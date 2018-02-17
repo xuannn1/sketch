@@ -103,7 +103,7 @@ class HomeworksController extends Controller
          $message_body = DB::table('message_bodies')->insertGetId([
               'content' => request('body'),
               'group_messaging' => 1,
-           )]);
+           ]);
          foreach($students as $student){
             $receiver = User::find($student);
             if(($receiver)&&($homework->registered->find($student))){//validate that this student 1 exist 2 registered for homework
