@@ -101,7 +101,7 @@ class HomeworksController extends Controller
       if($homework->active){
          $students = request('students');
          $message_body = DB::table('message_bodies')->insertGetId([
-              'content' => request('body',
+              'content' => request('body'),
               'group_messaging' => 1,
            )]);
          foreach($students as $student){
