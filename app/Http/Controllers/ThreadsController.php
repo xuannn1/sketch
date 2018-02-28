@@ -112,6 +112,7 @@ class threadsController extends Controller
       $public = request('public')? true: false;
       $noreply = request('noreply')? true:false;
       $markdown = request('markdown')? true: false;
+      $indentation = request('indentation')? true: false;
       $thread = Thread::create([
          'title' => request('title'),
          'brief' => request('brief'),
@@ -131,6 +132,7 @@ class threadsController extends Controller
          'body' => null,
          'thread_id' => $thread->id,
          'markdown' => $markdown,
+         'indentation' => $indentation,
       ]);
       $thread->update(['post_id'=>$post->id]);
       if($thread->label_id == 50){
@@ -160,6 +162,7 @@ class threadsController extends Controller
          $public = request('public')? true: false;
          $noreply = request('noreply')? true:false;
          $markdown = request('markdown')? true: false;
+         $indentation = request('indentation')? true: false;
          $thread->update([
             'title' => request('title'),
             'brief' => request('brief'),
@@ -171,7 +174,10 @@ class threadsController extends Controller
             'edited_at' => Carbon::now(),
            ]);
            $post = $thread->mainpost;
-           $post->update(['markdown'=>$markdown]);
+           $post->update([
+             'markdown'=>$markdown,
+             'indentation'=>$indentation,
+           ]);
          return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
       }else{
          return redirect()->route('error', ['error_code' => '403']);

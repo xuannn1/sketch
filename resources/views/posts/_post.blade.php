@@ -58,7 +58,7 @@
          评论&nbsp;<a href="{{ route('book.showchapter', $post->chapter_id) }}">{{ $post->trim( $post->chapter->title . $post->chapter->mainpost->title . $post->chapter->mainpost->body , 20) }}</a>
       </div>
       @endif
-      <div class="main-text">
+      <div class="main-text {{ $post->indentation? 'indentation':'' }}">
          @if($post->maintext)
          <div class="text-center h5">
          <strong>{{ $post->chapter->title }}</strong>

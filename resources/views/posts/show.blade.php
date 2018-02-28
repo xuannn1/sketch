@@ -89,7 +89,7 @@
                      </div>
                @endif
                @if($post->maintext)
-               <div class="main-text">
+               <div class="main-text {{ $post->indentation? 'indentation':'' }}">
                   {!! Helper::wrapParagraphs($post->body) !!}
                   <br>
                </div>

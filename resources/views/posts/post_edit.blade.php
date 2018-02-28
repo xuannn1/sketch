@@ -22,6 +22,7 @@
          <div class="checkbox">
            <label><input type="checkbox" name="anonymous" {{ $post->anonymous ? 'checked' : '' }}>马甲？</label>&nbsp;
            <label><input type="checkbox" name="markdown" {{ $post->markdown ? 'checked' : '' }}>使用Markdown语法？</label>
+           <label><input type="checkbox" name="indentation" {{ $post->indentation ? 'checked' : '' }}>段首缩进？</label>
            <div class="form-group text-right grayout" id="majia" style="display:block">
                <input type="text" name="majia" class="form-control" value="{{ $post->majia ?? '匿名咸鱼'}}" disabled>
                <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>

@@ -32,17 +32,18 @@ class ChaptersController extends Controller
    {
       $thread = $book->thread;
       if ((Auth::id()==$thread->creator->id)&&(!$thread->locked)){
+          $this->validate($request, [
+             'title' => 'required|string|max:35',
+             'brief' => 'max:35',
+             'body' => 'required|string|min:15',
+             'annotation' => 'max:20000',
+          ]);
          $max_volumn = $book->recent_volumn();
          $volumn_id = $max_volumn ? $max_volumn->id: 0;
          $max_chapter = $book->max_chapter_order();
          $chapter_order = $max_chapter ? : 0;
-         $this->validate($request, [
-            'title' => 'required|string|max:35',
-            'brief' => 'max:35',
-            'body' => 'required|string|min:15',
-            'annotation' => 'max:20000',
-         ]);
          $markdown = request('markdown')? true: false;
+         $indentation = request('indentation')? true: false;
          $post = Post::create([
             'body' => request('body'),
             'title' => request('brief'),
@@ -52,6 +53,7 @@ class ChaptersController extends Controller
             'anonymous' => $thread->anonymous,
             'majia' => $thread->majia,
             'markdown' => $markdown,
+            'indentation' => $indentation,
          ]);
          $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post->body);
          $characters = iconv_strlen($string, 'utf-8');
@@ -166,6 +168,7 @@ class ChaptersController extends Controller
             'annotation' => 'max:20000',
          ]);
          $markdown = request('markdown')? true: false;
+         $indentation = request('indentation')? true:false;
          $post = $chapter->mainpost;
          $string = preg_replace('/[[:punct:]\s\n\t\r]/','',request('body'));
          $characters = iconv_strlen($string, 'utf-8');
@@ -179,6 +182,7 @@ class ChaptersController extends Controller
             'body' => request('body'),
             'title' => request('brief'),
             'markdown' => $markdown,
+            'indentation' => $indentation,
             'edited_at' => Carbon::now(),
          ]);
          $total_char = DB::table('chapters')

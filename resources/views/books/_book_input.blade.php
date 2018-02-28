@@ -115,4 +115,4 @@
 <label><input type="checkbox" name="public" {{ (old('public') ?? $thread->public) ? 'checked' : '' }}>是否公开可见</label>&nbsp;
 <label><input type="checkbox" name="noreply" {{ (old('noreply') ?? $thread->noreply) ? 'checked' : '' }}>是否禁止回帖</label>&nbsp;
 <label><input type="checkbox" name="markdown" {{ (old('markdown') ?? $thread->markdown) ? 'checked' : '' }}>使用Markdown语法？</label>
-</div>
+<label><input type="checkbox" name="indentation" {{ (old('indentation') ?? $book->indentation) ? 'checked' : '' }}>段首缩进？</label>

@@ -49,6 +49,7 @@ class PostsController extends Controller
               }
            }
            $markdown = request('markdown')? true: false;
+           $indentation = request('indentation')? true: false;
            $chapter_id = request('default_chapter_id');
            $reply_to_post_id = request('reply_to_post');
            if ($reply_to_post_id!= "0"){
@@ -70,6 +71,7 @@ class PostsController extends Controller
               'anonymous' => $anonymous,
               'majia' => $majia,
               'markdown' => $markdown,
+              'indentation' => $indentation,
            ]);
            $post->checklongcomment();
            if ($chapter_id !=0){//如果是给某个章节回帖，这个章节的数据更新
@@ -142,11 +144,13 @@ class PostsController extends Controller
                ]);
             }
             $markdown = request('markdown')? true: false;
+            $indentation = request('indentation')? true: false;
             $post->update([
                'body' => request('body'),
                'edited_at' => Carbon::now(),
                'anonymous' => $anonymous,
                'markdown' => $markdown,
+               'indentation' => $indentation,
             ]);
             $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post->body);
             $characters = iconv_strlen($string, 'utf-8');

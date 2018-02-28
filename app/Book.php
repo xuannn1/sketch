@@ -50,7 +50,7 @@ class Book extends Model
 
    public function tongren()
    {
-      return $this->hasOne(Tongren::class, 'book_id');
+      return $this->hasOne(Tongren::class, 'book_id')->withDefault();
    }
    public function deleteTongren()
    {

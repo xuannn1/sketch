@@ -31,6 +31,7 @@
             </div>
             <button type="submit" name="store_button" value="Store" class="btn btn-danger sosad-button">回复</button>
             <label><input type="checkbox" name="markdown_editor" onclick="document.getElementById('markdowneditor').setAttribute("data-provide", "markdown")">Markdown语法？</label>
+            <label><input type="checkbox" name="indentation" checked>段首缩进？</label>
             <button type="submit" name="full_editor_button" value="FullEditor" class="btn btn-danger sosad-button">高级编辑器</button>
             @if((Auth::id()==$thread->creator->id)&&($thread->book_id!=0))
                <button type="submit" name="new_chapter_button" value="NewChapter" class="btn btn-danger sosad-button">更新章节</button>

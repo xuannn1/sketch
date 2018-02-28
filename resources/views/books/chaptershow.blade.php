@@ -41,7 +41,7 @@
             @if((Auth::check())&&(Auth::user()->admin))
             @include('admin._delete_post')
             @endif
-            <div class="text-left main-text">
+            <div class="text-left main-text {{ $chapter->mainpost->indentation? 'indentation':'' }}">
                @if($chapter->mainpost->markdown)
                {!! Markdown::convertToHtml($chapter->mainpost->body) !!}
                @else

@@ -95,6 +95,7 @@ class BooksController extends Controller
       $bianyuan = request('bianyuan')? true: false;
       $original = request('originalornot')? true: false;
       $markdown = request('markdown')? true: false;
+      $indentation = request('indentation')? true: false;
       $thread = Thread::create([
          'title' => request('title'),
          'brief' => request('brief'),
@@ -107,8 +108,6 @@ class BooksController extends Controller
          'anonymous' => $anonymous,
          'majia' => $majia,
       ]);
-      $user->update(['majia'=>$majia]);
-      $thread->addTags(request('tags'));
       $post = Post::create([
          'user_id' => $user->id,
          'body' => null,
@@ -122,19 +121,21 @@ class BooksController extends Controller
          'book_length' => request('book_length'),
          'sexual_orientation' => request('sexual_orientation'),
          'lastaddedchapter_at' => Carbon::now(),
+         'indentaion' => $indentation,
       ]);
-      $thread->update([
-         'post_id' => $post->id,
-         'book_id' => $book->id,
-      ]);
-
-      if (!request('originalornot')){//选择了同人作品，那么检验是否填写了同人相关内容
+      if (!$original){//选择了同人作品，那么检验是否填写了同人相关内容
          $tongren = Tongren::create([
             'book_id' => $book->id,
             'tongren_yuanzhu' => request('original_work'),
             'tongren_cp' => request('tongren_cp'),
          ]);
       }
+      $user->update(['majia'=>$majia]);
+      $thread->addTags(request('tags'));
+      $thread->update([
+         'post_id' => $post->id,
+         'book_id' => $book->id,
+      ]);
       $user->jifen+=10;
       $user->shengfan+=10;
       $user->xianyu+=5;
@@ -180,6 +181,7 @@ class BooksController extends Controller
          $public = request('public')? true:false;
          $noreply = request('noreply')? true:false;
          $markdown = request('markdown')? true: false;
+         $indentation = request('indentation')? true: false;
          $thread->update([
             'title' => request('title'),
             'brief' => request('brief'),
@@ -195,21 +197,22 @@ class BooksController extends Controller
          $thread->deleteTags();
          $thread->addTags(request('tags'));
          $book->update([
-            'original' => request('originalornot'),
             'book_status' => request('book_status'),
             'book_length' => request('book_length'),
             'sexual_orientation' => request('sexual_orientation'),
+            'indentation' => $indentation,
          ]);
-         $book->deleteTongren();
-         if(!request('originalornot')){//是同人作品，更新同人信息
-            $tongren = Tongren::create([
-               'book_id' => $book->id,
+         if(!$book->original){
+            $tongren = $book->tongren();
+            $tongren->update([
                'tongren_yuanzhu' => request('original_work'),
                'tongren_cp' => request('tongren_cp'),
             ]);
          }
          $post = $thread->mainpost;
-         $post->update(['markdown'=>$markdown]);
+         $post->update([
+           'markdown'=>$markdown,
+         ]);
          return redirect()->route('book.show', $book->id)->with("success", "您已成功修改文章");
       }else{
          return redirect()->route('error', ['error_code' => '405']);

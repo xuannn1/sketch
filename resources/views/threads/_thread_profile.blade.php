@@ -40,7 +40,7 @@
       </span>
    </div>
    <!-- 主题正文 -->
-   <div class="main-text">
+   <div class="main-text {{ $thread->mainpost->indentation? 'indentation':'' }}">
       @if($thread->mainpost->markdown)
       {!! Markdown::convertToHtml($thread->body) !!}
       @else
