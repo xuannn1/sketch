@@ -85,7 +85,7 @@
             @if($post->title)
                <strong>{{ $post->title }}</strong>
             @endif
-            @if($post->body && $post->markdown)
+            @if($post->markdown)
             {!! Markdown::convertToHtml($post->body) !!}
             @else
             {!! Helper::wrapParagraphs($post->body) !!}

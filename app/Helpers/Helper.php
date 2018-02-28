@@ -5,7 +5,7 @@ use Auth;
 
 class Helper
 {
-   public static function wrapParagraphs(string $post)
+   public static function wrapParagraphs($post= null)
    {
       while(strip_tags($post)!=$post){
          $post = strip_tags($post);
