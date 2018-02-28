@@ -30,6 +30,7 @@ class BooksController extends Controller
      $book->book_length = '0';
      $book->sexual_orientation = '0';
      $book->book_status = '0';
+     $book->indentation = true;
      $thread =new Thread;
      $thread->bianyuan = 3;
      $thread->public = 1;
@@ -41,6 +42,7 @@ class BooksController extends Controller
      $thread->id = 0;
      $mainpost = new Post;
      $mainpost->markdown = false;
+     $mainpost->indentation = true;
      $tongren = new Tongren;
      $tongren->tongren_yuanzhu = '';
      $tongren->tongren_cp = '';
@@ -121,7 +123,7 @@ class BooksController extends Controller
          'book_length' => request('book_length'),
          'sexual_orientation' => request('sexual_orientation'),
          'lastaddedchapter_at' => Carbon::now(),
-         'indentaion' => $indentation,
+         'indentation' => $indentation,
       ]);
       if (!$original){//选择了同人作品，那么检验是否填写了同人相关内容
          $tongren = Tongren::create([
