@@ -84,6 +84,7 @@
      @endforeach
   </div>
 </div>
+<br>
 <div class="form-group">
 <label for="title"><h4>7. 标题：</h4></label><a data-toggle="collapse" data-target="#biaotiguiding" class="h6">（点击查看关于规范标题格式的说明）</a>
 <div id="biaotiguiding" class="collapse h6">
@@ -98,8 +99,11 @@
 </div>
 
 <div class="form-group">
-<label for="wenan"><h4>9. 文案：</h4></label>
-<textarea name="wenan" id="markdowneditor" data-provide="markdown" rows="20" class="form-control">{{ $thread->body }}</textarea>
+<label for="wenan"><h4>9. 文案（不是正文）：</h4></label><a data-toggle="collapse" data-target="#wenan" class="h6">（点击查看“文案”与“正文”的区别）</a>
+<div id="wenan" class="collapse h6">
+  文案不是正文，文案属于对文章的简单介绍。文案采用“居中排列”的板式，而不是“向左对齐”。如果在这里发布正文，阅读效果不好。正文请在发布文章后，于文案下选择“新建章节”来建立。
+</div>
+<textarea name="wenan" id="markdowneditor" data-provide="markdown" rows="12" class="form-control">{{ $thread->body }}</textarea>
 <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
 <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
 </div>

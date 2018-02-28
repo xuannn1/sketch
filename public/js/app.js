@@ -33109,7 +33109,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           hotkey: 'Ctrl+P',
           title: 'Preview',
           btnText: 'Preview',
-          btnClass: 'btn btn-primary btn-sm',
+          btnClass: 'btn btn-primary btn-sm sosad-button',
           icon: { glyph: 'glyphicon glyphicon-search', fa: 'fa fa-search', 'fa-3': 'icon-search' },
           callback: function(e){
             // Check the preview mode and toggle based on this flag
