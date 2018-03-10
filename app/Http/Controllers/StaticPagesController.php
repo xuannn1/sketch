@@ -78,6 +78,7 @@ class StaticPagesController extends Controller
         $join->where('administrations.operation','=',8);
         $join->on('administrations.item_id','=','post_comments.id');
      })
+     ->where('administrations.deleted_at','=',null)
      ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body' )
      ->orderBy('administrations.created_at','desc')
      ->paginate(Config::get('constants.index_per_page'));

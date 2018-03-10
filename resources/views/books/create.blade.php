@@ -12,6 +12,7 @@
          <form method="POST" action="{{ route('book.store') }}" name="create_book">
            {{ csrf_field() }}
                <div>
+                 <h6>（发文前请阅读：<a href="http://sosad.fun/threads/136">版规的详细说明（草案）</a>。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">关于本站</a>，<a href="{{ route('help') }}">使用帮助</a>。感谢发文！）</h6>
                  <h4>1. 请选择文章原创性</h4>
                  <label class="radio-inline"><input type="radio" name="originalornot" value="1" {{ old('originalornot')=='1' ? 'checked' : '' }} onclick="document.getElementById('yuanchuang').style.display = 'block'; document.getElementById('tongren').style.display = 'none'">原创</label>
                  <label class="radio-inline"><input type="radio" name="originalornot" value="0" {{ old('originalornot')=='0' ? 'checked' : '' }} onclick="document.getElementById('tongren').style.display = 'block'; document.getElementById('yuanchuang').style.display = 'none';">同人</label>

@@ -69,7 +69,14 @@ class LoginController extends Controller
         // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
         // Customization: If client status is inactive (0) return failed_status error.
-        if($user){ if ($user->activated == 0) { return $this->sendFailedLoginResponse($request, 'auth.failed_activated'); } }
+        if($user){
+          if ($user->activated == 0) {
+            return $this->sendFailedLoginResponse($request, 'auth.failed_activated');
+          }
+          if ($user->no_logging_or_not == 1) {
+            return $this->sendFailedLoginResponse($request, 'auth.failed_allowedlogging');
+          }
+        }
 
         return $this->sendFailedLoginResponse($request);
     }
@@ -84,6 +91,7 @@ class LoginController extends Controller
         $credentials = $request->only($this->username(), 'password');
         // Customization: validate if client status is active (1)
         $credentials['activated'] = 1;
+        $credentials['no_logging_or_not'] = 0;
         return $credentials;
     }
     /**

@@ -18,7 +18,7 @@
    <span class="pull-right">
       <a class="btn btn-sm btn-default" href="#" data-toggle="modal" data-target="#TriggerVoteForShengfan{{ $thread->mainpost->id }}">剩饭{{ $thread->shengfan }}</a>
       <a class="btn btn-sm btn-default" href="{{ route('xianyu.vote', $thread->id)}}" >咸鱼{{ $thread->xianyu }}</a>
-      @if((!$thread->locked)&&(!$thread->noreply)&&(($thread->public)||($thread->user_id==Auth::id())))
+      @if((!$thread->locked)&&(!$thread->noreply)&&(($thread->public)||($thread->user_id==Auth::id()))&&(Auth::user()->no_posting < Carbon\Carbon::now()))
       <a class="btn btn-sm btn-default" href="#" data-toggle="modal" data-target="#TriggerPostComment{{ $thread->mainpost->id }}">点评</a>
       @endif
    </span>
@@ -41,6 +41,7 @@
       </div>
    </div>
 </div>
+
 <div class="modal fade" id="TriggerPostComment{{ $thread->mainpost->id }}" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">

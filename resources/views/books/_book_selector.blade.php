@@ -38,6 +38,13 @@
                <li><input type="checkbox" name="sexual_orientation[]" value="7"checked />&nbsp;其他性向</li>
             </ul>
          </span>
+         <span class="button-group">
+            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">边缘<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+               <li><input type="checkbox" name="bianyuan[]" value="0"checked />&nbsp;非边缘</li>
+               <li><input type="checkbox" name="bianyuan[]" value="1"checked />&nbsp;边缘</li>
+            </ul>
+         </span>
         <button type="submit" name="button" class="btn btn-xs btn-primary sosad-button">提交</button>
  </form>
 </div>

@@ -22,11 +22,15 @@
          </div>
          @if (Auth::check())
          <div class="panel-heading">
-            @if ($channel->channel_state == 1)
-               <a class="btn btn-lg btn-primary sosad-button" href="{{ route('book.create') }}" role="button">发布文章</a>
-            @else
-               <a class="btn btn-lg btn-primary sosad-button" href="{{ route('thread.create', $channel) }}" role="button">发布主题</a>
-            @endif
+           @if(Auth::user()->no_posting > Carbon\Carbon::now())
+            <h6 class="text-center">您被禁言至{{ Carbon\Carbon::parse(Auth::user()->no_posting)->diffForHumans() }}，暂时不能发帖。</h6>
+           @else
+              @if ($channel->channel_state == 1)
+                 <a class="btn btn-lg btn-primary sosad-button" href="{{ route('book.create') }}" role="button">发布文章</a>
+              @else
+                 <a class="btn btn-lg btn-primary sosad-button" href="{{ route('thread.create', $channel) }}" role="button">发布主题</a>
+              @endif
+           @endif
          </div>
          @else
          <div class="panel-heading text-center">

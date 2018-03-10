@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use App\Quote;
 use App\Channel;
 use App\Label;
 use App\Thread;
 use App\Post;
+use App\User;
 use App\PostComment;
 use App\Administration;
 use App\Book;
+use App\Message;
 use Auth;
 
 class AdminsController extends Controller
@@ -183,5 +186,32 @@ class AdminsController extends Controller
       $channels = Channel::all();
       $channels->load('labels');
       return view('admin.advanced_thread_form', compact('thread','channels'));
+   }
+
+   public function sendpublicmessageform()
+   {
+     return view('admin.send_publicmessage');
+   }
+   public function sendpublicmessage(Request $request)
+   {
+      $this->validate($request, [
+          'body' => 'required|string|max:20000|min:10',
+       ]);
+       $receivers = User::all();
+       $message_body = DB::table('message_bodies')->insertGetId([
+            'content' => request('body'),
+            'group_messaging' => 1,
+         ]);
+       foreach($receivers as $receiver){
+         Message::create([
+            'message_body' => $message_body,
+            'poster_id' => Auth::id(),
+            'receiver_id' => $receiver->id,
+            'private' => false,
+         ]);
+         $receiver->increment('message_reminders');
+       }
+       return redirect()->back()->with('success','您已成功发布公共通知');
+
    }
 }

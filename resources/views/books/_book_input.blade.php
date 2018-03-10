@@ -54,7 +54,7 @@
    <label for="bianyuan"><h4>5. 是否边缘敏感题材？</h4></label>
    <a data-toggle="collapse" data-target="#bianyuan" class="h6">（点击查看什么属于边缘敏感题材）</a>
     <div id="bianyuan" class="collapse h6">
-       文章含肉超过20%，或题材包含人兽、触手、父子、乱伦、生子、产乳、abo、冰恋、军政、黑道、性转……等边缘敏感题材的，请勾选此项。勾选后，本文标题将不出现在游客浏览目录中
+       文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含人兽、触手、父子、乱伦、生子、产乳、abo、冰恋、军政、黑道、性转……等边缘敏感题材，或估计不适合未成年人观看的，请勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。
     </div>
     <div class="">
       <label class="radio-inline"><input type="radio" name="bianyuan" value="0" {{ old('bianyuan')=='0' ? 'checked' : ($thread->bianyuan==0 ? 'checked' : '' ) }}  onclick="uncheckAll('bianyuantags');document.getElementById('bianyuantags').style.display = 'none'">非边缘</label>
@@ -69,9 +69,6 @@
       array_push($tag_list, $t_tag->id);
    }
    ?>
-
-
-
   @foreach ($tags as $tag)
      <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (((is_array($oldtags))&&(in_array($tag->id, old('tags'))))||((!$oldtags)&&(in_array($tag->id, $tag_list))))? 'checked':'' }} >{{ $tag->tagname }}
   @endforeach
@@ -86,11 +83,11 @@
 </div>
 <br>
 <div class="form-group">
-<label for="title"><h4>7. 标题：</h4></label><a data-toggle="collapse" data-target="#biaotiguiding" class="h6">（点击查看关于规范标题格式的说明）</a>
-<div id="biaotiguiding" class="collapse h6">
-  标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，不要放入标题。
-</div>
-<input type="text" name="title" class="form-control" value="{{ old('title') ?? $thread->title }}">
+  <label for="title"><h4>7. 标题：</h4></label><a data-toggle="collapse" data-target="#biaotiguiding" class="h6">（点击查看关于规范标题格式的说明）</a>
+  <div id="biaotiguiding" class="collapse h6">
+    标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，不要放入标题。
+  </div>
+  <input type="text" name="title" class="form-control" value="{{ old('title') ?? $thread->title }}">
 </div>
 
 <div class="form-group">
@@ -99,24 +96,25 @@
 </div>
 
 <div class="form-group">
-<label for="wenan"><h4>9. 文案（不是正文）：</h4></label><a data-toggle="collapse" data-target="#wenan" class="h6">（点击查看“文案”与“正文”的区别）</a>
-<div id="wenan" class="collapse h6">
-  文案不是正文，文案属于对文章的简单介绍。文案采用“居中排列”的板式，而不是“向左对齐”。如果在这里发布正文，阅读效果不好。正文请在发布文章后，于文案下选择“新建章节”来建立。
-</div>
-<textarea name="wenan" id="markdowneditor" data-provide="markdown" rows="12" class="form-control">{{ $thread->body }}</textarea>
-<button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
-<button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
+  <label for="wenan"><h4>9. 文案（不是正文）：</h4></label><a data-toggle="collapse" data-target="#wenan" class="h6">（点击查看“文案”与“正文”的区别）</a>
+  <div id="wenan" class="collapse h6">
+    文案不是正文，文案属于对文章的简单介绍。文案采用“居中排列”的板式，而不是“向左对齐”。如果在这里发布正文，阅读效果不好。正文请在发布文章后，于文案下选择“新建章节”来建立。
+  </div>
+  <textarea name="wenan" id="markdowneditor" data-provide="markdown" rows="12" class="form-control">{{ $thread->body }}</textarea>
+  <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
+  <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
 </div>
 
 <div class="checkbox">
-<label><input type="checkbox" name="anonymous" {{ (old('anonymous') ?? $thread->anonymous) ? 'checked' : '' }}>马甲？</label>
-<div class="form-group text-right {{ $thread->id>0 ? 'grayout' :'' }}" id="majia" style="display:block">
-    <input type="text" name="majia" class="form-control" value="{{ old('majia') ?? $thread->majia ?? '匿名咸鱼'}}" {{ $book->id>0 ? 'readonly' :''}}>
-    <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>
-</div>
+  <label><input type="checkbox" name="anonymous" {{ (old('anonymous') ?? $thread->anonymous) ? 'checked' : '' }}>马甲？</label>
+  <div class="form-group text-right {{ $thread->id>0 ? 'grayout' :'' }}" id="majia" style="display:block">
+      <input type="text" name="majia" class="form-control" value="{{ old('majia') ?? $thread->majia ?? '匿名咸鱼'}}" {{ $book->id>0 ? 'readonly' :''}}>
+      <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>
+  </div>
 </div>
 <div class="checkbox">
-<label><input type="checkbox" name="public" {{ (old('public') ?? $thread->public) ? 'checked' : '' }}>是否公开可见</label>&nbsp;
-<label><input type="checkbox" name="noreply" {{ (old('noreply') ?? $thread->noreply) ? 'checked' : '' }}>是否禁止回帖</label>&nbsp;
-<label><input type="checkbox" name="markdown" {{ (old('markdown') ?? $thread->markdown) ? 'checked' : '' }}>使用Markdown语法？</label>
-<label><input type="checkbox" name="indentation" {{ (old('indentation') ?? $book->indentation) ? 'checked' : '' }}>段首缩进？</label>
+  <label><input type="checkbox" name="public" {{ (old('public') ?? $thread->public) ? 'checked' : '' }}>是否公开可见</label>&nbsp;
+  <label><input type="checkbox" name="noreply" {{ (old('noreply') ?? $thread->noreply) ? 'checked' : '' }}>是否禁止回帖</label>&nbsp;
+  <label><input type="checkbox" name="markdown" {{ (old('markdown') ?? $thread->markdown) ? 'checked' : '' }}>使用Markdown语法？</label>
+  <label><input type="checkbox" name="indentation" {{ (old('indentation') ?? $book->indentation) ? 'checked' : '' }}>段首缩进？</label>
+</div>

@@ -1,10 +1,10 @@
 <span class="voteposts">
    @include('posts._post_vote_buttons')
-   @if(!$thread->locked)
-   <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostComment{{ $post->id }}" class="btn btn-xs btn-info sosad-button">点评</a>
-   @endif
 </span>
-@if(!$thread->locked)
+@if((!$thread->locked)&&(Auth::user()->no_posting < Carbon\Carbon::now()))
+<span class="voteposts">
+  <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostComment{{ $post->id }}" class="btn btn-xs btn-info sosad-button">点评</a>
+</span>
 <span ><a href = "#replyToThread" class="btn btn-primary sosad-button btn-xs" onclick="replytopost({{ $post->id }}, '{{ $post->trim($post->body, 10)}}')">回复</a></span>
 @endif
 
