@@ -8,7 +8,9 @@
       @include('users._message_button')
       <span><a href="{{route('users.followers', $user->id)}}">粉丝：{{ $user->followers()->count() }}</a></span>
 </div>
-
+@if((Auth::check())&&(Auth::user()->admin))
+@include('admin._modify_user')
+@endif
 <div class="stats">
       <span>等级：{{ $user->user_level }}</span>
       <span>积分：{{ $user->jifen }}</span>

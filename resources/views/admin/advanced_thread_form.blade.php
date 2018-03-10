@@ -23,7 +23,7 @@
                <label><input type="radio" name="controlthread" value="2">{{ $thread->public ? '转为私密' : '转为公开' }}</label>
             </div>
             <div class="radio">
-               <p class="lead admin-symbol"><label><input type="radio" name="controlthread" value="3">{{ $thread->deleted_at ? '恢复删除' : '删除帖子' }}</label></p>
+               <p class="lead admin-symbol"><label><input type="radio" name="controlthread" value="3">{{ $thread->deleted_at ? '恢复已删除' : '删除帖子' }}</label></p>
             </div>
 
             <label><input type="radio" name="controlthread" value="4">转换板块</label>

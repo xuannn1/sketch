@@ -138,8 +138,9 @@
 {//以下是admin
    Route::get('/admin', 'AdminsController@index')->name('admin.index');//管理员管理界面
    Route::post('/admin/threadmanagement/{thread}','AdminsController@threadmanagement')->name('admin.threadmanagement');//管理员管理主题贴
-   Route::post('/admin/postmanagement/{post}','AdminsController@postmanagement')->name('admin.postmanagement');//管理员管理主题贴
-   Route::post('/admin/postcommentmanagement/{postcomment}','AdminsController@postcommentmanagement')->name('admin.postcommentmanagement');//管理员管理主题贴
+   Route::post('/admin/postmanagement/{post}','AdminsController@postmanagement')->name('admin.postmanagement');//管理员管理回帖
+   Route::post('/admin/usermanagement/{user}','AdminsController@usermanagement')->name('admin.usermanagement');//管理员管理用户
+   Route::post('/admin/postcommentmanagement/{postcomment}','AdminsController@postcommentmanagement')->name('admin.postcommentmanagement');//管理员管理点评
    Route::get('/admin/advancedthreadform/{thread}','AdminsController@advancedthreadform')->name('admin.advancedthreadform');//高级管理主题贴页面
    Route::get('/admin/sendpublicmessageform', 'AdminsController@sendpublicmessageform')->name('admin.sendpublicmessageform')->middleware('admin');//发送提醒通知表格
    Route::post('/admin/sendpublicmessage', 'AdminsController@sendpublicmessage')->name('admin.sendpublicmessage')->middleware('admin');//发送提醒通知

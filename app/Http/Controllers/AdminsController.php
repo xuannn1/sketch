@@ -16,6 +16,7 @@ use App\Administration;
 use App\Book;
 use App\Message;
 use Auth;
+use Carbon\Carbon;
 
 class AdminsController extends Controller
 {
@@ -106,7 +107,7 @@ class AdminsController extends Controller
       if ($var=="4"){
          Administration::create([
             'user_id' => Auth::id(),
-            'operation' => '9',//5:删帖
+            'operation' => '9',//转移版块
             'item_id' => $thread->id,
             'reason' => request('reason'),
          ]);
@@ -146,23 +147,53 @@ class AdminsController extends Controller
    }
    public function postmanagement(Post $post, Request $request)
    {
-      $this->validate($request, [
-          'reason' => 'required|string',
-      ]);
-      if(request("delete")){
-         Administration::create([
-            'user_id' => Auth::id(),
-            'operation' => '7',//:删回帖
-            'item_id' => $post->id,
-            'reason' => request('reason'),
-         ]);
-         if($post->chapter_id !=0){
-            App\Chapter::destroy($post->chapter_id);
-         }
-         $post->delete();
-         return redirect()->back()->with("success","已经成功处理该回帖");
-      }
-      return redirect()->back()->with("warning","什么都没做");
+     $this->validate($request, [
+         'reason' => 'required|string',
+         'majia' => 'required|string|max:10'
+     ]);
+     $var = request('controlpost');//
+     if ($var=="7"){//删帖
+        Administration::create([
+          'user_id' => Auth::id(),
+          'operation' => '7',//:删回帖
+          'item_id' => $post->id,
+          'reason' => request('reason'),
+        ]);
+        if($post->chapter_id !=0){
+          App\Chapter::destroy($post->chapter_id);
+        }
+        $post->delete();
+        return redirect()->back()->with("success","已经成功处理该贴");
+     }
+     if ($var=="10"){//修改马甲
+       if (request('anonymous')=="1"){
+         $post->anonymous = true;
+         $post->majia = request('majia');
+       }
+       if (request('anonymous')=="2"){
+         $post->anonymous = false;
+       }
+       $post->save();
+        Administration::create([
+          'user_id' => Auth::id(),
+          'operation' => '10',//:修改马甲
+          'item_id' => $post->id,
+          'reason' => request('reason'),
+        ]);
+        return redirect()->back()->with("success","已经成功处理该回帖");
+     }
+     if ($var=="11"){//折叠
+       $post->fold_state = !$post->fold_state;
+       $post->save();
+        Administration::create([
+           'user_id' => Auth::id(),
+           'operation' => ($post->fold_state? '11':'12'),//11 => '折叠帖子',12 => '解折帖子'
+           'item_id' => $post->id,
+           'reason' => request('reason'),
+        ]);
+        return redirect()->back()->with("success","已经成功处理该回帖");
+     }
+     return redirect()->back()->with("warning","什么都没做");
    }
    public function postcommentmanagement(PostComment $postcomment, Request $request)
    {
@@ -186,6 +217,39 @@ class AdminsController extends Controller
       $channels = Channel::all();
       $channels->load('labels');
       return view('admin.advanced_thread_form', compact('thread','channels'));
+   }
+   public function usermanagement(User $user, Request $request)
+   {
+     $this->validate($request, [
+         'reason' => 'required|string',
+         'days' => 'required|numeric',
+         'hours' => 'required|numeric',
+     ]);
+     $var = request('controluser');//
+     if ($var=="13"){//设置禁言时间
+        Administration::create([
+          'user_id' => Auth::id(),
+          'operation' => '13',//:增加禁言时间
+          'item_id' => $user->id,
+          'reason' => request('reason'),
+        ]);
+        $user->no_posting = Carbon::now()->addDays(request('days'))->addHours(request('hours'));
+        $user->save();
+        return redirect()->back()->with("success","已经成功处理该用户");
+     }
+     if ($var=="14"){//解除禁言
+        Administration::create([
+          'user_id' => Auth::id(),
+          'operation' => '14',//:增加禁言时间
+          'item_id' => $user->id,
+          'reason' => request('reason'),
+        ]);
+        $user->no_posting = Carbon::now();
+        $user->save();
+        return redirect()->back()->with("success","已经成功处理该用户");
+     }
+
+     return redirect()->back()->with("warning","什么都没做");
    }
 
    public function sendpublicmessageform()

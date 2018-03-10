@@ -70,7 +70,7 @@ class StaticPagesController extends Controller
      })
      ->leftjoin('posts',function($join)
      {
-        $join->where('administrations.operation','=',7);
+        $join->whereIn('administrations.operation',[7,10,11,12]);
         $join->on('administrations.item_id','=','posts.id');
      })
      ->leftjoin('post_comments',function($join)
@@ -78,8 +78,13 @@ class StaticPagesController extends Controller
         $join->where('administrations.operation','=',8);
         $join->on('administrations.item_id','=','post_comments.id');
      })
+     ->leftjoin('users as operated_users',function($join)
+     {
+        $join->whereIn('administrations.operation',[13,14]);
+        $join->on('administrations.item_id','=','operated_users.id');
+     })
      ->where('administrations.deleted_at','=',null)
-     ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body' )
+     ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body','operated_users.name as operated_users_name' )
      ->orderBy('administrations.created_at','desc')
      ->paginate(Config::get('constants.index_per_page'));
      $admin_operation = Config::get('constants.administrations');

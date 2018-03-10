@@ -8,10 +8,10 @@
          <form action="{{ route('admin.threadmanagement',$thread->id)}}" method="POST">
             {{ csrf_field() }}
             <div class="admin-symbol">
-               <h1>管理员权限专区</h1>
+               <h1>管理员权限专区：警告！请勿进行私人用户操作！</h1>
             </div>
             <div class="radio">
-               <label><input type="radio" name="controlthread" value="1">{{ $thread->locked ? '解锁' : '锁帖' }}</label>
+               <label><input type="radio" name="controluser" value="1">{{ $thread->locked ? '解锁' : '锁帖' }}</label>
             </div>
             <div class="radio">
                <label><input type="radio" name="controlthread" value="2">{{ $thread->public ? '转为私密' : '转为公开' }}</label>
@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
                <label for="reason"></label>
-               <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由"></textarea>
+               <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)"></textarea>
             </div>
             <a href="{{ route('admin.advancedthreadform', $thread) }}">高级管理</a>
             <div class="">
