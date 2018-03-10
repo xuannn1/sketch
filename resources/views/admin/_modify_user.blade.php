@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                <label for="reason"></label>
-               <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由"></textarea>
+               <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)"></textarea>
             </div>
             <div class="">
                <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>

@@ -26,7 +26,7 @@
                <p class="lead admin-symbol"><label><input type="radio" name="controlthread" value="3">{{ $thread->deleted_at ? '恢复已删除' : '删除帖子' }}</label></p>
             </div>
 
-            <label><input type="radio" name="controlthread" value="4">转换板块</label>
+            <label><input type="radio" name="controlthread" value="4">转换板块（注意，如果点选了下面其他选项，记得回头把这个选一下）</label>
             @foreach($channels as $channel)
             <div class="">
                <label class="radio-inline"><input type="radio" name="channel" value="{{$channel->id}}" onclick="document.getElementById('{{$channel->channelname}}').style.display = 'block'">{{$channel->channelname}}</label>
@@ -40,7 +40,7 @@
             @endforeach
             <div class="form-group">
                <label for="reason"></label>
-               <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由"></textarea>
+               <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)"></textarea>
             </div>
             <div class="">
                <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>
