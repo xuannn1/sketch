@@ -199,7 +199,36 @@ class threadsController extends Controller
    }
    public function txt_download(Thread $thread)
    {
+      $user = Auth::user();
+      if (($user->id!=$thread->user_id)||(!$user->admin)) {//假如并非本人主题，登陆用户也不是管理员，首先看主人是否允许开放下载
+        if (!$thread->download_as_thread){
+          return redirect()->back()->with("danger","作者并未开放下载");
+        }else{
+          if($user->user_level>0){
+            if ($thread->book_id > 0){//图书的下载需要更多剩饭咸鱼
+              if (($user->shengfan > 5)&&($user->xianyu > 1)){
+                $user->decrement('shengfan',5);
+                $user->decrement('xianyu',1);
+              }else{
+                return redirect()->back()->with("danger","您的剩饭与咸鱼不够，不能下载");
+              }
+            }else{//下载讨论帖需要的剩饭稍微少一些
+              if ($user->shengfan > 2){
+                $user->decrement('shengfan',2);
+              }else{
+                return redirect()->back()->with("danger","您的剩饭与咸鱼不够，不能下载");
+              }
+            }
+          }else{
+            return redirect()->back()->with("danger","您的用户等级不够，不能下载");
+          }
+        }
+      }
       $thread->increment('downloaded');
+      $author = $thread->creator;
+      $author->increment('shengfan',5);
+      $author->increment('jifen',5);
+      $author->increment('xianyu',1);
       $posts = Post::where([
         ['thread_id', '=', $thread->id],
         ['id', '<>', $thread->post_id]
@@ -251,7 +280,6 @@ class threadsController extends Controller
       });
       $disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'thread'.$thread->id.'.txt');
       $response->headers->set('Content-Disposition', $disposition);
-
       return $response;
    }
 }

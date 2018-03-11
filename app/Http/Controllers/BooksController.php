@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
 use App\Label;
 use App\Thread;
 use App\Book;
@@ -40,6 +43,8 @@ class BooksController extends Controller
      $thread->title=null;
      $thread->tags = [];
      $thread->id = 0;
+     $thread->download_as_thread = true;
+     $thread->download_as_book = true;
      $mainpost = new Post;
      $mainpost->markdown = false;
      $mainpost->indentation = true;
@@ -98,6 +103,8 @@ class BooksController extends Controller
       $original = request('originalornot')? true: false;
       $markdown = request('markdown')? true: false;
       $indentation = request('indentation')? true: false;
+      $download_as_thread = request('download_as_thread')? true: false;
+      $download_as_book = request('download_as_book')? true: false;
       $thread = Thread::create([
          'title' => request('title'),
          'brief' => request('brief'),
@@ -109,6 +116,8 @@ class BooksController extends Controller
          'label_id' => request('label'),
          'anonymous' => $anonymous,
          'majia' => $majia,
+         'download_as_thread' => $download_as_thread,
+         'download_as_book' => $download_as_book,
       ]);
       $post = Post::create([
          'user_id' => $user->id,
@@ -184,6 +193,8 @@ class BooksController extends Controller
          $noreply = request('noreply')? true:false;
          $markdown = request('markdown')? true: false;
          $indentation = request('indentation')? true: false;
+         $download_as_thread = request('download_as_thread')? true: false;
+         $download_as_book = request('download_as_book')? true: false;
          $thread->update([
             'title' => request('title'),
             'brief' => request('brief'),
@@ -195,6 +206,8 @@ class BooksController extends Controller
             'public' => $public,
             'noreply' => $noreply,
             'edited_at' => Carbon::now(),
+            'download_as_thread' => $download_as_thread,
+            'download_as_book' => $download_as_book,
          ]);
          $thread->deleteTags();
          $thread->addTags(request('tags'));
@@ -519,5 +532,72 @@ class BooksController extends Controller
          $bookquery.=0;
       }
       return redirect()->route('books.selector',$bookquery);
+   }
+   public function txt_download(Thread $thread)
+   {
+      $book = $thread->book;
+      $user = Auth::user();
+      if (($user->id!=$thread->user_id)||(!$user->admin)) {//假如并非本人主题，登陆用户也不是管理员，首先看主人是否允许开放下载
+        if (!$thread->download_as_book){
+          return redirect()->back()->with("danger","作者并未开放下载");
+        }else{
+          if($user->user_level>0){
+            if (($user->shengfan > 10)&&($user->xianyu > 2)){
+              $user->decrement('shengfan',10);
+              $user->decrement('xianyu',2);
+            }else{
+              return redirect()->back()->with("danger","您的剩饭与咸鱼不够，不能下载");
+            }
+          }else{
+            return redirect()->back()->with("danger","您的用户等级不够，不能下载");
+          }
+        }
+      }
+      $thread->increment('downloaded');
+      $author = $thread->creator;
+      $author->increment('shengfan',5);
+      $author->increment('jifen',5);
+      $author->increment('xianyu',1);
+      $chapters = $book->chapters;
+      $chapters->load(['mainpost']);
+      $thread->load(['creator', 'tags', 'label']);
+      $book_info = Config::get('constants.book_info');
+      $txt = 'Downloaded from http://sosad.fun by Username:'.Auth::user()->name.' UserID:'.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
+      $txt .= "标题：".$thread->title."\n";
+      $txt .= "简介：".$thread->brief."\n";
+      $txt .= "作者：";
+      if($thread->anonymous){$txt.=$thread->majia;}else{$txt.=$thread->creator->name;}
+      $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
+      if($thread->created_at < $thread->edited_at){
+        $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
+      }
+      $txt .= "\n";
+      $txt .= "图书信息：".$book_info['originality_info'][$book->original].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
+      if($thread->bianyuan){$txt .= "|边缘";}
+      $txt .= '|'.$thread->label->labelname;
+      foreach ($thread->tags as $tag){
+        $txt .= '-'.$tag->tagname;
+      }
+      $txt .="\n文案：\n".$thread->body."\n\n";
+
+      foreach($chapters as $i=>$chapter){
+        $txt .= ($i+1).'.'.$chapter->title."\n";//章节名
+        $txt .= Carbon::parse($chapter->created_at)->setTimezone(8);
+        if($chapter->created_at < $chapter->edited_at){
+          $txt.= "/".Carbon::parse($chapter->edited_at)->setTimezone(8);
+        }
+        $txt .= "\n";
+        if($chapter->mainpost->title){$txt .= $chapter->mainpost->title."\n";}
+        if($chapter->mainpost->body){$txt .= $chapter->mainpost->body."\n";}
+        if($chapter->annotation){$txt .= "备注：".$chapter->annotation."\n";}
+        $txt .="\n";
+      }
+      $response = new StreamedResponse();
+      $response->setCallBack(function () use($txt) {
+          echo $txt;
+      });
+      $disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'book'.$book->id.'.txt');
+      $response->headers->set('Content-Disposition', $disposition);
+      return $response;
    }
 }

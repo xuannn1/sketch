@@ -107,14 +107,16 @@
 
 <div class="checkbox">
   <label><input type="checkbox" name="anonymous" {{ (old('anonymous') ?? $thread->anonymous) ? 'checked' : '' }}>马甲？</label>
-  <div class="form-group text-right {{ $thread->id>0 ? 'grayout' :'' }}" id="majia" style="display:block">
+  <div class="form-group {{ $thread->id>0 ? 'grayout' :'' }}" id="majia" style="display:block">
       <input type="text" name="majia" class="form-control" value="{{ old('majia') ?? $thread->majia ?? '匿名咸鱼'}}" {{ $book->id>0 ? 'readonly' :''}}>
       <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>
   </div>
-</div>
-<div class="checkbox">
-  <label><input type="checkbox" name="public" {{ (old('public') ?? $thread->public) ? 'checked' : '' }}>是否公开可见</label>&nbsp;
-  <label><input type="checkbox" name="noreply" {{ (old('noreply') ?? $thread->noreply) ? 'checked' : '' }}>是否禁止回帖</label>&nbsp;
   <label><input type="checkbox" name="markdown" {{ (old('markdown') ?? $thread->markdown) ? 'checked' : '' }}>使用Markdown语法？</label>
   <label><input type="checkbox" name="indentation" {{ (old('indentation') ?? $book->indentation) ? 'checked' : '' }}>段首缩进？</label>
+</div>
+<div class="checkbox">
+  <label><input type="checkbox" name="public" {{ (old('public') ?? $thread->public) ? 'checked' : '' }}>是否公开可见？</label>&nbsp;
+  <label><input type="checkbox" name="noreply" {{ (old('noreply') ?? $thread->noreply) ? 'checked' : '' }}>是否禁止回帖？</label>&nbsp;
+  <label><input type="checkbox" name="download_as_thread" {{ (old('download_as_thread') ?? $thread->download_as_thread) ? 'checked' : '' }}>开放书评下载？</label>&nbsp;
+  <label><input type="checkbox" name="download_as_book" {{ (old('download_as_thread') ?? $thread->download_as_book) ? 'checked' : '' }}>开放书籍下载？</label>&nbsp;
 </div>
