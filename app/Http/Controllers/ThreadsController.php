@@ -214,31 +214,29 @@ class threadsController extends Controller
       $txt .= "发帖人：";
       if($thread->anonymous){$txt.=$thread->majia;}else{$txt.=$thread->creator->name;}
       $txt .= " at ".Carbon::parse($thread->created_at)->now(8)."/".Carbon::parse($thread->edited_at)->now(8)."\n";
-      $txt .="正文：".$thread->body."\n";
+      $txt .="正文：\n".$thread->body."\n";
+
+      $postcomments = $thread->mainpost->comments;
+      foreach($postcomments as $k => $postcomment){
+        $txt .= "主楼点评".($k+1).": ";
+        if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
+        $txt .= Carbon::parse($postcomment->created_at)->now(8)."\n";
+        $txt .= $postcomment->body."\n";
+      }
+      $txt .= "\n";
       foreach($posts as $i=>$post){
-        if($post->id == $thread->mainpost->id){
-          $postcomments = $thread->mainpost->comments;
-          foreach($postcomments as $k => $postcomment){
-            $txt .= "点评 No.".$k.": ";
-            if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
-            $txt .= Carbon::parse($postcomment->created_at)->now(8)."\n";
-            $txt .= $postcomment->body."\n";
-          }
-          $txt .= "\n";
-        }else{
-          $txt.="回帖 No.".$i.": ";
-          if($post->anonymous){$txt.=$post->majia;}else{$txt.=$post->owner->name;}
-          Carbon::parse($post->created_at)->now(8)."/".Carbon::parse($post->edited_at)->now(8)."\n";
-          if($post->title){$txt .= $post->title."\n";}
-          $txt .= $post->body."\n";
-          foreach($post->comments as $k => $postcomment){
-            $txt .= "点评 No.".($k+1).": ";
-            if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
-            $txt .= Carbon::parse($postcomment->created_at)->now(8)."\n";
-            $txt .= $postcomment->body."\n";
-          }
-          $txt .= "\n";
+        $txt.="回帖".($i+1).": ";
+        if($post->anonymous){$txt.=$post->majia;}else{$txt.=$post->owner->name;}
+        $txt .= " ".Carbon::parse($post->created_at)->now(8)."/".Carbon::parse($post->edited_at)->now(8)."\n";
+        if($post->title){$txt .= $post->title."\n";}
+        $txt .= $post->body."\n";
+        foreach($post->comments as $k => $postcomment){
+          $txt .= "回帖".($i+1)."点评".($k+1).": ";
+          if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
+          $txt .= " ".Carbon::parse($postcomment->created_at)->now(8)."\n";
+          $txt .= $postcomment->body."\n";
         }
+        $txt .= "\n";
       }
       $response = new StreamedResponse();
       $response->setCallBack(function () use($txt) {
