@@ -220,7 +220,7 @@ class threadsController extends Controller
       foreach($postcomments as $k => $postcomment){
         $txt .= "主楼点评".($k+1).": ";
         if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
-        $txt .= Carbon::parse($postcomment->created_at)->now(8)."\n";
+        $txt .= ' '.Carbon::parse($postcomment->created_at)->now(8)."\n";
         $txt .= $postcomment->body."\n";
       }
       $txt .= "\n";
