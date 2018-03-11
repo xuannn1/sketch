@@ -33,9 +33,6 @@
          <div class="panel-vote">
             <!-- 对主题进行投票／收藏／点赞等操作 -->
             @if(Auth::check())
-              <div class="text-right h6">
-                <a href=" {{ route('thread_download.txt', $thread->id) }} ">下载txt格式（建设中）</a>
-              </div>
               @include('threads._thread_vote')
             @else
             <h6 class="display-4">请 <a href="{{ route('login') }}">登录</a> 后参与讨论</h6>

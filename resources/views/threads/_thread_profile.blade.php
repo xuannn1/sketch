@@ -56,3 +56,6 @@
       @endif
    @endif
 </div>
+<div class="text-right h6">
+  <a href=" {{ route('thread_download.txt', $thread->id) }} ">下载txt讨论贴（建设中）</a>
+</div>
