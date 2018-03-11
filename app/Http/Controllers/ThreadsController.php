@@ -213,27 +213,34 @@ class threadsController extends Controller
       $txt .= "简介：".$thread->brief."\n";
       $txt .= "发帖人：";
       if($thread->anonymous){$txt.=$thread->majia;}else{$txt.=$thread->creator->name;}
-      $txt .= " at ".Carbon::parse($thread->created_at)->now(8)."/".Carbon::parse($thread->edited_at)->now(8)."\n";
-      $txt .="正文：\n".$thread->body."\n";
+      $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
+      if($thread->created_at<$thread->edited_at){
+        $txt."/".Carbon::parse($thread->edited_at)->setTimezone(8);
+      }
+      $txt .="\n正文：\n".$thread->body."\n";
 
       $postcomments = $thread->mainpost->comments;
       foreach($postcomments as $k => $postcomment){
         $txt .= "主楼点评".($k+1).": ";
         if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
-        $txt .= ' '.Carbon::parse($postcomment->created_at)->now(8)."\n";
+        $txt .= ' '.Carbon::parse($postcomment->created_at)->setTimezone(8)."\n";
         $txt .= $postcomment->body."\n";
       }
       $txt .= "\n";
       foreach($posts as $i=>$post){
         $txt.="回帖".($i+1).": ";
         if($post->anonymous){$txt.=$post->majia;}else{$txt.=$post->owner->name;}
-        $txt .= " ".Carbon::parse($post->created_at)->now(8)."/".Carbon::parse($post->edited_at)->now(8)."\n";
+        $txt .= " ".Carbon::parse($post->created_at)->setTimezone(8);
+        if($post->created_at<$post->edited_at){
+          $txt."/".Carbon::parse($post->edited_at)->setTimezone(8);
+        }
+        $txt .= "\n";
         if($post->title){$txt .= $post->title."\n";}
         $txt .= $post->body."\n";
         foreach($post->comments as $k => $postcomment){
           $txt .= "回帖".($i+1)."点评".($k+1).": ";
           if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
-          $txt .= " ".Carbon::parse($postcomment->created_at)->now(8)."\n";
+          $txt .= " ".Carbon::parse($postcomment->created_at)->setTimezone(8)."\n";
           $txt .= $postcomment->body."\n";
         }
         $txt .= "\n";
