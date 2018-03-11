@@ -55,4 +55,7 @@
       @include('homeworks._register_button')
       @endif
    @endif
+   @if(Auth::check())
+      <a href=" {{ route('thread_download.txt', $thread->id) }} ">下载txt格式（建设中）</a>
+   @endif
 </div>

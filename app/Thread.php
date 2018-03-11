@@ -36,7 +36,7 @@ class Thread extends Model
 
    public function mainpost()
    {
-      return $this->belongsTo(Post::class, 'post_id');
+      return $this->belongsTo(Post::class, 'post_id')->withDefault();
    }
 
    public function creator()

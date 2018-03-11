@@ -187,3 +187,8 @@
    Route::get('/cache/retrieve', 'CachesController@retrieve')->name('cache.retrieve');
    Route::get('cache/initcache','CachesController@initcache')->name('cache.initcache');
 }
+
+//动态下载模块
+{
+   Route::get('thread_download/txt/{thread}','ThreadsController@txt_download')->name('thread_download.txt')->middleware('filter_thread');
+}

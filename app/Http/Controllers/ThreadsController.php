@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 use App\Thread;
 use App\Post;
@@ -194,5 +196,57 @@ class threadsController extends Controller
       $page = intdiv($totalposts, Config::get('constants.items_per_page'))+1;
       $url = 'threads/'.$thread->id.'?page='.$page.'#post'.$post->id;
       return redirect($url);
+   }
+   public function txt_download(Thread $thread)
+   {
+      $thread->increment('downloaded');
+      $posts = Post::where([
+        ['thread_id', '=', $thread->id],
+        ['id', '<>', $thread->post_id]
+        ])
+        ->with(['owner','reply_to_post.owner','chapter','comments.owner'])
+        ->oldest()
+        ->get();
+      $thread->load(['channel','creator', 'tags', 'label', 'mainpost.comments.owner']);
+      $txt = 'Downloaded from http://sosad.fun by Username:'.Auth::user()->name.' UserID:'.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
+      $txt .= "标题：".$thread->title."\n";
+      $txt .= "简介：".$thread->brief."\n";
+      $txt .= "发帖人：";
+      if($thread->anonymous){$txt.=$thread->majia;}else{$txt.=$thread->creator->name;}
+      $txt .= " at ".Carbon::parse($thread->created_at)->now(8)."/".Carbon::parse($thread->edited_at)->now(8)."\n";
+      $txt .="正文：".$thread->body."\n";
+      foreach($posts as $i=>$post){
+        if($post->id == $thread->mainpost->id){
+          $postcomments = $thread->mainpost->comments;
+          foreach($postcomments as $k => $postcomment){
+            $txt .= "点评 No.".$k.": ";
+            if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
+            $txt .= Carbon::parse($postcomment->created_at)->now(8)."\n";
+            $txt .= $postcomment->body."\n";
+          }
+          $txt .= "\n";
+        }else{
+          $txt.="回帖 No.".$i.": ";
+          if($post->anonymous){$txt.=$post->majia;}else{$txt.=$post->owner->name;}
+          Carbon::parse($post->created_at)->now(8)."/".Carbon::parse($post->edited_at)->now(8)."\n";
+          if($post->title){$txt .= $post->title."\n";}
+          $txt .= $post->body."\n";
+          foreach($post->comments as $k => $postcomment){
+            $txt .= "点评 No.".($k+1).": ";
+            if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
+            $txt .= Carbon::parse($postcomment->created_at)->now(8)."\n";
+            $txt .= $postcomment->body."\n";
+          }
+          $txt .= "\n";
+        }
+      }
+      $response = new StreamedResponse();
+      $response->setCallBack(function () use($txt) {
+          echo $txt;
+      });
+      $disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'thread'.$thread->id.'.txt');
+      $response->headers->set('Content-Disposition', $disposition);
+
+      return $response;
    }
 }

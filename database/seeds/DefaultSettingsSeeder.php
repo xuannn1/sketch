@@ -4,6 +4,8 @@ use Illuminate\Database\Seeder;
 use App\Channel;
 use App\Label;
 use App\Tag;
+use Carbon\Carbon;
+use App\InvitationToken;
 
 class DefaultSettingsSeeder extends Seeder
 {
@@ -383,8 +385,16 @@ class DefaultSettingsSeeder extends Seeder
                   'tag_group' => '5',
                ]);
             }
+
+
          }
       }
+      InvitationToken::create([
+          'user_id' => 1,
+          'token' => 'SOSAD_invite',
+          'invitation_times' => 10,
+          'invite_until' => Carbon::now()->addYears(2),
+      ]);
    }
 }
 

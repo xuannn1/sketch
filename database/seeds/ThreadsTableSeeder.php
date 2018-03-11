@@ -21,7 +21,7 @@ class ThreadsTableSeeder extends Seeder
       $channels = Channel::get();
       $channels->each(function (Channel $channel){
          $label = $channel->labels()->inRandomOrder()->first();
-         if ($label) {
+         if (($channel->id >2 )&&($label)) {
             $threads = factory(Thread::class)->times(2)->create(['channel_id' => $channel->id, 'label_id' => $label->id ]);
 
             $threads->each(function ($thread){
