@@ -82,6 +82,11 @@ class DownloadsController extends Controller
       }
       return $txt;
     }
+    public function add_download_info($thread){//添加下载声明
+      $txt = 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
+      $txt .= "仅供个人备份使用，请勿私自传播，书籍/文章所有权利属于原作者，个人评论如非特别声明，遵循知识共享CC-BY-NC-SA。For personal backup only. All rights of independent articles reserved to its author. Except where otherwise noted, comments are distributed under Creative Commons CC-BY-NC-SA.\n";
+      return $txt;
+    }
     public function process_text($string,$markdown,$indentation)
     {
       if($markdown){
@@ -96,7 +101,7 @@ class DownloadsController extends Controller
       $string = Helper::htmltotext($string);
       return $string;
     }
-    public function generate_thread_text(Thread $thread)
+    public function generate_thread_text(Thread $thread)//临时制作输出文件
     {
       $posts = Post::where([
         ['thread_id', '=', $thread->id],
@@ -106,10 +111,7 @@ class DownloadsController extends Controller
         ->oldest()
         ->get();
       $thread->load(['channel','creator', 'tags', 'label', 'mainpost.comments.owner']);
-      $txt = 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
-      if (($thread->book_id>0)&&(Auth::user()->id!=$thread->user_id)){
-        $txt .= "仅供个人备份使用，请勿私自传播，所有权利属于原作者。For personal backup only. All rights reserved to the author.\n";
-      }
+      $txt = $this->add_download_info($thread);
       if($thread->book_id>0){
          $txt .=$this->print_book_info($thread);
           }else{
@@ -150,10 +152,8 @@ class DownloadsController extends Controller
         }
         $txt .= "\n";
       }
-      $txt .= 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
-      if (($thread->book_id>0)&&(Auth::user()->id!=$thread->user_id)){
-        $txt .= "仅供个人备份使用，请勿私自传播，所有权利属于原作者。For personal backup only. All rights reserved to the author.\n";
-      }
+      $txt .= $this->add_download_info($thread);
+      $txt = str_replace("\n","\r\n",$txt);
       return $txt;
      }
       public function generate_book_noreview_text(Thread $thread)
@@ -163,10 +163,7 @@ class DownloadsController extends Controller
         $chapters->load(['mainpost']);
         $thread->load(['creator', 'tags', 'label']);
         $book_info = Config::get('constants.book_info');
-        $txt = 'Downloaded from http://sosad.fun by Username:'.Auth::user()->name.' UserID:'.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
-        if (($thread->book_id>0)&&(Auth::user()->id!=$thread->user_id)){
-          $txt .= "仅供个人备份使用，请勿私自传播，所有权利属于原作者。For personal backup only. All rights reserved to the author.\n";
-        }
+        $txt = $this->add_download_info($thread);
         $txt .=$this->print_book_info($thread);
         foreach($chapters as $i=>$chapter){
           $txt .= ($i+1).'.'.$chapter->title."\n";//章节名
@@ -180,10 +177,9 @@ class DownloadsController extends Controller
           if($chapter->annotation){$txt .= "备注：".$this->process_text($chapter->mainpost->annotation,1,0);}
           $txt .="\n";
         }
-        $txt .= 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
-        if (($thread->book_id>0)&&(Auth::user()->id!=$thread->user_id)){
-          $txt .= "仅供个人备份使用，请勿私自传播，所有权利属于原作者。For personal backup only. All rights reserved to the author.\n";
-        }return $txt;
+        $txt .= $this->add_download_info($thread);//添加下载备注
+        $txt = str_replace("\n","\r\n",$txt);
+        return $txt;
       }
      public function thread_txt(Thread $thread)
      {
