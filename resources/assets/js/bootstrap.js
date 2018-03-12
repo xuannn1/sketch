@@ -51,6 +51,4 @@ if (token) {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
-
 require('bootstrap-markdown/js/bootstrap-markdown.js');
-require('marked/lib/marked.js');

@@ -44,7 +44,7 @@ class BooksController extends Controller
      $thread->tags = [];
      $thread->id = 0;
      $thread->download_as_thread = true;
-     $thread->download_as_book = true;
+     $thread->download_as_book = false;
      $mainpost = new Post;
      $mainpost->markdown = false;
      $mainpost->indentation = true;
@@ -541,7 +541,7 @@ class BooksController extends Controller
         if (!$thread->download_as_book){
           return redirect()->back()->with("danger","作者并未开放下载");
         }else{
-          if($user->user_level>0){
+          if($user->user_level>4){
             if (($user->shengfan > 10)&&($user->xianyu > 2)){
               $user->decrement('shengfan',10);
               $user->decrement('xianyu',2);

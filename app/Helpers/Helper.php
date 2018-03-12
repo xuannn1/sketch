@@ -19,6 +19,25 @@ class Helper
       //$post = '<p>' . preg_replace('#(<br>[\r\n]+){2}#', '</p><p>', $post) . '</p>';
       return $post;
    }
+   public static function wrapText($post= null)//自己写编辑器
+   {
+      while(strip_tags($post)!=$post){
+         $post = strip_tags($post);
+      }
+      $post = str_replace("\r\n", "\n", $post);
+      $post = str_replace("\r", "\n", $post);
+      $post = preg_replace('/\n{3,}/', "</p><br><p>", $post);
+      $post = preg_replace('/\n{1,2}/', "</p><p>", $post);
+      $post = "<p>{$post}</p>";
+      $post = str_replace(
+          array("[b]","[/b]","[u]","[/u]","[em]","[/em]","[blockquote]","[/blockquote]","[h6]","[/h6]","[h5]","[/h5]","[h4]","[/h4]","[h3]","[/h3]","[h2]","[/h2]","[h1]","[/h1]","[code]","[/code]","[linebreak]"),
+          array("<b>", "</b>","<u>","</u>","<em>","</em>","<blockquote>","</blockquote>","<h6>","</h6>","<h5>","</h5>","<h4>","</h4>","<h3>","</h3>","<h2>","</h2>","<h1>","</h1>","<code>","</code>","<hr>"),
+          $post
+      );
+      //$post = nl2br($post, false);
+      //$post = '<p>' . preg_replace('#(<br>[\r\n]+){2}#', '</p><p>', $post) . '</p>';
+      return $post;
+   }
    public static function trimtext($text, int $len)
    {
       $str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
