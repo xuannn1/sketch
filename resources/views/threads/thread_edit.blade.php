@@ -47,7 +47,7 @@
              <label><input type="checkbox" name="public" {{ $thread->public ? 'checked' : '' }}>是否公开可见</label>
              <label><input type="checkbox" name="noreply" {{ $thread->noreply ? 'checked' : '' }}>是否禁止回帖</label>
              <label><input type="checkbox" name="markdown" {{ $thread->mainpost->markdown ? 'checked' : '' }}>使用Markdown语法？</label>
-             <label><input type="checkbox" name="indentation" {{ $thread->mainpost->indentation ? 'checked' : '' }}>段首缩进？</label>
+             <label><input type="checkbox" name="indentation" {{ $thread->mainpost->indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
              </div>
              <button type="submit" class="btn btn-primary sosad-button">确认修改</button>
          </form>

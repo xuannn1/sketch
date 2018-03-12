@@ -438,3 +438,9 @@ function cancelreceiveupvotereminders(){
       }
    });
 };
+function doublebreakline(string) {//魔改md，使得单一换行能够显示
+  //console.log("init"+string);
+  string = string.replace(/\n/g,"\n\n");
+  //console.log("after"+string);
+  return(string);
+}

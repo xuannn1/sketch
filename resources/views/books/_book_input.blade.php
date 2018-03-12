@@ -112,7 +112,7 @@
       <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>
   </div>
   <label><input type="checkbox" name="markdown" {{ (old('markdown') ?? $thread->markdown) ? 'checked' : '' }}>使用Markdown语法？</label>
-  <label><input type="checkbox" name="indentation" {{ (old('indentation') ?? $book->indentation) ? 'checked' : '' }}>段首缩进？</label>
+  <label><input type="checkbox" name="indentation" {{ (old('indentation') ?? $book->indentation) ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
 </div>
 <div class="checkbox">
   <label><input type="checkbox" name="public" {{ (old('public') ?? $thread->public) ? 'checked' : '' }}>是否公开可见？</label>&nbsp;

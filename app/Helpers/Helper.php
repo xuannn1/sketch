@@ -9,13 +9,12 @@ class Helper
 {
    public static function wrapParagraphs($post= null)
    {
-      while(strip_tags($post)!=$post){
-         $post = strip_tags($post);
+      while(strip_tags($post,"<br>")!=$post){
+         $post = strip_tags($post,"<br>");
       }
       $post = str_replace("\r\n", "\n", $post);
       $post = str_replace("\r", "\n", $post);
-      $post = preg_replace('/\n{3,}/', "</p><br><p>", $post);
-      $post = preg_replace('/\n{1,2}/', "</p><p>", $post);
+      $post = preg_replace('/\n{1,}/', "</p><p>", $post);
       $post = "<p>{$post}</p>";
       return $post;
    }

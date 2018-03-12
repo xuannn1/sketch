@@ -63,7 +63,7 @@ class DownloadsController extends Controller
       $txt .= "标题：".$thread->title."\n";
       $txt .= "简介：".$thread->brief."\n";
       $txt .= "发帖人：";
-      if($thread->anonymous){$txt.=$thread->majia;}else{$txt.=$thread->creator->name;}
+      if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
       $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
       if($thread->created_at < $thread->edited_at){
         $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
@@ -72,14 +72,19 @@ class DownloadsController extends Controller
       $postcomments = $thread->mainpost->comments;
       foreach($postcomments as $k => $postcomment){
         $txt .= "主楼点评".($k+1).": ";
-        if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
+        if($postcomment->anonymous){$txt.=($postcomment->majia ?? "匿名咸鱼");}else{$txt.=$postcomment->owner->name;}
         $txt .= ' '.Carbon::parse($postcomment->created_at)->setTimezone(8)."\n";
         $txt .= $postcomment->body."\n";
       }
       $txt .= "\n";
       foreach($posts as $i=>$post){
         $txt.="回帖".($i+1).": ";
-        if($post->anonymous){$txt.=$post->majia;}else{$txt.=$post->owner->name;}
+
+        if($post->maintext){
+          if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
+        }else{
+          if($post->anonymous){$txt.=($post->majia ?? "匿名咸鱼");}else{$txt.=$post->owner->name;}
+        }
         $txt .= " ".Carbon::parse($post->created_at)->setTimezone(8);
         if($post->created_at < $post->edited_at){
           $txt .= "/".Carbon::parse($post->edited_at)->setTimezone(8);
@@ -89,7 +94,7 @@ class DownloadsController extends Controller
         $txt .= $this->process_text($post->body,$post->markdown,$post->indentation);
         foreach($post->comments as $k => $postcomment){
           $txt .= "回帖".($i+1)."点评".($k+1).": ";
-          if($postcomment->anonymous){$txt.=$postcomment->majia;}else{$txt.=$postcomment->owner->name;}
+          if($postcomment->anonymous){$txt.=($postcomment->majia ?? "匿名咸鱼");}else{$txt.=$postcomment->owner->name;}
           $txt .= " ".Carbon::parse($postcomment->created_at)->setTimezone(8)."\n";
           $txt .= $postcomment->body."\n";
         }
@@ -108,7 +113,7 @@ class DownloadsController extends Controller
         $txt .= "标题：".$thread->title."\n";
         $txt .= "简介：".$thread->brief."\n";
         $txt .= "作者：";
-        if($thread->anonymous){$txt.=$thread->majia;}else{$txt.=$thread->creator->name;}
+        if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
         $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
         if($thread->created_at < $thread->edited_at){
           $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);

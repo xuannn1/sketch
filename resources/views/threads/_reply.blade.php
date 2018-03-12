@@ -19,7 +19,7 @@
         <div class="checkbox">
           <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majiareplythread{{$thread->id}}').style.display = 'block'">马甲？</label>&nbsp;
           <label><input type="checkbox" name="markdown" onclick="$('#markdowneditor').markdown({language:'zh'})">Markdown语法？</label>
-          <label><input type="checkbox" name="indentation" checked>段首缩进？</label>
+          <label><input type="checkbox" name="indentation" checked>段首缩进（自动空两格）？</label>
           <div class="form-group text-right" id="majiareplythread{{$thread->id}}" style="display:none">
               <input type="text" name="majia" class="form-control" value="{{Auth::user()->majia ?:'匿名咸鱼'}}" placeholder="请输入不超过10字的马甲">
               <label for="majia"><small>(马甲仅勾选“匿名”时有效)</small></label>
