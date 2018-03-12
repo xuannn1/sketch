@@ -192,13 +192,13 @@ class DownloadsController extends Controller
           if (!$thread->download_as_thread){
             return redirect()->back()->with("danger","作者并未开放下载");
           }else{
-            if($user->user_level>2){
+            if($user->user_level>0){
               if ($thread->book_id > 0){//图书的下载需要更多剩饭咸鱼
-                if (($user->shengfan > 10)&&($user->xianyu > 2)){
+                if (($user->user_level>=2)&&($user->shengfan > 10)&&($user->xianyu > 2)){
                   $user->decrement('shengfan',10);
                   $user->decrement('xianyu',2);
                 }else{
-                  return redirect()->back()->with("danger","您的剩饭与咸鱼不够，不能下载");
+                  return redirect()->back()->with("danger","您的等级或剩饭与咸鱼不够，不能下载");
                 }
               }else{//下载讨论帖需要的剩饭稍微少一些
                 if ($user->shengfan > 5){
