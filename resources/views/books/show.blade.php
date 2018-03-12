@@ -28,7 +28,7 @@
          <div class="panel-vote">
           @if(Auth::check())
             <div class="text-right h6">
-              <a href=" {{ route('book_download.txt', $thread->id) }} ">下载txt书籍（建设中）</a>
+              <a href=" {{ route('download.book_noreview_text', $thread->id) }} ">下载txt书籍（建设中）</a>
             </div>
             @include('threads._thread_vote')
             @else

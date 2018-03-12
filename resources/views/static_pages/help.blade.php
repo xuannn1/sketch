@@ -23,7 +23,7 @@
                         <div class="row">
                           <a data-toggle="collapse" data-target="#part{{$i}}" class="h4">{{$help[0]}}</a>
                           <div id="part{{$i}}" class="collapse h6 col-xs-offset-1">
-                            {!! Markdown::convertToHtml($help[1]) !!}
+                            {!! Helper::sosadMarkdown($help[1]) !!}
                           </div>
                         </div>
                        @endforeach

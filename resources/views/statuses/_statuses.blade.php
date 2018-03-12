@@ -16,7 +16,7 @@
       </div>
       <div class="col-xs-12 h5 brief">
          <span class="smaller-10">
-            {!! Markdown::convertToHtml($status->content) !!}
+            {!! Helper::sosadMarkdown($status->content) !!}
          </span>
       </div>
    </div>

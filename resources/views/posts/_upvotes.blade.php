@@ -28,7 +28,7 @@
          <div id="full{{$post->id}}" class="hidden main-text">
             <h5 class="text-center"><strong>{{ $post->title }}</strong></h5>
             @if($post->markdown)
-            {!! Markdown::convertToHtml($post->body) !!}
+            {!! Helper::sosadMarkdown($post->body) !!}
             @else
             {!! Helper::wrapParagraphs($post->body) !!}
             @endif

@@ -54,7 +54,7 @@
 
 <div class="panel-body text-center main-text">
    @if($thread->mainpost->markdown)
-   {!! Markdown::convertToHtml($thread->body) !!}
+   {!! Helper::sosadMarkdown($thread->body) !!}
    @else
    {!! Helper::wrapParagraphs($thread->body) !!}
    @endif

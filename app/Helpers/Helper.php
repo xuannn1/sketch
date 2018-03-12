@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 use Auth;
+use GrahamCampbell\Markdown\Facades\Markdown;
+
 
 class Helper
 {
@@ -12,11 +14,9 @@ class Helper
       }
       $post = str_replace("\r\n", "\n", $post);
       $post = str_replace("\r", "\n", $post);
-      $post = preg_replace('/\n{2,}/', "</p><br><p>", $post);
-      $post = preg_replace('/\n/', '</p><p>',$post);
+      $post = preg_replace('/\n{3,}/', "</p><br><p>", $post);
+      $post = preg_replace('/\n{1,2}/', "</p><p>", $post);
       $post = "<p>{$post}</p>";
-      //$post = nl2br($post, false);
-      //$post = '<p>' . preg_replace('#(<br>[\r\n]+){2}#', '</p><p>', $post) . '</p>';
       return $post;
    }
    public static function wrapText($post= null)//自己写编辑器
@@ -34,8 +34,6 @@ class Helper
           array("<b>", "</b>","<u>","</u>","<em>","</em>","<blockquote>","</blockquote>","<h6>","</h6>","<h5>","</h5>","<h4>","</h4>","<h3>","</h3>","<h2>","</h2>","<h1>","</h1>","<code>","</code>","<hr>"),
           $post
       );
-      //$post = nl2br($post, false);
-      //$post = '<p>' . preg_replace('#(<br>[\r\n]+){2}#', '</p><p>', $post) . '</p>';
       return $post;
    }
    public static function trimtext($text, int $len)
@@ -58,5 +56,26 @@ class Helper
       }
       return true;
    }
-
+   public static function htmltotext($post= null)
+   {
+      $post = str_replace("</p>", "\n", $post);
+      $post = str_replace("<br>", "\n", $post);
+      while(strip_tags($post)!=$post){
+         $post = strip_tags($post);
+      }
+      return $post;
+   }
+   // public static function modifyMarkdown($post= null)
+   // {
+   //    $post = str_replace("</p>\n", "</p>", $post);
+   //    $post = str_replace("\n", "</p><p>", $post);
+   //    return $post;
+   // }
+   public static function sosadMarkdown($post= null)
+   {
+      $post = Markdown::convertToHtml($post);
+      $post = str_replace("</p>\n", "</p>", $post);
+      $post = str_replace("\n", "</p><p>", $post);
+      return $post;
+   }
 }

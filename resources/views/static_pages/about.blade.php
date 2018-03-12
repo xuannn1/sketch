@@ -18,7 +18,7 @@
                <div class="container-fluid">
                   <div class="row">
                      <div class="col-xs-10 col-xs-offset-1">
-                        {!! Markdown::convertToHtml($data['webinfo_about']) !!}
+                        {!! Helper::sosadMarkdown($data['webinfo_about']) !!}
                      </div>
                   </div>
                </div>

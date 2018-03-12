@@ -34,7 +34,7 @@
             <!-- 对主题进行投票／收藏／点赞等操作 -->
             @if(Auth::check())
               <div class="text-right h6">
-                <a href=" {{ route('thread_download.txt', $thread->id) }} ">下载txt讨论贴（建设中）</a>
+                <a href=" {{ route('download.thread_txt', $thread->id) }} ">下载txt讨论贴（建设中）</a>
               </div>
               @include('threads._thread_vote')
             @else

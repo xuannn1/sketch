@@ -21,5 +21,5 @@
 </div>
 <br>
 <div class = "main-text">
-   {!! Markdown::convertToHtml($user->introduction) !!}
+   {!! Helper::sosadMarkdown($user->introduction) !!}
 </div>

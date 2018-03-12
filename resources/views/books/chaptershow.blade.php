@@ -43,14 +43,14 @@
             @endif
             <div class="text-left main-text {{ $chapter->mainpost->indentation? 'indentation':'' }}">
                @if($chapter->mainpost->markdown)
-               {!! Markdown::convertToHtml($chapter->mainpost->body) !!}
+               {!! Helper::sosadMarkdown($chapter->mainpost->body) !!}
                @else
                {!! Helper::wrapParagraphs($chapter->mainpost->body) !!}
                @endif
                <br>
             </div>
             <div class="text-left grayout">
-               {!! Markdown::convertToHtml($chapter->annotation) !!}
+               {!! Helper::sosadMarkdown($chapter->annotation) !!}
             </div>
             <div class="">
                <a class="smaller-10" href="{{ route('thread.showpost', $chapter->post_id) }}"><u>论坛讨论模式</u></a>

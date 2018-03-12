@@ -25,7 +25,7 @@
                </span>
             </div>
             <div class="main-text">
-               {!! Markdown::convertToHtml($reply->body) !!}
+               {!! Helper::sosadMarkdown($reply->body) !!}
             </div>
             <?php $post = $reply ?>
             @include('posts._post_simplevote')

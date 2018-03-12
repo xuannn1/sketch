@@ -29,7 +29,7 @@
             </div>
             <div class="main-text">
                @if($post->markdown)
-               {!! Markdown::convertToHtml($post->body) !!}
+               {!! Helper::sosadMarkdown($post->body) !!}
                @else
                {!! Helper::wrapParagraphs($post->body) !!}
                @endif

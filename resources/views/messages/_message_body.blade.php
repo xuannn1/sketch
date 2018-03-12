@@ -1,7 +1,7 @@
 <div class="col-xs-12">
    <span id="full{{$message->id}}" class="hidden">
       <div class="main-text">
-         {!! Markdown::convertToHtml($message->content) !!}
+         {!! Helper::sosadMarkdown($message->content) !!}
       </div>
    </span>
    <span id="abbreviated{{$message->id}}" class="">

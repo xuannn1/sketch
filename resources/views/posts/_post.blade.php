@@ -71,7 +71,7 @@
          </div>
          <div>
             @if($post->markdown)
-            {!! Markdown::convertToHtml($post->body) !!}
+            {!! Helper::sosadMarkdown($post->body) !!}
             @else
             {!! Helper::wrapParagraphs($post->body) !!}
             @endif
@@ -79,7 +79,7 @@
          </div>
          <div class="grayout">
            <br>
-            {!! Markdown::convertToHtml($post->chapter->annotation) !!}
+            {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
          </div>
          <br>
          <div class="container-fluid">
@@ -91,7 +91,7 @@
                <strong>{{ $post->title }}</strong>
             @endif
             @if($post->markdown)
-            {!! Markdown::convertToHtml($post->body) !!}
+            {!! Helper::sosadMarkdown($post->body) !!}
             @else
             {!! Helper::wrapParagraphs($post->body) !!}
             @endif

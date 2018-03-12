@@ -42,7 +42,7 @@
    <!-- 主题正文 -->
    <div class="main-text {{ $thread->mainpost->indentation ? 'indentation':'' }}">
       @if($thread->mainpost->markdown)
-      {!! Markdown::convertToHtml($thread->body) !!}
+      {!! Helper::sosadMarkdown($thread->body) !!}
       @else
       {!! Helper::wrapParagraphs($thread->body) !!}
       @endif

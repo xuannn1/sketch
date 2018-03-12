@@ -28,7 +28,7 @@
             @if($thread->post_id == $post->id)
                <div class="">
                   @if($thread->mainpost->markdown)
-                  {!! Markdown::convertToHtml($thread->body) !!}
+                  {!! Helper::sosadMarkdown($thread->body) !!}
                   @else
                   {!! Helper::wrapParagraphs($thread->body) !!}
                   @endif
@@ -95,11 +95,11 @@
                </div>
                <h6 class = "grayout">
                   <br>
-                  {!! Markdown::convertToHtml($post->chapter->annotation) !!}
+                  {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
                </h6>
                @else
                <strong>{{ $post->title }}</strong>
-               {!! Markdown::convertToHtml($post->body) !!}
+               {!! Helper::sosadMarkdown($post->body) !!}
                @endif
             </div>
             @if(Auth::check())
