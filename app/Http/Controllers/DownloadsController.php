@@ -106,7 +106,10 @@ class DownloadsController extends Controller
         ->oldest()
         ->get();
       $thread->load(['channel','creator', 'tags', 'label', 'mainpost.comments.owner']);
-      $txt = 'Downloaded from http://sosad.fun by Username:'.Auth::user()->name.' UserID:'.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
+      $txt = 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
+      if (($thread->book_id>0)&&(Auth::user()->id!=$thread->user_id)){
+        $txt .= "仅供个人备份使用，请勿私自传播，所有权利属于原作者。For personal backup only. All rights reserved to the author.\n";
+      }
       if($thread->book_id>0){
          $txt .=$this->print_book_info($thread);
           }else{
@@ -147,6 +150,10 @@ class DownloadsController extends Controller
         }
         $txt .= "\n";
       }
+      $txt .= 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
+      if (($thread->book_id>0)&&(Auth::user()->id!=$thread->user_id)){
+        $txt .= "仅供个人备份使用，请勿私自传播，所有权利属于原作者。For personal backup only. All rights reserved to the author.\n";
+      }
       return $txt;
      }
       public function generate_book_noreview_text(Thread $thread)
@@ -157,23 +164,10 @@ class DownloadsController extends Controller
         $thread->load(['creator', 'tags', 'label']);
         $book_info = Config::get('constants.book_info');
         $txt = 'Downloaded from http://sosad.fun by Username:'.Auth::user()->name.' UserID:'.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
-        $txt .= "标题：".$thread->title."\n";
-        $txt .= "简介：".$thread->brief."\n";
-        $txt .= "作者：";
-        if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
-        $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
-        if($thread->created_at < $thread->edited_at){
-          $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
+        if (($thread->book_id>0)&&(Auth::user()->id!=$thread->user_id)){
+          $txt .= "仅供个人备份使用，请勿私自传播，所有权利属于原作者。For personal backup only. All rights reserved to the author.\n";
         }
-        $txt .= "\n";
-        $txt .= "图书信息：".$book_info['originality_info'][$book->original].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
-        if($thread->bianyuan){$txt .= "|边缘";}
-        $txt .= '|'.$thread->label->labelname;
-        foreach ($thread->tags as $tag){
-          $txt .= '-'.$tag->tagname;
-        }
-        $txt .="\n文案：\n".$this->process_text($thread->body,$thread->mainpost->markdown,$thread->mainpost->indentation)."\n";
-
+        $txt .=$this->print_book_info($thread);
         foreach($chapters as $i=>$chapter){
           $txt .= ($i+1).'.'.$chapter->title."\n";//章节名
           $txt .= Carbon::parse($chapter->created_at)->setTimezone(8);
@@ -186,7 +180,10 @@ class DownloadsController extends Controller
           if($chapter->annotation){$txt .= "备注：".$this->process_text($chapter->mainpost->annotation,1,0);}
           $txt .="\n";
         }
-        return $txt;
+        $txt .= 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
+        if (($thread->book_id>0)&&(Auth::user()->id!=$thread->user_id)){
+          $txt .= "仅供个人备份使用，请勿私自传播，所有权利属于原作者。For personal backup only. All rights reserved to the author.\n";
+        }return $txt;
       }
      public function thread_txt(Thread $thread)
      {
@@ -195,17 +192,17 @@ class DownloadsController extends Controller
           if (!$thread->download_as_thread){
             return redirect()->back()->with("danger","作者并未开放下载");
           }else{
-            if($user->user_level>0){
+            if($user->user_level>2){
               if ($thread->book_id > 0){//图书的下载需要更多剩饭咸鱼
-                if (($user->shengfan > 5)&&($user->xianyu > 1)){
-                  $user->decrement('shengfan',5);
-                  $user->decrement('xianyu',1);
+                if (($user->shengfan > 10)&&($user->xianyu > 2)){
+                  $user->decrement('shengfan',10);
+                  $user->decrement('xianyu',2);
                 }else{
                   return redirect()->back()->with("danger","您的剩饭与咸鱼不够，不能下载");
                 }
               }else{//下载讨论帖需要的剩饭稍微少一些
-                if ($user->shengfan > 2){
-                  $user->decrement('shengfan',2);
+                if ($user->shengfan > 5){
+                  $user->decrement('shengfan',5);
                 }else{
                   return redirect()->back()->with("danger","您的剩饭与咸鱼不够，不能下载");
                 }
@@ -242,7 +239,7 @@ class DownloadsController extends Controller
      public function book_noreview_text(Thread $thread)
      {
         $user = Auth::user();
-        if (($user->id!=$thread->user_id)||(!$user->admin)) {//假如并非本人主题，登陆用户也不是管理员，首先看主人是否允许开放下载
+        if (($user->id!=$thread->user_id)&&(!$user->admin)){//假如并非本人主题，登陆用户也不是管理员，首先看主人是否允许开放下载
           if (!$thread->download_as_book){
             return redirect()->back()->with("danger","作者并未开放下载");
           }else{
