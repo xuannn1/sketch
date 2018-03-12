@@ -17,6 +17,7 @@ use App\Chapter;
 use App\Tag;
 use Carbon\Carbon;
 use App\Tongren;
+use App\Download;
 use Auth;
 
 class DownloadsController extends Controller
@@ -35,6 +36,52 @@ class DownloadsController extends Controller
     {
         //
     }
+    public function print_book_info($thread)
+    {
+      $book_info = Config::get('constants.book_info');
+      $book = $thread->book;
+      $txt = "标题：".$thread->title."\n";
+      $txt .= "简介：".$thread->brief."\n";
+      $txt .= "作者：";
+      if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
+      $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
+      if($thread->created_at < $thread->edited_at){
+        $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
+      }
+      $txt .= "\n";
+      $txt .= "图书信息：".$book_info['originality_info'][$book->original].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
+      if($thread->bianyuan){$txt .= "|边缘";}
+      $txt .= '|'.$thread->label->labelname;
+      foreach ($thread->tags as $tag){
+        $txt .= '-'.$tag->tagname;
+      }
+      $txt .="\n文案：\n".$this->process_text($thread->body,$thread->mainpost->markdown,$thread->mainpost->indentation)."\n";
+      return $txt;
+    }
+
+    public function print_thread_info($thread)
+    {
+      $txt = "标题：".$thread->title."\n";
+      $txt .= "简介：".$thread->brief."\n";
+      $txt .= "发帖人：";
+      if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
+      $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
+      if($thread->created_at < $thread->edited_at){
+        $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
+      }
+      $txt .="\n正文：\n".$this->process_text($thread->body,$thread->mainpost->markdown,$thread->mainpost->indentation);
+      return $txt;
+    }
+    public function reply_to_sth($post)
+    {
+      $txt = "";
+      if($post->reply_to_post_id!=0){
+        $txt .= "回复".($post->reply_to_post->anonymous ? ($post->reply_to_post->majia ?? '匿名咸鱼') : $post->reply_to_post->owner->name).$post->reply_to_post->trim($post->reply_to_post->title . $post->reply_to_post->body, 20)."\n";
+      }elseif(($post->chapter_id!=0)&&(!$post->maintext)&&($post->chapter->mainpost->id>0)){
+        $txt .= "评论".$post->trim( $post->chapter->title . $post->chapter->mainpost->title . $post->chapter->mainpost->body , 20)."\n";
+      }
+      return $txt;
+    }
     public function process_text($string,$markdown,$indentation)
     {
       if($markdown){
@@ -44,7 +91,7 @@ class DownloadsController extends Controller
       }
       if($indentation)
       {
-        $string = str_replace("<p>", "<p>    ", $string);
+        $string = str_replace("<p>", "<p>　　", $string);
       }
       $string = Helper::htmltotext($string);
       return $string;
@@ -60,15 +107,11 @@ class DownloadsController extends Controller
         ->get();
       $thread->load(['channel','creator', 'tags', 'label', 'mainpost.comments.owner']);
       $txt = 'Downloaded from http://sosad.fun by Username:'.Auth::user()->name.' UserID:'.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
-      $txt .= "标题：".$thread->title."\n";
-      $txt .= "简介：".$thread->brief."\n";
-      $txt .= "发帖人：";
-      if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
-      $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
-      if($thread->created_at < $thread->edited_at){
-        $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
+      if($thread->book_id>0){
+         $txt .=$this->print_book_info($thread);
+          }else{
+         $txt .=$this->print_thread_info($thread);
       }
-      $txt .="\n正文：\n".$this->process_text($thread->body,$thread->mainpost->markdown,$thread->mainpost->indentation);
       $postcomments = $thread->mainpost->comments;
       foreach($postcomments as $k => $postcomment){
         $txt .= "主楼点评".($k+1).": ";
@@ -90,8 +133,12 @@ class DownloadsController extends Controller
           $txt .= "/".Carbon::parse($post->edited_at)->setTimezone(8);
         }
         $txt .= "\n";
+        $txt .= $this->reply_to_sth($post);
+        if($post->maintext){$txt .= $post->chapter->title."\n";}
         if($post->title){$txt .= $post->title."\n";}
         $txt .= $this->process_text($post->body,$post->markdown,$post->indentation);
+        if($post->chapter->annotation){$txt .= "备注".$this->process_text($post->chapter->annotation,1,0);}
+
         foreach($post->comments as $k => $postcomment){
           $txt .= "回帖".($i+1)."点评".($k+1).": ";
           if($postcomment->anonymous){$txt.=($postcomment->majia ?? "匿名咸鱼");}else{$txt.=$postcomment->owner->name;}
@@ -168,12 +215,20 @@ class DownloadsController extends Controller
             }
           }
         }
-        $thread->increment('downloaded');//reward part
-        $author = $thread->creator;
-        $author->increment('shengfan',5);
-        $author->increment('jifen',5);
-        $author->increment('xianyu',1);
 
+        if($thread->user_id!=$user->id){//并非作者本人下载，奖励部分
+          $author = $thread->creator;
+          $author->increment('shengfan',5);
+          $author->increment('jifen',5);
+          $author->increment('xianyu',1);
+          $thread->increment('downloaded');
+        }
+        if ($thread->book_id>0){$format = 1;}else{$format = 0;}
+        $download = Download::create([
+          'user_id' => $user->id,
+          'thread_id' => $thread->id,
+          'format' => $format,
+        ]);
         $txt = $this->generate_thread_text($thread);//制作所需要的文档
 
         $response = new StreamedResponse();
@@ -203,11 +258,18 @@ class DownloadsController extends Controller
             }
           }
         }
-        $thread->increment('downloaded');
-        $author = $thread->creator;
-        $author->increment('shengfan',5);
-        $author->increment('jifen',5);
-        $author->increment('xianyu',1);
+        if($thread->user_id!=$user->id){//并非作者本人下载，奖励部分
+          $author = $thread->creator;
+          $author->increment('shengfan',10);
+          $author->increment('jifen',10);
+          $author->increment('xianyu',2);
+          $thread->increment('downloaded');
+        }
+        $download = Download::create([
+          'user_id' => $user->id,
+          'thread_id' => $thread->id,
+          'format' => 3,
+        ]);
 
         $txt = $this->generate_book_noreview_text($thread);//制作所需要的下载文档
         $response = new StreamedResponse();
