@@ -11,11 +11,6 @@ let mix = require('laravel-mix');
  |
  */
 mix.js('resources/assets/js/app.js', 'public/js')
-   .scripts([
-     'public/js/app.js',
-     'public/js/marked/lib/marked.min.js',
-     'public/js.sosad.js'
-   ], 'public/js/sosad_all.js')
    .sass('resources/assets/sass/app.scss', 'public/css/sass.css')
    .styles([
     'node_modules/bootstrap-markdown/css/bootstrap-markdown.min.css',

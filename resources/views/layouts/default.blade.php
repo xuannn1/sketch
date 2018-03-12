@@ -12,6 +12,8 @@
          @include('shared.messages')
          @yield('content')
          @include('layouts._footer')
-         <script src="js/sosad_all.js"></script>
+         <script src="/js/app.js"></script>
+         <script src="/js/marked/lib/marked.min.js"></script>
+         <script src="/js/sosad.js"></script>
    </body>
 </html>
