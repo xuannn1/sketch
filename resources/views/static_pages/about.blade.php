@@ -10,6 +10,7 @@
                   <div class="row">
                      <div class="col-xs-10 col-xs-offset-1">
                         <h1>关于</h1>
+                        test
                      </div>
                   </div>
                </div>
