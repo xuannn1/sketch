@@ -114,7 +114,7 @@ class DownloadsController extends Controller
       $txt = $this->add_download_info($thread);
       if($thread->book_id>0){
          $txt .=$this->print_book_info($thread);
-          }else{
+       }else{
          $txt .=$this->print_thread_info($thread);
       }
       $postcomments = $thread->mainpost->comments;
@@ -189,19 +189,23 @@ class DownloadsController extends Controller
             return redirect()->back()->with("danger","作者并未开放下载");
           }else{
             if($user->user_level>0){
-              if ($thread->book_id > 0){//图书的下载需要更多剩饭咸鱼
-                if (($user->user_level>=2)&&($user->shengfan > 10)&&($user->xianyu > 2)){
-                  $user->decrement('shengfan',10);
-                  $user->decrement('xianyu',2);
-                }else{
-                  return redirect()->back()->with("danger","您的等级或剩饭与咸鱼不够，不能下载");
+              if ($thread->channel->channel_state < 10){
+                if ($thread->book_id > 0){//图书的下载需要更多剩饭咸鱼
+                  if (($user->user_level>=4)&&($user->shengfan > 10)&&($user->xianyu > 2)){
+                    $user->decrement('shengfan',10);
+                    $user->decrement('xianyu',2);
+                  }else{
+                    return redirect()->back()->with("danger","您的等级或剩饭与咸鱼不够，不能下载");
+                  }
+                }else{//下载讨论帖需要的剩饭稍微少一些
+                  if ($user->shengfan > 5){
+                    $user->decrement('shengfan',5);
+                  }else{
+                    return redirect()->back()->with("danger","您的剩饭与咸鱼不够，不能下载");
+                  }
                 }
-              }else{//下载讨论帖需要的剩饭稍微少一些
-                if ($user->shengfan > 5){
-                  $user->decrement('shengfan',5);
-                }else{
-                  return redirect()->back()->with("danger","您的剩饭与咸鱼不够，不能下载");
-                }
+              }else{
+                return redirect()->back()->with("danger","特殊板块,不开放非本人主题贴下载");
               }
             }else{
               return redirect()->back()->with("danger","您的用户等级不够，不能下载");

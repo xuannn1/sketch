@@ -14,7 +14,7 @@ class AddSangdianToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('sangdian')->unsigned()->default(5);//每人初始丧点
+            $table->integer('sangdian')->unsigned()->default(0);//每人初始丧点
             $table->dateTime('guarden_deadline')->default(Carbon\Carbon::now());// 进入后花园权限截止日期
         });
     }
