@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Thread;
+use App\Models\Thread;
 use App\Xianyu;
 use Auth;
-use App\User;
+use App\Models\User;
 
 class XianyusController extends Controller
 {

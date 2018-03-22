@@ -13,7 +13,7 @@
 
 {//以下是用户注册与验证模块
    Auth::routes();
-   Route::get('/test', 'StaticPagesController@test')->name('test');
+   Route::get('/test', 'PagesController@test')->name('test');
 
    Route::post('login', 'Auth\LoginController@login')->name('login');
    Route::get('register/confirm/{token}', 'Auth\RegisterController@confirmEmail')->name('confirm_email');//确认邮箱正确
@@ -24,11 +24,12 @@
 }
 
 {//以下是静态页面模块
-   Route::get('/', 'StaticPagesController@home')->name('home');
-   Route::get('about', 'StaticPagesController@about')->name('about');
-   Route::get('help', 'StaticPagesController@help')->name('help');
-   Route::get('error/{error_code}', 'StaticPagesController@error')->name('error');
-   Route::get('/administrationrecords', 'StaticPagesController@administrationrecords')->name('administrationrecords');
+   Route::get('/', 'PagesController@home')->name('home');
+   Route::get('about', 'PagesController@about')->name('about');
+   Route::get('help', 'PagesController@help')->name('help');
+   Route::get('/search','PagesController@search')->name('search');
+   Route::get('error/{error_code}', 'PagesController@error')->name('error');
+   Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
    Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
 }
 
@@ -185,12 +186,12 @@
    ]]);
    Route::post('/cache/save', 'CachesController@save')->name('cache.save');
    Route::get('/cache/retrieve', 'CachesController@retrieve')->name('cache.retrieve');
-   Route::get('cache/initcache','CachesController@initcache')->name('cache.initcache');
+   Route::get('/cache/initcache','CachesController@initcache')->name('cache.initcache');
 }
 
 //动态下载模块
 {
-   Route::get('downloads/thread_txt/{thread}','DownloadsController@thread_txt')->name('download.thread_txt')->middleware('filter_thread');
-   Route::get('downloads/book_noreview_text/{thread}','DownloadsController@book_noreview_text')->name('download.book_noreview_text')->middleware('filter_thread');
+   Route::get('/downloads/thread_txt/{thread}','DownloadsController@thread_txt')->name('download.thread_txt')->middleware('filter_thread');
+   Route::get('/downloads/book_noreview_text/{thread}','DownloadsController@book_noreview_text')->name('download.book_noreview_text')->middleware('filter_thread');
 
 }

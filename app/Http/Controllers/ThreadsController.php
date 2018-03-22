@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-use App\Thread;
-use App\Post;
-use App\Tag;
-use App\Channel;
+use App\Models\Thread;
+use App\Models\Post;
+use App\Models\Tag;
+use App\Models\Channel;
 use Carbon\Carbon;
 use Auth;
-use App\User;
-use App\RegisterHomework;
+use App\Models\User;
+// use App\RegisterHomework;
 
 class threadsController extends Controller
 {
@@ -23,23 +23,11 @@ class threadsController extends Controller
    {
       $this->middleware('auth')->except(['index', 'show', 'showpost']);
    }
-   public function index()
+   public function index(Request $request)
    {
-      $threads = DB::table('threads')
-      ->join('users', 'threads.user_id', '=', 'users.id')
-      ->join('labels', 'threads.label_id', '=', 'labels.id')
-      ->join('channels', 'threads.channel_id','=','channels.id')
-      ->leftjoin('posts','threads.last_post_id','=', 'posts.id')
-      ->where([['threads.book_id', '=', 0],['threads.deleted_at', '=', null],['channels.channel_state','<',10],['threads.public','=',1]])
-      ->select('threads.*', 'channels.channelname','users.name','labels.labelname','posts.body as last_post_body')
-      ->orderby('threads.lastresponded_at', 'desc')
-      ->simplePaginate(Config::get('constants.index_per_page'));
-      $show = [
-        'channel' => false,
-        'label' => false,
-     ];
-     $collections = false;
-      return view('threads.index_all', compact('threads', 'show', 'collections'));
+      $threads = Thread::canSee()->inChannel(request('channel'))->inLabel(request('label'))->withOrder('recentresponded')
+      ->with('creator','label','channel','lastpost')->simplePaginate(config('index_per_page'));
+      return view('threads.index', compact('threads'))->with('show_as_collections', false);
    }
 
    public function show(Thread $thread, Request $request)

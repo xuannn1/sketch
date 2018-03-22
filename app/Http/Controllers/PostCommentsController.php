@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Thread;
-use App\Post;
-use App\PostComment;
+use App\Models\Thread;
+use App\Models\Post;
+use App\Models\PostComment;
 use App\Activity;
 use Auth;
 

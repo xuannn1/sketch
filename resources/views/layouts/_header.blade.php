@@ -11,6 +11,13 @@
            @if (Auth::check()&&(Auth::user()->lastrewarded_at <= Carbon\Carbon::today()->toDateTimeString()))
             <li><a href="{{ route('qiandao') }}" style="color:#d66666">我要签到</a></li>
            @endif
+           <div class="search-container">
+               <form method="GET" action="{{ route('search') }}">
+                   <input type="textarea" placeholder="Search.." name="search">
+                   <button type="submit"><i class="fa fa-search"></i></button>
+               </form>
+           </div>
+
            <li><a href="{{ route('books.index') }}">文库</a></li>
            <li class="dropdown">
              <a href="" class="dropdown-toggle" data-toggle="dropdown">

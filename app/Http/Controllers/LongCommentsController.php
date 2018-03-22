@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 use App\LongComment;
-use App\Post;
+use App\Models\Post;
 use Auth;
 
 class LongCommentsController extends Controller

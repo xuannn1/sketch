@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 use Auth;
 use App\Collection;
-use App\Thread;
+use App\Models\Thread;
 use Carbon\Carbon;
 use App\Follower;
 

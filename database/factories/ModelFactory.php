@@ -12,7 +12,7 @@
 */
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
@@ -27,47 +27,47 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 
-$factory->define(App\Tag::class, function (Faker\Generator $faker){
+$factory->define(App\Models\Tag::class, function (Faker\Generator $faker){
    return [
       'tagname' => str_random(3),
    ];
 });
 
-$factory->define(App\TaggingThread::class, function (Faker\Generator $faker){
+$factory->define(App\Models\TaggingThread::class, function (Faker\Generator $faker){
    return [
       'tag_id' => rand(1,10),
       'thread_id' =>rand(1,10),
    ];
 });
 
-$factory->define(App\Thread::class, function (Faker\Generator $faker){
+$factory->define(App\Models\Thread::class, function (Faker\Generator $faker){
    return [
       'user_id' => function(){
-         return factory('App\User')->create()->id;
+         return factory('App\Models\User')->create()->id;
       },
       'title' => $faker->sentence,
       'brief' => $faker->sentence,
       'body' => $faker->paragraph,
    ];
 });
-$factory->define(App\Post::class, function (Faker\Generator $faker){
+$factory->define(App\Models\Post::class, function (Faker\Generator $faker){
    return [
       'user_id' => function(){
-         return factory('App\User')->create()->id;
+         return factory('App\Models\User')->create()->id;
       },
       'thread_id' => function(){
-         return factory('App\Thread')->create()->id;
+         return factory('App\Models\Thread')->create()->id;
       },
       'body' => $faker->paragraph,
    ];
 });
-$factory->define(App\PostComment::class, function (Faker\Generator $faker){
+$factory->define(App\Models\PostComment::class, function (Faker\Generator $faker){
    return [
       'user_id' => function(){
-         return factory('App\User')->create()->id;
+         return factory('App\Models\User')->create()->id;
       },
       'post_id' => function(){
-         return factory('App\Post')->create()->id;
+         return factory('App\Models\Post')->create()->id;
       },
       'body' => $faker->sentence,
    ];

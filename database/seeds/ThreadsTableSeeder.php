@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Thread;
-use App\Post;
-use App\PostComment;
-use App\Channel;
-use App\Tag;
-use App\Labels;
-use App\TaggingThread;
+use App\Models\Thread;
+use App\Models\Post;
+use App\Models\PostComment;
+use App\Models\Channel;
+use App\Models\Tag;
+use App\Models\Labels;
+use App\Models\TaggingThread;
 
 class ThreadsTableSeeder extends Seeder
 {

@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Thread;
+use App\Models\Thread;
 use Auth;
 use App\RegisterHomework;
 use App\Message;
-use App\User;
-use App\Post;
+use App\Models\User;
+use App\Models\Post;
 use App\Homework;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;

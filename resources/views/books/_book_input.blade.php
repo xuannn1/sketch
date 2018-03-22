@@ -2,7 +2,7 @@
 
  <div id="yuanchuang" style="display:{{ ((($book->id>0)&&($book->original==1))||(($book->id==0)&&(old('originalornot')=='1'))) ? 'block' : 'none' }} ">
     <h4>  1.1 请选择主题对应类型：</h4>
-   <?php $labels =\App\Channel::find(1)->labels()->get(); ?>
+   <?php $labels =\App\Models\Channel::find(1)->labels()->get(); ?>
    @foreach ($labels as $index => $label)
       <label class="radio-inline"><input type="radio" name="label" value="{{ $label->id }}" {{ ((($thread->id>0)&&($thread->label_id==$label->id))||(($thread->id==0)&&(old('label')==strval($label->id)))) ? 'checked' : '' }}>{{ $label->labelname }}</label>
    @endforeach
@@ -10,7 +10,7 @@
 
  <div id="tongren" style="display:{{ ((($book->id>0)&&($book->original==0))||(($book->id==0)&&(old('originalornot')=='0'))) ? 'block' : 'none' }}">
     <h4>&nbsp;&nbsp;1.1 请选择主题对应类型：</h4>
-   <?php $labels = App\Channel::find(2)->labels()->get(); ?>
+   <?php $labels = App\Models\Channel::find(2)->labels()->get(); ?>
    @foreach ($labels as $index => $label)
       <label class="radio-inline"><input type="radio" name="label" value="{{ $label->id }}" {{ ((($thread->id>0)&&($thread->label_id==$label->id))||(($thread->id==0)&&(old('label')==strval($label->id)))) ? 'checked' : '' }}>{{ $label->labelname }}</label>
    @endforeach

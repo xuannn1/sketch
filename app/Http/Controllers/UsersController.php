@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 
 use Auth;
 use Hash;
-use App\User;
+use App\Models\User;
 use Carbon\Carbon;
 
 class UsersController extends Controller

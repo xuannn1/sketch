@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 
 use Auth;
 use App\Message;
-use App\User;
+use App\Models\User;
 
 class MessagesController extends Controller
 {

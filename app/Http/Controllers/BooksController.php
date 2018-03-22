@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-use App\Label;
-use App\Thread;
-use App\Book;
-use App\Post;
+use App\Models\Label;
+use App\Models\Thread;
+use App\Models\Book;
+use App\Models\Post;
 use App\Chapter;
-use App\Tag;
+use App\Models\Tag;
 use Carbon\Carbon;
 use App\Tongren;
 use Auth;

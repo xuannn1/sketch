@@ -16,7 +16,7 @@ class FilterChannel
      */
     public function handle($request, Closure $next)
     {
-      $channel_state = \App\Channel::FindOrFail($request->route('channel')->id)->channel_state;
+      $channel_state = \App\Models\Channel::FindOrFail($request->route('channel'))->channel_state;
     if ($channel_state>=10){
       if (Auth::check()){
           if ($request->user()->group > $channel_state){

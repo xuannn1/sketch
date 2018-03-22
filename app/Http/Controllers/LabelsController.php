@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-use App\Channel;
-use App\Thread;
-use App\Label;
+use App\Models\Channel;
+use App\Models\Thread;
+use App\Models\Label;
 
 class LabelsController extends Controller
 {

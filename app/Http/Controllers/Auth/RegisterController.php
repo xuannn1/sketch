@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 
-use App\User;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\InvitationToken;
 use Carbon\Carbon;
@@ -78,7 +78,7 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {

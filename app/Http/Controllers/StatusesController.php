@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 use App\Status;
-use App\User;
+use App\Models\User;
 use Auth;
 
 
