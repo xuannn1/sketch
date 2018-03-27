@@ -6,14 +6,6 @@ use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use App\Models\User;
-use App\Models\PostComment;
-use App\Shengfan;
-use App\Models\Thread;
-use App\Models\Chapter;
-use App\Models\LongComment;
-use Illuminate\Support\Facades\Config;
-
 
 class Post extends Model
 {

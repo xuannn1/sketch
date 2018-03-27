@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePost;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 use App\Models\Thread;
 use App\Models\Post;
@@ -62,7 +62,7 @@ class PostsController extends Controller
      {
         $thread = $post->thread->load('label','channel');
         $post->load('owner','reply_to_post.owner');
-        $postcomments = $post->allcomments()->with('owner')->paginate(Config::get('constants.items_per_page'));
+        $postcomments = $post->allcomments()->with('owner')->paginate(config('constants.items_per_page'));
         $defaultchapter=$post->chapter_id;
         return view('posts.show',compact('post','thread','postcomments','defaultchapter'));
      }

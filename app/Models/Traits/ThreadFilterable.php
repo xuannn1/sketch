@@ -7,13 +7,9 @@ use Auth;
 
 trait ThreadFilterable
 {
-    public function scopeIsNotBianyuan($query)
+    public function scopeBianyuan($query,$bianyuan=0)//0:notbianyuan, 1:both bianyuan and not bianyuan
     {
-        return $query->where('bianyuan', '=', false);
-    }
-    public function scopeIsBianyuan($query)
-    {
-        return $query->where('bianyuan', '=', true);
+        return $query->where('bianyuan', '<=', $bianyuan);
     }
 
     public function scopeInChannel($query,$channel)
@@ -24,6 +20,12 @@ trait ThreadFilterable
             return $query;
         }
     }
+
+    public function scopePublic($query,$public=1)//1:only public; 0:
+    {
+        return $query->where('public', '>=', $public);
+    }
+
     public function scopeInLabel($query,$label)
     {
         if ($label){
@@ -43,5 +45,6 @@ trait ThreadFilterable
             $q->where('channel_state','<=',$usergroup);
         });
     }
+
 
 }

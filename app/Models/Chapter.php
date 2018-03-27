@@ -5,10 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use App\Models\Post;
-use App\Volumn;
-use App\Models\Book;
-
 class Chapter extends Model
 {
    use SoftDeletes;

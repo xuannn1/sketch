@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -78,7 +78,7 @@ class threadsController extends Controller
       $totalposts = Post::allPosts($thread->id,$thread->post_id)
           ->where('created_at', '<', $post->created_at)
           ->count();
-      $page = intdiv($totalposts, Config::get('constants.items_per_page'))+1;
+      $page = intdiv($totalposts, config('constants.items_per_page'))+1;
       $url = 'threads/'.$thread->id.'?page='.$page.'#post'.$post->id;
       return redirect($url);
    }

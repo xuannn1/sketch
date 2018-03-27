@@ -194,7 +194,7 @@ class VotePostsController extends Controller
         ->where('posts.fold_state', '=', false)
         ->select('posts.*','users.name','vote_posts.upvoted_at')
         ->orderBy('vote_posts.upvoted_at','desc')
-        ->paginate(Config::get('constants.index_per_page'));
+        ->paginate(config('constants.index_per_page'));
      $collections = false;
      return view('statuses.index', compact('statuses','collections'));
    }

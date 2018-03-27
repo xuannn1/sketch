@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Collection;
 use Illuminate\Support\Facades\DB;
 
 
@@ -133,6 +132,9 @@ class Thread extends Model
        return $array;
    }
    public function scopeNotSelf($query){
+
+   }
+   public function scopePublic($query){
 
    }
 

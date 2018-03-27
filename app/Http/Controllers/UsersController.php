@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
+
 
 use Auth;
 use Hash;
@@ -144,12 +144,12 @@ class UsersController extends Controller
       $user = User::find($id);
       if ($user){
          $group = Auth::check() ? Auth::user()->group : 10;
-         $books=$this->findbooks($id,Config::get('constants.index_per_part'));
-         $threads=$this->findthreads($id,Config::get('constants.index_per_part'), $group);
-         $posts=$this->findlongcomments($id,Config::get('constants.index_per_part'), $group);
-         $statuses=$this->findstatuses($id,Config::get('constants.index_per_part'));
-         $upvotes=$this->findupvotes($id,Config::get('constants.index_per_part'), $group);
-         $book_info = Config::get('constants.book_info');
+         $books=$this->findbooks($id,config('constants.index_per_part'));
+         $threads=$this->findthreads($id,config('constants.index_per_part'), $group);
+         $posts=$this->findlongcomments($id,config('constants.index_per_part'), $group);
+         $statuses=$this->findstatuses($id,config('constants.index_per_part'));
+         $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
+         $book_info = config('constants.book_info');
          $show = [
             'channel' => false,
             'label' => false,
@@ -165,8 +165,8 @@ class UsersController extends Controller
    {
       $user = User::find($id);
       if ($user){
-         $books=$this->findbooks($id,Config::get('constants.index_per_page'));
-         $book_info = Config::get('constants.book_info');
+         $books=$this->findbooks($id,config('constants.index_per_page'));
+         $book_info = config('constants.book_info');
          $collections = false;
          return view('users.showbooks', compact('user','book_info','books','collections'));
       }else{
@@ -179,7 +179,7 @@ class UsersController extends Controller
       $user = User::find($id);
       $group = Auth::check() ? Auth::user()->group : 10;
       if ($user){
-         $posts=$this->findlongcomments($id,Config::get('constants.index_per_page'),$group);
+         $posts=$this->findlongcomments($id,config('constants.index_per_page'),$group);
          return view('users.showlongcomments', compact('user','posts'));
       }else{
          return redirect()->route('error', ['error_code' => '404']);
@@ -191,7 +191,7 @@ class UsersController extends Controller
       $user = User::find($id);
       if ($user){
          $group = Auth::check() ? Auth::user()->group : 10;
-         $threads=$this->findthreads($id,Config::get('constants.index_per_page'),$group);
+         $threads=$this->findthreads($id,config('constants.index_per_page'),$group);
          $show = [
             'channel' => false,
             'label' => false,
@@ -206,7 +206,7 @@ class UsersController extends Controller
    {
       $user = User::find($id);
       if ($user){
-         $statuses=$this->findstatuses($id,Config::get('constants.index_per_page'));
+         $statuses=$this->findstatuses($id,config('constants.index_per_page'));
          $collections = false;
          return view('users.showstatuses', compact('user','statuses','collections'));
       }else{
@@ -218,7 +218,7 @@ class UsersController extends Controller
      $user = User::find($id);
      if ($user){
         $group = Auth::check() ? Auth::user()->group : 10;
-        $posts=$this->findupvotes($id,Config::get('constants.index_per_page'), $group);
+        $posts=$this->findupvotes($id,config('constants.index_per_page'), $group);
         $collections = false;
         return view('users.showupvotes', compact('user','posts','collections'));
      }else{
@@ -293,7 +293,7 @@ class UsersController extends Controller
    public function followings($id)
     {
       $user = User::findOrFail($id);
-      $users = $user->followings()->paginate(Config::get('constants.index_per_page'));
+      $users = $user->followings()->paginate(config('constants.index_per_page'));
       $title = '关注的人';
       return view('users.showfollows', compact('user','users','title'));
     }
@@ -301,13 +301,13 @@ class UsersController extends Controller
     public function followers($id)
     {
       $user = User::findOrFail($id);
-      $users = $user->followers()->paginate(Config::get('constants.index_per_page'));
+      $users = $user->followers()->paginate(config('constants.index_per_page'));
       $title = '粉丝';
       return view('users.showfollows', compact('user','users','title'));
     }
    public function index()
    {
-      $users = User::orderBy('lastrewarded_at','desc')->paginate(Config::get('constants.index_per_page'));
+      $users = User::orderBy('lastrewarded_at','desc')->paginate(config('constants.index_per_page'));
       return view('users.index_all', compact('users'));
    }
 

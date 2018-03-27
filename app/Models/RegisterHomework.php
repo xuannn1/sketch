@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Thread;
-use App\Models\Post;
+
 class RegisterHomework extends Model
 {
    protected $guarded = [];

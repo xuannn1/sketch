@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 
 use App\Models\LongComment;
@@ -26,7 +26,7 @@ class LongCommentsController extends Controller
       ->where([['posts.long_comment','=',1],['posts.deleted_at','=',null],['channels.channel_state','<',$group]])
       ->select('posts.*','threads.title as thread_title', 'users.name')
       ->orderBy('posts.created_at', 'desc')
-      ->simplePaginate(Config::get('constants.index_per_page'));
+      ->simplePaginate(config('constants.index_per_page'));
       return view('long_comments.index', compact('posts'));
    }
 }

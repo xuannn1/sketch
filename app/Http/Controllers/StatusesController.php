@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Status;
@@ -49,7 +49,7 @@ class StatusesController extends Controller
          ->where('users.deleted_at', '=', null)
          ->select('statuses.*','users.name')
          ->orderBy('statuses.created_at','desc')
-         ->paginate(Config::get('constants.index_per_page'));
+         ->paginate(config('constants.index_per_page'));
       $collections = false;
       return view('statuses.index', compact('statuses','collections'));
     }

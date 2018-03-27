@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
+
 use App\Models\Label;
 use App\Models\Thread;
 use App\Models\Book;
@@ -75,7 +75,7 @@ class ChaptersController extends Controller
         ])
         ->sum('chapters.characters');
          $post->update(['chapter_id'=>$chapter->id]);
-         if ($characters>Config::get('constants.update_min')){
+         if ($characters>config('constants.update_min')){
             $book->update(['lastaddedchapter_at' => Carbon::now()]);
          }
          $thread->update([
@@ -137,11 +137,11 @@ class ChaptersController extends Controller
          ['maintext', '=', false],
          ])->with(['owner', 'comments.owner', 'reply_to_post.owner'])
          ->latest()
-         ->paginate(Config::get('constants.items_per_page'));
+         ->paginate(config('constants.items_per_page'));
       $chapter->increment('viewed');
       $only = false;
       $chapter_replied = false;
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       return view('books.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next', 'only', 'book_info','chapter_replied'));
    }
    public function edit(Chapter $chapter)

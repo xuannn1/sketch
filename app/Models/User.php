@@ -6,7 +6,7 @@ use Laravel\Scout\Searchable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Config;
+
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Support\Facades\DB;
 
@@ -76,7 +76,7 @@ class User extends Authenticatable
 
    public function collected_threads()
    {
-     return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->where('book_id', '=', 0);
+     return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->where('book_id', '=', 0)->withPivot('updated', 'keep_updated');
   }
   public function findrecord($post_id)
   {
@@ -143,7 +143,7 @@ class User extends Authenticatable
     }
     public function checklevelup()
     {
-      $level_ups = Config::get('constants.level_up');
+      $level_ups = config('constants.level_up');
       foreach($level_ups as $level=>$requirement){
          if (($this->user_level < $level)
          &&(!(array_key_exists('continued_qiandao',$requirement))||($requirement['continued_qiandao']<=$this->continued_qiandao))

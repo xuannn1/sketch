@@ -4,7 +4,7 @@
       <div class="col-xs-12 h5">
          @if($show_as_collections)
          <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionThread({{$thread->id}})">取消收藏</button>
-         <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$thread->id}})" Id="togglekeepupdatethread{{$thread->id}}">{{$thread->keep_updated?'不再提醒':'接收提醒'}}</button>
+         <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$thread->id}})" Id="togglekeepupdatethread{{$thread->id}}">{{$thread->pivot->keep_updated?'不再提醒':'接收提醒'}}</button>
          @endif
          <!-- thread title -->
          <span class="bigger-20">
@@ -25,7 +25,7 @@
             <span class="glyphicon glyphicon-warning-sign"></span>
             @endif
             </small>
-            @if(($show_as_collections)&&($thread->updated))
+            @if(($show_as_collections)&&($thread->pivot->updated))
             <span class="badge">有更新</span>
             @endif
          </span>

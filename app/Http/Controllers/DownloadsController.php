@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Helper;
 use App\Models\Label;
@@ -38,7 +38,7 @@ class DownloadsController extends Controller
     }
     public function print_book_info($thread)
     {
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       $book = $thread->book;
       $txt = "标题：".$thread->title."\n";
       $txt .= "简介：".$thread->brief."\n";
@@ -162,7 +162,7 @@ class DownloadsController extends Controller
         $chapters = $book->chapters;
         $chapters->load(['mainpost']);
         $thread->load(['creator', 'tags', 'label']);
-        $book_info = Config::get('constants.book_info');
+        $book_info = config('constants.book_info');
         $txt = $this->add_download_info($thread);
         $txt .=$this->print_book_info($thread);
         foreach($chapters as $i=>$chapter){

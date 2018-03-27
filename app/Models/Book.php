@@ -4,11 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Label;
-use App\Models\Tag;
-use App\Models\Thread;
-use App\Models\Chapter;
-
 class Book extends Model
 {
    protected $guarded = [];

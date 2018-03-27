@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -251,11 +251,11 @@ class BooksController extends Controller
          ['id', '<>', $thread->post_id]
          ])->with(['owner', 'comments.owner', 'reply_to_post.owner','chapter.mainpost'])
          ->latest()
-         ->paginate(Config::get('constants.index_per_part'));
+         ->paginate(config('constants.index_per_part'));
       $ip = $request->getClientIp();
       $only = false;
       $chapter_replied = true;
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       return view('books.show', compact('book', 'thread','chapters', 'posts', 'ip', 'only', 'book_info','chapter_replied'));
    }
    public function index()
@@ -269,7 +269,7 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }else{
          $books = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
@@ -279,10 +279,10 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.bianyuan', '=', false],['threads.public','=',1]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }
       $collections = false;
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       return view('books.index', compact('books','book_info','collections'));
    }
 
@@ -307,7 +307,7 @@ class BooksController extends Controller
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->distinct()
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }else{
          $books = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
@@ -322,10 +322,10 @@ class BooksController extends Controller
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->distinct()
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }
       $collections = false;
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       return view('books.index', compact('books','book_info','collections'));
    }
    public function bookoriginal($original){
@@ -338,7 +338,7 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['books.original','=',$original]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }else{
          $books = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
@@ -348,9 +348,9 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.bianyuan', '=', false],['threads.public','=',1],['books.original','=',$original]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       $collections = false;
       return view('books.index', compact('books','book_info','collections'));
    }
@@ -364,7 +364,7 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['books.book_status','=',$bookstatus]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }else{
          $books = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
@@ -374,9 +374,9 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.bianyuan', '=', false],['threads.public','=',1],['books.book_status','=',$bookstatus]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       $collections = false;
       return view('books.index', compact('books','book_info','collections'));
    }
@@ -390,7 +390,7 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['books.book_length','=',$booklength]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }else{
          $books = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
@@ -400,9 +400,9 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.bianyuan', '=', false],['threads.public','=',1],['books.book_length','=',$booklength]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       $collections = false;
       return view('books.index', compact('books','book_info','collections'));
    }
@@ -416,7 +416,7 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['books.sexual_orientation','=',$booksexualorientation]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }else{
          $books = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
@@ -426,9 +426,9 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.bianyuan', '=', false],['threads.public','=',1],['books.sexual_orientation','=',$booksexualorientation]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       $collections = false;
       return view('books.index', compact('books','book_info','collections'));
    }
@@ -442,7 +442,7 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['threads.label_id','=',$booklabel]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }else{
          $books = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
@@ -452,9 +452,9 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.bianyuan', '=', false],['threads.public','=',1],['threads.label_id','=',$booklabel]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       $collections = false;
       return view('books.index', compact('books','book_info','collections'));
    }
@@ -469,7 +469,7 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['tagging_threads.tag_id','=',$booktag]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }else{
          $books = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
@@ -480,9 +480,9 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.bianyuan', '=', false],['threads.public','=',1],['tagging_threads.tag_id','=',$booktag]])
             ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(Config::get('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
       }
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       $collections = false;
       return view('books.index', compact('books','book_info','collections'));
    }

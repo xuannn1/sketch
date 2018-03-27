@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 use App\Models\Quote;
 use App\Models\Channel;
@@ -30,7 +30,7 @@ class AdminsController extends Controller
    }
    public function quotesreview()
    {
-      $quotes = Quote::orderBy('created_at', 'desc')->paginate(Config::get('constants.index_per_page'));
+      $quotes = Quote::orderBy('created_at', 'desc')->paginate(config('constants.index_per_page'));
       return view('admin.quotesreview', compact('quotes'));
    }
 

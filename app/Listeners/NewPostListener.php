@@ -52,7 +52,7 @@ class NewPostListener
           DB::table('collections')
           ->join('users','users.id','=','collections.user_id')
           ->where([['collections.thread_id','=',$thread->id],['collections.keep_updated','=',true],['collections.user_id','<>',$post->user_id]])
-          ->update(['collections.updated'=>1]);
+          ->update(['collections.updated'=>1,'users.collection_threads_updated'=>DB::raw('users.collection_threads_updated + 1')]);
          }
 
          //回帖了，不是给自己的帖子回帖，回帖对象也不是楼主，那么送出回帖提醒

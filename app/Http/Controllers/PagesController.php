@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 use Auth;
 use App\Models\Channel;
@@ -17,27 +17,26 @@ class PagesController extends Controller
 
     public function home()
     {
-        $group = 10;
+      $group = 10;
       if (Auth::check()){
          $group = Auth::user()->group;
       }
       $channels = Channel::where('channel_state','<',$group)
       ->orderBy('id','asc')
       ->get();
-
       $quote = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->first();
       return view('pages/home',compact('channels', 'quote'));
     }
 
     public function about()
     {
-      $data = Config::get('constants');
+      $data = config('constants');
       return view('pages/about',compact('data'));
     }
 
     public function help()
     {
-      $data = Config::get('constants');
+      $data = config('constants');
       return view('pages/help',compact('data'));
     }
 
@@ -84,15 +83,15 @@ class PagesController extends Controller
      ->where('administrations.deleted_at','=',null)
      ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body','operated_users.name as operated_users_name' )
      ->orderBy('administrations.created_at','desc')
-     ->paginate(Config::get('constants.index_per_page'));
-     $admin_operation = Config::get('constants.administrations');
+     ->paginate(config('constants.index_per_page'));
+     $admin_operation = config('constants.administrations');
      return view('pages.adminrecords',compact('records','admin_operation'));
   }
 
   public function search(Request $request){
-      $users = User::search(request('search'))->paginate(Config::get('constants.index_per_part'));
-      $threads = Thread::search(request('search'))->paginate(Config::get('constants.index_per_part'));$threads->load('creator','channel','label');
-      $posts = Post::search(request('search'))->paginate(Config::get('constants.index_per_part'));$posts->load('thread');
+      $users = User::search(request('search'))->paginate(config('constants.index_per_part'));
+      $threads = Thread::search(request('search'))->paginate(config('constants.index_per_part'));$threads->load('creator','channel','label');
+      $posts = Post::search(request('search'))->paginate(config('constants.index_per_part'));$posts->load('thread');
       $show = [
         'channel' => false,
         'label' => false,

@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Thread;
-use App\Models\Label;
 use Auth;
 
 class Channel extends Model
@@ -21,10 +19,8 @@ class Channel extends Model
    }
    public function recent_threads()
    {
-      if (Auth::check()){
-         return Thread::where([['channel_id','=',$this->id],['public','=',1]])->orderBy('lastresponded_at', 'desc')->with('creator')->take(2)->get();
-      }else{
-         return Thread::where([['bianyuan','=',0],['channel_id','=',$this->id],['public','=',1]])->orderBy('lastresponded_at', 'desc')->with('creator')->take(2)->get();
-      }
+       $bianyuan = Auth::check();
+       return Thread::inChannel($this->id)->bianyuan($bianyuan)->public()->withOrder('recentresponded')->take(2)->get();
    }
+
 }

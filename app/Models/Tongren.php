@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Book;
-use App\Models\Tag;
 
 class Tongren extends Model
 {
