@@ -48,9 +48,7 @@ class PostCommentsController extends Controller
             ]);
             $post->owner->increment('postcomment_reminders');
          }
-         $user->jifen+=1;
-         $user->shengfan+=1;
-         $user->save();
+         $user->reward("regular_post_comment");
          return back()->with("success", "您已成功点评");
       }else{
          return redirect()->back()->with("danger","抱歉，本帖锁定，暂时不能点评");

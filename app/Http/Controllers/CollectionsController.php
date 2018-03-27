@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 use Auth;
-use App\Collection;
+use App\Models\Collection;
 use App\Models\Thread;
 use Carbon\Carbon;
 use App\Follower;
@@ -87,9 +87,9 @@ class CollectionsController extends Controller
       $collections = true;
       Auth::user()->collection_books_updated = 0;
       Auth::user()->save();
-      return view('users.collections_books', compact('books', 'book_info', 'active','updates','collections'));
+      return view('users.collections_books', compact('books', 'book_info', 'active','updates','collections'))->with('show_as_collections',1);
    }
-   public function threads()
+   public function threads()//还需要修改join类型
    {
       $user = Auth::user();
       $threads = DB::table('collections')
@@ -111,7 +111,7 @@ class CollectionsController extends Controller
       $collections = true;
       Auth::user()->collection_threads_updated = 0;
       Auth::user()->save();
-      return view('users.collections_threads', compact('threads','show','active','updates','collections'));
+      return view('users.collections_threads', compact('threads','show','active','updates','collections'))->with('show_as_collections',1);
    }
 
    public function statuses()

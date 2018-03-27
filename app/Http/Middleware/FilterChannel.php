@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Auth;
+use App\Models\Channel;
 
 class FilterChannel
 {
@@ -16,16 +17,16 @@ class FilterChannel
      */
     public function handle($request, Closure $next)
     {
-      $channel_state = \App\Models\Channel::FindOrFail($request->route('channel'))->channel_state;
-    if ($channel_state>=10){
-      if (Auth::check()){
-          if ($request->user()->group > $channel_state){
-             return $next($request);
+        $channel = $request->route('channel');
+        if ($channel->channel_state>=10){
+          if (Auth::check()){
+              if ($request->user()->group > $channel->channel_state){
+                 return $next($request);
+              }
+              return redirect()->route('error', ['error_code' => '403']);
           }
-          return redirect()->route('error', ['error_code' => '403']);
-      }
-      return redirect('login');
-    }
-     return $next($request);
+          return redirect('login');
+        }
+         return $next($request);
     }
 }

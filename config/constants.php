@@ -8,6 +8,8 @@ return [
    'comments_per_post' => 3,//每个post，显示最早的n-1条回复
    'update_min' => 1000, //章节更新必须达到这个水平才能进入排名榜
    'longcomment_lenth' => 200, //“长评”必须达到该字数
+   'default_user_group' => 10,
+   'default_majia' => '匿名咸鱼',
 
    'book_info' =>[
       'originality_info' => [

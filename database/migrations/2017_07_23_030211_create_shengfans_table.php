@@ -18,7 +18,7 @@ class CreateShengfansTable extends Migration
             $table->tinyInteger('shengfan_num')->default(0);//这次投喂了多少剩饭
             $table->integer('user_id')->unsigned()->index();//投掷剩饭者用户名
             $table->integer('post_id')->unsigned()->index();//属于哪个post
-            $table->timestamps('created_at');
+            $table->timestamps();
         });
     }
 

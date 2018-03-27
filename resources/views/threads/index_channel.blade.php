@@ -12,9 +12,13 @@
       <div class="panel panel-default">
          <div class="panel-heading">
             <ul class="nav nav-tabs">
-               <li role="presentation" class="{{ $label->id ? '': 'active' }}"><a href="{{ route('channel.show', $channel) }}">全部<span class="badge">{{ $total }}</span></a></li>
-               @foreach($labelsinfo as $singlelabel)
-               <li role="presentation" id="{{ $singlelabel[0] }}" class="{{ $label->id==$singlelabel[0]?'active':''}}"><a href="{{ route('label.show', $singlelabel[0]) }}" >{{ $singlelabel[2] }}<span class="badge">{{ $singlelabel[1] }}</span></a></li>
+               <li role="presentation" class="{{ request('label') ? '': 'active' }}"><a href="{{ route('channel.show', $channel) }}">全部<span class="badge"></span></a></li>
+               @foreach($labels as $label)
+               <li role="presentation" id="{{ $label->id }}" class="{{ request('label')===$label->id ? 'active':'' }}">
+                   <a href="{{ route('channel.show',['channel'=>$channel->id,'label'=>$label->id]) }}" >
+                       {{ $label->labelname }}<span class="badge">{{ $label->threads_count }}</span>
+                   </a>
+               </li>
                @endforeach
             </ul>
          </div>

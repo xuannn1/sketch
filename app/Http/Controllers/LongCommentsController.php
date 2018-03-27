@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-use App\LongComment;
+use App\Models\LongComment;
 use App\Models\Post;
 use Auth;
 

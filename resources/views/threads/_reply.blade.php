@@ -9,7 +9,7 @@
            <span class="" id="reply_to_post_info"></span>
            <button type="button" class="label"><span class="glyphicon glyphicon glyphicon-remove" onclick="cancelreplytopost()"></span></button>
         </div>
-        <input type="hidden" name="reply_to_post" id="reply_to_post_id" class="form-control" value="0"></input>
+        <input type="hidden" name="reply_to_post_id" id="reply_to_post_id" class="form-control" value="0"></input>
         <input type="hidden" name="default_chapter_id" id="default_chapter_id" value="{{ $defaultchapter }}"></input>
         <div class="form-group">
            <textarea name="body" rows="7" class="form-control" id="markdowneditor" placeholder="评论十个字起哦～" value="{{ old('body') }}"></textarea>

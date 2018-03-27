@@ -18,12 +18,6 @@ class AppServiceProvider extends ServiceProvider
     {
          Schema::defaultStringLength(191);
          Carbon::setLocale('zh');
-         // Make a custom blade directive:
-         // Blade::directive('wrapParagraphs', function ($string) {
-         //    $post = nl2br($string, false);
-         //    $post = '<p>' . preg_replace('#(<br>[\r\n]+){2}#', '</p><p>', $post) . '</p>';
-         //    return($post);
-         // });
     }
 
     /**

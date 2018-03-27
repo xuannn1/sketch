@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Hash;
 use App\Models\User;
 use Auth;
-use App\Linkaccount;
+use App\Models\Linkaccount;
 
 class LinkedAccountsController extends Controller
 {

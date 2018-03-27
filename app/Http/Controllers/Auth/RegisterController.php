@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\InvitationToken;
+use App\Models\InvitationToken;
 use Carbon\Carbon;
 use Mail;
 
@@ -113,7 +113,7 @@ class RegisterController extends Controller
         $to = $user->email;
         $subject = "感谢注册废文网！请确认你的邮箱。";
 
-        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
+        Mail::queue($view, $data, function ($message) use ($from, $name, $to, $subject) {
             $message->from($from, $name)->to($to)->subject($subject);
         });
     }

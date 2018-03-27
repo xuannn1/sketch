@@ -32,32 +32,10 @@ trait ThreadFilterable
             return $query;
         }
     }
-    public function scopeWithOrder($query, $order)
-    {
-        switch ($order) {
-            case 'recentresponded':
-                $query = $this->recentResponded();
-                break;
-
-            default:
-                $query = $this->recent();
-                break;
-        }
-    }
-
-    public function scopeRecentResponded($query)
-    {
-        return $query->orderBy('lastresponded_at', 'desc');
-    }
-
-    public function scopeRecent($query)
-    {
-        return $query->orderBy('created_at', 'desc');
-    }
 
     public function scopeCanSee($query)
     {
-        $usergroup=10;
+        $usergroup=config('constants.default_user_group');
         if(Auth::check()){
             $usergroup = Auth::user()->group;
         }
@@ -65,4 +43,5 @@ trait ThreadFilterable
             $q->where('channel_state','<=',$usergroup);
         });
     }
+
 }

@@ -13,10 +13,10 @@ use App\Models\Label;
 use App\Models\Thread;
 use App\Models\Book;
 use App\Models\Post;
-use App\Chapter;
+use App\Models\Chapter;
 use App\Models\Tag;
 use Carbon\Carbon;
-use App\Tongren;
+use App\Models\Tongren;
 use App\Download;
 use Auth;
 

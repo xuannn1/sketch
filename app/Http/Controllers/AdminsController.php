@@ -127,7 +127,7 @@ class AdminsController extends Controller
                      'book_length' => 0,
                      'lastaddedchapter_at' => Carbon::now(),
                   ]);
-                  $tongren = App\Tongren::create(
+                  $tongren = App\Models\Tongren::create(
                       ['book_id' => $book->id]
                   );
                }else{
@@ -135,7 +135,7 @@ class AdminsController extends Controller
                   $book->original = 2-$channel->id;
                   $book->save();
                   if($channel->id == 2){
-                     $tongren = App\Tongren::firstOrCreate(['book_id' => $book->id]);
+                     $tongren = App\Models\Tongren::firstOrCreate(['book_id' => $book->id]);
                   }
                }
             }
@@ -160,7 +160,7 @@ class AdminsController extends Controller
           'reason' => request('reason'),
         ]);
         if($post->chapter_id !=0){
-          App\Chapter::destroy($post->chapter_id);
+          App\Models\Chapter::destroy($post->chapter_id);
         }
         $post->delete();
         return redirect()->back()->with("success","已经成功处理该贴");

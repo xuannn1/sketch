@@ -1,6 +1,6 @@
 <div class="">
    作业进度：<br>
-   @foreach($register_homeworks as $registration)
+   @foreach($thread->homework->registerhomeworks as $registration)
       @if($registration->thread->id>0)
         @if((Auth::check())&&(Auth::user()->admin))
         <span><a href="{{ route('user.show', $registration->user_id) }}">{{ $registration->student->name }}</a></span>：<span><a href="{{ route('thread.show', $registration->thread->id) }}">{{ $registration->thread->title }}</a></span>：

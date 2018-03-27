@@ -17,5 +17,13 @@ class Label extends Model
    {
       return $this->belongsTo(Channel::class);
    }
+   public function scopeInChannel($query,$channel)
+   {
+       if ($channel){
+           return $query->where('channel_id', '=', $channel);
+       }else{
+           return $query;
+       }
+   }
 
 }

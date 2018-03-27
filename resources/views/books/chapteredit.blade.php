@@ -5,7 +5,7 @@
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
    @include('shared.errors')
    <div class="panel-group">
-      <h5><a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('label.show', $thread->label) }}">{{ $thread->label->labelname }}</a>/<a href="{{ route('book.show', $book) }}">{{ $thread->title }}</a></h5>
+      <h5><a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('channel.show', ['channel'=>$thread->channel_id,'label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>/<a href="{{ route('book.show', $book) }}">{{ $thread->title }}</a></h5>
       <h4>编辑章节</h4>
       <form method="POST" action="{{ route('book.updatechapter', $chapter) }}">
          {{ csrf_field() }}

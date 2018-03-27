@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-use App\Status;
+use App\Models\Status;
 use App\Models\User;
 use Auth;
 use App\Follower;

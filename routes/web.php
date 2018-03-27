@@ -62,8 +62,8 @@
 {//以下展示论坛贴按标签（label）与板块（channel）分布的视图
    Route::get('/channels', 'ChannelsController@index')->name('channel.show');//展示某个板块的所有帖子
    Route::get('/channels/{channel}', 'ChannelsController@show')->name('channel.show')->middleware('filter_channel');//展示某个板块的所有帖子
-   Route::get('/channels/{channel}/threads/create', 'ThreadsController@createThreadForm')->name('thread.create');//发布新主题页面
-   Route::post('/channels/{channel}/threads/create','ThreadsController@store')->name('thread.store');//在特定板块发表主题
+   Route::get('/channels/{channel}/threads/create', 'ThreadsController@createThreadForm')->name('thread.create')->middleware('filter_channel');//发布新主题页面
+   Route::post('/channels/{channel}/threads/create','ThreadsController@store')->name('thread.store')->middleware('filter_channel');//在特定板块发表主题
    Route::get('labels/{label}', 'LabelsController@show')->name('label.show')->middleware('filter_label');//按label选择，展示某个板块的帖子
 }
 
@@ -75,7 +75,7 @@
    Route::post('/threads/{thread}/update', 'ThreadsController@update')->name('thread.update');
    Route::post('/threads/{thread}/posts', 'PostsController@store')->name('post.store');//在某个主题发表回帖
    Route::get('/threads/{thread}/posts', 'PostsController@create_post_form')->name('post.create');//在某个主题发表回帖
-   Route::get('/threads/{thread}/user/{user}', 'ThreadsController@useronly')->name('thread.useronly');//只看该作者
+   //Route::get('/threads/{thread}/user/{user}', 'ThreadsController@useronly')->name('thread.useronly');//只看该作者
    Route::get('/threads/{thread}/xianyu', 'XianyusController@vote')->name('xianyu.vote');//为主题投放咸鱼
 }
 

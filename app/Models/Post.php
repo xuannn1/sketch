@@ -10,8 +10,8 @@ use App\Models\User;
 use App\Models\PostComment;
 use App\Shengfan;
 use App\Models\Thread;
-use App\Chapter;
-use App\LongComment;
+use App\Models\Chapter;
+use App\Models\LongComment;
 use Illuminate\Support\Facades\Config;
 
 
@@ -19,10 +19,13 @@ class Post extends Model
 {
    use SoftDeletes;
    use Searchable;
+   use Traits\PostFilterable;
+   use Traits\RegularTraits;
+
    protected $dates = ['deleted_at'];
 
    protected $guarded = [];
-
+   //需要移动到helper
     public function sub_str($str, $length = 0, $append = true)
     {
         $str = trim($str);
@@ -52,6 +55,12 @@ class Post extends Model
    {
      return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
    }
+
+   public function user()
+   {
+     return $this->belongsTo(User::class, 'user_id')->withDefault();
+   }
+
 
    public function thread()
    {
@@ -89,21 +98,20 @@ class Post extends Model
          return $body;
       }
    }
-   public function checklongcomment()
+   public function checklongcomment()//新建章节之后，检查是否属于长评范畴，如果属于，加入推荐队列
    {
       if (!$this->maintext){//必须不能是某章节正文
          $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$this->body);
          $lenth = iconv_strlen($string, 'utf-8');
-         if($lenth>=Config::get('constants.longcomment_lenth')){
-            $this->long_comment = true;
-            if ($this->long_comment_id ==0){
-               $longcomment = LongComment::create([
-                  'post_id' => $this->id,
-               ]);
-               $this->long_comment_id = $longcomment->id;
+         if($lenth>=config('constants.longcomment_lenth')){
+            $longcomment = LongComment::firstOrCreate(['post_id' => $this->id,]);
+            $this->user->reward('longcomment');
+        }else{
+            $longcomment = LongComment::where('post_id',$this->id)->first();
+            if($longcomment){
+                $longcomment->delete();
             }
-            $this->save();
-         }
+        }
       }
       return;
    }

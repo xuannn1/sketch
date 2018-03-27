@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Label;
 use App\Models\Tag;
 use App\Models\Thread;
-use App\Chapter;
+use App\Models\Chapter;
 
 class Book extends Model
 {

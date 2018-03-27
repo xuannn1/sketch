@@ -9,7 +9,7 @@
          <!-- thread title -->
          <span class="bigger-20">
             <a class="btn btn-xs btn-success sosad-button" href="{{route('channel.show', $thread->channel_id)}}">{{$thread->channel->channelname}}</a>
-            <a class="btn btn-xs btn-warning sosad-button" href="{{route('label.show', $thread->label_id)}}">{{$thread->label->labelname}}</a>
+            <a class="btn btn-xs btn-warning sosad-button" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->label->labelname}}</a>
             <strong><a href="{{ route('thread.show', $thread->id) }}">{{ $thread->title }}</a></strong>
             @if( $thread->bianyuan == 1)
             <span class="badge">边</span>

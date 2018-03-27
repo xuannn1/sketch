@@ -32,6 +32,7 @@ class AddReminderToUsersTable extends Migration
            $table->dropcolumn('post_reminders');//
            $table->dropcolumn('postcomment_reminders');//
            $table->dropcolumn('reply_reminders');//
+           $table->dropcolumn('replycomment_reminders');//
         });
     }
 }

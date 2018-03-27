@@ -1,5 +1,5 @@
 <div class="text-center">
-   @if($homework->registration_on)
+   @if($thread->homework->registration_on)
    @if(Auth::check())
    <a href="#" data-toggle="modal" data-target="#TriggerRegister" class="btn btn-md btn-info sosad-button">我要报名</a>
    <div class="modal fade" id="TriggerRegister" role="dialog">

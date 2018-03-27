@@ -50,9 +50,9 @@
    @if($thread->homework_id>0)
       @include('homeworks._registered_students')
       @if($thread->show_homework_profile)
-      @include('homeworks._registered_homeworks')
+        @include('homeworks._registered_homeworks')
       @else
-      @include('homeworks._register_button')
+        @include('homeworks._register_button')
       @endif
    @endif
 </div>

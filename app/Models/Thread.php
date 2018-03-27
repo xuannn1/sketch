@@ -6,21 +6,16 @@ use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
-use League\CommonMark\Converter;
 use Illuminate\Http\Request;
-use App\Models\Post;
-use App\Models\User;
-use App\Models\Channel;
-use App\Models\Label;
-use App\Models\Tag;
-use App\Models\Book;
-use App\Xianyu;
 use Carbon\Carbon;
-use App\Collection;
+use App\Models\Collection;
+use Illuminate\Support\Facades\DB;
+
 
 class Thread extends Model
 {
    use Traits\ThreadFilterable;
+   use Traits\RegularTraits;
    use SoftDeletes;
    use Searchable;
    protected $dates = ['deleted_at'];
@@ -33,7 +28,7 @@ class Thread extends Model
   }
   public function posts()
    {
-      return $this->hasMany(Post::class, 'thread_id');
+      return $this->hasMany(Post::class, 'thread_id')->where('id','<>',$this->post_id);
    }
 
    public function mainpost()
@@ -46,10 +41,14 @@ class Thread extends Model
       return $this->hasOne(Post::class, 'thread_id','id')->latest();
    }
 
-
    public function creator()
    {
       return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
+   }
+
+   public function user()
+   {
+      return $this->belongsTo(User::class, 'user_id')->withDefault();
    }
 
    public function addPost($post)
@@ -57,14 +56,15 @@ class Thread extends Model
       $this->posts()->create($post);
    }
 
-   public function addThread($thread)
-   {
-      $this->threads()->create($thread);
-   }
-
    public function channel()
    {
       return $this->belongsTo(Channel::class, 'channel_id');
+   }
+
+   public function responded()
+   {
+       $this->update(['lastresponded_at' => Carbon::now()]);
+       $this->increment('responded');
    }
 
    public function label()
@@ -76,6 +76,7 @@ class Thread extends Model
    {
       return $this->belongsToMany(Tag::class, 'tagging_threads', 'thread_id', 'tag_id');
    }
+
    public function addTags($tags){
       foreach($tags as $tag){
          $book = TaggingThread::create([
@@ -130,5 +131,16 @@ class Thread extends Model
    {
        $array = $this->only('title','brief','body');
        return $array;
+   }
+   public function scopeNotSelf($query){
+
+   }
+
+   public function registerhomework(){
+       DB::table('register_homeworks')
+       ->join('homeworks','homeworks.id','=','register_homeworks.homework_id')
+       ->where('register_homeworks.user_id','=',Auth::id())
+       ->where('homeworks.active','=',true)
+       ->update(['register_homeworks.thread_id' => $thread->id]);
    }
 }

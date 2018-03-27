@@ -9,11 +9,11 @@ use App\Models\Label;
 use App\Models\Thread;
 use App\Models\Book;
 use App\Models\Post;
-use App\Chapter;
+use App\Models\Chapter;
 use App\Models\Tag;
 use Carbon\Carbon;
-use App\Tongren;
-use App\Status;
+use App\Models\Tongren;
+use App\Models\Status;
 use Auth;
 
 class ChaptersController extends Controller

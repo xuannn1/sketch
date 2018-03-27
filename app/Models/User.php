@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Config;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\Thread;
-use App\Linkaccount;
-
 class User extends Authenticatable
 {
      use Notifiable;
@@ -190,4 +187,54 @@ class User extends Authenticatable
         $array = $this->only('name','introduction');
         return $array;
     }
+
+    public function postreminders()
+    {
+        return Activity::where('user_id',$this->id)->where('type',1)->where('seen',0)->count();
+    }
+
+    public function totalreminders()
+    {
+        return Activity::where('user_id',$this->id)->where('seen',0)->count();
+    }
+
+    public function reward($kind){
+        switch ($kind):
+            case "regular_post"://主题贴的新回帖,对楼主送出回帖提醒
+                $this->increment('experience_points',2);
+                $this->increment('jifen',2);
+                $this->increment('xianyu',1);
+                break;
+            case "regular_post_comment":
+                $this->increment('experience_points',1);
+                $this->increment('jifen',1);
+                break;
+            case "longcomment":
+                $this->increment('experience_points',5);
+                $this->increment('jifen',5);
+                $this->increment('xianyu',3);
+                break;
+            default:
+                echo "应该奖励什么呢？一个bug呀……";
+        endswitch;
+    }
+
+    public function unreadmessages()
+    {
+        $unreadmessages = $this->message_reminders
+            +$this->post_reminders
+            +$this->reply_reminders
+            +$this->postcomment_reminders
+            +$this->upvote_reminders;
+        return $unreadmessages;
+    }
+
+    public function unreadupdates()
+    {
+        $unreadupdates = $this->collection_books_updated
+        + $this->collection_threads_updated
+        + $this->collection_statuses_updated;
+        return $unreadupdates;
+    }
+
 }

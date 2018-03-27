@@ -70,6 +70,7 @@ class UsersController extends Controller
    }
 
    public function findlongcomments($id, $paginate, $group)
+   //需要调整
    {
       if ($id == Auth::id()){
          return $posts = DB::table('posts')
