@@ -160,7 +160,7 @@ return [
         'notsad'                => '丧病属性',
         'quote'                 => '题头正文',
         'shengfan_num'          => '剩饭数',
-        'original_work'         => '原著作品',
+        'tongren_yuanzhu'       => '同人作品原著',
         'tongren_cp'            => '同人作品CP',
         'requirement'           => '作业要求',
         'theme'                 => '作业主题',
@@ -168,6 +168,8 @@ return [
         'old-password'          => '旧密码',
         'annotation'            => '备注',
         'sexual_orientation'    => '性向',
+        'channel_id'            => '版块',
+        'label_id'              => '类别',
     ],
 
 ];

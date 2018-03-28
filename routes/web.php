@@ -107,11 +107,6 @@
    Route::get('/chapters/{chapter}/edit', 'ChaptersController@edit')->name('book.editchapter');//编辑章节
    Route::post('chapters/{chapter}/update', 'ChaptersController@update')->name('book.updatechapter');//编辑章节
    Route::get('/books', 'BooksController@index')->name('books.index');//看全部书
-   Route::get('/book-original/{original}','BooksController@bookoriginal')->name('books.original');//图书过滤-原创性
-   Route::get('/book-status/{bookstatus}','BooksController@bookstatus')->name('books.bookstatus');//图书过滤-进度
-   Route::get('/book-length/{booklength}','BooksController@booklength')->name('books.booklength');//图书过滤-篇幅
-   Route::get('/book-sexual-orientation/{booksexualorientation}','BooksController@booksexualorientation')->name('books.booksexualorientation');//图书过滤-篇幅
-   Route::get('/book-label/{booklabel}','BooksController@booklabel')->name('books.booklabel');//图书过滤-类型
    Route::get('/book-tag/{booktag}','BooksController@booktag')->name('books.booktag');//图书过滤-tag
    Route::get('/bookselector/{bookquery}','BooksController@selector')->name('books.selector');//图书过滤
    Route::post('/book-filter','BooksController@filter')->name('books.filter');//输入过滤信息表格

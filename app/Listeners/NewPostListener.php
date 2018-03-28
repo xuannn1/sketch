@@ -35,6 +35,7 @@ class NewPostListener
     {
         $post = $event->post;
         $thread = $post->thread;
+        $thread->update(['last_post_id'=>$post->id]);
         if ($post->chapter_id !=0){//如果是给某个章节回帖，这个章节的数据更新
            $post->chapter->increment('responded');
         }

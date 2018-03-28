@@ -12,6 +12,7 @@ trait PostFilterable
     {
         return $query->where('id','<>',$mainpost)->where('thread_id','=',$thread);
     }
+
     public function scopeUserOnly($query,$useronly)
     {
         if($useronly){
@@ -20,5 +21,10 @@ trait PostFilterable
             return $query;
         }
 
+    }
+
+    public function scopeNoMaintext($query)
+    {
+        return $query->where('maintext',false);
     }
 }

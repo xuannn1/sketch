@@ -49,7 +49,7 @@ class StorePost extends FormRequest
         if ($data['chapter_id']!=0){
             $chapter = Chapter::find($data['chapter_id']);
             if ((!$chapter)||($thread->book_id == 0)||($chapter->book_id != $thread->book->id)){
-             return redirect()->route('error', ['error_code' => '403']);
+             abort(403,'数据冲突');
             }
         }
 
@@ -57,7 +57,7 @@ class StorePost extends FormRequest
         if ($data['reply_to_post_id']!= 0){
             $reply = Post::find($data['reply_to_post_id']);
             if ((!$reply)||($reply->thread_id != $thread->id)){
-             return redirect()->route('error', ['error_code' => '403']);
+                abort(403,'数据冲突');
             }
             if($reply->maintext){//假如回复的是某章节，
              $data['reply_to_post_id'] = 0;

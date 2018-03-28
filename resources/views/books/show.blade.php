@@ -10,9 +10,9 @@
       <div class="">
          <a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
          &nbsp;/&nbsp;
-         <a href="{{ route('books.original', ($book->original+0)) }}">{{ $thread->channel->channelname }}</a>
+         <a href="{{ route('books.index', ['channel'=>$thread->channel_id]) }}">{{ $thread->channel->channelname }}</a>
          &nbsp;/&nbsp;
-         <a href="{{ route('books.booklabel', $thread->label_id) }}">{{ $thread->label->labelname }}</a>
+         <a href="{{ route('books.index', ['label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>
          &nbsp;/&nbsp;
          <a href="{{ route('book.show',$book->id) }}">{{ $thread->title }}</a>
       </div>

@@ -97,6 +97,6 @@ class PagesController extends Controller
         'label' => false,
       ];
       $collections = false;
-      return view('pages.search',compact('users','threads','posts','show','collections'));
+      return view('pages.search',compact('users','threads','posts','show','collections'))->with('show_as_collections',0);
   }
 }

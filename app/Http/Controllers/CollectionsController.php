@@ -91,8 +91,16 @@ class CollectionsController extends Controller
    public function threads()
    {
       $user = Auth::user();
-      $threads = $user->collected_threads()->withOrder('recentresponded')->paginate(config('constants.items_per_page'));
-      $threads->load('creator','label','channel','lastpost');
+      $threads = DB::table('collections')
+         ->join('threads','collections.thread_id','=','threads.id')
+         ->join('users','threads.user_id','=','users.id')
+         ->join('labels','threads.label_id','=','labels.id')
+         ->join('channels','threads.channel_id','=','channels.id')
+         ->leftjoin('posts','threads.last_post_id','=', 'posts.id')
+         ->where([['collections.user_id','=',$user->id], ['threads.deleted_at', '=', null],['threads.book_id','=',0]])
+         ->select('threads.*','users.name','labels.labelname', 'posts.body as last_post_body','channels.channelname','collections.updated as updated','collections.keep_updated as keep_updated')
+         ->orderBy('threads.lastresponded_at','desc')
+         ->paginate(config('constants.items_per_page'));
       $updates = [$user->collection_books_updated,$user->collection_threads_updated,$user->collection_statuses_updated];
       $user->collection_threads_updated = 0;
       $user->save();

@@ -149,13 +149,7 @@ class UsersController extends Controller
          $posts=$this->findlongcomments($id,config('constants.index_per_part'), $group);
          $statuses=$this->findstatuses($id,config('constants.index_per_part'));
          $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
-         $book_info = config('constants.book_info');
-         $show = [
-            'channel' => false,
-            'label' => false,
-         ];
-         $collections = false;
-         return view('users.show', compact('user','book_info','books','threads','posts','show','statuses','collections','upvotes'));
+         return view('users.show', compact('user','books','threads','posts','statuses','upvotes'))->with('show_as_collections',false);
       }else{
          return redirect()->route('error', ['error_code' => '404']);
       }

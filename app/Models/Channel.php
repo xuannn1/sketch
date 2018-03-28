@@ -19,8 +19,12 @@ class Channel extends Model
    }
    public function recent_threads()
    {
-       $bianyuan = Auth::check();
-       return Thread::inChannel($this->id)->bianyuan($bianyuan)->public()->withOrder('recentresponded')->take(2)->get();
+       return Thread::inChannel($this->id)
+        ->filterBianyuan(Auth::check())
+        ->isPublic()
+        ->withOrder('recentresponded')
+        ->take(2)
+        ->get();
    }
 
 }

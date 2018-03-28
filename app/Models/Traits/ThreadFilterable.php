@@ -7,9 +7,13 @@ use Auth;
 
 trait ThreadFilterable
 {
-    public function scopeBianyuan($query,$bianyuan=0)//0:notbianyuan, 1:both bianyuan and not bianyuan
+    public function scopeFilterBianyuan($query, $bianyuan)//0:notbianyuan, 1:both bianyuan and not bianyuan
     {
-        return $query->where('bianyuan', '<=', $bianyuan);
+        if (!$bianyuan){
+            return $query->where('bianyuan', '=', 0);
+        }else{
+            return $query;
+        }
     }
 
     public function scopeInChannel($query,$channel)
@@ -21,11 +25,6 @@ trait ThreadFilterable
         }
     }
 
-    public function scopePublic($query,$public=1)//1:only public; 0:
-    {
-        return $query->where('public', '>=', $public);
-    }
-
     public function scopeInLabel($query,$label)
     {
         if ($label){
@@ -33,6 +32,11 @@ trait ThreadFilterable
         }else{
             return $query;
         }
+    }
+
+    public function scopeIsPublic($query)//1:only public; 0:all
+    {
+        return $query->where('public',1);
     }
 
     public function scopeCanSee($query)
@@ -46,5 +50,14 @@ trait ThreadFilterable
         });
     }
 
+    public function scopeIsBook($query)
+    {
+        return $query->where('book_id','>',0);
+    }
+
+    public function scopeNotBook($query)
+    {
+        return $query->where('book_id',0);
+    }
 
 }

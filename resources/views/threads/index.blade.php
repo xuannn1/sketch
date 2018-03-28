@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', '所有主题贴')
 @section('content')
-<div class="container">
+<div class="container-fluid">
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <!-- 首页／版块／类型 -->
         <div class="site-map">

@@ -38,38 +38,39 @@ class StoreThread extends FormRequest
     }
     public function generateThread($channel_id)
     {
-        $data = $this->only('title','brief','body');
-        $data2 = [];
-        $data2['user_ip'] = $this->getClientIp();
-        $data['channel_id']=$channel_id;
-        $data['label_id']=(int)$this->label;
+        $thread_data = $this->only('title','brief','body');
+        $post_data = [];
+        $post_data['user_ip'] = $this->getClientIp();
+        $thread_data['channel_id']=$channel_id;
+        $thread_data['label_id']=(int)$this->label;
         //查看标签是否符合权限
-        if(\App\Models\Label::find($data['label_id'])->channel_id!=$channel_id){
-            return redirect()->route('error', ['error_code' => '403']);
+        if(\App\Models\Label::find($thread_data['label_id'])->channel_id!=$channel_id){
+            abort(403,'数据冲突');
         }
         //将boolean值赋予提交的设置
         if ($this->anonymous){
-            $data['anonymous']=1;
-            $data['majia']=$this->majia;
+            $thread_data['anonymous']=1;
+            $thread_data['majia']=$this->majia;
             auth()->user()->update(['majia'=>$this->majia]);
         }else{
-            $data['anonymous']=0;
+            $thread_data['anonymous']=0;
         }
-        $data['public']=$this->public ? true:false;
-        $data['noreply']=$this->noreply ? true:false;
-        $data2['markdown']=$this->markdown ? true:false;
-        $data2['indentation']=$this->indentation ? true:false;
+        $thread_data['public']=$this->public ? true:false;
+        $thread_data['noreply']=$this->noreply ? true:false;
+        $post_data['markdown']=$this->markdown ? true:false;
+        $post_data['indentation']=$this->indentation ? true:false;
+        $thread_data['lastresponded_at']=Carbon::now();
+        $thread_data['user_id'] = auth()->id();
+        $post_data['user_id'] = auth()->id();
 
-        $data['lastresponded_at']=Carbon::now();
-        $data['user_id'] = auth()->id();
-        $thread = DB::transaction(function () use($data, $data2) {
-            $thread = Thread::create($data);
-            $data2['user_id'] = auth()->id();
-            $data2['thread_id'] = $thread->id;
-            $post = Post::create($data2);
+        $thread = DB::transaction(function () use($thread_data, $post_data) {
+            $thread = Thread::create($thread_data);
+            $post_data['thread_id'] = $thread->id;
+            $post = Post::create($post_data);
             $thread->update(['post_id'=>$post->id]);
             return $thread;
         }, 2);
+
         return $thread;
 
     }

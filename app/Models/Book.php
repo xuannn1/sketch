@@ -54,7 +54,7 @@ class Book extends Model
 
    public function chapters()
    {
-      return $this->hasMany(Chapter::class);
+      return $this->hasMany(Chapter::class)->orderBy('chapter_order','asc');
    }
 
    public function max_chapter_order()
@@ -65,8 +65,8 @@ class Book extends Model
    {
       return Volumn::where('book_id','=',$this->id)->orderBy('volumn_order', 'desc')->first();
    }
-   public function last_post()
+   public function last_chapter()
    {
-      return $this->belongsTo(Post::class, 'last_chapter_post_id')->withDefault();
+      return $this->belongsTo(Chapter::class, 'last_chapter_id')->select('title')->withDefault();
    }
 }

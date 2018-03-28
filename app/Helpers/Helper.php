@@ -77,4 +77,6 @@ class Helper
       $post = str_replace("\n", "</p><p>", $post);
       return $post;
    }
+
+   
 }

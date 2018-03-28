@@ -35,6 +35,11 @@ class Thread extends Model
       return $this->belongsTo(Post::class, 'post_id')->withDefault();
    }
 
+   public function last_post()
+   {
+      return $this->belongsTo(Post::class, 'last_post_id')->withDefault();
+   }
+
    public function lastpost()
    {
       return $this->hasOne(Post::class, 'thread_id','id')->latest();
@@ -57,7 +62,7 @@ class Thread extends Model
 
    public function channel()
    {
-      return $this->belongsTo(Channel::class, 'channel_id');
+      return $this->belongsTo(Channel::class, 'channel_id')->withDefault();
    }
 
    public function responded()
@@ -68,7 +73,7 @@ class Thread extends Model
 
    public function label()
    {
-      return $this->belongsTo(Label::class, 'label_id');
+      return $this->belongsTo(Label::class, 'label_id')->withDefault();
    }
 
    public function tags()
@@ -76,47 +81,35 @@ class Thread extends Model
       return $this->belongsToMany(Tag::class, 'tagging_threads', 'thread_id', 'tag_id');
    }
 
-   public function addTags($tags){
-      foreach($tags as $tag){
-         $book = TaggingThread::create([
-            'thread_id' => $this->id,
-            'tag_id' => $tag,
-         ]);
-      }
-   }
-   public function deleteTags(){
-      $find = $this->hasMany(TaggingThread::class, 'thread_id')->delete();
-   }
-
    public function book()
    {
       return $this->belongsTo(Book::class, 'book_id')->withDefault();
    }
-   public function xianyu_voted(User $user, $ip)
-   {
-      $xianyus = $this->recentXianyus();
-      $id = $user->id;
-      if (($xianyus->where('user_id', $id)->first())||($xianyus->where('user_ip', $ip)->first())) {
-         return true;
-      }
-      return false;
-   }
+   // public function xianyu_voted(User $user, $ip)
+   // {
+   //    $xianyus = $this->recentXianyus();
+   //    $id = $user->id;
+   //    if (($xianyus->where('user_id', $id)->first())||($xianyus->where('user_ip', $ip)->first())) {
+   //       return true;
+   //    }
+   //    return false;
+   // }
+   //
+   // public function xianyus(){
+   //    $xianyus = Xianyu::where('thread_id', $this->id);
+   //    return ($xianyus);
+   // }
+   //
+   // public function recentXianyus(){
+   //    $timelimit = Carbon::now()->subDays(7);//目前设置，一周内只能投一次咸鱼。
+   //    $recent_xianyus = $this->xianyus()->where('created_at', '>', '$timelimit');
+   //    return ($recent_xianyus);
+   // }
 
-   public function xianyus(){
-      $xianyus = Xianyu::where('thread_id', $this->id);
-      return ($xianyus);
-   }
-
-   public function recentXianyus(){
-      $timelimit = Carbon::now()->subDays(7);//目前设置，一周内只能投一次咸鱼。
-      $recent_xianyus = $this->xianyus()->where('created_at', '>', '$timelimit');
-      return ($recent_xianyus);
-   }
-
-   public function collection(User $user)
-   {
-      return (Collection::where('thread_id', $this->id)->where('user_id', $user->id))->first();
-   }
+   // public function collection(User $user)
+   // {
+   //    return (Collection::where('thread_id', $this->id)->where('user_id', $user->id))->first();
+   // }
 
    public function homework()
    {
@@ -131,12 +124,6 @@ class Thread extends Model
        $array = $this->only('title','brief','body');
        return $array;
    }
-   public function scopeNotSelf($query){
-
-   }
-   public function scopePublic($query){
-
-   }
 
    public function registerhomework(){
        DB::table('register_homeworks')
@@ -145,4 +132,5 @@ class Thread extends Model
        ->where('homeworks.active','=',true)
        ->update(['register_homeworks.thread_id' => $thread->id]);
    }
+
 }

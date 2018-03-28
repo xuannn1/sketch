@@ -23,7 +23,8 @@ class LongCommentsController extends Controller
       ->join('users','users.id','=','posts.user_id')
       ->join('threads','threads.id','=','posts.thread_id')
       ->join('channels', 'threads.channel_id','=','channels.id')
-      ->where([['posts.long_comment','=',1],['posts.deleted_at','=',null],['channels.channel_state','<',$group]])
+      ->join('long_comments','posts.id','=','long_comments.post_id')
+      ->where([['posts.deleted_at','=',null],['channels.channel_state','<',$group]])
       ->select('posts.*','threads.title as thread_title', 'users.name')
       ->orderBy('posts.created_at', 'desc')
       ->simplePaginate(config('constants.index_per_page'));

@@ -35,16 +35,17 @@
    <p>{{ $book->tongren->tongren_yuanzhu }}-{{ $book->tongren->tongren_cp }}</p>
    @endif
    <p>
-      <a href="{{ route('books.original', intval($book->original)) }}">{{ $book_info['originality_info'][$book->original] }}</a>
-      -&nbsp;<a href="{{ route('books.booklength',$book->book_length) }}">{{ $book_info['book_lenth_info'][$book->book_length] }}</a>
-      -&nbsp;<a href="{{ route('books.bookstatus',$book->book_status) }}">{{ $book_info['book_status_info'][$book->book_status] }}</a>
-      -&nbsp;<a href="{{ route('books.booksexualorientation',$book->sexual_orientation) }}">{{ $book_info['sexual_orientation_info'][$book->sexual_orientation] }}</a>
+      <a href="{{ route('books.index', ['channel'=>(int)($book->channel_id)]) }}">{{ config('constants.book_info')['originality_info'][$book->original] }}</a>
+      -&nbsp;<a href="{{ route('books.index',['book_length'=>$book->book_length]) }}">{{ config('constants.book_info')['book_lenth_info'][$book->book_length] }}</a>
+      -&nbsp;<a href="{{ route('books.index',['book_status'=>$book->book_status]) }}">{{ config('constants.book_info')['book_status_info'][$book->book_status] }}</a>
+      -&nbsp;<a href="{{ route('books.index',['sexual_orientation'=>$book->sexual_orientation]) }}">{{ config('constants.book_info')['sexual_orientation_info'][$book->sexual_orientation] }}</a>
+
    </p>
    <p>
       @if( $thread->bianyuan == 1)
          <span class="badge">边</span>
       @endif
-      <a href="{{ route('books.booklabel',$thread->label_id) }}">{{ $thread->label->labelname }}</a>
+      <a href="{{ route('books.index',['label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>
       @foreach ($thread->tags as $int=>$tag)
          - <a href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
       @endforeach

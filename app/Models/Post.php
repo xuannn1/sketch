@@ -97,12 +97,14 @@ class Post extends Model
          $lenth = iconv_strlen($string, 'utf-8');
          if($lenth>=config('constants.longcomment_lenth')){
             $longcomment = LongComment::firstOrCreate(['post_id' => $this->id,]);
+            $this->update(['long_comment'=>1,'long_comment_id'=>$longcomment->id]);
             $this->user->reward('longcomment');
         }else{
             $longcomment = LongComment::where('post_id',$this->id)->first();
             if($longcomment){
                 $longcomment->delete();
             }
+            $this->update(['long_comment'=>0,'long_comment_id'=>0]);
         }
       }
       return;

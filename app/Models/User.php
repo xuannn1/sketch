@@ -64,53 +64,48 @@ class User extends Authenticatable
       return $this->hasMany(Status::class);
    }
 
-   public function isAdvanced($usergroup)
-    {
-      return ($this->group >= usergroup);
-    }
-
    public function collected_books()
    {
-      return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->where('book_id', '>', 0);
+      return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->where('book_id', '>', 0)->withPivot('updated', 'keep_updated');
    }
 
    public function collected_threads()
    {
      return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->where('book_id', '=', 0)->withPivot('updated', 'keep_updated');
   }
-  public function findrecord($post_id)
-  {
-     return VotePosts::where('user_id', '=', $this->id)->where('post_id', '=', $post_id)->first();
-  }
-  public function upvotedpost($post_id)
-  {
-     $record = $this->findrecord($post_id);
-     return (($record) && ($record->upvoted));
-  }
-  public function downvotedpost($post_id)
-  {
-     $record = $this->findrecord($post_id);
-     return (($record) && ($record->downvoted));
-  }
-  public function funnypost($post_id)
-  {
-     $record = $this->findrecord($post_id);
-     return (($record) && ($record->funny));
-  }
-  public function foldpost($post_id)
-  {
-     $record = $this->findrecord($post_id);
-     return (($record) && ($record->better_to_fold));
-  }
+  // public function findrecord($post_id)
+  // {
+  //    return VotePosts::where('user_id', '=', $this->id)->where('post_id', '=', $post_id)->first();
+  // }
+  // public function upvotedpost($post_id)
+  // {
+  //    $record = $this->findrecord($post_id);
+  //    return (($record) && ($record->upvoted));
+  // }
+  // public function downvotedpost($post_id)
+  // {
+  //    $record = $this->findrecord($post_id);
+  //    return (($record) && ($record->downvoted));
+  // }
+  // public function funnypost($post_id)
+  // {
+  //    $record = $this->findrecord($post_id);
+  //    return (($record) && ($record->funny));
+  // }
+  // public function foldpost($post_id)
+  // {
+  //    $record = $this->findrecord($post_id);
+  //    return (($record) && ($record->better_to_fold));
+  // }
 
-  public function feed()
-    {
-      $user_ids = Auth::user()->followings->pluck('id')->toArray();
-      array_push($user_ids, Auth::user()->id);
-      return Status::whereIn('user_id', $user_ids)
-                              ->with('user')
-                              ->orderBy('created_at', 'desc');
-    }
+  // public function feed()
+  //   {
+  //     $user_ids = Auth::user()->followings->pluck('id')->toArray();
+  //     array_push($user_ids, Auth::user()->id);
+  //     return Status::whereIn('user_id', $user_ids)
+  //                             ->with('user')
+  //                             ->orderBy('created_at', 'desc');
+  //   }
 
     public function followers()
     {
@@ -200,10 +195,21 @@ class User extends Authenticatable
 
     public function reward($kind){
         switch ($kind):
-            case "regular_post"://主题贴的新回帖,对楼主送出回帖提醒
+            case "regular_post"://普通回帖奖励
                 $this->increment('experience_points',2);
                 $this->increment('jifen',2);
                 $this->increment('xianyu',1);
+                break;
+            case "regular_thread"://普通主题奖励
+                $this->increment('experience_points',5);
+                $this->increment('jifen',5);
+                $this->increment('xianyu',3);
+                break;
+            case "regular_book"://普通书本奖励
+                $this->increment('experience_points',20);
+                $this->increment('jifen',10);
+                $this->increment('xianyu',5);
+                $this->increment('sangdian',1);
                 break;
             case "regular_post_comment":
                 $this->increment('experience_points',1);
