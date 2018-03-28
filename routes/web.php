@@ -64,7 +64,6 @@
    Route::get('/channels/{channel}', 'ChannelsController@show')->name('channel.show')->middleware('filter_channel');//展示某个板块的所有帖子
    Route::get('/channels/{channel}/threads/create', 'ThreadsController@createThreadForm')->name('thread.create')->middleware('filter_channel');//发布新主题页面
    Route::post('/channels/{channel}/threads/create','ThreadsController@store')->name('thread.store')->middleware('filter_channel');//在特定板块发表主题
-   Route::get('labels/{label}', 'LabelsController@show')->name('label.show')->middleware('filter_label');//按label选择，展示某个板块的帖子
 }
 
 
@@ -186,6 +185,7 @@
 
 //动态下载模块
 {
+    Route::get('/downloads/index/{thread}', 'DownloadsController@index')->name('download.index')->middleware('filter_thread');//下载某个主题,注意必须有权限
    Route::get('/downloads/thread_txt/{thread}','DownloadsController@thread_txt')->name('download.thread_txt')->middleware('filter_thread');
    Route::get('/downloads/book_noreview_text/{thread}','DownloadsController@book_noreview_text')->name('download.book_noreview_text')->middleware('filter_thread');
 

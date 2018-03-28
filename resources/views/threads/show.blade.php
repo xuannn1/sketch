@@ -13,7 +13,9 @@
             <!-- 主题介绍部分 -->
             @if($thread->book_id>0)
               @include('books._book_profile')
-              <div><a href="{{ route('book.show', $thread->book_id) }}">文库阅读模式</a></div>
+              <div><a href="{{ route('book.show', $thread->book_id) }}">文库阅读模式</a>
+                  <span class="pull-right"><a href="{{ route('download.index', $thread) }}">下载</a></span>
+              </div>
             @else
               @include('threads._thread_profile')
             @endif
@@ -22,7 +24,7 @@
             <!-- 对主题进行投票／收藏／点赞等操作 -->
             @if(Auth::check())
               <div class="text-right h6">
-                <a href=" {{ route('download.thread_txt', $thread->id) }} ">下载txt讨论贴</a>
+                
               </div>
               @include('threads._thread_vote')
             @else

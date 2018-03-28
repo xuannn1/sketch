@@ -1,45 +1,20 @@
+<!-- 标题部分 -->
 <div class="article-title">
-   <span>
-      <h2 class="inline-title"><a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a><small>
-      @if(!$thread->public)
-      <span class="glyphicon glyphicon-eye-close"></span>
-      @endif
-      @if($thread->locked)
-      <span class="glyphicon glyphicon-lock"></span>
-      @endif
-      @if($thread->noreply)
-      <span class="glyphicon glyphicon-warning-sign"></span>
-      @endif
-      </small></h2>
-   </span>
-   @if((Auth::check())&&(Auth::user()->admin))
-   @include('admin._modify_thread')
-   @endif
-   <div class="">
-      <span class="">{{ $thread->brief }}</span>
-   </div>
+    <h2>
+        @include('threads._thread_title')
+        @if((Auth::check())&&(Auth::user()->admin))
+        @include('admin._modify_thread')
+        @endif
+    </h2>
 </div>
-<!-- 作者信息 -->
+<!-- 一句话简介 -->
+
 <div class="article-body">
-   <div class="text-center">
-      <span>
-         @if ($thread->anonymous)
-            <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
-            @if((Auth::check()&&(Auth::user()->admin)))
-            <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->creator->name }}</a></span>
-            @endif
-         @else
-         <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->creator->name }}</a>
-         @endif
-      </span>&nbsp;
-      <span class="grayout">
-         发表于{{ Carbon\Carbon::parse($thread->created_at)->diffForHumans() }}
-         @if($thread->created_at < $thread->edited_at )
-           修改于{{ Carbon\Carbon::parse($thread->edited_at)->diffForHumans() }}
-         @endif
-      </span>
-   </div>
-   <!-- 主题正文 -->
+    <div>{{ $thread->brief }}</div>
+    <div class="text-center">
+        @include('threads._thread_author_time')
+    </div>
+   <!-- 首楼正文 -->
    <div class="main-text {{ $thread->mainpost->indentation ? 'indentation':'' }}">
       @if($thread->mainpost->markdown)
       {!! Helper::sosadMarkdown($thread->body) !!}
@@ -47,6 +22,7 @@
       {!! Helper::wrapParagraphs($thread->body) !!}
       @endif
    </div>
+   <!-- 是否附加作业信息 -->
    @if($thread->homework_id>0)
       @include('homeworks._registered_students')
       @if($thread->show_homework_profile)

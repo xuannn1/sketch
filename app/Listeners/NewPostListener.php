@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\NewPost;
-use App\Events\NewActivity;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +10,7 @@ use App\Models\Activity;
 
 
 class NewPostListener
+//class NewPostListener implements ShouldQueue
 {
 
     //public $queue = 'listeners';

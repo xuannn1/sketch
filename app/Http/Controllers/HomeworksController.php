@@ -7,10 +7,10 @@ use Carbon\Carbon;
 use App\Models\Thread;
 use Auth;
 use App\RegisterHomework;
-use App\Message;
+use App\Models\Message;
 use App\Models\User;
 use App\Models\Post;
-use App\Homework;
+use App\Models\Homework;
 
 use Illuminate\Support\Facades\DB;
 

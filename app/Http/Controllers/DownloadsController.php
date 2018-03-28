@@ -17,7 +17,7 @@ use App\Models\Chapter;
 use App\Models\Tag;
 use Carbon\Carbon;
 use App\Models\Tongren;
-use App\Download;
+use App\Models\Download;
 use Auth;
 
 class DownloadsController extends Controller
@@ -30,11 +30,11 @@ class DownloadsController extends Controller
 
     public function __construct()
     {
-      $this->middleware('auth')->except(['index']);
+      $this->middleware('auth');
     }
-    public function index()
+    public function index(Thread $thread)
     {
-        //
+       return view('downloads.index', compact('thread'));
     }
     public function print_book_info($thread)
     {
@@ -277,4 +277,6 @@ class DownloadsController extends Controller
         $response->headers->set('Content-Disposition', $disposition);
         return $response;
       }
+
+
 }

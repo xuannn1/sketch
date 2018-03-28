@@ -85,31 +85,31 @@ class Thread extends Model
    {
       return $this->belongsTo(Book::class, 'book_id')->withDefault();
    }
-   // public function xianyu_voted(User $user, $ip)
-   // {
-   //    $xianyus = $this->recentXianyus();
-   //    $id = $user->id;
-   //    if (($xianyus->where('user_id', $id)->first())||($xianyus->where('user_ip', $ip)->first())) {
-   //       return true;
-   //    }
-   //    return false;
-   // }
-   //
-   // public function xianyus(){
-   //    $xianyus = Xianyu::where('thread_id', $this->id);
-   //    return ($xianyus);
-   // }
-   //
-   // public function recentXianyus(){
-   //    $timelimit = Carbon::now()->subDays(7);//目前设置，一周内只能投一次咸鱼。
-   //    $recent_xianyus = $this->xianyus()->where('created_at', '>', '$timelimit');
-   //    return ($recent_xianyus);
-   // }
+   public function xianyu_voted(User $user, $ip)
+   {
+      $xianyus = $this->recentXianyus();
+      $id = $user->id;
+      if (($xianyus->where('user_id', $id)->first())||($xianyus->where('user_ip', $ip)->first())) {
+         return true;
+      }
+      return false;
+   }
+   
+   public function xianyus(){
+      $xianyus = Xianyu::where('thread_id', $this->id);
+      return ($xianyus);
+   }
 
-   // public function collection(User $user)
-   // {
-   //    return (Collection::where('thread_id', $this->id)->where('user_id', $user->id))->first();
-   // }
+   public function recentXianyus(){
+      $timelimit = Carbon::now()->subDays(7);//目前设置，一周内只能投一次咸鱼。
+      $recent_xianyus = $this->xianyus()->where('created_at', '>', '$timelimit');
+      return ($recent_xianyus);
+   }
+
+   public function collection(User $user)
+   {
+      return Collection::where('thread_id', $this->id)->where('user_id', $user->id)->first();
+   }
 
    public function homework()
    {

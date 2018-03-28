@@ -73,30 +73,30 @@ class User extends Authenticatable
    {
      return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->where('book_id', '=', 0)->withPivot('updated', 'keep_updated');
   }
-  // public function findrecord($post_id)
-  // {
-  //    return VotePosts::where('user_id', '=', $this->id)->where('post_id', '=', $post_id)->first();
-  // }
-  // public function upvotedpost($post_id)
-  // {
-  //    $record = $this->findrecord($post_id);
-  //    return (($record) && ($record->upvoted));
-  // }
-  // public function downvotedpost($post_id)
-  // {
-  //    $record = $this->findrecord($post_id);
-  //    return (($record) && ($record->downvoted));
-  // }
-  // public function funnypost($post_id)
-  // {
-  //    $record = $this->findrecord($post_id);
-  //    return (($record) && ($record->funny));
-  // }
-  // public function foldpost($post_id)
-  // {
-  //    $record = $this->findrecord($post_id);
-  //    return (($record) && ($record->better_to_fold));
-  // }
+  public function findrecord($post_id)
+  {
+     return VotePosts::where('user_id', '=', $this->id)->where('post_id', '=', $post_id)->first();
+  }
+  public function upvotedpost($post_id)
+  {
+     $record = $this->findrecord($post_id);
+     return (($record) && ($record->upvoted));
+  }
+  public function downvotedpost($post_id)
+  {
+     $record = $this->findrecord($post_id);
+     return (($record) && ($record->downvoted));
+  }
+  public function funnypost($post_id)
+  {
+     $record = $this->findrecord($post_id);
+     return (($record) && ($record->funny));
+  }
+  public function foldpost($post_id)
+  {
+     $record = $this->findrecord($post_id);
+     return (($record) && ($record->better_to_fold));
+  }
 
   // public function feed()
   //   {

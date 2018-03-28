@@ -12,9 +12,9 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\PostComment;
-use App\Administration;
+use App\Models\Administration;
 use App\Models\Book;
-use App\Message;
+use App\Models\Message;
 use Auth;
 use Carbon\Carbon;
 

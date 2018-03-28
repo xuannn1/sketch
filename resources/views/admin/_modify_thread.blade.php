@@ -1,6 +1,6 @@
-<div class="">
-   <a href="#" data-toggle="modal" data-target="#TriggerAdminThread{{ $thread->id }}" class="btn btn-md btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
-</div>
+<span class = "pull-right">
+   <a href="#" data-toggle="modal" data-target="#TriggerAdminThread{{ $thread->id }}" class="btn btn-sm btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
+</span>
 
 <div class="modal fade" id="TriggerAdminThread{{ $thread->id }}" role="dialog">
     <div class="modal-dialog">

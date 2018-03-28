@@ -4,7 +4,7 @@
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
      <div class="panel panel-default">
        <div class="panel-heading">
-          <a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('channel.show', $book->thread->channel_id) }}">{{ $book->thread->channel->channelname }}</a>/<a href="{{ route('label.show', $book->thread->label) }}">{{ $book->thread->label->labelname }}</a>/{{ $book->thread->title }}
+          <a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('channel.show', $book->thread->channel_id) }}">{{ $book->thread->channel->channelname }}</a>/<a href="{{ route('channel.show', ['channel'=>$book->thread->channel_id,'label'=>$book->thread->label_id]) }}">{{ $book->thread->label->labelname }}</a>/<a href="{{ route('book.show',$book->id) }}">{{ $book->thread->title }}</a>
        </div>
        <div class="panel-body">
          @include('shared.errors')

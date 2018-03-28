@@ -31,4 +31,9 @@
         修改于 {{ Carbon\Carbon::parse($post->edited_at)->diffForHumans() }}
       @endif
    </span>
+
+  @if((Auth::check())&&(Auth::user()->admin))
+  @include('admin._delete_post')
+  @endif
+
 </span>

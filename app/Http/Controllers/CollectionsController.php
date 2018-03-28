@@ -9,7 +9,7 @@ use Auth;
 use App\Models\Collection;
 use App\Models\Thread;
 use Carbon\Carbon;
-use App\Follower;
+use App\Models\Follower;
 
 class CollectionsController extends Controller
 {

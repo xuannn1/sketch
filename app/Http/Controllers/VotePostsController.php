@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use Auth;
 use App\Models\User;
-use App\VotePosts;
+use App\Models\VotePosts;
 use Carbon\Carbon;
-use App\Activity;
+use App\Models\Activity;
 
 class VotePostsController extends Controller
 {

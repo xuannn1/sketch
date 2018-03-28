@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 
 use Auth;
-use App\Message;
+use App\Models\Message;
 use App\Models\User;
 
 class MessagesController extends Controller

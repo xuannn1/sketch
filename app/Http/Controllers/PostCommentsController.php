@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Models\PostComment;
-use App\Activity;
+use App\Models\Activity;
 use Auth;
 
 class PostCommentsController extends Controller

@@ -22,7 +22,7 @@ class ChaptersController extends Controller
    {
       if (Auth::id()==$book->thread->creator->id){
          $book->load(['thread','thread.channel','thread.creator','thread.label']);
-         return view('books.create_chapter', compact('book'));
+         return view('chapters.create_chapter', compact('book'));
       }else{
          return redirect()->route('error', ['error_code' => '403']);
       }
@@ -139,7 +139,7 @@ class ChaptersController extends Controller
          ->latest()
          ->paginate(config('constants.items_per_page'));
       $chapter->increment('viewed');
-      return view('books.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next'))->with('chapter_replied',false);
+      return view('chapters.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next'))->with('chapter_replied',false);
    }
    public function edit(Chapter $chapter)
    {
@@ -149,7 +149,7 @@ class ChaptersController extends Controller
       if($thread->locked){
          return redirect()->back()->with("danger","本文已被锁定，不能修改");
       }else{
-         return view('books.chapteredit', compact('chapter', 'thread', 'book', 'mainpost'));
+         return view('chapters.chapteredit', compact('chapter', 'thread', 'book', 'mainpost'));
       }
 
    }

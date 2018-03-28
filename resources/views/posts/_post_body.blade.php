@@ -1,8 +1,3 @@
-<div class="text-center">
-   @if((Auth::check())&&(Auth::user()->admin))
-   @include('admin._delete_post')
-   @endif
-</div>
 @if($post->reply_to_post_id!=0)
 <div class="post-reply grayout">
    回复&nbsp;<a href="{{ route('thread.showpost', $post->reply_to_post_id) }}">{{ $post->reply_to_post->anonymous ? ($post->reply_to_post->majia ?? '匿名咸鱼') : $post->reply_to_post->owner->name }}&nbsp;{{ $post->reply_to_post->trim($post->reply_to_post->title . $post->reply_to_post->body, 20) }}</a>
@@ -26,11 +21,13 @@
       @endif
       <br>
    </div>
+   @if($post->chapter->annotation)
    <div class="grayout">
      <br>
       {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
    </div>
-   <br>
+   @endif
+
    <div class="container-fluid">
       <u><a class="smaller-10" href="{{ route('book.showchapter', $post->chapter_id) }}">前往文库阅读</a></u>
       <span class="pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->chapter->characters }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->chapter->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->chapter->responded }}</em></span>

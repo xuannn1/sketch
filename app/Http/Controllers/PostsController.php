@@ -12,7 +12,7 @@ use App\Events\NewPost;
 use Carbon\Carbon;
 use Auth;
 use App\Models\Chapter;
-use App\Activity;
+use App\Models\Activity;
 use App\Models\Collection;
 
 class PostsController extends Controller

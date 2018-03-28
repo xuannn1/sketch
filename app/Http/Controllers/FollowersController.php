@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Status;
 use App\Models\User;
 use Auth;
-use App\Follower;
+use App\Models\Follower;
 
 class FollowersController extends Controller
 {
