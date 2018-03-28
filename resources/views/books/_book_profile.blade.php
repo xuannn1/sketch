@@ -59,5 +59,4 @@
    @else
    {!! Helper::wrapParagraphs($thread->body) !!}
    @endif
-   <br>
 </div>

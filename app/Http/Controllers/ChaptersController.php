@@ -139,10 +139,7 @@ class ChaptersController extends Controller
          ->latest()
          ->paginate(config('constants.items_per_page'));
       $chapter->increment('viewed');
-      $only = false;
-      $chapter_replied = false;
-      $book_info = config('constants.book_info');
-      return view('books.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next', 'only', 'book_info','chapter_replied'));
+      return view('books.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next'))->with('chapter_replied',false);
    }
    public function edit(Chapter $chapter)
    {

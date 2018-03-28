@@ -89,7 +89,7 @@ class BooksController extends Controller
         $thread->increment('viewed');
         $posts = Post::allPosts($thread->id,$thread->post_id)->noMaintext()->userOnly(request('useronly'))->withOrder('oldest')
         ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
-        return view('books.show', compact('book','thread', 'posts'))->with('defaultchapter',0);
+        return view('books.show', compact('book','thread', 'posts'))->with('defaultchapter',0)->with('chapter_replied',true);
     }
     public function index(Request $request)
     {
@@ -105,7 +105,7 @@ class BooksController extends Controller
         if($request->book_status){$query = $query->where('books.book_status','=',$request->book_status);}
         if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
         $books = $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]])
-            ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
+            ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
             ->orderby('books.lastaddedchapter_at', 'desc')
             ->paginate(config('constants.index_per_page'));
         return view('books.index', compact('books'))->with('show_as_collections', false);
@@ -130,7 +130,7 @@ class BooksController extends Controller
             ->whereIn('books.book_length',$bookinfo[1])
             ->whereIn('books.book_status',$bookinfo[2])
             ->whereIn('books.sexual_orientation',$bookinfo[3])
-            ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
+            ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
             ->distinct()
             ->orderby('books.lastaddedchapter_at', 'desc')
             ->paginate(config('constants.index_per_page'));
@@ -148,7 +148,7 @@ class BooksController extends Controller
             ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['tagging_threads.tag_id','=',$booktag]]);
         if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
-        $books = $query->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title')
+        $books = $query->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
             ->orderby('books.lastaddedchapter_at', 'desc')
             ->paginate(config('constants.index_per_page'));
 

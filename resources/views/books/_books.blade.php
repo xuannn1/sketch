@@ -27,6 +27,9 @@
             @if($book->noreply)
             <span class="glyphicon glyphicon-warning-sign"></span>
             @endif
+            @if(($book->last_chapter_title)&&($book->last_chapter_responded==0))
+            <span class="badge">新</span>
+            @endif
          </small>
          @if(($show_as_collections)&&($book->updated))
          <span class="badge">有更新</span>

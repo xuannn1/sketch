@@ -53,7 +53,7 @@ class threadsController extends Controller
        $thread->increment('viewed');
        $thread->load('label','channel');
        $book = $thread->book;
-       return view('threads.show', compact('thread', 'posts','book'))->with('defaultchapter',0);
+       return view('threads.show', compact('thread', 'posts','book'))->with('defaultchapter',0)->with('chapter_replied',true);
    }
 
    public function createThreadForm(Channel $channel)
