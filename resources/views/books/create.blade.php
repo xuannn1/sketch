@@ -126,7 +126,7 @@
                         </div>
 
                         <div class="checkbox">
-                            <label><input type="checkbox" name="markdown" >使用 Markdown 语法？</label>&nbsp;
+                            <!-- <label><input type="checkbox" name="markdown" >使用Markdown语法？</label>&nbsp; -->
                             <label><input type="checkbox" name="indentation" checked>段首缩进（自动空两格）？</label>&nbsp;
                             <br>
                             <label><input type="checkbox" name="public" checked>是否公开可见？</label>&nbsp;

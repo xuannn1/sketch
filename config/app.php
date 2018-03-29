@@ -179,6 +179,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        \Genert\BBCode\BBCodeServiceProvider::class,
 
     ],
 
@@ -231,6 +232,8 @@ return [
 
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
         'Helper' => App\Helpers\Helper::class,
+        'BBCode' => \Genert\BBCode\Facades\BBCode::class,
+
     ],
 
 ];

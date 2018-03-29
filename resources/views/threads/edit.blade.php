@@ -44,7 +44,7 @@
                </div>
              </div>
              <div class="checkbox">
-                 <label><input type="checkbox" name="markdown" {{ $thread->mainpost->markdown ? 'checked' : '' }}>使用Markdown语法？</label>
+                 <!-- <label><input type="checkbox" name="markdown" {{ $thread->mainpost->markdown ? 'checked' : '' }}>使用Markdown语法？</label> -->
                  <label><input type="checkbox" name="indentation" {{ $thread->mainpost->indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
                  <br>
                  <label><input type="checkbox" name="public" {{ $thread->public ? 'checked' : '' }}>是否公开可见</label>

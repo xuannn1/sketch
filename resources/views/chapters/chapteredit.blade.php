@@ -22,7 +22,7 @@
                <textarea name="body" rows="12" class="form-control" id="mainbody" data-provide="markdown" placeholder="正文">{{ $mainpost->body }}</textarea>
                <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-control addon-button">恢复数据</button>
                <button href="#" type="button" onclick="wordscount('mainbody');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
-               <label><input type="checkbox" name="markdown" {{ $mainpost->markdown? 'checked':''}}>使用Markdown语法？</label>
+               <!-- <label><input type="checkbox" name="markdown" {{ $mainpost->markdown? 'checked':''}}>使用Markdown语法？</label> -->
                <label><input type="checkbox" name="indentation" {{ $mainpost->indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
 
             </div>

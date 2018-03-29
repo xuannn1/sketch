@@ -120,7 +120,7 @@
                           <input type="text" name="majia" class="form-control" value="{{ $thread->majia ?? '匿名咸鱼' }}" readonly>
                           <label for="majia"><small>(马甲仅勾选“匿名”时有效，可以更改披马与否，但马甲名称不能再修改)</small></label>
                       </div>
-                      <label><input type="checkbox" name="markdown" {{ $thread->mainpost->markdown ? 'checked' : '' }}>使用Markdown语法？</label>&nbsp;
+                      <!-- <label><input type="checkbox" name="markdown" {{ $thread->mainpost->markdown ? 'checked' : '' }}>使用Markdown语法？</label>&nbsp; -->
                       <label><input type="checkbox" name="indentation" {{ $book->indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>&nbsp;
                       <br>
                       <label><input type="checkbox" name="public" {{ $thread->public ? 'checked' : '' }}>是否公开可见？</label>&nbsp;

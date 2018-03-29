@@ -37,7 +37,7 @@
 
              <div class="checkbox">
                <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majia').style.display = 'block'">马甲？</label>
-               <label><input type="checkbox" name="markdown">使用Markdown语法？</label>
+               <!-- <label><input type="checkbox" name="markdown">使用Markdown语法？</label> -->
                <div class="form-group text-right" id="majia" style="display:none">
                    <input type="text" name="majia" class="form-control" value="{{Auth::user()->majia ?:'匿名咸鱼'}}" placeholder="请输入不超过10字的马甲">
                    <label for="majia"><small>(马甲仅勾选“匿名”时有效)</small></label>

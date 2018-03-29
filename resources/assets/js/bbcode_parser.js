@@ -153,6 +153,7 @@ var BBCodeHTML = function() {
 
   // adds BBCodes and their HTML
   me.addBBCode('[b]{TEXT}[/b]', '<strong>{TEXT}</strong>');
+  me.addBBCode('[code]{TEXT}[/code]', '<code>{TEXT}</code>');
   me.addBBCode('[i]{TEXT}[/i]', '<em>{TEXT}</em>');
   me.addBBCode('[u]{TEXT}[/u]', '<span style="text-decoration:underline;">{TEXT}</span>');
   me.addBBCode('[s]{TEXT}[/s]', '<span style="text-decoration:line-through;">{TEXT}</span>');
@@ -164,10 +165,17 @@ var BBCodeHTML = function() {
   me.addBBCode('[img]{URL}[/img]', '<img src="{URL}" alt="{URL}" />');
   me.addBBCode('[img={LINK} width={NUMBER1} height={NUMBER2}]{TEXT}[/img]', '<img src="{LINK}" width="{NUMBER1}" height="{NUMBER2}" alt="{TEXT}" />');
   me.addBBCode('[img]{LINK}[/img]', '<img src="{LINK}" alt="{LINK}" />');
-  me.addBBCode('[color=COLOR]{TEXT}[/color]', '<span style="{COLOR}">{TEXT}</span>');
+  me.addBBCode('[color={COLOR}]{TEXT}[/color]', '<span style="color:{COLOR}">{TEXT}</span>');
   me.addBBCode('[highlight={COLOR}]{TEXT}[/highlight]', '<span style="background-color:{COLOR}">{TEXT}</span>');
   me.addBBCode('[quote="{TEXT1}"]{TEXT2}[/quote]', '<div class="quote"><cite>{TEXT1}</cite><p>{TEXT2}</p></div>');
   me.addBBCode('[quote]{TEXT}[/quote]', '<cite>{TEXT}</cite>');
   me.addBBCode('[blockquote]{TEXT}[/blockquote]', '<blockquote>{TEXT}</blockquote>');
+  me.addBBCode('[size={NUMBER}]{TEXT}[/size]', '<span style="font-size:{NUMBER}px">{TEXT}</span>');
+  me.addBBCode('[ul]{TEXT}[/ul]', '<ul>{TEXT}</ul>');
+  me.addBBCode('[ol]{TEXT}[/ol]', '<ol>{TEXT}</ol>');
+  me.addBBCode('[li]{TEXT}[/li]', '<li>{TEXT}</li>');
+  me.addBBCode('[table]{TEXT}[/table]', '<table>{TEXT}</table>');
+  me.addBBCode('[tr]{TEXT}[/tr]', '<tr>{TEXT}</tr>');
+  me.addBBCode('[td]{TEXT}[/td]', '<td>{TEXT}</td>');
 };
 var bbcodeParser = new BBCodeHTML();       // creates object instance of BBCodeHTML()

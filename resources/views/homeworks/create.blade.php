@@ -17,9 +17,9 @@
                <button type="button" onclick="retrievecache('requirement')" class="sosad-button-control addon-button">恢复数据</button>
                <button href="#" type="button" onclick="wordscount('requirement');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
              </div>
-             <div class="">
+             <!-- <div class="">
                 <label><input type="checkbox" name="markdown" checked>使用Markdown语法？</label>
-             </div>
+             </div> -->
              <button type="submit" class="btn btn-danger sosad-button">发布</button>
          </form>
        </div>

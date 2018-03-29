@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
+        "genert/bbcode": "^1.1",
         "graham-campbell/markdown": "^10.0.0",
         "laravel/framework": "5.5.*",
         "laravel/scout": "^4.0",

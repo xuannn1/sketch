@@ -438,9 +438,25 @@ function cancelreceiveupvotereminders(){
       }
    });
 };
+function sosadpretreat(string) {//将正常文本预处理
+    console.log("init"+string);
+    string = string.replace(/\[br\]/g,"</p><br><p>");
+    console.log("a"+string);
+    string = string.replace(/\r\n/g,"\n");
+    console.log("b"+string);
+    string = string.replace(/\r/g,"\n");
+    console.log("c"+string);
+    string = string.replace(/\n{1,}/g,"</p><p>");
+    console.log("d"+string);
+    string = "<p>"+string+"</p>";
+    console.log("e"+string);
+    string = string.replace(/<p><\/p>/g,"");
+    console.log("after"+string);
+    return(string);
+}
 function doublebreakline(string) {//魔改md，使得单一换行能够显示
-  //console.log("init"+string);
-  string = string.replace(/\n/g,"\n\n");
-  //console.log("after"+string);
-  return(string);
+    //console.log("init"+string);
+    string = string.replace(/\n/g,"<br>");
+    //console.log("after"+string);
+    return(string);
 }
