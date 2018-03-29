@@ -1,4 +1,5 @@
 <span>
+    <!-- 显示作者名称 -->
    @if ($post->maintext)
       @if ($thread->anonymous)
          <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
@@ -18,13 +19,16 @@
          <a href="{{ route('user.show', $post->user_id) }}">{{ $post->owner->name }}</a>
       @endif
    @endif
+
    @if((!$post->anonymous)&&((!$thread->anonymous)||(!$post->maintext)))
+      <!-- 只看该用户/取消只看该用户-标志 -->
       @if(request('useronly'))
          <span class="grayout smaller-20"><a href="{{ route('thread.show',$thread) }}">取消只看该用户</a></span>
       @else
          <span class="grayout smaller-20"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'useronly'=>$post->user_id]) }}">只看该用户</a></span>
       @endif
    @endif
+   <!-- 发表时间 -->
    <span class="smaller-20">
       发表于 {{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}
       @if($post->created_at < $post->edited_at )

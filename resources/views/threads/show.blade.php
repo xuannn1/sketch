@@ -23,9 +23,6 @@
          <div class="panel-vote">
             <!-- 对主题进行投票／收藏／点赞等操作 -->
             @if(Auth::check())
-              <div class="text-right h6">
-                
-              </div>
               @include('threads._thread_vote')
             @else
             <h6 class="display-4">请 <a href="{{ route('login') }}">登录</a> 后参与讨论</h6>
