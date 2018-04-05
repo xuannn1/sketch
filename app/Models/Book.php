@@ -16,32 +16,6 @@ class Book extends Model
    {
       return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
    }
-   public function book_status()
-   {
-      $array = [
-         '1' => '连载',
-         '2' => '完结',
-         '3' => '暂停',
-      ];
-      return ($array[$this->book_status]);
-   }
-   public function book_length()
-   {
-      $array = [
-         '1' => '短篇',
-         '2' => '中篇',
-         '3' => '长篇',
-      ];
-      return ($array[$this->book_length]);
-   }
-   public function originality()
-   {
-      if($this->original){
-         return("原创");
-      }else {
-         return("同人");
-      }
-   }
 
    public function tongren()
    {

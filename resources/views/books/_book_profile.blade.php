@@ -17,11 +17,11 @@
     <div class="book-intro">
        <!-- 书本登记信息，同人信息，长度，连载进度etc -->
        <em><b>
-       @if(!$book->original)
+       @if(!$thread->original())
        <p>{{ $book->tongren->tongren_yuanzhu }}-{{ $book->tongren->tongren_cp }}</p>
        @endif
        <p>
-          <a href="{{ route('books.index', ['channel'=>(int)($book->channel_id)]) }}">{{ config('constants.book_info')['originality_info'][$book->original] }}</a>
+          <a href="{{ route('books.index', ['channel'=>(int)($book->channel_id)]) }}">{{ config('constants.book_info')['originality_info'][$thread->original()] }}</a>
           -&nbsp;<a href="{{ route('books.index',['book_length'=>$book->book_length]) }}">{{ config('constants.book_info')['book_lenth_info'][$book->book_length] }}</a>
           -&nbsp;<a href="{{ route('books.index',['book_status'=>$book->book_status]) }}">{{ config('constants.book_info')['book_status_info'][$book->book_status] }}</a>
           -&nbsp;<a href="{{ route('books.index',['sexual_orientation'=>$book->sexual_orientation]) }}">{{ config('constants.book_info')['sexual_orientation_info'][$book->sexual_orientation] }}</a>

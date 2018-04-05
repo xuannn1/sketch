@@ -5,7 +5,7 @@
 <span class="voteposts">
   <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostComment{{ $post->id }}" class="btn btn-xs btn-info sosad-button">点评</a>
 </span>
-<span ><a href = "#replyToThread" class="btn btn-primary sosad-button btn-xs" onclick="replytopost({{ $post->id }}, '{{ $post->trim($post->body, 10)}}')">回复</a></span>
+<span ><a href = "#replyToThread" class="btn btn-primary sosad-button btn-xs" onclick="replytopost({{ $post->id }}, '{{ Helper::trimtext($post->body, 10)}}')">回复</a></span>
 @endif
 
 @if($post->user_id == Auth::id()&&(!$thread->locked))

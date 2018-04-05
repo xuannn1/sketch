@@ -94,7 +94,7 @@ class Thread extends Model
       }
       return false;
    }
-   
+
    public function xianyus(){
       $xianyus = Xianyu::where('thread_id', $this->id);
       return ($xianyus);
@@ -125,6 +125,10 @@ class Thread extends Model
        return $array;
    }
 
+   public function original()
+   {
+      return (int)(2-$this->channel_id);
+   }
    public function registerhomework(){
        DB::table('register_homeworks')
        ->join('homeworks','homeworks.id','=','register_homeworks.homework_id')

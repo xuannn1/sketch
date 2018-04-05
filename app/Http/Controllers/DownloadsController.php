@@ -49,7 +49,7 @@ class DownloadsController extends Controller
         $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
       }
       $txt .= "\n";
-      $txt .= "图书信息：".$book_info['originality_info'][$book->original].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
+      $txt .= "图书信息：".$book_info['originality_info'][$thread->].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
       if($thread->bianyuan){$txt .= "|边缘";}
       $txt .= '|'.$thread->label->labelname;
       foreach ($thread->tags as $tag){
@@ -76,9 +76,9 @@ class DownloadsController extends Controller
     {
       $txt = "";
       if($post->reply_to_post_id!=0){
-        $txt .= "回复".($post->reply_to_post->anonymous ? ($post->reply_to_post->majia ?? '匿名咸鱼') : $post->reply_to_post->owner->name).$post->reply_to_post->trim($post->reply_to_post->title . $post->reply_to_post->body, 20)."\n";
+        $txt .= "回复".($post->reply_to_post->anonymous ? ($post->reply_to_post->majia ?? '匿名咸鱼') : $post->reply_to_post->owner->name).Helper::trimtext($post->reply_to_post->title . $post->reply_to_post->body, 20)."\n";
       }elseif(($post->chapter_id!=0)&&(!$post->maintext)&&($post->chapter->mainpost->id>0)){
-        $txt .= "评论".$post->trim( $post->chapter->title . $post->chapter->mainpost->title . $post->chapter->mainpost->body , 20)."\n";
+        $txt .= "评论".Helper::trimtext( $post->chapter->title . $post->chapter->mainpost->title . $post->chapter->mainpost->body , 20)."\n";
       }
       return $txt;
     }

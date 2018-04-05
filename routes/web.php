@@ -74,7 +74,6 @@
    Route::post('/threads/{thread}/update', 'ThreadsController@update')->name('thread.update');
    Route::post('/threads/{thread}/posts', 'PostsController@store')->name('post.store');//在某个主题发表回帖
    Route::get('/threads/{thread}/posts', 'PostsController@create_post_form')->name('post.create');//在某个主题发表回帖
-   //Route::get('/threads/{thread}/user/{user}', 'ThreadsController@useronly')->name('thread.useronly');//只看该作者
    Route::get('/threads/{thread}/xianyu', 'XianyusController@vote')->name('xianyu.vote');//为主题投放咸鱼
 }
 
@@ -190,3 +189,4 @@
    Route::get('/downloads/book_noreview_text/{thread}','DownloadsController@book_noreview_text')->name('download.book_noreview_text')->middleware('filter_thread');
 
 }
+    Route::resource('polls', 'PollsController');

@@ -132,7 +132,6 @@ class AdminsController extends Controller
                   );
                }else{
                   $book = Book::findOrFail($thread->book_id);
-                  $book->original = 2-$channel->id;
                   $book->save();
                   if($channel->id == 2){
                      $tongren = App\Models\Tongren::firstOrCreate(['book_id' => $book->id]);

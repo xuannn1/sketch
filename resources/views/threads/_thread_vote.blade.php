@@ -13,6 +13,7 @@
          @else
          <a class="btn btn-sm btn-danger sosad-button" href="{{ route('thread.edit', $thread->id) }}">编辑主楼</a>
          @endif
+         <a class="btn btn-sm btn-danger sosad-button" href="{{ route('poll.create', $thread) }}">修改文案</a>
       @endif
    </span>
    <span class="pull-right">

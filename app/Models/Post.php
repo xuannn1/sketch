@@ -18,30 +18,30 @@ class Post extends Model
 
    protected $guarded = [];
    //需要移动到helper
-    public function sub_str($str, $length = 0, $append = true)
-    {
-        $str = trim($str);
-        $strlength = strlen($str);
-        if ($length == 0 || $length >= $strlength) {
-            return $str;
-        } elseif ($length < 0) {
-            $length = $strlength + $length;
-            if ($length < 0) {
-                $length = $strlength;
-            }
-        }
-        if (function_exists('mb_substr')) {
-            $newstr = mb_substr($str, 0, $length, 'utf-8');
-        } elseif (function_exists('iconv_substr')) {
-            $newstr = iconv_substr($str, 0, $length, 'utf-8');
-        } else {
-            $newstr = substr($str, 0, $length);
-        }
-        if ($append && $str != $newstr) {
-            $newstr .= '...';
-        }
-        return $newstr;
-    }
+    // public function sub_str($str, $length = 0, $append = true)
+    // {
+    //     $str = trim($str);
+    //     $strlength = strlen($str);
+    //     if ($length == 0 || $length >= $strlength) {
+    //         return $str;
+    //     } elseif ($length < 0) {
+    //         $length = $strlength + $length;
+    //         if ($length < 0) {
+    //             $length = $strlength;
+    //         }
+    //     }
+    //     if (function_exists('mb_substr')) {
+    //         $newstr = mb_substr($str, 0, $length, 'utf-8');
+    //     } elseif (function_exists('iconv_substr')) {
+    //         $newstr = iconv_substr($str, 0, $length, 'utf-8');
+    //     } else {
+    //         $newstr = substr($str, 0, $length);
+    //     }
+    //     if ($append && $str != $newstr) {
+    //         $newstr .= '...';
+    //     }
+    //     return $newstr;
+    // }
 
    public function owner()
    {
@@ -80,16 +80,16 @@ class Post extends Model
    {
       return $this->belongsTo(Chapter::class, 'chapter_id')->withDefault();
    }
-   public function trim($str, $len)
-   {
-      $body = preg_replace('/[[:punct:]\s\n\t\r]/','',$str);
-      $body = trim($body);
-      if (strlen($body)>$len){
-         return $this->sub_str($body, $len, true);
-      }else{
-         return $body;
-      }
-   }
+   // public function trim($str, $len)
+   // {
+   //    $body = preg_replace('/[[:punct:]\s\n\t\r]/','',$str);
+   //    $body = trim($body);
+   //    if (strlen($body)>$len){
+   //       return $this->sub_str($body, $len, true);
+   //    }else{
+   //       return $body;
+   //    }
+   // }
    public function checklongcomment()//新建章节之后，检查是否属于长评范畴，如果属于，加入推荐队列
    {
       if (!$this->maintext){//必须不能是某章节正文
