@@ -45206,24 +45206,25 @@ function cancelreceiveupvotereminders(){
    });
 };
 function sosadpretreat(string) {//将正常文本预处理
-    console.log("init"+string);
     string = string.replace(/\[br\]/g,"</p><br><p>");
-    console.log("a"+string);
     string = string.replace(/\r\n/g,"\n");
-    console.log("b"+string);
     string = string.replace(/\r/g,"\n");
-    console.log("c"+string);
     string = string.replace(/\n{1,}/g,"</p><p>");
-    console.log("d"+string);
     string = "<p>"+string+"</p>";
-    console.log("e"+string);
     string = string.replace(/<p><\/p>/g,"");
-    console.log("after"+string);
     return(string);
 }
 function doublebreakline(string) {//魔改md，使得单一换行能够显示
-    //console.log("init"+string);
     string = string.replace(/\n/g,"<br>");
-    //console.log("after"+string);
     return(string);
+}
+
+function addoption(thread_id){//让投票区增加分支选择项
+    var option_number = $('#thread-'+thread_id+'-poll-options > input').length + 1;
+    if (option_number<=10){
+        $('#thread-'+thread_id+'-poll-options').append('<input type="text" name="option-'+option_number+'" class="form-control" id="thread-'+thread_id+'-poll-option-'+ option_number +'" placeholder="请填写选项'+option_number+'">');
+        //console.log(option_number);
+    }else{
+        alert("只能填写十项");
+    }
 }

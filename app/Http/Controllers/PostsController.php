@@ -22,10 +22,7 @@ class PostsController extends Controller
    {
       $this->middleware('auth');
    }
-   public function create_post_form(Request $request,Thread $thread)
-   {
-      return view('threads.reply',compact('request','thread'));
-   }
+
     public function store(StorePost $form, Thread $thread)
     {
         if ((!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id()))){

@@ -73,7 +73,6 @@
    Route::get('/threads/{thread}/edit', 'ThreadsController@edit')->name('thread.edit');
    Route::post('/threads/{thread}/update', 'ThreadsController@update')->name('thread.update');
    Route::post('/threads/{thread}/posts', 'PostsController@store')->name('post.store');//在某个主题发表回帖
-   Route::get('/threads/{thread}/posts', 'PostsController@create_post_form')->name('post.create');//在某个主题发表回帖
    Route::get('/threads/{thread}/xianyu', 'XianyusController@vote')->name('xianyu.vote');//为主题投放咸鱼
 }
 

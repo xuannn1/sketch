@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class PollsController extends Controller
 {
+    public function __construct()
+    {
+       $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -24,9 +28,10 @@ class PollsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Thread $thread)
+    public function create(Request $request)
     {
-        //
+        $thread = \App\Models\Thread::find($request->thread);
+        return view('polls.poll_create',compact('thread'));
     }
 
     /**
