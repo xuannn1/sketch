@@ -98,11 +98,12 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
         $user = $this->create($request->all());
-        $user->activated = 1;
+        $user->activated = 1;//手工建立已激活用户
         $user->save();
-        event(new Registered($user));
-        $this->sendEmailConfirmationTo($user);
-        session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
+        //event(new Registered($user));
+        //$this->sendEmailConfirmationTo($user);
+        //session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
+        session()->flash('success', '用户已建立，欢迎登陆玩耍！');
         return redirect('/');
     }
 
