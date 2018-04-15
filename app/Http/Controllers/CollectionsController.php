@@ -118,12 +118,10 @@ class CollectionsController extends Controller
          ->select('statuses.*','users.name','followers.keep_updated as keep_updated','followers.updated as updated')
          ->orderBy('statuses.created_at','desc')
          ->paginate(config('constants.index_per_page'));
-      $active = 2;
-      //dd($statuses);
       $updates = [Auth::user()->collection_books_updated,Auth::user()->collection_threads_updated,Auth::user()->collection_statuses_updated];
       $collections = true;
       Auth::user()->collection_statuses_updated = 0;
       Auth::user()->save();
-      return view('users.collections_statuses', compact('statuses','user','active','updates','collections'))->with('show_as_collections',1);
+      return view('users.collections_statuses', compact('statuses','user','updates','collections'))->with('show_as_collections',1)->with('active',2);
    }
 }

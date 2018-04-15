@@ -51,6 +51,6 @@ class StatusesController extends Controller
          ->orderBy('statuses.created_at','desc')
          ->paginate(config('constants.index_per_page'));
       $collections = false;
-      return view('statuses.index', compact('statuses','collections'));
+      return view('statuses.index', compact('statuses','collections'))->with('show_as_collections', false);
     }
 }
