@@ -130,7 +130,7 @@ class BooksController extends Controller
         $query->whereIn('books.book_length',$bookinfo[1])
             ->whereIn('books.book_status',$bookinfo[2])
             ->whereIn('books.sexual_orientation',$bookinfo[3]);
-        if(count($bookinfo[0]==1)){
+        if(count($bookinfo[0])==1){
             $query->where('threads.channel_id', $bookinfo[0][0]);
         }
         if(count($bookinfo[4]==1)){
