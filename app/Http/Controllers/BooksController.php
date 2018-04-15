@@ -125,19 +125,19 @@ class BooksController extends Controller
             ->join('labels', 'threads.label_id', '=', 'labels.id')
             ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-        if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
 
         $query->whereIn('books.book_length',$bookinfo[1])
             ->whereIn('books.book_status',$bookinfo[2])
             ->whereIn('books.sexual_orientation',$bookinfo[3]);
+        if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
         if(count($bookinfo[0])==1){
-            $query->where('threads.channel_id', $bookinfo[0][0]);
+            $query->where('threads.channel_id','=', $bookinfo[0][0]);
         }
-        if(count($bookinfo[4]==1)){
+        if(count($bookinfo[4])==1){
             if($bookinfo[4][0]<3){
-                $query->where('threads.bianyuan', (bool)$bookinfo[4][0]);
+                $query->where('threads.bianyuan', '=', (bool)$bookinfo[4][0]);
             }else{
-                $query->where('threads.bianyuan', $bookinfo[4][0]);
+                $query->where('threads.bianyuan', '=',$bookinfo[4][0]);
             }
         }
         $books = $query->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
