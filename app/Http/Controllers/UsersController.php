@@ -162,7 +162,7 @@ class UsersController extends Controller
          $books=$this->findbooks($id,config('constants.index_per_page'));
          $book_info = config('constants.book_info');
          $collections = false;
-         return view('users.showbooks', compact('user','book_info','books','collections'));
+         return view('users.showbooks', compact('user','book_info','books','collections'))->with('show_as_collections',false);
       }else{
          return redirect()->route('error', ['error_code' => '404']);
       }
@@ -191,7 +191,7 @@ class UsersController extends Controller
             'label' => false,
          ];
          $collections = false;
-         return view('users.showthreads', compact('user','threads','show','collections'));
+         return view('users.showthreads', compact('user','threads','show','collections'))->with('show_as_collections',false);
       }else{
          return redirect()->route('error', ['error_code' => '404']);
       }
