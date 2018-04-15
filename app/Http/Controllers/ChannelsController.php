@@ -28,8 +28,8 @@ class ChannelsController extends Controller
         $threads = $query->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1],['threads.channel_id','=',$channel->id]])
             ->select('threads.*', 'channels.channelname','users.name','labels.labelname','posts.body as last_post_body')
             ->orderby('threads.lastresponded_at', 'desc')
-            ->simplePaginate(config('constants.index_per_page'));
-            
+            ->paginate(config('constants.index_per_page'));
+
         $labels = Label::inChannel($channel->id)->withCount('threads')->get();
         return view('threads.index_channel', compact('threads', 'labels','channel'))->with('show_as_collections', false);
     }
