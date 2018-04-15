@@ -38,7 +38,7 @@ class UsersController extends Controller
          ->join('labels', 'threads.label_id', '=', 'labels.id')
          ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
          ->where([['threads.deleted_at', '=', null],['threads.user_id','=',$id],['threads.anonymous','=',0],['threads.public','=',1]])
-         ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title')
+         ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
          ->orderby('books.lastaddedchapter_at', 'desc')
          ->simplePaginate($paginate);
       }
