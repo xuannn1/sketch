@@ -267,7 +267,7 @@ function destroystatus(status_id){
       }
    });
 };
-if($('textarea').length){
+if($('textarea').length>1){
    console.log('goingto initiate cache');
    $.ajaxSetup({
      headers: {

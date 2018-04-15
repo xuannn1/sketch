@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale = 1.0">
+      <title>废文网 - 每日一丧</title>
+      <link rel="stylesheet" href="/css/app.css">
+   </head>
+   <body>
+      <div class="container">
+    	<div class="content text-center">
+            <div class="title">
+                <h1>出错啦！内部错误500-Internal Server Error</h1>
+		<h3>这里是废文网。朋友您好，您访问的网址，</h3>
+		<p><!--#echo var="HTTP_REFERER" --></p>
+		<h3>目前不能打开</h3>
+		<h3>这是因为目前访问人数过多，服务器不能完成所需处理导致的，刷新可破，还请稍安勿躁。我们的技术正在尽力优化程序。</h3>
+            </div>
+         </div>
+       </div>
+   </body>
+</html>

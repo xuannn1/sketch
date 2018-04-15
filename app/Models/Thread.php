@@ -121,7 +121,7 @@ class Thread extends Model
     }
    public function toSearchableArray()
    {
-       $array = $this->only('title','brief','body');
+       $array = $this->only('title','brief');
        return $array;
    }
 
