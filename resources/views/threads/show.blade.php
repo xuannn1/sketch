@@ -14,7 +14,6 @@
             @if($thread->book_id>0)
               @include('books._book_profile')
               <div><a href="{{ route('book.show', $thread->book_id) }}">文库阅读模式</a>
-                  <span class="pull-right"><a href="{{ route('download.index', $thread) }}">下载</a></span>
               </div>
             @else
               @include('threads._thread_profile')
@@ -23,6 +22,10 @@
          <div class="panel-vote">
             <!-- 对主题进行投票／收藏／点赞等操作 -->
             @if(Auth::check())
+                <div class="row">
+                    <span class="pull-right"><a href="{{ route('download.index', $thread) }}">下载</a>
+                    </span>
+                </div>
               @include('threads._thread_vote')
             @else
             <h6 class="display-4">请 <a href="{{ route('login') }}">登录</a> 后参与讨论</h6>

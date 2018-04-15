@@ -118,6 +118,7 @@ class BooksController extends Controller
         foreach($bookquery as $info){
             array_push($bookinfo,array_map('intval',explode('_',$info)));
         }
+        //dd(count($bookinfo[0]));
         $query = DB::table('threads')
             ->join('books', 'threads.book_id', '=', 'books.id')
             ->join('users', 'threads.user_id', '=', 'users.id')
@@ -126,11 +127,20 @@ class BooksController extends Controller
             ->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
         if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
 
-        $books = $query->whereIn('books.original',$bookinfo[0])
-            ->whereIn('books.book_length',$bookinfo[1])
+        $query->whereIn('books.book_length',$bookinfo[1])
             ->whereIn('books.book_status',$bookinfo[2])
-            ->whereIn('books.sexual_orientation',$bookinfo[3])
-            ->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
+            ->whereIn('books.sexual_orientation',$bookinfo[3]);
+        if(count($bookinfo[0]==1)){
+            $query->where('threads.channel_id', $bookinfo[0][0]);
+        }
+        if(count($bookinfo[4]==1)){
+            if($bookinfo[4][0]<3){
+                $query->where('threads.bianyuan', (bool)$bookinfo[4][0]);
+            }else{
+                $query->where('threads.bianyuan', $bookinfo[4][0]);
+            }
+        }
+        $books = $query->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
             ->distinct()
             ->orderby('books.lastaddedchapter_at', 'desc')
             ->paginate(config('constants.index_per_page'));
@@ -155,7 +165,7 @@ class BooksController extends Controller
       return view('books.index', compact('books'))->with('show_as_collections', false);
    }
    public function filter(Request $request){
-      $bookquery='';
+       $bookquery='';
       if(request('original')){
          foreach(request('original') as $i=>$query){
             if($i>0){
@@ -198,6 +208,17 @@ class BooksController extends Controller
          }
       }else{
          $bookquery.=0;
+      }
+      $bookquery.='-';
+      if(request('bianyuan')){
+         foreach(request('bianyuan') as $i=>$query){
+            if($i>0){
+               $bookquery.='_';
+            }
+            $bookquery.=$query;
+         }
+      }else{
+         $bookquery.=3;
       }
       return redirect()->route('books.selector',$bookquery);
    }

@@ -2,6 +2,12 @@
 @section('content')
 <div class="container">
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+       <div class="search-container">
+           <form method="GET" action="{{ route('search') }}">
+               <input type="textarea" placeholder="Search.." name="search">
+               <button type="submit"><i class="fa fa-search"></i></button>
+           </form>
+       </div>
       <div class="jumbotron" >
          <h2 id= "daily-quote" class="display-1">{{ $quote->quote }}</h2>
          <div>

@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">原创性<span class="caret"></span></button>
             <ul class="dropdown-menu">
                <li><input type="checkbox" name="original[]" value="1"checked />&nbsp;原创</li>
-               <li><input type="checkbox" name="original[]" value="0"checked />&nbsp;同人</li>
+               <li><input type="checkbox" name="original[]" value="2"checked />&nbsp;同人</li>
             </ul>
          </span>
          <span class="button-group">

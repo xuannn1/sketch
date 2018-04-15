@@ -21,3 +21,6 @@ mix.scripts([
     'resources/assets/js/bbcode_parser.js',
     'resources/assets/js/sosad.js'
       ], 'public/js/all.js');
+if (mix.inProduction()) {
+  mix.version();
+}

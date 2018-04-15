@@ -69,6 +69,7 @@ class CollectionsController extends Controller
 
    public function books()
    {
+
       $user = Auth::user();
       $books = DB::table('collections')
          ->join('threads','collections.thread_id','=','threads.id')
@@ -77,7 +78,7 @@ class CollectionsController extends Controller
          ->join('labels','threads.label_id','=','labels.id')
          ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
          ->where([['collections.user_id','=',$user->id], ['threads.deleted_at', '=', null],['threads.book_id','>',0]])
-         ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','collections.updated as updated','collections.keep_updated as keep_updated')
+         ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','chapters.responded as last_chapter_responded', 'collections.updated as updated','collections.keep_updated as keep_updated')
          ->orderBy('books.lastaddedchapter_at','desc')
          ->paginate(config('constants.index_per_page'));
       $book_info = config('constants.book_info');

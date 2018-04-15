@@ -15,8 +15,6 @@
              <div class="panel-body">
                 @include('books._book_profile')
                 <div><a href="{{ route('thread.show', $thread) }}">论坛讨论模式</a>
-                    <span class="pull-right"><a href="{{ route('download.index', $thread) }}">下载</a>
-                    </span>
                 </div>
              </div>
              <!-- 对主题进行投票／收藏／点赞等操作 -->

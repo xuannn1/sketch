@@ -5,7 +5,7 @@
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
       <div class="panel panel-default">
          <div class="panel-heading lead">
-            <h1>{{ $thread->title }}</h1>
+            @include('threads._thread_title')
          </div>
          <div class="panel-body">
              <h2>可选下载项：</h2>
