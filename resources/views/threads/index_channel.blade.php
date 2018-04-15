@@ -24,7 +24,7 @@
          </div>
          <div class="panel-body">
                @include('threads._threads')
-               {{ $threads->links() }}
+               {{ $threads->appends(request()->query())->links() }}
          </div>
          @if (Auth::check())
          <div class="panel-heading">

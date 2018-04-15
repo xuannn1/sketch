@@ -9,9 +9,9 @@
             文章列表
          </div>
          <div class="panel-body">
-            {{ $books->links() }}
+            {{ $books->appends(request()->query())->links() }}
             @include('books._books')
-            {{ $books->links() }}
+            {{ $books->appends(request()->query())->links() }}
          </div>
       </div>
    </div>

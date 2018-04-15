@@ -49,11 +49,13 @@ class StoreBook extends FormRequest
         if (count($tags)>3) {
             return false;
         }elseif(!$bianyuan){
-            foreach ($tags as $tag){
-                if(\App\Models\Tag::find($tag)->tag_group>0){
-                    return false;
+            if($tags){
+                foreach ($tags as $tag){
+                    if(\App\Models\Tag::find($tag)->tag_group>0){
+                        return false;
+                    }
                 }
-            }
+            }    
         }
         return true;
     }
@@ -62,7 +64,7 @@ class StoreBook extends FormRequest
     {
         //book_data
         $book_data = $this->only('book_status','book_length','sexual_orientation');
-        $book_data['original']=2-(int)$this->channel_id;//未来希望能够删去这一项
+        //$book_data['original']=2-(int)$this->channel_id;//未来希望能够删去这一项
         //thread_data
         $thread_data = $this->only('channel_id','label_id','title','brief');
         if ($this->anonymous){
