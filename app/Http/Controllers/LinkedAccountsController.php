@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Hash;
-use App\User;
+use App\Models\User;
 use Auth;
-use App\Linkaccount;
+use App\Models\Linkaccount;
 
 class LinkedAccountsController extends Controller
 {

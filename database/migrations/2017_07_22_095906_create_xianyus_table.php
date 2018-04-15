@@ -15,10 +15,10 @@ class CreateXianyusTable extends Migration
     {
         Schema::create('xianyus', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('user_ip', 45)->nullable()->index();//投掷咸鱼者ip
+            $table->string('user_ip')->nullable()->index();//投掷咸鱼者ip
             $table->integer('user_id')->unsigned()->index();//投掷咸鱼者用户名
             $table->integer('thread_id')->unsigned()->index();//属于哪个主题
-            $table->timestamps('created_at');
+            $table->timestamps();
         });
     }
 

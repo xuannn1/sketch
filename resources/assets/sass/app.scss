@@ -414,6 +414,11 @@ hr {
    }
 
 }
+.md-preview{
+    p{
+       white-space: pre-wrap !important;
+    }
+}
 .addon-button{
    font-weight:lighter;
    border-width:1px;

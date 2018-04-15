@@ -16,3 +16,11 @@ mix.js('resources/assets/js/app.js', 'public/js')
     'node_modules/bootstrap-markdown/css/bootstrap-markdown.min.css',
     'public/css/sass.css'
       ], 'public/css/app.css');
+mix.scripts([
+    'public/js/app.js',
+    'resources/assets/js/bbcode_parser.js',
+    'resources/assets/js/sosad.js'
+      ], 'public/js/all.js');
+if (mix.inProduction()) {
+  mix.version();
+}

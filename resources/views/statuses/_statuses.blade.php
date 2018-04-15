@@ -2,7 +2,7 @@
 <article class="{{ 'status'.$status->id }} {{ 'followuser'.$status->user_id}}">
    <div class="row">
       <div class="col-xs-12 h5">
-         @if($collections)
+         @if($show_as_collections)
          <button type="button" class="btn btn-xs btn-danger sosad-button hidden cancel-button" onclick="cancelfollow({{$status->user_id}})">取消关注</button>
          <button class="btn btn-xs btn-warning sosad-button hidden cancel-button {{'togglekeepupdateuser'.$status->user_id}}" type="button" name="button" onClick="ToggleKeepUpdateUser({{$status->user_id}})">{{$status->keep_updated? '不再提醒':'接收提醒'}}</button>
          @endif

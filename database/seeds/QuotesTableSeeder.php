@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Quote;
+use App\Models\Quote;
 
 class QuotesTableSeeder extends Seeder
 {

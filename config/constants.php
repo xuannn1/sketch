@@ -8,6 +8,8 @@ return [
    'comments_per_post' => 3,//每个post，显示最早的n-1条回复
    'update_min' => 1000, //章节更新必须达到这个水平才能进入排名榜
    'longcomment_lenth' => 200, //“长评”必须达到该字数
+   'default_user_group' => 10,
+   'default_majia' => '匿名咸鱼',
 
    'book_info' =>[
       'originality_info' => [
@@ -58,22 +60,22 @@ return [
    ],
    'level_up' => [
       1 => [//基础功能,可以开始下载
-         'jifen' => 50,
+         'experience_points' => 50,
       ],
       2 => [//可以发无限私信给好友，每日发user_level个私信给陌生人
-         'jifen' => 100,
+         'experience_points' => 100,
       ],
       3 => [//可以关联账户
-         'jifen' => 150,
+         'experience_points' => 150,
          'xianyu' => 25,
       ],
       4 => [//可以悬赏（未做）
-         'jifen' => 300,
+         'experience_points' => 300,
          'xianyu' => 30,
          'sangdian' => 10,
       ],
       5 => [//可以按扣除咸鱼／丧点的方式发私信给陌生人（未做）
-         'jifen' => 500,
+         'experience_points' => 500,
          'xianyu' => 50,
          'sangdian' => 15,
       ],

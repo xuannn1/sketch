@@ -3,38 +3,22 @@
 namespace App\Helpers;
 use Auth;
 use GrahamCampbell\Markdown\Facades\Markdown;
-
+use Genert\BBCode\BBCode;
 
 class Helper
 {
-   public static function wrapParagraphs($post= null)
-   {
-      while(strip_tags($post,"<br>")!=$post){
-         $post = strip_tags($post,"<br>");
-      }
-      $post = str_replace("\r\n", "\n", $post);
-      $post = str_replace("\r", "\n", $post);
-      $post = preg_replace('/\n{1,}/', "</p><p>", $post);
-      $post = "<p>{$post}</p>";
-      return $post;
-   }
-   public static function wrapText($post= null)//自己写编辑器
-   {
-      while(strip_tags($post)!=$post){
-         $post = strip_tags($post);
-      }
-      $post = str_replace("\r\n", "\n", $post);
-      $post = str_replace("\r", "\n", $post);
-      $post = preg_replace('/\n{3,}/', "</p><br><p>", $post);
-      $post = preg_replace('/\n{1,2}/', "</p><p>", $post);
-      $post = "<p>{$post}</p>";
-      $post = str_replace(
-          array("[b]","[/b]","[u]","[/u]","[em]","[/em]","[blockquote]","[/blockquote]","[h6]","[/h6]","[h5]","[/h5]","[h4]","[/h4]","[h3]","[/h3]","[h2]","[/h2]","[h1]","[/h1]","[code]","[/code]","[linebreak]"),
-          array("<b>", "</b>","<u>","</u>","<em>","</em>","<blockquote>","</blockquote>","<h6>","</h6>","<h5>","</h5>","<h4>","</h4>","<h3>","</h3>","<h2>","</h2>","<h1>","</h1>","<code>","</code>","<hr>"),
-          $post
-      );
-      return $post;
-   }
+   // public static function wrapParagraphs($post= null)
+   // {
+   //    while(strip_tags($post,"<br>")!=$post){
+   //       $post = strip_tags($post,"<br>");
+   //    }
+   //    $post = str_replace("\r\n", "\n", $post);
+   //    $post = str_replace("\r", "\n", $post);
+   //    $post = preg_replace('/\n{1,}/', "</p><p>", $post);
+   //    $post = "<p>{$post}</p>";
+   //    return $post;
+   // }
+
    public static function trimtext($text, int $len)
    {
       $str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
@@ -64,17 +48,80 @@ class Helper
       }
       return $post;
    }
-   // public static function modifyMarkdown($post= null)
-   // {
-   //    $post = str_replace("</p>\n", "</p>", $post);
-   //    $post = str_replace("\n", "</p><p>", $post);
-   //    return $post;
-   // }
+
+
    public static function sosadMarkdown($post= null)
    {
       $post = Markdown::convertToHtml($post);
       $post = str_replace("</p>\n", "</p>", $post);
       $post = str_replace("\n", "</p><p>", $post);
       return $post;
+   }
+//test bbcodeparser
+   public static function wrapParagraphs($post= null)
+   {
+       while(strip_tags($post,"<br>")!=$post){
+          $post = strip_tags($post,"<br>");
+       }
+       $post = str_replace("\r\n", "\n", $post);
+       $post = str_replace("\r", "\n", $post);
+
+
+       $bbCode = new BBCode();
+       $bbCode->addParser(
+            'blockquote',
+            '/\[blockquote\](.*?)\[\/blockquote\]/s',
+            '<blockquote>$1</blockquote>',
+            '$1'
+        );
+        $bbCode->addParser(
+             'unordered list',
+             '/\[ul\](.*?)\[\/ul\]/s',
+             '<ul>$1</ul>',
+             '$1'
+        );
+        $bbCode->addParser(
+             'line breaker',
+             '/\[br\]/s',
+             '<br>',
+             ''
+        );
+        $bbCode->addParser(
+            'ordered list',
+            '/\[ol\](.*?)\[\/ol\]/s',
+            '<ol>$1</ol>',
+            '$1'
+        );
+        $bbCode->addParser(
+           'list',
+            '/\[li\](.*?)\[\/li\]/s',
+            '<li>$1</li>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'size',
+            '/\[size\=(.*?)\](.*?)\[\/size\]/s',
+            '<span style="font-size:$1px">$2</span>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'color',
+            '/\[color\=(.*?)\](.*?)\[\/color\]/s',
+            '<span style="color:$1">$2</span>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'highlight',
+            '/\[highlight\=(.*?)\](.*?)\[\/highlight\]/s',
+            '<span style="background-color:$1">$2</span>',
+            '$1'
+        );
+
+       $post = $bbCode->convertToHtml($post);
+
+       $post = str_replace("<br>", "</p><br><p>", $post);
+       $post = preg_replace('/\n{1,}/', "</p><p>", $post);
+       $post = "<p>{$post}</p>";
+       return $post;
    }
 }

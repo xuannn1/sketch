@@ -6,18 +6,18 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Helper;
-use App\Label;
-use App\Thread;
-use App\Book;
-use App\Post;
-use App\Chapter;
-use App\Tag;
+use App\Models\Label;
+use App\Models\Thread;
+use App\Models\Book;
+use App\Models\Post;
+use App\Models\Chapter;
+use App\Models\Tag;
 use Carbon\Carbon;
-use App\Tongren;
-use App\Download;
+use App\Models\Tongren;
+use App\Models\Download;
 use Auth;
 
 class DownloadsController extends Controller
@@ -30,15 +30,15 @@ class DownloadsController extends Controller
 
     public function __construct()
     {
-      $this->middleware('auth')->except(['index']);
+      $this->middleware('auth');
     }
-    public function index()
+    public function index(Thread $thread)
     {
-        //
+       return view('downloads.index', compact('thread'));
     }
     public function print_book_info($thread)
     {
-      $book_info = Config::get('constants.book_info');
+      $book_info = config('constants.book_info');
       $book = $thread->book;
       $txt = "标题：".$thread->title."\n";
       $txt .= "简介：".$thread->brief."\n";
@@ -49,7 +49,7 @@ class DownloadsController extends Controller
         $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
       }
       $txt .= "\n";
-      $txt .= "图书信息：".$book_info['originality_info'][$book->original].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
+      $txt .= "图书信息：".$book_info['originality_info'][2-$thread->channel_id].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
       if($thread->bianyuan){$txt .= "|边缘";}
       $txt .= '|'.$thread->label->labelname;
       foreach ($thread->tags as $tag){
@@ -76,9 +76,9 @@ class DownloadsController extends Controller
     {
       $txt = "";
       if($post->reply_to_post_id!=0){
-        $txt .= "回复".($post->reply_to_post->anonymous ? ($post->reply_to_post->majia ?? '匿名咸鱼') : $post->reply_to_post->owner->name).$post->reply_to_post->trim($post->reply_to_post->title . $post->reply_to_post->body, 20)."\n";
+        $txt .= "回复".($post->reply_to_post->anonymous ? ($post->reply_to_post->majia ?? '匿名咸鱼') : $post->reply_to_post->owner->name).Helper::trimtext($post->reply_to_post->title . $post->reply_to_post->body, 20)."\n";
       }elseif(($post->chapter_id!=0)&&(!$post->maintext)&&($post->chapter->mainpost->id>0)){
-        $txt .= "评论".$post->trim( $post->chapter->title . $post->chapter->mainpost->title . $post->chapter->mainpost->body , 20)."\n";
+        $txt .= "评论".Helper::trimtext( $post->chapter->title . $post->chapter->mainpost->title . $post->chapter->mainpost->body , 20)."\n";
       }
       return $txt;
     }
@@ -162,7 +162,7 @@ class DownloadsController extends Controller
         $chapters = $book->chapters;
         $chapters->load(['mainpost']);
         $thread->load(['creator', 'tags', 'label']);
-        $book_info = Config::get('constants.book_info');
+        $book_info = config('constants.book_info');
         $txt = $this->add_download_info($thread);
         $txt .=$this->print_book_info($thread);
         foreach($chapters as $i=>$chapter){
@@ -277,4 +277,6 @@ class DownloadsController extends Controller
         $response->headers->set('Content-Disposition', $disposition);
         return $response;
       }
+
+
 }

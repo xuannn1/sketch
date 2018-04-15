@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Thread;
+use App\Models\Thread;
 use Auth;
 use App\RegisterHomework;
-use App\Message;
-use App\User;
-use App\Post;
-use App\Homework;
-use Illuminate\Support\Facades\Config;
+use App\Models\Message;
+use App\Models\User;
+use App\Models\Post;
+use App\Models\Homework;
+
 use Illuminate\Support\Facades\DB;
 
 class HomeworksController extends Controller
@@ -123,7 +123,7 @@ class HomeworksController extends Controller
    }
    public function index()
    {
-      $homeworks = Homework::with(['registerhomeworks.student'])->orderBy('id','desc')->paginate(Config::get('constants.items_per_page'));
+      $homeworks = Homework::with(['registerhomeworks.student'])->orderBy('id','desc')->paginate(config('constants.items_per_page'));
       return view('homeworks.index', compact('homeworks'));
    }
    public function show(Homework $homework)

@@ -5,26 +5,15 @@
 <div class="container-fluid">
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
       @include('shared.errors')
-      <?php $defaultchapter = 0 ?>
       <!-- 首页／版块／类型 -->
-      <div class="">
-         <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
-         &nbsp;/&nbsp;
-         <a href="{{ route('channel.show', $thread->channel_id) }}">{{ $thread->channel->channelname }}</a>
-         &nbsp;/&nbsp;
-         <a href="{{ route('label.show', $thread->label) }}">{{ $thread->label->labelname }}</a>
-         &nbsp;/&nbsp;
-         <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>
-      </div>
-      {{ $posts->links() }}
+      @include('threads._site_map')
       @if($posts->currentPage()==1)
       <div class="panel panel-default">
          <div class="panel-body">
             <!-- 主题介绍部分 -->
             @if($thread->book_id>0)
               @include('books._book_profile')
-              <div>
-                <a href="{{ route('book.show', $thread->book_id) }}">文库阅读模式</a>
+              <div><a href="{{ route('book.show', $thread->book_id) }}">文库阅读模式</a>
               </div>
             @else
               @include('threads._thread_profile')
@@ -33,9 +22,10 @@
          <div class="panel-vote">
             <!-- 对主题进行投票／收藏／点赞等操作 -->
             @if(Auth::check())
-              <div class="text-right h6">
-                <a href=" {{ route('download.thread_txt', $thread->id) }} ">下载txt讨论贴</a>
-              </div>
+                <div class="row">
+                    <span class="pull-right"><a href="{{ route('download.index', $thread) }}">下载</a>
+                    </span>
+                </div>
               @include('threads._thread_vote')
             @else
             <h6 class="display-4">请 <a href="{{ route('login') }}">登录</a> 后参与讨论</h6>

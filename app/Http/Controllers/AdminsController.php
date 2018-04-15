@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
-use App\Quote;
-use App\Channel;
-use App\Label;
-use App\Thread;
-use App\Post;
-use App\User;
-use App\PostComment;
-use App\Administration;
-use App\Book;
-use App\Message;
+use App\Models\Quote;
+use App\Models\Channel;
+use App\Models\Label;
+use App\Models\Thread;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\PostComment;
+use App\Models\Administration;
+use App\Models\Book;
+use App\Models\Message;
 use Auth;
 use Carbon\Carbon;
 
@@ -30,7 +30,7 @@ class AdminsController extends Controller
    }
    public function quotesreview()
    {
-      $quotes = Quote::orderBy('created_at', 'desc')->paginate(Config::get('constants.index_per_page'));
+      $quotes = Quote::orderBy('created_at', 'desc')->paginate(config('constants.index_per_page'));
       return view('admin.quotesreview', compact('quotes'));
    }
 
@@ -127,15 +127,14 @@ class AdminsController extends Controller
                      'book_length' => 0,
                      'lastaddedchapter_at' => Carbon::now(),
                   ]);
-                  $tongren = App\Tongren::create(
+                  $tongren = App\Models\Tongren::create(
                       ['book_id' => $book->id]
                   );
                }else{
                   $book = Book::findOrFail($thread->book_id);
-                  $book->original = 2-$channel->id;
                   $book->save();
                   if($channel->id == 2){
-                     $tongren = App\Tongren::firstOrCreate(['book_id' => $book->id]);
+                     $tongren = App\Models\Tongren::firstOrCreate(['book_id' => $book->id]);
                   }
                }
             }
@@ -160,7 +159,7 @@ class AdminsController extends Controller
           'reason' => request('reason'),
         ]);
         if($post->chapter_id !=0){
-          App\Chapter::destroy($post->chapter_id);
+          App\Models\Chapter::destroy($post->chapter_id);
         }
         $post->delete();
         return redirect()->back()->with("success","已经成功处理该贴");

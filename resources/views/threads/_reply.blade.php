@@ -9,7 +9,7 @@
            <span class="" id="reply_to_post_info"></span>
            <button type="button" class="label"><span class="glyphicon glyphicon glyphicon-remove" onclick="cancelreplytopost()"></span></button>
         </div>
-        <input type="hidden" name="reply_to_post" id="reply_to_post_id" class="form-control" value="0"></input>
+        <input type="hidden" name="reply_to_post_id" id="reply_to_post_id" class="form-control" value="0"></input>
         <input type="hidden" name="default_chapter_id" id="default_chapter_id" value="{{ $defaultchapter }}"></input>
         <div class="form-group">
            <textarea name="body" rows="7" class="form-control" id="markdowneditor" placeholder="评论十个字起哦～" value="{{ old('body') }}"></textarea>
@@ -18,7 +18,7 @@
         </div>
         <div class="checkbox">
           <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majiareplythread{{$thread->id}}').style.display = 'block'">马甲？</label>&nbsp;
-          <label><input type="checkbox" name="markdown" onclick="$('#markdowneditor').markdown({language:'zh'})">Markdown语法？</label>
+          <label><input type="checkbox" name="editor" onclick="$('#markdowneditor').markdown({language:'zh'})">显示编辑器？</label>
           <label><input type="checkbox" name="indentation" checked>段首缩进（自动空两格）？</label>
           <div class="form-group text-right" id="majiareplythread{{$thread->id}}" style="display:none">
               <input type="text" name="majia" class="form-control" value="{{Auth::user()->majia ?:'匿名咸鱼'}}" placeholder="请输入不超过10字的马甲">

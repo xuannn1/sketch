@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+
 use Illuminate\Support\Facades\DB;
 
-use App\Channel;
-use App\Thread;
-use App\Label;
+use App\Models\Channel;
+use App\Models\Thread;
+use App\Models\Label;
 
 class LabelsController extends Controller
 {
@@ -21,7 +21,7 @@ class LabelsController extends Controller
       ->where([['threads.label_id','=',$label->id],['threads.deleted_at', '=', null],['threads.public','=',1]])
       ->select('threads.*','users.name','posts.body as last_post_body')
       ->orderby('threads.lastresponded_at', 'desc')
-      ->paginate(Config::get('constants.index_per_page'));
+      ->paginate(config('constants.index_per_page'));
 
       $labelstats =DB::table('threads')
       ->join('users', 'threads.user_id', '=', 'users.id')

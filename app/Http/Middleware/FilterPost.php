@@ -17,8 +17,8 @@ class FilterPost
     public function handle($request, Closure $next)
     {
       $post= $request->route('post');
-      $thread = \App\Thread::FindOrFail($post->thread_id);
-      $channel= \App\Channel::FindOrFail($thread->channel_id);
+      $thread = \App\Models\Thread::FindOrFail($post->thread_id);
+      $channel= \App\Models\Channel::FindOrFail($thread->channel_id);
       if ($thread->public){
          if ($channel->channel_state>=10){//作业，后花园，以及管理界面
             if (Auth::check()){

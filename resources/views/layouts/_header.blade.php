@@ -11,6 +11,13 @@
            @if (Auth::check()&&(Auth::user()->lastrewarded_at <= Carbon\Carbon::today()->toDateTimeString()))
             <li><a href="{{ route('qiandao') }}" style="color:#d66666">我要签到</a></li>
            @endif
+           <!-- <li class="search-container">
+               <form method="GET" action="{{ route('search') }}">
+                   <input type="textarea" placeholder="Search.." name="search">
+                   <button type="submit"><i class="fa fa-search"></i></button>
+               </form>
+           </li> -->
+
            <li><a href="{{ route('books.index') }}">文库</a></li>
            <li class="dropdown">
              <a href="" class="dropdown-toggle" data-toggle="dropdown">
@@ -24,28 +31,17 @@
              </ul>
            </li>
           @if (Auth::check())
-          <?php $user = Auth::user();
-          $unreadmessages = $user->message_reminders
-          +$user->post_reminders
-          +$user->reply_reminders
-          +$user->postcomment_reminders
-          +$user->upvote_reminders;
-          $unreadupdates = $user->collection_books_updated
-          + $user->collection_threads_updated
-          + $user->collection_statuses_updated;
-          $linkedaccounts = $user->linkedaccounts();
-          ?>
-            <li><a href="{{ route('collections.books') }}">收藏<span class="badge">{{ $unreadupdates!=0? $unreadupdates :''}}</span></a></li>
+            <li><a href="{{ route('collections.books') }}">收藏<span class="badge">{{ Auth::user()->unreadupdates()!=0? Auth::user()->unreadupdates() :''}}</span></a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{$unreadmessages>0? 'blink_me reminder-sign':''}}">
-                <span class="glyphicon glyphicon-bell {{$unreadmessages>0? :'hidden'}}"></span>{{ $user->name }} <b class="caret"></b></span>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{Auth::user()->unreadmessages()>0? 'blink_me reminder-sign':''}}">
+                <span class="glyphicon glyphicon-bell {{Auth::user()->unreadmessages()>0? :'hidden'}}"></span>{{ Auth::user()->name }} <b class="caret"></b></span>
               </a>
               <ul class="dropdown-menu">
-                <li><a href="{{ route('user.show', $user->id) }}">个人主页</a></li>
+                <li><a href="{{ route('user.show', Auth::user()->id) }}">个人主页</a></li>
                 <li><a href="{{ route('users.edit') }}">编辑资料</a></li>
                 <li><a href="{{ route('book.create') }}">我要发文</a></li>
-                <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ $unreadmessages!=0? $unreadmessages :''}}</span></a></li>
-               @foreach($linkedaccounts as $account)
+                <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ auth()->user()->unreadmessages()>0 ? auth()->user()->unreadmessages():''}}</span></a></li>
+               @foreach(Auth::user()->linkedaccounts() as $account)
                <li><a href="{{ route('linkedaccounts.switch', $account->id) }}">切换：{{ $account->name }}</a></li>
                @endforeach
                 <li><a href="{{ route('logout') }}" onclick="event.preventDefault();

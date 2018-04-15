@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Channel;
-use App\Label;
-use App\Tag;
+use App\Models\Channel;
+use App\Models\Label;
+use App\Models\Tag;
 use Carbon\Carbon;
-use App\InvitationToken;
+use App\Models\InvitationToken;
 
 class DefaultSettingsSeeder extends Seeder
 {

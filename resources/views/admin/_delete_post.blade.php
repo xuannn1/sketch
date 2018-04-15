@@ -1,5 +1,5 @@
 <span>
-   <a href="#" data-toggle="modal" data-target="#TriggerAdminControlPost{{ $post->id }}" class="btn btn-sm btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理帖子</a>
+   <a href="#" data-toggle="modal" data-target="#TriggerAdminControlPost{{ $post->id }}" class="btn btn-xs btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理帖子</a>
 </span>
 
 <div class="modal fade" id="TriggerAdminControlPost{{ $post->id }}" role="dialog">

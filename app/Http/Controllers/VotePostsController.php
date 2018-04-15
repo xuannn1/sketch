@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Post;
+use App\Models\Post;
 use Auth;
-use App\User;
-use App\VotePosts;
+use App\Models\User;
+use App\Models\VotePosts;
 use Carbon\Carbon;
-use App\Activity;
+use App\Models\Activity;
 
 class VotePostsController extends Controller
 {
@@ -194,7 +194,7 @@ class VotePostsController extends Controller
         ->where('posts.fold_state', '=', false)
         ->select('posts.*','users.name','vote_posts.upvoted_at')
         ->orderBy('vote_posts.upvoted_at','desc')
-        ->paginate(Config::get('constants.index_per_page'));
+        ->paginate(config('constants.index_per_page'));
      $collections = false;
      return view('statuses.index', compact('statuses','collections'));
    }

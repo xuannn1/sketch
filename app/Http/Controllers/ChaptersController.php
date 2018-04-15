@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
-use App\Label;
-use App\Thread;
-use App\Book;
-use App\Post;
-use App\Chapter;
-use App\Tag;
+
+use App\Models\Label;
+use App\Models\Thread;
+use App\Models\Book;
+use App\Models\Post;
+use App\Models\Chapter;
+use App\Models\Tag;
 use Carbon\Carbon;
-use App\Tongren;
-use App\Status;
+use App\Models\Tongren;
+use App\Models\Status;
 use Auth;
 
 class ChaptersController extends Controller
@@ -22,7 +22,7 @@ class ChaptersController extends Controller
    {
       if (Auth::id()==$book->thread->creator->id){
          $book->load(['thread','thread.channel','thread.creator','thread.label']);
-         return view('books.create_chapter', compact('book'));
+         return view('chapters.create_chapter', compact('book'));
       }else{
          return redirect()->route('error', ['error_code' => '403']);
       }
@@ -75,7 +75,7 @@ class ChaptersController extends Controller
         ])
         ->sum('chapters.characters');
          $post->update(['chapter_id'=>$chapter->id]);
-         if ($characters>Config::get('constants.update_min')){
+         if ($characters>config('constants.update_min')){
             $book->update(['lastaddedchapter_at' => Carbon::now()]);
          }
          $thread->update([
@@ -137,12 +137,9 @@ class ChaptersController extends Controller
          ['maintext', '=', false],
          ])->with(['owner', 'comments.owner', 'reply_to_post.owner'])
          ->latest()
-         ->paginate(Config::get('constants.items_per_page'));
+         ->paginate(config('constants.items_per_page'));
       $chapter->increment('viewed');
-      $only = false;
-      $chapter_replied = false;
-      $book_info = Config::get('constants.book_info');
-      return view('books.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next', 'only', 'book_info','chapter_replied'));
+      return view('chapters.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next'))->with('chapter_replied',false);
    }
    public function edit(Chapter $chapter)
    {
@@ -152,7 +149,7 @@ class ChaptersController extends Controller
       if($thread->locked){
          return redirect()->back()->with("danger","本文已被锁定，不能修改");
       }else{
-         return view('books.chapteredit', compact('chapter', 'thread', 'book', 'mainpost'));
+         return view('chapters.chapteredit', compact('chapter', 'thread', 'book', 'mainpost'));
       }
 
    }

@@ -17,7 +17,7 @@ class FilterThread
     public function handle($request, Closure $next)
     {
       $thread = $request->route('thread');
-      $channel= \App\Channel::FindOrFail($thread->channel_id);
+      $channel= \App\Models\Channel::FindOrFail($thread->channel_id);
       if ($thread->user_id == Auth::id()){//原作者本人可见帖子
          return $next($request);
       }elseif($thread->public){

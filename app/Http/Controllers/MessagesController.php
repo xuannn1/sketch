@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
+
 
 use Auth;
-use App\Message;
-use App\User;
+use App\Models\Message;
+use App\Models\User;
 
 class MessagesController extends Controller
 {
@@ -194,57 +194,57 @@ class MessagesController extends Controller
 
    public function index()//1:show unread activities;0:show all activities
    {
-      $messages = $this->findmessages(0, Config::get('constants.index_per_part'));
-      $posts = $this->findposts(0, Config::get('constants.index_per_part'));
-      $postcomments = $this->findpostcomments(0, Config::get('constants.index_per_part'));
-      $replies = $this->findreplies(0, Config::get('constants.index_per_part'));
-      $upvotes = $this->findupvotes(0, Config::get('constants.index_per_part'));
+      $messages = $this->findmessages(0, config('constants.index_per_part'));
+      $posts = $this->findposts(0, config('constants.index_per_part'));
+      $postcomments = $this->findpostcomments(0, config('constants.index_per_part'));
+      $replies = $this->findreplies(0, config('constants.index_per_part'));
+      $upvotes = $this->findupvotes(0, config('constants.index_per_part'));
       return view('messages.index', compact('posts','postcomments','replies','messages','upvotes','group_messages'));
    }
    public function unread()//1:show unread activities;0:show all activities
    {
-      $messages = $this->findmessages(1, Config::get('constants.index_per_part'));
-      $posts = $this->findposts(1, Config::get('constants.index_per_part'));
-      $postcomments = $this->findpostcomments(1, Config::get('constants.index_per_part'));
-      $replies = $this->findreplies(1, Config::get('constants.index_per_part'));
-      $upvotes = $this->findupvotes(1, Config::get('constants.index_per_part'));
+      $messages = $this->findmessages(1, config('constants.index_per_part'));
+      $posts = $this->findposts(1, config('constants.index_per_part'));
+      $postcomments = $this->findpostcomments(1, config('constants.index_per_part'));
+      $replies = $this->findreplies(1, config('constants.index_per_part'));
+      $upvotes = $this->findupvotes(1, config('constants.index_per_part'));
       return view('messages.unread', compact('posts','postcomments','replies','messages','upvotes','group_messages'));
    }
    public function messagebox()//show all messages
    {
-      $messages = $this->findmessages_combineduser(Config::get('constants.items_per_part'));
-      $messages_sent = $this->findmessagessent(Config::get('constants.items_per_part'));
+      $messages = $this->findmessages_combineduser(config('constants.items_per_part'));
+      $messages_sent = $this->findmessagessent(config('constants.items_per_part'));
       return view('messages.messagebox', compact('messages','messages_sent','group_messages'));
    }
 
    public function posts()
    {
-      $posts = $this->findposts(0, Config::get('constants.index_per_page'));
+      $posts = $this->findposts(0, config('constants.index_per_page'));
       return view('messages.posts', compact('posts'));
    }
    public function postcomments()
    {
-      $postcomments = $this->findpostcomments(0, Config::get('constants.index_per_page'));
+      $postcomments = $this->findpostcomments(0, config('constants.index_per_page'));
       return view('messages.postcomments', compact('postcomments'));
    }
    public function upvotes()
    {
-      $upvotes = $this->findupvotes(0, Config::get('constants.index_per_page'));
+      $upvotes = $this->findupvotes(0, config('constants.index_per_page'));
       return view('messages.upvotes', compact('upvotes'));
    }
    public function replies()
    {
-      $replies = $this->findreplies(0, Config::get('constants.index_per_page'));
+      $replies = $this->findreplies(0, config('constants.index_per_page'));
       return view('messages.replies', compact('replies'));
    }
    public function messages()
    {
-      $messages = $this->findmessages(0, Config::get('constants.index_per_page'));
+      $messages = $this->findmessages(0, config('constants.index_per_page'));
       return view('messages.messages', compact('messages'));
    }
    public function messages_sent()
    {
-      $messages_sent = $this->findmessagessent(Config::get('constants.index_per_page'));
+      $messages_sent = $this->findmessagessent(config('constants.index_per_page'));
       return view('messages.messages_sent', compact('messages_sent'));
    }
    public function clear()//make all reminders as seen
@@ -261,7 +261,7 @@ class MessagesController extends Controller
    }
 
    public function conversation(User $user, $is_group_messaging){
-     $messages = $this->findconversation($user->id, Config::get('constants.index_per_page'), $is_group_messaging);
+     $messages = $this->findconversation($user->id, config('constants.index_per_page'), $is_group_messaging);
      return view('messages.conversations', compact('messages','user','is_group_messaging'));
    }
    public function create(User $user)

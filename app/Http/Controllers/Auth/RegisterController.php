@@ -7,9 +7,9 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 
-use App\User;
+use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\InvitationToken;
+use App\Models\InvitationToken;
 use Carbon\Carbon;
 use Mail;
 
@@ -78,7 +78,7 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {
@@ -98,12 +98,12 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
         $user = $this->create($request->all());
-        $user->activated = 1;//手工建立已激活用户
+        $user->activated = 1;
         $user->save();
-        //event(new Registered($user));
-        //$this->sendEmailConfirmationTo($user);
-        //session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
-        session()->flash('success', '用户已建立，欢迎登陆玩耍！');
+        // event(new Registered($user));
+        // $this->sendEmailConfirmationTo($user);
+        // session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
+        session()->flash('success', '账户已建立并激活，直接登录就可以玩耍了，快来试试吧！');
         return redirect('/');
     }
 
@@ -116,7 +116,7 @@ class RegisterController extends Controller
         $to = $user->email;
         $subject = "感谢注册废文网！请确认你的邮箱。";
 
-        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
+        Mail::queue($view, $data, function ($message) use ($from, $name, $to, $subject) {
             $message->from($from, $name)->to($to)->subject($subject);
         });
     }

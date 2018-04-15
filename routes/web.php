@@ -13,7 +13,7 @@
 
 {//以下是用户注册与验证模块
    Auth::routes();
-   Route::get('/test', 'StaticPagesController@test')->name('test');
+   Route::get('/test', 'PagesController@test')->name('test');
 
    Route::post('login', 'Auth\LoginController@login')->name('login');
    Route::get('register/confirm/{token}', 'Auth\RegisterController@confirmEmail')->name('confirm_email');//确认邮箱正确
@@ -24,11 +24,12 @@
 }
 
 {//以下是静态页面模块
-   Route::get('/', 'StaticPagesController@home')->name('home');
-   Route::get('about', 'StaticPagesController@about')->name('about');
-   Route::get('help', 'StaticPagesController@help')->name('help');
-   Route::get('error/{error_code}', 'StaticPagesController@error')->name('error');
-   Route::get('/administrationrecords', 'StaticPagesController@administrationrecords')->name('administrationrecords');
+   Route::get('/', 'PagesController@home')->name('home');
+   Route::get('about', 'PagesController@about')->name('about');
+   Route::get('help', 'PagesController@help')->name('help');
+   Route::get('/search','PagesController@search')->name('search');
+   Route::get('error/{error_code}', 'PagesController@error')->name('error');
+   Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
    Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
 }
 
@@ -61,9 +62,8 @@
 {//以下展示论坛贴按标签（label）与板块（channel）分布的视图
    Route::get('/channels', 'ChannelsController@index')->name('channel.show');//展示某个板块的所有帖子
    Route::get('/channels/{channel}', 'ChannelsController@show')->name('channel.show')->middleware('filter_channel');//展示某个板块的所有帖子
-   Route::get('/channels/{channel}/threads/create', 'ThreadsController@createThreadForm')->name('thread.create');//发布新主题页面
-   Route::post('/channels/{channel}/threads/create','ThreadsController@store')->name('thread.store');//在特定板块发表主题
-   Route::get('labels/{label}', 'LabelsController@show')->name('label.show')->middleware('filter_label');//按label选择，展示某个板块的帖子
+   Route::get('/channels/{channel}/threads/create', 'ThreadsController@createThreadForm')->name('thread.create')->middleware('filter_channel');//发布新主题页面
+   Route::post('/channels/{channel}/threads/create','ThreadsController@store')->name('thread.store')->middleware('filter_channel');//在特定板块发表主题
 }
 
 
@@ -73,8 +73,6 @@
    Route::get('/threads/{thread}/edit', 'ThreadsController@edit')->name('thread.edit');
    Route::post('/threads/{thread}/update', 'ThreadsController@update')->name('thread.update');
    Route::post('/threads/{thread}/posts', 'PostsController@store')->name('post.store');//在某个主题发表回帖
-   Route::get('/threads/{thread}/posts', 'PostsController@create_post_form')->name('post.create');//在某个主题发表回帖
-   Route::get('/threads/{thread}/user/{user}', 'ThreadsController@useronly')->name('thread.useronly');//只看该作者
    Route::get('/threads/{thread}/xianyu', 'XianyusController@vote')->name('xianyu.vote');//为主题投放咸鱼
 }
 
@@ -106,11 +104,6 @@
    Route::get('/chapters/{chapter}/edit', 'ChaptersController@edit')->name('book.editchapter');//编辑章节
    Route::post('chapters/{chapter}/update', 'ChaptersController@update')->name('book.updatechapter');//编辑章节
    Route::get('/books', 'BooksController@index')->name('books.index');//看全部书
-   Route::get('/book-original/{original}','BooksController@bookoriginal')->name('books.original');//图书过滤-原创性
-   Route::get('/book-status/{bookstatus}','BooksController@bookstatus')->name('books.bookstatus');//图书过滤-进度
-   Route::get('/book-length/{booklength}','BooksController@booklength')->name('books.booklength');//图书过滤-篇幅
-   Route::get('/book-sexual-orientation/{booksexualorientation}','BooksController@booksexualorientation')->name('books.booksexualorientation');//图书过滤-篇幅
-   Route::get('/book-label/{booklabel}','BooksController@booklabel')->name('books.booklabel');//图书过滤-类型
    Route::get('/book-tag/{booktag}','BooksController@booktag')->name('books.booktag');//图书过滤-tag
    Route::get('/bookselector/{bookquery}','BooksController@selector')->name('books.selector');//图书过滤
    Route::post('/book-filter','BooksController@filter')->name('books.filter');//输入过滤信息表格
@@ -185,12 +178,14 @@
    ]]);
    Route::post('/cache/save', 'CachesController@save')->name('cache.save');
    Route::get('/cache/retrieve', 'CachesController@retrieve')->name('cache.retrieve');
-   Route::get('cache/initcache','CachesController@initcache')->name('cache.initcache');
+   Route::get('/cache/initcache','CachesController@initcache')->name('cache.initcache');
 }
 
 //动态下载模块
 {
-   Route::get('downloads/thread_txt/{thread}','DownloadsController@thread_txt')->name('download.thread_txt')->middleware('filter_thread');
-   Route::get('downloads/book_noreview_text/{thread}','DownloadsController@book_noreview_text')->name('download.book_noreview_text')->middleware('filter_thread');
+    Route::get('/downloads/index/{thread}', 'DownloadsController@index')->name('download.index')->middleware('filter_thread');//下载某个主题,注意必须有权限
+   Route::get('/downloads/thread_txt/{thread}','DownloadsController@thread_txt')->name('download.thread_txt')->middleware('filter_thread');
+   Route::get('/downloads/book_noreview_text/{thread}','DownloadsController@book_noreview_text')->name('download.book_noreview_text')->middleware('filter_thread');
 
 }
+    Route::resource('polls', 'PollsController');

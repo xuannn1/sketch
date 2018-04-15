@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Quote;
+use App\Models\Quote;
 use Auth;
 
 class QuotesController extends Controller

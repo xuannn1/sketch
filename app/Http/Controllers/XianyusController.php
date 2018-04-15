@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Thread;
-use App\Xianyu;
+use App\Models\Thread;
+use App\Models\Xianyu;
 use Auth;
-use App\User;
+use App\Models\User;
 
 class XianyusController extends Controller
 {
@@ -42,7 +42,7 @@ class XianyusController extends Controller
         $user = Auth::user();
         $id = $user->id;
         if ($thread->xianyu_voted($user, $ip)) {
-           return back()->with("info", "本周内您的账户/IP，已为此条主题投过咸鱼");
+           return back()->with("info", "您的账户/IP，已为此条主题投过咸鱼");
         }
         //检查咸鱼是否足够
         if ($user->xianyu <= 0){
@@ -78,7 +78,7 @@ class XianyusController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Xianyu  $xianyu
+     * @param  \App\Models\Xianyu  $xianyu
      * @return \Illuminate\Http\Response
      */
     public function show(Xianyu $xianyu)
@@ -89,7 +89,7 @@ class XianyusController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Xianyu  $xianyu
+     * @param  \App\Models\Xianyu  $xianyu
      * @return \Illuminate\Http\Response
      */
     public function edit(Xianyu $xianyu)
@@ -101,7 +101,7 @@ class XianyusController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Xianyu  $xianyu
+     * @param  \App\Models\Xianyu  $xianyu
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Xianyu $xianyu)
@@ -112,7 +112,7 @@ class XianyusController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Xianyu  $xianyu
+     * @param  \App\Models\Xianyu  $xianyu
      * @return \Illuminate\Http\Response
      */
     public function destroy(Xianyu $xianyu)
