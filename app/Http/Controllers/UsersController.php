@@ -202,7 +202,7 @@ class UsersController extends Controller
       if ($user){
          $statuses=$this->findstatuses($id,config('constants.index_per_page'));
          $collections = false;
-         return view('users.showstatuses', compact('user','statuses','collections'));
+         return view('users.showstatuses', compact('user','statuses','collections'))->with('show_as_collections',false);
       }else{
          return redirect()->route('error', ['error_code' => '404']);
       }

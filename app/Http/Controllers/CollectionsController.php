@@ -124,6 +124,6 @@ class CollectionsController extends Controller
       $collections = true;
       Auth::user()->collection_statuses_updated = 0;
       Auth::user()->save();
-      return view('users.collections_statuses', compact('statuses','user','active','updates','collections'));
+      return view('users.collections_statuses', compact('statuses','user','active','updates','collections'))->with('show_as_collections',1);
    }
 }
