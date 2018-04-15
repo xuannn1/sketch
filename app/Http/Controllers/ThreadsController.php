@@ -41,7 +41,7 @@ class threadsController extends Controller
 
         $threads = $query->select('threads.*', 'channels.channelname','users.name','labels.labelname','posts.body as last_post_body')
             ->orderby('threads.lastresponded_at', 'desc')
-            ->simplePaginate(config('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'));
 
       return view('threads.index', compact('threads'))->with('show_as_collections', false);
    }
