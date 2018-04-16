@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
@@ -16,7 +15,6 @@ class Thread extends Model
    use Traits\ThreadFilterable;
    use Traits\RegularTraits;
    use SoftDeletes;
-   use Searchable;
    protected $dates = ['deleted_at'];
 
    protected $guarded = [];
@@ -114,15 +112,6 @@ class Thread extends Model
    public function homework()
    {
       return $this->belongsTo(Homework::class, 'homework_id')->withDefault();
-   }
-   public function searchableAs()
-    {
-        return 'threads_index';
-    }
-   public function toSearchableArray()
-   {
-       $array = $this->only('title','brief');
-       return $array;
    }
 
    public function original()

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Laravel\Scout\Searchable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,7 +13,6 @@ class User extends Authenticatable
 {
      use Notifiable;
      use SoftDeletes;
-     use Searchable;
      protected $dates = ['deleted_at'];
 
     /**
@@ -23,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'lastresponded_at', 'introduction', 'invitation_token', 'majia'
+        'name', 'email', 'password', 'lastresponded_at', 'introduction', 'invitation_token', 'majia','activated'
     ];
 
     /**
@@ -171,17 +169,6 @@ class User extends Authenticatable
          ->get();
       return $secondgroup;
    }
-
-   public function searchableAs()
-    {
-        return 'users_index';
-    }
-
-    public function toSearchableArray()
-    {
-        $array = $this->only('name','introduction');
-        return $array;
-    }
 
     public function postreminders()
     {

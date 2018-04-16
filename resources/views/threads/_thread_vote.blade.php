@@ -13,7 +13,7 @@
          @else
          <a class="btn btn-sm btn-danger sosad-button" href="{{ route('thread.edit', $thread->id) }}">编辑主楼</a>
          @endif
-         
+
       @endif
    </span>
    <span class="pull-right">
@@ -25,10 +25,10 @@
    </span>
 </div>
 
-<div class="modal fade" id="TriggerVoteForShengfan{{ $thread->mainpost->id }}" role="dialog">
+<div class="modal fade" id="TriggerVoteForShengfan{{ $thread->post_id }}" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
-         <form action="{{ route('shengfan.vote', $thread->mainpost->id) }}" method="POST">
+         <form action="{{ route('shengfan.vote', $thread->post_id) }}" method="POST">
             {{ csrf_field() }}
             <div class="form-group">
                <label for="shengfan">请输入您想投喂的剩饭数（-1~10）</label>
