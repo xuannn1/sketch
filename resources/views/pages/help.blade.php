@@ -8,7 +8,7 @@
             <div class="panel-heading">
                <div class="container-fluid">
                   <div class="row">
-                     <div class="col-xs-10 col-xs-offset-1">
+                     <div class="col-sm-10 col-sm-offset-1">
                         <h1>帮助</h1>
                      </div>
                   </div>
@@ -17,19 +17,19 @@
             <div class="panel-body">
                <div class="container-fluid">
                   <div class="row">
-                     <div class="col-xs-10 col-xs-offset-1 h6">
+                     <div class="col-sm-10 col-sm-offset-1">
                        <?php $helps = $data['webinfo_help'];  ?>
                        @foreach ($helps as $i=>$help)
                         <div class="row">
-                          <a data-toggle="collapse" data-target="#part{{$i}}" class="h4">{{$help[0]}}</a>
-                          <div id="part{{$i}}" class="collapse h6 col-xs-offset-1">
+                          <a data-toggle="collapse" data-target="#part{{$i}}" class="man-item">{{$help[0]}}</a>
+                          <div id="part{{$i}}" class="collapse static-article">
                             {!! Helper::sosadMarkdown($help[1]) !!}
                           </div>
                         </div>
                        @endforeach
                         <br>
-                       <a data-toggle="collapse" data-target="#settings" class="h4">当前数据</a>
-                       <div id="settings" class="collapse h6 col-xs-offset-1">
+                       <a data-toggle="collapse" data-target="#settings" class="man-item">当前数据</a>
+                       <div id="settings" class="collapse static-article">
                          <p>信息每页显示：{{ $data['items_per_page'] }}个</p>
                          <p>信息每分区显示：{{ $data['items_per_part'] }}个</p>
                          <p>目录每页显示：{{ $data['index_per_page'] }}个</p>

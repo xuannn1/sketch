@@ -6,7 +6,7 @@
    </style>
    <div class="col-sm-offset-3 col-sm-6">
      <div class="panel panel-default">
-       <div class="panel-heading lead">注册</div>
+       <div class="panel-heading h2">注册</div>
        <div class="panel-body">
          @include('shared.errors')
          <form method="POST" action="{{ route('register') }}">
@@ -48,11 +48,13 @@
                    <br>
                 </div>
                 <div class="panel-footer text-center">
-                   <input type="checkbox" name="have_read_policy" value=true>
-                   <span>我已阅读并同意注册协议</span>&nbsp;<u><a href="{{'about'}}">更多内容</a></u>
+                   <input type="checkbox" name="have_read_policy" value=true id="checkbox-input">
+                   <label for="checkbox-input" class="input-helper input-helper--checkbox">
+                       <span>我已阅读并同意注册协议</span>&nbsp;<a href="{{'about'}}">更多内容</a>
+                   </label>
                 </div>
              </div>
-             <button type="submit" class="btn btn-danger sosad-button">注册</button>
+             <button type="submit" class="btn btn-danger sosad-button-auth">注册</button>
          </form>
        </div>
      </div>

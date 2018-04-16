@@ -8,7 +8,7 @@
             <div class="panel-heading">
                <div class="container-fluid">
                   <div class="row">
-                     <div class="col-xs-10 col-xs-offset-1">
+                    <div class="col-sm-10 col-sm-offset-1">
                         <h1>关于</h1>
                      </div>
                   </div>
@@ -17,7 +17,7 @@
             <div class="panel-body">
                <div class="container-fluid">
                   <div class="row">
-                     <div class="col-xs-10 col-xs-offset-1">
+                     <div class="col-sm-10 col-sm-offset-1 static-article">
                         {!! Helper::sosadMarkdown($data['webinfo_about']) !!}
                      </div>
                   </div>

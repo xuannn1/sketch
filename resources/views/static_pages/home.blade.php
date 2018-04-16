@@ -31,7 +31,7 @@
 
          @else
             <div class="text-center">
-               <a class="quote-join" href="{{ route('register') }}" role="button">一起来丧</a>
+               <a class="quote-join button-dark" href="{{ route('register') }}" role="button">一起来丧</a>
             </div>
          @endif
       </div>

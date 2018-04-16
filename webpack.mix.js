@@ -11,11 +11,13 @@ let mix = require('laravel-mix');
  |
  */
 mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css/sass.css')
-   .styles([
+    .sass('resources/assets/sass/app.scss', 'public/css/sass.css')
+    .combine([
     'node_modules/bootstrap-markdown/css/bootstrap-markdown.min.css',
     'public/css/sass.css'
-      ], 'public/css/app.css');
+    ], 'public/css/app.css')
+    .browserSync('localhost:8000')
+    .disableSuccessNotifications();
 mix.scripts([
     'public/js/app.js',
     'resources/assets/js/bbcode_parser.js',

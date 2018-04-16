@@ -4,9 +4,9 @@
 @section('content')
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-8 col-md-offset-2">
+      <div class="col-sm-6 col-sm-offset-3">
         <div class="panel panel-default">
-          <div class="panel-heading">更新密码</div>
+          <div class="panel-heading h2">更新密码</div>
           <div class="panel-body">
             @include('shared.errors')
             <form action="{{ route('password.request') }}" method="POST">
