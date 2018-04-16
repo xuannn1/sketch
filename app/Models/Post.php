@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use GrahamCampbell\Markdown\Facades\Markdown;
@@ -10,7 +9,6 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 class Post extends Model
 {
    use SoftDeletes;
-   use Searchable;
    use Traits\PostFilterable;
    use Traits\RegularTraits;
 
@@ -108,15 +106,5 @@ class Post extends Model
         }
       }
       return;
-   }
-
-   public function searchableAs()
-    {
-        return 'posts_index';
-    }
-   public function toSearchableArray()
-   {
-       $array = $this->only('title','body');
-       return $array;
    }
 }
