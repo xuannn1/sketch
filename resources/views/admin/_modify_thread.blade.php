@@ -11,7 +11,7 @@
                <h1>管理员权限专区：警告！请勿进行私人用户操作！</h1>
             </div>
             <div class="radio">
-               <label><input type="radio" name="controluser" value="1">{{ $thread->locked ? '解锁' : '锁帖' }}</label>
+               <label><input type="radio" name="controlthread" value="1">{{ $thread->locked ? '解锁' : '锁帖' }}</label>
             </div>
             <div class="radio">
                <label><input type="radio" name="controlthread" value="2">{{ $thread->public ? '转为私密' : '转为公开' }}</label>

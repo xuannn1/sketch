@@ -61,7 +61,6 @@ class Kernel extends HttpKernel
         'filter_book' => \App\Http\Middleware\FilterBook::class,
         'filter_channel' => \App\Http\Middleware\FilterChannel::class,
         'filter_label' => \App\Http\Middleware\FilterLabel::class,
-        'filter_admin' => \App\Http\Middleware\FilterAdmin::class,
         'filter_chapter' => \App\Http\Middleware\FilterChapter::class,
         'admin' => \App\Http\Middleware\CheckAdmin::class,
     ];
