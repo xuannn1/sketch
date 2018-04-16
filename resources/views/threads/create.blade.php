@@ -43,7 +43,7 @@
                </div>
              </div>
              <div class="checkbox">
-             <label><input type="checkbox" name="public" checked>是否公开可见</label>
+             <!-- <label><input type="checkbox" name="public" checked>是否公开可见</label> -->
              <label><input type="checkbox" name="noreply">是否禁止回帖</label>
              <!-- <label><input type="checkbox" name="markdown">使用Markdown语法？</label> -->
              <label><input type="checkbox" name="indentation" checked>段首缩进（自动空两格）？</label>
