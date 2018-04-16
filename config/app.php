@@ -173,7 +173,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        \Laravel\Scout\ScoutServiceProvider::class,
+        Laravel\Scout\ScoutServiceProvider::class,
 
 
         // App\Providers\BroadcastServiceProvider::class,
