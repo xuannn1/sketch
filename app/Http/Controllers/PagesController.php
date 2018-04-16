@@ -11,9 +11,16 @@ use App\Models\User;
 use App\Models\Quote;
 use App\Models\Thread;
 use App\Models\Post;
+use Carbon\Carbon;
 
 class PagesController extends Controller
 {
+    public function __construct()
+    {
+       $this->middleware('auth', [
+         'only' => ['search'],
+       ]);
+    }
 
     public function home()
     {
@@ -89,6 +96,13 @@ class PagesController extends Controller
     }
 
     public function search(Request $request){
+        $user = Auth::user();
+        if($user->lastsearched_at>Carbon::now()->subMinutes(15)->toDateTimeString()){
+            return redirect()->back()->with('warning','15分钟内只能进行一次搜索');
+        }else{
+            $user->lastsearched_at=Carbon::now();
+            $user->save();
+        }
         if($request->search){
             if( $request->search_options=='threads'){
                 $group = 10;

@@ -2,6 +2,7 @@
 @section('content')
 <div class="container">
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+       @if(Auth::check())
        <div class="search-container">
            <form method="GET" action="{{ route('search') }}" id="search_form">
                <select name="search_options" form="search_form" onchange="if
@@ -15,6 +16,7 @@
                <button type="submit"><i class="fa fa-search"></i></button>
            </form>
        </div>
+       @endif
       <div class="jumbotron" >
          <h2 id= "daily-quote" class="display-1">{{ $quote->quote }}</h2>
          <div>
