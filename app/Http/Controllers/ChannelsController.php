@@ -30,7 +30,7 @@ class ChannelsController extends Controller
             ->orderby('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'));
 
-        $labels = Label::inChannel($channel->id)->withCount('threads')->get();
+        $labels = Label::inChannel($channel->id)->withCount('threads')->orderBy('created_at','asc')->get();
         return view('threads.index_channel', compact('threads', 'labels','channel'))->with('show_as_collections', false);
     }
 }

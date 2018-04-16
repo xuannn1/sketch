@@ -22,7 +22,7 @@ class PagesController extends Controller
          $group = Auth::user()->group;
       }
       $channels = Channel::where('channel_state','<',$group)
-      ->orderBy('id','asc')
+      ->orderBy('orderby','asc')
       ->get();
       $quote = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->first();
       return view('pages/home',compact('channels', 'quote'));
