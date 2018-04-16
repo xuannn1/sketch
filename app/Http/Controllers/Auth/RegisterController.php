@@ -87,6 +87,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'invitation_token' => $data['invitation_token'],
+            'activated' => 1,
         ]);
         $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
         $invitation_token->decrement('invitation_times');
@@ -98,8 +99,6 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
         $user = $this->create($request->all());
-        $user->activated = 1;
-        $user->save();
         // event(new Registered($user));
         // $this->sendEmailConfirmationTo($user);
         // session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
