@@ -37,8 +37,7 @@ class PagesController extends Controller
 
     public function about()
     {
-      $data = config('constants');
-      return view('pages/about',compact('data'));
+      return view('pages/about');
     }
 
     public function help()

@@ -66,8 +66,7 @@
 
                     <div>
                         <label for="bianyuan"><h4>5. 是否边缘敏感题材？</h4></label>
-                        <a data-toggle="collapse" data-target="#bianyuan" class="h6">（点击查看什么属于边缘敏感题材）</a>
-                        <div id="bianyuan" class="collapse h6">
+                        <div id="bianyuan" class="h6">
                           文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含人兽、触手、父子、乱伦、生子、产乳、abo、冰恋、军政、黑道、性转……等边缘敏感题材，或估计不适合未成年人观看的，请勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。
                         </div>
                         <div>
@@ -90,8 +89,8 @@
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="title"><h4>7. 标题：</h4></label><a data-toggle="collapse" data-target="#biaotiguiding" class="h6">（点击查看关于规范标题格式的说明）</a>
-                        <div id="biaotiguiding" class="collapse h6">
+                        <label for="title"><h4>7. 标题：</h4></label>
+                        <div id="biaotiguiding" class="h6">
                             标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，不要放入标题。
                         </div>
                         <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="请输入不超过20字的标题">
@@ -111,13 +110,13 @@
                     </div>
 
                     <div class="text-center">
-                        <a data-toggle="collapse" data-target="#more_options" class="h5">（更多设置）</a>
+                        <a data-toggle="collapse" data-target="#more_options" class="h5">点击展开更多设置（可日后再填）</a>
                     </div>
 
                     <div id="more_options" class="collapse">
                         <div class="form-group">
-                            <label for="wenan"><h4>9. 文案：</h4></label><a data-toggle="collapse" data-target="#wenan" class="h6" placeholder="给文章写一段文案介绍吧">（点击查看“文案”与“正文”的区别）</a>
-                            <div id="wenan" class="collapse h6">
+                            <label for="wenan"><h4>9. 文案：</h4></label>
+                            <div id="wenan" class="h6">
                                 文案不是正文，文案属于对文章的简单介绍。文案采用“居中排列”的板式，而不是“向左对齐”。如果在这里发布正文，阅读效果不好。正文请在发布文章后，于文案下选择“新建章节”来建立。
                             </div>
                             <textarea name="wenan" id="markdowneditor" data-provide="markdown" rows="5" class="form-control">{{ old('wenan') }}</textarea>
