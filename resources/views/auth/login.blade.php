@@ -15,16 +15,20 @@
                 <input type="text" name="email" class="form-control" value="{{ old('email') }}">
               </div>
               <div class="form-group">
-                <label for="password">密码（<a href="{{ route('password.request') }}">忘记密码/重新激活</a>）：</label>
+                <label for="password">密码：</label>
                 <input type="password" name="password" class="form-control" value="{{ old('password') }}">
               </div>
               <div class="checkbox">
                 <label><input type="checkbox" name="remember">记住我</label>
               </div>
               <button type="submit" class="btn btn-danger sosad-button">登录</button>
+              <a href="{{ route('register') }}" class="btn btn-success sosad-button">我要注册</a>
             </form>
+            <br>
+            <div class="">
+                <u><a href="{{ route('password.request') }}">忘记密码/重新激活</a></u>
+            </div>
             <hr>
-            <p>还没账号？ <a href="{{ route('register') }}">现在注册！</a></p>
           </div>
         </div>
       </div>

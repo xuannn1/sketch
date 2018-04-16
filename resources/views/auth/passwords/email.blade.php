@@ -6,8 +6,8 @@
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default">
-        <div class="panel-heading">
-          向您的邮箱发送 重置密码/重新激活 邮件
+        <div class="panel-heading h5">
+          向您的邮箱发送 <strong>重置密码/重新激活</strong> 邮件
         </div>
         <div class="panel-body">
           @include('shared.errors')
@@ -21,13 +21,8 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <div class="col-md-6 col-md-offset-4">
-                <button type="submit" class="btn btn-danger sosad-button">
-                  重置
-                </button>
-              </div>
-            </div>
+            <button type="submit" class="btn btn-danger sosad-button">重置</button>
+
           </form>
         </div>
       </div>

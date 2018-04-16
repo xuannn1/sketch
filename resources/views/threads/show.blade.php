@@ -7,6 +7,7 @@
       @include('shared.errors')
       <!-- 首页／版块／类型 -->
       @include('threads._site_map')
+      {{ $posts->links() }}
       @if($posts->currentPage()==1)
       <div class="panel panel-default">
          <div class="panel-body">

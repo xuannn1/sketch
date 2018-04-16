@@ -33,14 +33,10 @@
                   <input type="password" class="form-control" name="password_confirmation">
                 </div>
               </div>
-
-              <div class="form-group">
-                <div class="vol-md-6 col-md-offset-4">
-                  <button type="submit" class="btn btn-danger sosad-button">
-                    更新密码
-                  </button>
-                </div>
-              </div>
+              
+              <button type="submit" class="btn btn-danger sosad-button">
+                更新密码
+              </button>
             </form>
           </div>
         </div>
