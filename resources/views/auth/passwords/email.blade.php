@@ -10,7 +10,11 @@
           向您的邮箱发送 <strong>重置密码/重新激活</strong> 邮件
         </div>
         <div class="panel-body">
-          @include('shared.errors')
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
           <form action="{{ route('password.email') }}" method="POST">
             {{ csrf_field() }}
 
