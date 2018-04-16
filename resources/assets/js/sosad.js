@@ -267,25 +267,29 @@ function destroystatus(status_id){
       }
    });
 };
-if($('textarea').length>1){
-   console.log('goingto initiate cache');
-   $.ajaxSetup({
-     headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-     }
-  });
-  $.ajax({
-     type: "GET",
-     url: web_base_url + '/cache/initcache',
-     data: {
-         },
-     success: function(data) {
-        if (data != "notwork"){
-           console.log(data);
-        }
-     }
-  });
-}
+
+$(document).ready(function(){
+    $( 'textarea' ).click(function() {
+        console.log('goingto initiate cache');
+        $.ajaxSetup({
+          headers: {
+               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+       });
+       $.ajax({
+          type: "GET",
+          url: web_base_url + '/cache/initcache',
+          data: {
+              },
+          success: function(data) {
+             if (data != "notwork"){
+                console.log(data);
+             }
+          }
+       });
+    });
+});
+
 
 $('textarea').keyup(_.debounce(function() {
    console.log('save');
