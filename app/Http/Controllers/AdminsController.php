@@ -20,6 +20,7 @@ use Carbon\Carbon;
 
 class AdminsController extends Controller
 {
+    //所有这些都需要用transaction，以后再说
    public function __construct()
    {
      $this->middleware('admin');
@@ -104,42 +105,45 @@ class AdminsController extends Controller
          $thread->delete();
          return redirect()->route('home')->with("success","已经删帖");
       }
-      if ($var=="4"){
-         Administration::create([
-            'user_id' => Auth::id(),
-            'operation' => '9',//转移版块
-            'item_id' => $thread->id,
-            'reason' => request('reason'),
-         ]);
-         $label = Label::findOrFail(request('label'));
-         $channel = Channel::findOrFail(request('channel'));
-         if(($label)&&($label->channel_id == $channel->id)){
-            $thread->channel_id = $channel->id;
-            $thread->label_id = $label->id;
-            if($channel->channel_state!=1){
-                $thread->book->delete();
-                $thread->book_id = 0;
-            }else{
-               if($thread->book_id==0){//这篇主题本来并不算文章,新建文章
-                  $book = Book::create([
-                     'thread_id' => $thread->id,
-                     'original' => 2-$channel->id,
-                     'book_status' => 0,
-                     'book_length' => 0,
-                     'lastaddedchapter_at' => Carbon::now(),
-                  ]);
-                  $tongren = App\Models\Tongren::create(
-                      ['book_id' => $book->id]
-                  );
+      if ($var=="4"){//书本/主题贴转移版块
+
+        DB::transaction(function () use($thread){
+            Administration::create([
+               'user_id' => Auth::id(),
+               'operation' => '9',//转移版块
+               'item_id' => $thread->id,
+               'reason' => request('reason'),
+            ]);
+            $label = Label::findOrFail(request('label'));
+            $channel = Channel::findOrFail(request('channel'));
+            if(($label)&&($label->channel_id == $channel->id)){
+               $thread->channel_id = $channel->id;
+               $thread->label_id = $label->id;
+               if($channel->channel_state!=1){
+                   $thread->book->delete();
+                   $thread->book_id = 0;
                }else{
-                  $book = Book::findOrFail($thread->book_id);
-                  $book->save();
-                  if($channel->id == 2){
-                     $tongren = App\Models\Tongren::firstOrCreate(['book_id' => $book->id]);
+                  if($thread->book_id==0){//这篇主题本来并不算文章,新建文章
+                     $book = Book::create([
+                        'thread_id' => $thread->id,
+                        'book_status' => 0,
+                        'book_length' => 0,
+                        'lastaddedchapter_at' => Carbon::now(),
+                     ]);
+                     $tongren = App\Models\Tongren::create(
+                         ['book_id' => $book->id]
+                     );
+                  }else{
+                     $book = Book::findOrFail($thread->book_id);
+                     $book->save();
+                     if($channel->id == 2){
+                        $tongren = \App\Models\Tongren::firstOrCreate(['book_id' => $book->id]);
+                     }
                   }
                }
             }
-         }
+        });
+
          $thread->save();
          return redirect()->route('thread.show', $thread)->with("success","已经转移操作");
       }
