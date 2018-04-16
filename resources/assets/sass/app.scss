@@ -52,6 +52,20 @@ $font-list-serif: "HiraMinProN", "Source Han Serif CN","Source Han Serif SC","So
         text-decoration: none;
     }
 }
+
+%button-grey {
+    background: $border-color-row;
+    color: $link-color;
+    font-weight: 300;
+    border: none;
+    border-radius: 5px;
+    &:hover, &:focus {
+        color: $link-hover-color;
+        background: $body-color;
+        text-decoration: none;
+    }
+}
+
 .button-radius {
     background: none;
     color: $button-color;
@@ -63,6 +77,13 @@ $font-list-serif: "HiraMinProN", "Source Han Serif CN","Source Han Serif SC","So
         color: $body-color;
         background: $button-color;
         text-decoration: none;
+    }
+}
+
+%light-shadow {
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    &:hover, &:focus {
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 50px 60px rgba(0, 0, 0, 0.04);
     }
 }
 
@@ -292,6 +313,7 @@ footer {
     display: inline-block;
     padding: 10px 20px;
     @extend %button-dark;
+    @extend %light-shadow;
 }
 
 .quote-button-wrapper {
@@ -373,10 +395,7 @@ label, .label {
 }
 
 .status-wrapper {
-    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-    &:hover, &:focus {
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 50px 60px rgba(0, 0, 0, 0.04);
-    }
+    @extend %light-shadow;
 }
 
 .status-editor {
@@ -461,6 +480,7 @@ h4, .h4, h5, .h5, h6, .h6 {
     @extend %headings-shared;
     margin-top: 10px;
     margin-bottom: 10px;
+    line-height: normal;
 }
 
 code {
@@ -719,6 +739,13 @@ hr {
     margin: 5px 0px;
 }
 
+.sosad-button-tag {
+    @extend %button-grey;
+    padding: 3px 7px;
+    margin-bottom: 2px;
+    margin-right: 2px;
+}
+
 .sosad-button-control{
    background-color:$background-color !important;
    border-color:$button-color;
@@ -727,6 +754,26 @@ hr {
    font-weight:bold;
    border-style:solid;
 }
+
+.badge {
+    background: none;
+    color: $link-hover-color;
+    border: 1px solid $link-hover-color;
+    border-radius: 1em;
+    margin-bottom: 3px;
+    padding: 3px;
+}
+
+// tab badges
+.panel-default > .panel-heading .badge {
+    background: none;
+    border: none;
+    font-weight: 600;
+    color: $link-hover-color;
+    padding: 0;
+    padding-bottom: 10px;
+}
+
 .button-disabled{
     background-color:$button-disabled;
     border-color:$button-disabled;
@@ -819,6 +866,17 @@ hr {
 .chapters{
    margin-top:10px;
    margin-bottom:10px;
+}
+
+.nav-tabs {
+    border-bottom: none;
+    li > a {
+        line-height: 1.2em;
+        &:hover {
+            background: none;
+            border: none;
+        }
+    }
 }
 
 

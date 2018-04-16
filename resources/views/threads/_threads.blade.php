@@ -1,16 +1,16 @@
 @foreach($threads as $thread)
 <article class="{{ 'thread'.$thread->id }}">
    <div class="row">
-      <div class="col-xs-12 h5">
+      <div class="col-xs-12">
          @if($show_as_collections)
          <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionThread({{$thread->id}})">取消收藏</button>
          <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$thread->id}})" Id="togglekeepupdatethread{{$thread->id}}">{{$thread->keep_updated?'不再提醒':'接收提醒'}}</button>
          @endif
          <!-- thread title -->
          <span class="bigger-20">
-            <a class="btn btn-xs btn-success sosad-button" href="{{route('channel.show', $thread->channel_id)}}">{{$thread->channelname}}</a>
-            <a class="btn btn-xs btn-warning sosad-button" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->labelname}}</a>
-            <strong><a href="{{ route('thread.show', $thread->id) }}">{{ $thread->title }}</a></strong>
+            <a class="btn btn-xs btn-success sosad-button-tag" href="{{route('channel.show', $thread->channel_id)}}">{{$thread->channelname}}</a>
+            <a class="btn btn-xs btn-warning sosad-button-tag" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->labelname}}</a>
+            <a href="{{ route('thread.show', $thread->id) }}">{{ $thread->title }}</a>
             @if( $thread->bianyuan == 1)
             <span class="badge">边</span>
             @endif
@@ -52,6 +52,6 @@
          <span class="pull-right smaller-10">{{ Carbon\Carbon::parse($thread->created_at)->diffForHumans() }}/{{ Carbon\Carbon::parse($thread->lastresponded_at)->diffForHumans() }}</span>
       </div>
    </div>
-   <hr>
+   <!-- <hr> -->
 </article>
 @endforeach
