@@ -96,7 +96,7 @@
    Route::post('/book/create', 'BooksController@store')->name('book.store');//发表新的文章
    Route::get('/books/{book}/edit', 'BooksController@edit')->name('book.edit');//修改文章
    Route::post('/books/{book}/update', 'BooksController@update')->name('book.update');//更新文章修改
-   Route::get('/books/{book}', 'BooksController@show')->name('book.show');//查看某本书的目录
+   Route::get('/books/{book}', 'BooksController@show')->name('book.show')->middleware('filter_book');//查看某本书的目录
 
    Route::get('/books/{book}/createchapter', 'ChaptersController@createChapterForm')->name('book.createchapter');//更新章节的表格
    Route::post('/books/{book}/storechapter', 'ChaptersController@store')->name('book.storechapter');//储存新章节
