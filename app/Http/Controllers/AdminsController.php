@@ -117,7 +117,8 @@ class AdminsController extends Controller
             $thread->channel_id = $channel->id;
             $thread->label_id = $label->id;
             if($channel->channel_state!=1){
-               $thread->book_id = 0;
+                $thread->book->delete();
+                $thread->book_id = 0;
             }else{
                if($thread->book_id==0){//这篇主题本来并不算文章,新建文章
                   $book = Book::create([

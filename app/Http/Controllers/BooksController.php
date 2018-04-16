@@ -133,7 +133,7 @@ class BooksController extends Controller
         if(count($bookinfo[0])==1){
             $query->where('threads.channel_id','=', $bookinfo[0][0]);
         }
-        if(count($bookinfo[4])==1){
+        if ((count($bookinfo)>=5)&&(count($bookinfo[4])==1)){
             if($bookinfo[4][0]<3){
                 $query->where('threads.bianyuan', '=', (bool)$bookinfo[4][0]);
             }else{
