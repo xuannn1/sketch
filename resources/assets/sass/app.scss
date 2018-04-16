@@ -97,7 +97,7 @@ html {
 }
 
 body{
-   padding-top: 50px;
+   padding-top: 60px;
    background-color: $body-color;
    font-family: $font-list;
    font-weight: 400;
@@ -144,7 +144,6 @@ header .container {
     font-size: 14px;
     i {
         font-size: 0.8em;
-        opacity: 0.8;
     }
     &:hover, &:focus {
         background-color: $body-color;
@@ -155,7 +154,7 @@ header .container {
 .navbar-inverse .navbar-nav {
   li a, .open a {
     @extend %navbar-shared;
-    padding: 10px 20px;
+    padding: 14px 20px;
   }
 }
 
@@ -163,7 +162,7 @@ header .container {
     border: none;
     border-radius: 0px;
     border-left: solid 1px $border-color-row;
-    padding: 10px 20px;
+    padding: 14px 20px;
     margin: 0px 0px;
     &:hover, &:focus {
         background-color: $navbar-color;
@@ -203,7 +202,7 @@ header .container {
   font-size: 1.7em;
   font-weight: 700;
   img {
-    height: 42px;
+    height: 2em;
     vertical-align: middle;
   }
 }
@@ -211,7 +210,7 @@ header .container {
 .navbar-inverse .navbar-nav .open .dropdown-menu {
   display: block;
   position: absolute;
-  top: 45px;
+  top: 50px;
   width: auto;
   z-index: 1000;
   background-color: #fff;
@@ -512,7 +511,7 @@ code {
    font-weight: 600;
    font-size: 0.8em;
    padding-top:5px;
-   padding-bottom:9px;
+   padding-bottom:6px;
    border-bottom: solid 2.5px $body-font-color;
    // border-bottom: solid 2px $body-font-color-light;
    &:hover, &:focus {
@@ -555,6 +554,9 @@ hr {
     flex-flow: row wrap;
     -webkit-flex-flow: row wrap;
     font-family: $font-list;
+    a {
+        display: block;
+    }
 }
 
 .thread-info {
@@ -898,7 +900,7 @@ hr {
     }
     .navbar-collapse.in {
         position: absolute;
-        top: 45px;
+        top: 55px;
         right: 0px;
         width: 45%;
         height: auto;
@@ -912,7 +914,7 @@ hr {
     }
     .navbar-collapse.collapsing {
         position: absolute;
-        top: 45px;
+        top: 55px;
         right: 0px;
         width: 45%;
         height: auto;
@@ -921,7 +923,7 @@ hr {
     .navbar-inverse .navbar-nav .open .dropdown-menu {
         width: 100%;
       position: absolute;
-      top: 35px;
+      top: 50px;
       left: 0px;
       border: none;
       > li { padding: 2px 0px; }

@@ -11485,7 +11485,7 @@ html {
 }
 
 body {
-  padding-top: 50px;
+  padding-top: 60px;
   background-color: #f9f9f9;
   font-family: "Noto Sans SC", "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\5FAE\8F6F\96C5\9ED1", Helvetica, Arial, Verdana, sans-serif;
   font-weight: 400;
@@ -11544,7 +11544,6 @@ header .container {
 .navbar-inverse .navbar-nav .open a i,
 .navbar-inverse .navbar-nav .open .dropdown-menu > li > a i {
   font-size: 0.8em;
-  opacity: 0.8;
 }
 
 .navbar-inverse .navbar-nav li a:hover,
@@ -11559,14 +11558,14 @@ header .container {
 
 .navbar-inverse .navbar-nav li a,
 .navbar-inverse .navbar-nav .open a {
-  padding: 10px 20px;
+  padding: 14px 20px;
 }
 
 .navbar-inverse .navbar-toggle {
   border: none;
   border-radius: 0px;
   border-left: solid 1px #efefef;
-  padding: 10px 20px;
+  padding: 14px 20px;
   margin: 0px 0px;
 }
 
@@ -11607,14 +11606,14 @@ header .container {
 }
 
 #logo img {
-  height: 42px;
+  height: 2em;
   vertical-align: middle;
 }
 
 .navbar-inverse .navbar-nav .open .dropdown-menu {
   display: block;
   position: absolute;
-  top: 45px;
+  top: 50px;
   width: auto;
   z-index: 1000;
   background-color: #fff;
@@ -11977,7 +11976,7 @@ code {
   font-weight: 600;
   font-size: 0.8em;
   padding-top: 5px;
-  padding-bottom: 9px;
+  padding-bottom: 6px;
   border-bottom: solid 2.5px #555;
 }
 
@@ -12025,6 +12024,10 @@ hr {
       -ms-flex-flow: row wrap;
           flex-flow: row wrap;
   font-family: "Noto Sans SC", "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\5FAE\8F6F\96C5\9ED1", Helvetica, Arial, Verdana, sans-serif;
+}
+
+.thread a {
+  display: block;
 }
 
 .thread-info {
@@ -12428,7 +12431,7 @@ hr {
 
   .navbar-collapse.in {
     position: absolute;
-    top: 45px;
+    top: 55px;
     right: 0px;
     width: 45%;
     height: auto;
@@ -12442,7 +12445,7 @@ hr {
 
   .navbar-collapse.collapsing {
     position: absolute;
-    top: 45px;
+    top: 55px;
     right: 0px;
     width: 45%;
     height: auto;
@@ -12452,7 +12455,7 @@ hr {
   .navbar-inverse .navbar-nav .open .dropdown-menu {
     width: 100%;
     position: absolute;
-    top: 35px;
+    top: 50px;
     left: 0px;
     border: none;
   }
