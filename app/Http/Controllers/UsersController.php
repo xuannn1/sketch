@@ -258,26 +258,30 @@ class UsersController extends Controller
       $user = Auth::user();
       if ($user->lastrewarded_at <= Carbon::today()->toDateTimeString())
       {
-         if ($user->lastrewarded_at > Carbon::today()->subdays(1)->toDateTimeString()) {
-             $user->increment('continued_qiandao');
-         }else{
-            $user->continued_qiandao=1;
-         }
-         $user->lastrewarded_at = Carbon::now();
-         $message = "您已成功签到！连续签到".$user->continued_qiandao."天！";
-         $reward_base = 1;
-         if(($user->continued_qiandao>=5)&&($user->continued_qiandao%5==0)){
-            $reward_base = intval($user->continued_qiandao/10)+2;
-            $message .="您获得了特殊奖励！";
-         }
-         $user->increment('xianyu', 1*$reward_base);
-         $user->increment('shengfan', 5*$reward_base);
-         $user->increment('jifen', 5*$reward_base);
-         $user->message_limit = $user->user_level;
-         $user->save();
-         if($user->checklevelup()){
-            $message .="您的个人等级已提高!";
-         }
+          $message = DB::transaction(function () use($user){
+              if ($user->lastrewarded_at > Carbon::today()->subdays(1)->toDateTimeString()) {
+                  $user->increment('continued_qiandao');
+                  if($user->continued_qiandao>$user->maximum_qiandao){$user->maximum_qiandao = $user->continued_qiandao;}
+              }else{
+                 $user->continued_qiandao=1;
+              }
+              $user->lastrewarded_at = Carbon::now();
+              $message = "您已成功签到！连续签到".$user->continued_qiandao."天！";
+              $reward_base = 1;
+              if(($user->continued_qiandao>=5)&&($user->continued_qiandao%5==0)){
+                 $reward_base = intval($user->continued_qiandao/10)+2;
+                 $message .="您获得了特殊奖励！";
+              }
+              $user->increment('xianyu', 1*$reward_base);
+              $user->increment('shengfan', 5*$reward_base);
+              $user->increment('jifen', 5*$reward_base);
+              $user->message_limit = $user->user_level;
+              $user->save();
+              if($user->checklevelup()){
+                 $message .="您的个人等级已提高!";
+              }
+              return $message;
+          });
          return back()->with("success", $message);
       }else{
          return back()->with("info", "您已领取奖励，请勿重复签到");
