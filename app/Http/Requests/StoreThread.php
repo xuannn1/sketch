@@ -86,7 +86,6 @@ class StoreThread extends FormRequest
            'body' => request('body'),
            'label_id' => request('label'),
            'anonymous' => $anonymous,
-           'public' => $public,
            'noreply' => $noreply,
            'edited_at' => Carbon::now(),
           ]);
