@@ -1,11 +1,11 @@
 @extends('layouts.default')
-@section('title', Helper::convert_to_title($thread->title).'-'.$chapter->title)
+@section('title', Helper::convert_to_title($thread->title).'-'.Helper::convert_to_public($chapter->title))
 @section('content')
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
       @include('shared.errors')
       <div class="">
-         <a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('channel.show', ['channel'=>$thread->channel_id,'label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>/<a href="{{ route('book.show', $book) }}">{{ Helper::convert_to_title($thread->title) }}</a>/<a href="{{route('book.showchapter', $chapter->id)}}">{{ $chapter->title }}</a>
+         <a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('channel.show', ['channel'=>$thread->channel_id,'label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>/<a href="{{ route('book.show', $book) }}">{{ Helper::convert_to_title($thread->title) }}</a>/<a href="{{route('book.showchapter', $chapter->id)}}">{{ Helper::convert_to_public($chapter->title) }}</a>
       </div>
       {{ $posts->links() }}
       @if($posts->currentPage()==1)
@@ -13,7 +13,7 @@
          <div class="panel-heading">
             <div class="text-center h5">
                <div class="h4">
-                  <a href="{{route('book.showchapter', $chapter->id)}}" class="bigger-20">{{ $chapter->title }}</a>
+                  <a href="{{route('book.showchapter', $chapter->id)}}" class="bigger-20">{{ Helper::convert_to_public($chapter->title) }}</a>
                </div>
                <?php $post = $chapter->mainpost ?>
                <div class="grayout">

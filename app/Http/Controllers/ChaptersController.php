@@ -95,7 +95,7 @@ class ChaptersController extends Controller
             Status::create([
                'user_id' => Auth::id(),
                'content' => '更新了[《'.Helper::convert_to_title($thread->title).'》'
-               .$chapter->title.'：'.request('brief').']('
+               .Helper::convert_to_public($chapter->title).'：'.request('brief').']('
                .route('book.showchapter', $chapter->id)
                .')',
             ]);

@@ -10,7 +10,7 @@
          <span class="bigger-20">
             <a class="btn btn-xs btn-success sosad-button" href="{{route('channel.show', $thread->channel_id)}}">{{$thread->channelname}}</a>
             <a class="btn btn-xs btn-warning sosad-button" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->labelname}}</a>
-            <strong><a href="{{ route('thread.show', $thread->id) }}">{{ $thread->title }}</a></strong>
+            <strong><a href="{{ route('thread.show', $thread->id) }}">{{ Helper::convert_to_title($thread->title) }}</a></strong>
             @if( $thread->bianyuan == 1)
             <span class="badge">边</span>
             @endif
@@ -44,7 +44,7 @@
          <!-- author end -->
       </div>
       <div class="col-xs-12 h5 ">
-         <span>{{ $thread->brief }}</span>
+         <span>{{ Helper::convert_to_public($thread->brief) }}</span>
          <span class="pull-right smaller-10"><em><span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->responded }}</em></span>
       </div>
       <div class="col-xs-12 h5 grayout brief">

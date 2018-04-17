@@ -21,12 +21,12 @@
               <br>
              <div class="form-group">
                <label for="title">标题：</label>
-               <input type="text" name="title" class="form-control" value="{{ $thread->title }}">
+               <input type="text" name="title" class="form-control" value="{{ Helper::convert_to_title($thread->title) }}">
              </div>
 
              <div class="form-group">
                <label for="brief">简介：</label>
-               <input type="text" name="brief" class="form-control" value="{{ $thread->brief }}">
+               <input type="text" name="brief" class="form-control" value="{{ Helper::convert_to_public($thread->brief) }}">
              </div>
 
              <div class="form-group">

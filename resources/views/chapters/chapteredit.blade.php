@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', Helper::convert_to_title($thread->title).'-'.$chapter->title)
+@section('title', Helper::convert_to_title($thread->title).'-'.Helper::convert_to_public($chapter->title))
 @section('content')
 <div class="container-fluid">
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
@@ -11,7 +11,7 @@
          {{ csrf_field() }}
             <div class="form-group">
                <label for="title">章节名称：</label>
-               <input type="text" name="title" class="form-control" value="{{ $chapter->title }}">
+               <input type="text" name="title" class="form-control" value="{{ Helper::convert_to_public($chapter->title) }}">
             </div>
             <div class="form-group">
                <label for="brief">概要：</label>

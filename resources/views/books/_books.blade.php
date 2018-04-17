@@ -46,7 +46,7 @@
          </span>
       </div>
       <div class="col-xs-12 h5 brief">
-         <span>{{ $book->brief }}</span>
+         <span>{{ Helper::convert_to_public($book->brief) }}</span>
          <span class = "pull-right smaller-10"><em><span class="glyphicon glyphicon-pencil"></span>{{ $book->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $book->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $book->responded }}</em></span>
       </div>
       <div class="col-xs-12 h5 brief">

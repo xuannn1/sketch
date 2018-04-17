@@ -22,7 +22,7 @@
 
                     <div class="form-group">
                         <label for="brief"><h4>简介：</h4></label>
-                        <input type="text" name="brief" class="form-control" value="{{ $thread->brief }}">
+                        <input type="text" name="brief" class="form-control" value="{{ Helper::convert_to_public($thread->brief) }}">
                     </div>
 
                     <div class="form-group">
