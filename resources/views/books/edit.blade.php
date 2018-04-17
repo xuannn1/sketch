@@ -33,6 +33,7 @@
                         <textarea name="wenan" id="markdowneditor" data-provide="markdown" rows="5" class="form-control">{{ $thread->body }}</textarea>
                         <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
                         <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
+                        <button type="button" onclick="removespace('markdowneditor')" class="sosad-button-control addon-button">清理段首空格</button>
                     </div>
 
                     <div class="grayout">

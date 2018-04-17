@@ -56,6 +56,15 @@ function wordscount(item){
    var str = post.replace(/[\[\]\*\#\_\-\s\n\t\r]/g,"");
    alert("字数统计：" + str.length);
 };
+function removespace(itemname){
+   var post = document.getElementById(item).value;
+   console.log('post');
+   var res = str.split(" ");
+   console.log('res');
+   console.log('cleared spaces');
+
+   $('#'+itemname).val(post);
+};
 
 function expandpost(id){
    var x = document.getElementById('full'+id);
@@ -269,7 +278,7 @@ function destroystatus(status_id){
 };
 
 $(document).ready(function(){
-    $( 'textarea' ).click(function() {
+    $( 'textarea'  ).one( "click", function() {
         if($(this).attr('rows')>1){
             console.log('goingto initiate cache');
             $.ajaxSetup({
@@ -284,7 +293,7 @@ $(document).ready(function(){
                   },
               success: function(data) {
                  if (data != "notwork"){
-                    console.log(data);
+                    console.log("data");
                  }
               }
            });
@@ -309,7 +318,7 @@ $('textarea').keyup(_.debounce(function() {
           },
       success: function(data) {
          if (data != "notwork"){
-            console.log(item_value);
+            console.log(data);
          }
       }
    });

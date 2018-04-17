@@ -14,7 +14,9 @@
         <div class="form-group">
            <textarea name="body" rows="7" class="form-control" id="markdowneditor" placeholder="评论十个字起哦～" value="{{ old('body') }}"></textarea>
            <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
+           <button type="button" onclick="removespace('markdowneditor')" class="sosad-button-control addon-button">清理段首空格</button>
            <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
+
         </div>
         <div class="checkbox">
           <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majiareplythread{{$thread->id}}').style.display = 'block'">马甲？</label>&nbsp;
