@@ -62,16 +62,24 @@ class StoreThread extends FormRequest
         $thread_data['user_id'] = auth()->id();
         $post_data['user_id'] = auth()->id();
 
-        $thread = DB::transaction(function () use($thread_data, $post_data) {
-            $thread = Thread::create($thread_data);
-            $post_data['thread_id'] = $thread->id;
-            $post = Post::create($post_data);
-            $thread->update(['post_id'=>$post->id]);
-            return $thread;
-        }, 2);
-
+        if (!$this->isDuplicateThread($thread_data)){
+            $thread = DB::transaction(function () use($thread_data, $post_data) {
+                $thread = Thread::create($thread_data);
+                $post_data['thread_id'] = $thread->id;
+                $post = Post::create($post_data);
+                $thread->update(['post_id'=>$post->id]);
+                return $thread;
+            }, 2);
+        }
         return $thread;
+    }
 
+    public function isDuplicateThread($data)
+    {
+        $last_thread = Thread::where('user_id', auth()->id())
+                            ->orderBy('id', 'desc')
+                            ->first();
+        return count($last_thread) && strcmp($last_thread->title.$last_thread->brief.$last_thread->body, $data['title'].$data['brief'].$data['body']) === 0;
     }
 
     public function updateThread(Thread $thread)

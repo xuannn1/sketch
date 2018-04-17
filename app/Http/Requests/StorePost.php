@@ -67,8 +67,18 @@ class StorePost extends FormRequest
         $data['user_id']=auth()->id();
         $data['thread_id']= $thread->id;
 
-        $post = Post::create($data);
+        if (!$this->isDuplicatePost($data)){
+            $post = Post::create($data);
+        }
         return $post;
+    }
+
+    public function isDuplicatePost($data)
+    {
+        $last_post = Post::where('user_id', auth()->id())
+                            ->orderBy('id', 'desc')
+                            ->first();
+        return count($last_post) && strcmp($last_post->body, $data['body']) === 0;
     }
 
     public function updatePost(Post $post)

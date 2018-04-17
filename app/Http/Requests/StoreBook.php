@@ -104,34 +104,34 @@ class StoreBook extends FormRequest
             abort(403,'数据冲突');
         }
 
-
-        $thread = DB::transaction(function () use($book_data,$thread_data,$post_data,$tags_data,$tongren_data) {
-            $book = Book::create($book_data);
-            $thread_data['book_id'] = $book->id;
-            $thread = Thread::create($thread_data);
-            $book->update(['thread_id'=>$thread->id]);
-            $post_data['thread_id'] = $thread->id;
-            $post = Post::create($post_data);
-            $thread->update(['post_id'=>$post->id]);
-            $thread->tags()->sync($tags_data);
-            if ($thread->channel_id == 2){
-                $tongren_data['book_id']=$book->id;
-                $tongren = Tongren::create($tongren_data);
-            }
-            return $thread;
-        }, 2);
-
+        if (!$this->isDuplicateBook($thread_data)){
+            $thread = DB::transaction(function () use($book_data,$thread_data,$post_data,$tags_data,$tongren_data) {
+                $book = Book::create($book_data);
+                $thread_data['book_id'] = $book->id;
+                $thread = Thread::create($thread_data);
+                $book->update(['thread_id'=>$thread->id]);
+                $post_data['thread_id'] = $thread->id;
+                $post = Post::create($post_data);
+                $thread->update(['post_id'=>$post->id]);
+                $thread->tags()->sync($tags_data);
+                if ($thread->channel_id == 2){
+                    $tongren_data['book_id']=$book->id;
+                    $tongren = Tongren::create($tongren_data);
+                }
+                return $thread;
+            }, 2);
+        }
         //tags, tongren
         return $thread;
     }
 
-    // public function isDuplicateReply($data)
-    // {
-    //     $last_book = Thread::where('user_id', Auth::id())
-    //                         ->orderBy('id', 'desc')
-    //                         ->first();
-    //     return count($last_book) && strcmp($last_reply->body_original, $data['body']) === 0;
-    // }
+    public function isDuplicateBook($data)
+    {
+        $last_book = Thread::where('user_id', auth()->id())
+                            ->orderBy('id', 'desc')
+                            ->first();
+        return count($last_book) && strcmp($last_book->title.$last_book->brief.$last_book->body, $data['title'].$data['brief'].$data['body']) === 0;
+    }
 
     public function updateBook(Thread $thread)
     {
