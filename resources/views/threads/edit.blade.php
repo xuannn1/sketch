@@ -33,6 +33,7 @@
                <label for="body">正文：</label>
                <textarea id="mainbody" name="body" data-provide="markdown" rows="20" class="form-control" value="请输入至少20字的内容">{{ $thread->body }}</textarea>
                <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-control addon-button">恢复数据</button>
+               <button type="button" onclick="removespace('mainbody')" class="sosad-button-control addon-button">清理段首空格</button>
                <button href="#" type="button" onclick="wordscount('mainbody');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
              </div>
 

@@ -22,6 +22,7 @@
                <label for="body"><h4>正文：</h4></label>
                <textarea id="mainbody" name="body" rows="12" class="form-control" data-provide="markdown" placeholder="章节正文">{{ old('body') }}</textarea>
                <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-control addon-button">恢复数据</button>
+               <button type="button" onclick="removespace('mainbody')" class="sosad-button-control addon-button">清理段首空格</button>
                <button href="#" type="button" onclick="wordscount('mainbody');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
                <label><input type="checkbox" name="indentation" checked>段首缩进(每段前两个空格)？</label>
                <label><input type="checkbox" name="markdown">使用Markdown语法？（警告：如果您对markdwon语法并不熟悉，请务必直接忽略该选项）</label>
@@ -30,6 +31,7 @@
                <label for="annotation"><h4>备注：</h4></label>
                <textarea id="mainannotation" name="annotation" data-provide="markdown" rows="5" class="form-control" placeholder="作者有话说…">{{ old('annotation') }}</textarea>
                <button type="button" onclick="retrievecache('mainannotation')" class="sosad-button-control addon-button">恢复数据</button>
+               <button type="button" onclick="removespace('mainannotation')" class="sosad-button-control addon-button">清理段首空格</button>
                <button href="#" type="button" onclick="wordscount('mainannotation');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
              </div>
              @if(!$book->thread->anonymous)

@@ -57,13 +57,14 @@ function wordscount(item){
    alert("字数统计：" + str.length);
 };
 function removespace(itemname){
-   var post = document.getElementById(item).value;
-   console.log('post');
-   var res = str.split(" ");
-   console.log('res');
+   var post = $('#'+itemname).val();
+   var res = post.split("\n");
+   var string = "";
+   $.each(res, function(key,value){
+       string += $.trim(value) + "\n"
+   });
    console.log('cleared spaces');
-
-   $('#'+itemname).val(post);
+   $('#'+itemname).val(string);
 };
 
 function expandpost(id){
@@ -276,31 +277,33 @@ function destroystatus(status_id){
       }
    });
 };
+function initcache(){
+    console.log('goingto initiate cache');
+    $.ajaxSetup({
+      headers: {
+           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+   $.ajax({
+      type: "GET",
+      url: web_base_url + '/cache/initcache',
+      data: {
+          },
+      success: function(data) {
+         if (data != "notwork"){
+            console.log(data);
+         }
+      }
+   });
+};
 
 $(document).ready(function(){
     $( 'textarea'  ).one( "click", function() {
         if($(this).attr('rows')>1){
-            console.log('goingto initiate cache');
-            $.ajaxSetup({
-              headers: {
-                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-              }
-           });
-           $.ajax({
-              type: "GET",
-              url: web_base_url + '/cache/initcache',
-              data: {
-                  },
-              success: function(data) {
-                 if (data != "notwork"){
-                    console.log("data");
-                 }
-              }
-           });
+            initcache();
         }
     });
 });
-
 
 $('textarea').keyup(_.debounce(function() {
    console.log('save');

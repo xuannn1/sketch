@@ -18,7 +18,7 @@ class FilterThread
     {
       $thread = $request->route('thread');
       $channel= \App\Models\Channel::FindOrFail($thread->channel_id);
-      if ($thread->user_id == Auth::id()){//原作者本人可见帖子
+      if ((Auth::check())&&((Auth::user()->admin)||($thread->user_id == Auth::id()))){//原作者本人或管理员可见帖子
          return $next($request);
       }elseif($thread->public){
          if ($channel->channel_state>=10){//作业，后花园，以及管理界面

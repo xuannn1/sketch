@@ -21,6 +21,7 @@
                <label for="body">正文：</label>
                <textarea name="body" rows="12" class="form-control" id="mainbody" data-provide="markdown" placeholder="正文">{{ $mainpost->body }}</textarea>
                <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-control addon-button">恢复数据</button>
+               <button type="button" onclick="removespace('mainbody')" class="sosad-button-control addon-button">清理段首空格</button>
                <button href="#" type="button" onclick="wordscount('mainbody');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
                <label><input type="checkbox" name="indentation" {{ $mainpost->indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
                <label><input type="checkbox" name="markdown" {{ $mainpost->markdown? 'checked':''}}>使用Markdown语法？（警告：如果您对Markdown语法不熟悉，请务必忽略该选项）</label>
@@ -30,6 +31,7 @@
                <label for="annotation">备注：</label>
                <textarea id="mainannotation" name="annotation" data-provide="markdown" rows="5" class="form-control" placeholder="作者有话说">{{ $chapter->annotation }}</textarea>
                <button type="button" onclick="retrievecache('mainannotation')" class="sosad-button-control addon-button">恢复数据</button>
+               <button type="button" onclick="removespace('mainannotation')" class="sosad-button-control addon-button">清理段首空格</button>
                <button href="#" type="button" onclick="wordscount('mainannotation');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
             </div>
          </div>
