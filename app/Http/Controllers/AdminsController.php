@@ -262,24 +262,25 @@ class AdminsController extends Controller
    }
    public function sendpublicmessage(Request $request)
    {
-      $this->validate($request, [
-          'body' => 'required|string|max:20000|min:10',
-       ]);
-       $receivers = User::all();
-       $message_body = DB::table('message_bodies')->insertGetId([
-            'content' => request('body'),
-            'group_messaging' => 1,
-         ]);
-       foreach($receivers as $receiver){
-         Message::create([
-            'message_body' => $message_body,
-            'poster_id' => Auth::id(),
-            'receiver_id' => $receiver->id,
-            'private' => false,
-         ]);
-         $receiver->increment('message_reminders');
-       }
-       return redirect()->back()->with('success','您已成功发布公共通知');
+       //公共通知效率太低，取消
+      // $this->validate($request, [
+      //     'body' => 'required|string|max:20000|min:10',
+      //  ]);
+      //  $receivers = User::all();
+      //  $message_body = DB::table('message_bodies')->insertGetId([
+      //       'content' => request('body'),
+      //       'group_messaging' => 1,
+      //    ]);
+      //  foreach($receivers as $receiver){
+      //    Message::create([
+      //       'message_body' => $message_body,
+      //       'poster_id' => Auth::id(),
+      //       'receiver_id' => $receiver->id,
+      //       'private' => false,
+      //    ]);
+      //    $receiver->increment('message_reminders');
+      //  }
+      //  return redirect()->back()->with('success','您已成功发布公共通知');
 
    }
 }
