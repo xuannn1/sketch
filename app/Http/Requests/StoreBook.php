@@ -125,13 +125,13 @@ class StoreBook extends FormRequest
         return $thread;
     }
 
-    public function isDuplicateReply($data)
-    {
-        $last_book = Thread::where('user_id', Auth::id())
-                            ->orderBy('id', 'desc')
-                            ->first();
-        return count($last_book) && strcmp($last_reply->body_original, $data['body']) === 0;
-    }
+    // public function isDuplicateReply($data)
+    // {
+    //     $last_book = Thread::where('user_id', Auth::id())
+    //                         ->orderBy('id', 'desc')
+    //                         ->first();
+    //     return count($last_book) && strcmp($last_reply->body_original, $data['body']) === 0;
+    // }
 
     public function updateBook(Thread $thread)
     {
