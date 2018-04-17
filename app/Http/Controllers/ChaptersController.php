@@ -14,6 +14,7 @@ use App\Models\Tag;
 use Carbon\Carbon;
 use App\Models\Tongren;
 use App\Models\Status;
+use App\Helpers\Helper;
 use Auth;
 
 class ChaptersController extends Controller
@@ -44,7 +45,7 @@ class ChaptersController extends Controller
          $chapter_order = $max_chapter ? : 0;
          $markdown = request('markdown')? true: false;
          $indentation = request('indentation')? true: false;
-         DB::transaction(function()use(){
+         DB::transaction(function()use($thread,$markdown,$indentation, $chapter_order, $volumn_id, $book){
              $post = Post::create([
                 'body' => request('body'),
                 'title' => request('brief'),
@@ -99,9 +100,10 @@ class ChaptersController extends Controller
                     .Helper::convert_to_public($chapter->title).'：'.request('brief').']('
                     .route('book.showchapter', $chapter->id)
                     .')',
-                 ]);
-         });
-         }
+                    ]);
+                }
+            });
+
          return redirect()->route('book.show', $book)->with("success", "您已成功增添章节");
       }else{
          return redirect()->route('error', ['error_code' => '405']);
