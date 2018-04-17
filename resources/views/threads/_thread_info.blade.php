@@ -2,7 +2,7 @@
    <div class="row">
       <div class="col-xs-12 h5 brief">
          <span>
-            <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ $thread->title }}</a>
+            <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ Helper::convert_to_title($thread->title) }}</a>
          </span>
          <span class = "pull-right">
             @if($thread->anonymous)

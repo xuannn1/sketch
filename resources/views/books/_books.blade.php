@@ -10,7 +10,7 @@
             <strong>
                <span>
                   <a href="{{ route('book.show', $book->book_id) }}">
-                  {{ $book->title }}</a>
+                  {{ Helper::convert_to_title($book->title) }}</a>
                   @if( $book->bianyuan == 1)
                   <span class="badge">边</span>
                   @endif

@@ -18,6 +18,7 @@
       <span>咸鱼：{{ $user->xianyu }}</span>
       <span>丧点：{{ $user->sangdian }}</span>
       <span>连续签到：{{ $user->continued_qiandao }}天</span>
+      <span>最多签到：{{ $user->maximum_qiandao }}天</span>
 </div>
 <br>
 <div class = "main-text">

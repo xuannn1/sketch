@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Quote;
 use Auth;
@@ -15,29 +16,29 @@ class QuotesController extends Controller
     }
    public function store(Request $request)
   {
+    $this->validate($request, [
+     'quote' => 'required|string|max:80',
+    ]);
+    if (request('anonymous')){
      $this->validate($request, [
-         'quote' => 'required|string|max:80',
-         'notsad' => 'required',
+         'majia' => 'required|string|max:10',
       ]);
-      if (request('anonymous')){
-         $this->validate($request, [
-             'majia' => 'required|string|max:10',
-          ]);
-      }
-      $newquote = new Quote;
-      $newquote->quote = request('quote');
-      $newquote->user_id = auth()->id();
-      if (request('anonymous')){
-         $newquote->anonymous = true;
-         $newquote->majia = request('majia');
-      }
-      if (request('notsad'==1)){
-         $newquote->notsad = true;
-      }
-      $newquote->save();
+    }
+    DB::transaction(function(){
+        $newquote = new Quote;
+        $newquote->quote = request('quote');
+        $newquote->user_id = auth()->id();
 
-     return redirect()->route('home');
+        if (request('anonymous')){
+           $newquote->anonymous = true;
+           $newquote->majia = request('majia');
+        }
+        $newquote->save();
+        return $newquote;
+    });
+    return redirect()->back()->with('success','成功提交题头！');;
   }
+
   public function create(){
      return view('quotes.create');
   }

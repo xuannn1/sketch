@@ -9,7 +9,7 @@
             <div class="container-fluid">
                @foreach($threads as $thread)
                <div class="row">
-                  <span><a href="{{ route('thread.show',$thread) }}">{{$thread->title}}</a></span>
+                  <span><a href="{{ route('thread.show',$thread) }}">{{Helper::convert_to_title($thread->title)}}</a></span>
                </div>
                @endforeach
             </div>

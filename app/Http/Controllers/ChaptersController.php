@@ -94,7 +94,7 @@ class ChaptersController extends Controller
          if((request('sendstatus'))&&(!$thread->anonymous)){
             Status::create([
                'user_id' => Auth::id(),
-               'content' => '更新了[《'.$thread->title.'》'
+               'content' => '更新了[《'.Helper::convert_to_title($thread->title).'》'
                .$chapter->title.'：'.request('brief').']('
                .route('book.showchapter', $chapter->id)
                .')',

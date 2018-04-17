@@ -40,7 +40,7 @@ class DownloadsController extends Controller
     {
       $book_info = config('constants.book_info');
       $book = $thread->book;
-      $txt = "标题：".$thread->title."\n";
+      $txt = "标题：".Helper::convert_to_title($thread->title)."\n";
       $txt .= "简介：".$thread->brief."\n";
       $txt .= "作者：";
       if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
@@ -61,7 +61,7 @@ class DownloadsController extends Controller
 
     public function print_thread_info($thread)
     {
-      $txt = "标题：".$thread->title."\n";
+      $txt = "标题：".Helper::convert_to_title($thread->title)."\n";
       $txt .= "简介：".$thread->brief."\n";
       $txt .= "发帖人：";
       if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
@@ -213,19 +213,23 @@ class DownloadsController extends Controller
           }
         }
 
-        if($thread->user_id!=$user->id){//并非作者本人下载，奖励部分
-          $author = $thread->creator;
-          $author->increment('shengfan',5);
-          $author->increment('jifen',5);
-          $author->increment('xianyu',1);
-          $thread->increment('downloaded');
-        }
-        if ($thread->book_id>0){$format = 1;}else{$format = 0;}
-        $download = Download::create([
-          'user_id' => $user->id,
-          'thread_id' => $thread->id,
-          'format' => $format,
-        ]);
+        DB::transaction(function () use($user, $thread){
+            if($thread->user_id!=$user->id){//并非作者本人下载，奖励部分
+                $author = $thread->creator;
+                $author->increment('shengfan',5);
+                $author->increment('jifen',5);
+                $author->increment('xianyu',1);
+                $thread->increment('downloaded');
+                if ($thread->book_id>0){$format = 1;}else{$format = 0;}
+                $download = Download::create([
+                    'user_id' => $user->id,
+                    'thread_id' => $thread->id,
+                    'format' => $format,
+                ]);
+                }
+            });
+
+
         $txt = $this->generate_thread_text($thread);//制作所需要的文档
 
         $response = new StreamedResponse();
@@ -256,18 +260,19 @@ class DownloadsController extends Controller
           }
         }
         if($thread->user_id!=$user->id){//并非作者本人下载，奖励部分
-          $author = $thread->creator;
-          $author->increment('shengfan',10);
-          $author->increment('jifen',10);
-          $author->increment('xianyu',2);
-          $thread->increment('downloaded');
+            DB::transaction(function () use($user, $thread){
+                $author = $thread->creator;
+                $author->increment('shengfan',10);
+                $author->increment('jifen',10);
+                $author->increment('xianyu',2);
+                $thread->increment('downloaded');
+            });
         }
         $download = Download::create([
           'user_id' => $user->id,
           'thread_id' => $thread->id,
           'format' => 3,
         ]);
-
         $txt = $this->generate_book_noreview_text($thread);//制作所需要的下载文档
         $response = new StreamedResponse();
         $response->setCallBack(function () use($txt) {

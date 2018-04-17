@@ -8,7 +8,7 @@
       <div class="panel panel-default">
          <div class="panel-heading">
             <h4>高级管理</h4>
-            <a href="{{route('thread.show','thread')}}">{{ $thread->title }}</a>
+            <a href="{{route('thread.show','thread')}}">{{ Helper::convert_to_title($thread->title) }}</a>
          </div>
          <div class="panel-body">
             <form action="{{ route('admin.threadmanagement',$thread->id)}}" method="POST">
