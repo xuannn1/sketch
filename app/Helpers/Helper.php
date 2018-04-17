@@ -140,7 +140,7 @@ class Helper
        $substr1 = iconv_substr($string, 0, 1, 'utf-8');
        $substr2 = iconv_substr($string, $len-1, $len, 'utf-8');
        if (($substr1 == "《") && ($substr2 == "》")){
-           $string = iconv_substr($string, 1, $len-1, 'utf-8');
+           $string = iconv_substr($string, 1, $len-2, 'utf-8');
        }
        return $string;
    }
