@@ -136,10 +136,12 @@ class Helper
    {
        $badstring="|【|】|X|╳|<|>|〈|〉|";
        $string = preg_replace("/$badstring/i",'',Helper::convert_to_public($string));
-       $substr = iconv_substr($string, 0, 1, 'utf-8');
-       if($substr=="《"){$string = iconv_substr($string, 1, iconv_strlen($string), 'utf-8');}
-       $substr = iconv_substr($string, iconv_strlen($string)-1, iconv_strlen($string), 'utf-8');
-       if($substr=="》"){$string = iconv_substr($string, 0, iconv_strlen($string)-1, 'utf-8');}
+       $len = iconv_strlen($string);
+       $substr1 = iconv_substr($string, 0, 1, 'utf-8');
+       $substr2 = iconv_substr($string, $len-1, $len, 'utf-8');
+       if (($substr1 == "《") && ($substr2 == "》")){
+           $string = iconv_substr($string, 1, $len-1, 'utf-8');
+       }
        return $string;
    }
 }
