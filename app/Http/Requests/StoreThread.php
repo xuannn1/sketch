@@ -55,7 +55,6 @@ class StoreThread extends FormRequest
         }else{
             $thread_data['anonymous']=0;
         }
-        // $thread_data['public']=$this->public ? true:false;
         $thread_data['noreply']=$this->noreply ? true:false;
         $post_data['markdown']=$this->markdown ? true:false;
         $post_data['indentation']=$this->indentation ? true:false;
@@ -78,7 +77,6 @@ class StoreThread extends FormRequest
     public function updateThread(Thread $thread)
     {
         $anonymous = request('anonymous')? true: false;
-        $public = request('public')? true: false;
         $noreply = request('noreply')? true:false;
         $markdown = request('markdown')? true: false;
         $indentation = request('indentation')? true: false;
