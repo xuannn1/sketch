@@ -70,6 +70,8 @@ class StoreThread extends FormRequest
                 $thread->update(['post_id'=>$post->id]);
                 return $thread;
             }, 2);
+        }else{
+            abort(400,'请求已登记，请勿重复提交相同数据');
         }
         return $thread;
     }

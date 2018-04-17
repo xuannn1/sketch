@@ -35,20 +35,14 @@ class AdminsController extends Controller
       return view('admin.quotesreview', compact('quotes'));
    }
 
-   public function quoteapprove(Quote $quote)
+   public function toggle_review(Quote $quote)
    {
-      $quote->approved = true;
+      $quote->approved = !$quote->approved;
       $quote->reviewed = true;
       $quote->update();
-      return back();
+      return $quote;
    }
-   public function quotedisapprove(Quote $quote)
-   {
-      $quote->approved = false;
-      $quote->reviewed = true;
-      $quote->update();
-      return back();
-   }
+
    public function threadmanagement(Thread $thread, Request $request)
    {
       $this->validate($request, [

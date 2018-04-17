@@ -25,7 +25,7 @@
                </span>
             </div>
             <div class="main-text">
-               {!! Helper::sosadMarkdown($reply->body) !!}
+               {!! Helper::wrapParagraphs($reply->body) !!}
             </div>
             <?php $post = $reply ?>
             @include('posts._post_simplevote')

@@ -27,7 +27,7 @@
             @if($book->noreply)
             <span class="glyphicon glyphicon-warning-sign"></span>
             @endif
-            @if(($book->last_chapter_title)&&($book->last_chapter_responded==0))
+            @if(($book->last_chapter_title)&&($book->last_chapter_responded==0)&&($book->lastaddedchapter_at > Carbon\Carbon::now()->subDays(1)->toDateTimeString() ))
             <span class="badge">新</span>
             @endif
          </small>

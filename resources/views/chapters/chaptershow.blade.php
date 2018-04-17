@@ -50,7 +50,7 @@
                <br>
             </div>
             <div class="text-left grayout">
-               {!! Helper::sosadMarkdown($chapter->annotation) !!}
+               {!! Helper::wrapParagraphs($chapter->annotation) !!}
             </div>
             <div class="">
                <a class="smaller-10" href="{{ route('thread.showpost', $chapter->post_id) }}"><u>论坛讨论模式</u></a>

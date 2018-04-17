@@ -22,7 +22,7 @@ class Helper
    public static function trimtext($text, int $len)
    {
       $str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
-      $substr = iconv_substr($str, 0, $len, 'utf-8');
+      $substr = trim(iconv_substr($str, 0, $len, 'utf-8'));
       if(iconv_strlen($str) > iconv_strlen($substr)){
          $substr.='…';
       }

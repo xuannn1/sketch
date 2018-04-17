@@ -39,6 +39,32 @@ function vote_post(post_id, method){ //method = upvote,downvote,fold,funny
    });
 };
 
+function toggle_review_quote(quote_id){
+   $.ajaxSetup({
+      headers: {
+           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+   $.ajax({
+      type: 'GET',
+      url: web_base_url + '/quotes/' + quote_id + '/' + 'toggle_review',
+      data: {
+          },
+      success: function(data) {
+         if (data != "notwork"){
+             console.log(data.approved);
+             if (data.approved){
+                $( '.togglereviewquote'+quote_id ).html("取消通过").addClass('btn-danger').removeClass('btn-success');
+             }else{
+                $( '.togglereviewquote'+quote_id ).html("通过题头").addClass('btn-success').removeClass('btn-danger');
+             }
+        }else{
+            console.log('having error approving/disaproving quote');
+        }
+      }
+   });
+};
+
 function replytopost(post_id, post_trim){
    document.getElementById("reply_to_post_id").value = post_id;
    document.getElementById("reply_to_post").classList.remove('hidden');

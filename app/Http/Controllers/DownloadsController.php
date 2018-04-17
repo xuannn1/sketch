@@ -142,7 +142,7 @@ class DownloadsController extends Controller
         if($post->maintext){$txt .= $post->chapter->title."\n";}
         if($post->title){$txt .= $post->title."\n";}
         $txt .= $this->process_text($post->body,$post->markdown,$post->indentation);
-        if($post->chapter->annotation){$txt .= "备注".$this->process_text($post->chapter->annotation,1,0);}
+        if($post->chapter->annotation){$txt .= "备注".$this->process_text($post->chapter->annotation,0,0);}
 
         foreach($post->comments as $k => $postcomment){
           $txt .= "回帖".($i+1)."点评".($k+1).": ";
@@ -174,7 +174,7 @@ class DownloadsController extends Controller
           $txt .= "\n";
           if($chapter->mainpost->title){$txt .= $chapter->mainpost->title."\n";}
           if($chapter->mainpost->body){$txt .= $this->process_text($chapter->mainpost->body,$chapter->mainpost->markdown,$chapter->mainpost->indentation)."\n";}
-          if($chapter->annotation){$txt .= "备注：".$this->process_text($chapter->mainpost->annotation,1,0);}
+          if($chapter->annotation){$txt .= "备注：".$this->process_text($chapter->mainpost->annotation,0,0);}
           $txt .="\n";
         }
         $txt .= $this->add_download_info($thread);//添加下载备注

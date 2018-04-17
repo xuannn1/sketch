@@ -37,8 +37,9 @@
    Route::get('/quote/create', 'QuotesController@create')->name('quote.create');//贡献题头
    Route::post('/quote/create', 'QuotesController@store')->name('quote.store');//贡献题头
    Route::get('/quotes/review', 'AdminsController@quotesreview')->name('quotes.review');//编辑题头
-   Route::get('/quotes/{quote}/approve','AdminsController@quoteapprove')->name('quote.approve');//通过题头
-   Route::get('/quotes/{quote}/disapprove','AdminsController@quotedisapprove')->name('quote.disapprove');//取消通过题头
+   //Route::get('/quotes/{quote}/approve','AdminsController@quoteapprove')->name('quote.approve');//通过题头
+   //Route::get('/quotes/{quote}/disapprove','AdminsController@quotedisapprove')->name('quote.disapprove');//取消通过题头
+   Route::get('/quotes/{quote}/toggle_review','AdminsController@toggle_review')->name('quote.toggle_review');//通过题头
    Route::get('/quotes/{quote}/xianyu','QuotesController@xianyu')->name('quote.vote');//给题头投喂咸鱼
 }
 

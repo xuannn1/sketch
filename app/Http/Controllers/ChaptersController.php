@@ -99,15 +99,11 @@ class ChaptersController extends Controller
                   if((request('sendstatus'))&&(!$thread->anonymous)){
                      Status::create([
                         'user_id' => Auth::id(),
-                        'content' => '更新了[《'.Helper::convert_to_title($thread->title).'》'
-                        .Helper::convert_to_public($chapter->title).'：'.request('brief').']('
-                        .route('book.showchapter', $chapter->id)
-                        .')',
+                        'content' => '[url='.route('book.showchapter', $chapter->id).']'.'更新了《'.Helper::convert_to_title($thread->title).'》'.Helper::convert_to_public($chapter->title).'[/url]',
                         ]);
                     }
                 });
             }
-
          return redirect()->route('book.show', $book)->with("success", "您已成功增添章节");
       }else{
          return redirect()->route('error', ['error_code' => '405']);

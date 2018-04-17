@@ -25,11 +25,7 @@
                      <p>是否已通过：{{ $quote->approved }}</p>
                   </div>
                   <div class="col-xs-3">
-                     @if(! $quote->approved)
-                     <a class="btn btn-sm btn-success sosad-button" href="{{ route('quote.approve', $quote->id) }}" role="button">通过审核</a>
-                     @else
-                     <a class="btn btn-sm btn-danger" href="{{ route('quote.disapprove', $quote->id) }}" role="button">取消通过</a>
-                     @endif
+                      <button class="btn btn-xs {{ $quote->approved? "btn-danger":"btn-success" }} cancel-button {{'togglereviewquote'.$quote->id}}" type="button" name="button" onClick="toggle_review_quote({{$quote->id}},'{{$quote->approved ? "disapprove":"approve"}}')">{{$quote->approved? '取消通过':'通过题头'}}</button>
                   </div></small>
                </div>
                <hr>

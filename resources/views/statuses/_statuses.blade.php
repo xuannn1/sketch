@@ -16,7 +16,7 @@
       </div>
       <div class="col-xs-12 h5 brief">
          <span class="smaller-10">
-            {!! Helper::sosadMarkdown($status->content) !!}
+            {!! Helper::wrapParagraphs($status->content) !!}
          </span>
       </div>
    </div>

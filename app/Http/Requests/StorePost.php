@@ -69,6 +69,8 @@ class StorePost extends FormRequest
 
         if (!$this->isDuplicatePost($data)){
             $post = Post::create($data);
+        }else{
+            abort(400,'请求已登记，请勿重复提交相同数据');
         }
         return $post;
     }

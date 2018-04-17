@@ -22,5 +22,5 @@
 </div>
 <br>
 <div class = "main-text">
-   {!! Helper::sosadMarkdown($user->introduction) !!}
+   {!! Helper::wrapParagraphs($user->introduction) !!}
 </div>
