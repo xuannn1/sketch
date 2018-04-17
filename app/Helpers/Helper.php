@@ -134,7 +134,12 @@ class Helper
 
    public static function convert_to_title($string= null)
    {
-       $badstring="|《|》|【|】|\[|\]|X|\/|\\|╳|（|）|\(|\)|";
-       return preg_replace("/$badstring/i",'',Helper::convert_to_public($string));
+       $badstring="|【|】|X|╳|<|>|〈|〉|";
+       $string = preg_replace("/$badstring/i",'',Helper::convert_to_public($string));
+       $substr = iconv_substr($string, 0, 1, 'utf-8');
+       if($substr=="《"){$string = iconv_substr($string, 1, iconv_strlen($string), 'utf-8');}
+       $substr = iconv_substr($string, iconv_strlen($string)-1, iconv_strlen($string), 'utf-8');
+       if($substr=="》"){$string = iconv_substr($string, 0, iconv_strlen($string)-1, 'utf-8');}
+       return $string;
    }
 }
