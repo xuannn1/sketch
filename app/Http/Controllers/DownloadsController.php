@@ -191,7 +191,7 @@ class DownloadsController extends Controller
             if($user->user_level>0){
               if ($thread->channel->channel_state < 10){
                 if ($thread->book_id > 0){//图书的下载需要更多剩饭咸鱼
-                  if (($user->user_level>=4)&&($user->shengfan > 10)&&($user->xianyu > 2)){
+                  if (($user->user_level>=2)&&($user->shengfan > 10)&&($user->xianyu > 2)){
                     $user->decrement('shengfan',10);
                     $user->decrement('xianyu',2);
                   }else{
@@ -247,7 +247,7 @@ class DownloadsController extends Controller
           if (!$thread->download_as_book){
             return redirect()->back()->with("danger","作者并未开放下载");
           }else{
-            if($user->user_level>4){
+            if($user->user_level>2){
               if (($user->shengfan > 10)&&($user->xianyu > 2)){
                 $user->decrement('shengfan',10);
                 $user->decrement('xianyu',2);
