@@ -165,27 +165,18 @@ class HomeworksController extends Controller
    }
    public function rewards(Homework $homework, Request $request)
    {
-      $reward_base = 1;
       if($homework->active){
          $registered = $homework->registered_students();
          foreach($registered as $student){
             $rewards=request($student->id);
             $user = User::find($student->id);
             if($rewards=='1'){//super-reward
-                DB::transaction(function()use($user, $reward_base){
-                    $user->increment('jifen', 50*$reward_base);
-                    $user->increment('experience_points', 50*$reward_base);
-                    $user->increment('shengfan', 50*$reward_base);
-                    $user->increment('xianyu', 25*$reward_base);
-                    $user->increment('sangdian', 10*$reward_base);
+                DB::transaction(function()use($user){
+                    $user->reward('homework_excellent');
                 });
             }elseif($rewards=='2'){//regular-reward
-                DB::transaction(function()use($user, $reward_base){
-                    $user->increment('jifen', 20*$reward_base);
-                    $user->increment('experience_points', 20*$reward_base);
-                    $user->increment('shengfan', 20*$reward_base);
-                    $user->increment('xianyu', 10*$reward_base);
-                    $user->increment('sangdian', 5*$reward_base);
+                DB::transaction(function()use($user){
+                    $user->reward('homework_regular');
                 });
             }elseif($rewards=='4'){//punishmeng-1months
                $user->no_registration = Carbon::now()->addMonth(1);

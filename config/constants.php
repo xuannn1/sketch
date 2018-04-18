@@ -60,14 +60,19 @@ return [
    ],
    'level_up' => [
       1 => [//
-         'experience_points' => 50,
+         'experience_points' => 20,
+         'xianyu' => 0,
+         'sangdian' => 0,
       ],
       2 => [//可以下载图书（含回帖方式）
-         'experience_points' => 100,
+         'experience_points' => 50,
+         'xianyu' => 10,
+         'sangdian' => 0,
       ],
       3 => [//可以下载图书（脱水方式）
-         'experience_points' => 150,
+         'experience_points' => 100,
          'xianyu' => 25,
+         'sangdian' => 0,
       ],
       4 => [//
          'experience_points' => 300,

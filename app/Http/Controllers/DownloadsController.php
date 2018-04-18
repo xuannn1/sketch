@@ -215,11 +215,7 @@ class DownloadsController extends Controller
 
         DB::transaction(function () use($user, $thread){
             if($thread->user_id!=$user->id){//并非作者本人下载，奖励部分
-                $author = $thread->creator;
-                $author->increment('shengfan',5);
-                $author->increment('jifen',5);
-                $author->increment('experience_points',5);
-                $author->increment('xianyu',1);
+                $thread->creator->reward('book_downloaded_as_thread');
                 $thread->increment('downloaded');
                 if ($thread->book_id>0){$format = 1;}else{$format = 0;}
                 $download = Download::create([
@@ -262,11 +258,7 @@ class DownloadsController extends Controller
         }
         if($thread->user_id!=$user->id){//并非作者本人下载，奖励部分
             DB::transaction(function () use($user, $thread){
-                $author = $thread->creator;
-                $author->increment('shengfan',10);
-                $author->increment('jifen',10);
-                $author->increment('experience_points',10);
-                $author->increment('xianyu',2);
+                $thread->creator->reward('book_downloaded_as_book');
                 $thread->increment('downloaded');
             });
         }

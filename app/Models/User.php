@@ -198,14 +198,44 @@ class User extends Authenticatable
                 $this->increment('xianyu',5);
                 $this->increment('sangdian',1);
                 break;
+            case "standard_chapter"://标准章节奖励
+                $this->increment('experience_points',5);
+                $this->increment('jifen',5);
+                $this->increment('xianyu',1);
+                $this->increment('sangdian',1);
+                break;
             case "regular_post_comment":
                 $this->increment('experience_points',1);
                 $this->increment('jifen',1);
+                break;
+            case "book_downloaded_as_thread":
+                $this->increment('experience_points',5);
+                $this->increment('jifen',5);
+                $this->increment('shengfan',1);
+                break;
+            case "book_downloaded_as_book":
+                $this->increment('experience_points',10);
+                $this->increment('jifen',10);
+                $this->increment('shengfan',2);
                 break;
             case "longcomment":
                 $this->increment('experience_points',5);
                 $this->increment('jifen',5);
                 $this->increment('xianyu',3);
+                break;
+            case "homework_excellent":
+                $this->increment('jifen', 50);
+                $this->increment('experience_points', 50);
+                $this->increment('shengfan', 50);
+                $this->increment('xianyu', 25);
+                $this->increment('sangdian', 10);
+                break;
+            case "homework_excellent":
+                $this->increment('jifen', 20);
+                $this->increment('experience_points', 20);
+                $this->increment('shengfan', 10);
+                $this->increment('xianyu', 5);
+                $this->increment('sangdian', 5);
                 break;
             default:
                 echo "应该奖励什么呢？一个bug呀……";

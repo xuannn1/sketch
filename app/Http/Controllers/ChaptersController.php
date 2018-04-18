@@ -82,6 +82,7 @@ class ChaptersController extends Controller
                   $post->update(['chapter_id'=>$chapter->id]);
                   if ($characters>config('constants.update_min')){
                      $book->update(['lastaddedchapter_at' => Carbon::now()]);
+                     $thread->user->reward("regular_book");
                   }
                   $thread->update([
                      'lastresponded_at' => Carbon::now(),

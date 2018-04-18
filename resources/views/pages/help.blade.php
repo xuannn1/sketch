@@ -252,6 +252,19 @@
                                     <li>长评标准：{{ $data['longcomment_lenth'] }}字</li>
                                     <li>新章节的更新字数必须达到{{ $data['update_min'] }}字，才能计入本书“最后更新”的排名数据（顶帖）</li>
                                     <br>
+                                    <li>升级标准：</li>
+                                    <br>
+                                    <ul>
+                                        @foreach($data['level_up'] as $level=>$level_requirement)
+                                        <li>等级：{{$level}}</li>
+                                        <ul>
+                                            <li>所需经验：{{$level_requirement['experience_points']}}</li>
+                                            <li>所需咸鱼：{{$level_requirement['xianyu']}}</li>
+                                            <li>所需丧点：{{$level_requirement['sangdian']}}</li>
+                                        </ul>
+                                        @endforeach
+                                    </ul>
+                                    <br>
                                     @if(Auth::check())
                                     <li>出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：<h6>
                                         {{ $data['word_filter']['not_in_public'] }}
