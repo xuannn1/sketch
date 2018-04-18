@@ -46,6 +46,7 @@ class NewPostListener
               'user_id' => $thread->user_id,
            ]);
            $thread->user->increment('post_reminders');
+           $thread->user->increment('unread_reminders');
         }
 
         //如果这不是一本书，那么告诉所有收藏本讨论、愿意接受更新的读者, 这里发生了更新
@@ -64,6 +65,7 @@ class NewPostListener
               'user_id' => $post->reply_to_post->user_id,
            ]);
            $post->reply_to_post->user->increment('reply_reminders');
+           $post->reply_to_post->user->increment('unread_reminders');
         }
 
         //声明本帖已得到回应

@@ -37,6 +37,7 @@ class VotePostsController extends Controller
             $candidate->increment('upvoted');
             if(!$candidate->no_upvote_reminders){//假如这位被点赞用户设定接收点赞提醒
               $candidate->increment('upvote_reminders');
+              $candidate->increment('unread_reminders');
             }
             if($candidate->upvoted % 20 == 19){
                $candidate->jifen +=5;
@@ -74,6 +75,7 @@ class VotePostsController extends Controller
                   $candidate->increment('upvoted');
                   if(!$candidate->no_upvote_reminders){//假如这位被点赞用户设定接收点赞提醒
                     $candidate->increment('upvote_reminders');
+                    $candidate->increment('unread_reminders');
                   }
                   if($candidate->upvoted % 20 == 19){
                      $candidate->jifen +=5;

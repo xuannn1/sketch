@@ -47,6 +47,7 @@ class PostCommentsController extends Controller
                'user_id' => $post->user_id,
             ]);
             $post->owner->increment('postcomment_reminders');
+            $post->owner->increment('unread_reminders');
          }
          $user->reward("regular_post_comment");
          return back()->with("success", "您已成功点评");

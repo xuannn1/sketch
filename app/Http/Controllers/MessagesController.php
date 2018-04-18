@@ -203,6 +203,8 @@ class MessagesController extends Controller
    }
    public function unread()//1:show unread activities;0:show all activities
    {
+      Auth::user()->unread_reminders=0;
+      Auth::user()->save();
       $messages = $this->findmessages(1, config('constants.index_per_part'));
       $posts = $this->findposts(1, config('constants.index_per_part'));
       $postcomments = $this->findpostcomments(1, config('constants.index_per_part'));
@@ -251,12 +253,6 @@ class MessagesController extends Controller
    {
       DB::table('activities')->where('user_id','=', Auth::id())->update(['seen'=>1]);
       DB::table('messages')->where('receiver_id','=', Auth::id())->update(['seen'=>1]);
-      Auth::user()->post_reminders = 0;
-      Auth::user()->reply_reminders = 0;
-      Auth::user()->postcomment_reminders = 0;
-      Auth::user()->message_reminders = 0;
-      Auth::user()->upvote_reminders = 0;
-      Auth::user()->save();
       return redirect()->back()->with("success", "您已清除所有未读消息提醒");
    }
 
@@ -285,6 +281,7 @@ class MessagesController extends Controller
             'private' => false,
          ]);
          $user->increment('message_reminders');
+         $user->increment('unread_reminders');
          if (!Auth::user()->isFollowing($user->id)) {
              Auth::user()->follow($user->id);
          }
