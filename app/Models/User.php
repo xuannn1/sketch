@@ -196,7 +196,7 @@ class User extends Authenticatable
                 $this->increment('experience_points',20);
                 $this->increment('jifen',10);
                 $this->increment('xianyu',5);
-                $this->increment('sangdian',1);
+                $this->increment('sangdian',2);
                 break;
             case "standard_chapter"://标准章节奖励
                 $this->increment('experience_points',5);
@@ -222,6 +222,7 @@ class User extends Authenticatable
                 $this->increment('experience_points',5);
                 $this->increment('jifen',5);
                 $this->increment('xianyu',3);
+                $this->increment('sangdian',1);
                 break;
             case "homework_excellent":
                 $this->increment('jifen', 50);
