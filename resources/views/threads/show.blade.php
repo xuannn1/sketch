@@ -8,7 +8,7 @@
       <!-- 首页／版块／类型 -->
       @include('threads._site_map')
       @if($posts->currentPage()==1)
-      <div class="panel panel-default">
+      <div class="panel panel-default panel-thread">
          <div class="panel-body">
             <!-- 主题介绍部分 -->
             @if($thread->book_id>0)

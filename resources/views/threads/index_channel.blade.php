@@ -27,19 +27,25 @@
                {{ $threads->appends(request()->query())->links() }}
          </div>
          @if (Auth::check())
-         <div class="panel-heading">
+         <div class="panel-footer">
            @if(Auth::user()->no_posting > Carbon\Carbon::now())
             <h6 class="text-center">您被禁言至{{ Carbon\Carbon::parse(Auth::user()->no_posting)->diffForHumans() }}，暂时不能发帖。</h6>
            @else
               @if ($channel->channel_state == 1)
-                 <a class="btn btn-lg btn-primary sosad-button" href="{{ route('book.create') }}" role="button">发布文章</a>
+                 <a class="btn btn-primary sosad-button-post" href="{{ route('book.create') }}" role="button">
+                     <i class="fa fa-book"></i>
+                     发布文章
+                 </a>
               @else
-                 <a class="btn btn-lg btn-primary sosad-button" href="{{ route('thread.create', $channel) }}" role="button">发布主题</a>
+                 <a class="btn btn-primary sosad-button-post" href="{{ route('thread.create', $channel) }}" role="button">
+                     <i class="fa fa-plus"></i>
+                     发布主题
+                 </a>
               @endif
            @endif
          </div>
          @else
-         <div class="panel-heading text-center">
+         <div class="panel-footer text-center">
             <h4 class="display-1">请 <a href="{{ route('login') }}">登录</a> 后发布主题</h4>
          </div>
          @endif

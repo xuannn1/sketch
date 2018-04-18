@@ -6,17 +6,17 @@
        <div class="search-container">
            <form method="GET" action="{{ route('search') }}" id="search_form">
                <select name="search_options" form="search_form" onchange="if
-(this.options[this.selectedIndex].value=='tongren_yuanzhu')  document.getElementById('tongren_cp_name').style.display = 'inline';">
-                   <option value ="threads">标题</option>
-                   <option value ="users">用户</option>
-                   <option value ="tongren_yuanzhu" >同人原著</option>
-               </select>
-               <input type="textarea" placeholder="搜索..." name="search">
-               <input type="textarea" placeholder="CP简称，可不填" name="tongren_cp" id="tongren_cp_name" style="display:none">
-               <button type="submit"><i class="fa fa-search"></i></button>
-           </form>
-       </div>
-       @endif
+               (this.options[this.selectedIndex].value=='tongren_yuanzhu')  document.getElementById('tongren_cp_name').style.display = 'inline';">
+               <option value ="threads">标题</option>
+               <option value ="users">用户</option>
+               <option value ="tongren_yuanzhu" >同人原著</option>
+           </select>
+           <input type="textarea" placeholder="搜索..." name="search">
+           <input type="textarea" placeholder="CP简称，可不填" name="tongren_cp" id="tongren_cp_name" style="display:none">
+           <button type="submit"><i class="fa fa-search"></i></button>
+       </form>
+    </div>
+    @endif
       <div class="jumbotron" >
          <h2 id= "daily-quote" class="display-1">{{ $quote->quote }}</h2>
          <div>

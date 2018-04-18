@@ -7,9 +7,9 @@
          <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$thread->id}})" Id="togglekeepupdatethread{{$thread->id}}">{{$thread->keep_updated?'不再提醒':'接收提醒'}}</button>
          @endif
          <!-- thread title -->
-         <span class="bigger-20">
-            <a class="btn btn-xs btn-success sosad-button-tag" href="{{route('channel.show', $thread->channel_id)}}">{{$thread->channelname}}</a>
-            <a class="btn btn-xs btn-warning sosad-button-tag" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->labelname}}</a>
+         <span class="bigger-20 thread-title">
+            <a class="btn btn-xs btn-success sosad-button-tag-left" href="{{route('channel.show', $thread->channel_id)}}">{{$thread->channelname}}</a>
+            <a class="btn btn-xs btn-warning sosad-button-tag-right" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->labelname}}</a>
             <a href="{{ route('thread.show', $thread->id) }}">{{ $thread->title }}</a>
             @if( $thread->bianyuan == 1)
             <span class="badge">边</span>
@@ -43,11 +43,11 @@
          </span>
          <!-- author end -->
       </div>
-      <div class="col-xs-12 h5 ">
+      <div class="col-xs-12 brief">
          <span>{{ $thread->brief }}</span>
          <span class="pull-right smaller-10"><em><span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->responded }}</em></span>
       </div>
-      <div class="col-xs-12 h5 grayout brief">
+      <div class="col-xs-12 grayout brief">
          <span class="smaller-10"><a href="{{ route('thread.showpost', $thread->last_post_id) }}"> {!! Helper::trimtext($thread->last_post_body,20) !!}</a></span>
          <span class="pull-right smaller-10">{{ Carbon\Carbon::parse($thread->created_at)->diffForHumans() }}/{{ Carbon\Carbon::parse($thread->lastresponded_at)->diffForHumans() }}</span>
       </div>

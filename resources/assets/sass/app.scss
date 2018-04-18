@@ -3,85 +3,29 @@
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 @import url(//fonts.googleapis.com/earlyaccess/notosanssc.css);
 
-// Variables
-@import "variables";
-
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Variables
+@import 'variables';
+
+// Partials
+@import 'buttons';
 
 
 // font-awesome
 $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
 @import "node_modules/font-awesome/scss/font-awesome.scss";
 
-
-$navbar-color: #fff;
-$admin-symbol-color:#c49d8d;
-$reminder-symbol-color:#e3a300;
-$background-color:#fff;
-$body-color:#f9f9f9;
-$border-color:#999;
-$border-color-row:#efefef;
-$button-color:#666666;
-$button-disabled:#e1e1e1;
-$admin-button-color:#7c5454;
-$link-color: #555;
-// $link-hover-color: #bf2c24;
-$link-hover-color: #fc6423;
-$body-font-color:#555;
-$body-font-color-light:#999;
-$button-color: #222;
-$panel-color:#f5f5f5;
-$panel-border-color:#c4c4c4;
-$hr-border-color:#e8e8e8;
-$font-list: "Noto Sans SC", "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Helvetica, Arial, Verdana, sans-serif;
-$font-list-serif: "HiraMinProN", "Source Han Serif CN","Source Han Serif SC","Source Han Serif TC", "Songti SC", "Songti TC", SimSun, serif;
-
-%button-dark {
-    background: $button-color;
-    color: $body-color;
-    font-weight: 400;
-    border: none;
-    border-radius: 0px;
-    -webkit-transition: background-color 0.2s, color 0.2s, outline 0.2s;
-    transition: background-color 0.2s, color 0.2s, outline 0.2s;
-    &:hover, &:focus {
-        outline: 1px solid $button-color;
-        color: $button-color;
-        background: #fff;
-        text-decoration: none;
-    }
-}
-
-%button-grey {
-    background: $border-color-row;
-    color: $link-color;
-    font-weight: 300;
-    border: none;
-    border-radius: 5px;
-    &:hover, &:focus {
-        color: $link-hover-color;
-        background: $body-color;
-        text-decoration: none;
-    }
-}
-
-.button-radius {
-    background: none;
-    color: $button-color;
-    border-radius: 2em;
-    border: solid 1px $button-color;
-    -webkit-transition: background-color 0.2s, color 0.2s; /* Safari */
-    transition: background-color 0.2s, color 0.2s;
-    &:hover, &:focus {
-        color: $body-color;
-        background: $button-color;
-        text-decoration: none;
-    }
-}
-
 %light-shadow {
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    &:hover, &:focus {
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 50px 60px rgba(0, 0, 0, 0.04);
+    }
+}
+
+%button-shadow {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1), 0 50px 60px rgba(0, 0, 0, 0.04);
     &:hover, &:focus {
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 50px 60px rgba(0, 0, 0, 0.04);
     }
@@ -139,9 +83,11 @@ header .container {
 
 %navbar-shared {
     background-color: $navbar-color;
-    color: $body-font-color;
+    // color: $body-font-color;
+    color: $bold-color;
     font-weight: 600;
     font-size: 14px;
+    letter-spacing: 1px;
     i {
         font-size: 0.8em;
     }
@@ -155,6 +101,9 @@ header .container {
   li a, .open a {
     @extend %navbar-shared;
     padding: 14px 20px;
+    &:hover, &:focus {
+        border-bottom: 2.5px solid $bold-color;
+    }
   }
 }
 
@@ -183,13 +132,15 @@ header .container {
 .navbar-nav {
   float: left !important;
 }
-.navbar-nav>li {
+.navbar-nav>li:last-child {
   // border-left: solid 1px $border-color-row;
+  margin-right: 20px;
 }
 
-.navbar-nav.navbar-right:last-child {
-  margin-right: -15px !important;
-}
+// .navbar-nav.navbar-right:last-child {
+//   margin-right: -15px !important;
+//   padding-right: 15px !important;
+// }
 
 .navbar-right {
   float: right!important;
@@ -213,7 +164,7 @@ header .container {
   top: 50px;
   width: auto;
   z-index: 1000;
-  background-color: #fff;
+  background-color: $navbar-color;
   -webkit-background-clip: padding-box;
           background-clip: padding-box;
   border: none;
@@ -221,7 +172,11 @@ header .container {
           box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
     >li > a {
         @extend %navbar-shared;
-        padding: 5px 20px;
+        padding: 10px 20px;
+        &:hover, &:focus {
+            border-left: 2.5px solid $bold-color;
+            border-bottom: none;
+        }
     }
 }
 
@@ -236,8 +191,8 @@ header .container {
 }
 
 .search-container {
-    display: inline-block;
-    float: right;
+    display: block;
+    position: relative;
 }
 
 /*footer*/
@@ -308,31 +263,31 @@ footer {
     font-weight: 300;
     margin-bottom: 30px;
 }
+// .quote-join {
+//     display: inline-block;
+//     padding: 10px 20px;
+//     @extend %button-dark;
+//     @extend %button-shadow;
+//     border-radius: 2em;
+//     &:hover, &:focus {
+//         border-radius: 2em;
+//         outline-style: none;
+//         border: 1px solid $link-color;
+//     }
+// }
+
+// https://codepen.io/seme332/pen/reJOwo
 .quote-join {
     display: inline-block;
-    padding: 10px 20px;
-    @extend %button-dark;
-    @extend %light-shadow;
+    @extend %button-fancy;
+    font-size: 1em;
 }
 
 .quote-button-wrapper {
     width: 100%;
 }
 .quote-button {
-    border: none;
-    display: inline-block;
-    margin: 0px 0px;
-    text-align: center;
-    color: $link-color;
-    &:first-child {
-        border-right: solid 1px $border-color-row;
-    }
-    padding: 10px 20px;
-    width: auto;
-    &:hover, &:focus {
-        text-decoration: none;
-        color: $link-hover-color;
-    }
+    @extend %button-plain;
 }
 
 // Customize all input fields.
@@ -352,7 +307,7 @@ footer {
 }
 
 #markdowneditor {
-    background: #fff;
+    background: $panel-color;
 }
 
 // https://gist.github.com/martinwolf/6434799
@@ -409,7 +364,7 @@ label, .label {
         transition: height 0.2s linear;
     }
     .form-control {
-        background-color: #fff;
+        background-color: $panel-color;
     }
 }
 .status-submit {
@@ -491,23 +446,24 @@ code {
 }
 
 .panel{
-    // padding:5px;
     margin-bottom:15px;
     border: none;
-    // border: solid 1px $border-color-row;
-    // border-radius: 0px;
-    // border-bottom: solid 1px $border-color;
+}
+
+.panel-thread {
+    padding: 1em 2em;
 }
 
 .panel-body{
    padding-top: 0;
-   padding-bottom:5px;
+   padding-bottom: 0.5em;
 }
 #channel-name {
    margin-top:0px;
    color: $body-font-color;
    // color: $body-font-color-light;
    // font-family: $font-list-serif;
+   letter-spacing: 1px;
    font-weight: 600;
    font-size: 0.8em;
    padding-top:5px;
@@ -678,8 +634,8 @@ hr {
    margin-bottom:0px;
 }
 .panel-footer{
-   padding: 7px 15px;
-   background-color: $body-color;
+   padding: 7px 15px 20px 15px;
+   background-color: $panel-color;
    border: none;
 }
 .panel-vote{
@@ -748,6 +704,53 @@ hr {
     margin-right: 2px;
 }
 
+// 大分类
+.sosad-button-tag-left {
+    @extend %button-grey;
+    font-weight: 500;
+    padding: 3px 7px;
+    margin-bottom: 2px;
+    margin-right: 0px;
+    border-radius: 5px 0 0 5px;
+}
+
+// 小分类
+.sosad-button-tag-right {
+    @extend %button-grey;
+    font-weight: 500;
+    background: $body-color;
+    padding: 3px 7px;
+    margin-bottom: 2px;
+    margin-left: -5px;
+    border-radius: 0 5px 5px 0;
+}
+
+// 新建章节，修改文案
+.sosad-button-edit {
+    @extend %button-plain;
+    width: 49%;
+
+}
+.sosad-button-thread {
+    @extend %button-fancy;
+    font-weight: 600;
+    display: inline-block;
+    padding: 5px 20px;
+    letter-spacing: normal;
+    // border-radius: 0;
+}
+
+.sosad-button-kudos {
+    @extend %button-outline;
+    margin: 0 2px 5px 2px;
+}
+
+// 发布
+.sosad-button-post {
+    @extend %button-fancy;
+    font-size: 1em;
+}
+
 .sosad-button-control{
    background-color:$background-color !important;
    border-color:$button-color;
@@ -810,8 +813,7 @@ hr {
    font-size:75%;
 }
 .brief{
-   margin-top:0px;
-   margin-bottom:0px;
+   line-height: 1.8;
 }
 .narrow{
    margin-top:7px;
@@ -839,6 +841,12 @@ hr {
    }
 
 }
+
+.chapter-text {
+    line-height: 1.8;
+    font-size: 1.2em;
+}
+
 .md-preview{
     p{
        white-space: pre-wrap !important;
@@ -849,6 +857,10 @@ hr {
    border-width:1px;
    border-color:$panel-border-color;
    border-radius:3px;
+}
+.thread-title {
+    font-weight: 300;
+    line-height: 2;
 }
 .thread-vote{
    .sosad-button{
@@ -870,17 +882,48 @@ hr {
    margin-bottom:10px;
 }
 
+// Scrollable tabs
+
+.nav-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: -webkit-box;
+    display: -moz-box;
+}
+
+.nav-tabs>li {
+  float: none;
+}
+
 .nav-tabs {
     border-bottom: none;
-    li > a {
+    > li > a {
+        background: none;
         line-height: 1.2em;
-        &:hover {
+        border: none;
+        &:hover,&:focus {
             background: none;
             border: none;
         }
     }
+    > li.active > a {
+        background: none;
+        border: none;
+        outline: 0;
+        &:hover,&:focus {
+            border: none;
+            background: none;
+            border-bottom: 2.5px solid $bold-color;
+        }
+    }
 }
 
+.site-map {
+    margin-bottom: 10px;
+    padding-left: 1em;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
 
 
 @media (max-width: 480px) {
@@ -890,6 +933,12 @@ hr {
     .text-center p {
         text-align: center !important;
     }
+
+    .panel, .panel-thread {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
     .navbar-nav > li {
         float: left!important;
         border: none;
@@ -959,16 +1008,36 @@ hr {
         right: 5px;
     }
 
-    // Scrollable tabs on mobile device
+    .sosad-button-thread,
+    .sosad-button-thread:hover,
+    .sosad-button-thread:focus,
+    .sosad-button-thread:active{
+        background: $bold-color;
+        color: $panel-color;
 
-    .nav-tabs {
-        overflow-x: auto;
-        overflow-y: hidden;
-        display: -webkit-box;
-        display: -moz-box;
+        display: inline-block;
+        font-weight: 400;
+        line-height: 2.75rem;
+        position: fixed;
+        width: 50%;
+        bottom: 0;
+        text-align: center;
+        border: 1px solid $bold-color;
+        border-radius: 0;
+        // box-shadow: none;
+        transition: none;
+        opacity: 1;
+        z-index: 2;
+        padding: 1em 0;
+        transform: none;
+        // 回复显示在右边，容易按到
+        &:first-child {
+            right: 0;
+        }
+        &:last-child {
+            left: 0;
+        }
     }
 
-    .nav-tabs>li {
-      float: none;
-    }
+
 }

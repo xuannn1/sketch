@@ -1,5 +1,7 @@
-<div class="">
-     <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
+<div class="site-map">
+     <a href="{{ route('home') }}">
+         <!-- <span class="glyphicon glyphicon-home"></span> -->
+         <span><i class="fa fa-home"></i>&nbsp;首页</span></a>
      &nbsp;/&nbsp;
      <a href="{{ route('channel.show', $thread->channel_id) }}">{{ $thread->channel->channelname }}</a>
      &nbsp;/&nbsp;

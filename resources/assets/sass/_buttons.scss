@@ -1,0 +1,89 @@
+
+%button-dark {
+    background: $button-color;
+    color: $body-color;
+    font-weight: 400;
+    border: none;
+    border-radius: 0px;
+    -webkit-transition: background-color 0.2s, color 0.2s, outline 0.2s;
+    transition: background-color 0.2s, color 0.2s, outline 0.2s;
+    &:hover, &:focus, &:active {
+        outline: 1px solid $button-color;
+        color: $button-color;
+        background: $panel-color;
+        text-decoration: none;
+    }
+}
+
+%button-grey {
+    background: $border-color-row;
+    color: $link-color;
+    font-weight: 300;
+    border: none;
+    border-radius: 5px;
+    &:hover, &:focus, &:active {
+        color: $link-hover-color;
+        background: $body-color;
+        text-decoration: none;
+    }
+}
+
+%button-fancy {
+    font-weight: 350;
+    color: $panel-color;
+    letter-spacing: 2px;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 2em;
+    background: $bold-color;
+    box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.25s ease 0s;
+    &:hover, &:focus, &:active {
+        // background-color: rgba(255, 233, 73, 1);
+        // box-shadow: 0px 15px 20px rgba(252, 100, 35, 0.4);
+        // box-shadow: 0px 15px 20px rgba(255, 230, 48, 0.3);
+        // color: #341adb;
+        // color: #593fff;
+        color: $bold-color;
+        font-weight: 600;
+        background-color: $panel-color;
+        border: 1px solid $bold-color;
+        box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+        transform: translateY(-7px);
+    }
+}
+
+%button-plain {
+    border: $panel-color;
+    display: inline-block;
+    margin: 0px 0px;
+    text-align: center;
+    color: $link-color;
+    background: none;
+    &:first-child {
+        border-right: solid 1px $border-color-row;
+    }
+    padding: 10px 20px;
+    width: auto;
+    &:hover, &:focus, &:active {
+        box-shadow: none;
+        background: $panel-color;
+        text-decoration: none;
+        color: $link-hover-color;
+    }
+}
+
+%button-outline {
+    background: $panel-color;
+    color: $button-color;
+    border-radius: 2em;
+    border: solid 1px $button-color;
+    -webkit-transition: background-color 0.2s, color 0.2s; /* Safari */
+    transition: background-color 0.2s, color 0.2s;
+    &:hover, &:focus {
+        background: $panel-color;
+        color: $link-hover-color;
+        border: solid 1px $link-hover-color;
+        text-decoration: none;
+    }
+}

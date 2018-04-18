@@ -10,7 +10,7 @@
       @include('threads._site_map')
       {{ $posts->links() }}
       @if($posts->currentPage()==1)
-          <div class="panel panel-default">
+          <div class="panel panel-default panel-thread">
            <!-- 主题介绍部分 -->
              <div class="panel-body">
                 @include('books._book_profile')
@@ -33,7 +33,7 @@
              </div>
              @endif
           </div>
-          <div class="panel panel-default">
+          <div class="panel panel-default panel-thread">
               <div class="panel-body">
                  @include('chapters._chapters')
               </div>
