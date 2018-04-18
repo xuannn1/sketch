@@ -59,11 +59,15 @@ class QuotesController extends Controller
      if ($user->xianyu<=0){
         return back()->with("info", "抱歉，您的咸鱼不足");
      }
-     $quote->increment('xianyu');
-     $user->decrement('xianyu');
-     $user->increment('jifen', 2);
-     $quote->creator->increment('xianyu');
-     $quote->creator->increment('jifen',2);
+     DB::transaction(function () use ($quote, $user){
+         $quote->increment('xianyu');
+         $user->decrement('xianyu');
+         $user->increment('jifen', 2);
+         $user->increment('experience_points', 2);
+         $quote->creator->increment('xianyu');
+         $quote->creator->increment('jifen',2);
+         $quote->creator->increment('experience_points', 2);
+     });
      return back()->with("success", "您已成功投掷咸鱼~");
   }
 }

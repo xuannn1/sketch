@@ -275,6 +275,7 @@ class UsersController extends Controller
               $user->increment('xianyu', 1*$reward_base);
               $user->increment('shengfan', 5*$reward_base);
               $user->increment('jifen', 5*$reward_base);
+              $user->increment('experience_points', 5*$reward_base);
               $user->message_limit = $user->user_level;
               $user->save();
               if($user->checklevelup()){

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Thread;
 use Auth;
-use App\RegisterHomework;
+use App\Models\RegisterHomework;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\Post;
@@ -172,15 +172,21 @@ class HomeworksController extends Controller
             $rewards=request($student->id);
             $user = User::find($student->id);
             if($rewards=='1'){//super-reward
-               $user->increment('jifen', 50*$reward_base);
-               $user->increment('shengfan', 50*$reward_base);
-               $user->increment('xianyu', 25*$reward_base);
-               $user->increment('sangdian', 10*$reward_base);
+                DB::transaction(function()use($user, $reward_base){
+                    $user->increment('jifen', 50*$reward_base);
+                    $user->increment('experience_points', 50*$reward_base);
+                    $user->increment('shengfan', 50*$reward_base);
+                    $user->increment('xianyu', 25*$reward_base);
+                    $user->increment('sangdian', 10*$reward_base);
+                });
             }elseif($rewards=='2'){//regular-reward
-               $user->increment('jifen', 20*$reward_base);
-               $user->increment('shengfan', 20*$reward_base);
-               $user->increment('xianyu', 10*$reward_base);
-               $user->increment('sangdian', 5*$reward_base);
+                DB::transaction(function()use($user, $reward_base){
+                    $user->increment('jifen', 20*$reward_base);
+                    $user->increment('experience_points', 20*$reward_base);
+                    $user->increment('shengfan', 20*$reward_base);
+                    $user->increment('xianyu', 10*$reward_base);
+                    $user->increment('sangdian', 5*$reward_base);
+                });
             }elseif($rewards=='4'){//punishmeng-1months
                $user->no_registration = Carbon::now()->addMonth(1);
             }elseif($rewards=='5'){//punishmeng-3months

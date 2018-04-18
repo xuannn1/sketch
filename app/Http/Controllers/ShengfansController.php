@@ -38,6 +38,7 @@ class ShengfansController extends Controller
                         $user->update(['lastresponded_at' => Carbon::now()]);
                         $user->decrement('shengfan', $shengfan_num);//动作发起者自己减少对应剩饭
                         $user->increment('jifen', $shengfan_num);//但是增加自己的积分
+                        $user->increment('experience_points', $shengfan_num);//但是增加自己的经验
 
                         $thread = $post->thread;
                         if($thread->post_id=$post->id){//确认是给一个主题扔剩饭
@@ -45,6 +46,7 @@ class ShengfansController extends Controller
                             $author = $thread->creator;
                             $author->increment('shengfan', $shengfan_num);//每当主题被人扔剩饭，自己得等量剩饭
                             $author->increment('jifen', 1);//每当主题被人扔剩饭，自己得等量积分
+                            $author->increment('experience_points', $shengfan_num);//得经验
                             $data["success"]="您已成功投掷剩饭~";
                             $data["shengfan"]=$thread->shengfan;
                             return $data;

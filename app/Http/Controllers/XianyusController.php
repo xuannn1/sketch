@@ -61,8 +61,10 @@ class XianyusController extends Controller
                 $user->update(['lastresponded_at' => Carbon::now()]);
                 $user->decrement('xianyu');
                 $user->increment('jifen', 5);
+                $user->increment('experience_points', 5);
                 $thread->creator->increment('xianyu', 5);//每当主题被人扔咸鱼，自己得5咸鱼
                 $thread->creator->increment('jifen', 5);//每当主题被人扔咸鱼，自己得5积分
+                $thread->creator->increment('experience_points', 5);//每当主题被人扔咸鱼，自己得5积分
                 $data["success"]="您已成功投掷咸鱼~";
                 $data["xianyu"]=$thread->xianyu;
                 return $data;

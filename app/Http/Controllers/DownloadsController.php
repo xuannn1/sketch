@@ -218,6 +218,7 @@ class DownloadsController extends Controller
                 $author = $thread->creator;
                 $author->increment('shengfan',5);
                 $author->increment('jifen',5);
+                $author->increment('experience_points',5);
                 $author->increment('xianyu',1);
                 $thread->increment('downloaded');
                 if ($thread->book_id>0){$format = 1;}else{$format = 0;}
@@ -264,6 +265,7 @@ class DownloadsController extends Controller
                 $author = $thread->creator;
                 $author->increment('shengfan',10);
                 $author->increment('jifen',10);
+                $author->increment('experience_points',10);
                 $author->increment('xianyu',2);
                 $thread->increment('downloaded');
             });

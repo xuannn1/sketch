@@ -59,17 +59,17 @@ return [
       '3' => '点评帖子',
    ],
    'level_up' => [
-      1 => [//基础功能,可以开始下载
+      1 => [//
          'experience_points' => 50,
       ],
-      2 => [//可以发无限私信给好友，每日发user_level个私信给陌生人
+      2 => [//可以下载图书（含回帖方式）
          'experience_points' => 100,
       ],
-      3 => [//可以关联账户
+      3 => [//可以下载图书（脱水方式）
          'experience_points' => 150,
          'xianyu' => 25,
       ],
-      4 => [//可以悬赏（未做）
+      4 => [//
          'experience_points' => 300,
          'xianyu' => 30,
          'sangdian' => 10,

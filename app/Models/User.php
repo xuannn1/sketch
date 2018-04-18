@@ -140,7 +140,7 @@ class User extends Authenticatable
       foreach($level_ups as $level=>$requirement){
          if (($this->user_level < $level)
          &&(!(array_key_exists('continued_qiandao',$requirement))||($requirement['continued_qiandao']<=$this->continued_qiandao))
-         &&(!(array_key_exists('jifen',$requirement))||($requirement['jifen']<=$this->jifen))
+         &&(!(array_key_exists('experience_points',$requirement))||($requirement['experience_points']<=$this->jifen))
          &&(!(array_key_exists('xianyu',$requirement))||($requirement['xianyu']<=$this->xianyu))
          &&(!(array_key_exists('sangdian',$requirement))||($requirement['sangdian']<=$this->sangdian))){
             $this->user_level = $level;
