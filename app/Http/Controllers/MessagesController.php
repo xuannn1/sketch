@@ -253,6 +253,12 @@ class MessagesController extends Controller
    {
       DB::table('activities')->where('user_id','=', Auth::id())->update(['seen'=>1]);
       DB::table('messages')->where('receiver_id','=', Auth::id())->update(['seen'=>1]);
+      Auth::user()->post_reminders = 0;
+      Auth::user()->reply_reminders = 0;
+      Auth::user()->postcomment_reminders = 0;
+      Auth::user()->message_reminders = 0;
+      Auth::user()->upvote_reminders = 0;
+      Auth::user()->save();
       return redirect()->back()->with("success", "您已清除所有未读消息提醒");
    }
 

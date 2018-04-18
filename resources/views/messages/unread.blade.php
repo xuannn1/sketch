@@ -8,7 +8,13 @@
          <div class="panel-body">
             <div class="text-center">
                <h4>您好&nbsp;<strong>{{Auth::user()->name}}</strong>！</h4>
-               <h5 class="text-center">您共有新跟帖{{ Auth::user()->post_reminders }}条，新回复{{ Auth::user()->reply_reminders }}条，新点评{{ Auth::user()->postcomment_reminders }}条，新点赞{{ Auth::user()->upvote_reminders }}条！</h5>
+               <h5 class="text-center">
+                   您共有新跟帖{{ Auth::user()->post_reminders }}条，
+                   新回复{{ Auth::user()->reply_reminders }}条，
+                   新点评{{ Auth::user()->postcomment_reminders }}条，
+                   新点赞{{ Auth::user()->upvote_reminders }}条，
+                   新消息{{ Auth::user()->message_reminders }}条，
+               </h5>
                @include('messages._receive_stranger_messages_button')
                @include('messages._receive_upvote_reminders_button')
             </div>
@@ -16,7 +22,7 @@
                   <li role="presentation" class = "active"><a href="{{ route('messages.unread') }}">未读</a></li>
                   <li role="presentation"><a href="{{ route('messages.index') }}">全部</a></li>
                   <li role="presentation"><a href="{{ route('messages.messagebox') }}">信箱</a></li>
-                  <li role="presentation" class="pull-right"><a class="btn btn-success sosad-button" href="{{ route('messages.clear') }}">清空</a></a></li>
+                  <li role="presentation" class="pull-right"><a class="btn btn-success sosad-button" href="{{ route('messages.clear') }}">清理未读</a></a></li>
             </ul>
          </div>
       </div>
