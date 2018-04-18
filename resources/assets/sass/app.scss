@@ -28,6 +28,9 @@ $link-color: #505050;
 $body-font-color:#505050;
 $panel-border-color:#c4c4c4;
 $hr-border-color:#e8e8e8;
+$new-chapter-badge-color:#bf5050;
+$new-chapter-badge-background-color:#dee0ec;
+
 
 header {
    .navbar-inverse {
@@ -453,4 +456,9 @@ hr {
     top: 0;
     left: 100%;
     margin-top: -1px;
+}
+
+.newchapter-badge{
+    color:$new-chapter-badge-color;
+    background-color:$new-chapter-badge-background-color;
 }

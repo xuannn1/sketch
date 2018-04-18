@@ -27,12 +27,12 @@
             @if($book->noreply)
             <span class="glyphicon glyphicon-warning-sign"></span>
             @endif
-            @if(($book->last_chapter_title)&&($book->last_chapter_responded==0)&&($book->lastaddedchapter_at > Carbon\Carbon::now()->subDays(1)->toDateTimeString() ))
-            <span class="badge">新</span>
+            @if(($book->last_chapter_title)&&($book->last_chapter_post_id == $book->last_post_id)&&($book->lastaddedchapter_at > Carbon\Carbon::now()->subDays(1)->toDateTimeString()))
+            <span class="badge newchapter-badge">新</span>
             @endif
          </small>
          @if(($show_as_collections)&&($book->updated))
-         <span class="badge">有更新</span>
+         <span class="badge newchapter-badge">有更新</span>
          @endif
          <span class = "pull-right">
             @if($book->anonymous)

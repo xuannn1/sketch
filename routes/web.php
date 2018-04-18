@@ -118,8 +118,8 @@
    Route::post('/posts/{post}/comments', 'PostCommentsController@store')->name('postcomment.store');//对某个回帖发点评
    Route::delete('/postcomments/{postcomment}', 'PostCommentsController@destroy')->name('postcomment.destroy');//对某个回帖发点评
    Route::get('/posts/{post}/', 'PostsController@show')->name('post.show')->middleware('filter_post');//查看某个回帖
-   Route::post('/posts/{post}/shengfan', 'ShengfansController@vote')->name('shengfan.vote');//为回帖投剩饭；
-   Route::get('/posts/{post}/shengfan', 'ShengfansController@index')->name('shengfan.index');//显示本条信息下所有剩饭投喂情况；
+   Route::get('/posts/{post}/shengfan', 'ShengfansController@vote_post')->name('shengfan.vote_post');//为回帖投剩饭；
+   Route::get('/posts/{post}/shengfan-index', 'ShengfansController@index')->name('shengfan.index');//显示本条信息下所有剩饭投喂情况；
 
    Route::get('/posts/{post}/upvote','VotePostsController@upvote')->name('voteposts.upvote');//为回帖投票赞
    Route::get('/posts/{post}/downvote','VotePostsController@downvote')->name('voteposts.downvote');//为回帖投票踩

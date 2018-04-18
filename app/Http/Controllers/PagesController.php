@@ -136,7 +136,7 @@ class PagesController extends Controller
             if ($request->tongren_cp){
                 $query->where('tongrens.tongren_cp','like','%'.$request->tongren_cp.'%');
             }
-            $books = $query->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
+            $books = $query->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id')
             ->orderby('books.lastaddedchapter_at', 'desc')
             ->simplePaginate(config('constants.index_per_page'));
             return view('pages.search_books', compact('books'))->with('show_as_collections', false);

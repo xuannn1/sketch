@@ -28,7 +28,7 @@ class UsersController extends Controller
          ->join('labels', 'threads.label_id', '=', 'labels.id')
          ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
          ->where([['threads.deleted_at', '=', null],['threads.user_id','=',$id]])
-         ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
+         ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id')
          ->orderby('books.lastaddedchapter_at', 'desc')
          ->simplePaginate($paginate);
       }else{
@@ -38,7 +38,7 @@ class UsersController extends Controller
          ->join('labels', 'threads.label_id', '=', 'labels.id')
          ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
          ->where([['threads.deleted_at', '=', null],['threads.user_id','=',$id],['threads.anonymous','=',0],['threads.public','=',1]])
-         ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded')
+         ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id')
          ->orderby('books.lastaddedchapter_at', 'desc')
          ->simplePaginate($paginate);
       }
@@ -259,7 +259,7 @@ class UsersController extends Controller
       if ($user->lastrewarded_at <= Carbon::today()->toDateTimeString())
       {
           $message = DB::transaction(function () use($user){
-              if ($user->lastrewarded_at > Carbon::today()->subdays(1)->toDateTimeString()) {
+              if ($user->lastrewarded_at > Carbon::now()->subdays(2)->toDateTimeString()) {
                   $user->increment('continued_qiandao');
                   if($user->continued_qiandao>$user->maximum_qiandao){$user->maximum_qiandao = $user->continued_qiandao;}
               }else{

@@ -54,15 +54,105 @@ function toggle_review_quote(quote_id){
          if (data != "notwork"){
              console.log(data.approved);
              if (data.approved){
-                $( '.togglereviewquote'+quote_id ).html("取消通过").addClass('btn-danger').removeClass('btn-success');
+                $( '.togglereviewquote'+quote_id ).html("对外显示").addClass('btn-success').removeClass('btn-danger');
              }else{
-                $( '.togglereviewquote'+quote_id ).html("通过题头").addClass('btn-success').removeClass('btn-danger');
+                $( '.togglereviewquote'+quote_id ).html("不显示").addClass('btn-danger').removeClass('btn-success');
              }
         }else{
             console.log('having error approving/disaproving quote');
         }
       }
    });
+};
+
+function thread_xianyu(thread_id){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'GET',
+        url: web_base_url + '/threads/' + thread_id + '/xianyu',
+        data: {
+        },
+        success: function(data) {
+            console.log(data);
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                }
+            });
+            if(!(data['xianyu'] === undefined)){
+                $( '#threadxianyu'+thread_id ).html('咸鱼'+data['xianyu']);
+            }
+        }
+    });
+};
+
+function thread_add_to_collection(thread_id){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'GET',
+        url: web_base_url + '/threads/' + thread_id + '/collection',
+        data: {
+        },
+        success: function(data) {
+            console.log(data);
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                }
+            });
+            if(!(data['collection'] === undefined)){
+                $( '#threadcollection'+thread_id ).html('收藏'+data['collection']);
+            }
+        }
+    });
+};
+
+
+function post_shengfan(post_id){
+    if ($.isNumeric($('#post'+post_id+'shengfan').val())){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type: 'GET',
+            url: web_base_url + '/posts/' + post_id + '/shengfan?num=' + $('#post'+post_id+'shengfan').val(),
+            data: {
+            },
+            success: function(data) {
+                console.log(data);
+                $('.shengfan-modal').modal('hide');
+                var message = ["success","info","warning","danger"];
+                $.each(data, function( key, value ){
+                    if ($.inArray(key,message)>-1){
+                        console.log(key,value);
+                        $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                    }
+                });
+                if(!(data['shengfan'] === undefined)){
+                    $( '#postshengfan'+post_id ).html('剩饭'+data['shengfan']);
+                }
+            }
+        });
+    }else{
+        $('.shengfan-modal').modal('hide');
+        console.log($('#post'+post_id+'shengfan').val());
+        console.log('error that is not a number');
+        $( '#ajax-message' ).html('抱歉，您输入的不是数字。').addClass('alert-danger').removeClass('hidden');
+    }
 };
 
 function replytopost(post_id, post_trim){

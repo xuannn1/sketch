@@ -8,10 +8,10 @@
          <div class="panel-body">
             @foreach ($quotes as $quote)
                <div class="row text-center">
-                  <div class="col-xs-3">
+                  <div class="col-xs-4">
                      <h5>{{ $quote->quote }}</h5>
                   </div><small>
-                  <div class="col-xs-3">
+                  <div class="col-xs-4">
                      <p><a href="#">{{ $quote->creator->name }}</a></p>
                      @if ($quote->anonymous)
                         <p>马甲：{{ $quote->majia ?? '匿名咸鱼'}}</p>
@@ -20,12 +20,8 @@
                         <p style = "color:#b73766">不丧</p>
                      @endif
                   </div>
-                  <div class="col-xs-3">
-                     <p>是否已审核：{{ $quote->reviewed }}</p>
-                     <p>是否已通过：{{ $quote->approved }}</p>
-                  </div>
-                  <div class="col-xs-3">
-                      <button class="btn btn-xs {{ $quote->approved? "btn-danger":"btn-success" }} cancel-button {{'togglereviewquote'.$quote->id}}" type="button" name="button" onClick="toggle_review_quote({{$quote->id}},'{{$quote->approved ? "disapprove":"approve"}}')">{{$quote->approved? '取消通过':'通过题头'}}</button>
+                  <div class="col-xs-4">
+                      <button class="btn btn-small {{ $quote->approved? "btn-success":"btn-danger" }} cancel-button {{'togglereviewquote'.$quote->id}}" type="button" name="button" onClick="toggle_review_quote({{$quote->id}},'{{$quote->approved ? "disapprove":"approve"}}')">{{$quote->approved? '对外显示':'不显示'}}</button>
                   </div></small>
                </div>
                <hr>

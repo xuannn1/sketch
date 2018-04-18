@@ -17,21 +17,25 @@ class CollectionsController extends Controller
    {
      $this->middleware('auth');
    }
-   public function store(Thread $thread)
-   {
-      $user = Auth::user();
-      $collection = $thread->collection($user);
-      if($collection){
-         return back()->with("info", "您已收藏本文，无需重复收藏~");
-      }
-      $collecttion = Collection::create([
-        'user_id' => $user->id,
-        'thread_id' => $thread->id,
-     ]);
-     $thread->increment('collection');
-     $user->update(['lastresponded_at' => Carbon::now()]);
-     return back()->with("success", "您已成功收藏本文");
-   }
+    public function store(Thread $thread)
+    {
+        $user = Auth::user();
+        $data =[];
+        $collection = $thread->collection($user);
+        if($collection){
+            $data['info']="您已收藏本文，无需重复收藏~";
+        }else{
+            $collecttion = Collection::create([
+                'user_id' => $user->id,
+                'thread_id' => $thread->id,
+            ]);
+            $thread->increment('collection');
+            $user->update(['lastresponded_at' => Carbon::now()]);
+            $data['success']="您已成功收藏本文";
+            $data['collection']=$thread->collection;
+        }
+        return $data;
+    }
 
    public function cancel(Request $request)
    {
@@ -78,7 +82,7 @@ class CollectionsController extends Controller
          ->join('labels','threads.label_id','=','labels.id')
          ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
          ->where([['collections.user_id','=',$user->id], ['threads.deleted_at', '=', null],['threads.book_id','>',0]])
-         ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','chapters.responded as last_chapter_responded', 'collections.updated as updated','collections.keep_updated as keep_updated')
+         ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','chapters.responded as last_chapter_responded', 'collections.updated as updated','collections.keep_updated as keep_updated', 'chapters.post_id as last_chapter_post_id')
          ->orderBy('books.lastaddedchapter_at','desc')
          ->paginate(config('constants.index_per_page'));
       $book_info = config('constants.book_info');
