@@ -48,7 +48,17 @@
                                     <li><a href="#help-4-6">你们什么时候制作app？网上那个app是你们的吗，为什么logo不一样？</a></li>
                                     <li><a href="#help-4-7">如何支持你们？</a></li>
                                 </ul>
-                                <li><a href="#help-5" class="h4">当前数据</a></li>
+                                <li><a href="#help-5" class="h4">5. 当前设置</a></li>
+                                <ul>
+                                    <li><a href="#help-5-1">5.1 当前页面数据</a></li>
+                                    <li><a href="#help-5-2">5.2 升级标准</a></li>
+                                    <li><a href="#help-5-3">5.3 不同等级的权限</a></li>
+                                    <li><a href="#help-5-4">5.4 页面屏蔽字符</a></li>
+                                    <ul>
+                                        <li><a href="#help-5-4-1">5.4.1 出现在标题/简介/章节名中会被隐藏的词汇</a></li>
+                                        <li><a href="#help-5-4-2">5.4.2 出现在书名中会被隐藏的特殊字符</a></li>
+                                    </ul>
+                                </ul>
                             </ol>
                         </div>
                         <br>
@@ -243,40 +253,61 @@
                             </div>
                             <br>
                             <div id="help-5">
-                                <h2>5. 当前数据</h2>
+                                <h2>5. 当前设置</h2>
                                 <ul>
-                                    <li>信息每页显示：{{ $data['items_per_page'] }}个</li>
-                                    <li>信息每分区显示：{{ $data['items_per_part'] }}个</li>
-                                    <li>目录每页显示：{{ $data['index_per_page'] }}个</li>
-                                    <li>目录每分区显示：{{ $data['index_per_part'] }}个</li>
-                                    <li>长评标准：{{ $data['longcomment_lenth'] }}字</li>
-                                    <li>新章节的更新字数必须达到{{ $data['update_min'] }}字，才能计入本书“最后更新”的排名数据（顶帖）</li>
-                                    <br>
-                                    <li>升级标准：</li>
-                                        <p>用户签到时会检查是否符合升级条件，符合则自动升级。</p>
-                                        <p>普通互动，回帖、点评、签到、投掷咸鱼剩饭，都能增加积分、经验。签到送数值不等的咸鱼、剩饭、经验、积分，连续签到次数越多，每次签到奖励的页越多，有时会出现额外奖励。更新书籍章节、发表主题贴、发表长评，可奖励数值不等的丧点。作业活动奖励丧点。</p>
-                                    <ul>
-                                        @foreach($data['level_up'] as $level=>$level_requirement)
-                                        <li>等级：{{$level}}</li>
+                                    <div id="help-5-1">
+                                        <h4>5.1 当前页面数据</h4>
                                         <ul>
-                                            <li>所需经验：{{$level_requirement['experience_points']}}</li>
-                                            <li>所需咸鱼：{{$level_requirement['xianyu']}}</li>
-                                            <li>所需丧点：{{$level_requirement['sangdian']}}</li>
+                                            <li>信息每页显示：{{ $data['items_per_page'] }}个</li>
+                                            <li>信息每分区显示：{{ $data['items_per_part'] }}个</li>
+                                            <li>目录每页显示：{{ $data['index_per_page'] }}个</li>
+                                            <li>目录每分区显示：{{ $data['index_per_part'] }}个</li>
+                                            <li>长评标准：{{ $data['longcomment_lenth'] }}字</li>
+                                            <li>新章节的更新字数必须达到{{ $data['update_min'] }}字，才能计入本书“最后更新”的排名数据（顶帖）</li>
                                         </ul>
-                                        @endforeach
-                                    </ul>
+                                    </div>
+                                    <br>
+                                    <div id="help-5-1">
+                                        <h4>5.2 升级标准</h4>
+                                        <ul>
+                                            @foreach($data['level_up'] as $level=>$level_requirement)
+                                            <li>等级：{{$level}}</li>
+                                            <ul>
+                                                <li>所需经验：{{$level_requirement['experience_points']}}</li>
+                                                <li>所需咸鱼：{{$level_requirement['xianyu']}}</li>
+                                                <li>所需丧点：{{$level_requirement['sangdian']}}</li>
+                                            </ul>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    <br>
+                                    <div id="help-5-3">
+                                        <h4>5.3 不同等级的权限</h4>
+                                        <div class="main-text indentation">
+                                            <p>用户<code>签到</code>时会检查是否符合升级条件，符合则自动升级。</p>
+                                            <p>普通互动，比如回帖、点评、签到、投掷咸鱼剩饭、点赞，都能增加积分、经验。签到送数值不等的咸鱼、剩饭、经验、积分，连续签到次数越多，每次签到奖励的页越多，有时会出现额外奖励。更新书籍章节、发表主题贴、发表长评，可奖励数值不等的丧点。作业活动奖励丧点。</p>
+                                            <p><strong>1级</strong>能下载讨论帖，<strong>2级</strong>能下载讨论格式的书籍，<strong>3级</strong>能（需作者开放下载）下载“脱水”书籍；能<code>关联马甲号</code>（从编辑资料进入），关联后能免密码登陆马甲。</p>
+                                            <p>签到时能获得和自己等级相等的陌生人私信限额，用于给未关注自己的用户发送私信（对方可选择屏蔽陌生人私信）。互相关注用户可以发送无限量私信</p>
+                                        </div>
+                                    </div>
                                     <br>
                                     @if(Auth::check())
-                                    <li>出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：<h6>
-                                        {{ $data['word_filter']['not_in_public'] }}
-                                    </h6></li>
-                                    <br>
-                                    <li>出现在书名中会被隐藏的特殊字符（用‘|’隔开）：<h6>
-                                        {{ $data['word_filter']['not_in_title'] }}
-                                    </h6></li>
+                                    <div id="help-5-4">
+                                        <h4>5.4 页面屏蔽字符</h4>
+                                        <div id="help-5-4-1">
+                                            <h5>5.4.1 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</h5><h6>
+                                                {{ $data['word_filter']['not_in_public'] }}
+                                            </h6>
+                                        </div>
+                                        <br>
+                                        <div id="help-5-4-2">
+                                            <h5>5.4.2 出现在书名中会被隐藏的特殊字符（用‘|’隔开）：</h5><h6>
+                                                {{ $data['word_filter']['not_in_title'] }}
+                                            </h6>
+                                        </div>
+                                    </div>
                                     @endif
                                 </ul>
-
                             </div>
                         </div>
                     </div>
