@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Sosadfun\Traits\BookTraits;
 use Auth;
 use App\Models\Collection;
 use App\Models\Thread;
@@ -13,6 +13,9 @@ use App\Models\Follower;
 
 class CollectionsController extends Controller
 {
+
+    use BookTraits;
+
    public function __construct()
    {
      $this->middleware('auth');
@@ -73,16 +76,11 @@ class CollectionsController extends Controller
 
    public function books()
    {
-
       $user = Auth::user();
-      $books = DB::table('collections')
-         ->join('threads','collections.thread_id','=','threads.id')
-         ->join('books','threads.book_id','=','books.id')
-         ->join('users','threads.user_id','=','users.id')
-         ->join('labels','threads.label_id','=','labels.id')
-         ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
+      $books = $this->join_book_tables()
+         ->join('collections','collections.thread_id','=','threads.id')
          ->where([['collections.user_id','=',$user->id], ['threads.deleted_at', '=', null],['threads.book_id','>',0]])
-         ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','chapters.responded as last_chapter_responded', 'collections.updated as updated','collections.keep_updated as keep_updated', 'chapters.post_id as last_chapter_post_id')
+         ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','chapters.responded as last_chapter_responded', 'collections.updated as updated','collections.keep_updated as keep_updated', 'chapters.post_id as last_chapter_post_id','tongrens.tongren_yuanzhu','tongrens.tongren_cp','tongrens.tongren_yuanzhu_tag_id','tongrens.tongren_cp_tag_id','tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname','tongren_cp_tags.tagname as tongren_cp_tagname')
          ->orderBy('books.lastaddedchapter_at','desc')
          ->paginate(config('constants.index_per_page'));
       $book_info = config('constants.book_info');
