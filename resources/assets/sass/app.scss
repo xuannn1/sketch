@@ -489,3 +489,12 @@ hr {
     color:$new-chapter-badge-color;
     background-color:$new-chapter-badge-background-color;
 }
+
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 99;
+  cursor: pointer;
+}

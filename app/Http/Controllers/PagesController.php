@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Quote;
 use App\Models\Thread;
 use App\Models\Post;
+use App\Models\WebStat;
 use Carbon\Carbon;
 
 class PagesController extends Controller
@@ -43,7 +44,8 @@ class PagesController extends Controller
     public function help()
     {
       $data = config('constants');
-      return view('pages/help',compact('data'));
+      $webstat = WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
+      return view('pages/help',compact('data','webstat'));
     }
 
     public function test()

@@ -13,7 +13,7 @@
 @endif
 <div class="stats">
       <span>等级：{{ $user->user_level }}</span>
-      <span>经验：{{ $user->experience_points }}</span>
+      <span>盐都：{{ $user->experience_points }}</span>
       <span>积分：{{ $user->jifen }}</span>
       <span>剩饭：{{ $user->shengfan }}</span>
       <span>咸鱼：{{ $user->xianyu }}</span>

@@ -53,10 +53,11 @@
                                     <li><a href="#help-5-1">5.1 当前页面数据</a></li>
                                     <li><a href="#help-5-2">5.2 升级标准</a></li>
                                     <li><a href="#help-5-3">5.3 不同等级的权限</a></li>
-                                    <li><a href="#help-5-4">5.4 页面屏蔽字符</a></li>
+                                    <li><a href="#help-5-4">5.4 昨日统计数据</a></li>
+                                    <li><a href="#help-5-5">5.5 页面屏蔽字符</a></li>
                                     <ul>
-                                        <li><a href="#help-5-4-1">5.4.1 出现在标题/简介/章节名中会被隐藏的词汇</a></li>
-                                        <li><a href="#help-5-4-2">5.4.2 出现在书名中会被隐藏的特殊字符</a></li>
+                                        <li><a href="#help-5-5-1">5.5.1 出现在标题/简介/章节名中会被隐藏的词汇</a></li>
+                                        <li><a href="#help-5-5-2">5.5.2 出现在书名中会被隐藏的特殊字符</a></li>
                                     </ul>
                                 </ul>
                             </ol>
@@ -273,7 +274,7 @@
                                             @foreach($data['level_up'] as $level=>$level_requirement)
                                             <li>等级：{{$level}}</li>
                                             <ul>
-                                                <li>所需经验：{{$level_requirement['experience_points']}}</li>
+                                                <li>所需盐度：{{$level_requirement['experience_points']}}</li>
                                                 <li>所需咸鱼：{{$level_requirement['xianyu']}}</li>
                                                 <li>所需丧点：{{$level_requirement['sangdian']}}</li>
                                             </ul>
@@ -285,23 +286,35 @@
                                         <h4>5.3 不同等级的权限</h4>
                                         <div class="main-text indentation">
                                             <p>用户<code>签到</code>时会检查是否符合升级条件，符合则自动升级。</p>
-                                            <p>普通互动，比如回帖、点评、签到、投掷咸鱼剩饭、点赞，都能增加积分、经验。签到送数值不等的咸鱼、剩饭、经验、积分，连续签到次数越多，每次签到奖励的页越多，有时会出现额外奖励。更新书籍章节、发表主题贴、发表长评，可奖励数值不等的丧点。作业活动奖励丧点。</p>
+                                            <p>普通互动，比如回帖、点评、签到、投掷咸鱼剩饭、点赞，都能增加积分、盐度（也就是经验）。签到送数值不等的咸鱼、剩饭、盐度、积分，连续签到次数越多，每次签到奖励的页越多，有时会出现额外奖励。更新书籍章节、发表主题贴、发表长评，可奖励数值不等的丧点。作业活动奖励丧点。</p>
                                             <p><strong>1级</strong>能下载讨论帖，<strong>2级</strong>能下载讨论格式的书籍，<strong>3级</strong>能（需作者开放下载）下载“脱水”书籍；能<code>关联马甲号</code>（从编辑资料进入），关联后能免密码登陆马甲。</p>
                                             <p>签到时能获得和自己等级相等的陌生人私信限额，用于给未关注自己的用户发送私信（对方可选择屏蔽陌生人私信）。互相关注用户可以发送无限量私信</p>
                                         </div>
                                     </div>
                                     <br>
-                                    @if(Auth::check())
                                     <div id="help-5-4">
-                                        <h4>5.4 页面屏蔽字符</h4>
-                                        <div id="help-5-4-1">
-                                            <h5>5.4.1 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</h5><h6>
+                                        <h4>5.4 昨日网站数据汇总</h4>
+                                        <ul>
+                                            <li>昨日新注册用户：{{ $webstat['new_users'] }}人</li>
+                                            <li>昨日签到人数：{{ $webstat['qiandaos'] }}个</li>
+                                            <li>昨日发帖总数：{{ $webstat['posts'] }}个</li>
+                                            <li>昨日新增章节数：{{ $webstat['posts_maintext'] }}个</li>
+                                            <li>昨日新增回复数：{{ $webstat['posts_reply'] }}个</li>
+                                            <li>昨日点评数：{{ $webstat['post_comments'] }}字</li>
+                                        </ul>
+                                    </div>
+                                    <br>
+                                    @if(Auth::check())
+                                    <div id="help-5-5">
+                                        <h4>5.5 页面屏蔽字符</h4>
+                                        <div id="help-5-5-1">
+                                            <h5>5.5.1 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</h5><h6>
                                                 {{ $data['word_filter']['not_in_public'] }}
                                             </h6>
                                         </div>
                                         <br>
-                                        <div id="help-5-4-2">
-                                            <h5>5.4.2 出现在书名中会被隐藏的特殊字符（用‘|’隔开）：</h5><h6>
+                                        <div id="help-5-5-2">
+                                            <h5>5.5.2 出现在书名中会被隐藏的特殊字符（用‘|’隔开）：</h5><h6>
                                                 {{ $data['word_filter']['not_in_title'] }}
                                             </h6>
                                         </div>
@@ -312,12 +325,28 @@
                         </div>
                     </div>
                 </div>
-                <br>
-                <br>
             </div>
         </div>
+        <button class="btn btn-md btn-danger sosad-button" onclick="topFunction()" id="myBtn" title="Go to top">回到页面顶部</button>
     </div>
 </div>
+<script>
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
 
+function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("myBtn").style.display = "block";
+    } else {
+        document.getElementById("myBtn").style.display = "none";
+    }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+</script>
 
 @stop
