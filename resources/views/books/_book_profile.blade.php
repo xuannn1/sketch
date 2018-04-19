@@ -20,7 +20,7 @@
        @if(!$thread->original())
        <p>
            @if($book->tongren->tongren_yuanzhu_tag_id>0)
-           <a href="{{ route('books.booktag', $book->tongren->tongren_yuanzhu_tag_id) }}">{{$book->tongren->yuanzhu()}}</a>
+           <a href="{{ route('books.booktag', $book->tongren->tongren_yuanzhu_tag_id) }}">《{{$book->tongren->yuanzhu()}}》</a>
            @else
            {{ $book->tongren->tongren_yuanzhu }}
            @endif

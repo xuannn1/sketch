@@ -31,7 +31,7 @@
                  <div id="fill_yuanzhu_tag" style="display:none">
                      <h4>同人原著</h4>
                      @foreach ($tags_tongren_yuanzhu as $tag)
-                         <label class="radio-inline hidden label_{{$tag->label_id}} tongren_yuanzhu_tag"><input type="radio" name="tongren_yuanzhu_tag_id" value="{{ $tag->id }}" onClick="show_only_this_cp_tags('{{$tag->id}}')" {{ old('tongren_yuanzhu_tag_id')==(string)$tag->id ?'checked':''}}>{{ $tag->tagname }}</label>
+                         <label class="radio-inline hidden label_{{$tag->label_id}} tongren_yuanzhu_tag"><input type="radio" name="tongren_yuanzhu_tag_id" value="{{ $tag->id }}" onClick="show_only_this_cp_tags('{{$tag->id}}')" {{ old('tongren_yuanzhu_tag_id')==(string)$tag->id ?'checked':''}}>{{ $tag->tagname }}（{{$tag->tag_explanation}}）</label>
                      @endforeach
                      <label class="radio-inline"><input type="radio" name="tongren_yuanzhu_tag_id" value="0" onClick="document.getElementById('fill_yuanzhu').style.display = 'block';" {{ old('tongren_yuanzhu_tag_id')==='0' ?'checked':''}}>其他原著</label>
                      <div id="fill_yuanzhu" style="display:{{ old('tongren_yuanzhu_tag_id')==='0'? 'block':'none' }}">
@@ -43,7 +43,7 @@
                 <div id="fill_CP_tag" style="display:none">
                     <h4>同人CP</h4>
                     @foreach ($tags_tongren_cp as $tag)
-                        <label class="radio-inline hidden tongren_yuanzhu_{{$tag->tag_belongs_to}} tongren_cp_tag"><input type="radio" name="tongren_CP_tag_id" value="{{ $tag->id }}" {{ old('tongren_CP_tag_id')==(string)$tag->id ?'checked':''}}>{{ $tag->tagname }}</label>
+                        <label class="radio-inline hidden tongren_yuanzhu_{{$tag->tag_belongs_to}} tongren_cp_tag"><input type="radio" name="tongren_CP_tag_id" value="{{ $tag->id }}" {{ old('tongren_CP_tag_id')==(string)$tag->id ?'checked':''}}>{{ $tag->tagname }}（{{$tag->tag_explanation}}）</label>
                     @endforeach
                     <label class="radio-inline"><input type="radio" name="tongren_CP_tag_id" value="0" onClick="document.getElementById('fill_CP').style.display = 'block'" {{ old('tongren_CP_tag_id')==='0' ?'checked':''}}>其他CP</label>
                     <div id="fill_CP" style="display:{{ old('tongren_CP_tag_id')==='0'? 'block':'none' }}">

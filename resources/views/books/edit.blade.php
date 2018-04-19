@@ -59,7 +59,7 @@
                         <div id="tongren_yuanzhu">
                             <h4>&nbsp;&nbsp;1.2 从下列同人原著作品中，选择对应的同人原著作品简称</h4>
                             @foreach ($tags_tongren_yuanzhu as $tag)
-                                <label class="radio-inline {{$tag->label_id==$thread->label_id? '':'hidden'}} label_{{$tag->label_id}} tongren_yuanzhu_tag"><input type="radio" name="tongren_yuanzhu_tag_id" value="{{ $tag->id }}" onClick="show_only_this_cp_tags('{{$tag->id}}')" {{ $book->tongren->tongren_yuanzhu_tag_id==$tag->id ?'checked':''}}>{{ $tag->tagname }}</label>
+                                <label class="radio-inline {{$tag->label_id==$thread->label_id? '':'hidden'}} label_{{$tag->label_id}} tongren_yuanzhu_tag"><input type="radio" name="tongren_yuanzhu_tag_id" value="{{ $tag->id }}" onClick="show_only_this_cp_tags('{{$tag->id}}')" {{ $book->tongren->tongren_yuanzhu_tag_id==$tag->id ?'checked':''}}>{{ $tag->tagname }}（{{$tag->tag_explanation}}）</label>
                             @endforeach
                             <label class="radio-inline"><input type="radio" name="tongren_yuanzhu_tag_id" value="0" onClick="show_only_this_cp_tags('{{$tag->id}}')" {{ $book->tongren->tongren_yuanzhu_tag_id==0 ?'checked':''}}>其他原著</label>
                             <br>
@@ -70,7 +70,7 @@
                         <div id="tongren_cp">
                             <h5>&nbsp;&nbsp;1.3 从下列对应同人CP中，选择对应的CP简称</h5>
                             @foreach ($tags_tongren_cp as $tag)
-                                <label class="radio-inline {{$tag->tag_belongs_to==$book->tongren->tongren_yuanzhu_tag_id? '':'hidden'}} tongren_yuanzhu_{{$tag->tag_belongs_to}} tongren_cp_tag"><input type="radio" name="tongren_CP_tag_id" value="{{ $tag->id }}" {{ ($book->tongren->tongren_CP_tag_id) == $tag->id ?'checked':'' }}>{{ $tag->tagname }}</label>
+                                <label class="radio-inline {{$tag->tag_belongs_to==$book->tongren->tongren_yuanzhu_tag_id? '':'hidden'}} tongren_yuanzhu_{{$tag->tag_belongs_to}} tongren_cp_tag"><input type="radio" name="tongren_CP_tag_id" value="{{ $tag->id }}" {{ ($book->tongren->tongren_CP_tag_id) == $tag->id ?'checked':'' }}>{{ $tag->tagname }}（{{$tag->tag_explanation}}）</label>
                             @endforeach
                             <label class="radio-inline"><input type="radio" name="tongren_CP_tag_id" value="0" {{ $book->tongren->tongren_CP_tag_id==0 ?'checked':''}}>其他CP</label>
                             <br>

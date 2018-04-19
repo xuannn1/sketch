@@ -17,14 +17,14 @@ class Tongren extends Model
    public function yuanzhu()
    {
       if ($this->tongren_yuanzhu_tag_id != 0){
-         return Tag::find($this->tongren_yuanzhu_tag_id)->tagname;
+         return Tag::find($this->tongren_yuanzhu_tag_id)->tag_explanation;
       }
    }
 
    public function cp()
    {
       if ($this->tongren_CP_tag_id != 0){
-         return Tag::find($this->tongren_CP_tag_id)->tagname;
+         return Tag::find($this->tongren_CP_tag_id)->tag_explanation;
       }
    }
 }
