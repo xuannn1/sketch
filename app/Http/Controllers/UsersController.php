@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Sosadfun\Traits\BookTraits;
 
 use Auth;
 use Hash;
@@ -13,36 +13,31 @@ use Carbon\Carbon;
 
 class UsersController extends Controller
 {
-   public function __construct()
-   {
-      $this->middleware('auth', [
-        'only' => ['edit', 'update', 'destroy', 'qiandao'],
-      ]);
-   }
-   public function findbooks($id, $paginate)
-   {
-      if ($id == Auth::id()){
-         return $books = DB::table('threads')
-         ->join('books', 'threads.book_id', '=', 'books.id')
-         ->join('users', 'threads.user_id', '=', 'users.id')
-         ->join('labels', 'threads.label_id', '=', 'labels.id')
-         ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
-         ->where([['threads.deleted_at', '=', null],['threads.user_id','=',$id]])
-         ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id')
-         ->orderby('books.lastaddedchapter_at', 'desc')
-         ->simplePaginate($paginate);
-      }else{
-         return $books = DB::table('threads')
-         ->join('books', 'threads.book_id', '=', 'books.id')
-         ->join('users', 'threads.user_id', '=', 'users.id')
-         ->join('labels', 'threads.label_id', '=', 'labels.id')
-         ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
-         ->where([['threads.deleted_at', '=', null],['threads.user_id','=',$id],['threads.anonymous','=',0],['threads.public','=',1]])
-         ->select('books.*', 'threads.*', 'users.name','labels.labelname','chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id')
-         ->orderby('books.lastaddedchapter_at', 'desc')
-         ->simplePaginate($paginate);
-      }
-   }
+    use BookTraits;
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'only' => ['edit', 'update', 'destroy', 'qiandao'],
+        ]);
+    }
+    public function findbooks($id, $paginate)
+    {
+        $query = $this->join_book_tables();
+        $query->where('threads.user_id','=',$id);//属于这个人
+        //未登陆，看不见边缘文章
+        if(!Auth::check()){$query->where('threads.bianyuan','=',0);}
+        //假如未登陆，或者既不是管理员也不是本人，则不能看私密文章，不能看匿名文章
+        if((!Auth::check())||((!$id === Auth::id())&&(!Auth::user()->admin))){
+            $query->where('threads.public','=',1)
+                ->where('threads.anonymous','=',0);
+        }
+        //已删除的也不能看
+        $query->where('threads.deleted_at', '=', null);
+        $books = $this->return_book_fields($query)
+           ->orderby('books.lastaddedchapter_at', 'desc')
+           ->simplePaginate($paginate);
+        return $books;
+    }
 
    public function findthreads($id, $paginate, $group)
    {

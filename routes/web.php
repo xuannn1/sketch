@@ -47,7 +47,7 @@
    Route::get('/users/{id}', 'UsersController@show')->name('user.show');//展示某用户的个人页面
    Route::get('users/{id}/threads','UsersController@showthreads')->name('user.showthreads');//展示某用户的全部主题贴
    Route::get('users/{id}/books','UsersController@showbooks')->name('user.showbooks');//展示某用户的全部文章
-   Route::get('users/{id}/statuses','UsersController@showstatuses')->name('user.showstatuses');//展示某用户的全部文章
+   Route::get('users/{id}/statuses','UsersController@showstatuses')->name('user.showstatuses');//展示某用户的全部动态
    Route::get('users/{id}/longcomments','UsersController@showlongcomments')->name('user.showlongcomments');//展示某用户的全部长评
    Route::get('/users/{id}/upvotes', 'UsersController@showupvotes')->name('user.showupvotes');
    Route::get('/users/{id}/followings', 'UsersController@followings')->name('users.followings');
@@ -138,6 +138,8 @@
    Route::get('/admin/advancedthreadform/{thread}','AdminsController@advancedthreadform')->name('admin.advancedthreadform');//高级管理主题贴页面
    Route::get('/admin/sendpublicmessageform', 'AdminsController@sendpublicmessageform')->name('admin.sendpublicmessageform')->middleware('admin');//发送提醒通知表格
    Route::post('/admin/sendpublicmessage', 'AdminsController@sendpublicmessage')->name('admin.sendpublicmessage')->middleware('admin');//发送提醒通知
+   Route::get('/admin/createtag', 'AdminsController@create_tag_form')->name('admin.createtag')->middleware('admin');//显示新建tag表格
+   Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//发送提醒通知
 
 }
 
@@ -177,6 +179,7 @@
    Route::resource('statuses', 'StatusesController', ['only' => [
        'index', 'store', 'destroy'
    ]]);
+   Route::get('/statuses/collections', 'StatusesController@collections')->name('statuses.collections');//显示关注对象的所有动态
    Route::post('/cache/save', 'CachesController@save')->name('cache.save');
    Route::get('/cache/retrieve', 'CachesController@retrieve')->name('cache.retrieve');
    Route::get('/cache/initcache','CachesController@initcache')->name('cache.initcache');

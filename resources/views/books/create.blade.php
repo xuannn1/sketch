@@ -14,8 +14,8 @@
                     <div>
                         <h6>（发文前请阅读：<a href="http://sosad.fun/threads/136">《版规的详细说明（草案）》</a>。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">《关于本站》</a>，<a href="{{ route('help') }}">《使用帮助》</a>。除文章原创性之外，其他内容均可修改。感谢发文！）</h6>
                         <h4>1. 请选择文章原创性</h4>
-                        <label class="radio-inline"><input type="radio" name="channel_id" value="1"  onclick="document.getElementById('yuanchuang').style.display = 'block'; document.getElementById('tongren').style.display = 'none'" {{ old('channel_id')=='1'?'checked':''}}>原创</label>
-                        <label class="radio-inline"><input type="radio" name="channel_id" value="2"  onclick="document.getElementById('tongren').style.display = 'block'; document.getElementById('yuanchuang').style.display = 'none';"{{ old('channel_id')=='2'?'checked':''}}>同人</label>
+                        <label class="radio-inline"><input type="radio" name="channel_id" value="1"  onclick="document.getElementById('yuanchuang').style.display = 'block'; document.getElementById('tongren').style.display = 'none';uncheckAll('tongrentags');document.getElementById('tongrentags').style.display = 'none'" {{ old('channel_id')=='1'?'checked':''}}>原创</label>
+                        <label class="radio-inline"><input type="radio" name="channel_id" value="2"  onclick="document.getElementById('tongren').style.display = 'block'; document.getElementById('yuanchuang').style.display = 'none';document.getElementById('tongrentags').style.display = 'block'"{{ old('channel_id')=='2'?'checked':''}}>同人</label>
                     </div>
 
                     <div id="yuanchuang" style="display:{{ old('channel_id')=='1'?'block':'none'}}">
@@ -28,13 +28,30 @@
                     <div id="tongren" style="display:{{ old('channel_id')=='2'?'block':'none'}}">
                         <h4>&nbsp;&nbsp;1.1 请选择主题对应类型：</h4>
                         @foreach ($labels_tongren as $label)
-                            <label class="radio-inline"><input type="radio" name="label_id" value="{{ $label->id }}" {{ old('label_id')==$label->id ? 'checked':''}}>{{ $label->labelname }}</label>
+                            <label class="radio-inline"><input type="radio" name="label_id" value="{{ $label->id }}" onClick="show_only_this_label_tongren('{{$label->id}}');" {{ old('label_id')==$label->id ? 'checked':''}}>{{ $label->labelname }}</label>
                         @endforeach
                         <br>
-                        <h4>&nbsp;&nbsp;1.2 请填写原著作品</h4>
-                        <input type="text" name="tongren_yuanzhu" class="form-control" placeholder="请输入完整原著作品名称" value="{{ old('tongren_yuanzhu') }}">
-                        <h4>&nbsp;&nbsp;1.3 请填写同人作品CP</h4>
-                        <input type="text" name="tongren_cp" class="form-control" placeholder="请输入cp简称" value="{{ old('tongren_cp') }}">
+                        <div id="tongren_yuanzhu">
+                            <h4>&nbsp;&nbsp;1.2 从下列同人原著作品中，选择对应的同人原著作品简称</h4>
+                            @foreach ($tags_tongren_yuanzhu as $tag)
+                                <label class="radio-inline hidden label_{{$tag->label_id}} tongren_yuanzhu_tag"><input type="radio" name="tongren_yuanzhu_tag_id" value="{{ $tag->id }}" onClick="show_only_this_cp_tags('{{$tag->id}}')" {{ old('tongren_yuanzhu_tag_id')==(string)$tag->id ?'checked':''}}>{{ $tag->tagname }}</label>
+                            @endforeach
+                            <label class="radio-inline"><input type="radio" name="tongren_yuanzhu_tag_id" value="0" onClick="document.getElementById('fill_yuanzhu').style.display = 'block';show_only_this_cp_tags('0');" {{ old('tongren_yuanzhu_tag_id')==='0' ?'checked':''}}>其他原著</label>
+                            <div id="fill_yuanzhu" style="display:{{ old('tongren_yuanzhu_tag_id')==='0'? 'block':'none' }}">
+                                <label>填写原著作品全称:<input type="text" name="tongren_yuanzhu" class="form-control" placeholder="请输入完整原著作品名称" value="{{ old('tongren_yuanzhu') }}"></label>
+                            </div>
+                        </div>
+
+                        <div id="tongren_cp">
+                            <h5>&nbsp;&nbsp;1.3 从下列对应同人CP中，选择对应的CP简称</h5>
+                            @foreach ($tags_tongren_cp as $tag)
+                                <label class="radio-inline hidden tongren_yuanzhu_{{$tag->tag_belongs_to}} tongren_cp_tag"><input type="radio" name="tongren_CP_tag_id" value="{{ $tag->id }}" {{ old('tongren_CP_tag_id')==(string)$tag->id ?'checked':''}}>{{ $tag->tagname }}</label>
+                            @endforeach
+                            <label class="radio-inline"><input type="radio" name="tongren_CP_tag_id" value="0" onClick="document.getElementById('fill_CP').style.display = 'block'" {{ old('tongren_CP_tag_id')==='0' ?'checked':''}}>其他CP</label>
+                            <div id="fill_CP" style="display:{{ old('tongren_CP_tag_id')==='0'? 'block':'none' }}">
+                                <label>填写同人作品CP全称:<input type="text" name="tongren_cp" class="form-control" placeholder="请输入cp简称" value="{{ old('tongren_cp') }}"></label>
+                            </div>
+                        </div>
                     </div>
 
                     <div>
@@ -86,6 +103,11 @@
                            <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
                         @endforeach
                         </div>
+                        <div id="tongrentags" style="display: {{ old('channel_id')=='1'? 'none':'block'}}">
+                        @foreach ($tags_tongren as $tag)
+                           <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
+                        @endforeach
+                        </div>
                     </div>
                     <br>
                     <div class="form-group">
@@ -115,7 +137,7 @@
 
                     <div id="more_options" class="collapse">
                         <div class="form-group">
-                            <label for="wenan"><h4>9. 文案：</h4></label>
+                            <label for="wenan"><h4>9. 文案（可选）：</h4></label>
                             <div id="wenan" class="h6">
                                 文案不是正文，文案属于对文章的简单介绍。文案采用“居中排列”的板式，而不是“向左对齐”。如果在这里发布正文，阅读效果不好。正文请在发布文章后，于文案下选择“新建章节”来建立。
                             </div>

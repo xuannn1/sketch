@@ -13,7 +13,14 @@ function uncheckAll(divid) {
 function checkAll(divid) {
     $('#' + divid + ' :checkbox').prop('checked', true);
 }
-
+function show_only_this_label_tongren(label_id){
+    $('.tongren_yuanzhu_tag').addClass('hidden');
+    $('.label_'+label_id).removeClass('hidden');
+}
+function show_only_this_cp_tags(mother_tag_id){
+    $('.tongren_cp_tag').addClass('hidden');
+    $('.tongren_yuanzhu_'+mother_tag_id).removeClass('hidden');
+}
 function vote_post(post_id, method){ //method = upvote,downvote,fold,funny
    $.ajaxSetup({
       headers: {
@@ -58,6 +65,7 @@ function toggle_review_quote(quote_id){
              }else{
                 $( '.togglereviewquote'+quote_id ).html("不显示").addClass('btn-danger').removeClass('btn-success');
              }
+             $('.not_reviewed_'+quote_id).addClass('hidden');
         }else{
             console.log('having error approving/disaproving quote');
         }

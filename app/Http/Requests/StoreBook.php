@@ -7,6 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Book;
 use App\Models\Thread;
 use App\Models\Post;
+use App\Models\tag;
+use App\Models\Label;
 use App\Models\Tongren;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -44,14 +46,24 @@ class StoreBook extends FormRequest
         ];
     }
 
-    public function tags_validate($tags,$bianyuan)
+    public function tags_validate($tags,$bianyuan,$channel_id)
     {
         if (count($tags)>3) {
             return false;
-        }elseif(!$bianyuan){
+        }
+        if(!$bianyuan){
             if($tags){
                 foreach ($tags as $tag){
-                    if(\App\Models\Tag::find($tag)->tag_group>0){
+                    if(\App\Models\Tag::find($tag)->tag_group==5){
+                        return false;
+                    }
+                }
+            }
+        }
+        if($channel_id===1){//检查同人tag使用情况，如果是原创，不准使用同人tag（tag_group>5）
+            if($tags){
+                foreach ($tags as $tag){
+                    if(\App\Models\Tag::find($tag)->tag_group>5){
                         return false;
                     }
                 }
@@ -62,10 +74,7 @@ class StoreBook extends FormRequest
 
     public function generateBook()
     {
-        //book_data
         $book_data = $this->only('book_status','book_length','sexual_orientation');
-        //$book_data['original']=2-(int)$this->channel_id;//未来希望能够删去这一项
-        //thread_data
         $thread_data = $this->only('channel_id','label_id','title','brief');
         if ($this->anonymous){
             $thread_data['anonymous']=1;
@@ -92,15 +101,16 @@ class StoreBook extends FormRequest
         //tags_data
         $tags_data = $this->tags;
         //tongren_data
-        $tongren_data = $this->only('tongren_yuanzhu','tongren_cp');
+
+        $tongren_data = $this->only('tongren_yuanzhu','tongren_cp','tongren_yuanzhu_tag_id','tongren_CP_tag_id');
 
         //查看标签是否符合权限
-        if(\App\Models\Label::find($thread_data['label_id'])->channel_id!=(int)$thread_data['channel_id']){
+        if(Label::find($thread_data['label_id'])->channel_id!=(int)$thread_data['channel_id']){
             abort(403,'数据冲突');
         }
 
         //查看tag数目是否符合要求，是否存在边缘tag但是没注明
-        if (!$this->tags_validate($tags_data,$thread_data['bianyuan'])){
+        if (!$this->tags_validate($tags_data,$thread_data['bianyuan'],$thread_data['channel_id'])){
             abort(403,'数据冲突');
         }
 
@@ -162,7 +172,7 @@ class StoreBook extends FormRequest
         //tags_data
         $tags_data = $this->tags;
         //tongren_data
-        $tongren_data = $this->only('tongren_yuanzhu','tongren_cp');
+        $tongren_data = $this->only('tongren_yuanzhu','tongren_cp','tongren_yuanzhu_tag_id','tongren_CP_tag_id');
 
         //查看标签是否符合权限
         if(\App\Models\Label::find($thread_data['label_id'])->channel_id!=$thread->channel_id){
@@ -170,7 +180,7 @@ class StoreBook extends FormRequest
         }
 
         //查看tag数目是否符合要求，是否存在边缘tag但是没注明
-        if (!$this->tags_validate($tags_data,$thread_data['bianyuan'])){
+        if (!$this->tags_validate($tags_data,$thread_data['bianyuan'],$thread->channel_id)){
             abort(403,'数据冲突');
         }
 

@@ -1,23 +1,33 @@
 @foreach($books as $book)
 <article class="{{ 'thread'.$book->thread_id }}">
-   <div class="row">
-      <div class="col-xs-12 h5 narrow">
-         @if($show_as_collections)
-         <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionThread({{$book->thread_id}})">取消收藏</button>
-         <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$book->thread_id}})" Id="togglekeepupdatethread{{$book->thread_id}}">{{$book->keep_updated?'不再提醒':'接收提醒'}}</button>
-         @endif
-         <span class="bigger-20">
+    <div class="row">
+        <div class="col-xs-12 h5 narrow">
+            @if($show_as_collections)
+            <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionThread({{$book->thread_id}})">取消收藏</button>
+            <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$book->thread_id}})" Id="togglekeepupdatethread{{$book->thread_id}}">{{$book->keep_updated?'不再提醒':'接收提醒'}}</button>
+            @endif
+        <span class="bigger-20">
             <strong>
-               <span>
-                  <a href="{{ route('book.show', $book->book_id) }}">
-                  {{ Helper::convert_to_title($book->title) }}</a>
-                  @if( $book->bianyuan == 1)
-                  <span class="badge">边</span>
-                  @endif
+                <span>
+                    <a href="{{ route('book.show', $book->book_id) }}">
+                        {{ Helper::convert_to_title($book->title) }}
+                    </a>
                </span>
             </strong>
-         </span>
-         <small>
+        </span>
+        <small>
+            @if($book->tongren_yuanzhu_tagname)
+            <a class="btn btn-xs btn-success tag-button-left" href="{{ route('books.booktag', $book->tongren_yuanzhu_tag_id) }}">{{$book->tongren_yuanzhu_tagname}}</a>
+            @endif
+            @if($book->tongren_cp_tagname)
+            <a class="btn btn-xs btn-warning tag-button-right" href="{{ route('books.booktag', $book->tongren_cp_tag_id) }}">{{$book->tongren_cp_tagname}}</a>
+            @endif
+            @if( $book->bianyuan == 1)
+            <span class="badge bianyuan-tag badge-tag">边</span>
+            @endif
+            @if(($book->last_chapter_title)&&($book->last_chapter_post_id == $book->last_post_id)&&($book->lastaddedchapter_at > Carbon\Carbon::now()->subHours(12)->toDateTimeString()))
+            <span class="badge newchapter-badge badge-tag">新</span>
+            @endif
             @if(!$book->public)
             <span class="glyphicon glyphicon-eye-close"></span>
             @endif
@@ -26,9 +36,6 @@
             @endif
             @if($book->noreply)
             <span class="glyphicon glyphicon-warning-sign"></span>
-            @endif
-            @if(($book->last_chapter_title)&&($book->last_chapter_post_id == $book->last_post_id)&&($book->lastaddedchapter_at > Carbon\Carbon::now()->subHours(12)->toDateTimeString()))
-            <span class="badge newchapter-badge">新</span>
             @endif
          </small>
          @if(($show_as_collections)&&($book->updated))

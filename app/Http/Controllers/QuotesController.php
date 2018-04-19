@@ -43,7 +43,7 @@ class QuotesController extends Controller
             ->orderBy('id', 'desc')
             ->first();
         return count($last_quote) && strcmp($last_quote->quote, $data['quote']) === 0;
-  }
+    }
 
   public function create(){
      return view('quotes.create');

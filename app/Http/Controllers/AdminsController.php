@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Quote;
 use App\Models\Channel;
 use App\Models\Label;
+use App\Models\Tag;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Models\User;
@@ -276,5 +277,33 @@ class AdminsController extends Controller
       //  }
       //  return redirect()->back()->with('success','您已成功发布公共通知');
 
+   }
+
+   public function create_tag_form(){
+       $labels_tongren = Label::where('channel_id',2)->get();
+       $tags_tongren_yuanzhu = Tag::where('tag_group',10)->get();
+       $tags_tongren_cp = Tag::where('tag_group',20)->get();
+       return view('admin.create_tag',compact('labels_tongren','tags_tongren_yuanzhu','tags_tongren_cp'));
+   }
+   public function store_tag(Request $request){
+       if($request->tongren_tag_group==='1'){//同人原著tag
+           Tag::create([
+               'tag_group' => 10,
+               'tagname'=>$request->tongren_yuanzhu,
+               'tag_explanation'=>$request->tongren_yuanzhu_full,
+               'label_id' =>$request->label_id,
+           ]);
+           return redirect()->back()->with("success","成功创立同人原著tag");
+       }
+       if($request->tongren_tag_group==='2'){//同人CPtag
+           Tag::create([
+               'tag_group' => 20,
+               'tagname'=>$request->tongren_cp,
+               'tag_explanation'=>$request->tongren_cp_full,
+               'tag_belongs_to' =>$request->tongren_yuanzhu_tag_id,
+           ]);
+           return redirect()->back()->with("success","成功创立同人CPtag");
+       }
+       return redirect()->back()->with("warning","什么都没做");
    }
 }

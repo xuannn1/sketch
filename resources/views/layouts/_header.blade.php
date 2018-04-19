@@ -10,9 +10,14 @@
            @endif
            @if (Auth::check()&&(Auth::user()->lastrewarded_at <= Carbon\Carbon::today()->subHour(2)->toDateTimeString()))
             <li><a href="{{ route('qiandao') }}" style="color:#d66666">我要签到</a></li>
-           @endif
-           <li><a href="{{ route('books.index') }}">文库</a></li>
-           <li class="dropdown">
+            @endif
+            @if(Auth::check())
+                <li><a href="{{ route('statuses.collections') }}">动态</a></li>
+            @else
+                <li><a href="{{ route('statuses.index') }}">动态</a></li>
+            @endif
+            <li><a href="{{ route('books.index') }}">文库</a></li>
+            <li class="dropdown">
              <a href="" class="dropdown-toggle" data-toggle="dropdown">
                论坛 <b class="caret"></b>
              </a>
@@ -20,7 +25,6 @@
                <li><a href="{{ route('threads.index') }}">全部讨论</a></li>
                <li><a href="{{ route('longcomments.index') }}">长评列表</a></li>
                <li><a href="{{ route('users.index') }}">全部用户</a></li>
-               <li><a href="{{ route('statuses.index') }}">全部动态</a></li>
              </ul>
            </li>
           @if (Auth::check())

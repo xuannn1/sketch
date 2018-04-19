@@ -28,7 +28,7 @@ $link-color: #505050;
 $body-font-color:#505050;
 $panel-border-color:#c4c4c4;
 $hr-border-color:#e8e8e8;
-$new-chapter-badge-color:#bf5050;
+$new-chapter-badge-color:#ce8383;
 $new-chapter-badge-background-color:#dee0ec;
 
 
@@ -458,6 +458,33 @@ hr {
     margin-top: -1px;
 }
 
+.tag-button-left{
+    padding:0px 1px 0px 5px;
+    border-radius:10px 0px 0px 10px;
+    margin:-5px 0px 0px -4px;
+    background-color:#d7e4df;
+    color:#7f827f;
+    border-width:0px;
+}
+.tag-button-right{
+    padding:0px 5px 0px 1px;
+    border-radius:0px 10px 10px 0px;
+    margin:-5px 0px 0px -4px;
+    background-color:#e7d3e8;
+    color:#a28957;
+    border-width:0px;
+}
+.badge-tag{
+    padding:3px 6px;
+    border-radius:8px;
+    margin:-4px 0px 0px -1px;
+    border-width:0px;
+}
+.bianyuan-tag{
+    background-color:#dadada;
+    color:#6f6e6c;
+
+}
 .newchapter-badge{
     color:$new-chapter-badge-color;
     background-color:$new-chapter-badge-background-color;

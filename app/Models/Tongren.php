@@ -14,7 +14,7 @@ class Tongren extends Model
       return $this->belongsTo(Book::class, 'book_id')->withDefault();
    }
 
-   public function original()
+   public function yuanzhu()
    {
       if ($this->tongren_yuanzhu_tag_id != 0){
          return Tag::find($this->tongren_yuanzhu_tag_id)->tagname;

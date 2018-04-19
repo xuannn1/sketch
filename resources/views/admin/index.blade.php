@@ -18,8 +18,7 @@
          <div class="panel-body">
             <h4>标签（tag）管理</h4>
             <ul>
-               <li><a href="#">新建标签</a></li>
-               <li><a href="#">标签列表</a></li>
+               <li><a href="{{ route('admin.createtag') }}">新建标签</a></li>
             </ul>
             <h4>类别（label）管理</h4>
             <ul>

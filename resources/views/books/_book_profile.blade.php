@@ -18,7 +18,19 @@
        <!-- 书本登记信息，同人信息，长度，连载进度etc -->
        <em><b>
        @if(!$thread->original())
-       <p>{{ $book->tongren->tongren_yuanzhu }}-{{ $book->tongren->tongren_cp }}</p>
+       <p>
+           @if($book->tongren->tongren_yuanzhu_tag_id>0)
+           <a href="{{ route('books.booktag', $book->tongren->tongren_yuanzhu_tag_id) }}">{{$book->tongren->yuanzhu()}}</a>
+           @else
+           {{ $book->tongren->tongren_yuanzhu }}
+           @endif
+           -
+           @if($book->tongren->tongren_CP_tag_id>0)
+           <a href="{{ route('books.booktag', $book->tongren->tongren_CP_tag_id) }}">{{$book->tongren->cp()}}</a>
+           @else
+           {{ $book->tongren->tongren_cp }}
+           @endif
+        </p>
        @endif
        <p>
           <a href="{{ route('books.index', ['channel'=>(int)($book->channel_id)]) }}">{{ config('constants.book_info')['originality_info'][$thread->original()] }}</a>

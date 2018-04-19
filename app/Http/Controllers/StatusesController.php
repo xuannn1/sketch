@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Status;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 
 
 class StatusesController extends Controller
@@ -20,17 +21,31 @@ class StatusesController extends Controller
 
     public function store(Request $request)
     {
-      $this->validate($request, [
-        'content' => 'required|max:180'
-      ]);
-      Auth::user()->statuses()->create([
-        'content' => $request->content
-      ]);
-      DB::table('followers')//告诉所有粉丝, 自己发布了新动态
-      ->join('users','users.id','=','followers.follower_id')
-      ->where([['followers.user_id','=',Auth::id()],['followers.keep_updated','=',true]])
-      ->update(['followers.updated'=>1,'users.collection_statuses_updated'=>DB::raw('users.collection_statuses_updated + 1')]);
-      return redirect()->back()->with('success','动态成功发布');
+        $this->validate($request, [
+            'content' => 'required|string|max:180'
+        ]);
+        $content = trim($request->content);
+        $last_status = Status::where('user_id', auth()->id())
+                ->orderBy('id', 'desc')
+                ->first();
+        if (count($last_status) && strcmp($last_status->content, $content) === 0){
+            return redirect()->back()->with('warning','您已成功提交状态，请不要重复提交哦！');
+        }else{
+            if(Carbon::now()->subMinutes(5)->toDateTimeString() < $last_status->created_at->toDateTimeString() ){
+                return redirect()->back()->with('warning','5分钟内只能提交一条状态');
+            }else{
+                DB::transaction(function() use($content){
+                    Auth::user()->statuses()->create([
+                        'content' => $content
+                    ]);
+                    DB::table('followers')//告诉所有粉丝, 自己发布了新动态
+                        ->join('users','users.id','=','followers.follower_id')
+                        ->where([['followers.user_id','=',Auth::id()],['followers.keep_updated','=',true]])
+                        ->update(['followers.updated'=>1,'users.collection_statuses_updated'=>DB::raw('users.collection_statuses_updated + 1')]);
+                });
+            }
+        }
+        return back()->with('success','动态成功发布');
     }
 
     public function destroy(Status $status)
@@ -49,8 +64,20 @@ class StatusesController extends Controller
          ->where('users.deleted_at', '=', null)
          ->select('statuses.*','users.name')
          ->orderBy('statuses.created_at','desc')
-         ->paginate(config('constants.index_per_page'));
+         ->simplePaginate(config('constants.index_per_page'));
       $collections = false;
-      return view('statuses.index', compact('statuses','collections'))->with('show_as_collections', false);
+      return view('statuses.index', compact('statuses','collections'))->with('show_as_collections', false)->with('active',0);
+    }
+    public function collections()
+    {
+        $user = Auth::user();
+        $statuses = DB::table('followers')
+           ->join('users','followers.user_id','=','users.id')
+           ->join('statuses','users.id','=','statuses.user_id')
+           ->where([['followers.follower_id','=',$user->id], ['users.deleted_at', '=', null]])
+           ->select('statuses.*','users.name','followers.keep_updated as keep_updated','followers.updated as updated')
+           ->orderBy('statuses.created_at','desc')
+           ->simplePaginate(config('constants.index_per_page'));
+        return view('statuses.collections', compact('statuses','user'))->with('show_as_collections',1)->with('active',1);
     }
 }
