@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command('webstat:count')
                   // ->daily();
-                  ->everyMinute();
+                  ->daily();
     }
 
     /**
