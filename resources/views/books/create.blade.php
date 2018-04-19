@@ -38,7 +38,8 @@
                             @endforeach
                             <label class="radio-inline"><input type="radio" name="tongren_yuanzhu_tag_id" value="0" onClick="document.getElementById('fill_yuanzhu').style.display = 'block';show_only_this_cp_tags('0');" {{ old('tongren_yuanzhu_tag_id')==='0' ?'checked':''}}>其他原著</label>
                             <div id="fill_yuanzhu" style="display:{{ old('tongren_yuanzhu_tag_id')==='0'? 'block':'none' }}">
-                                <label>填写原著作品全称:<input type="text" name="tongren_yuanzhu" class="form-control" placeholder="请输入完整原著作品名称" value="{{ old('tongren_yuanzhu') }}"></label>
+                                <label>填写原著作品全称:<input type="text"
+                                    name="tongren_yuanzhu" class="form-control" placeholder="请输入完整原著作品名称" value="{{ old('tongren_yuanzhu') }}"></label>
                             </div>
                         </div>
 
@@ -49,7 +50,8 @@
                             @endforeach
                             <label class="radio-inline"><input type="radio" name="tongren_CP_tag_id" value="0" onClick="document.getElementById('fill_CP').style.display = 'block'" {{ old('tongren_CP_tag_id')==='0' ?'checked':''}}>其他CP</label>
                             <div id="fill_CP" style="display:{{ old('tongren_CP_tag_id')==='0'? 'block':'none' }}">
-                                <label>填写同人作品CP全称:<input type="text" name="tongren_cp" class="form-control" placeholder="请输入cp简称" value="{{ old('tongren_cp') }}"></label>
+                                <label>填写同人作品CP全称:<input type="text" name="tongren_cp"
+                                    class="form-control" placeholder="请输入cp全称" value="{{ old('tongren_cp') }}"></label>
                             </div>
                         </div>
                     </div>
