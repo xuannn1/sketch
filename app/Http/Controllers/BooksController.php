@@ -141,9 +141,9 @@ class BooksController extends Controller
 
     public function booktag(Tag $booktag){
         $query = $this->join_book_tables();
-        if($booktag->tag_group===10){
+        if($booktag->tag_group==10){
             $query->where('tongren_yuanzhu_tags.id','=',$booktag->id);
-        }elseif($booktag->tag_group===20){
+        }elseif($booktag->tag_group==20){
             $query->where('tongren_cp_tags.id','=',$booktag->id);
         }else{
             $query->join('tagging_threads','threads.id','=','tagging_threads.thread_id');
