@@ -50,8 +50,8 @@
                 <a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>
             </div>
             <div class="panel-body">
-                <?php $thread = $channel->threads[0] ?>
-                @if($thread)
+                <?php $threads = $channel->threads; if($threads){$thread = $threads[0];} ?>
+                @if(($threads)&&($thread))
                 @include('threads._thread_info')
                 @endif
             </div>
