@@ -82,9 +82,10 @@ class PagesController extends Controller
     public function test()
     {
       return view('pages/test');
-   }
-   public function error($error_code)
-   {
+    }
+
+    public function error($error_code)
+    {
       $errors = array(
          "401" => "抱歉，您未登陆",
          "403" => "抱歉，由于设置，您无权限访问该页面",
@@ -129,8 +130,8 @@ class PagesController extends Controller
 
     public function search(Request $request){
         $user = Auth::user();
-        if($user->lastsearched_at>Carbon::now()->subMinutes(15)->toDateTimeString()){
-            return redirect()->back()->with('warning','15分钟内只能进行一次搜索');
+        if((!Auth::user()->admin)&&($user->lastsearched_at>Carbon::now()->subMinutes(5)->toDateTimeString())){
+            return redirect()->back()->with('warning','5分钟内只能进行一次搜索');
         }else{
             $user->lastsearched_at=Carbon::now();
             $user->save();
@@ -151,7 +152,7 @@ class PagesController extends Controller
                     ->orderby('threads.lastresponded_at', 'desc')
                     ->simplePaginate(config('constants.index_per_page'));
                   $show = ['channel' => false,'label' => false,];
-                return    view('pages.search_threads',compact('threads','show'))->with('show_as_collections',0);
+                return    view('pages.search_threads',compact('threads','show'))->with('show_as_collections',0)->with('show_channel',1);
             }
             if($request->search_options=='users'){
                 $users = User::where('name','like', '%'.$request->search.'%')->simplePaginate(config('constants.index_per_page'));

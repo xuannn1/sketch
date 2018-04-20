@@ -103,6 +103,7 @@ class StoreBook extends FormRequest
         //tongren_data
 
         $tongren_data = $this->only('tongren_yuanzhu','tongren_cp','tongren_yuanzhu_tag_id','tongren_CP_tag_id');
+        $tongren_data = $this->tongren_data_sync($tongren_data);
 
         //查看标签是否符合权限
         if(Label::find($thread_data['label_id'])->channel_id!=(int)$thread_data['channel_id']){
@@ -146,6 +147,17 @@ class StoreBook extends FormRequest
         return count($last_book) && strcmp($last_book->title.$last_book->brief.$last_book->body, $data['title'].$data['brief'].$data['body']) === 0;
     }
 
+    public function tongren_data_sync($data)
+    {
+        if($data['tongren_yuanzhu_tag_id']>0){
+            $data['tongren_yuanzhu']=Tag::find($data['tongren_yuanzhu_tag_id'])->tag_explanation;
+        }
+        if($data['tongren_CP_tag_id']>0){
+            $data['tongren_cp']=Tag::find($data['tongren_CP_tag_id'])->tag_explanation;
+        }
+        return $data;
+    }
+
     public function updateBook(Thread $thread)
     {
         $book = $thread->book;
@@ -174,7 +186,8 @@ class StoreBook extends FormRequest
         $tags_data = $this->tags;
         //tongren_data
         $tongren_data = $this->only('tongren_yuanzhu','tongren_cp','tongren_yuanzhu_tag_id','tongren_CP_tag_id');
-
+        $tongren_data = $this->tongren_data_sync($tongren_data);
+        
         //查看标签是否符合权限
         if(\App\Models\Label::find($thread_data['label_id'])->channel_id!=$thread->channel_id){
             abort(403,'数据冲突');
