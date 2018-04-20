@@ -10,7 +10,7 @@ class Channel extends Model
 {
     public function threads()
     {
-      return $this->hasMany(Thread::class);
+        return $this->hasMany(Thread::class)->where('public',1)->where('bianyuan',0)->orderBy('lastresponded_at','desc')->groupBy('channel_id');
     }
 
     public function labels()

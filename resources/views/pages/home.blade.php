@@ -50,9 +50,8 @@
                 <a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>
             </div>
             <div class="panel-body">
-                @foreach ($channel->recent_threads() as $thread)
+                <?php $thread = $channel->threads[0] ?>
                 @include('threads._thread_info')
-                @endforeach
             </div>
         </div>
         @endforeach

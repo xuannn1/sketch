@@ -23,6 +23,19 @@ class PagesController extends Controller
        ]);
     }
 
+    // public function home()
+    // {
+    //   $group = 10;
+    //   if (Auth::check()){
+    //      $group = Auth::user()->group;
+    //   }
+    //   $channels = Channel::where('channel_state','<',$group)
+    //   ->orderBy('orderby','asc')
+    //   ->get();
+    //   $quote = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->first();
+    //   return view('pages/home',compact('channels', 'quote'));
+    // }
+
     public function home()
     {
       $group = 10;
@@ -32,6 +45,10 @@ class PagesController extends Controller
       $channels = Channel::where('channel_state','<',$group)
       ->orderBy('orderby','asc')
       ->get();
+      $channels->load('threads.creator');
+      $channel = $channels[0];
+      $threads = $channel->threads;
+      $thread = $threads[0];
       $quote = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->first();
       return view('pages/home',compact('channels', 'quote'));
     }
