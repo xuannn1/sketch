@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Label extends Model
 {
+    protected $guarded = [];
+    
     public function threads()
     {
        return $this->hasMany(Thread::class);

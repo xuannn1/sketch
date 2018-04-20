@@ -65,12 +65,12 @@ class StoreThread extends FormRequest
         if (!$this->isDuplicateThread($thread_data)){
             $thread = DB::transaction(function () use($thread_data, $post_data) {
                 $thread = Thread::create($thread_data);
-                $thread->update_channel();
                 $post_data['thread_id'] = $thread->id;
                 $post = Post::create($post_data);
                 $thread->update(['post_id'=>$post->id]);
+                $thread->update_channel();
                 return $thread;
-            }, 2);
+            });
         }else{
             abort(400,'请求已登记，请勿重复提交相同数据');
         }

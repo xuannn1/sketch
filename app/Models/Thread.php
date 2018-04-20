@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use Auth;
 
 class Thread extends Model
 {
@@ -124,16 +124,17 @@ class Thread extends Model
        ->join('homeworks','homeworks.id','=','register_homeworks.homework_id')
        ->where('register_homeworks.user_id','=',Auth::id())
        ->where('homeworks.active','=',true)
-       ->update(['register_homeworks.thread_id' => $thread->id]);
+       ->update(['register_homeworks.thread_id' => $this->id]);
    }
 
    public function update_channel(){
        $channel = $this->channel;
-       if(($this->bianyuan == 0)&&($this->public == 1)&&($this->id!=$channel->recent_thread_1_id)){
-           $channel->recent_thread_2_id = $channel->recent_thread_1_id;
-           $channel->recent_thread_1_id = $this->id;
-           $channel->save();
-       }
-
+       if (((!$this->bianyuan)||($this->bianyuan==0))&&
+          ((!$this->public)||($this->public==1))&&
+          ($this->id!=$channel->recent_thread_1_id)){
+                $channel->recent_thread_2_id = $channel->recent_thread_1_id;
+                $channel->recent_thread_1_id = $this->id;
+                $channel->save();
+          }
    }
 }
