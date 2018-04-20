@@ -51,7 +51,9 @@
             </div>
             <div class="panel-body">
                 <?php $thread = $channel->threads[0] ?>
+                @if($thread)
                 @include('threads._thread_info')
+                @endif
             </div>
         </div>
         @endforeach
