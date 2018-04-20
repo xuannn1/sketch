@@ -1,5 +1,5 @@
 <!-- 作者信息，发表时间 -->
-<span>
+<div>
  @if ($thread->anonymous)
     <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
     @if((Auth::check()&&(Auth::user()->admin)))
@@ -8,10 +8,10 @@
  @else
  <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->creator->name }}</a>
  @endif
-</span>&nbsp;
-<span class="grayout smaller-20">
+</div>
+<p class="grayout smaller-20">
  发表于{{ Carbon\Carbon::parse($thread->created_at)->diffForHumans() }}
  @if($thread->created_at < $thread->edited_at )
    修改于{{ Carbon\Carbon::parse($thread->edited_at)->diffForHumans() }}
  @endif
-</span>
+</p>

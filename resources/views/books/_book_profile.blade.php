@@ -16,7 +16,7 @@
     <!-- 书本基本信息 -->
     <div class="book-intro">
        <!-- 书本登记信息，同人信息，长度，连载进度etc -->
-       <em><b>
+       <b>
        @if(!$thread->original())
        <p>
            @if($book->tongren->tongren_yuanzhu_tag_id>0)
@@ -32,7 +32,7 @@
            @endif
         </p>
        @endif
-       <p>
+       <em><p>
           <a href="{{ route('books.index', ['channel'=>(int)($book->channel_id)]) }}">{{ config('constants.book_info')['originality_info'][$thread->original()] }}</a>
           -&nbsp;<a href="{{ route('books.index',['book_length'=>$book->book_length]) }}">{{ config('constants.book_info')['book_lenth_info'][$book->book_length] }}</a>
           -&nbsp;<a href="{{ route('books.index',['book_status'=>$book->book_status]) }}">{{ config('constants.book_info')['book_status_info'][$book->book_status] }}</a>
@@ -46,8 +46,8 @@
           @foreach ($thread->tags as $int=>$tag)
              - <a href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
           @endforeach
-       </p>
-       </b></em>
+       </p></em>
+       </b>
     </div>
     <!-- 书本文案 -->
     <div class="panel-body text-center main-text">

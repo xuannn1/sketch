@@ -459,21 +459,35 @@ hr {
 }
 
 .tag-button-left{
-    padding:0px 1px 0px 5px;
+    padding:0px 2px 0px 5px;
     border-radius:10px 0px 0px 10px;
-    margin:-5px 0px 0px -4px;
-    background-color:#d7e4df;
-    color:#7f827f;
+    margin:-5px 0px 0px -5px;
     border-width:0px;
 }
 .tag-button-right{
-    padding:0px 5px 0px 1px;
+    padding:0px 5px 0px 2px;
     border-radius:0px 10px 10px 0px;
-    margin:-5px 0px 0px -4px;
-    background-color:#e7d3e8;
-    color:#a28957;
+    margin:-5px 0px 0px -5px;
     border-width:0px;
 }
+
+.tag-green{
+    background-color:#c7ecd4;
+    color:#808080;
+}
+.tag-red{
+    background-color:#ecc7c7;
+    color:#808080;
+}
+.tag-yellow{
+    background-color:#ece6c7;
+    color:#808080;
+}
+.tag-blue{
+    background-color:#c7cfec;
+    color:#808080;
+}
+
 .badge-tag{
     padding:3px 6px;
     border-radius:8px;

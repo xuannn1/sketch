@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 use App\Http\Requests\StoreThread;
+use App\Sosadfun\Traits\ThreadTraits;
 
 use App\Models\Thread;
 use App\Models\Post;
@@ -21,28 +22,26 @@ use App\Models\User;
 
 class threadsController extends Controller
 {
+    use ThreadTraits;
+
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show', 'showpost']);
     }
+
     public function index(Request $request)
     {
+
         $group = 10;
         if(Auth::check()){$group = Auth::user()->group;}
-        $query = DB::table('threads')
-            ->join('users', 'threads.user_id', '=', 'users.id')
-            ->join('labels', 'threads.label_id', '=', 'labels.id')
-            ->join('channels', 'threads.channel_id','=','channels.id')
-            ->leftjoin('posts','threads.last_post_id','=', 'posts.id')
+        $query = $this->join_thread_tables()
             ->where([['threads.book_id', '=', 0],['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]]);
-
         if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
         if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
 
-        $threads = $query->select('threads.*', 'channels.channelname','users.name','labels.labelname','posts.body as last_post_body')
+        $threads = $this->return_thread_fields($query)
             ->orderby('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'));
-
       return view('threads.index', compact('threads'))->with('show_as_collections', false);
    }
 

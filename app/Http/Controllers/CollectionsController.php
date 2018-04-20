@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Sosadfun\Traits\BookTraits;
+use App\Sosadfun\Traits\ThreadTraits;
 use Auth;
 use App\Models\Collection;
 use App\Models\Thread;
@@ -15,11 +16,12 @@ class CollectionsController extends Controller
 {
 
     use BookTraits;
+    use ThreadTraits;
 
-   public function __construct()
-   {
+    public function __construct()
+    {
      $this->middleware('auth');
-   }
+    }
     public function store(Thread $thread)
     {
         $user = Auth::user();
@@ -94,14 +96,10 @@ class CollectionsController extends Controller
    public function threads()
    {
       $user = Auth::user();
-      $threads = DB::table('collections')
-         ->join('threads','collections.thread_id','=','threads.id')
-         ->join('users','threads.user_id','=','users.id')
-         ->join('labels','threads.label_id','=','labels.id')
-         ->join('channels','threads.channel_id','=','channels.id')
-         ->leftjoin('posts','threads.last_post_id','=', 'posts.id')
+       $threads = $this->join_thread_tables()
+         ->join('collections','collections.thread_id','=','threads.id')
          ->where([['collections.user_id','=',$user->id], ['threads.deleted_at', '=', null],['threads.book_id','=',0]])
-         ->select('threads.*','users.name','labels.labelname', 'posts.body as last_post_body','channels.channelname','collections.updated as updated','collections.keep_updated as keep_updated')
+         ->select('threads.*', 'books.*', 'users.name', 'labels.labelname', 'channels.channelname' , 'posts.body as last_post_body', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'collections.updated as updated', 'collections.keep_updated as keep_updated', 'chapters.post_id as last_chapter_post_id', 'tongrens.tongren_yuanzhu', 'tongrens.tongren_cp', 'tongrens.tongren_yuanzhu_tag_id', 'tongrens.tongren_cp_tag_id', 'tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname', 'tongren_cp_tags.tagname as tongren_cp_tagname', 'collections.updated as updated', 'collections.keep_updated as keep_updated')
          ->orderBy('threads.lastresponded_at','desc')
          ->paginate(config('constants.items_per_page'));
       $updates = [$user->collection_books_updated,$user->collection_threads_updated,$user->collection_statuses_updated];

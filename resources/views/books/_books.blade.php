@@ -17,10 +17,10 @@
         </span>
         <small>
             @if($book->tongren_yuanzhu_tagname)
-            <a class="btn btn-xs btn-success tag-button-left" href="{{ route('books.booktag', $book->tongren_yuanzhu_tag_id) }}">{{$book->tongren_yuanzhu_tagname}}</a>
+            <a class="btn btn-xs btn-success tag-button-left tag-blue" href="{{ route('books.booktag', $book->tongren_yuanzhu_tag_id) }}">{{$book->tongren_yuanzhu_tagname}}</a>
             @endif
             @if($book->tongren_cp_tagname)
-            <a class="btn btn-xs btn-warning tag-button-right" href="{{ route('books.booktag', $book->tongren_cp_tag_id) }}">{{$book->tongren_cp_tagname}}</a>
+            <a class="btn btn-xs btn-warning tag-button-right tag-yellow" href="{{ route('books.booktag', $book->tongren_cp_tag_id) }}">{{$book->tongren_cp_tagname}}</a>
             @endif
             @if( $book->bianyuan == 1)
             <span class="badge bianyuan-tag badge-tag">边</span>

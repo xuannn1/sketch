@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Sosadfun\Traits\BookTraits;
-
+use App\Sosadfun\Traits\ThreadTraits;
 use Auth;
 use Hash;
 use App\Models\User;
@@ -14,6 +14,7 @@ use Carbon\Carbon;
 class UsersController extends Controller
 {
     use BookTraits;
+    use ThreadTraits;
     public function __construct()
     {
         $this->middleware('auth', [
@@ -41,27 +42,23 @@ class UsersController extends Controller
 
    public function findthreads($id, $paginate, $group)
    {
-      if ($id == Auth::id()){
-         return $threads = DB::table('threads')
-         ->join('users', 'threads.user_id', '=', 'users.id')
-         ->join('labels', 'threads.label_id', '=', 'labels.id')
-         ->join('channels', 'threads.channel_id','=','channels.id')
-         ->leftjoin('posts','threads.last_post_id','=', 'posts.id')
-         ->where([['threads.book_id', '=', 0],['threads.deleted_at', '=', null],['threads.user_id','=',$id]])
-         ->select('channels.channelname','threads.*', 'users.name','labels.labelname','posts.body as last_post_body')
-         ->orderby('threads.lastresponded_at', 'desc')
-         ->simplePaginate($paginate);
-      }else{
-         return $threads = DB::table('threads')
-         ->join('users', 'threads.user_id', '=', 'users.id')
-         ->join('labels', 'threads.label_id', '=', 'labels.id')
-         ->join('channels', 'threads.channel_id','=','channels.id')
-         ->leftjoin('posts','threads.last_post_id','=', 'posts.id')
-         ->where([['threads.book_id', '=', 0],['threads.deleted_at', '=', null],['threads.anonymous','=',0],['threads.public','=',1],['threads.user_id','=',$id],['channels.channel_state','<',$group]])
-         ->select('channels.channelname','threads.*', 'users.name','labels.labelname','posts.body as last_post_body')
-         ->orderby('threads.lastresponded_at', 'desc')
-         ->simplePaginate($paginate);
-      }
+       $query = $this->join_thread_tables();
+       $query->where('threads.user_id','=',$id);//属于这个人
+       //未登陆，看不见边缘文章
+       if(!Auth::check()){$query->where('threads.bianyuan','=',0);}
+       //假如未登陆，或者既不是管理员也不是本人，则不能看私密文章，不能看匿名文章
+       if((!Auth::check())||((!$id === Auth::id())&&(!Auth::user()->admin))){
+           $query->where('threads.public','=',1)
+               ->where('threads.anonymous','=',0);
+       }
+       //已删除的也不能看
+       $query->where('threads.deleted_at', '=', null);
+       //不能是图书，只能是讨论帖
+       $query->where('threads.book_id', '=', 0);
+       $threads = $this->return_thread_fields($query)
+          ->orderby('threads.lastresponded_at', 'desc')
+          ->simplePaginate($paginate);
+       return $threads;
    }
 
    public function findlongcomments($id, $paginate, $group)
