@@ -13,3 +13,5 @@ foreach($channels as $channel){
     $channel->recent_thread_2_id = $threads[1]->id;
     $channel->save();
 }
+
+DB::table('cache')->where('key','like','sosaduser-is-online-%')->count();

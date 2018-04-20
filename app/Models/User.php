@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable
 {
@@ -259,6 +260,11 @@ class User extends Authenticatable
         + $this->collection_threads_updated
         + $this->collection_statuses_updated;
         return $unreadupdates;
+    }
+
+    public function isOnline()
+    {
+        return Cache::has('user-is-online-' . $this->id);
     }
 
 }

@@ -73,9 +73,10 @@ class PagesController extends Controller
 
     public function help()
     {
-      $data = config('constants');
-      $webstat = WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
-      return view('pages/help',compact('data','webstat'));
+        $users_online = DB::table('cache')->where('key','like','sosaduser-is-online-%')->count();
+        $data = config('constants');
+        $webstat = WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
+        return view('pages/help',compact('data','webstat','users_online'));
     }
 
     public function test()
