@@ -42,7 +42,7 @@ class threadsController extends Controller
         $threads = $this->return_thread_fields($query)
             ->orderby('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'));
-      return view('threads.index', compact('threads'))->with('show_as_collections', false);
+      return view('threads.index', compact('threads'))->with('show_as_collections', false)->with('show_channel',true);
    }
 
    public function show(Thread $thread, Request $request)

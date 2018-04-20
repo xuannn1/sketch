@@ -105,7 +105,7 @@ class CollectionsController extends Controller
       $updates = [$user->collection_books_updated,$user->collection_threads_updated,$user->collection_statuses_updated];
       $user->collection_threads_updated = 0;
       $user->save();
-      return view('users.collections_threads', compact('threads','updates'))->with('show_as_collections',1)->with('active',1);
+      return view('users.collections_threads', compact('threads','updates'))->with('show_as_collections',1)->with('active',1)->with('show_channel',1);
    }
 
    public function statuses()

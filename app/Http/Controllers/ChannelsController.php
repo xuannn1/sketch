@@ -28,6 +28,6 @@ class ChannelsController extends Controller
         $labels = Label::inChannel($channel->id)
             ->withCount('threads')->orderBy('created_at','asc')
             ->get();
-        return view('threads.index_channel', compact('threads', 'labels','channel'))->with('show_as_collections', false);
+        return view('threads.index_channel', compact('threads', 'labels','channel'))->with('show_as_collections', false)->with('show_channel', false);
     }
 }

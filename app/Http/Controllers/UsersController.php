@@ -141,7 +141,7 @@ class UsersController extends Controller
          $posts=$this->findlongcomments($id,config('constants.index_per_part'), $group);
          $statuses=$this->findstatuses($id,config('constants.index_per_part'));
          $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
-         return view('users.show', compact('user','books','threads','posts','statuses','upvotes'))->with('show_as_collections',false);
+         return view('users.show', compact('user','books','threads','posts','statuses','upvotes'))->with('show_as_collections',false)->with('show_channel',1);
       }else{
          return redirect()->route('error', ['error_code' => '404']);
       }
@@ -183,7 +183,7 @@ class UsersController extends Controller
             'label' => false,
          ];
          $collections = false;
-         return view('users.showthreads', compact('user','threads','show','collections'))->with('show_as_collections',false);
+         return view('users.showthreads', compact('user','threads','show','collections'))->with('show_as_collections',false)->with('show_channel',1);
       }else{
          return redirect()->route('error', ['error_code' => '404']);
       }
