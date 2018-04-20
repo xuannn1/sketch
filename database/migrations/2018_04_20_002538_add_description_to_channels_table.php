@@ -15,7 +15,9 @@ class AddDescriptionToChannelsTable extends Migration
     {
         Schema::table('channels', function (Blueprint $table) {
             $table->string('description')->nullable();//一句话版面简介
-            $table->text('regulations')->nullable();//正文
+            $table->text('regulations')->nullable();//版规
+            $table->integer('recent_thread_1_id')->unsigned()->default(0);//最新thread
+            $table->integer('recent_thread_2_id')->unsigned()->default(0);//最新thread
         });
     }
 
@@ -29,6 +31,8 @@ class AddDescriptionToChannelsTable extends Migration
         Schema::table('channels', function (Blueprint $table) {
             $table->dropcolumn('description');
             $table->dropcolumn('regulations');
+            $table->dropcolumn('recent_thread_1_id');
+            $table->dropcolumn('recent_thread_2_id');
         });
     }
 }

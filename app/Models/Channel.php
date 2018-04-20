@@ -26,5 +26,13 @@ class Channel extends Model
         ->take(2)
         ->get();
    }
+   public function recent_thread_1()
+   {
+      return $this->belongsTo(Thread::class, 'recent_thread_1_id')->withDefault();
+   }
+   public function recent_thread_2()
+   {
+      return $this->belongsTo(Thread::class, 'recent_thread_2_id')->withDefault();
+   }
 
 }
