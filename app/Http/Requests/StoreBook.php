@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Book;
 use App\Models\Thread;
 use App\Models\Post;
-use App\Models\tag;
+use App\Models\Tag;
 use App\Models\Label;
 use App\Models\Tongren;
 use Carbon\Carbon;
@@ -187,7 +187,7 @@ class StoreBook extends FormRequest
         //tongren_data
         $tongren_data = $this->only('tongren_yuanzhu','tongren_cp','tongren_yuanzhu_tag_id','tongren_CP_tag_id');
         $tongren_data = $this->tongren_data_sync($tongren_data);
-        
+
         //查看标签是否符合权限
         if(\App\Models\Label::find($thread_data['label_id'])->channel_id!=$thread->channel_id){
             abort(403,'数据冲突');
