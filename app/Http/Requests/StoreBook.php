@@ -119,6 +119,7 @@ class StoreBook extends FormRequest
                 $book = Book::create($book_data);
                 $thread_data['book_id'] = $book->id;
                 $thread = Thread::create($thread_data);
+                $thread->update_channel();
                 $book->update(['thread_id'=>$thread->id]);
                 $post_data['thread_id'] = $thread->id;
                 $post = Post::create($post_data);

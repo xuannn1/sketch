@@ -32,6 +32,7 @@ class ChaptersController extends Controller
    public function store(Book $book, Request $request)
    {
       $thread = $book->thread;
+      $channel = $thread->channel;
       if ((Auth::id()==$thread->creator->id)&&(!$thread->locked)){
           $this->validate($request, [
              'title' => 'required|string|max:35',
@@ -45,10 +46,8 @@ class ChaptersController extends Controller
          $chapter_order = $max_chapter ? : 0;
          $markdown = request('markdown')? true: false;
          $indentation = request('indentation')? true: false;
-
-
          if (!$this->isDuplicatePost(request('body'))){
-             DB::transaction(function()use($thread,$markdown,$indentation, $chapter_order, $volumn_id, $book){
+             DB::transaction(function()use($thread,$markdown,$indentation, $chapter_order, $volumn_id, $book, $channel){
                  $post = Post::create([
                     'body' => request('body'),
                     'title' => request('brief'),
@@ -88,6 +87,7 @@ class ChaptersController extends Controller
                      'lastresponded_at' => Carbon::now(),
                      'last_post_id' => $post->id,
                   ]);
+                  $thread->update_channel();
                   $book->update([
                      'last_chapter_id' => $chapter->id,
                      'total_char' => $total_char

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Thread;
+use App\Models\Channel;
 use Auth;
 use App\Models\RegisterHomework;
 use App\Models\Message;
@@ -32,6 +33,7 @@ class HomeworksController extends Controller
           'requirement' => 'required|string|min:10',
        ]);
       $homework = Homework::create();
+      $channel = Channel::find(4);
       $thread = Thread::create([
          'title' => "第{$homework->id}次作业报名入口",
          'channel_id' => 4,
@@ -43,6 +45,7 @@ class HomeworksController extends Controller
          'homework_id' => $homework->id,
          'body'=>request('requirement'),
       ]);
+      $channel->add_most_recent_thread($thread->id);
       $markdown = request('markdown')? true: false;
       $post = Post::create([
          'user_id' => auth()->id(),

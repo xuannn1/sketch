@@ -33,6 +33,7 @@ class Thread extends Model
       return $this->belongsTo(Post::class, 'post_id')->withDefault();
    }
 
+
    public function last_post()
    {
       return $this->belongsTo(Post::class, 'last_post_id')->withDefault();
@@ -126,4 +127,13 @@ class Thread extends Model
        ->update(['register_homeworks.thread_id' => $thread->id]);
    }
 
+   public function update_channel(){
+       $channel = $this->channel;
+       if(($this->bianyuan == 0)&&($this->public == 1)){
+           $channel->recent_thread_2_id = $channel->recent_thread_1_id;
+           $channel->recent_thread_1_id = $this->id;
+           $channel->save();
+       }
+
+   }
 }
