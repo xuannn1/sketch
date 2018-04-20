@@ -129,7 +129,7 @@ class Thread extends Model
 
    public function update_channel(){
        $channel = $this->channel;
-       if(($this->bianyuan == 0)&&($this->public == 1)){
+       if(($this->bianyuan == 0)&&($this->public == 1)&&($channel->recent_thread_2_id!=$channel->recent_thread_1_id)){
            $channel->recent_thread_2_id = $channel->recent_thread_1_id;
            $channel->recent_thread_1_id = $this->id;
            $channel->save();
