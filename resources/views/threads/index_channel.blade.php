@@ -22,12 +22,14 @@
                @endforeach
                @if($channel->channel_state==1)
                @foreach($sexual_orientation_info as $key=>$value)
+               @if(!$key==0)
                <li role="presentation" id="sexual_orientation-{{ $key }}" class="{{ request('sexual_orientation')=== $key ? 'active':'' }}">
                    <a href="{{ route('channel.show',['channel'=>$channel->id, 'sexual_orientation' => $key ]) }}" >
                        {{ $value }}<span class="badge">{{ array_key_exists($key, $s_count)? $s_count[$key]:'0' }}</span>
                    </a>
                    </a>
                </li>
+               @endif
                @endforeach
                @endif
             </ul>
