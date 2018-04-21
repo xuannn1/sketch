@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Linkaccount extends Model
 {
-   protected $guarded = [];
-   public $timestamps = false;
+    protected $guarded = [];
+    public $timestamps = false;
 }

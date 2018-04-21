@@ -40,34 +40,34 @@ class QuotesController extends Controller
     public function isDuplicateQuote($data)
     {
         $last_quote = Quote::where('user_id', auth()->id())
-            ->orderBy('id', 'desc')
-            ->first();
+        ->orderBy('id', 'desc')
+        ->first();
         return count($last_quote) && strcmp($last_quote->quote, $data['quote']) === 0;
     }
 
-  public function create(){
-     return view('quotes.create');
-  }
-  public function edit(){
+    public function create(){
+        return view('quotes.create');
+    }
+    public function edit(){
 
-  }
-  public function update(){
+    }
+    public function update(){
 
-  }
-  public function xianyu(Quote $quote, Request $request){
-     $user = Auth::user();
-     if ($user->xianyu<=0){
-        return back()->with("info", "抱歉，您的咸鱼不足");
-     }
-     DB::transaction(function () use ($quote, $user){
-         $quote->increment('xianyu');
-         $user->decrement('xianyu');
-         $user->increment('jifen', 2);
-         $user->increment('experience_points', 2);
-         $quote->creator->increment('xianyu');
-         $quote->creator->increment('jifen',2);
-         $quote->creator->increment('experience_points', 2);
-     });
-     return back()->with("success", "您已成功投掷咸鱼~");
-  }
+    }
+    public function xianyu(Quote $quote, Request $request){
+        $user = Auth::user();
+        if ($user->xianyu<=0){
+            return back()->with("info", "抱歉，您的咸鱼不足");
+        }
+        DB::transaction(function () use ($quote, $user){
+            $quote->increment('xianyu');
+            $user->decrement('xianyu');
+            $user->increment('jifen', 2);
+            $user->increment('experience_points', 2);
+            $quote->creator->increment('xianyu');
+            $quote->creator->increment('jifen',2);
+            $quote->creator->increment('experience_points', 2);
+        });
+        return back()->with("success", "您已成功投掷咸鱼~");
+    }
 }

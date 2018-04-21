@@ -1,14 +1,14 @@
 
 <div class="">
- 已报名：<br>
- @if((Auth::check()&&(Auth::user()->admin)))
+    已报名：<br>
+    @if((Auth::check()&&(Auth::user()->admin)))
     @foreach($thread->homework->registered as $i=>$student)
     {{$i+1}}. <span><a href="{{ route('user.show', $student->id) }}">{{ $student->name }}</a></span>{{ $student->majia ? '（'.$student->majia.'）':''}}<br>
     @endforeach
- @else
+    @else
     @foreach($thread->homework->registered as $i=>$student)
     {{$i+1}}. {{ $student->majia ?? $student->name }}<br>
     @endforeach
- @endif
- <br>
+    @endif
+    <br>
 </div>

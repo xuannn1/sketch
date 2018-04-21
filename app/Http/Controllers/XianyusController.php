@@ -12,15 +12,15 @@ use Auth;
 class XianyusController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
 
-   public function __construct()
-   {
-     $this->middleware('auth');
-   }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index()
     {
@@ -30,10 +30,10 @@ class XianyusController extends Controller
 
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Show the form for creating a new resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function vote(Thread $thread, Request $request)
     {
         //检查最近一周内，该ip或者用户名是否投过咸鱼
@@ -52,9 +52,9 @@ class XianyusController extends Controller
             //没投过的情况
             $data = DB::transaction(function() use($ip,$id,$thread, $user, $data){
                 $xianyu = Xianyu::create([
-                  'user_ip' => $ip,
-                  'user_id' => $id,
-                  'thread_id' => $thread->id,
+                    'user_ip' => $ip,
+                    'user_id' => $id,
+                    'thread_id' => $thread->id,
                 ]);
                 $thread->increment('xianyu');
                 $thread->update(['lastresponded_at' => Carbon::now()]);
@@ -75,56 +75,56 @@ class XianyusController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
     public function store(Request $request)
     {
         //
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Xianyu  $xianyu
-     * @return \Illuminate\Http\Response
-     */
+    * Display the specified resource.
+    *
+    * @param  \App\Models\Xianyu  $xianyu
+    * @return \Illuminate\Http\Response
+    */
     public function show(Xianyu $xianyu)
     {
         //
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Xianyu  $xianyu
-     * @return \Illuminate\Http\Response
-     */
+    * Show the form for editing the specified resource.
+    *
+    * @param  \App\Models\Xianyu  $xianyu
+    * @return \Illuminate\Http\Response
+    */
     public function edit(Xianyu $xianyu)
     {
         //
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Xianyu  $xianyu
-     * @return \Illuminate\Http\Response
-     */
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  \App\Models\Xianyu  $xianyu
+    * @return \Illuminate\Http\Response
+    */
     public function update(Request $request, Xianyu $xianyu)
     {
         //
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Xianyu  $xianyu
-     * @return \Illuminate\Http\Response
-     */
+    * Remove the specified resource from storage.
+    *
+    * @param  \App\Models\Xianyu  $xianyu
+    * @return \Illuminate\Http\Response
+    */
     public function destroy(Xianyu $xianyu)
     {
         //

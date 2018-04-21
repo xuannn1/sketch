@@ -7,17 +7,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PostComment extends Model
 {
-   use SoftDeletes;
-   protected $dates = ['deleted_at'];
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
 
-   protected $guarded = [];
+    protected $guarded = [];
 
-   public function owner()
-  {
-    return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
-  }
-  public function post()
-  {
-     return $this->belongsTo(Post::class, 'post_id')->withDefault();
-  }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
+    }
+    public function post()
+    {
+        return $this->belongsTo(Post::class, 'post_id')->withDefault();
+    }
 }

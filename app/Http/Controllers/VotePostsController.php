@@ -13,14 +13,14 @@ use App\Models\Activity;
 
 class VotePostsController extends Controller
 {
-   public function __construct()
-   {
-      $this->middleware('auth');
-   }
-   public function findrecord(User $user, Post $post)
-   {
-      return VotePosts::where('user_id', '=', $user->id)->where('post_id', '=', $post->id)->first();
-   }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    public function findrecord(User $user, Post $post)
+    {
+        return VotePosts::where('user_id', '=', $user->id)->where('post_id', '=', $post->id)->first();
+    }
     public function upvote(Post $post)
     {
         $candidate = User::findOrFail($post->user_id);
@@ -104,107 +104,107 @@ class VotePostsController extends Controller
         }
         return $post->up_voted;
     }
-   public function downvote(Post $post)
-   {
-      $candidate = User::findOrFail($post->user_id);
-      $record = Auth::user()->findrecord($post->id);
-      $post = DB::transaction(function()use($record, $post,$candidate){
-          if (!$record){
-             $record = VotePosts::create([
-               'user_id' => Auth::id(),
-               'post_id' => $post->id,
-               'downvoted' => true,
-               'downvoted_at' => Carbon::now()
-             ]);
-             if($candidate){
-                $candidate->increment('downvoted');
-             }
-             $post->increment('down_voted');
-          }else{
-             if ($record->upvoted){//首先，不能已经赞过
-                return "notwork";
-             }else{
-                if ($record->downvoted){//已经踩过的，先取消踩
-                   $record->update(['downvoted' => false]);
-                   $post->decrement('down_voted');
-                   if($candidate){
-                      $candidate->decrement('downvoted');
-                   }
-                }else{//没有踩过的，踩
-                   $record->update([
-                     'downvoted' => true,
-                     'downvoted_at' => Carbon::now(),
-                   ]);
-                   $post->increment('down_voted');
-                   if($candidate){
-                      $candidate->increment('downvoted');
-                   }
+    public function downvote(Post $post)
+    {
+        $candidate = User::findOrFail($post->user_id);
+        $record = Auth::user()->findrecord($post->id);
+        $post = DB::transaction(function()use($record, $post,$candidate){
+            if (!$record){
+                $record = VotePosts::create([
+                    'user_id' => Auth::id(),
+                    'post_id' => $post->id,
+                    'downvoted' => true,
+                    'downvoted_at' => Carbon::now()
+                ]);
+                if($candidate){
+                    $candidate->increment('downvoted');
                 }
-             }
-          }
-          return $post;
-      });
-      return $post->down_voted;
-   }
-   public function funny(Post $post)
-   {
-      $record = Auth::user()->findrecord($post->id);
-       $post = DB::transaction(function()use($record, $post){
-          if (!$record){
-             $record = VotePosts::create([
-               'user_id' => Auth::id(),
-               'post_id' => $post->id,
-               'funny' => true,
-               'funny_at' => Carbon::now(),
-             ]);
-             $post->increment('funny');
-          }else{
-             if ($record->funny){//已经觉得好笑的，先取消好笑
-                $record->update(['funny' => false]);
-                $post->decrement('funny');
-             }else{//不觉得好笑的，觉得好笑
-                $record->update([
-                  'funny' => true,
-                  'funny_at' => Carbon::now(),
+                $post->increment('down_voted');
+            }else{
+                if ($record->upvoted){//首先，不能已经赞过
+                    return "notwork";
+                }else{
+                    if ($record->downvoted){//已经踩过的，先取消踩
+                        $record->update(['downvoted' => false]);
+                        $post->decrement('down_voted');
+                        if($candidate){
+                            $candidate->decrement('downvoted');
+                        }
+                    }else{//没有踩过的，踩
+                        $record->update([
+                            'downvoted' => true,
+                            'downvoted_at' => Carbon::now(),
+                        ]);
+                        $post->increment('down_voted');
+                        if($candidate){
+                            $candidate->increment('downvoted');
+                        }
+                    }
+                }
+            }
+            return $post;
+        });
+        return $post->down_voted;
+    }
+    public function funny(Post $post)
+    {
+        $record = Auth::user()->findrecord($post->id);
+        $post = DB::transaction(function()use($record, $post){
+            if (!$record){
+                $record = VotePosts::create([
+                    'user_id' => Auth::id(),
+                    'post_id' => $post->id,
+                    'funny' => true,
+                    'funny_at' => Carbon::now(),
                 ]);
                 $post->increment('funny');
-             }
-          }
-          return $post;
-      });
-      return $post->funny;
-   }
-   public function fold(Post $post)
-   {
-      $record = Auth::user()->findrecord($post->id);
-      $post = DB::transaction(function()use($record, $post){
-          if (!$record){
-             $record = VotePosts::create([
-               'user_id' => Auth::id(),
-               'post_id' => $post->id,
-               'better_to_fold' => true,
-               'better_to_fold_at' => Carbon::now(),
-             ]);
-             $post->increment('fold');
-          }else{
-             if ($record->better_to_fold){
-                $record->update(['better_to_fold' => false]);
-                $post->decrement('fold');
-             }else{
-                $record->update([
-                  'better_to_fold' => true,
-                  'better_to_fold_at' => Carbon::now(),
+            }else{
+                if ($record->funny){//已经觉得好笑的，先取消好笑
+                    $record->update(['funny' => false]);
+                    $post->decrement('funny');
+                }else{//不觉得好笑的，觉得好笑
+                    $record->update([
+                        'funny' => true,
+                        'funny_at' => Carbon::now(),
+                    ]);
+                    $post->increment('funny');
+                }
+            }
+            return $post;
+        });
+        return $post->funny;
+    }
+    public function fold(Post $post)
+    {
+        $record = Auth::user()->findrecord($post->id);
+        $post = DB::transaction(function()use($record, $post){
+            if (!$record){
+                $record = VotePosts::create([
+                    'user_id' => Auth::id(),
+                    'post_id' => $post->id,
+                    'better_to_fold' => true,
+                    'better_to_fold_at' => Carbon::now(),
                 ]);
                 $post->increment('fold');
-             }
-          }
-          return $post;
-      });
-      return $post->fold;
-   }
-   public function index()//havenot finished 选择最新得到赞的回帖
-   {
-     $statuses = DB::table('vote_posts')
+            }else{
+                if ($record->better_to_fold){
+                    $record->update(['better_to_fold' => false]);
+                    $post->decrement('fold');
+                }else{
+                    $record->update([
+                        'better_to_fold' => true,
+                        'better_to_fold_at' => Carbon::now(),
+                    ]);
+                    $post->increment('fold');
+                }
+            }
+            return $post;
+        });
+        return $post->fold;
+    }
+    public function index()//havenot finished 选择最新得到赞的回帖
+    {
+        $statuses = DB::table('vote_posts')
         ->join('users','vote_posts.user_id','=','users.id')
         ->join('posts','vote_posts.post_id','=','posts.id')
         ->where('users.deleted_at', '=', null)
@@ -214,7 +214,7 @@ class VotePostsController extends Controller
         ->select('posts.*','users.name','vote_posts.upvoted_at')
         ->orderBy('vote_posts.upvoted_at','desc')
         ->paginate(config('constants.index_per_page'));
-     $collections = false;
-     return view('statuses.index', compact('statuses','collections'));
-   }
+        $collections = false;
+        return view('statuses.index', compact('statuses','collections'));
+    }
 }

@@ -14,21 +14,21 @@
     <div class="text-center">
         @include('threads._thread_author_time')
     </div>
-   <!-- 首楼正文 -->
-   <div class="main-text {{ $thread->mainpost->indentation ? 'indentation':'' }}">
-      @if($thread->mainpost->markdown)
-      {!! Helper::sosadMarkdown($thread->body) !!}
-      @else
-      {!! Helper::wrapParagraphs($thread->body) !!}
-      @endif
-   </div>
-   <!-- 是否附加作业信息 -->
-   @if($thread->homework_id>0)
-      @include('homeworks._registered_students')
-      @if($thread->show_homework_profile)
-        @include('homeworks._registered_homeworks')
-      @else
-        @include('homeworks._register_button')
-      @endif
-   @endif
+    <!-- 首楼正文 -->
+    <div class="main-text {{ $thread->mainpost->indentation ? 'indentation':'' }}">
+        @if($thread->mainpost->markdown)
+        {!! Helper::sosadMarkdown($thread->body) !!}
+        @else
+        {!! Helper::wrapParagraphs($thread->body) !!}
+        @endif
+    </div>
+    <!-- 是否附加作业信息 -->
+    @if($thread->homework_id>0)
+    @include('homeworks._registered_students')
+    @if($thread->show_homework_profile)
+    @include('homeworks._registered_homeworks')
+    @else
+    @include('homeworks._register_button')
+    @endif
+    @endif
 </div>

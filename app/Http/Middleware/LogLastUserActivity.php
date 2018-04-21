@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\Cache;
 class LogLastUserActivity
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
+    * Handle an incoming request.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  \Closure  $next
+    * @return mixed
+    */
     public function handle($request, Closure $next)
     {
         if(Auth::check()) {

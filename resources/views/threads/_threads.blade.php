@@ -9,21 +9,21 @@
             <!-- thread title -->
             <span>
                 @if($thread->channel_id!=2)
-                    @if($show_channel)
-                    <a class="btn btn-xs btn-success sosad-button tag-button-left tag-red" href="{{route('channel.show', $thread->channel_id)}}">{{$thread->channelname}}</a>
-                    @endif
-                    <a class="btn btn-xs btn-warning sosad-button tag-button-right tag-green" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->labelname}}</a>
+                @if($show_channel)
+                <a class="btn btn-xs btn-success sosad-button tag-button-left tag-red" href="{{route('channel.show', $thread->channel_id)}}">{{$thread->channelname}}</a>
+                @endif
+                <a class="btn btn-xs btn-warning sosad-button tag-button-right tag-green" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->labelname}}</a>
                 @endif
                 <span class="bigger-20"><strong><a href="{{ route('thread.show', $thread->id) }}">
                     {{ Helper::convert_to_title($thread->title) }}
                 </a></strong></span>
                 @if($thread->channel_id==2)
-                    @if($thread->tongren_yuanzhu_tagname)
-                    <a class="btn btn-xs btn-success tag-button-left tag-blue" href="{{ route('books.booktag', $thread->tongren_yuanzhu_tag_id) }}">{{$thread->tongren_yuanzhu_tagname}}</a>
-                    @endif
-                    @if($thread->tongren_cp_tagname)
-                    <a class="btn btn-xs btn-warning tag-button-right tag-yellow" href="{{ route('books.booktag', $thread->tongren_cp_tag_id) }}">{{$thread->tongren_cp_tagname}}</a>
-                    @endif
+                @if($thread->tongren_yuanzhu_tagname)
+                <a class="btn btn-xs btn-success tag-button-left tag-blue" href="{{ route('books.booktag', $thread->tongren_yuanzhu_tag_id) }}">{{$thread->tongren_yuanzhu_tagname}}</a>
+                @endif
+                @if($thread->tongren_cp_tagname)
+                <a class="btn btn-xs btn-warning tag-button-right tag-yellow" href="{{ route('books.booktag', $thread->tongren_cp_tag_id) }}">{{$thread->tongren_cp_tagname}}</a>
+                @endif
                 @endif
                 @if( $thread->bianyuan == 1)
                 <span class="badge bianyuan-tag badge-tag">边</span>
@@ -32,15 +32,15 @@
                 <span class="badge newchapter-badge badge-tag">有更新</span>
                 @endif
                 <small>
-                @if(!$thread->public)
-                   <span class="glyphicon glyphicon-eye-close"></span>
-                @endif
-                @if($thread->locked)
-                   <span class="glyphicon glyphicon-lock"></span>
-                @endif
-                @if($thread->noreply)
-                <span class="glyphicon glyphicon-warning-sign"></span>
-                @endif
+                    @if(!$thread->public)
+                    <span class="glyphicon glyphicon-eye-close"></span>
+                    @endif
+                    @if($thread->locked)
+                    <span class="glyphicon glyphicon-lock"></span>
+                    @endif
+                    @if($thread->noreply)
+                    <span class="glyphicon glyphicon-warning-sign"></span>
+                    @endif
                 </small>
             </span>
             <!-- thread title end   -->
@@ -52,7 +52,7 @@
                 <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->name }}</a></span>
                 @endif
                 @else
-                    <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->name }}</a>
+                <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->name }}</a>
                 @endif
             </span>
             <!-- author end -->

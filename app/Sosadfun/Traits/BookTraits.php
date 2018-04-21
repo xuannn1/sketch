@@ -6,13 +6,13 @@ use Illuminate\Support\Facades\DB;
 trait BookTraits{
     public function join_book_tables(){
         $query = DB::table('threads')
-            ->join('books', 'threads.book_id', '=', 'books.id')
-            ->join('users', 'threads.user_id', '=', 'users.id')
-            ->join('labels', 'threads.label_id', '=', 'labels.id')
-            ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
-            ->leftjoin('tongrens','books.id','=', 'tongrens.book_id')
-            ->leftjoin('tags as tongren_yuanzhu_tags','tongren_yuanzhu_tags.id','=', 'tongrens.tongren_yuanzhu_tag_id')
-            ->leftjoin('tags as tongren_cp_tags','tongren_cp_tags.id','=', 'tongrens.tongren_cp_tag_id');
+        ->join('books', 'threads.book_id', '=', 'books.id')
+        ->join('users', 'threads.user_id', '=', 'users.id')
+        ->join('labels', 'threads.label_id', '=', 'labels.id')
+        ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
+        ->leftjoin('tongrens','books.id','=', 'tongrens.book_id')
+        ->leftjoin('tags as tongren_yuanzhu_tags','tongren_yuanzhu_tags.id','=', 'tongrens.tongren_yuanzhu_tag_id')
+        ->leftjoin('tags as tongren_cp_tags','tongren_cp_tags.id','=', 'tongrens.tongren_cp_tag_id');
         return $query;
     }
 

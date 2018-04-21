@@ -12,20 +12,20 @@ use Illuminate\Support\Facades\DB;
 class StoreThread extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
+    * Determine if the user is authorized to make this request.
+    *
+    * @return bool
+    */
     public function authorize()
     {
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    * Get the validation rules that apply to the request.
+    *
+    * @return array
+    */
     public function rules()
     {
         return [
@@ -80,8 +80,8 @@ class StoreThread extends FormRequest
     public function isDuplicateThread($data)
     {
         $last_thread = Thread::where('user_id', auth()->id())
-                            ->orderBy('id', 'desc')
-                            ->first();
+        ->orderBy('id', 'desc')
+        ->first();
         return count($last_thread) && strcmp($last_thread->title.$last_thread->brief.$last_thread->body, $data['title'].$data['brief'].$data['body']) === 0;
     }
 
@@ -92,18 +92,18 @@ class StoreThread extends FormRequest
         $markdown = request('markdown')? true: false;
         $indentation = request('indentation')? true: false;
         $thread->update([
-           'title' => request('title'),
-           'brief' => request('brief'),
-           'body' => request('body'),
-           'label_id' => request('label'),
-           'anonymous' => $anonymous,
-           'noreply' => $noreply,
-           'edited_at' => Carbon::now(),
-          ]);
-          $post = $thread->mainpost;
-          $post->update([
+            'title' => request('title'),
+            'brief' => request('brief'),
+            'body' => request('body'),
+            'label_id' => request('label'),
+            'anonymous' => $anonymous,
+            'noreply' => $noreply,
+            'edited_at' => Carbon::now(),
+        ]);
+        $post = $thread->mainpost;
+        $post->update([
             'markdown'=>$markdown,
             'indentation'=>$indentation,
-          ]);
+        ]);
     }
 }

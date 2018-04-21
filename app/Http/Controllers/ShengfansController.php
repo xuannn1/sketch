@@ -13,7 +13,7 @@ class ShengfansController extends Controller
 {
     public function __construct()
     {
-       $this->middleware('auth');
+        $this->middleware('auth');
     }
     public function vote_post(Post $post, Request $request)
     {  //是否投喂过

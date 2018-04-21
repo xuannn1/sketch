@@ -1,7 +1,7 @@
 @if (count($feed_items))
-  <ol class='statuses'>
+<ol class='statuses'>
     @foreach ($feed_items as $status)
-      @include('statuses._status', ['user' => $status->user])
+    @include('statuses._status', ['user' => $status->user])
     @endforeach
-  </ol>
+</ol>
 @endif

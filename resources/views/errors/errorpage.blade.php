@@ -5,7 +5,7 @@
 <div class="container">
     <div class="content text-center">
         <div class="title">
-           <h1>{{ $error_message }}</h1>
+            <h1>{{ $error_message }}</h1>
         </div>
     </div>
 </div>

@@ -10,20 +10,20 @@ use App\Models\Post;
 class StorePost extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
+    * Determine if the user is authorized to make this request.
+    *
+    * @return bool
+    */
     public function authorize()
     {
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    * Get the validation rules that apply to the request.
+    *
+    * @return array
+    */
     public function rules()
     {
         return [
@@ -49,7 +49,7 @@ class StorePost extends FormRequest
         if ($data['chapter_id']!=0){
             $chapter = Chapter::find($data['chapter_id']);
             if ((!$chapter)||($thread->book_id == 0)||($chapter->book_id != $thread->book->id)){
-             abort(403,'数据冲突');
+                abort(403,'数据冲突');
             }
         }
 
@@ -60,7 +60,7 @@ class StorePost extends FormRequest
                 abort(403,'数据冲突');
             }
             if($reply->maintext){//假如回复的是某章节，
-             $data['reply_to_post_id'] = 0;
+                $data['reply_to_post_id'] = 0;
             }
             $data['chapter_id'] = $reply->chapter_id;
         }
@@ -78,8 +78,8 @@ class StorePost extends FormRequest
     public function isDuplicatePost($data)
     {
         $last_post = Post::where('user_id', auth()->id())
-                            ->orderBy('id', 'desc')
-                            ->first();
+        ->orderBy('id', 'desc')
+        ->first();
         return count($last_post) && strcmp($last_post->body, $data['body']) === 0;
     }
 
