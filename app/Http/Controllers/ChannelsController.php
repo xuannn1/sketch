@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use App\Sosadfun\Traits\ThreadTraits;
 use App\Models\Channel;
 use App\Models\Thread;
@@ -28,17 +29,25 @@ class ChannelsController extends Controller
         $threads = $this->return_thread_fields($query)
             ->orderby('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'));
-        $labels = Label::inChannel($channel->id)
+
+        $labels = Cache::remember('labels', 5, function () use($channel) {
+            $labels = Label::inChannel($channel->id)
             ->withCount('threads')->orderBy('created_at','asc')
             ->get();
+            return $labels;
+        });
 
         if ($channel->channel_state==1){
-            $sexual_orientation_count = DB::table('threads')
-                ->join('books', 'threads.book_id', '=', 'books.id')
-                ->where([['threads.deleted_at', '=', null],['threads.public','=',1], ['threads.channel_id','=',$channel->id]])
-                ->select('books.sexual_orientation', DB::raw('count(*) as total'))
-                ->groupBy('sexual_orientation')
-                ->get();
+            $sexual_orientation_count = Cache::remember('sexual_orientation_count', 5, function () use($channel) {
+                $sexual_orientation_count = DB::table('threads')
+                    ->join('books', 'threads.book_id', '=', 'books.id')
+                    ->where([['threads.deleted_at', '=', null],['threads.public','=',1], ['threads.channel_id','=',$channel->id]])
+                    ->select('books.sexual_orientation', DB::raw('count(*) as total'))
+                    ->groupBy('sexual_orientation')
+                    ->get();
+                return $sexual_orientation_count;
+            });
+
             $s_count=[];
             foreach($sexual_orientation_count as $dataset){
                 $s_count[$dataset->sexual_orientation]=$dataset->total;
