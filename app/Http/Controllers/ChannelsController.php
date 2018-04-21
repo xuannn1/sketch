@@ -21,11 +21,7 @@ class ChannelsController extends Controller
         if(Auth::check()){$group = Auth::user()->group;}
         $query = $this->join_thread_tables()
             ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1], ['threads.channel_id','=',$channel->id]]);
-        $query2=$query;
-        $sexual_orientation_count = $query2
-                 ->select('sexual_orientation', DB::raw('count(*) as total'))
-                 ->groupBy('sexual_orientation')
-                 ->get();
+
         if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
         if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
 
@@ -35,11 +31,22 @@ class ChannelsController extends Controller
         $labels = Label::inChannel($channel->id)
             ->withCount('threads')->orderBy('created_at','asc')
             ->get();
-        $s_count=[];
-        foreach($sexual_orientation_count as $dataset){
-            $s_count[$dataset->sexual_orientation]=$dataset->total;
+
+        if ($channel->channel_state==1){
+            $sexual_orientation_count = DB::table('threads')
+                ->join('books', 'threads.book_id', '=', 'books.id')
+                ->where([['threads.deleted_at', '=', null],['threads.public','=',1], ['threads.channel_id','=',$channel->id]])
+                ->select('books.sexual_orientation', DB::raw('count(*) as total'))
+                ->groupBy('sexual_orientation')
+                ->get();
+            $s_count=[];
+            foreach($sexual_orientation_count as $dataset){
+                $s_count[$dataset->sexual_orientation]=$dataset->total;
+            }
+            $sexual_orientation_info = config('constants.book_info.sexual_orientation_info');
+            return view('threads.index_channel', compact('threads', 'labels','channel','sexual_orientation_info','s_count'))->with('show_as_collections', false)->with('show_channel', false);
+        }else{
+            return view('threads.index_channel', compact('threads', 'labels','channel'))->with('show_as_collections', false)->with('show_channel', false);
         }
-        $sexual_orientation_info = config('constants.book_info.sexual_orientation_info');
-        return view('threads.index_channel', compact('threads', 'labels','channel','sexual_orientation_info','s_count'))->with('show_as_collections', false)->with('show_channel', false);
     }
 }
