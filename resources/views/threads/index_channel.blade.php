@@ -20,6 +20,7 @@
                    </a>
                </li>
                @endforeach
+               @if($channel->channel_state==1)
                @foreach($sexual_orientation_info as $key=>$value)
                <li role="presentation" id="sexual_orientation-{{ $key }}" class="{{ request('sexual_orientation')=== $key ? 'active':'' }}">
                    <a href="{{ route('channel.show',['channel'=>$channel->id, 'sexual_orientation' => $key ]) }}" >
@@ -28,6 +29,7 @@
                    </a>
                </li>
                @endforeach
+               @endif
             </ul>
          </div>
          <div class="panel-body">
