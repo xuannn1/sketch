@@ -185,7 +185,7 @@ class DownloadsController extends Controller
      {
         $user = Auth::user();
         if (($user->id!=$thread->user_id)||(!$user->admin)) {//假如并非本人主题，登陆用户也不是管理员，首先看主人是否允许开放下载
-          if (!$thread->download_as_thread){
+          if ((!$thread->public)||(!$thread->download_as_thread)){
             return redirect()->back()->with("danger","作者并未开放下载");
           }else{
             if($user->user_level>0){
@@ -241,7 +241,7 @@ class DownloadsController extends Controller
      {
         $user = Auth::user();
         if (($user->id!=$thread->user_id)&&(!$user->admin)){//假如并非本人主题，登陆用户也不是管理员，首先看主人是否允许开放下载
-          if (!$thread->download_as_book){
+          if ((!$thread->public)||(!$thread->download_as_book)){
             return redirect()->back()->with("danger","作者并未开放下载");
           }else{
             if($user->user_level>2){

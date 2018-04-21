@@ -131,4 +131,10 @@ class Helper
        }
        return $string;
    }
+
+   public static function convertBBCodetoMarkdown($string){
+       $string = Markdown::convertFromHtml($string);
+       $string = BBCode::convertToHtml($string);
+       return $string;
+   }
 }
