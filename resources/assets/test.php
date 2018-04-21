@@ -30,3 +30,21 @@ foreach ($statuses as $status){
 
 
 \Http\Helpers\Helper::convertBBCodetoMarkdown($status->content)
+
+
+$tongrens = \App\Models\Tongren::all();
+foreach($tongrens as $tongren){
+    if (!$tongren->tongren_yuanzhu){
+        if($tongren->tongren_yuanzhu_tag_id>0){
+            $tag = \App\Models\Tag::find($tongren->tongren_yuanzhu_tag_id);
+            $tongren->tongren_yuanzhu = $tag->tag_explanation;
+        }
+    }
+    if (!$tongren->tongren_cp){
+        if($tongren->tongren_CP_tag_id>0){
+            $tag = \App\Models\Tag::find($tongren->tongren_CP_tag_id);
+            $tongren->tongren_cp=$tag->tag_explanation;
+        }
+    }
+    $tongren->save();
+}
