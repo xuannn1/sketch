@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
+use App\Sosadfun\Traits\ThreadTraits;
+use App\Sosadfun\Traits\BookTraits;
 use Auth;
 use App\Models\Channel;
 use App\Models\User;
@@ -16,6 +18,9 @@ use Carbon\Carbon;
 
 class PagesController extends Controller
 {
+    use ThreadTraits;
+    use BookTraits;
+
     public function __construct()
     {
        $this->middleware('auth', [
@@ -136,43 +141,33 @@ class PagesController extends Controller
             $user->lastsearched_at=Carbon::now();
             $user->save();
         }
+        $group = 10;
+        if(Auth::check()){$group = Auth::user()->group;}
         if($request->search){
             if( $request->search_options=='threads'){
-                $group = 10;
-                if(Auth::check()){$group = Auth::user()->group;}
-                $query = DB::table('threads')
-                    ->join('users', 'threads.user_id', '=', 'users.id')
-                    ->join('labels', 'threads.label_id', '=', 'labels.id')
-                    ->join('channels', 'threads.channel_id','=','channels.id')
-                    ->leftjoin('posts','threads.last_post_id','=', 'posts.id')
-                    ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]])
-                    ->where('threads.title', 'like', '%'.$request->search.'%');
-
-                  $threads = $query->select('threads.*',        'channels.channelname','users.name','labels.labelname','posts.body as last_post_body')
+                $query = $this->join_thread_tables()
+                    ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1],['threads.title','like','%'.$request->search.'%']]);
+                $threads = $this->return_thread_fields($query)
                     ->orderby('threads.lastresponded_at', 'desc')
                     ->simplePaginate(config('constants.index_per_page'));
-                  $show = ['channel' => false,'label' => false,];
-                return    view('pages.search_threads',compact('threads','show'))->with('show_as_collections',0)->with('show_channel',1);
+                $show = ['channel' => false,'label' => false,];
+                return view('pages.search_threads',compact('threads','show'))->with('show_as_collections',0)->with('show_channel',1);
             }
             if($request->search_options=='users'){
                 $users = User::where('name','like', '%'.$request->search.'%')->simplePaginate(config('constants.index_per_page'));
                 return view('pages.search_users',compact('users'));
             }
             if($request->search_options=='tongren_yuanzhu'){
-                $query = DB::table('threads')
-                    ->join('books', 'threads.book_id', '=', 'books.id')
-                    ->join('users', 'threads.user_id', '=', 'users.id')
-                    ->join('labels', 'threads.label_id', '=', 'labels.id')
-                    ->join('tongrens','books.id','=','tongrens.book_id')
-                    ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
+                $query = $this->join_book_tables()
                     ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['threads.channel_id','=',2]]);
                 $query->where('tongrens.tongren_yuanzhu','like','%'.$request->search.'%');
-            if ($request->tongren_cp){
-                $query->where('tongrens.tongren_cp','like','%'.$request->tongren_cp.'%');
-            }
-            $books = $query->select('books.*', 'threads.*', 'users.name','labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id')
-            ->orderby('books.lastaddedchapter_at', 'desc')
-            ->simplePaginate(config('constants.index_per_page'));
+                if ($request->tongren_cp){
+                    $query->where('tongrens.tongren_cp','like','%'.$request->tongren_cp.'%');
+                }
+                $books = $this->return_book_fields($query)
+                    ->orderby('threads.lastresponded_at', 'desc')
+                    ->simplePaginate(config('constants.index_per_page'));
+
             return view('pages.search_books', compact('books'))->with('show_as_collections', false);
           }
       }
