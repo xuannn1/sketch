@@ -21,12 +21,11 @@ class ChannelsController extends Controller
         if(Auth::check()){$group = Auth::user()->group;}
         $query = $this->join_thread_tables()
             ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1], ['threads.channel_id','=',$channel->id]]);
-
-        $sexual_orientation_count = $query
+        $query2=$query;
+        $sexual_orientation_count = $query2
                  ->select('sexual_orientation', DB::raw('count(*) as total'))
                  ->groupBy('sexual_orientation')
                  ->get();
-
         if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
         if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
 
