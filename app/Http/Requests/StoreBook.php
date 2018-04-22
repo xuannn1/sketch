@@ -152,7 +152,7 @@ class StoreBook extends FormRequest
         if(((array_key_exists('tongren_yuanzhu_tag_id',  $data)))&&($data['tongren_yuanzhu_tag_id']>0)){
             $data['tongren_yuanzhu']=Tag::find($data['tongren_yuanzhu_tag_id'])->tag_explanation;
         }
-        if(((array_key_exists('tongren_cp_tag_id', $data)))&&($data['tongren_cp_tag_id']>0)){
+        if(((array_key_exists('tongren_CP_tag_id', $data)))&&($data['tongren_CP_tag_id']>0)){
             $data['tongren_cp']=Tag::find($data['tongren_CP_tag_id'])->tag_explanation;
         }
         return $data;
