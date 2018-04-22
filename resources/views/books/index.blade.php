@@ -14,12 +14,10 @@
                         @foreach ($all_book_tags['tags_feibianyuan'] as $key=>$tag)
                         <a class="book-tag tags_feibianyuan badge newchapter-badge badge-tag {{$key>5? 'hidden extra-tag':''}} " href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
                         @endforeach
-                        <br>
                         @if(Auth::check())
                         @foreach ($all_book_tags['tags_bianyuan'] as $key=>$tag)
                         <a class="book-tag tags_bianyuan badge bianyuan-tag badge-tag {{$key>5? 'hidden extra-tag':''}} " href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
                         @endforeach
-                        <br>
                         @endif
                         @foreach ($all_book_tags['tags_tongren'] as $key=>$tag)
                         <a class="book-tag tags_tongren badge newchapter-badge badge-tag {{$key>2? 'hidden extra-tag':''}}" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
