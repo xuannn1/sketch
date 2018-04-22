@@ -28,7 +28,7 @@ class UsersController extends Controller
         //未登陆，看不见边缘文章
         if(!Auth::check()){$query->where('threads.bianyuan','=',0);}
         //假如未登陆，或者既不是管理员也不是本人，则不能看私密文章，不能看匿名文章
-        if((!Auth::check())||((!$id === Auth::id())&&(!Auth::user()->admin))){
+        if((!Auth::check())||(($id !== Auth::id())&&(!Auth::user()->admin))){
             $query->where('threads.public','=',1)
             ->where('threads.anonymous','=',0);
         }
@@ -47,7 +47,7 @@ class UsersController extends Controller
         //未登陆，看不见边缘文章
         if(!Auth::check()){$query->where('threads.bianyuan','=',0);}
         //假如未登陆，或者既不是管理员也不是本人，则不能看私密文章，不能看匿名文章
-        if((!Auth::check())||((!$id === Auth::id())&&(!Auth::user()->admin))){
+        if((!Auth::check())||(($id !== Auth::id())&&(!Auth::user()->admin))){
             $query->where('threads.public','=',1)
             ->where('threads.anonymous','=',0);
         }
