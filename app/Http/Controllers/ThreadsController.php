@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -33,14 +35,21 @@ class threadsController extends Controller
     {
         $group = 10;
         if(Auth::check()){$group = Auth::user()->group;}
-        $query = $this->join_thread_tables()
-        ->where([['threads.book_id', '=', 0],['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]]);
-        if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
-        if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
-
-        $threads = $this->return_thread_fields($query)
-        ->orderby('threads.lastresponded_at', 'desc')
-        ->paginate(config('constants.index_per_page'));
+        $threadqueryid = '-thread-index-query-group'.$group
+        .'-'.(Auth::check()?'logged':'not_logged')
+        .'-'.($request->label? 'l'.$request->label:'no_l')
+        .'-'.($request->channel? 'ch'.$request->channel:'no_ch');
+        $threads = Cache::remember($threadqueryid, 2, function () use($group, $request) {
+            $query = $this->join_no_book_thread_tables()
+            ->where([['threads.book_id','=',0],['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]]);
+            if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
+            if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
+            if(!Auth::check()){$query = $query->where('threads.bianyuan','=',0);}
+            $threads = $this->return_no_book_thread_fields($query)
+            ->orderby('threads.lastresponded_at', 'desc')
+            ->paginate(config('constants.index_per_page'));
+            return $threads;
+        });
         return view('threads.index', compact('threads'))->with('show_as_collections', false)->with('show_channel',true);
     }
 

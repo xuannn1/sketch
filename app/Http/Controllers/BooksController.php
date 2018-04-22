@@ -137,7 +137,7 @@ class BooksController extends Controller
 
     public function index(Request $request)
     {
-        $bookqueryid = '-'.'bookquery'.'-'.(Auth::check()?'logged':'not_logged')
+        $bookqueryid = '-bookquery'.'-'.(Auth::check()?'logged':'not_logged')
         .'-'.($request->label? 'l'.$request->label:'no_l')
         .'-'.($request->channel? 'ch'.$request->channel:'no_ch')
         .'-'.($request->book_length? 'bl'.$request->book_length:'no_bl')

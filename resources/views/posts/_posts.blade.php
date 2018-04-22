@@ -33,7 +33,7 @@
                     {!! Helper::wrapParagraphs($post->body) !!}
                     @endif
                 </div>
-                <span id="abbreviated{{$post->id}}"><strong>{{ $post->title }}</strong>{{ $post->title ? ' ': ''}}{!! Helper::trimtext($post->body,60) !!}</span>
+                <span id="abbreviated{{$post->id}}"><strong>{{ $post->title }}</strong>{{ $post->title ? ' ': ''}}{!! Helper::trimtext($post->body,70) !!}</span>
                 <a type="button" name="button" id="expand{{$post->id}}" onclick="expandpost('{{$post->id}}')">展开</a>
                 @include('posts._post_simplevote')
             </div>
