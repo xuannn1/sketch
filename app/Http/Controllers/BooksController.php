@@ -3,23 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreBook;
 use App\Sosadfun\Traits\BookTraits;
-
-use App\Models\Label;
-use App\Models\Thread;
-use App\Models\Book;
-use App\Models\Post;
-use App\Models\Chapter;
-use App\Models\Tag;
-use App\Models\Channel;
 use Carbon\Carbon;
-use App\Models\Tongren;
+use App\Models\Post;
+use App\Models\Book;
 use Auth;
 
 class BooksController extends Controller
@@ -82,6 +74,7 @@ class BooksController extends Controller
 
     public function index(Request $request)
     {
+        //dd($request->page);
         $all_book_tags = $this->all_book_tags();
         $bookqueryid = '-bookquery'.'-'.(Auth::check()?'logged':'not_logged')
         .'-'.($request->label? 'l'.$request->label:'no_l')

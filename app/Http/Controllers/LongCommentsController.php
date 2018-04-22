@@ -32,7 +32,6 @@ class LongCommentsController extends Controller
             ->simplePaginate(config('constants.index_per_page'));
             return $posts;
         });
-        $posts = unserialize(base64_decode($posts));
         return view('long_comments.index', compact('posts'));
     }
 }

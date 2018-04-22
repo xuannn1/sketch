@@ -4,6 +4,12 @@ namespace App\Sosadfun\Traits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
+use App\Models\Label;
+use App\Models\Tag;
+use Carbon\Carbon;
+
+use Auth;
+
 trait BookTraits{
     public function join_book_tables(){
         $query = DB::table('threads')
