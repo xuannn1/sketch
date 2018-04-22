@@ -14,17 +14,18 @@
                         @foreach ($all_book_tags['tags_feibianyuan'] as $key=>$tag)
                         <a class="book-tag tags_feibianyuan badge newchapter-badge badge-tag {{$key>5? 'hidden extra-tag':''}} " href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
                         @endforeach
+                        @foreach ($all_book_tags['tags_tongren'] as $key=>$tag)
+                        <a class="book-tag tags_tongren badge bianyuan-tag badge-tag {{$key>1? 'hidden extra-tag':''}}" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
+                        @endforeach
+                        @foreach ($all_book_tags['tags_tongren_yuanzhu'] as $key=>$tag)
+                        <a class="book-tag tags_tongren_yuanzhu badge bianyuan-tag badge-tag {{$key>3? 'hidden extra-tag':''}}" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
+                        @endforeach
                         @if(Auth::check())
                         @foreach ($all_book_tags['tags_bianyuan'] as $key=>$tag)
-                        <a class="book-tag tags_bianyuan badge bianyuan-tag badge-tag {{$key>5? 'hidden extra-tag':''}} " href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
+                        <a class="book-tag tags_bianyuan badge newchapter-badge badge-tag hidden extra-tag" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
                         @endforeach
                         @endif
-                        @foreach ($all_book_tags['tags_tongren_yuanzhu'] as $key=>$tag)
-                        <a class="book-tag tags_tongren_yuanzhu badge newchapter-badge badge-tag {{$key>3? 'hidden extra-tag':''}}" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
-                        @endforeach
-                        @foreach ($all_book_tags['tags_tongren'] as $key=>$tag)
-                        <a class="book-tag tags_tongren badge newchapter-badge badge-tag {{$key>1? 'hidden extra-tag':''}}" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
-                        @endforeach
+
                         <br>
                     </div>
                     <div class="col-xs-2">
