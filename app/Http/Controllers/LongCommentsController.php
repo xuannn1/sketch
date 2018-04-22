@@ -30,8 +30,9 @@ class LongCommentsController extends Controller
             ->select('posts.*','threads.title as thread_title', 'users.name')
             ->orderBy('posts.created_at', 'desc')
             ->simplePaginate(config('constants.index_per_page'));
-            return $posts;
+            return serialize($posts);
         });
+        $posts = unserialize($posts);
         return view('long_comments.index', compact('posts'));
     }
 }
