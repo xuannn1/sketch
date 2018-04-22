@@ -48,3 +48,8 @@ foreach($tongrens as $tongren){
     }
     $tongren->save();
 }
+
+
+$tags_feibianyuan = App\Models\Tag::where('tag_group',0);
+
+$tags_feibianyuan->load('threadscount');
