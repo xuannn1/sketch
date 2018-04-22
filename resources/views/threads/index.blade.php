@@ -10,6 +10,7 @@
         <div class="panel panel-default">
             <div class="panel-heading lead">所有主题贴</div>
             <div class="panel-body">
+                {{ $threads->links() }}
                 @include('threads._threads')
                 {{ $threads->links() }}
             </div>

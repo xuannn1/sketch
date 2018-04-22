@@ -24,8 +24,13 @@
                     <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-control addon-button">恢复数据</button>
                     <button type="button" onclick="removespace('mainbody')" class="sosad-button-control addon-button">清理段首空格</button>
                     <button href="#" type="button" onclick="wordscount('mainbody');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
-                    <label><input type="checkbox" name="indentation" checked>段首缩进(每段前两个空格)？</label>
-                    <label><input type="checkbox" name="markdown">使用Markdown语法？（警告：如果您对markdwon语法并不熟悉，请务必直接忽略该选项）</label>
+                    <br>
+                    <br>
+                    <div class="">
+                        <label><input type="checkbox" name="indentation" checked>段首缩进(每段前两个空格)？</label>
+                        <br>
+                        <label><input type="checkbox" name="markdown">使用Markdown语法？（建议：如果您对markdwon语法并不熟悉，请直接忽略该选项）</label>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="annotation"><h4>备注：</h4></label>

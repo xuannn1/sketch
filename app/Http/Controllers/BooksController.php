@@ -12,6 +12,7 @@ use App\Sosadfun\Traits\BookTraits;
 use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\Book;
+use App\Models\Tag;
 use Auth;
 
 class BooksController extends Controller
@@ -74,14 +75,15 @@ class BooksController extends Controller
 
     public function index(Request $request)
     {
-        //dd($request->page);
         $all_book_tags = $this->all_book_tags();
+        //dd($all_book_tags['tags_feibianyuan']);
         $bookqueryid = '-bookquery'.'-'.(Auth::check()?'logged':'not_logged')
         .'-'.($request->label? 'l'.$request->label:'no_l')
         .'-'.($request->channel? 'ch'.$request->channel:'no_ch')
         .'-'.($request->book_length? 'bl'.$request->book_length:'no_bl')
         .'-'.($request->book_status? 'bs'.$request->book_status:'no_bs')
-        .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so');
+        .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so')
+        .'-'.($request->page? 'page'.$request->page:'page1');
         //dd($bookqueryid);
         $books = Cache::remember($bookqueryid, 10, function () use($request) {
             $query = $this->join_book_tables();
@@ -100,7 +102,7 @@ class BooksController extends Controller
         return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
     }
 
-    public function selector($bookquery_original)
+    public function selector($bookquery_original, Request $request)
     {
         $all_book_tags = $this->all_book_tags();
         $bookquery=explode('-',$bookquery_original);
@@ -108,7 +110,8 @@ class BooksController extends Controller
         foreach($bookquery as $info){
             array_push($bookinfo,array_map('intval',explode('_',$info)));
         }
-        $books = Cache::remember('-bookselector-'.$bookquery_original, 10, function () use($bookinfo) {
+        //dd($bookinfo[3]);
+        $books = Cache::remember('-bookselector-'.$bookquery_original.'page'.($request->page? $request->page:1), 10, function () use($bookinfo, $request) {
             $query = $this->join_book_tables();
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             $query->whereIn('books.book_length',$bookinfo[1])
@@ -135,22 +138,26 @@ class BooksController extends Controller
         return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
     }
 
-    public function booktag(Tag $booktag){
+    public function booktag(Tag $booktag, Request $request){
         $all_book_tags = $this->all_book_tags();
-        $query = $this->join_book_tables();
-        if($booktag->tag_group==10){
-            $query->where('tongren_yuanzhu_tags.id','=',$booktag->id);
-        }elseif($booktag->tag_group==20){
-            $query->where('tongren_cp_tags.id','=',$booktag->id);
-        }else{
-            $query->join('tagging_threads','threads.id','=','tagging_threads.thread_id');
-            $query->where('tagging_threads.tag_id','=',$booktag->id);//for regular tag
-        }
-        $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-        if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
-        $books = $this->return_book_fields($query)
-        ->orderby('books.lastaddedchapter_at', 'desc')
-        ->paginate(config('constants.index_per_page'));
+
+        $books = Cache::remember('-booktag-'.$booktag->id.'-page-'.($request->page? $request->page:1), 10, function () use($request, $booktag) {
+            $query = $this->join_book_tables();
+            if($booktag->tag_group==10){
+                $query->where('tongren_yuanzhu_tags.id','=',$booktag->id);
+            }elseif($booktag->tag_group==20){
+                $query->where('tongren_cp_tags.id','=',$booktag->id);
+            }else{
+                $query->join('tagging_threads','threads.id','=','tagging_threads.thread_id');
+                $query->where('tagging_threads.tag_id','=',$booktag->id);//for regular tag
+            }
+            $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
+            if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
+            $books = $this->return_book_fields($query)
+            ->orderby('books.lastaddedchapter_at', 'desc')
+            ->paginate(config('constants.index_per_page'));
+            return $books;
+        });
         return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
     }
 

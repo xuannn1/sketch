@@ -38,7 +38,8 @@ class threadsController extends Controller
         $threadqueryid = '-thread-index-query-group'.$group
         .'-'.(Auth::check()?'logged':'not_logged')
         .'-'.($request->label? 'l'.$request->label:'no_l')
-        .'-'.($request->channel? 'ch'.$request->channel:'no_ch');
+        .'-'.($request->channel? 'ch'.$request->channel:'no_ch')
+        .'-'.($request->page? 'page'.$request->page:'page1');
         $threads = Cache::remember($threadqueryid, 2, function () use($group, $request) {
             $query = $this->join_no_book_thread_tables()
             ->where([['threads.book_id','=',0],['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]]);

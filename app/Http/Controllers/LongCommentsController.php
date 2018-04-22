@@ -17,10 +17,10 @@ class LongCommentsController extends Controller
     {
         $this->middleware('auth')->except('index', 'show');
     }
-    public function index()
+    public function index(Request $request)
     {
         $group = Auth::check() ? Auth::user()->group : 10;
-        $posts = Cache::remember('-longcomment-group'.$group.'-', 10, function () use($group) {
+        $posts = Cache::remember('-longcomment-group'.$group.'-page'.$request->page.'-', 10, function () use($group, $request) {
             $posts = DB::table('posts')
             ->join('users','users.id','=','posts.user_id')
             ->join('threads','threads.id','=','posts.thread_id')

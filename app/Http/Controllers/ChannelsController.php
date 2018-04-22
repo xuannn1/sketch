@@ -21,7 +21,8 @@ class ChannelsController extends Controller
         $threadqueryid = '-thread-query-channel'.$channel->id
         .'-'.(Auth::check()?'logged':'not_logged')
         .'-'.($request->label? 'l'.$request->label:'no_l')
-        .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so');
+        .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so')
+        .'-'.($request->page? 'page'.$request->page:'page1');
         $threads = Cache::remember($threadqueryid, 2, function () use($request, $channel) {
             if($channel->id!=2){
                 $query = $this->join_no_book_thread_tables();
