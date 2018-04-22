@@ -55,7 +55,7 @@ class UsersController extends Controller
         $query->where('threads.deleted_at', '=', null);
         //不能是图书，只能是讨论帖
         $query->where('threads.book_id', '=', 0);
-        $query->where('channel.channel_state', '<', $group);
+        $query->where('channels.channel_state', '<', $group);
         $threads = $this->return_no_book_thread_fields($query)
         ->orderby('threads.lastresponded_at', 'desc')
         ->simplePaginate($paginate);
