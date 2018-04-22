@@ -603,3 +603,7 @@ function addoption(thread_id){//让投票区增加分支选择项
         alert("只能填写十项");
     }
 }
+
+function toggle_tags(){
+    $('.extra-tag').toggleClass('hidden');
+}
