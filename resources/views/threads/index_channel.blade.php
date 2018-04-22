@@ -35,6 +35,7 @@
             </ul>
         </div>
         <div class="panel-body">
+            {{ $threads->appends(request()->query())->links() }}
             @include('threads._threads')
             {{ $threads->appends(request()->query())->links() }}
         </div>
