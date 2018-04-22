@@ -57,7 +57,7 @@ class StoreChapter extends FormRequest
         $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post_data['body']);
         $chapter_data = $this->only('title','annotation');
         $chapter_data['characters'] = iconv_strlen($string, 'utf-8');
-        $chapter_data['chapter_order'] = $book->max_chapter_order() ? $book->max_chapter_order+1 : 1;
+        $chapter_data['chapter_order'] = $book->max_chapter_order() ? $book->max_chapter_order()+1 : 1;
         $chapter_data['volumn_id'] = $book->recent_volumn() ? $book->recent_volumn->id: 0;
         $chapter_data['book_id'] = $book->id;
         $chapter_data['edited_at'] = Carbon::now();
