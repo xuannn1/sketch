@@ -25,11 +25,14 @@ class UsersController extends Controller
     {
         $query = $this->join_book_tables();
         $query->where('threads.user_id','=',$id);//属于这个人
-        //未登陆，看不见边缘文章
-        if(!Auth::check()){$query->where('threads.bianyuan','=',0);}
-        //假如未登陆，或者既不是管理员也不是本人，则不能看私密文章，不能看匿名文章
-        if((!Auth::check())||(($id !== Auth::id())&&(!Auth::user()->admin))){
-            $query->where('threads.public','=',1)
+        if(Auth::check()){//登陆,但不是本人，也不是管理员，则不能看私密文章，不能看匿名文章
+            if(($id != Auth::id())&&(!Auth::user()->admin)){
+                $query->where('threads.public','=',1)
+                ->where('threads.anonymous','=',0);
+            }
+        }else{//未登陆，看不见边缘文章,私密文章，匿名文章
+            $query->where('threads.bianyuan','=',0)
+            ->where('threads.public','=',1)
             ->where('threads.anonymous','=',0);
         }
         //已删除的也不能看
@@ -44,11 +47,14 @@ class UsersController extends Controller
     {
         $query = $this->join_no_book_thread_tables();
         $query->where('threads.user_id','=',$id);//属于这个人
-        //未登陆，看不见边缘文章
-        if(!Auth::check()){$query->where('threads.bianyuan','=',0);}
-        //假如未登陆，或者既不是管理员也不是本人，则不能看私密文章，不能看匿名文章
-        if((!Auth::check())||(($id !== Auth::id())&&(!Auth::user()->admin))){
-            $query->where('threads.public','=',1)
+        if(Auth::check()){//登陆,但不是本人，也不是管理员，则不能看私密文章，不能看匿名文章
+            if(($id != Auth::id())&&(!Auth::user()->admin)){
+                $query->where('threads.public','=',1)
+                ->where('threads.anonymous','=',0);
+            }
+        }else{//未登陆，看不见边缘文章,私密文章，匿名文章
+            $query->where('threads.bianyuan','=',0)
+            ->where('threads.public','=',1)
             ->where('threads.anonymous','=',0);
         }
         //已删除的也不能看

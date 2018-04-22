@@ -12,7 +12,7 @@
                 <option value ="tongren_yuanzhu" >同人原著</option>
             </select>
             <input type="textarea" placeholder="搜索..." name="search">
-            <input type="textarea" placeholder="CP简称，可不填" name="tongren_cp" id="tongren_cp_name" style="display:none">
+            <input type="textarea" placeholder="人名，也可不填" name="tongren_cp" id="tongren_cp_name" style="display:none">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
     </div>
