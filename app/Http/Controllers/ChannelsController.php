@@ -18,11 +18,11 @@ class ChannelsController extends Controller
 
     public function show(Request $request, Channel $channel)
     {
-        // $threadqueryid = '-thread-query-channel'.$channel->id
-        // .'-'.(Auth::check()?'logged':'not_logged')
-        // .'-'.($request->label? 'l'.$request->label:'no_l')
-        // .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so');
-        // $threads = Cache::remember($threadqueryid, 2, function () use($request, $channel) {
+        $threadqueryid = '-thread-query-channel'.$channel->id
+        .'-'.(Auth::check()?'logged':'not_logged')
+        .'-'.($request->label? 'l'.$request->label:'no_l')
+        .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so');
+        $threads = Cache::remember($threadqueryid, 2, function () use($request, $channel) {
             if($channel->id!=2){
                 $query = $this->join_no_book_thread_tables();
             }else{
@@ -42,8 +42,8 @@ class ChannelsController extends Controller
             }
             $threads = $query->orderby('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'));
-            //return $threads;
-        //});
+            return $threads;
+        });
 
         $labels = Cache::remember('-channel-'.$channel->id.'-labels', 10, function () use($channel) {
             $labels = Label::inChannel($channel->id)
