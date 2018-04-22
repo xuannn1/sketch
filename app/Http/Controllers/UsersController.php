@@ -42,7 +42,7 @@ class UsersController extends Controller
 
     public function findthreads($id, $paginate, $group)
     {
-        $query = $this->join_thread_tables();
+        $query = $this->join_no_book_thread_tables();
         $query->where('threads.user_id','=',$id);//属于这个人
         //未登陆，看不见边缘文章
         if(!Auth::check()){$query->where('threads.bianyuan','=',0);}
@@ -55,7 +55,8 @@ class UsersController extends Controller
         $query->where('threads.deleted_at', '=', null);
         //不能是图书，只能是讨论帖
         $query->where('threads.book_id', '=', 0);
-        $threads = $this->return_thread_fields($query)
+        $query->where('channel.channel_group', '<', $group);
+        $threads = $this->return_no_book_thread_fields($query)
         ->orderby('threads.lastresponded_at', 'desc')
         ->simplePaginate($paginate);
         return $threads;
