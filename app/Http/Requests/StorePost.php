@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Chapter;
 use App\Models\Thread;
 use App\Models\Post;
+use Carbon\Carbon;
 
 class StorePost extends FormRequest
 {
@@ -85,16 +86,11 @@ class StorePost extends FormRequest
 
     public function updatePost(Post $post)
     {
-
         $data = $this->only('body');
-        if ($this->anonymous){
-            $data['anonymous']=1;
-        }else{
-            $data['anonymous']=0;
-        }
+        $data['anonymous']=$this->anonymous ? 1:0;
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;
-
+        $data['edited_at']=Carbon::now();
         $post->update($data);
         return $post;
     }

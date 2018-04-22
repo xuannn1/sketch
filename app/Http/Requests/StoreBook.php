@@ -165,11 +165,7 @@ class StoreBook extends FormRequest
         $book_data = $this->only('book_status','book_length','sexual_orientation');
         //thread_data
         $thread_data = $this->only('label_id','title','brief');
-        if ($this->anonymous){
-            $thread_data['anonymous']=1;
-        }else{
-            $thread_data['anonymous']=0;
-        }
+        $thread_data['anonymous'] = $this->anonymous? 1:0;
         $thread_data['body']=$this->wenan;
         $thread_data['edited_at']=Carbon::now();
         $thread_data['bianyuan'] = $this->bianyuan=='1'? true:false;

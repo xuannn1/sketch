@@ -31,38 +31,43 @@ class BooksController extends Controller
         $this->middleware('auth')->only('create', 'store', 'update','edit');
     }
 
-    public function create()
-    {
-        $labels_yuanchuang = Cache::remember('-labels_yuanchuang-', 10, function () {
+    public function all_book_tags(){
+        $tags=[];
+        $tags['labels_yuanchuang']= Cache::remember('-labels_yuanchuang-', 10, function () {
             $labels_yuanchuang = Label::where('channel_id',1)->get();
             return $labels_yuanchuang;
         });
-        $labels_tongren = Cache::remember('-labels_tongren-', 10, function () {
+        $tags['labels_tongren']=Cache::remember('-labels_tongren-', 10, function () {
             $labels_tongren = Label::where('channel_id',2)->get();
             return $labels_tongren;
         });
-        $tags_feibianyuan = Cache::remember('-tags-feibianyuan-', 10, function () {
+        $tags['tags_feibianyuan']=Cache::remember('-tags-feibianyuan-', 10, function () {
             $tags_feibianyuan = Tag::where('tag_group',0)->get();
             return $tags_feibianyuan;
         });
-        $tags_bianyuan = Cache::remember('-tags-bianyuan-', 10, function () {
+        $tags['tags_bianyuan']=Cache::remember('-tags-bianyuan-', 10, function () {
             $tags_bianyuan = Tag::where('tag_group',5)->get();
             return $tags_bianyuan;
         });
-        $tags_tongren = Cache::remember('-tags-tongren-', 10, function () {
+        $tags['tags_tongren']=Cache::remember('-tags-tongren-', 10, function () {
             $tags_tongren = Tag::where('tag_group',25)->get();
             return $tags_tongren;
         });
-        $tags_tongren_yuanzhu = Cache::remember('-tags-tongren-yuanzhu-', 10, function () {
+        $tags['tags_tongren_yuanzhu']=Cache::remember('-tags-tongren-yuanzhu-', 10, function () {
             $tags_tongren_yuanzhu = Tag::where('tag_group',10)->get();
             return $tags_tongren_yuanzhu;
         });
-        $tags_tongren_cp = Cache::remember('-tags-tongren-cp-', 10, function () {
+        $tags['tags_tongren_cp']=Cache::remember('-tags-tongren-cp-', 10, function () {
             $tags_tongren_cp = Tag::where('tag_group',20)->get();
             return $tags_tongren_cp;
         });
+        return $tags;
+    }
 
-        return view('books.create',compact('labels_yuanchuang','labels_tongren','tags_feibianyuan','tags_bianyuan','tags_tongren','tags_tongren_yuanzhu','tags_tongren_cp'));
+    public function create()
+    {
+        $all_book_tags = $this->all_book_tags();
+        return view('books.create',compact('all_book_tags'));
     }
 
     public function store(StoreBook $form)
@@ -77,36 +82,8 @@ class BooksController extends Controller
             $thread = $book->thread->load('mainpost');
             $book->load('tongren');
             $tags = $thread->tags->pluck('id')->toArray();
-            $labels_yuanchuang = Cache::remember('-labels_yuanchuang-', 10, function () {
-                $labels_yuanchuang = Label::where('channel_id',1)->get();
-                return $labels_yuanchuang;
-            });
-            $labels_tongren = Cache::remember('-labels_tongren-', 10, function () {
-                $labels_tongren = Label::where('channel_id',2)->get();
-                return $labels_tongren;
-            });
-            $tags_feibianyuan = Cache::remember('-tags-feibianyuan-', 10, function () {
-                $tags_feibianyuan = Tag::where('tag_group',0)->get();
-                return $tags_feibianyuan;
-            });
-            $tags_bianyuan = Cache::remember('-tags-bianyuan-', 10, function () {
-                $tags_bianyuan = Tag::where('tag_group',5)->get();
-                return $tags_bianyuan;
-            });
-            $tags_tongren = Cache::remember('-tags-tongren-', 10, function () {
-                $tags_tongren = Tag::where('tag_group',25)->get();
-                return $tags_tongren;
-            });
-            $tags_tongren_yuanzhu = Cache::remember('-tags-tongren-yuanzhu-', 10, function () {
-                $tags_tongren_yuanzhu = Tag::where('tag_group',10)->get();
-                return $tags_tongren_yuanzhu;
-            });
-            $tags_tongren_cp = Cache::remember('-tags-tongren-cp-', 10, function () {
-                $tags_tongren_cp = Tag::where('tag_group',20)->get();
-                return $tags_tongren_cp;
-            });
-
-            return view('books.edit',compact('book', 'thread','tags','labels_yuanchuang','labels_tongren','tags_feibianyuan','tags_bianyuan','tags_tongren','tags_tongren_yuanzhu','tags_tongren_cp'));
+            $all_book_tags = $this->all_book_tags();
+            return view('books.edit',compact('book', 'thread','tags', $all_book_tags));
         }else{
             return redirect()->route('error', ['error_code' => '405']);
         }
@@ -137,6 +114,7 @@ class BooksController extends Controller
 
     public function index(Request $request)
     {
+        $all_book_tags = $this->all_book_tags();
         $bookqueryid = '-bookquery'.'-'.(Auth::check()?'logged':'not_logged')
         .'-'.($request->label? 'l'.$request->label:'no_l')
         .'-'.($request->channel? 'ch'.$request->channel:'no_ch')
@@ -158,11 +136,12 @@ class BooksController extends Controller
             ->paginate(config('constants.index_per_page'));
             return $books;
         });
-        return view('books.index', compact('books'))->with('show_as_collections', false);
+        return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
     }
 
     public function selector($bookquery_original)
     {
+        $all_book_tags = $this->all_book_tags();
         $bookquery=explode('-',$bookquery_original);
         $bookinfo=[];
         foreach($bookquery as $info){
@@ -192,10 +171,11 @@ class BooksController extends Controller
             return $books;
         });
 
-        return view('books.index', compact('books'))->with('show_as_collections', false);
+        return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
     }
 
     public function booktag(Tag $booktag){
+        $all_book_tags = $this->all_book_tags();
         $query = $this->join_book_tables();
         if($booktag->tag_group==10){
             $query->where('tongren_yuanzhu_tags.id','=',$booktag->id);
@@ -210,7 +190,7 @@ class BooksController extends Controller
         $books = $this->return_book_fields($query)
         ->orderby('books.lastaddedchapter_at', 'desc')
         ->paginate(config('constants.index_per_page'));
-        return view('books.index', compact('books'))->with('show_as_collections', false);
+        return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
     }
 
     public function filter(Request $request){

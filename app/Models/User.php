@@ -199,6 +199,11 @@ class User extends Authenticatable
             $this->increment('xianyu',5);
             $this->increment('sangdian',2);
             break;
+            case "short_chapter"://短小章节奖励
+            $this->increment('experience_points',3);
+            $this->increment('jifen',3);
+            $this->increment('xianyu',1);
+            break;
             case "standard_chapter"://标准章节奖励
             $this->increment('experience_points',5);
             $this->increment('jifen',5);
