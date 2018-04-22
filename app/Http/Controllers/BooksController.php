@@ -137,14 +137,14 @@ class BooksController extends Controller
 
     public function index(Request $request)
     {
-        $bookqueryid = '-bookquery'.'-'.(Auth::check()?'logged':'not_logged')
-        .'-'.($request->label? 'l'.$request->label:'no_l')
-        .'-'.($request->channel? 'ch'.$request->channel:'no_ch')
-        .'-'.($request->book_length? 'bl'.$request->book_length:'no_bl')
-        .'-'.($request->book_status? 'bs'.$request->book_status:'no_bs')
-        .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so');
-        //dd($bookqueryid);
-        $books = Cache::remember($bookqueryid, 10, function () use($request) {
+        // $bookqueryid = '-bookquery'.'-'.(Auth::check()?'logged':'not_logged')
+        // .'-'.($request->label? 'l'.$request->label:'no_l')
+        // .'-'.($request->channel? 'ch'.$request->channel:'no_ch')
+        // .'-'.($request->book_length? 'bl'.$request->book_length:'no_bl')
+        // .'-'.($request->book_status? 'bs'.$request->book_status:'no_bs')
+        // .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so');
+        // //dd($bookqueryid);
+        //$books = Cache::remember($bookqueryid, 10, function () use($request) {
             $query = $this->join_book_tables();
             if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
             if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
@@ -156,8 +156,8 @@ class BooksController extends Controller
             $books = $this->return_book_fields($query)
             ->orderby('books.lastaddedchapter_at', 'desc')
             ->paginate(config('constants.index_per_page'));
-            return $books;
-        });
+            //return $books;
+        //});
         return view('books.index', compact('books'))->with('show_as_collections', false);
     }
 
@@ -168,7 +168,7 @@ class BooksController extends Controller
         foreach($bookquery as $info){
             array_push($bookinfo,array_map('intval',explode('_',$info)));
         }
-        $books = Cache::remember('-bookselector-'.$bookquery_original, 10, function () use($bookinfo) {
+        //$books = Cache::remember('-bookselector-'.$bookquery_original, 10, function () use($bookinfo) {
             $query = $this->join_book_tables();
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             $query->whereIn('books.book_length',$bookinfo[1])
@@ -189,8 +189,8 @@ class BooksController extends Controller
             ->distinct()
             ->orderby('books.lastaddedchapter_at', 'desc')
             ->paginate(config('constants.index_per_page'));
-            return $books;
-        });
+            //return $books;
+        //});
 
         return view('books.index', compact('books'))->with('show_as_collections', false);
     }
