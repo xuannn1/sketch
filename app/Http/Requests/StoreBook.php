@@ -150,10 +150,12 @@ class StoreBook extends FormRequest
     public function tongren_data_sync($data)
     {
         if(((array_key_exists('tongren_yuanzhu_tag_id',  $data)))&&($data['tongren_yuanzhu_tag_id']>0)){
-            $data['tongren_yuanzhu']=Tag::find($data['tongren_yuanzhu_tag_id'])->tag_explanation;
+            $tag = Tag::find($data['tongren_yuanzhu_tag_id']);
+            $data['tongren_yuanzhu']=$tag->tagname.'（'.$tag->tag_explanation.'）';
         }
         if(((array_key_exists('tongren_CP_tag_id', $data)))&&($data['tongren_CP_tag_id']>0)){
-            $data['tongren_cp']=Tag::find($data['tongren_CP_tag_id'])->tag_explanation;
+            $tag =Tag::find($data['tongren_CP_tag_id']);
+            $data['tongren_cp']=$tag->tagname.'（'.$tag->tag_explanation.'）';
         }
         return $data;
     }
