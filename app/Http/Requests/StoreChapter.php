@@ -11,7 +11,6 @@ use App\Models\Chapter;
 use App\Models\Post;
 use App\Models\Status;
 use Carbon\Carbon;
-use Auth;
 
 class StoreChapter extends FormRequest
 {
@@ -95,12 +94,12 @@ class StoreChapter extends FormRequest
 
                 DB::table('collections')//告诉所有收藏本文章、愿意接受更新的读者, 这里发生了更新
                 ->join('users','users.id','=','collections.user_id')
-                ->where([['collections.thread_id','=',$thread->id],['collections.keep_updated','=',true],['collections.user_id','<>',Auth::id()]])
+                ->where([['collections.thread_id','=',$thread->id],['collections.keep_updated','=',true],['collections.user_id','<>',auth()->id()]])
                 ->update(['collections.updated'=>1,'users.collection_books_updated'=>DB::raw('users.collection_books_updated + 1')]);
 
                 if(($sendstatuses)&&(!$thread->anonymous)){
                     Status::create([
-                        'user_id' => Auth::id(),
+                        'user_id' => auth()->id(),
                         'content' => '[url='.route('book.showchapter', $chapter->id).']'.'更新了《'.Helper::convert_to_title($thread->title).'》'.Helper::convert_to_public($chapter->title).'[/url]',
                     ]);
                 }
