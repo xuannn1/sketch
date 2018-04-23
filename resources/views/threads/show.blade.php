@@ -18,14 +18,15 @@
             @else
               @include('threads._thread_profile')
             @endif
+            <!-- @if(Auth::check())
+            <div class="row">
+                原来下载按钮处
+            </div>
+            @endif -->
          </div>
          <div class="panel-vote">
             <!-- 对主题进行投票／收藏／点赞等操作 -->
             @if(Auth::check())
-                <div class="row">
-                    <span class="pull-right"><a href="{{ route('download.index', $thread) }}">下载</a>
-                    </span>
-                </div>
               @include('threads._thread_vote')
             @else
             <h6 class="display-4">请 <a href="{{ route('login') }}">登录</a> 后参与讨论</h6>

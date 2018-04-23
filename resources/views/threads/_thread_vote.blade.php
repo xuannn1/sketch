@@ -17,12 +17,13 @@
       @if((!$thread->locked)&&(!$thread->noreply)&&(($thread->public)||($thread->user_id==Auth::id()))&&(Auth::user()->no_posting < Carbon\Carbon::now()))
       <a class="btn btn-sm sosad-button-kudos" href="#" data-toggle="modal" data-target="#TriggerPostComment{{ $thread->mainpost->id }}">点评</a>
       @endif
+      <a class="btn btn-sm sosad-button-kudos" href="{{ route('download.index', $thread) }}">下载</a>
    </span>
 </div>
 
-<div class="container-fluid thread-vote">
+@if ((Auth::id() == $thread->user_id)&&(!$thread->locked))
+<div class="container-fluid thread-edit">
     <span>
-        @if ((Auth::id() == $thread->user_id)&&(!$thread->locked))
         @if($thread->book_id != 0)
         <a class="btn btn-sm sosad-button-edit" href="{{ route('book.createchapter', $thread->book_id) }}">
             <i class="fa fa-plus"></i>
@@ -39,9 +40,9 @@
         </a>
         @endif
 
-        @endif
     </span>
 </div>
+@endif
 
 <div class="modal fade" id="TriggerVoteForShengfan{{ $thread->post_id }}" role="dialog">
     <div class="modal-dialog">

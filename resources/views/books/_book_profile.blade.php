@@ -37,12 +37,12 @@
        </p>
        </b></em>
     </div>
-    <!-- 书本文案 -->
-    <div class="panel-body text-center main-text">
-       @if($thread->mainpost->markdown)
-       {!! Helper::sosadMarkdown($thread->body) !!}
-       @else
-       {!! Helper::wrapParagraphs($thread->body) !!}
-       @endif
-    </div>
+</div>
+<!-- 书本文案 -->
+<div class="panel-body main-text">
+    @if($thread->mainpost->markdown)
+    {!! Helper::sosadMarkdown($thread->body) !!}
+    @else
+    {!! Helper::wrapParagraphs($thread->body) !!}
+    @endif
 </div>

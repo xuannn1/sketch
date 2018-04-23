@@ -54,7 +54,7 @@
 }
 
 %button-plain {
-    border: $panel-color;
+    border: none;
     display: inline-block;
     margin: 0px 0px;
     text-align: center;
@@ -67,7 +67,6 @@
     width: auto;
     &:hover, &:focus, &:active {
         box-shadow: none;
-        background: $panel-color;
         text-decoration: none;
         color: $link-hover-color;
     }

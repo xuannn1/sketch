@@ -11,7 +11,7 @@
        </div>
       <div class="panel panel-default">
          <div class="panel-heading">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-pills nav-fill nav-justified">
                <li role="presentation" class="{{ request('label') ? '': 'active' }}"><a href="{{ route('channel.show', $channel) }}">全部<span class="badge"></span></a></li>
                @foreach($labels as $label)
                <li role="presentation" id="{{ $label->id }}" class="{{ request('label')===$label->id ? 'active':'' }}">
