@@ -32,6 +32,6 @@ class LongCommentsController extends Controller
             ->simplePaginate(config('constants.index_per_page'));
             return $posts;
         });
-        return view('long_comments.index', compact('posts'));
+        return view('long_comments.index', compact('posts'))->with('active',0);
     }
 }

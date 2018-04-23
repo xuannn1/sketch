@@ -40,6 +40,7 @@ class StorePost extends FormRequest
         if ($this->anonymous){
             $data['anonymous']=1;
             $data['majia']=$this->majia;
+            Auth::user()->update(['majia'=>$data['majia']]);
         }else{
             $data['anonymous']=0;
         }

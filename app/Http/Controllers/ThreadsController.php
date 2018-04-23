@@ -51,7 +51,7 @@ class threadsController extends Controller
             ->paginate(config('constants.index_per_page'));
             return $threads;
         });
-        return view('threads.index', compact('threads'))->with('show_as_collections', false)->with('show_channel',true);
+        return view('threads.index', compact('threads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
     }
 
     public function show(Thread $thread, Request $request)

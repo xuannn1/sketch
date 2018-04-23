@@ -306,7 +306,7 @@ class UsersController extends Controller
     public function index()
     {
         $users = User::orderBy('lastrewarded_at','desc')->paginate(config('constants.index_per_page'));
-        return view('users.index_all', compact('users'));
+        return view('statuses.users_index', compact('users'))->with('active',2);
     }
 
 }

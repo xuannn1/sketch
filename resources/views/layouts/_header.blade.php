@@ -17,16 +17,7 @@
                     <li><a href="{{ route('statuses.index') }}">动态</a></li>
                     @endif
                     <li><a href="{{ route('books.index') }}">文库</a></li>
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown">
-                            论坛 <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ route('threads.index') }}">全部讨论</a></li>
-                            <li><a href="{{ route('longcomments.index') }}">长评列表</a></li>
-                            <li><a href="{{ route('users.index') }}">全部用户</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="{{ route('threads.index') }}">论坛</a></li>
                     @if (Auth::check())
                     <li><a href="{{ route('collections.books') }}">收藏<span class="badge">{{ Auth::user()->unreadupdates()!=0? Auth::user()->unreadupdates() :''}}</span></a></li>
                     <li class="dropdown">
