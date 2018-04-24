@@ -47,7 +47,7 @@ class AdminsController extends Controller
     public function threadmanagement(Thread $thread, Request $request)
     {
         $this->validate($request, [
-            'reason' => 'required|string',
+            'reason' => 'required|string|max:180',
         ]);
         $var = request('controlthread');
         if ($var=="1"){

@@ -269,7 +269,7 @@
                                             </ul>
                                         </div>
                                         <br>
-                                        <div id="help-5-1">
+                                        <div id="help-5-2">
                                             <h4>5.2 升级标准</h4>
                                             <ul>
                                                 @foreach($data['level_up'] as $level=>$level_requirement)

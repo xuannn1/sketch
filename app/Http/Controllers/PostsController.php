@@ -58,10 +58,11 @@ class PostsController extends Controller
     public function show(Post $post)
     {
         $thread = $post->thread->load('label','channel');
+        $book = $thread->book;
         $post->load('owner','reply_to_post.owner');
         $postcomments = $post->allcomments()->with('owner')->paginate(config('constants.items_per_page'));
         $defaultchapter=$post->chapter_id;
-        return view('posts.show',compact('post','thread','postcomments','defaultchapter'));
+        return view('posts.show',compact('post','thread','postcomments','defaultchapter','book'));
     }
 
     public function destroy($id){
