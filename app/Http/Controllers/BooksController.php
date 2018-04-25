@@ -63,12 +63,18 @@ class BooksController extends Controller
 
     public function show(Book $book, Request $request)
     {
-        $book->load('chapters.mainpost','tongren');
-        $thread=$book->thread->load(['creator', 'tags','channel','label', 'mainpost.comments.owner']);
-        $thread->increment('viewed');
-        $posts = Post::allPosts($thread->id,$thread->post_id)->noMaintext()->userOnly(request('useronly'))->withOrder('oldest')
-        ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
-        return view('books.show', compact('book','thread', 'posts'))->with('defaultchapter',0)->with('chapter_replied',true);
+        $thread = $book->thread;
+        if($thread->id>0){
+            $book->load('chapters.mainpost','tongren');
+            $thread->load(['creator', 'tags','channel','label', 'mainpost.comments.owner']);
+            $thread->increment('viewed');
+            $posts = Post::allPosts($thread->id,$thread->post_id)->noMaintext()->userOnly(request('useronly'))->withOrder('oldest')
+            ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
+            return view('books.show', compact('book','thread', 'posts'))->with('defaultchapter',0)->with('chapter_replied',true);
+        }else{
+            return redirect()->route('error', ['error_code' => '404']);
+        }
+
     }
 
 
