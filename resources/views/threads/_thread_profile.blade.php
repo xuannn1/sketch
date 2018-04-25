@@ -10,7 +10,7 @@
 <!-- 一句话简介 -->
 
 <div class="article-body">
-    <div>{{ Helper::convert_to_public($thread->brief) }}</div>
+    <div>{{ $thread->brief }}</div>
     <div class="text-center">
         @include('threads._thread_author_time')
     </div>

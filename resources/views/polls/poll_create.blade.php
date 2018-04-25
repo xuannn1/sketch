@@ -1,10 +1,10 @@
 @extends('layouts.default')
-@section('title', Helper::convert_to_title($thread->title).'-添加投票')
+@section('title', $thread->title.'-添加投票')
 @section('content')
 <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('channel.show', $thread->channel_id) }}">{{ $thread->channel->channelname }}</a>/<a href="{{ route('channel.show', ['channel'=>$thread->channel_id,'label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>/<a href="{{ route('thread.show',$thread->id) }}">{{ Helper::convert_to_title($thread->title) }}</a>/添加投票
+            <a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('channel.show', $thread->channel_id) }}">{{ $thread->channel->channelname }}</a>/<a href="{{ route('channel.show', ['channel'=>$thread->channel_id,'label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>/<a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>/添加投票
         </div>
         <div class="panel-body">
             @include('shared.errors')

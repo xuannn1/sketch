@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-xs-12 h5 brief">
             <span>
-                <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ Helper::convert_to_title($thread->title) }}</a>
+                <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ $thread->title }}</a>
             </span>
             <span class = "pull-right">
                 @if($thread->anonymous)
@@ -16,7 +16,7 @@
             </span>
         </div>
         <div class="col-xs-12 h5 brief">
-            <span class="grayout smaller-15">{{ Helper::convert_to_public($thread->brief) }}</span>
+            <span class="grayout smaller-15">{{ $thread->brief }}</span>
             <span class="pull-right smaller-15">{{ Carbon\Carbon::parse($thread->created_at)->diffForHumans() }}／{{ Carbon\Carbon::parse($thread->lastresponded_at)->diffForHumans() }}</span>
         </div>
     </div>

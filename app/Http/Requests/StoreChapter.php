@@ -106,7 +106,7 @@ class StoreChapter extends FormRequest
                 if(($sendstatuses)&&(!$thread->anonymous)){
                     Status::create([
                         'user_id' => auth()->id(),
-                        'content' => '[url='.route('book.showchapter', $chapter->id).']'.'更新了《'.Helper::convert_to_title($thread->title).'》'.Helper::convert_to_public($chapter->title).'[/url]',
+                        'content' => '[url='.route('book.showchapter', $chapter->id).']'.'更新了《'.$thread->title.'》'.$chapter->title.'[/url]',
                     ]);
                 }
             });

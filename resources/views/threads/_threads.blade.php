@@ -15,7 +15,7 @@
                 <a class="btn btn-xs btn-warning sosad-button tag-button-right tag-green" href="{{route('channel.show',['channel'=>$thread->channel_id,'label'=>$thread->label_id])}}">{{$thread->labelname}}</a>
                 @endif
                 <span class="bigger-20"><strong><a href="{{ route('thread.show', $thread->id) }}">
-                    {{ Helper::convert_to_title($thread->title) }}
+                    {{ $thread->title }}
                 </a></strong></span>
                 @if($thread->channel_id==2)
                 @if($thread->tongren_yuanzhu_tagname)
@@ -58,7 +58,7 @@
             <!-- author end -->
         </div>
         <div class="col-xs-12 h5 ">
-            <span>{{ Helper::convert_to_public($thread->brief) }}</span>
+            <span>{{ $thread->brief }}</span>
             <span class="pull-right smaller-10"><em><span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->responded }}</em></span>
         </div>
         <div class="col-xs-12 h5 grayout brief">

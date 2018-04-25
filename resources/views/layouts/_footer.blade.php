@@ -2,7 +2,7 @@
     <div class="col-md-10 col-md-offset-1">
         <footer class="footer">
             <small class="slogon">
-                <img class="brand-icon" src="/img/So-logo.ico" alt="sosad-logo">
+                <img class="brand-icon" src="/img/icon.png" alt="sosad-logo">
                 <a href="/">首页</a>
             </small>
             <div>

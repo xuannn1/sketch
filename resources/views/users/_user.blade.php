@@ -2,6 +2,9 @@
     <span type="button" class="{{$user->admin? 'admin-symbol' : '' }}"><span class="glyphicon glyphicon-user"></span></span>
     {{ $user->name }}
 </h3>
+@if($user->isOnline())
+<span class="badge newchapter-badge ">在线</span>
+@endif
 <div class="row h5 text-center stat">
     <span><a href="{{route('users.followings', $user->id)}}">关注：{{ $user->followings()->count() }}</a></span>
     @include('users._follow_button')

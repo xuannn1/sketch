@@ -1,5 +1,5 @@
 <span>
-    <a href="{{ route('thread.show',$thread->id) }}">{{ Helper::convert_to_title($thread->title) }}</a><small>
+    <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a><small>
         @if(!$thread->public)
         <span class="glyphicon glyphicon-eye-close"></span>
         @endif

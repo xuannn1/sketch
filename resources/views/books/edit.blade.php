@@ -17,12 +17,12 @@
                     <div id="biaotiguiding" class="h6">
                         标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，不要放入标题。
                     </div>
-                    <input type="text" name="title" class="form-control" value="{{ Helper::convert_to_title($thread->title) }}">
+                    <input type="text" name="title" class="form-control" value="{{ $thread->title }}">
                 </div>
 
                 <div class="form-group">
                     <label for="brief"><h4>简介：</h4></label>
-                    <input type="text" name="brief" class="form-control" value="{{ Helper::convert_to_public($thread->brief) }}">
+                    <input type="text" name="brief" class="form-control" value="{{ $thread->brief }}">
                 </div>
 
                 <div class="form-group">

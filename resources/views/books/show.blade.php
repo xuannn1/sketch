@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', Helper::convert_to_title($thread->title))
+@section('title', $thread->title)
 
 @section('content')
 <div class="container-fluid">

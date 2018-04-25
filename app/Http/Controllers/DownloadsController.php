@@ -40,8 +40,8 @@ class DownloadsController extends Controller
     {
         $book_info = config('constants.book_info');
         $book = $thread->book;
-        $txt = "标题：".Helper::convert_to_title($thread->title)."\n";
-        $txt .= "简介：".Helper::convert_to_public($thread->brief)."\n";
+        $txt = "标题：".$thread->title."\n";
+        $txt .= "简介：".$thread->brief."\n";
         $txt .= "作者：";
         if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
         $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
@@ -61,8 +61,8 @@ class DownloadsController extends Controller
 
     public function print_thread_info($thread)
     {
-        $txt = "标题：".Helper::convert_to_title($thread->title)."\n";
-        $txt .= "简介：".Helper::convert_to_public($thread->brief)."\n";
+        $txt = "标题：".$thread->title."\n";
+        $txt .= "简介：".$thread->brief."\n";
         $txt .= "发帖人：";
         if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
         $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
@@ -166,7 +166,7 @@ class DownloadsController extends Controller
         $txt = $this->add_download_info($thread);
         $txt .=$this->print_book_info($thread);
         foreach($chapters as $i=>$chapter){
-            $txt .= ($i+1).'.'.Helper::convert_to_public($chapter->title)."\n";//章节名
+            $txt .= ($i+1).'.'.$chapter->title."\n";//章节名
             $txt .= Carbon::parse($chapter->created_at)->setTimezone(8);
             if($chapter->created_at < $chapter->edited_at){
                 $txt.= "/".Carbon::parse($chapter->edited_at)->setTimezone(8);

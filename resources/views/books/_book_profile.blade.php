@@ -9,7 +9,7 @@
 </div>
 
 <div class="article-body text-center">
-    <div>{{ Helper::convert_to_public($thread->brief) }}</div>
+    <div>{{ $thread->brief }}</div>
     <div>
         @include('threads._thread_author_time')
     </div>
