@@ -52,7 +52,7 @@
                             <span>我已阅读并同意注册协议</span>&nbsp;<u><a href="{{'about'}}">更多内容</a></u>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-danger sosad-button">注册</button>
+                    <button type="submit" class="btn btn-danger sosad-button">注册（点“一下”，别多点，会报错！）</button>
                 </form>
             </div>
         </div>
