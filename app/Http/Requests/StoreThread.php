@@ -8,6 +8,8 @@ use App\Models\Thread;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\Helper;
+
 
 class StoreThread extends FormRequest
 {
@@ -55,6 +57,12 @@ class StoreThread extends FormRequest
         }else{
             $thread_data['anonymous']=0;
         }
+        while(Helper::convert_to_title($thread_data['title'])!=$thread_data['title']){
+           $thread_data['title'] = Helper::convert_to_title($thread_data['title']);
+        }
+        while(Helper::convert_to_public($thread_data['brief'])!=$thread_data['brief']){
+           $thread_data['brief'] = Helper::convert_to_public($thread_data['brief']);
+        }
         $thread_data['noreply']=$this->noreply ? true:false;
         $post_data['markdown']=$this->markdown ? true:false;
         $post_data['indentation']=$this->indentation ? true:false;
@@ -87,23 +95,27 @@ class StoreThread extends FormRequest
 
     public function updateThread(Thread $thread)
     {
-        $anonymous = request('anonymous')? true: false;
-        $noreply = request('noreply')? true:false;
-        $markdown = request('markdown')? true: false;
-        $indentation = request('indentation')? true: false;
-        $thread->update([
-            'title' => request('title'),
-            'brief' => request('brief'),
-            'body' => request('body'),
-            'label_id' => request('label'),
-            'anonymous' => $anonymous,
-            'noreply' => $noreply,
-            'edited_at' => Carbon::now(),
-        ]);
+        $thread_data = $this->only('title','brief','body');
+        $thread_data['label_id']=(int)$this->label;
+        //查看标签是否符合权限
+        if(\App\Models\Label::find($thread_data['label_id'])->channel_id!=$thread->channel_id){
+            abort(403,'数据冲突');
+        }
+        //题目不能敏感
+        while(Helper::convert_to_title($thread_data['title'])!=$thread_data['title']){
+           $thread_data['title'] = Helper::convert_to_title($thread_data['title']);
+        }
+        while(Helper::convert_to_public($thread_data['brief'])!=$thread_data['brief']){
+           $thread_data['brief'] = Helper::convert_to_public($thread_data['brief']);
+        }
+        //将boolean值赋予提交的设置
+        $thread_data['anonymous']=$this->anonymous ? true:false;
+        $thread_data['noreply']=$this->noreply ? true:false;
+        $post_data['markdown']=$this->markdown ? true:false;
+        $post_data['indentation']=$this->indentation ? true:false;
+        $thread->update($thread_data);
         $post = $thread->mainpost;
-        $post->update([
-            'markdown'=>$markdown,
-            'indentation'=>$indentation,
-        ]);
+        $post->update($post_data);
+        return $thread;
     }
 }

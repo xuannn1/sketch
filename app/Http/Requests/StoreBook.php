@@ -12,6 +12,7 @@ use App\Models\Label;
 use App\Models\Tongren;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\Helper;
 
 class StoreBook extends FormRequest
 {
@@ -82,6 +83,12 @@ class StoreBook extends FormRequest
             auth()->user()->update(['majia'=>$this->majia]);
         }else{
             $thread_data['anonymous']=0;
+        }
+        while(Helper::convert_to_title($thread_data['title'])!=$thread_data['title']){
+           $thread_data['title'] = Helper::convert_to_title($thread_data['title']);
+        }
+        while(Helper::convert_to_public($thread_data['brief'])!=$thread_data['brief']){
+           $thread_data['brief'] = Helper::convert_to_public($thread_data['brief']);
         }
         $thread_data['body']=$this->wenan;
         $thread_data['lastresponded_at']=Carbon::now();
@@ -167,6 +174,12 @@ class StoreBook extends FormRequest
         $book_data = $this->only('book_status','book_length','sexual_orientation');
         //thread_data
         $thread_data = $this->only('label_id','title','brief');
+        while(Helper::convert_to_title($thread_data['title'])!=$thread_data['title']){
+           $thread_data['title'] = Helper::convert_to_title($thread_data['title']);
+        }
+        while(Helper::convert_to_public($thread_data['brief'])!=$thread_data['brief']){
+           $thread_data['brief'] = Helper::convert_to_public($thread_data['brief']);
+        }
         $thread_data['anonymous'] = $this->anonymous? 1:0;
         $thread_data['body']=$this->wenan;
         $thread_data['edited_at']=Carbon::now();

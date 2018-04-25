@@ -71,3 +71,26 @@ for($i=1;$i<20;$i++){
     $stat_days[$i]=$data;
 }
 print_r($stat_days);
+
+
+
+
+//去除文章里所有敏感词
+$threads = App\Models\Thread::all();
+foreach($threads as $thread){
+    if($thread->title!=App\Helpers\Helper::convert_to_title($thread->title)){
+        $thread->update(['title'=>App\Helpers\Helper::convert_to_title($thread->title)]);
+    }
+}
+$chapters = App\Models\Chapter::all();
+foreach($chapters as $chapter){
+    if($chapter->title!=App\Helpers\Helper::convert_to_title($chapter->title)){
+        $chapter->update(['title'=>App\Helpers\Helper::convert_to_title($chapter->title)]);
+    }
+}
+$posts = App\Models\Post::all();
+foreach($posts as $post){
+    if($post->title!=App\Helpers\Helper::convert_to_title($post->title)){
+        $post->update(['title'=>App\Helpers\Helper::convert_to_title($post->title)]);
+    }
+}
