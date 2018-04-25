@@ -94,3 +94,23 @@ foreach($posts as $post){
         $post->update(['title'=>App\Helpers\Helper::convert_to_title($post->title)]);
     }
 }
+
+$users = \App\Models\User::where('lastrewarded_at','>','2018-04-25 00:00:00')->get();
+foreach($users as $user){
+    if($user->maximum_qiandao == $user->continued_qiandao){
+        $date1=Carbon\Carbon::parse($user->lastrewarded_at);
+        $date2=Carbon\Carbon::parse($user->created_at);
+        $days = $date1->diffInDays($date2);
+        if($days+5<$user->continued_qiandao){
+            $added_reward_base =0;
+            for($i = $days;$i<=$user->continued_qiandao;$i++){
+                $reward_base = 1;
+                if(($i>=5)&&($i%5==0)){
+                    $reward_base = intval($i/10)+2;
+                }
+                $added_reward_base+=$reward_base;
+            }
+            echo 'user'.$user->id.'added_base'.$added_reward_base.'|';
+        }
+    }
+}
