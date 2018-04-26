@@ -188,6 +188,11 @@ class User extends Authenticatable
             $this->increment('jifen',2);
             $this->increment('xianyu',1);
             break;
+            case "first_post"://抢到新章节首杀
+            $this->increment('experience_points',4);
+            $this->increment('jifen',4);
+            $this->increment('xianyu',2);
+            break;
             case "regular_thread"://普通主题奖励
             $this->increment('experience_points',5);
             $this->increment('jifen',5);

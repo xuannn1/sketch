@@ -28,7 +28,7 @@ class StorePost extends FormRequest
     public function rules()
     {
         return [
-            'body' => 'required|string|min:10|max:10000',
+            'body' => 'required|string|min:10|max:20000',
             'reply_to_post_id' => 'numeric',
             'majia' => 'string|max:10',
         ];

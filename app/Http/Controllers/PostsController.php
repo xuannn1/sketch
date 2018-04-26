@@ -29,9 +29,15 @@ class PostsController extends Controller
             $post = $form->generatePost($thread);
             $post->checklongcomment();
             event(new NewPost($post));
-            return redirect(route('thread.showpost',$post->id))->with("success", "您已成功回帖");
+            if(($thread->book_id>0)&&($post->chapter_id>0)&&($post->chapter->responded<=1)){
+                $post->user->reward("first_post");
+                return redirect()->back()->with('success', '您得到了新章节率先回帖的特殊奖励');
+            }else{
+                $post->user->reward("regular_post");
+            }
+            return redirect()->back()->with('success', '您已成功回帖');
         }else{
-            return redirect()->back()->with("danger", "抱歉，本主题锁定或设为隐私，不能回帖");
+            return redirect()->back()->with('danger', '抱歉，本主题锁定或设为隐私，不能回帖');
         }
     }
     public function edit(Post $post)
@@ -50,7 +56,7 @@ class PostsController extends Controller
         if ((Auth::id() == $post->user_id)&&(!$thread->locked)){
             $form->updatePost($post);
             $post->checklongcomment();
-            return redirect()->route('thread.showpost', $post->id)->with("success", "您已成功修改帖子");
+            return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
         }else{
             return redirect()->route('error', ['error_code' => '403']);
         }
