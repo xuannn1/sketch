@@ -29,7 +29,7 @@ class PostsController extends Controller
             $post = $form->generatePost($thread);
             $post->checklongcomment();
             event(new NewPost($post));
-            if(($thread->book_id>0)&&($post->chapter_id>0)&&($post->chapter->responded<=1)){
+            if(($thread->book_id>0)&&($post->chapter_id>0)&&($post->chapter->responded<=2)){
                 $post->user->reward("first_post");
                 return redirect()->back()->with('success', '您得到了新章节率先回帖的特殊奖励');
             }else{
