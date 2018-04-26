@@ -183,6 +183,11 @@ class User extends Authenticatable
 
     public function reward($kind){
         switch ($kind):
+            case "regular_status"://普通状态奖励
+            $this->increment('experience_points',1);
+            $this->increment('jifen',1);
+            $this->increment('shengfan',1);
+            break;
             case "regular_post"://普通回帖奖励
             $this->increment('experience_points',2);
             $this->increment('jifen',2);

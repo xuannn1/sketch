@@ -31,8 +31,8 @@ class StatusesController extends Controller
         if (count($last_status) && strcmp($last_status->content, $content) === 0){
             return redirect()->back()->with('warning','您已成功提交状态，请不要重复提交哦！');
         }else{
-            if(($last_status)&&(Carbon::now()->subMinutes(5)->toDateTimeString() < $last_status->created_at )){
-                return redirect()->back()->with('warning','5分钟内只能提交一条状态');
+            if(($last_status)&&(Carbon::now()->subMinutes(15)->toDateTimeString() < $last_status->created_at )){
+                return redirect()->back()->with('warning','15分钟内只能提交一条状态');
             }else{
                 DB::transaction(function() use($content){
                     Auth::user()->statuses()->create([
@@ -42,6 +42,7 @@ class StatusesController extends Controller
                     ->join('users','users.id','=','followers.follower_id')
                     ->where([['followers.user_id','=',Auth::id()],['followers.keep_updated','=',true]])
                     ->update(['followers.updated'=>1,'users.collection_statuses_updated'=>DB::raw('users.collection_statuses_updated + 1')]);
+                    Auth::user()->reward('regular_status');
                 });
             }
         }
