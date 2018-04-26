@@ -98,7 +98,7 @@ class AdminsController extends Controller
                 'reason' => request('reason'),
             ]);
             $thread->delete();
-            return redirect()->route('home')->with("success","已经删帖");
+            return redirect('/')->with("success","已经删帖");
         }
         if ($var=="4"){//书本/主题贴转移版块
 
