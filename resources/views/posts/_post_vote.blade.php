@@ -22,19 +22,24 @@
             <form action="{{ route('postcomment.store',$post->id)}}" method="POST">
                 {{ csrf_field() }}
                 <div class="form-group">
-                    <textarea name="body" rows="2" id="postcomment{{$post->id}}" class="form-control" placeholder="点评："></textarea>
-                    <button type="button" onclick="retrievecache('postcomment{{$post->id}}')" class="sosad-button-control addon-button">恢复数据</button>
-                    <div class="checkbox text-left">
+                    <div>
+                        <textarea name="body" rows="2" id="postcomment{{$post->id}}" class="form-control" placeholder="点评："></textarea>
+                    </div>
+                    <div class="text-left">
+                        <button type="button" onclick="retrievecache('postcomment{{$post->id}}')" class="sosad-button-control addon-button">恢复数据</button>
+                        <span class="pull-right grayout"><small>状态字数限制180&nbsp;</small></span>
+                    </div>
+                    <br>
+                    <div class="text-left">
                         <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majiacommentpost{{$post->id}}').style.display = 'block'">马甲？</label>
                         <div class="form-group text-right" id="majiacommentpost{{$post->id}}" style="display:none">
                             <input type="text" name="majia" class="form-control" value="{{Auth::user()->majia ?:'匿名咸鱼'}}" placeholder="请输入不超过10字的马甲">
                             <label for="majia"><small>(马甲仅勾选“匿名”时有效)</small></label>
                         </div>
                     </div>
-                </div>
-
-                <div class="">
-                    <button type="submit" class="btn btn-primary sosad-button btn-sm">点评</button>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary sosad-button btn-sm">点评</button>
+                    </div>
                 </div>
             </form>
         </div>

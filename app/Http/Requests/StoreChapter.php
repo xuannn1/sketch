@@ -66,9 +66,9 @@ class StoreChapter extends FormRequest
         $chapter_data['volumn_id'] = $book->recent_volumn() ? $book->recent_volumn->id: 0;
         $chapter_data['book_id'] = $book->id;
         $chapter_data['edited_at'] = Carbon::now();
-        $sendstatuses = $this->sendstatuses? 1:0;
+        $sendstatus = $this->sendstatus? 1:0;
         if (!$this->isDuplicateChapter($post_data)){
-            DB::transaction(function()use($post_data, $chapter_data, $book, $thread, $sendstatuses){
+            DB::transaction(function()use($post_data, $chapter_data, $book, $thread, $sendstatus){
                 $post = Post::create($post_data);
                 $chapter_data['post_id']=$post->id;
                 $chapter = Chapter::create($chapter_data);
@@ -103,7 +103,7 @@ class StoreChapter extends FormRequest
                 ->where([['collections.thread_id','=',$thread->id],['collections.keep_updated','=',true],['collections.user_id','<>',auth()->id()]])
                 ->update(['collections.updated'=>1,'users.collection_books_updated'=>DB::raw('users.collection_books_updated + 1')]);
 
-                if(($sendstatuses)&&(!$thread->anonymous)){
+                if(($sendstatus)&&(!$thread->anonymous)){
                     Status::create([
                         'user_id' => auth()->id(),
                         'content' => '[url='.route('book.showchapter', $chapter->id).']'.'更新了《'.$thread->title.'》'.$chapter->title.'[/url]',

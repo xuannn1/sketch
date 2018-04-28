@@ -146,10 +146,10 @@ class MessagesController extends Controller
         return $messages = DB::table('messages as m1')
         ->join('users','users.id','=','m1.poster_id')
         ->join('message_bodies','message_bodies.id','=','m1.message_body')
-        ->leftjoin('messages as m2', function($join){
-            $join->on('m1.poster_id', '=', 'm2.poster_id');
-            $join->on('m1.id', '<', 'm2.id');
-        })->whereNull('m2.id')
+        // ->leftjoin('messages as m2', function($join){
+        //     $join->on('m1.poster_id', '=', 'm2.poster_id');
+        //     $join->on('m1.id', '<', 'm2.id');
+        // })->whereNull('m2.id')
         ->where('m1.receiver_id','=', Auth::id())
         ->select('m1.*', 'users.name as poster_name','message_bodies.content', 'message_bodies.group_messaging')
         ->orderBy('m1.created_at', 'm1.desc')
@@ -160,10 +160,10 @@ class MessagesController extends Controller
     {
         return $messages = DB::table('message_bodies')
         ->join('messages as m1','message_bodies.id','=','m1.message_body')
-        ->leftjoin('messages as m2', function($join){
-            $join->on('m1.message_body', '=', 'm2.message_body');
-            $join->on('m1.id', '<', 'm2.id');
-        })->whereNull('m2.id')
+        // ->leftjoin('messages as m2', function($join){
+        //     $join->on('m1.message_body', '=', 'm2.message_body');
+        //     $join->on('m1.id', '<', 'm2.id');
+        // })->whereNull('m2.id')
         ->join('users','users.id','=','m1.receiver_id')
         ->where('m1.poster_id','=', Auth::id())
         ->select('m1.*', 'users.name as receiver_name','message_bodies.content','message_bodies.group_messaging')
