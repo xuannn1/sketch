@@ -4,7 +4,7 @@ return [
    'items_per_page' => 10,//当一页只看某个内容，显示多少内容
    'items_per_part' => 5,//当一个分区只看一个内容，显示多少内容
    'index_per_page' => 20,//当只搜索目录信息的时候，一页显示多少项目
-   'index_per_part' => 3,//当index用于整合页面的时候，一个分区显示多少项目
+   'index_per_part' => 2,//当index用于整合页面的时候，一个分区显示多少项目
    'comments_per_post' => 3,//每个post，显示最早的n-1条回复
    'update_min' => 1000, //章节更新必须达到这个水平才能进入排名榜
    'longcomment_lenth' => 200, //“长评”必须达到该字数

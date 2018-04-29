@@ -138,6 +138,25 @@ class UsersController extends Controller
 
     }
 
+    public function findxianyus($id, $paginate, $group)
+    {
+        $query = $this->join_thread_tables();
+        $query->join('xianyus','xianyus.thread_id','=','threads.id')
+        ->where([
+            ['threads.deleted_at', '=', null],
+            ['threads.public', '=', 1],
+            ['channels.channel_state','<',$group],
+            ['xianyus.user_id','=',$id]
+        ]);
+        if (!Auth::check()){
+            $queue->where('threads.bianyuan','=',0);
+        }
+        $xianyus = $this->return_thread_fields($query)
+        ->orderby('xianyus.created_at', 'desc')
+        ->simplePaginate($paginate);
+        return $xianyus;
+    }
+
     public function show($id)
     {
         $user = User::find($id);
@@ -148,7 +167,8 @@ class UsersController extends Controller
             $posts=$this->findlongcomments($id,config('constants.index_per_part'), $group);
             $statuses=$this->findstatuses($id,config('constants.index_per_part'));
             $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
-            return view('users.show', compact('user','books','threads','posts','statuses','upvotes'))->with('show_as_collections',false)->with('show_channel',1);
+            $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
+            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus'))->with('show_as_collections',false)->with('show_channel',1);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
@@ -214,6 +234,18 @@ class UsersController extends Controller
             $posts=$this->findupvotes($id,config('constants.index_per_page'), $group);
             $collections = false;
             return view('users.showupvotes', compact('user','posts','collections'));
+        }else{
+            return redirect()->route('error', ['error_code' => '404']);
+        }
+    }
+
+    public function showxianyus($id){
+        $user = User::find($id);
+        if ($user){
+            $group = Auth::check() ? Auth::user()->group : 10;
+            $xianyus=$this->findxianyus($id,config('constants.index_per_page'), $group);
+            $collections = false;
+            return view('users.showxianyus', compact('user','xianyus','collections'))->with('show_as_collections',false)->with('show_channel',1);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
