@@ -149,7 +149,7 @@ class UsersController extends Controller
             ['xianyus.user_id','=',$id]
         ]);
         if (!Auth::check()){
-            $queue->where('threads.bianyuan','=',0);
+            $query->where('threads.bianyuan','=',0);
         }
         $xianyus = $this->return_thread_fields($query)
         ->orderby('xianyus.created_at', 'desc')
