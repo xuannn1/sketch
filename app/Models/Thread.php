@@ -95,8 +95,7 @@ class Thread extends Model
     }
 
     public function xianyus(){
-        $xianyus = Xianyu::where('thread_id', $this->id);
-        return ($xianyus);
+        return $this->hasMany(Xianyu::class, 'thread_id');
     }
 
     public function recentXianyus(){

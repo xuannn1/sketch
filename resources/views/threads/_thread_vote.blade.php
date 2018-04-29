@@ -41,6 +41,19 @@
         </div>
     </div>
 </div>
+<div class="container-fluid">
+    <!-- 已有的咸鱼和剩饭投掷 -->
+    <div class="">
+        @foreach($xianyus as $xianyu)
+        <a href="{{ route('user.show', $xianyu->user_id) }}">{{ $xianyu->creator->name }}</a>，
+        @endforeach
+        最近投掷了咸鱼；
+        @foreach($shengfans as $shengfan)
+        <a href="{{ route('user.show', $shengfan->user_id) }}">{{ $shengfan->creator->name }}</a>，
+        @endforeach
+        最近投掷了剩饭。
+    </div>
+</div>
 
 <div class="modal fade" id="TriggerPostComment{{ $thread->mainpost->id }}" role="dialog">
     <div class="modal-dialog">

@@ -59,9 +59,11 @@ class threadsController extends Controller
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
         ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
         $thread->increment('viewed');
-        $thread->load('label','channel');
+        $thread->load('label','channel','mainpost');
         $book = $thread->book;
-        return view('threads.show', compact('thread', 'posts','book'))->with('defaultchapter',0)->with('chapter_replied',true);
+        $xianyus = $thread->xianyus->take(5);
+        $shengfans = $thread->mainpost->shengfans->take(5);
+        return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans'))->with('defaultchapter',0)->with('chapter_replied',true);
     }
 
     public function createThreadForm(Channel $channel)

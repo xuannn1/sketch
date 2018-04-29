@@ -15,31 +15,6 @@ class Post extends Model
     protected $dates = ['deleted_at'];
 
     protected $guarded = [];
-    //需要移动到helper
-    // public function sub_str($str, $length = 0, $append = true)
-    // {
-    //     $str = trim($str);
-    //     $strlength = strlen($str);
-    //     if ($length == 0 || $length >= $strlength) {
-    //         return $str;
-    //     } elseif ($length < 0) {
-    //         $length = $strlength + $length;
-    //         if ($length < 0) {
-    //             $length = $strlength;
-    //         }
-    //     }
-    //     if (function_exists('mb_substr')) {
-    //         $newstr = mb_substr($str, 0, $length, 'utf-8');
-    //     } elseif (function_exists('iconv_substr')) {
-    //         $newstr = iconv_substr($str, 0, $length, 'utf-8');
-    //     } else {
-    //         $newstr = substr($str, 0, $length);
-    //     }
-    //     if ($append && $str != $newstr) {
-    //         $newstr .= '...';
-    //     }
-    //     return $newstr;
-    // }
 
     public function owner()
     {
@@ -50,7 +25,6 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'user_id')->withDefault();
     }
-
 
     public function thread()
     {
@@ -65,10 +39,13 @@ class Post extends Model
     {
         return $this->hasMany(PostComment::class)->orderBy('created_at','desc');
     }
-
+    public function shengfans()
+    {
+        return $this->hasMany(Shengfan::class)->orderBy('created_at','desc');
+    }
     public function shengfan_voted(User $user)
     {
-        return (Shengfan::where('post_id', $this->id)->where('user_id', $user->id)->first());
+        return Shengfan::where('post_id', $this->id)->where('user_id', $user->id)->first();
     }
     public function reply_to_post()
     {
