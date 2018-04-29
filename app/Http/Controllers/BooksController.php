@@ -104,7 +104,8 @@ class BooksController extends Controller
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             $books = $this->return_book_fields($query)
             ->orderby('books.lastaddedchapter_at', 'desc')
-            ->paginate(config('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'))
+            ->appends($request->query());//看一下是否能够传递pagination
             return $books;
         });
         return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);

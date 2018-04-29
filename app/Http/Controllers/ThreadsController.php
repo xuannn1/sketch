@@ -48,7 +48,8 @@ class threadsController extends Controller
             if(!Auth::check()){$query = $query->where('threads.bianyuan','=',0);}
             $threads = $this->return_no_book_thread_fields($query)
             ->orderby('threads.lastresponded_at', 'desc')
-            ->paginate(config('constants.index_per_page'));
+            ->paginate(config('constants.index_per_page'))
+            ->appends($request->query());
             return $threads;
         });
         return view('threads.index', compact('threads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
