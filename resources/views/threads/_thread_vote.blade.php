@@ -43,15 +43,19 @@
 </div>
 <div class="container-fluid">
     <!-- 已有的咸鱼和剩饭投掷 -->
-    <div class="">
-        @foreach($xianyus as $xianyu)
-        <a href="{{ route('user.show', $xianyu->user_id) }}">{{ $xianyu->creator->name }}</a>，
-        @endforeach
-        最近投掷了咸鱼；
-        @foreach($shengfans as $shengfan)
-        <a href="{{ route('user.show', $shengfan->user_id) }}">{{ $shengfan->creator->name }}</a>，
-        @endforeach
-        最近投掷了剩饭。
+    <div class="h6 grayout">
+        @if(count($xianyus)>0)
+            @foreach($xianyus as $xianyu)
+            <a href="{{ route('user.show', $xianyu->user_id) }}">{{ $xianyu->creator->name }}</a>，
+            @endforeach
+            最近投掷了咸鱼<br>
+        @endif
+        @if(count($shengfans)>0)
+            @foreach($shengfans as $shengfan)
+            <a href="{{ route('user.show', $shengfan->user_id) }}">{{ $shengfan->creator->name }}</a>，
+            @endforeach
+            最近投掷了剩饭
+        @endif
     </div>
 </div>
 
