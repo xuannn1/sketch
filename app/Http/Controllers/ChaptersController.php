@@ -49,8 +49,8 @@ class ChaptersController extends Controller
 
     public function show(Chapter $chapter)
     {
-        $book=$chapter->book;
-        $thread = $book->thread;
+        $book = $chapter->book;
+        $thread = Thread::find($book->thread_id);
         if($thread->id){
             $chapter->load(['mainpost.owner','mainpost.comments.owner']);
             $previous = DB::table('chapters')
@@ -75,7 +75,7 @@ class ChaptersController extends Controller
             ->select('chapters.*')
             ->first();
 
-            $thread = $book->thread->load(['label','creator']);
+            $thread->load('label','creator');
             $posts = Post::where([
                 ['chapter_id','=', $chapter->id],
                 ['maintext', '=', false],
