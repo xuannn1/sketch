@@ -70,8 +70,8 @@ class BooksController extends Controller
             $thread->increment('viewed');
             $posts = Post::allPosts($thread->id,$thread->post_id)->noMaintext()->userOnly(request('useronly'))->withOrder('oldest')
             ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
-            $xianyus = $thread->xianyus->take(5);
-            $shengfans = $thread->mainpost->shengfans->take(5);
+            $xianyus = $thread->xianyus;
+            $shengfans = $thread->mainpost->shengfans;
             return view('books.show', compact('book','thread', 'posts', 'xianyus', 'shengfans'))->with('defaultchapter',0)->with('chapter_replied',true);
         }else{
             return redirect()->route('error', ['error_code' => '404']);

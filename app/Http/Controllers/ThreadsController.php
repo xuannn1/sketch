@@ -62,8 +62,8 @@ class threadsController extends Controller
         $thread->increment('viewed');
         $thread->load('label','channel','mainpost');
         $book = $thread->book;
-        $xianyus = $thread->xianyus->take(5);
-        $shengfans = $thread->mainpost->shengfans->take(5);
+        $xianyus = $thread->xianyus;
+        $shengfans = $thread->mainpost->shengfans;
         return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans'))->with('defaultchapter',0)->with('chapter_replied',true);
     }
 

@@ -48,13 +48,13 @@
             @foreach($xianyus as $xianyu)
             <a href="{{ route('user.show', $xianyu->user_id) }}">{{ $xianyu->creator->name }}</a>，
             @endforeach
-            最近投掷了咸鱼<br>
+            投掷了咸鱼<br>
         @endif
         @if(count($shengfans)>0)
             @foreach($shengfans as $shengfan)
             <a href="{{ route('user.show', $shengfan->user_id) }}">{{ $shengfan->creator->name }}</a>，
             @endforeach
-            最近投掷了剩饭
+            投掷了剩饭
         @endif
     </div>
 </div>
