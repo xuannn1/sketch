@@ -51,13 +51,13 @@
         </div>
         <div class="panel-body">
             <?php $thread = $channel->recent_thread_1; ?>
-            @if($thread->title)
+            @if(($thread->title)&&($thread->public))
             @include('threads._thread_info')
             @endif
         </div>
         <div class="panel-body">
             <?php $thread = $channel->recent_thread_2; ?>
-            @if($thread->title)
+            @if(($thread->title)&&($thread->public))
             @include('threads._thread_info')
             @endif
         </div>
