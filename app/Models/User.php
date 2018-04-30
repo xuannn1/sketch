@@ -247,7 +247,7 @@ class User extends Authenticatable
             $this->increment('xianyu', 25);
             $this->increment('sangdian', 10);
             break;
-            case "homework_excellent":
+            case "homework_regular":
             $this->increment('jifen', 20);
             $this->increment('experience_points', 20);
             $this->increment('shengfan', 10);
