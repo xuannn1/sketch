@@ -64,6 +64,7 @@ class threadsController extends Controller
         $book = $thread->book;
         $xianyus = $thread->xianyus;
         $shengfans = $thread->mainpost->shengfans;
+        //dd($thread->homework->registered_students());
         return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans'))->with('defaultchapter',0)->with('chapter_replied',true);
     }
 

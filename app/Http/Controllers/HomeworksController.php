@@ -45,7 +45,7 @@ class HomeworksController extends Controller
             'homework_id' => $homework->id,
             'body'=>request('requirement'),
         ]);
-        $channel->add_most_recent_thread($thread->id);
+        $thread->update_channel();
         $markdown = request('markdown')? true: false;
         $post = Post::create([
             'user_id' => auth()->id(),

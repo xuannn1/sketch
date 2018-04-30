@@ -24,11 +24,11 @@
     </div>
     <!-- 是否附加作业信息 -->
     @if($thread->homework_id>0)
-    @include('homeworks._registered_students')
-    @if($thread->show_homework_profile)
-    @include('homeworks._registered_homeworks')
-    @else
-    @include('homeworks._register_button')
-    @endif
+        @include('homeworks._registered_students')
+        @if($thread->show_homework_profile)
+            @include('homeworks._registered_homeworks')
+        @else
+        @include('homeworks._register_button')
+        @endif
     @endif
 </div>
