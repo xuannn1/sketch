@@ -39,7 +39,7 @@ class FilterPost
                 return $next($request);
             }
         }else{//并非公开贴
-            if ($thread->user_id == Auth::id()){//本人可见
+            if ((Auth::check())&&((Auth::user()->admin)||($thread->user_id == Auth::id()))){//本人或管理员可见
                 return $next($request);
             }
             return redirect()->route('error', ['error_code' => '403']);
