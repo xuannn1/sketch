@@ -50,7 +50,7 @@ class ChaptersController extends Controller
     public function show(Chapter $chapter)
     {
         $book = $chapter->book;
-        $thread = Thread::find($book->thread_id);
+        $thread = $book->thread;
         if($thread->id){
             $chapter->load(['mainpost.owner','mainpost.comments.owner']);
             $previous = DB::table('chapters')
