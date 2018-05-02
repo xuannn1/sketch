@@ -111,6 +111,7 @@ class StoreThread extends FormRequest
         //将boolean值赋予提交的设置
         $thread_data['anonymous']=$this->anonymous ? true:false;
         $thread_data['noreply']=$this->noreply ? true:false;
+        $thread_data['edited_at']=Carbon::now();
         $post_data['markdown']=$this->markdown ? true:false;
         $post_data['indentation']=$this->indentation ? true:false;
         $thread->update($thread_data);
