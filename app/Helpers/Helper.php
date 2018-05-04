@@ -123,12 +123,6 @@ class Helper
    {
        $badstring = config('constants.word_filter.not_in_title');
        $string = preg_replace("/$badstring/i",'',Helper::convert_to_public($string));
-       $len = iconv_strlen($string);
-       $substr1 = iconv_substr($string, 0, 1, 'utf-8');
-       $substr2 = iconv_substr($string, $len-1, $len, 'utf-8');
-       if (($substr1 == "《") && ($substr2 == "》")){
-           $string = iconv_substr($string, 1, $len-2, 'utf-8');
-       }
        return $string;
    }
 
