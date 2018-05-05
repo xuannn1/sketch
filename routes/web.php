@@ -160,7 +160,6 @@
    Route::get('/messages/index','MessagesController@index')->name('messages.index');
    Route::get('/messages/messagebox','MessagesController@messagebox')->name('messages.messagebox');
    Route::get('/messages/messages','MessagesController@messages')->name('messages.messages');
-   Route::get('/messages/messages_combineduser','MessagesController@messages_combineduser')->name('messages.messages_combineduser');
    Route::get('/messages/messages_sent','MessagesController@messages_sent')->name('messages.messages_sent');
    Route::get('/messages/posts','MessagesController@posts')->name('messages.posts');
    Route::get('/messages/postcomments','MessagesController@postcomments')->name('messages.postcomments');

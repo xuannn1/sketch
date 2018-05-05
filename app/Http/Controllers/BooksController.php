@@ -68,7 +68,7 @@ class BooksController extends Controller
             $book->load('chapters.mainpost','tongren');
             $thread->load(['creator', 'tags','channel','label', 'mainpost.comments.owner']);
             $thread->increment('viewed');
-            $posts = Post::allPosts($thread->id,$thread->post_id)->noMaintext()->userOnly(request('useronly'))->withOrder('oldest')
+            $posts = Post::allPosts($thread->id,$thread->post_id)->noMaintext()->userOnly(request('useronly'))->latest()
             ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
             $xianyus = $thread->xianyus;
             $shengfans = $thread->mainpost->shengfans;

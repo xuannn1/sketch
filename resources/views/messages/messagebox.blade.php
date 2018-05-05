@@ -22,11 +22,11 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
-                <h4><a href="{{ route('messages.messages_combineduser') }}">收件箱：</a></h4>
+                <h4><a href="{{ route('messages.messages') }}">收件箱：</a></h4>
                 @include('messages._messages')
                 @if($messages->hasMorePages())
                 <div class="text-center">
-                    <a href="{{ route('messages.messages_combineduser') }}">查看全部</a>
+                    <a href="{{ route('messages.messages') }}">查看全部</a>
                 </div>
                 @endif
             </div>

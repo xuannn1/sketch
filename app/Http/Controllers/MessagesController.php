@@ -166,6 +166,7 @@ class MessagesController extends Controller
         // })->whereNull('m2.id')
         ->join('users','users.id','=','m1.receiver_id')
         ->where('m1.poster_id','=', Auth::id())
+        ->where('message_bodies.group_messaging','=', 0)
         ->select('m1.*', 'users.name as receiver_name','message_bodies.content','message_bodies.group_messaging')
         ->orderBy('m1.created_at', 'm1.desc')
         ->simplePaginate($paginate);
