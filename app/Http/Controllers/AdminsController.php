@@ -101,7 +101,6 @@ class AdminsController extends Controller
             return redirect('/')->with("success","已经删帖");
         }
         if ($var=="4"){//书本/主题贴转移版块
-
             DB::transaction(function () use($thread){
                 Administration::create([
                     'user_id' => Auth::id(),
@@ -141,6 +140,26 @@ class AdminsController extends Controller
 
             $thread->save();
             return redirect()->route('thread.show', $thread)->with("success","已经转移操作");
+        }
+        if ($var=="5"){//打边缘
+            $thread->bianyuan = !$thread->bianyuan;
+            $thread->save();
+            if($thread->bianyuan){
+                Administration::create([
+                    'user_id' => Auth::id(),
+                    'operation' => '15',//15:转为边缘
+                    'item_id' => $thread->id,
+                    'reason' => request('reason'),
+                ]);
+            }else{
+                Administration::create([
+                    'user_id' => Auth::id(),
+                    'operation' => '16',//16:转为非边缘
+                    'item_id' => $thread->id,
+                    'reason' => request('reason'),
+                ]);
+            }
+            return redirect()->back()->with("success","已经成功处理该主题");
         }
         return redirect()->back()->with("danger","请选择操作类型（转换板块？）");
     }
