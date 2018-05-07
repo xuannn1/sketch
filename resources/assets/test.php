@@ -114,3 +114,8 @@ foreach($users as $user){
         }
     }
 }
+//increment unread_reminders for each user
+$users = App\Models\User::all();
+foreach($users as $user){
+    $user->increment('unread_reminders');
+}

@@ -59,7 +59,9 @@ class threadsController extends Controller
     {
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
         ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
-        $thread->increment('viewed');
+        if(!Auth::check()||(Auth::id()!=$thread->user_id)){
+            $thread->increment('viewed');
+        }
         $thread->load('label','channel','mainpost');
         $book = $thread->book;
         $xianyus = $thread->xianyus;

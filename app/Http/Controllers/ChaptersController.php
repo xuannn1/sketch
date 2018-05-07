@@ -83,7 +83,9 @@ class ChaptersController extends Controller
             ->with(['owner', 'comments.owner', 'reply_to_post.owner'])
             ->latest()
             ->paginate(config('constants.items_per_page'));
-            $chapter->increment('viewed');
+            if(!Auth::check()||(Auth::id()!=$thread->user_id)){
+                $chapter->increment('viewed');
+            }
             return view('chapters.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next'))->with('chapter_replied',false);
         }else{
             return redirect()->route('error', ['error_code' => '404']);

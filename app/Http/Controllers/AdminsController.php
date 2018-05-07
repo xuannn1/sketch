@@ -293,6 +293,7 @@ class AdminsController extends Controller
               'private' => false,
            ]);
            $receiver->increment('message_reminders');
+           $receiver->increment('unread_reminders');
          }
          return redirect()->back()->with('success','您已成功发布公共通知');
 
