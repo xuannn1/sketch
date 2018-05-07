@@ -57,8 +57,8 @@ class StoreThread extends FormRequest
         }else{
             $thread_data['anonymous']=0;
         }
-        while(Helper::convert_to_title($thread_data['title'])!=$thread_data['title']){
-           $thread_data['title'] = Helper::convert_to_title($thread_data['title']);
+        while(Helper::convert_to_public($thread_data['title'])!=$thread_data['title']){
+           $thread_data['title'] = Helper::convert_to_public($thread_data['title']);
         }
         while(Helper::convert_to_public($thread_data['brief'])!=$thread_data['brief']){
            $thread_data['brief'] = Helper::convert_to_public($thread_data['brief']);
