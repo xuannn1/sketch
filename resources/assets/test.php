@@ -78,22 +78,34 @@ print_r($stat_days);
 //去除文章里所有敏感词
 $threads = App\Models\Thread::all();
 foreach($threads as $thread){
-    if($thread->title!=App\Helpers\Helper::convert_to_title($thread->title)){
-        $thread->update(['title'=>App\Helpers\Helper::convert_to_title($thread->title)]);
+    if($thread->channel_id<=2){
+        if($thread->title!=App\Helpers\Helper::convert_to_public($thread->title)){
+            $thread->update(['title'=>App\Helpers\Helper::convert_to_public($thread->title)]);
+        }
+        if($thread->brief!=App\Helpers\Helper::convert_to_public($thread->brief)){
+            $thread->update(['brief'=>App\Helpers\Helper::convert_to_public($thread->brief)]);
+        }
+    }else{
+        if($thread->title!=App\Helpers\Helper::convert_to_public($thread->title)){
+            $thread->update(['title'=>App\Helpers\Helper::convert_to_public($thread->title)]);
+        }
     }
 }
+
 $chapters = App\Models\Chapter::all();
 foreach($chapters as $chapter){
-    if($chapter->title!=App\Helpers\Helper::convert_to_title($chapter->title)){
-        $chapter->update(['title'=>App\Helpers\Helper::convert_to_title($chapter->title)]);
+    if($chapter->title!=App\Helpers\Helper::convert_to_public($chapter->title)){
+        $chapter->update(['title'=>App\Helpers\Helper::convert_to_public($chapter->title)]);
     }
 }
 $posts = App\Models\Post::all();
 foreach($posts as $post){
-    if($post->title!=App\Helpers\Helper::convert_to_title($post->title)){
-        $post->update(['title'=>App\Helpers\Helper::convert_to_title($post->title)]);
+    if($post->title!=App\Helpers\Helper::convert_to_public($post->title)){
+        $post->update(['title'=>App\Helpers\Helper::convert_to_public($post->title)]);
     }
 }
+
+
 
 $users = \App\Models\User::where('lastrewarded_at','>','2018-04-25 00:00:00')->get();
 foreach($users as $user){
