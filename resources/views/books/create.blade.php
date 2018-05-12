@@ -130,14 +130,15 @@
                                     <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
                                     @endforeach
                                 </div>
-                                <hr>
                                 <div id="bianyuantags" style="display: {{ old('bianyuan')=='1'? 'block':'none'}}">
+                                    <hr>
                                     @foreach ($all_book_tags['tags_bianyuan'] as $tag)
                                     <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
                                     @endforeach
                                 </div>
-                                <hr>
+
                                 <div id="tongrentags" style="display: {{ old('channel_id')=='2'? 'block':'none'}}">
+                                    <hr>
                                     @foreach ($all_book_tags['tags_tongren'] as $tag)
                                     <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
                                     @endforeach
