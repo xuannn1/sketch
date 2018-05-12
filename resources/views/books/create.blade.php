@@ -125,16 +125,19 @@
                         <div id="more_options" class="collapse">
                             <div id="alltags">
                                 <h4>8. 请从以下标签中选择不多于三个标签：</h4>
-                                @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
-                                <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
-                                @endforeach
-                                <br>
+                                <div id="feibianyuantags">
+                                    @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
+                                    <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
+                                    @endforeach
+                                </div>
+                                <hr>
                                 <div id="bianyuantags" style="display: {{ old('bianyuan')=='1'? 'block':'none'}}">
                                     @foreach ($all_book_tags['tags_bianyuan'] as $tag)
                                     <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
                                     @endforeach
                                 </div>
-                                <div id="tongrentags" style="display: {{ old('channel_id')=='1'? 'none':'block'}}">
+                                <hr>
+                                <div id="tongrentags" style="display: {{ old('channel_id')=='2'? 'block':'none'}}">
                                     @foreach ($all_book_tags['tags_tongren'] as $tag)
                                     <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
                                     @endforeach

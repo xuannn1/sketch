@@ -112,7 +112,7 @@
                 <div>
                     <label for="bianyuan"><h4>5. 是否边缘敏感题材？</h4></label>
                     <div id="bianyuan" class="h6">
-                        文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含NP、人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转……等边缘敏感题材，或估计不适合未成年人观看的，请勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。
+                        文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含NP、人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转……等边缘敏感题材，或估计不适合未成年人观看的，请勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。<span style="color:red">边缘题材未勾选边缘即发文的，严肃处理。</span>
                     </div>
                     <div>
                         <label class="radio-inline"><input type="radio" name="bianyuan" value="0" onclick="uncheckAll('bianyuantags');document.getElementById('bianyuantags').style.display = 'none'" {{ $thread->bianyuan?'':'checked'}}>非边缘</label>
@@ -122,15 +122,18 @@
 
                 <div id="alltags">
                     <h4>6. 请从以下标签中选择不多于三个标签：</h4>
-                    @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
-                    <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}
-                    @endforeach
-                    <br>
+                    <div id="feibianyuantags">
+                        @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
+                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}
+                        @endforeach
+                    </div>
+                    <hr>
                     <div id="bianyuantags" style="display:{{ $thread->bianyuan?'block':'none'}}">
                         @foreach ($all_book_tags['tags_bianyuan'] as $tag)
                         <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}
                         @endforeach
                     </div>
+                    <hr>
                     <div id="tongrentags" style="display: {{ ($thread->channel_id)==1 ? 'none':'block'}}">
                         @foreach ($all_book_tags['tags_tongren'] as $tag)
                         <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}
