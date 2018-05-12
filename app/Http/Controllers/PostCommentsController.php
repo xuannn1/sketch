@@ -20,7 +20,7 @@ class PostCommentsController extends Controller
     {
         $user = Auth::user();
         $thread=$post->thread;
-        if(!$thread->locked){
+        if((Auth::user()->admin)||(!$thread->locked)){
             $this->validate($request, [
                 'body' => 'required|string|max:100',
             ]);

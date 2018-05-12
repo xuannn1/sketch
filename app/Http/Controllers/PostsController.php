@@ -25,7 +25,7 @@ class PostsController extends Controller
 
     public function store(StorePost $form, Thread $thread)
     {
-        if ((!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id()))){
+        if ((Auth::user()->admin)||((!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id())))){
             $post = $form->generatePost($thread);
             $post->checklongcomment();
             event(new NewPost($post));
@@ -43,10 +43,10 @@ class PostsController extends Controller
     public function edit(Post $post)
     {
         $thread=$post->thread;
-        if ($thread->locked){
-            return redirect()->route('error', ['error_code' => '403']);
-        }else{
+        if ((Auth::user()->admin)||(!$thread->locked)){
             return view('posts.post_edit', compact('post'));
+        }else{
+            return redirect()->route('error', ['error_code' => '403']);
         }
     }
 
