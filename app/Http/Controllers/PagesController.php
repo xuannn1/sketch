@@ -106,7 +106,7 @@ class PagesController extends Controller
         ->where('administrations.deleted_at','=',null)
         ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body','operated_users.name as operated_users_name' )
         ->orderBy('administrations.created_at','desc')
-        ->simplePaginate(config('constants.index_per_page'));
+        ->paginate(config('constants.index_per_page'));
         $admin_operation = config('constants.administrations');
         return view('pages.adminrecords',compact('records','admin_operation'));
     }
