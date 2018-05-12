@@ -59,7 +59,10 @@ class PostCommentsController extends Controller
     public function destroy($id)
     {
         $postcomment=PostComment::find($id);
-        if(Auth::id()==$postcomment->user_id){
+        $post = $postcomment->post;
+        $thread = $post->thread;
+        $channel = $thread->channel;
+        if ((Auth::user()->admin)||((Auth::id() == $postcomment->user_id)&&(!$thread->locked)&&($channel->channel_state!=2))){
             $postcomment->delete();
         }else{
             return redirect()->route('error', ['error_code' => '403']);

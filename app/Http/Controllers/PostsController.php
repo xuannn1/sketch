@@ -43,7 +43,8 @@ class PostsController extends Controller
     public function edit(Post $post)
     {
         $thread=$post->thread;
-        if ((Auth::user()->admin)||(!$thread->locked)){
+        $channel=$thread->channel;
+        if ((Auth::user()->admin)||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($channel->channel_state!=2))){
             return view('posts.post_edit', compact('post'));
         }else{
             return redirect()->route('error', ['error_code' => '403']);
@@ -53,7 +54,8 @@ class PostsController extends Controller
     public function update(StorePost $form, Post $post)
     {
         $thread=$post->thread;
-        if ((Auth::id() == $post->user_id)&&(!$thread->locked)){
+        $channel=$thread->channel;
+        if ((Auth::user()->admin)||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($channel->channel_state!=2))){
             $form->updatePost($post);
             $post->checklongcomment();
             return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
