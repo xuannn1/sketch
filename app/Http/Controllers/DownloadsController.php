@@ -217,7 +217,11 @@ class DownloadsController extends Controller
             if($thread->user_id!=$user->id){//并非作者本人下载，奖励部分
                 $thread->creator->reward('book_downloaded_as_thread');
                 $thread->increment('downloaded');
-                if ($thread->book_id>0){$format = 1;}else{$format = 0;}
+                if ($thread->book_id>0){
+                    $format = 1;
+                }else{
+                    $format = 0;
+                }
                 $download = Download::create([
                     'user_id' => $user->id,
                     'thread_id' => $thread->id,

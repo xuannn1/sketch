@@ -95,7 +95,8 @@ class StoreChapter extends FormRequest
                 $thread->update_channel();
                 $book->update([
                     'last_chapter_id' => $chapter->id,
-                    'total_char' => $total_char
+                    'total_char' => $total_char,
+                    'indentation'=> $post_data['indentation'],
                 ]);
 
                 DB::table('collections')//告诉所有收藏本文章、愿意接受更新的读者, 这里发生了更新
@@ -155,7 +156,10 @@ class StoreChapter extends FormRequest
             ['posts.deleted_at','=',NULL],
         ])
         ->sum('chapters.characters');
-        $book->update(['total_char' => $total_char]);
+        $book->update([
+            'total_char' => $total_char,
+            'indentation'=> $post_data['indentation'],
+        ]);
         return redirect()->route('book.showchapter', $chapter)->with("success", "您已成功修改章节");
     }
 }

@@ -22,7 +22,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password', 'lastresponded_at', 'introduction', 'invitation_token', 'majia', 'maximum_qiandao' , 'unread_messages'
+        'name', 'email', 'password', 'lastresponded_at', 'introduction', 'invitation_token', 'majia', 'maximum_qiandao' , 'unread_messages', 'indentation'
     ];
 
     /**
@@ -223,6 +223,12 @@ class User extends Authenticatable
             case "regular_post_comment":
             $this->increment('experience_points',1);
             $this->increment('jifen',1);
+            break;
+            case "upvoted_by_many":
+            $this->increment('experience_points',5);
+            $this->increment('jifen',5);
+            $this->increment('xianyu',1);
+            $this->increment('sangdian',1);
             break;
             case "book_downloaded_as_thread":
             $this->increment('experience_points',5);

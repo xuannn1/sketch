@@ -57,4 +57,8 @@
         {!! Helper::wrapParagraphs($thread->body) !!}
         @endif
     </div>
+    <div class="">
+        <!-- 这个地方，是整本书的信息汇总：总字数，阅读数，回应数，下载数 -->
+        <span class = "pull-right smaller-10"><em><span class="glyphicon glyphicon-pencil"></span>{{ $book->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon-comment"></span>{{ $thread->responded }}/<span class="glyphicon glyphicon-save"></span>{{ $thread->downloaded }}</em></span>
+    </div>
 </div>

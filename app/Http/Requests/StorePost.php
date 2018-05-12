@@ -71,6 +71,7 @@ class StorePost extends FormRequest
 
         if (!$this->isDuplicatePost($data)){
             $post = Post::create($data);
+            auth()->user()->update(['indentation'=>$data['indentation']]);
         }else{
             abort(400,'请求已登记，请勿重复提交相同数据');
         }
@@ -91,6 +92,7 @@ class StorePost extends FormRequest
         $data['anonymous']=$this->anonymous ? 1:0;
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;
+        auth()->user()->update(['indentation'=>$data['indentation']]);
         $data['edited_at']=Carbon::now();
         $post->update($data);
         return $post;

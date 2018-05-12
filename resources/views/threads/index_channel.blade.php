@@ -27,36 +27,35 @@
                         <a href="{{ route('channel.show',['channel'=>$channel->id, 'sexual_orientation' => $key ]) }}" >
                             {{ $value }}<span class="badge">{{ array_key_exists($key, $s_count)? $s_count[$key]:'0' }}</span>
                         </a>
-                    </a>
-                </li>
+                    </li>
+                    @endif
+                    @endforeach
+                    @endif
+                </ul>
+            </div>
+            <div class="panel-body">
+                {{ $threads->appends(request()->query())->links() }}
+                @include('threads._threads')
+                {{ $threads->appends(request()->query())->links() }}
+            </div>
+            @if (Auth::check())
+            <div class="panel-heading">
+                @if(Auth::user()->no_posting > Carbon\Carbon::now())
+                <h6 class="text-center">您被禁言至{{ Carbon\Carbon::parse(Auth::user()->no_posting)->diffForHumans() }}，暂时不能发帖。</h6>
+                @else
+                @if ($channel->channel_state == 1)
+                <a class="btn btn-lg btn-primary sosad-button" href="{{ route('book.create') }}" role="button">发布文章</a>
+                @else
+                <a class="btn btn-lg btn-primary sosad-button" href="{{ route('thread.create', $channel) }}" role="button">发布主题</a>
                 @endif
-                @endforeach
                 @endif
-            </ul>
-        </div>
-        <div class="panel-body">
-            {{ $threads->appends(request()->query())->links() }}
-            @include('threads._threads')
-            {{ $threads->appends(request()->query())->links() }}
-        </div>
-        @if (Auth::check())
-        <div class="panel-heading">
-            @if(Auth::user()->no_posting > Carbon\Carbon::now())
-            <h6 class="text-center">您被禁言至{{ Carbon\Carbon::parse(Auth::user()->no_posting)->diffForHumans() }}，暂时不能发帖。</h6>
+            </div>
             @else
-            @if ($channel->channel_state == 1)
-            <a class="btn btn-lg btn-primary sosad-button" href="{{ route('book.create') }}" role="button">发布文章</a>
-            @else
-            <a class="btn btn-lg btn-primary sosad-button" href="{{ route('thread.create', $channel) }}" role="button">发布主题</a>
-            @endif
+            <div class="panel-heading text-center">
+                <h4 class="display-1">请 <a href="{{ route('login') }}">登录</a> 后发布主题</h4>
+            </div>
             @endif
         </div>
-        @else
-        <div class="panel-heading text-center">
-            <h4 class="display-1">请 <a href="{{ route('login') }}">登录</a> 后发布主题</h4>
-        </div>
-        @endif
     </div>
-</div>
 </div>
 @stop

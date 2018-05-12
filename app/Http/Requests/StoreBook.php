@@ -76,6 +76,7 @@ class StoreBook extends FormRequest
     public function generateBook()
     {
         $book_data = $this->only('book_status','book_length','sexual_orientation');
+        $book_data['indentation']=$this->indentation ? true:false;
         $thread_data = $this->only('channel_id','label_id','title','brief');
         if ($this->anonymous){
             $thread_data['anonymous']=1;
@@ -172,6 +173,7 @@ class StoreBook extends FormRequest
         $book = $thread->book;
         //book_data
         $book_data = $this->only('book_status','book_length','sexual_orientation');
+        $book_data['indentation']=$this->indentation ? true:false;
         //thread_data
         $thread_data = $this->only('label_id','title','brief');
         while(Helper::convert_to_title($thread_data['title'])!=$thread_data['title']){

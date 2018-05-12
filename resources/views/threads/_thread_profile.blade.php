@@ -31,4 +31,8 @@
         @include('homeworks._register_button')
         @endif
     @endif
+    <!-- 这个地方，是整楼的信息汇总：总字数，阅读数，回应数，下载数 -->
+    <div class="">
+        <span class = "pull-right smaller-10"><em><span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon-comment"></span>{{ $thread->responded }}/<span class="glyphicon glyphicon-save"></span>{{ $thread->downloaded }}</em></span>
+    </div>
 </div>

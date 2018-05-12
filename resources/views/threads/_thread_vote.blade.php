@@ -21,7 +21,7 @@
 
         <button class="btn btn-sm btn-default" id="threadxianyu{{$thread->id}}" onclick="thread_xianyu({{$thread->id}})">咸鱼{{ $thread->xianyu }}</button>
 
-        @if((!$thread->locked)&&(!$thread->noreply)&&(($thread->public)||($thread->user_id==Auth::id()))&&(Auth::user()->no_posting < Carbon\Carbon::now()))
+        @if((Auth::user()->admin)||((!$thread->locked)&&(!$thread->noreply)&&(($thread->public)||($thread->user_id==Auth::id()))&&(Auth::user()->no_posting < Carbon\Carbon::now())))
         <a class="btn btn-sm btn-default" href="#" data-toggle="modal" data-target="#TriggerPostComment{{ $thread->mainpost->id }}">点评</a>
         @endif
     </span>

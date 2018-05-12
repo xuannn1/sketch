@@ -41,15 +41,13 @@ class VotePostsController extends Controller
                         $candidate->increment('unread_reminders');
                     }
                     if($candidate->upvoted % 20 == 19){
-                        $candidate->jifen +=5;
-                        $candidate->experience_points +=5;
-                        $candidate->xianyu +=1;
-                        $candidate->shengfan +=5;
+                        $candidate->reward('upvoted_by_many');
                     }
                     $upvote_acticity = Activity::create([
                         'type' => 5,
                         'item_id' => $record->id,
                         'user_id' => $candidate->id,
+                        'seen' => $candidate->no_upvote_reminders
                     ]);
                 }
                 return $post;
@@ -65,9 +63,6 @@ class VotePostsController extends Controller
                         $post->decrement('up_voted');
                         if($candidate){
                             $candidate->decrement('upvoted');
-                            if(!$activity->seen){
-                                $candidate->decrement('upvote_reminders');
-                            }
                         }
                         $activity->delete();
                     }else{//没有赞过的，赞
