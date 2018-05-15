@@ -104,6 +104,30 @@ class Helper
             '<span style="background-color:$1">$2</span>',
             '$1'
         );
+        $bbCode->addParser(
+            'table',
+            '/\[table\](.*?)\[\/table\]/s',
+            '<table>$1</table>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table tr',
+            '/\[tr\](.*?)\[\/tr\]/s',
+            '<tr>$1</tr>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table td',
+            '/\[td\](.*?)\[\/td\]/s',
+            '<td>$1</td>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table th',
+            '/\[th\](.*?)\[\/th\]/s',
+            '<th>$1</th>',
+            '$1'
+        );
 
        $post = $bbCode->convertToHtml($post);
 
