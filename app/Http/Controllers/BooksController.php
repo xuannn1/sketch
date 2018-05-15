@@ -154,7 +154,7 @@ class BooksController extends Controller
     public function booktag(Tag $booktag, Request $request){
         $all_book_tags = $this->all_book_tags();
 
-        $books = Cache::remember('-tag'.$booktag->id.'P'.(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($request, $booktag) {
+        $books = Cache::remember('-tag'.$booktag->id.(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($request, $booktag) {
             $query = $this->join_book_tables();
             if($booktag->tag_group==10){
                 $query->where('tongren_yuanzhu_tags.id','=',$booktag->id);
