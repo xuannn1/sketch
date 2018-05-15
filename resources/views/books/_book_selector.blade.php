@@ -21,7 +21,7 @@
             <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">进度<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach($book_info['book_status_info'] as $key=>$book_status)
-                <li><input type="checkbox" name="status[]" value={{$key}} checked />&nbsp;{{$book_lenth}}</li>
+                <li><input type="checkbox" name="status[]" value={{$key}} checked />&nbsp;{{$book_status}}</li>
                 @endforeach
             </ul>
         </span>
