@@ -24,6 +24,9 @@
                         @foreach($book_info['sexual_orientation_info'] as $key=>$sexual_orientation)
                         <a class="badge badge-tag" href="{{ route('books.index',['sexual_orientation'=>$key]) }}">{{$sexual_orientation}}</a>
                         @endforeach
+                        @foreach($book_info['rating_info'] as $key=>$rating)
+                        <a class="badge badge-tag" href="{{ route('books.index',['rating'=>($key)]) }}">{{$rating}}</a>
+                        @endforeach
                         <!-- 不是边缘的tag -->
                         @foreach ($all_book_tags['tags_feibianyuan'] as $key=>$tag)
                         <a class="book-tag tags_feibianyuan badge newchapter-badge badge-tag {{$key>5? 'hidden extra-tag':''}} " href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>

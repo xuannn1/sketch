@@ -86,18 +86,15 @@ class BooksController extends Controller
     public function index(Request $request)
     {
         $all_book_tags = $this->all_book_tags();
-        $page=$request->page;
-        if (!is_numeric($page)){
-            $page=1;
-        }
-        $bookqueryid = '-bookquery'.'-'.(Auth::check()?'Lgd':'nLg')//logged or not
-        .($request->label? 'L'.$request->label:'nL')
-        .($request->channel? 'Ch'.$request->channel:'nCh')
-        .($request->book_length? 'Bl'.$request->book_length:'nBl')
-        .($request->book_status? 'Bs'.$request->book_status:'nBs')
-        .($request->sexual_orientation? 'So'.$request->sexual_orientation:'nSo')
-        .('P'.$page);
-        $books = Cache::remember($bookqueryid, 5, function () use($request) {
+        $bookqueryid = '-bQ-'.(Auth::check()?'Lgd':'nLg')//logged or not
+        .($request->label? 'L'.$request->label:'')
+        .($request->channel? 'Ch'.$request->channel:'')
+        .($request->book_length? 'Bl'.$request->book_length:'')
+        .($request->book_status? 'Bs'.$request->book_status:'')
+        .($request->sexual_orientation? 'So'.$request->sexual_orientation:'')
+        .($request->rating? 'R'.$request->rating:'nR')
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+        $books = Cache::remember($bookqueryid, 2, function () use($request) {
             $query = $this->join_book_tables();
             if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
             if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
@@ -105,6 +102,7 @@ class BooksController extends Controller
             if($request->book_length){$query = $query->where('books.book_length','=',$request->book_length);}
             if($request->book_status){$query = $query->where('books.book_status','=',$request->book_status);}
             if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
+            if($request->rating){$query = $query->where('threads.bianyuan','=',$request->rating-1);}
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             $books = $this->return_book_fields($query)
             ->orderby('books.lastaddedchapter_at', 'desc')
@@ -118,29 +116,31 @@ class BooksController extends Controller
 
     public function selector($bookquery_original, Request $request)
     {
+        $book_info = config('constants.book_info');
         $all_book_tags = $this->all_book_tags();
         $bookquery=explode('-',$bookquery_original);
         $bookinfo=[];
         foreach($bookquery as $info){
             array_push($bookinfo,array_map('intval',explode('_',$info)));
         }
-        //dd($bookinfo[3]);
-        $books = Cache::remember('-bookselector-'.$bookquery_original.'page'.($request->page? $request->page:1), 10, function () use($bookinfo, $request) {
+        $books = Cache::remember('-bQry'.$bookquery_original.(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($bookinfo, $request, $book_info) {
             $query = $this->join_book_tables();
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-            $query->whereIn('books.book_length',$bookinfo[1])
-            ->whereIn('books.book_status',$bookinfo[2])
-            ->whereIn('books.sexual_orientation',$bookinfo[3]);
             if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
             if(count($bookinfo[0])==1){
                 $query->where('threads.channel_id','=', $bookinfo[0][0]);
             }
-            if ((count($bookinfo)>=5)&&(count($bookinfo[4])==1)){
-                if($bookinfo[4][0]<3){
-                    $query->where('threads.bianyuan', '=', (bool)$bookinfo[4][0]);
-                }else{
-                    $query->where('threads.bianyuan', '=',$bookinfo[4][0]);
-                }
+            if(count($bookinfo[1])<count($book_info['book_lenth_info'])){
+                $query->whereIn('books.book_length',$bookinfo[1]);
+            }
+            if(count($bookinfo[2])<count($book_info['book_status_info'])){
+                $query->whereIn('books.book_status',$bookinfo[2]);
+            }
+            if(count($bookinfo[3])<count($book_info['sexual_orientation_info'])){
+                $query->whereIn('books.sexual_orientation',$bookinfo[3]);
+            }
+            if(count($bookinfo[4])<count($book_info['rating_info'])){
+                $query->where('threads.bianyuan','=',$bookinfo[4][0]-1);
             }
             $books = $this->return_book_fields($query)
             ->distinct()
@@ -148,14 +148,13 @@ class BooksController extends Controller
             ->paginate(config('constants.index_per_page'));
             return $books;
         });
-        $book_info = config('constants.book_info');
         return view('books.index', compact('books','all_book_tags','book_info'))->with('show_as_collections', false);
     }
 
     public function booktag(Tag $booktag, Request $request){
         $all_book_tags = $this->all_book_tags();
 
-        $books = Cache::remember('-booktag-'.$booktag->id.'-page-'.($request->page? $request->page:1), 10, function () use($request, $booktag) {
+        $books = Cache::remember('-tag'.$booktag->id.'P'.(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($request, $booktag) {
             $query = $this->join_book_tables();
             if($booktag->tag_group==10){
                 $query->where('tongren_yuanzhu_tags.id','=',$booktag->id);
@@ -186,7 +185,7 @@ class BooksController extends Controller
                 $bookquery.=$query;
             }
         }else{
-            $bookquery.=3;
+            $bookquery.=0;
         }
         $bookquery.='-';
         if(request('length')){
@@ -222,15 +221,15 @@ class BooksController extends Controller
             $bookquery.=0;
         }
         $bookquery.='-';
-        if(request('bianyuan')){
-            foreach(request('bianyuan') as $i=>$query){
+        if(request('rating')){
+            foreach(request('rating') as $i=>$query){
                 if($i>0){
                     $bookquery.='_';
                 }
                 $bookquery.=$query;
             }
         }else{
-            $bookquery.=3;
+            $bookquery.=0;
         }
         return redirect()->route('books.selector',$bookquery);
     }

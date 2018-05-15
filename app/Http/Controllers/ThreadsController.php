@@ -35,11 +35,11 @@ class threadsController extends Controller
     {
         $group = 10;
         if(Auth::check()){$group = Auth::user()->group;}
-        $threadqueryid = '-thread-index-query-group'.$group
-        .'-'.(Auth::check()?'logged':'not_logged')
-        .'-'.($request->label? 'l'.$request->label:'no_l')
-        .'-'.($request->channel? 'ch'.$request->channel:'no_ch')
-        .'-'.($request->page? 'page'.$request->page:'page1');
+        $threadqueryid = '-tQry-'.$group
+        .(Auth::check()?'Lgd':'nLg')
+        .($request->label? 'L'.$request->label:'')
+        .($request->channel? 'Ch'.$request->channel:'')
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
         $threads = Cache::remember($threadqueryid, 2, function () use($group, $request) {
             $query = $this->join_no_book_thread_tables()
             ->where([['threads.book_id','=',0],['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]]);
