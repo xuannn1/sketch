@@ -310,7 +310,7 @@
                                             <h4>5.5 页面屏蔽字符</h4>
                                             <div id="help-5-5-1">
                                                 <h5>5.5.1 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</h5><h6>
-                                                    {{ $data['word_filter']['not_in_public'] }}
+                                                    <img src="/img/forbidden_words.png" alt="forbidden_words">
                                                 </h6>
                                             </div>
                                             <br>
