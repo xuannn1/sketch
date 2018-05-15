@@ -49,9 +49,9 @@ class PagesController extends Controller
 
     public function help()
     {
-        $users_online = Cache::remember('users-online-count', 5, function () {
+        $users_online = Cache::remember('-users-online-count', 5, function () {
             $users_online = DB::table('cache')
-            ->where('key','like','sosaduser-is-online-%')
+            ->where('key','like','sosad-usr-on-%')
             ->where('expiration','>', time()-60*30)
             ->count();
             return $users_online;
