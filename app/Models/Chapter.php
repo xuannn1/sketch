@@ -23,6 +23,10 @@ class Chapter extends Model
     {
         return $this->belongsTo(Post::class, 'post_id')->withDefault();
     }
+    public function mainpost_info()
+    {
+        return $this->belongsTo(Post::class, 'post_id')->select('id','title')->withDefault();
+    }
     public function volumn()
     {
         return $this->belongsTo(Volumn::class, 'volumn_id')->withDefault();

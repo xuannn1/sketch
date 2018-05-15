@@ -28,7 +28,7 @@ class Book extends Model
 
     public function chapters()
     {
-        return $this->hasMany(Chapter::class)->orderBy('chapter_order','asc');
+        return $this->hasMany(Chapter::class)->select('id', 'chapter_order', 'post_id', 'book_id', 'volumn_id', 'title', 'created_at', 'edited_at', 'characters', 'viewed', 'responded', 'deleted_at')->orderBy('chapter_order','asc');
     }
 
     public function max_chapter_order()
