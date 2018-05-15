@@ -86,16 +86,18 @@ class BooksController extends Controller
     public function index(Request $request)
     {
         $all_book_tags = $this->all_book_tags();
-        //dd($all_book_tags['tags_feibianyuan']);
-        $bookqueryid = '-bookquery'.'-'.(Auth::check()?'logged':'not_logged')
-        .'-'.($request->label? 'l'.$request->label:'no_l')
-        .'-'.($request->channel? 'ch'.$request->channel:'no_ch')
-        .'-'.($request->book_length? 'bl'.$request->book_length:'no_bl')
-        .'-'.($request->book_status? 'bs'.$request->book_status:'no_bs')
-        .'-'.($request->sexual_orientation? 'so'.$request->sexual_orientation:'no_so')
-        .'-'.($request->page? 'page'.$request->page:'page1');
-        //dd($bookqueryid);
-        $books = Cache::remember($bookqueryid, 10, function () use($request) {
+        $page=$request->page;
+        if (!is_numeric($page)){
+            $page=1;
+        }
+        $bookqueryid = '-bookquery'.'-'.(Auth::check()?'Lgd':'nLg')//logged or not
+        .($request->label? 'L'.$request->label:'nL')
+        .($request->channel? 'Ch'.$request->channel:'nCh')
+        .($request->book_length? 'Bl'.$request->book_length:'nBl')
+        .($request->book_status? 'Bs'.$request->book_status:'nBs')
+        .($request->sexual_orientation? 'So'.$request->sexual_orientation:'nSo')
+        .('P'.$page);
+        $books = Cache::remember($bookqueryid, 5, function () use($request) {
             $query = $this->join_book_tables();
             if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
             if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
@@ -110,7 +112,8 @@ class BooksController extends Controller
             ->appends($request->query());//看一下是否能够传递pagination
             return $books;
         });
-        return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
+        $book_info = config('constants.book_info');
+        return view('books.index', compact('books','all_book_tags','book_info'))->with('show_as_collections', false);
     }
 
     public function selector($bookquery_original, Request $request)
@@ -145,8 +148,8 @@ class BooksController extends Controller
             ->paginate(config('constants.index_per_page'));
             return $books;
         });
-
-        return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
+        $book_info = config('constants.book_info');
+        return view('books.index', compact('books','all_book_tags','book_info'))->with('show_as_collections', false);
     }
 
     public function booktag(Tag $booktag, Request $request){
@@ -169,7 +172,8 @@ class BooksController extends Controller
             ->paginate(config('constants.index_per_page'));
             return $books;
         });
-        return view('books.index', compact('books','all_book_tags'))->with('show_as_collections', false);
+        $book_info = config('constants.book_info');
+        return view('books.index', compact('books','all_book_tags','book_info'))->with('show_as_collections', false);
     }
 
     public function filter(Request $request){

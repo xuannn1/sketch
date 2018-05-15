@@ -69,6 +69,8 @@
                             <label class="radio-inline"><input type="radio" name="book_length" value="2" {{ old('book_length')=='2'?'checked':''}}>中篇</label>
                             <label class="radio-inline"><input type="radio" name="book_length" value="3" {{ old('book_length')=='3'?'checked':''}}>长篇</label>
                             <br>
+                            <label class="radio-inline"><input type="radio" name="book_length" value="4" {{ old('book_length')=='4'?'checked':''}}>大纲</label>
+                            <br>
                         </div>
 
                         <div>
