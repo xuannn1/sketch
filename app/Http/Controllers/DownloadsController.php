@@ -49,7 +49,7 @@ class DownloadsController extends Controller
             $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone('Asia/Shanghai');
         }
         $txt .= "\n";
-        $txt .= "图书信息：".$book_info['originality_info'][2-$thread->channel_id].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
+        $txt .= "图书信息：".$book_info['channel_info'][$thread->channel_id].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
         if($thread->bianyuan){$txt .= "|边缘";}
         $txt .= '|'.$thread->label->labelname;
         foreach ($thread->tags as $tag){

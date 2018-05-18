@@ -9,8 +9,8 @@
                 <div class="row">
                     <div class="col-xs-10">
                         <!-- 原创性标记 -->
-                        @foreach($book_info['originality_info'] as $key=>$originality)
-                        <a class="badge badge-tag" href="{{ route('books.index',['channel'=>(int)($key+1)]) }}">{{$originality}}</a>
+                        @foreach($book_info['channel_info'] as $key=>$channel)
+                        <a class="badge badge-tag" href="{{ route('books.index',['channel'=>$key]) }}">{{$channel}}</a>
                         @endforeach
                         <!-- 书本篇幅标记 -->
                         @foreach($book_info['book_lenth_info'] as $key=>$book_lenth)
