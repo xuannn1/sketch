@@ -44,9 +44,9 @@ class DownloadsController extends Controller
         $txt .= "简介：".$thread->brief."\n";
         $txt .= "作者：";
         if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
-        $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
+        $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone('Asia/Shanghai');
         if($thread->created_at < $thread->edited_at){
-            $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
+            $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone('Asia/Shanghai');
         }
         $txt .= "\n";
         $txt .= "图书信息：".$book_info['originality_info'][2-$thread->channel_id].'-'.$book_info['book_lenth_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
@@ -65,9 +65,9 @@ class DownloadsController extends Controller
         $txt .= "简介：".$thread->brief."\n";
         $txt .= "发帖人：";
         if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
-        $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone(8);
+        $txt .= " at ".Carbon::parse($thread->created_at)->setTimezone('Asia/Shanghai');
         if($thread->created_at < $thread->edited_at){
-            $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone(8);
+            $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone('Asia/Shanghai');
         }
         $txt .="\n正文：\n".$this->process_text($thread->body,$thread->mainpost->markdown,$thread->mainpost->indentation);
         return $txt;
@@ -83,7 +83,7 @@ class DownloadsController extends Controller
         return $txt;
     }
     public function add_download_info($thread){//添加下载声明
-        $txt = 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now(8)."\n";
+        $txt = 'Downloaded from http://sosad.fun by '.Auth::user()->name.' '.Auth::user()->id.' at UTC+8 '.Carbon::now('Asia/Shanghai')."\n";
         $txt .= "仅供个人备份使用，请勿私自传播，书籍/文章所有权利属于原作者，个人评论如非特别声明，遵循知识共享CC-BY-NC-SA。For personal backup only. All rights of independent articles reserved to its author. Except where otherwise noted, comments are distributed under Creative Commons CC-BY-NC-SA.\n";
         return $txt;
     }
@@ -121,7 +121,7 @@ class DownloadsController extends Controller
         foreach($postcomments as $k => $postcomment){
             $txt .= "主楼点评".($k+1).": ";
             if($postcomment->anonymous){$txt.=($postcomment->majia ?? "匿名咸鱼");}else{$txt.=$postcomment->owner->name;}
-            $txt .= ' '.Carbon::parse($postcomment->created_at)->setTimezone(8)."\n";
+            $txt .= ' '.Carbon::parse($postcomment->created_at)->setTimezone('Asia/Shanghai')."\n";
             $txt .= $postcomment->body."\n";
         }
         $txt .= "\n";
@@ -133,9 +133,9 @@ class DownloadsController extends Controller
             }else{
                 if($post->anonymous){$txt.=($post->majia ?? "匿名咸鱼");}else{$txt.=$post->owner->name;}
             }
-            $txt .= " ".Carbon::parse($post->created_at)->setTimezone(8);
+            $txt .= " ".Carbon::parse($post->created_at)->setTimezone('Asia/Shanghai');
             if($post->created_at < $post->edited_at){
-                $txt .= "/".Carbon::parse($post->edited_at)->setTimezone(8);
+                $txt .= "/".Carbon::parse($post->edited_at)->setTimezone('Asia/Shanghai');
             }
             $txt .= "\n";
             $txt .= $this->reply_to_sth($post);
@@ -147,7 +147,7 @@ class DownloadsController extends Controller
             foreach($post->comments as $k => $postcomment){
                 $txt .= "回帖".($i+1)."点评".($k+1).": ";
                 if($postcomment->anonymous){$txt.=($postcomment->majia ?? "匿名咸鱼");}else{$txt.=$postcomment->owner->name;}
-                $txt .= " ".Carbon::parse($postcomment->created_at)->setTimezone(8)."\n";
+                $txt .= " ".Carbon::parse($postcomment->created_at)->setTimezone('Asia/Shanghai')."\n";
                 $txt .= $postcomment->body."\n";
             }
             $txt .= "\n";
@@ -167,9 +167,9 @@ class DownloadsController extends Controller
         $txt .=$this->print_book_info($thread);
         foreach($chapters as $i=>$chapter){
             $txt .= ($i+1).'.'.$chapter->title."\n";//章节名
-            $txt .= Carbon::parse($chapter->created_at)->setTimezone(8);
+            $txt .= Carbon::parse($chapter->created_at)->setTimezone('Asia/Shanghai');
             if($chapter->created_at < $chapter->edited_at){
-                $txt.= "/".Carbon::parse($chapter->edited_at)->setTimezone(8);
+                $txt.= "/".Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai');
             }
             $txt .= "\n";
             if($chapter->mainpost->title){$txt .= $chapter->mainpost->title."\n";}

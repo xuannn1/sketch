@@ -27,8 +27,9 @@
                 <th>{{ $chapter->characters }}</th>
                 <th>{{ $chapter->viewed }}</th>
                 <th>{{ $chapter->responded }}</th>
-                <th>{{ Carbon\Carbon::parse($chapter->created_at)->setTimezone(8) }}</th>
-                <th>{{ $chapter->edited_at }}</th>
+                <th>{{ Carbon\Carbon::parse($chapter->created_at)->setTimezone('Asia/Shanghai') }}</th>
+                <th>{{ Carbon\Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai')
+                     }}</th>
             </tr>
             @endforeach
         </tbody>
