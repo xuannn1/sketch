@@ -40,7 +40,7 @@ class StoreBook extends FormRequest
             'channel_id' => 'required|numeric|min:1|max:2',
             'label_id' => 'required|numeric|min:1',
             'book_status' => 'required|numeric|min:1|max:3',
-            'book_length' => 'required|numeric|min:1|max:3',
+            'book_length' => 'required|numeric|min:1|max:4',
             'sexual_orientation' => 'required|numeric|min:1|max:7',
             'bianyuan' =>'required',
             'majia' => 'string|max:10',
