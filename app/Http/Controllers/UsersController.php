@@ -287,7 +287,7 @@ class UsersController extends Controller
     public function qiandao()
     {
         $user = Auth::user();
-        if ($user->lastrewarded_at <= Carbon::today()->subHour(1)->toDateTimeString())
+        if ($user->lastrewarded_at <= Carbon::today()->subHours(2)->toDateTimeString())
         {
             $message = DB::transaction(function () use($user){
                 if ($user->lastrewarded_at > Carbon::now()->subdays(2)->toDateTimeString()) {

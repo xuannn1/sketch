@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Quote;
 use Auth;
+use Carbon\Carbon;
 
 class QuotesController extends Controller
 {
@@ -18,7 +19,7 @@ class QuotesController extends Controller
     {
         $data = [];
         $this->validate($request, [
-            'quote' => 'required|string|max:80',
+            'quote' => 'required|string|max:80|unique:quotes',
         ]);
         $data['quote'] = request('quote');
         $data['user_id'] = auth()->id();
@@ -32,7 +33,7 @@ class QuotesController extends Controller
         if (!$this->isDuplicateQuote($data)){
             $quote = Quote::create($data);
         }else{
-            return redirect()->back()->with('warning','您已成功提交题头，请不要重复提交哦！');
+            return back()->with('warning','请不要重复提交题头！');
         }
         return back()->with('success','成功提交题头！');
     }
@@ -42,7 +43,7 @@ class QuotesController extends Controller
         $last_quote = Quote::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        return count($last_quote) && strcmp($last_quote->quote, $data['quote']) === 0;
+        return count($last_quote) && (strcmp($last_quote->quote, $data['quote']) === 0)||($last_quote->created_at>Carbon::today()->subHours(2)->toDateTimeString());
     }
 
     public function create(){
