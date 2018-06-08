@@ -24,6 +24,7 @@
     </div>
     <!-- 是否附加作业信息 -->
     @if($thread->homework_id>0)
+    <br>
         @include('homeworks._registered_students')
         @if($thread->show_homework_profile)
             @include('homeworks._registered_homeworks')

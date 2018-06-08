@@ -58,32 +58,51 @@ class HomeworksController extends Controller
     }
     public function register(Homework $homework, Request $request)
     {
-
         $user = Auth::user();
         $this->validate($request, [
             'majia' => 'string|max:10',
         ]);
-        if($user->no_registration>Carbon::now()){
+        if($homework->registered->find($user->id)){
+            return back()->with("info", "您已报名，请勿重复报名");
+        }elseif($user->no_registration>Carbon::now()){
             return back()->with("danger", "抱歉，您被暂时禁止报名");
         }else{
-            if($homework->registered->count() >= $homework->participants){
-                return back()->with("info", "抱歉，报名已满");
-            }elseif($homework->registered->find($user->id)){
-                return back()->with("info", "您已报名，请勿重复报名");
-            }else{
-                if ($user->group<15){//开通作业期间临时权限
-                    $user->group=15;
-                    $user->save();
+            if($homework->register_at>Carbon::now()){//两波报名都未开始
+                return back()->with("info", "抱歉，报名还未开始");
+            }elseif($homework->register_at_b>Carbon::now()){//第一波报名开始了，第二波没有，只看按照第一波的要求能不能报名
+                if($homework->register_number<=0){
+                    return back()->with("info", "抱歉，本波报名人数已满，无法报名。");
+                }elseif($user->sangdian<$homework->hold_sangdian){
+                    return back()->with("info", "抱歉，您的丧点不足，无法报名。");
+                }else{
+                    $homework->decrement('register_number');//第一波，报名了，去除第一波名额
                 }
-                $registration = RegisterHomework::create([
-                    'homework_id' => $homework->id,
-                    'user_id' => $user->id,
-                    'majia' => request('majia'),
-                ]);//报名参加本次作业
-                return redirect()->back()->with("success", "您已成功加入作业小组");
+            }else{//第二波已经开始
+                if(($homework->register_number+$homework->register_number_b)<=0){
+                    return back()->with("info", "抱歉，报名人数已满，无法报名。");
+                }elseif($user->sangdian<$homework->hold_sangdian){
+                    return back()->with("info", "抱歉，您的丧点不足，无法报名。");
+                }else{//去除无论哪一波报名名额的计算
+                    if ($homework->register_number>0){
+                        $homework->decrement('register_number');
+                    }else{
+                        $homework->decrement('register_number_b');
+                    }
+                }
             }
+            //在之前的条件中，都没有离开的，应该是已经报上名了，那么下面给予权限
+            if ($user->group<15){//本来权限不足的，开通作业期间临时权限，但是扣除丧点
+                $user->group=15;
+                $user->sangdian -= $homework->hold_sangdian;
+                $user->save();
+            }
+            $registration = RegisterHomework::create([
+                'homework_id' => $homework->id,
+                'user_id' => $user->id,
+                'majia' => request('majia'),
+            ]);//报名参加本次作业
+            return redirect()->back()->with("success", "您已成功加入作业小组");
         }
-
         return redirect()->back()->with("danger", "出现了问题");
     }
     public function sendreminderform(Homework $homework)
