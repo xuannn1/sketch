@@ -40,7 +40,7 @@ class HomeworksController extends Controller
             'user_id' => $user->id,
             'anonymous' => false,
             'lastresponded_at' => Carbon::now(),
-            'label_id' => 11,//needs adjust for now's datafile
+            'label_id' => 12,//needs adjust for now's datafile
             'brief' => ' ',
             'homework_id' => $homework->id,
             'body'=>request('requirement'),
