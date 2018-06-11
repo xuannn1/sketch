@@ -84,7 +84,7 @@ class StoreChapter extends FormRequest
 
                 if ($chapter_data['characters'] > config('constants.update_min')){
                     $book->update(['lastaddedchapter_at' => Carbon::now()]);
-                    $thread->user->reward("regular_chapter");
+                    $thread->user->reward("standard_chapter");
                 }else{
                     $thread->user->reward("short_chapter");
                 }
