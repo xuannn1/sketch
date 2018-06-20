@@ -29,7 +29,7 @@ class QuestionsController extends Controller
 
     public function index(User $user)
     {
-        $questions=$user->questions()->orderBy('created_at', 'desc')->paginate(config('constants.index_per_page'));
+        $questions=$user->questions()->orderBy('created_at', 'desc')->paginate(config('constants.items_per_part'));
         return view('questions.index', compact('questions','user'));
     }
 
