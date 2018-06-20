@@ -15,7 +15,7 @@
             </div>
             <div class="panel-body">
                 @foreach ($questions as $question)
-                <div class="row {{ $question->answer_id>0? 'grayout':'' }} main-text indentation">
+                <div class="row {{ $question->answer_id>0? 'grayout':'' }} main-text ">
                     <div class="col-xs-2">
                         {{ Carbon\Carbon::parse($question->created_at)->diffForHumans() }}提问
                     </div>
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 @if($question->answer_id>0)
-                    <div class="row main-text indentation">
+                    <div class="row main-text">
                         <div class="col-xs-2">
                             {{ Carbon\Carbon::parse($question->answer->created_at)->diffForHumans() }}回答
                             @if($question->answer->updated_at > $question->answer->created_at)
