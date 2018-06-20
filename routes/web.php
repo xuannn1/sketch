@@ -194,3 +194,9 @@
 
 }
     Route::resource('polls', 'PollsController');
+
+//留言箱功能
+{
+    Route::get('/users/{user}/question','QuestionsController@create')->name('question.create');//加载新建问题页面
+    Route::post('/users/{user}/question','QuestionsController@store')->name('question.store');//储存问题路径
+}

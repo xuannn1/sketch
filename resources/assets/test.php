@@ -131,3 +131,21 @@ $users = App\Models\User::all();
 foreach($users as $user){
     $user->increment('unread_reminders');
 }
+
+
+
+//manually add this message
+$receivers = User::all();
+$message_body = 453;
+foreach($receivers as $receiver){
+    if ($receiver->id>=23135){
+        \App\Models\Message::create([
+          'message_body' => $message_body,
+          'poster_id' => 1,
+          'receiver_id' => $receiver->id,
+          'private' => false,
+        ]);
+        $receiver->increment('message_reminders');
+        $receiver->increment('unread_reminders');
+    }
+}
