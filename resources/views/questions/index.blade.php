@@ -10,7 +10,9 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div>
-                    <a class="h4" href="{{ route('questions.create', $user) }}">{{ $user->name }}的全部问题</a>
+                    <a href="{{ route('questions.index', $user) }}" class="h4">{{ $user->name }}问答记录</a>
+                    <a class="h4 pull-right" href="{{ route('questions.create', $user) }}">提新问题</a>
+
                 </div>
             </div>
             <div class="panel-body">
