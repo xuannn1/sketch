@@ -13,5 +13,20 @@ class Question extends Model
     protected $dates = ['deleted_at'];
     protected $guarded = [];
 
-    
+    public function questioner()
+    {
+        return $this->belongsTo(User::class, 'questioner_id')->select(['id','name'])->withDefault();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withDefault();
+    }
+
+    public function answer()
+    {
+        return $this->belongsTo(Answer::class, 'answer_id')->withDefault();
+    }
+
+
 }

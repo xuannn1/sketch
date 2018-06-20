@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Question;
+use App\Models\Answer;
 use App\Models\User;
 use Carbon\Carbon;
 use Auth;
@@ -13,25 +14,30 @@ class QuestionsController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'only' => [],
+            'only' => ['answer'],
         ]);
     }
 
     public function create(User $user)
     {
         if ((Auth::check())&&(Auth::id()==$user->id)){
-            $questions=$user->questions()->orderBy('created_at', 'desc')->paginate(config('constants.index_per_page'));
-            return view('questions.index', compact('questions','user'));
+            return redirect()->route('questions.index', $user);
         }else{
             return view('questions.create_question', compact('user'));
         }
+    }
+
+    public function index(User $user)
+    {
+        $questions=$user->questions()->orderBy('created_at', 'desc')->paginate(config('constants.index_per_page'));
+        return view('questions.index', compact('questions','user'));
     }
 
     public function store(Request $request, User $user)
     {
         $data = [];
         $this->validate($request, [
-            'body' => 'required|string|max:500',
+            'body' => 'required|string|min:10|max:500',
         ]);
         $data['question_body'] = request('body');
         $data['user_id'] = $user->id;
@@ -53,5 +59,22 @@ class QuestionsController extends Controller
         ->orderBy('id', 'desc')
         ->first();
         return (count($last_question) && ((strcmp($last_question->body, $data['question_body']) === 0)||($last_question->created_at>Carbon::today()->subHours(2)->toDateTimeString())));
+    }
+
+    public function answer(User $user, Question $question, Request $request)
+    {
+        if(Auth::check()&&Auth::id()==$question->user_id){
+            $data = [];
+            $this->validate($request, [
+                'body' => 'required|string|max:5000',
+            ]);
+            $data['answer_body'] = request('body');
+            $data['question_id'] = $question->id;
+            $answer = Answer::updateOrCreate($data);
+            $question->update(['answer_id'=>$answer->id]);
+            return back()->with('success','成功提交回答！');
+        }else{
+            return back()->with('danger','请您登陆正确的账户');
+        }
     }
 }
