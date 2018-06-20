@@ -27,9 +27,25 @@
                 <div class="row">
                     <div class="col-xs-2">
                         {{ Carbon\Carbon::parse($question->answer->created_at)->diffForHumans() }}回答
+                        @if($question->answer->updated_at > $question->answer->created_at)
+                        {{ Carbon\Carbon::parse($question->answer->updated_at)->diffForHumans() }}修改
+                        @endif
                     </div>
                     <div class="col-xs-10">
                         {!! Helper::wrapParagraphs($question->answer->answer_body) !!}
+                        @if((Auth::check())&&(Auth::id()==$user->id))
+                        <button onclick="document.getElementById('answeringquestion{{$question->id}}').style.display = 'block'" class="btn btn-primary btn-sm sosad-button pull-right">修改回答</button>
+                        @endif
+                    </div>
+                    <div id="answeringquestion{{$question->id}}" style="display:none">
+                        <form method="POST" action="{{ route('questions.answer', ['user'=>$user,'question'=>$question]) }}" name="create_answer_to_question">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <textarea id="answerofquestion{{$question->id}}" name="body" rows="10" class="form-control" data-provide="markdown" placeholder="问题正文">{{ $question->answer->answer_body }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary sosad-button">发布回答</button>
+                            <br>
+                        </form>
                     </div>
                 </div>
                 <hr>

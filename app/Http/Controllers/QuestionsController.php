@@ -68,9 +68,10 @@ class QuestionsController extends Controller
             $this->validate($request, [
                 'body' => 'required|string|max:5000',
             ]);
-            $data['answer_body'] = request('body');
-            $data['question_id'] = $question->id;
-            $answer = Answer::updateOrCreate($data);
+            $answer = Answer::updateOrCreate(
+                ['question_id' => $question->id],
+                ['answer_body' => request('body')]
+            );
             $question->update(['answer_id'=>$answer->id]);
             return back()->with('success','成功提交回答！');
         }else{
