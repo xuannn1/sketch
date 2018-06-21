@@ -76,6 +76,17 @@
                 @endif
             </div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>系统消息：</h4>
+                @include('messages._system_reminders')
+                @if($system_reminders->hasMorePages())
+                <div class="text-center">
+                    <a href="{{ route('questions.index', Auth::id()) }}">查看全部</a>
+                </div>
+                @endif
+            </div>
+        </div>
     </div>
 </div>
 @stop

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Question;
 use App\Models\Answer;
 use App\Models\User;
+use App\Models\Activity;
 use Carbon\Carbon;
 use Auth;
 
@@ -47,8 +48,15 @@ class QuestionsController extends Controller
         }
         if (!$this->isDuplicateQuestion($data)){
             $question = Question::create($data);
+            $question_activity = Activity::create([
+               'type' => 6,
+               'item_id' => $question->id,
+               'user_id' => $user->id,
+            ]);
+            $user->increment('system_reminders');
+            $user->increment('unread_reminders');
         }else{
-            return back()->with('warning','您已提交问题，请不要重复提交！');
+            return back()->with('warning','一IP一天只能提一个问题，您已提交问题，请不要重复提交！');
         }
         return back()->with('success','成功提交问题！');
     }

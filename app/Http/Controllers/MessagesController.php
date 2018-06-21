@@ -121,6 +121,7 @@ class MessagesController extends Controller
             ->simplePaginate($paginate);
         }
     }
+
     public function findmessages($unread, $paginate)//1:show unread activities;0:show all activities
     {
         if ($unread ==1){
@@ -200,7 +201,8 @@ class MessagesController extends Controller
         $postcomments = $this->findpostcomments(0, config('constants.index_per_part'));
         $replies = $this->findreplies(0, config('constants.index_per_part'));
         $upvotes = $this->findupvotes(0, config('constants.index_per_part'));
-        return view('messages.index', compact('posts','postcomments','replies','messages','upvotes','group_messages'));
+        $system_reminders = $this->findsystemsreminders(0, config('constants.index_per_part'));
+        return view('messages.index', compact('messages','posts','postcomments','replies','upvotes','system_reminders'));
     }
     public function unread()//1:show unread activities;0:show all activities
     {
@@ -211,7 +213,8 @@ class MessagesController extends Controller
         $postcomments = $this->findpostcomments(1, config('constants.index_per_part'));
         $replies = $this->findreplies(1, config('constants.index_per_part'));
         $upvotes = $this->findupvotes(1, config('constants.index_per_part'));
-        return view('messages.unread', compact('posts','postcomments','replies','messages','upvotes','group_messages'));
+        $system_reminders = $this->findsystemsreminders(1, config('constants.index_per_part'));
+        return view('messages.unread', compact('messages','posts','postcomments','replies','upvotes','system_reminders'));
     }
     public function messagebox()//show all messages
     {
@@ -259,6 +262,7 @@ class MessagesController extends Controller
         Auth::user()->postcomment_reminders = 0;
         Auth::user()->message_reminders = 0;
         Auth::user()->upvote_reminders = 0;
+        Auth::user()->system_reminders = 0;
         Auth::user()->save();
         return redirect()->back()->with("success", "您已清除所有未读消息提醒");
     }
@@ -327,5 +331,25 @@ class MessagesController extends Controller
         $user->no_upvote_reminders = 0;
         $user->save();
         return 'works';
+    }
+
+
+    public function findsystemsreminders($unread, $paginate)//1:show unread activities;0:show all activities
+    {
+        $query = DB::table('activities')
+        ->join('questions',function($join)
+        {
+            $join->where('activities.type','=',6);
+            $join->on('activities.item_id','=','questions.id')
+                ->where('questions.deleted_at','=',null);
+        });
+        if ($unread==1) { $query->where('activities.seen','=','false'); }
+        $system_reminders = $query
+        ->where('activities.user_id','=',Auth::id())
+        ->select('activities.*','questions.question_body','questions.created_at')
+        ->orderBy('activities.id','desc')
+        ->simplePaginate($paginate);
+        //$activity_type = config('constants.activities');
+        return $system_reminders;
     }
 }

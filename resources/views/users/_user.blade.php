@@ -8,7 +8,9 @@
 <div class="row h5 text-center stat">
     <span><a href="{{route('users.followings', $user->id)}}">关注：{{ $user->followings()->count() }}</a></span>
     @include('users._follow_button')
+    &nbsp;&nbsp;
     <a type="button" class="btn btn-xs btn-primary sosad-button" href="{{ route('questions.create', $user) }}">问题箱</a>
+    &nbsp;&nbsp;
     @include('users._message_button')
     <span><a href="{{route('users.followers', $user->id)}}">粉丝：{{ $user->followers()->count() }}</a></span>
 </div>
