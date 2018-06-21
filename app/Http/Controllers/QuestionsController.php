@@ -37,7 +37,7 @@ class QuestionsController extends Controller
     public function store(Request $request, User $user)
     {
         $data = [];
-        $this->validate($request, [
+        $request->validate([
             'body' => 'required|string|min:10|max:500',
         ]);
         $data['question_body'] = request('body');
