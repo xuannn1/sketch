@@ -48,7 +48,7 @@ class CollectionsController extends Controller
         if((!$collection_list)||($collection_list->user_id==Auth::id())){
             if((request('item_type')==1)||(request('item_type')==2)){
                 $thread = Thread::find(request('item_id'));
-                $collection = $thread->collection(Auth::id(),request('collection_list_id'));
+                $collection = Collection::where('user_id',Auth::id())->where('collection_list_id',request('collection_list_id'))->where('item_id',request('item_id'))->first();
                 if($collection){
                     $data['info']="您已收藏本文，无需重复收藏~";
                 }else{
