@@ -52,13 +52,13 @@
     <!-- 书本文案 -->
     <div class="panel-body text-center main-text">
         @if($thread->mainpost->markdown)
-        {!! Helper::sosadMarkdown($thread->body) !!}
+        {!! Helper::sosadMarkdown($thread->mainpost->body) !!}
         @else
-        {!! Helper::wrapParagraphs($thread->body) !!}
+        {!! Helper::wrapParagraphs($thread->mainpost->body) !!}
         @endif
     </div>
     <div class="">
         <!-- 这个地方，是整本书的信息汇总：总字数，阅读数，回应数，下载数 -->
-        <span class = "pull-right smaller-10"><em><span class="glyphicon glyphicon-pencil"></span>{{ $book->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon-comment"></span>{{ $thread->responded }}/<span class="glyphicon glyphicon-save"></span>{{ $thread->downloaded }}</em></span>
+        <span class = "pull-right smaller-10"><em><span class="glyphicon glyphicon-pencil"></span>{{ $book->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon-comment"></span>{{ $thread->responded }}/<span class="glyphicon glyphicon-save"></span>{{ $thread->downloaded }}</em>&nbsp;&nbsp;<span><a href="{{ route('download.index', $thread) }}">下载</a></span>
     </div>
 </div>

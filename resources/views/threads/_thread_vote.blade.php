@@ -3,7 +3,7 @@
         @if((!$thread->noreply)&&(!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id())))
         <a class="btn btn-sm btn-primary sosad-button" href="#replyToThread">回复</a>
         @endif
-        <button class="btn btn-sm btn-success sosad-button" id="threadcollection{{$thread->id}}" onclick="thread_add_to_collection({{$thread->id}})">收藏{{ $thread->collection }}</button>
+        <button class="btn btn-sm btn-success sosad-button" id="itemcollection{{$thread->id}}" onclick="item_add_to_collection({{$thread->id}},1,0)">收藏{{ $thread->collection }}</button>
     </span>
     <span>
         @if ((Auth::id() == $thread->user_id)&&(!$thread->locked))

@@ -11,6 +11,13 @@ return [
    'default_user_group' => 10,
    'default_majia' => '匿名咸鱼',
 
+   'collection_type_info' => [
+      1 => '书籍收藏单',
+      2 => '讨论贴收藏单',
+      3 => '回帖收藏单',
+      4 => '收藏单の收藏单',
+   ],
+
    'book_info' =>[
       'originality_info' => [
          0 => '同人',
@@ -107,7 +114,7 @@ return [
       7 => [//可以按扣除咸鱼／丧点的方式发私信给陌生人（未做）
          'experience_points' => 1000,
          'xianyu' => 50,
-         'sangdian' => 15,
+         'sangdian' => 25,
       ],
    ],
    'word_filter' => [

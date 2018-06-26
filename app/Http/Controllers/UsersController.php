@@ -308,6 +308,7 @@ class UsersController extends Controller
                 $user->increment('jifen', 5*$reward_base);
                 $user->increment('experience_points', 5*$reward_base);
                 $user->message_limit = $user->user_level;
+                $user->collection_list_limit = $user->user_level;
                 $user->save();
                 if($user->checklevelup()){
                     $message .="您的个人等级已提高!";

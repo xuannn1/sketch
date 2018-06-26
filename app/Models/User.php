@@ -68,15 +68,36 @@ class User extends Authenticatable
         return $this->hasMany(Status::class);
     }
 
-    public function collected_books()
+    public function collected_books()//update
     {
-        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->where('book_id', '>', 0)->withPivot('updated', 'keep_updated');
+        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'item_id')->wherePivot('collection_list_id', 0)->where('book_id', '>', 0)->withPivot('updated', 'keep_updated');
     }
 
     public function collected_threads()
     {
-        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->where('book_id', '=', 0)->withPivot('updated', 'keep_updated');
+        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'item_id')->wherePivot('collection_list_id', 0)->where('book_id', '=', 0)->withPivot('updated', 'keep_updated');
     }
+
+    public function own_collection_lists()//自己的收藏单
+    {
+        return $this->hasMany(CollectionList::class,'user_id')->where('type','<>',4);
+    }
+
+    public function own_collection_book_lists()//自己的书籍收藏单
+    {
+        return $this->hasMany(CollectionList::class,'user_id')->where('type','=',1);
+    }
+
+    public function own_collection_thread_lists()//自己的讨论帖收藏单
+    {
+        return $this->hasMany(CollectionList::class,'user_id')->where('type','=',2);
+    }
+
+    public function collected_list()//收藏的，别人的收藏单
+    {
+        return $this->hasOne(CollectionList::class)->where('type',4)->withDefault();
+    }
+
     public function findrecord($post_id)
     {
         return VotePosts::where('user_id', '=', $this->id)->where('post_id', '=', $post_id)->first();

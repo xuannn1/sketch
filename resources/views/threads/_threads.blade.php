@@ -1,10 +1,22 @@
 @foreach($threads as $thread)
-<article class="{{ 'thread'.$thread->id }}">
+<article class="{{ 'item2id'.$thread->id }}">
     <div class="row">
         <div class="col-xs-12 h5">
-            @if($show_as_collections)
-            <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionThread({{$thread->id}})">取消收藏</button>
+            @if($show_as_collections==1)
+            <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{$thread->id}},2,0)">取消收藏</button>
             <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$thread->id}})" Id="togglekeepupdatethread{{$thread->id}}">{{$thread->keep_updated?'不再提醒':'接收提醒'}}</button>
+            <span class="button-group">
+                <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" data-toggle="dropdown">添加到收藏单
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach($own_collection_thread_lists as $list)
+                    <li><a type="button" name="button" onClick="item_add_to_collection({{$thread->id}},2,{{$list->id}})">{{$list->title}}</a></li>
+                    @endforeach
+                </ul>
+            </span>
+            @elseif($show_as_collections==2)
+            <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{$thread->id}},2,{{$collection_list->id}})">取消收藏</button>
             @endif
             <!-- thread title -->
             <span>

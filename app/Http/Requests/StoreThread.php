@@ -40,9 +40,10 @@ class StoreThread extends FormRequest
     }
     public function generateThread($channel_id)
     {
-        $thread_data = $this->only('title','brief','body');
-        $post_data = [];
+        $thread_data = $this->only('title','brief');
+        $post_data = $this->only('body');
         $post_data['user_ip'] = $this->getClientIp();
+
         $thread_data['channel_id']=$channel_id;
         $thread_data['label_id']=(int)$this->label;
         //查看标签是否符合权限
@@ -70,7 +71,7 @@ class StoreThread extends FormRequest
         $thread_data['user_id'] = auth()->id();
         $post_data['user_id'] = auth()->id();
 
-        if (!$this->isDuplicateThread($thread_data)){
+        if (!$this->isDuplicateThread($thread_data, $post_data)){
             $thread = DB::transaction(function () use($thread_data, $post_data) {
                 $thread = Thread::create($thread_data);
                 $post_data['thread_id'] = $thread->id;
@@ -85,17 +86,18 @@ class StoreThread extends FormRequest
         return $thread;
     }
 
-    public function isDuplicateThread($data)
+    public function isDuplicateThread($thread_data, $post_data)
     {
         $last_thread = Thread::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        return count($last_thread) && strcmp($last_thread->title.$last_thread->brief.$last_thread->body, $data['title'].$data['brief'].$data['body']) === 0;
+        return count($last_thread) && strcmp($last_thread->title.$last_thread->brief.$last_thread->mainpost->body, $thread_data['title'].$thread_data['brief'].$post_data['body']) === 0;
     }
 
     public function updateThread(Thread $thread)
     {
-        $thread_data = $this->only('title','brief','body');
+        $thread_data = $this->only('title','brief');
+        $post_data = $this->only('body');
         $thread_data['label_id']=(int)$this->label;
         //查看标签是否符合权限
         if(\App\Models\Label::find($thread_data['label_id'])->channel_id!=$thread->channel_id){

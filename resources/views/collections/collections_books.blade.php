@@ -8,7 +8,7 @@
             <div class="panel-heading">
                 <h3>我的收藏</h3>
                 <ul class="nav nav-tabs">
-                    @include('users._collection_stats')
+                    @include('collections._collection_stats')
                 </ul>
             </div>
             <div class="panel-body">

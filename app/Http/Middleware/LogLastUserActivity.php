@@ -21,6 +21,7 @@ class LogLastUserActivity
         if(Auth::check()) {
             $expiresAt = Carbon::now()->addMinutes(30);
             Cache::put('-usr-on-' . Auth::user()->id, true, $expiresAt);
+            Auth::user()->increment('clicks');
         }
         return $next($request);
     }

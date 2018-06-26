@@ -91,7 +91,6 @@ class StoreBook extends FormRequest
         while(Helper::convert_to_public($thread_data['brief'])!=$thread_data['brief']){
            $thread_data['brief'] = Helper::convert_to_public($thread_data['brief']);
         }
-        $thread_data['body']=$this->wenan;
         $thread_data['lastresponded_at']=Carbon::now();
         $thread_data['user_id'] = auth()->id();
         $thread_data['bianyuan'] = $this->bianyuan=='1'? 1:0;
@@ -102,6 +101,7 @@ class StoreBook extends FormRequest
 
         //post_data
         $post_data = [];
+        $post_data['body']=$this->wenan;
         $post_data['user_ip'] = $this->getClientIp();
         $post_data['user_id'] = auth()->id();
         $post_data['markdown']=$this->markdown ? true:false;
@@ -123,7 +123,7 @@ class StoreBook extends FormRequest
             abort(403,'数据冲突');
         }
 
-        if (!$this->isDuplicateBook($thread_data)){
+        if (!$this->isDuplicateBook($thread_data, $post_data)){
             $thread = DB::transaction(function () use($book_data,$thread_data,$post_data,$tags_data,$tongren_data) {
                 $book = Book::create($book_data);
                 $thread_data['book_id'] = $book->id;
@@ -147,12 +147,12 @@ class StoreBook extends FormRequest
         return $thread;
     }
 
-    public function isDuplicateBook($data)
+    public function isDuplicateBook($thread_data, $post_data)
     {
         $last_book = Thread::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        return count($last_book) && strcmp($last_book->title.$last_book->brief.$last_book->body, $data['title'].$data['brief'].$data['body']) === 0;
+        return count($last_book) && strcmp($last_book->title.$last_book->brief.$last_book->mainpost->body, $thread_data['title'].$thread_data['brief'].$post_data['body']) === 0;
     }
 
     public function tongren_data_sync($data)
@@ -183,7 +183,6 @@ class StoreBook extends FormRequest
            $thread_data['brief'] = Helper::convert_to_public($thread_data['brief']);
         }
         $thread_data['anonymous'] = $this->anonymous? 1:0;
-        $thread_data['body']=$this->wenan;
         $thread_data['edited_at']=Carbon::now();
         $thread_data['bianyuan'] = $this->bianyuan=='1'? true:false;
         $thread_data['public']=$this->public ? true:false;
@@ -192,7 +191,7 @@ class StoreBook extends FormRequest
         $thread_data['download_as_thread']=$this->download_as_thread ? true:false;
 
         //post_data
-        $post_data = [];
+        $post_data['body']=$this->wenan;
         $post_data['markdown']=$this->markdown ? true:false;
         $post_data['indentation']=$this->indentation ? true:false;
         //tags_data

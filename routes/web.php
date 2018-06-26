@@ -149,10 +149,19 @@
    Route::get('/threads/{thread}/collection', 'CollectionsController@store')->name('collection.store')->middleware('filter_thread');//收藏某个主题帖
    Route::get('/collections/books', 'CollectionsController@books')->name('collections.books');//显示收藏夹内容（首先是书）
    Route::get('/collections/threads', 'CollectionsController@threads')->name('collections.threads');//显示收藏夹内容（其他讨论）
-   Route::get('/collections/statuses', 'CollectionsController@statuses')->name('collections.statuses');//显示收藏夹内容（其他讨论）
+   Route::get('/collections/statuses', 'CollectionsController@statuses')->name('collections.statuses');//显示收藏夹内容（用户动态）
+   Route::get('/collections/collection_lists', 'CollectionsController@collection_lists')->name('collections.collection_lists');//显示收藏夹内容（收藏列表中的更新）
    Route::post('/collections/cancel', 'CollectionsController@cancel')->name('collection.cancel');//取消收藏某个主题帖
+   Route::post('/collections/store', 'CollectionsController@storeitem')->name('collection.storeitem');//收藏某个主题帖
    Route::post('/collections/togglekeepupdate', 'CollectionsController@togglekeepupdate')->name('collection.togglekeepupdate');//是否订阅更新提醒
    Route::post('/collections/clearupdates', 'CollectionsController@clearupdates')->name('collection.clearupdates');//清零更新提醒
+
+   Route::get('/collections/collection_lists/create', 'CollectionsController@collection_list_create')->name('collections.collection_list_create');//新增收藏夹
+   Route::post('/collections/collection_lists', 'CollectionsController@collection_list_store')->name('collections.collection_list_store');//储存新收藏夹
+   Route::get('/collections/collection_lists/{collection_list}', 'CollectionsController@collection_list_show')->name('collections.collection_list_show');//展示收藏单内容
+   Route::get('/collections/collection_lists/{collection_list}/edit', 'CollectionsController@collection_list_edit')->name('collections.collection_list_edit');//修改收藏单内容
+   Route::patch('/collections/collection_lists/{collection_list}', 'CollectionsController@collection_list_update')->name('collections.collection_list_update');//展示收藏单内容
+   Route::get('/collection_lists', 'CollectionsController@all_collection_index')->name('collection_lists.index');
 }
 
 {//消息提醒模块

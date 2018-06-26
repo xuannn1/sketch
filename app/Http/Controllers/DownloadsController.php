@@ -55,7 +55,7 @@ class DownloadsController extends Controller
         foreach ($thread->tags as $tag){
             $txt .= '-'.$tag->tagname;
         }
-        $txt .="\n文案：\n".$this->process_text($thread->body,$thread->mainpost->markdown,$thread->mainpost->indentation)."\n";
+        $txt .="\n文案：\n".$this->process_text($thread->mainpost->body,$thread->mainpost->markdown,$thread->mainpost->indentation)."\n";
         return $txt;
     }
 
@@ -69,7 +69,7 @@ class DownloadsController extends Controller
         if($thread->created_at < $thread->edited_at){
             $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone('Asia/Shanghai');
         }
-        $txt .="\n正文：\n".$this->process_text($thread->body,$thread->mainpost->markdown,$thread->mainpost->indentation);
+        $txt .="\n正文：\n".$this->process_text($thread->mainpost->body,$thread->mainpost->markdown,$thread->mainpost->indentation);
         return $txt;
     }
     public function reply_to_sth($post)

@@ -1,10 +1,22 @@
 @foreach($books as $book)
-<article class="{{ 'thread'.$book->thread_id }}">
+<article class="{{ 'item1id'.$book->thread_id }}">
     <div class="row">
-        <div class="col-xs-12 h5 narrow">
-            @if($show_as_collections)
-            <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionThread({{$book->thread_id}})">取消收藏</button>
+        <div class="col-xs-12 h5">
+            @if($show_as_collections==1)
+            <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{ $book->thread_id }},1,0)">取消收藏</button>
             <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$book->thread_id}})" Id="togglekeepupdatethread{{$book->thread_id}}">{{$book->keep_updated?'不再提醒':'接收提醒'}}</button>
+            <span class="button-group">
+                <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" data-toggle="dropdown">添加到收藏单
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach($own_collection_book_lists as $list)
+                    <li><a type="button" name="button" onClick="item_add_to_collection({{$book->thread_id}},1,{{$list->id}})">{{$list->title}}</a></li>
+                    @endforeach
+                </ul>
+            </span>
+            @elseif($show_as_collections==2)
+            <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{ $book->thread_id }},1,{{ $collection_list->id }})">取消收藏</button>
             @endif
             <span class="bigger-20">
                 <strong>
@@ -38,7 +50,7 @@
                 <span class="glyphicon glyphicon-warning-sign"></span>
                 @endif
             </small>
-            @if(($show_as_collections)&&($book->updated))
+            @if(($show_as_collections==1)&&($book->updated))
             <span class="badge newchapter-badge">有更新</span>
             @endif
             <span class = "pull-right">

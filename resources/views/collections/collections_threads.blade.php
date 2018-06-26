@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', '我关注的动态')
+@section('title', '我的收藏')
 
 @section('content')
 <div class="container-fluid">
@@ -8,13 +8,13 @@
             <div class="panel-heading">
                 <h3>我的收藏</h3>
                 <ul class="nav nav-tabs">
-                    @include('users._collection_stats')
+                    @include('collections._collection_stats')
                 </ul>
             </div>
             <div class="panel-body">
-                {{ $statuses->links() }}
-                @include('statuses._statuses')
-                {{ $statuses->links() }}
+                {{ $threads->links() }}
+                @include('threads._threads')
+                {{ $threads->links() }}
             </div>
         </div>
     </div>

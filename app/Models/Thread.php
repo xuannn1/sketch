@@ -104,9 +104,14 @@ class Thread extends Model
         return ($recent_xianyus);
     }
 
-    public function collection(User $user)
+    public function collection($user_id, $collection_list_id)
     {
-        return Collection::where('thread_id', $this->id)->where('user_id', $user->id)->first();
+        if($collection_list_id==0){
+            return Collection::where('item_id', $this->id)->where('user_id', $user_id)->first();
+        }else{
+            return Collection::where('item_id', $this->id)->where('collection_list_id', $collection_list_id)->first();
+        }
+
     }
 
     public function homework()

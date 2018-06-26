@@ -149,3 +149,20 @@ foreach($receivers as $receiver){
         $receiver->increment('unread_reminders');
     }
 }
+
+
+//updating all item_id = thread_id
+\App\Models\Collection::where('item_id','=',0)->update(["item_id" => DB::raw("`thread_id`")]);
+
+//updating all thread_id = item_id
+\App\Models\Collection::whereNull('thread_id')->update(["thread_id" => DB::raw("`item_id`")]);
+
+//updating all post->body as thread->imap_body
+$threads = Thread::all();
+foreach ($threads as $thread){
+    $post = $thread->mainpost;
+    $post->body = $thread->body;
+    $thread->body = null;
+    $post->save();
+    $thread->save();
+}
