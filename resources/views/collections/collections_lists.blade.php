@@ -13,11 +13,11 @@
             </div>
             <div class="panel-body">
                 <h4><a href="">我建立的收藏单：</a></h4>
-                <?php $collection_lists = $own_collection_lists ?>
+                <?php $collection_lists = $own_collection_lists; $show_as_collections=0; ?>
                 @include('collections._collection_lists')
             </div>
             <div class="panel-body">
-                <?php $collection_lists = $collected_lists ?>
+                <?php $collection_lists = $collected_lists ; $show_as_collections=1; ?>
                 <h4><a href="">我收藏的收藏单：</a></h4>
                 @include('collections._collection_lists')
             </div>

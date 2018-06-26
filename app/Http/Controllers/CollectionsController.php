@@ -108,18 +108,20 @@ class CollectionsController extends Controller
                 }
                 $collection->delete();
                 $thread->decrement('collection');
+                return 'worked';
             }else{
                 return 'notwork';
             }
         }elseif(request('item_type')==4){
             $collection_list_to_remove = CollectionList::find(request('item_id'));
-            $collection = Collection::where('user_id',Auth::id())->where('item_id', $collection_list->id)->where('collection_list_id',request('collection_list_id'))->first();
+            $collection = Collection::where('user_id',Auth::id())->where('item_id', request('item_id'))->where('collection_list_id',request('collection_list_id'))->first();
             if($collection){
                 if($collection->collection_list->item_number>0){
                     $collection->collection_list->decrement('item_number');
                 }
                 $collection->delete();
                 $collection_list_to_remove->decrement('collected');
+                return 'worked';
             }else{
                 return 'notwork';
             }
@@ -194,7 +196,7 @@ class CollectionsController extends Controller
         $collections = true;
         Auth::user()->collection_lists_updated = 0;
         Auth::user()->save();
-        return view('collections.collections_lists', compact('own_collection_lists','collected_list','collected_lists','user','updates','collections'))->with('show_as_collections',1)->with('active',3);
+        return view('collections.collections_lists', compact('own_collection_lists','collected_list','collected_lists','user','updates','collections'))->with('active',3);
     }
 
     public function collection_list_store(Request $request)
