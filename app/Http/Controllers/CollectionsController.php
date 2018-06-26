@@ -70,7 +70,7 @@ class CollectionsController extends Controller
                 $collection_list_to_add = CollectionList::find(request('item_id'));
                 $master_collection_list = Auth::user()->collected_list;
                 if($master_collection_list->id>0){
-                    $collection = Collection::where('user_id',Auth::id())->where('collection_list_id',$master_collection_list->id)->first();
+                    $collection = Collection::where('user_id',Auth::id())->where('collection_list_id',$master_collection_list->id)->where('item_id',$collection_list_to_add->id)->first();
                     if($collection){
                         $data['info']="您已收藏本文，无需重复收藏~";
                     }
@@ -89,7 +89,6 @@ class CollectionsController extends Controller
                     $data['success']="您已收藏本文!";
                     $data['collection']=$collection_list_to_add->collected;
                 }
-
             }
             return $data;
         }
