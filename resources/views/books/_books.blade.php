@@ -17,7 +17,7 @@
             </span>
             @elseif($show_as_collections==2)
             <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{ $book->thread_id }},1,{{ $collection_list->id }})">取消收藏</button>
-            <a class="btn btn-xs btn-danger sosad-button hidden cancel-button" href="#" data-toggle="modal" data-target="#TriggerCollectionComment{{ $book->collection_id }}">添加心得</a>
+            <a class="btn btn-xs btn-danger sosad-button hidden cancel-button" href="#" data-toggle="modal" data-target="#TriggerCollectionComment{{ $book->collection_id }}">添加/修改心得</a>
             <div class="modal fade" id="TriggerCollectionComment{{ $book->collection_id }}" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">

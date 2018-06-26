@@ -39,6 +39,7 @@ class CollectionsController extends Controller
                         'user_id' => Auth::id(),
                         'item_id' => $thread->id,
                         'collection_list_id' => request('collection_list_id'),
+                        'lastupdated_at' => Carbon::now(),
                     ]);
                     if($collection_list){
                         $collection_list->increment('item_number');
@@ -77,6 +78,7 @@ class CollectionsController extends Controller
                     'user_id' => Auth::id(),
                     'item_id' => $collection_list_to_add->id,
                     'collection_list_id' => $master_collection_list->id,
+                    'lastupdated_at' => Carbon::now(),
                 ]);
                 $master_collection_list->increment('item_number');
                 $collection_list_to_add->increment('collected');
@@ -95,6 +97,7 @@ class CollectionsController extends Controller
                 'body' => 'required|string|max:2000',
             ]);
             $data = $request->only('body');
+            $data['lastupdated_at'] = Carbon::now();
             $collection->update($data);
             if($collection->collection_list->id){
                 $collection->collection_list->update(['lastupdated_at'=>Carbon::now()]);
@@ -287,7 +290,7 @@ class CollectionsController extends Controller
             ->join('collections','collections.item_id','=','threads.id')
             ->where([['collections.user_id','=',$user_id],['collections.collection_list_id','=',$collection_list_id], ['threads.deleted_at', '=', null],['threads.book_id','>',0]])
             ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','chapters.responded as last_chapter_responded', 'collections.updated as updated','collections.keep_updated as keep_updated','collections.body as collection_body', 'collections.id as collection_id', 'chapters.post_id as last_chapter_post_id','tongrens.tongren_yuanzhu','tongrens.tongren_cp','tongrens.tongren_yuanzhu_tag_id','tongrens.tongren_cp_tag_id','tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname','tongren_cp_tags.tagname as tongren_cp_tagname')
-            ->orderBy('collections.id','desc')
+            ->orderBy('collections.lastupdated_at','desc')
             ->paginate(config('constants.index_per_page'));
             break;
             case "2"://讨论帖收藏单
@@ -296,7 +299,7 @@ class CollectionsController extends Controller
             ->where([['collections.user_id','=',$user_id],['collections.collection_list_id','=',$collection_list_id], ['threads.deleted_at', '=', null],['threads.book_id','=',0]])
             ->select('threads.id', 'threads.id as thread_id', 'threads.user_id','threads.book_id', 'threads.title', 'threads.brief', 'threads.locked', 'threads.public', 'threads.bianyuan', 'threads.anonymous', 'threads.majia', 'threads.noreply', 'threads.viewed', 'threads.responded', 'threads.lastresponded_at', 'threads.channel_id', 'threads.label_id', 'threads.deleted_at', 'threads.created_at',  'threads.edited_at', 'threads.homework_id', 'threads.post_id', 'threads.last_post_id', 'threads.show_homework_profile', 'threads.downloaded',
             'users.name', 'labels.labelname', 'channels.channelname', 'posts.body as last_post_body', 'collections.updated as updated', 'collections.id as collection_id',  'collections.keep_updated as keep_updated', 'collections.body as collection_body')
-            ->orderBy('collections.id','desc')
+            ->orderBy('collections.lastupdated_at','desc')
             ->paginate(config('constants.items_per_page'));
             break;
             case "4"://某人的收藏单的收藏总体
