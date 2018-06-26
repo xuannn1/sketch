@@ -55,7 +55,7 @@ class NewPostListener
             if ($thread->book_id==0){
               DB::table('collections')
               ->join('users','users.id','=','collections.user_id')
-              ->where([['collections.thread_id','=',$thread->id],['collections.keep_updated','=',true],['collections.user_id','<>',$post->user_id]])
+              ->where([['collections.item_id','=',$thread->id],['collections.collection_list_id','=',0],['collections.keep_updated','=',true],['collections.user_id','<>',$post->user_id]])
               ->update(['collections.updated'=>1,'users.collection_threads_updated'=>DB::raw('users.collection_threads_updated + 1')]);
              }
 

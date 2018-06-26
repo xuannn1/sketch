@@ -37,7 +37,7 @@ class PostsController extends Controller
             }
             return back()->with('success', '您已成功回帖');
         }else{
-            return rback()->with('danger', '抱歉，本主题锁定或设为隐私，不能回帖');
+            return back()->with('danger', '抱歉，本主题锁定或设为隐私，不能回帖');
         }
     }
     public function edit(Post $post)
