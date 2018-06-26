@@ -59,7 +59,7 @@ class CollectionsController extends Controller
                     ]);
                     if($collection_list){
                         $collection_list->increment('item_number');
-                        $collection_list->update(['lastresponded_at'=>Carbon::now() ]);
+                        $collection_list->update(['lastupdated_at'=>Carbon::now() ]);
                     }
                     $thread->increment('collection');
                     Auth::user()->update(['lastresponded_at' => Carbon::now() ]);
@@ -68,11 +68,12 @@ class CollectionsController extends Controller
                 }
             }elseif(request('item_type')==4){
                 $collection_list_to_add = CollectionList::find(request('item_id'));
-                $master_collection_list = Auth::user()->collected_list;
-                if($master_collection_list->id>0){
+                $master_collection_list = Auth::user()->collected_list();
+                if($master_collection_list){
                     $collection = Collection::where('user_id',Auth::id())->where('collection_list_id',$master_collection_list->id)->where('item_id',$collection_list_to_add->id)->first();
                     if($collection){
                         $data['info']="您已收藏本收藏单，无需重复收藏~";
+                        return $data;
                     }
                 }else{
                     $master_collection_list = CollectionList::create([
@@ -86,6 +87,7 @@ class CollectionsController extends Controller
                     'item_id' => $collection_list_to_add->id,
                     'collection_list_id' => $master_collection_list->id,
                 ]);
+                $master_collection_list->increment('item_number');
                 $collection_list_to_add->increment('collected');
                 $data['success']="您已收藏本收藏单!";
                 $data['collection']=$collection_list_to_add->collected;
@@ -99,13 +101,27 @@ class CollectionsController extends Controller
     {
         if((request('item_type')==1)||(request('item_type')==2)){
             $thread = Thread::find(request('item_id'));
-            $collection = $thread->collection(Auth::id(),request('collection_list_id'));
+            $collection = Collection::where('user_id',Auth::id())->where('collection_list_id',request('collection_list_id'))->where('item_id',request('item_id'))->first();
             if($collection){
-                $collection->collection_list->decrement('item_number');
+                if($collection->collection_list->item_number>0){
+                    $collection->collection_list->decrement('item_number');
+                }
                 $collection->delete();
                 $thread->decrement('collection');
             }else{
-                return redirect()->route('error', ['error_code' => '409']);
+                return 'notwork';
+            }
+        }elseif(request('item_type')==4){
+            $collection_list_to_remove = CollectionList::find(request('item_id'));
+            $collection = Collection::where('user_id',Auth::id())->where('item_id', $collection_list->id)->where('collection_list_id',request('collection_list_id'))->first();
+            if($collection){
+                if($collection->collection_list->item_number>0){
+                    $collection->collection_list->decrement('item_number');
+                }
+                $collection->delete();
+                $collection_list_to_remove->decrement('collected');
+            }else{
+                return 'notwork';
             }
         }
     }
@@ -172,12 +188,13 @@ class CollectionsController extends Controller
     {
         $user = Auth::user();
         $own_collection_lists = Auth::user()->own_collection_lists->load('creator');
-        $collected_lists = Auth::user()->collected_list->collected_items->load('creator');
+        $collected_list=Auth::user()->collected_list();
+        $collected_lists = $collected_list->collected_items->load('creator');
         $updates = [Auth::user()->collection_books_updated,Auth::user()->collection_threads_updated,Auth::user()->collection_statuses_updated, Auth::user()->collection_lists_updated];
         $collections = true;
         Auth::user()->collection_lists_updated = 0;
         Auth::user()->save();
-        return view('collections.collections_lists', compact('own_collection_lists','collected_lists','user','updates','collections'))->with('show_as_collections',1)->with('active',3);
+        return view('collections.collections_lists', compact('own_collection_lists','collected_list','collected_lists','user','updates','collections'))->with('show_as_collections',1)->with('active',3);
     }
 
     public function collection_list_store(Request $request)
@@ -275,6 +292,6 @@ class CollectionsController extends Controller
     public function all_collection_index()
     {
         $collection_lists = CollectionList::with('creator')->where('type','<>',4)->where('private',false)->orderBy('lastupdated_at','desc')->simplePaginate(config('constants.index_per_page'));
-        return view('collections.collection_list_index', compact('collection_lists'));
+        return view('collections.collection_list_index', compact('collection_lists'))->with('show_as_collections',0);
     }
 }

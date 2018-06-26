@@ -2,6 +2,9 @@
 <article class="{{ 'collection_list'.$collection_list->id }}">
     <div class="row">
         <div class="col-xs-12 h5">
+            @if(($show_as_collections==1)&&($collected_list))
+            <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{ $collection_list->id }},4,{{ $collected_list->id }})">取消收藏</button>
+            @endif
             <!-- list title -->
             <span>
                 <a class="btn btn-xs btn-success sosad-button tag-button-left tag-red" >{{ config('constants.collection_type_info')[$collection_list->type] }}</a>

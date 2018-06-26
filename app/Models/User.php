@@ -95,7 +95,7 @@ class User extends Authenticatable
 
     public function collected_list()//收藏的，别人的收藏单
     {
-        return $this->hasOne(CollectionList::class)->where('type',4)->withDefault();
+        return CollectionList::where('type','=',4)->where('user_id', '=', $this->id)->first();
     }
 
     public function findrecord($post_id)
