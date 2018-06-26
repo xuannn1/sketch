@@ -101,7 +101,7 @@ class StoreChapter extends FormRequest
 
                 DB::table('collections')//告诉所有收藏本文章、愿意接受更新的读者, 这里发生了更新
                 ->join('users','users.id','=','collections.user_id')
-                ->where([['collections.thread_id','=',$thread->id],['collections.keep_updated','=',true],['collections.user_id','<>',auth()->id()]])
+                ->where([['collections.item_id','=',$thread->id],['collections.collection_list_id','=',0],['collections.keep_updated','=',true],['collections.user_id','<>',auth()->id()]])
                 ->update(['collections.updated'=>1,'users.collection_books_updated'=>DB::raw('users.collection_books_updated + 1')]);
 
                 if(($sendstatus)&&(!$thread->anonymous)){
