@@ -15,8 +15,16 @@
                     @else
                     <a href="{{ route('user.show', $collection_list->user_id) }}">{{ $collection_list->creator->name }}</a>
                     @endif
-                    &nbsp;的收藏单</h4>
+                    的收藏单
+                </h4>
                 <h1><a href="{{ route('collections.collection_list_show', $collection_list->id) }}">{{ $collection_list->title }}</a></h1>
+                <div class="h4">{{ $collection_list->brief }}</div>
+                <p class="grayout smaller-20">
+                    发表于{{ Carbon\Carbon::parse($collection_list->created_at)->diffForHumans() }}
+                    @if($collection_list->created_at < $collection_list->lastupdated_at )
+                    修改于{{ Carbon\Carbon::parse($collection_list->lastupdated_at)->diffForHumans() }}
+                    @endif
+                </p>
                 <div class="text-center main-text">
                     {!! Helper::wrapParagraphs($collection_list->body) !!}
                 </div>
