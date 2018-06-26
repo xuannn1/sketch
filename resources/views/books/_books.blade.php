@@ -17,6 +17,23 @@
             </span>
             @elseif($show_as_collections==2)
             <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{ $book->thread_id }},1,{{ $collection_list->id }})">取消收藏</button>
+            <a class="btn btn-xs btn-danger sosad-button hidden cancel-button" href="#" data-toggle="modal" data-target="#TriggerCollectionComment{{ $book->collection_id }}">评论</a>
+            <div class="modal fade" id="TriggerCollectionComment{{ $book->collection_id }}" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ route('collection.store_comment', $book->collection_id)}}" method="POST">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <textarea name="body" rows="6" class="form-control" placeholder="留下对这个收藏的评论心得：" data-provide="markdown"  id="collectioncomment{{$book->collection_id}}">{{ $book->collection_body }}</textarea>
+                                <button type="button" onclick="retrievecache('collectioncomment{{$book->collection_id}}')" class="sosad-button-control addon-button">恢复数据</button>
+                            </div>
+                            <div class="">
+                                <button type="submit" class="btn btn-primary sosad-button btn-sm">提交评论</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             @endif
             <span class="bigger-20">
                 <strong>
@@ -50,7 +67,7 @@
                 <span class="glyphicon glyphicon-warning-sign"></span>
                 @endif
             </small>
-            @if(($show_as_collections==1)&&($book->updated))
+            @if(($show_as_collections)&&($book->updated))
             <span class="badge newchapter-badge">有更新</span>
             @endif
             <span class = "pull-right">
@@ -74,6 +91,15 @@
                 <a href="{{ route('books.index',['channel'=>(int)($book->channel_id)]) }}">{{ config('constants.book_info')['channel_info'][$book->channel_id] }}</a>-<a href="{{ route('books.index',['book_length'=>$book->book_length]) }}">{{ config('constants.book_info')['book_lenth_info'][$book->book_length] }}</a>-<a href="{{ route('books.index',['book_status'=>$book->book_status]) }}">{{ config('constants.book_info')['book_status_info'][$book->book_status] }}</a>-<a href="{{ route('books.index',['label'=>$book->label_id]) }}">{{ $book->labelname }}</a>-<a href="{{ route('books.index',['sexual_orientation'=>$book->sexual_orientation]) }}">{{ config('constants.book_info')['sexual_orientation_info'][$book->sexual_orientation] }}</a>
             </em></span>
         </div>
+        @if(($show_as_collections==2)&&($book->collection_body))
+        <div class="col-xs-12 h5">
+            <div id="full{{$book->collection_id}}" class="hidden main-text indentation">
+                {!! Helper::wrapParagraphs($book->collection_body) !!}
+            </div>
+            <span id="abbreviated{{$book->collection_id}}" class="grayout">{!! Helper::trimtext($book->collection_body,70) !!}</span>
+            <a type="button" name="button" id="expand{{$book->collection_id}}" onclick="expandpost('{{$book->collection_id}}')" >展开</a>
+        </div>
+        @endif
     </div>
     <hr class="narrow">
 </article>

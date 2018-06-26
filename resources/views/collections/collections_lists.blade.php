@@ -19,7 +19,9 @@
             <div class="panel-body">
                 <?php $collection_lists = $collected_lists ; $show_as_collections=1; ?>
                 <h4><a href="">我收藏的收藏单：</a></h4>
+                {{ $collection_lists->links() }}
                 @include('collections._collection_lists')
+                {{ $collection_lists->links() }}
             </div>
             <div class="panel-body">
                 <a class="btn btn-lg btn-primary sosad-button" href="{{ route('collections.collection_list_create') }}">新建收藏单</a>

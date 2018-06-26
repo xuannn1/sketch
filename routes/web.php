@@ -153,6 +153,7 @@
    Route::get('/collections/collection_lists', 'CollectionsController@collection_lists')->name('collections.collection_lists');//显示收藏夹内容（收藏列表中的更新）
    Route::post('/collections/cancel', 'CollectionsController@cancel')->name('collection.cancel');//取消收藏某个主题帖
    Route::post('/collections/store', 'CollectionsController@storeitem')->name('collection.storeitem');//收藏某个主题帖
+   Route::post('/collections/{collection}/store_comment', 'CollectionsController@store_comment')->name('collection.store_comment');//增加对某个收藏的评论
    Route::post('/collections/togglekeepupdate', 'CollectionsController@togglekeepupdate')->name('collection.togglekeepupdate');//是否订阅更新提醒
    Route::post('/collections/clearupdates', 'CollectionsController@clearupdates')->name('collection.clearupdates');//清零更新提醒
 

@@ -23,24 +23,7 @@ class CollectionsController extends Controller
     {
         $this->middleware('auth');
     }
-    // public function store(Thread $thread)//最简单的收藏某个thread
-    // {
-    //     $data =[];
-    //     $collection = $thread->collection(Auth::id(),0);
-    //     if($collection){
-    //         $data['info']="您已收藏本文，无需重复收藏~";
-    //     }else{
-    //         $collecttion = Collection::create([
-    //             'user_id' => Auth::id(),
-    //             'item_id' => $thread->id,
-    //         ]);
-    //         $thread->increment('collection');
-    //         $user->update(['lastresponded_at' => Carbon::now()]);
-    //         $data['success']="您已成功收藏本文";
-    //         $data['collection']=$thread->collection;
-    //     }
-    //     return $data;
-    // }
+
     public function storeitem(Request $request) //itemid,itemtype,listid
     {
         $data =[];
@@ -59,7 +42,15 @@ class CollectionsController extends Controller
                     ]);
                     if($collection_list){
                         $collection_list->increment('item_number');
-                        $collection_list->update(['lastupdated_at'=>Carbon::now() ]);
+                        $collection_list->update([
+                            'lastupdated_at'=>Carbon::now(),
+                            'last_item_id'=>request('item_id'),
+                        ]);
+                        DB::table('collections')//告诉所有收藏本收藏单，并保持更新提示的读者，这个单子发生了更新
+                        ->join('users','users.id','=','collections.user_id')
+                        ->join('collection_lists','collection_lists.id','=','collections.collection_list_id')
+                        ->where([['collections.item_id','=',$collection_list->id],['collection_lists.type','=',4],['collections.keep_updated','=',true],['collections.user_id','<>',auth()->id()]])
+                        ->update(['collections.updated'=>1,'users.collection_lists_updated'=>DB::raw('users.collection_lists_updated + 1')]);
                     }
                     $thread->increment('collection');
                     Auth::user()->update(['lastresponded_at' => Carbon::now() ]);
@@ -95,6 +86,23 @@ class CollectionsController extends Controller
             return $data;
         }
 
+    }
+
+    public function store_comment(Collection $collection, Request $request)
+    {
+        if(Auth::id()==$collection->user_id){
+            $this->validate($request, [
+                'body' => 'required|string|max:2000',
+            ]);
+            $data = $request->only('body');
+            $collection->update($data);
+            if($collection->collection_list->id){
+                $collection->collection_list->update(['lastupdated_at'=>Carbon::now()]);
+            }
+            return back()->with("success", "您已成功添加评价");
+        }else{
+            return redirect()->back()->with("danger","抱歉，数据冲突");
+        }
     }
 
     public function cancel(Request $request)
@@ -189,9 +197,12 @@ class CollectionsController extends Controller
     public function collection_lists()
     {
         $user = Auth::user();
-        $own_collection_lists = Auth::user()->own_collection_lists->load('creator');
-        $collected_list = Auth::user()->collected_list();
-        $collected_lists = $collected_list? $collected_list->collected_items->load('creator'):[];
+        $own_collection_lists = $this->find_collected_items(0, 5, Auth::id());
+        $collected_list = CollectionList::where('type','=',4)->where('user_id', '=', Auth::id())->first();
+        $collected_lists=[];
+        if($collected_list){
+            $collected_lists = $this->find_collected_items($collected_list->id, 4, Auth::id());
+        }
         $updates = [Auth::user()->collection_books_updated,Auth::user()->collection_threads_updated,Auth::user()->collection_statuses_updated, Auth::user()->collection_lists_updated];
         $collections = true;
         Auth::user()->collection_lists_updated = 0;
@@ -275,22 +286,74 @@ class CollectionsController extends Controller
             return $this->join_book_tables()
             ->join('collections','collections.item_id','=','threads.id')
             ->where([['collections.user_id','=',$user_id],['collections.collection_list_id','=',$collection_list_id], ['threads.deleted_at', '=', null],['threads.book_id','>',0]])
-            ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','chapters.responded as last_chapter_responded', 'collections.updated as updated','collections.keep_updated as keep_updated', 'chapters.post_id as last_chapter_post_id','tongrens.tongren_yuanzhu','tongrens.tongren_cp','tongrens.tongren_yuanzhu_tag_id','tongrens.tongren_cp_tag_id','tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname','tongren_cp_tags.tagname as tongren_cp_tagname')
-            ->orderBy('books.lastaddedchapter_at','desc')
+            ->select('books.*','threads.*','users.name','labels.labelname', 'chapters.title as last_chapter_title','chapters.responded as last_chapter_responded', 'collections.updated as updated','collections.keep_updated as keep_updated','collections.body as collection_body', 'collections.id as collection_id', 'chapters.post_id as last_chapter_post_id','tongrens.tongren_yuanzhu','tongrens.tongren_cp','tongrens.tongren_yuanzhu_tag_id','tongrens.tongren_cp_tag_id','tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname','tongren_cp_tags.tagname as tongren_cp_tagname')
+            ->orderBy('collections.id','desc')
             ->paginate(config('constants.index_per_page'));
             break;
             case "2"://讨论帖收藏单
             return $this->join_thread_tables()
             ->join('collections','collections.item_id','=','threads.id')
             ->where([['collections.user_id','=',$user_id],['collections.collection_list_id','=',$collection_list_id], ['threads.deleted_at', '=', null],['threads.book_id','=',0]])
-            ->select('threads.*', 'users.name', 'labels.labelname', 'channels.channelname' , 'posts.body as last_post_body', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'collections.updated as updated', 'collections.keep_updated as keep_updated', 'chapters.post_id as last_chapter_post_id', 'tongrens.tongren_yuanzhu', 'tongrens.tongren_cp', 'tongrens.tongren_yuanzhu_tag_id', 'tongrens.tongren_cp_tag_id', 'tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname', 'tongren_cp_tags.tagname as tongren_cp_tagname', 'collections.updated as updated', 'collections.keep_updated as keep_updated')
-            ->orderBy('threads.lastresponded_at','desc')
+            ->select('threads.id', 'threads.id as thread_id', 'threads.user_id','threads.book_id', 'threads.title', 'threads.brief', 'threads.locked', 'threads.public', 'threads.bianyuan', 'threads.anonymous', 'threads.majia', 'threads.noreply', 'threads.viewed', 'threads.responded', 'threads.lastresponded_at', 'threads.channel_id', 'threads.label_id', 'threads.deleted_at', 'threads.created_at',  'threads.edited_at', 'threads.homework_id', 'threads.post_id', 'threads.last_post_id', 'threads.show_homework_profile', 'threads.downloaded',
+            'users.name', 'labels.labelname', 'channels.channelname', 'posts.body as last_post_body', 'collections.updated as updated', 'collections.id as collection_id',  'collections.keep_updated as keep_updated', 'collections.body as collection_body')
+            ->orderBy('collections.id','desc')
             ->paginate(config('constants.items_per_page'));
+            break;
+            case "4"://某人的收藏单的收藏总体
+            return DB::table('collections')
+                ->join('collection_lists','collections.item_id','=','collection_lists.id')
+                ->join('users','users.id','=','collection_lists.user_id')
+                ->leftjoin('threads',function($join)
+                {
+                    $join->whereIn('collection_lists.type',[1,2]);
+                    $join->on('collection_lists.last_item_id','=','threads.id');
+                })
+                ->where([['collections.user_id', '=', $user_id],['collections.collection_list_id','=',$collection_list_id]])
+                ->select(
+                    'collections.id', 'collections.id as collection_id','collections.updated as updated',   'collections.keep_updated as keep_updated', 'collections.body as collection_body',
+                    'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.anonymous', 'collection_lists.majia',
+                    'collection_lists.type', 'collection_lists.item_number','collection_lists.last_item_id', 'threads.title as last_thread_title',
+                    'collection_lists.viewed', 'collection_lists.collected', 'collection_lists.xianyu', 'collection_lists.shengfan', 'collection_lists.created_at', 'collection_lists.lastupdated_at'
+                )
+                ->orderBy('collection_lists.lastupdated_at','desc')
+                ->paginate(config('constants.index_per_page'));
+            break;
+            case "5"://某人建立的所有收藏单
+            return DB::table('collection_lists')
+                ->join('users','users.id','=','collection_lists.user_id')
+                ->leftjoin('threads',function($join)
+                {
+                    $join->whereIn('collection_lists.type',[1,2]);
+                    $join->on('collection_lists.last_item_id','=','threads.id');
+                })
+                ->where([['collection_lists.user_id', '=', $user_id],['collection_lists.type', '<>', 4]])
+                ->select('collection_lists.id', 'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.anonymous', 'collection_lists.majia',
+                    'collection_lists.type', 'collection_lists.item_number', 'collection_lists.last_item_id', 'threads.title as last_thread_title',
+                    'collection_lists.viewed', 'collection_lists.collected', 'collection_lists.xianyu', 'collection_lists.shengfan', 'collection_lists.created_at', 'collection_lists.lastupdated_at'
+                )
+                ->orderBy('collection_lists.lastupdated_at','desc')
+                ->paginate(config('constants.index_per_page'));
+            break;
+            case "6"://所有收藏单
+            return DB::table('collection_lists')
+                ->join('users','users.id','=','collection_lists.user_id')
+                ->leftjoin('threads',function($join)
+                {
+                    $join->whereIn('collection_lists.type',[1,2]);
+                    $join->on('collection_lists.last_item_id','=','threads.id');
+                })
+                ->where('collection_lists.type', '<>', 4)
+                ->select('collection_lists.id', 'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.anonymous', 'collection_lists.majia',
+                    'collection_lists.type', 'collection_lists.item_number', 'collection_lists.last_item_id', 'threads.title as last_thread_title',
+                    'collection_lists.viewed', 'collection_lists.collected', 'collection_lists.xianyu', 'collection_lists.shengfan', 'collection_lists.created_at', 'collection_lists.lastupdated_at'
+                )
+                ->orderBy('collection_lists.lastupdated_at','desc')
+                ->paginate(config('constants.index_per_page'));
             break;
             default:
             echo "应该奖励什么呢？一个bug呀……";
+            //这里的case4，5，6可以合并，回头搞一下
         endswitch;
-
     }
 
     public function collection_list_show(CollectionList $collection_list)
@@ -305,7 +368,7 @@ class CollectionsController extends Controller
 
     public function all_collection_index()
     {
-        $collection_lists = CollectionList::with('creator')->where('type','<>',4)->where('private',false)->orderBy('lastupdated_at','desc')->paginate(config('constants.index_per_page'));
-        return view('collections.collection_list_index', compact('collection_lists'))->with('show_as_collections',0)->with('active',2);;
+        $collection_lists = $this->find_collected_items(0,6,0);
+        return view('collections.collection_list_index', compact('collection_lists'))->with('show_as_collections',0)->with('active',2);
     }
 }

@@ -166,3 +166,12 @@ foreach ($threads as $thread){
     $post->save();
     $thread->save();
 }
+
+//update last_item_id option in collection_list_store
+$collection_lists = App\Models\CollectionList::where('last_item_id','=',0)->get();
+foreach($collection_lists as $list){
+    $newest_collection = App\Models\Collection::where('collection_list_id','=',$list->id)->orderBy('id','desc')->first();
+    if($newest_collection){
+        $list->update(['last_item_id'=>$newest_collection->item_id]);
+    }
+}

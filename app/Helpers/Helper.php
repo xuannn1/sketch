@@ -7,11 +7,13 @@ use Genert\BBCode\BBCode;
 
 class Helper
 {
-   public static function trimtext($text, int $len)
+   public static function trimtext($text=null, int $len)
    {
-      $str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
-      $substr = trim(iconv_substr($str, 0, $len, 'utf-8'));
-      if(iconv_strlen($str) > iconv_strlen($substr)){
+      $bbCode = new BBCode();
+      $text = $bbCode->stripBBCodeTags((string) $text);
+      //$str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
+      $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
+      if(iconv_strlen($text) > iconv_strlen($substr)){
          $substr.='…';
       }
       return $substr;

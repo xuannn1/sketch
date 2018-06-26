@@ -23,7 +23,7 @@ class CollectionList extends Model
                 return $this->belongsToMany(Thread::class, 'collections', 'collection_list_id', 'item_id')->where('book_id', '=', 0)->withPivot('updated', 'keep_updated', 'collection_list_id');
             break;
             case '3'://帖子收藏
-                return $this->belongsToMany(Post::class, 'collections', 'collection_list_id', 'item_id')->where('book_id', '=', 0)->withPivot('updated', 'keep_updated', 'collection_list_id');
+                return $this->belongsToMany(Post::class, 'collections', 'collection_list_id', 'item_id')->withPivot('updated', 'keep_updated', 'collection_list_id');
             break;
             case 0://空集
             case '4'://收藏单收藏
