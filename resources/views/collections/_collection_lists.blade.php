@@ -23,7 +23,14 @@
             <!-- list title end   -->
             <!-- author  -->
             <span class = "pull-right">
+                @if ($collection_list->anonymous)
+                <span>{{ $collection_list->majia ?? '匿名咸鱼'}}</span>
+                @if((Auth::check()&&(Auth::user()->admin)))
+                <span class="admin-anonymous"><a href="{{ route('user.show', $collection_list->user_id) }}">{{ $collection_list->creator->name }}</a></span>
+                @endif
+                @else
                 <a href="{{ route('user.show', $collection_list->user_id) }}">{{ $collection_list->creator->name }}</a>
+                @endif
             </span>
             <!-- author end -->
         </div>

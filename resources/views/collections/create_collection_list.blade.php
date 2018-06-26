@@ -34,6 +34,14 @@
                         <br>
                     </div>
 
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majia').style.display = 'block'">马甲？</label>
+                        <div class="form-group text-right" id="majia" style="display:none">
+                            <input type="text" name="majia" class="form-control" value="{{Auth::user()->majia ?:'匿名咸鱼'}}">
+                            <label for="majia"><small>(请输入不超过10字的马甲。马甲仅勾选“匿名”时有效)</small></label>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary sosad-button">发布新收藏单</button>
                 </form>
             </div>

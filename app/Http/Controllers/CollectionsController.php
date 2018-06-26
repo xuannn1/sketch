@@ -207,11 +207,19 @@ class CollectionsController extends Controller
                 'title' => 'required|string|max:20',
                 'brief' => 'required|string|max:50',
                 'body' => 'nullable|string|max:5000',
+                'majia' => 'string|max:10',
             ]);
             $data = $request->only('title','brief','body');
             $data['user_id'] = auth()->id();
             $data['type'] = request('collection_type');
             $data['lastupdated_at'] = Carbon::now();
+            if (request('anonymous')){
+                $data['anonymous']=1;
+                $data['majia']=request('majia');
+                auth()->user()->update(['majia'=>request('majia')]);
+            }else{
+                $data['anonymous']=0;
+            }
             if (!$this->isDuplicateList($data)){
                 $collection_list = CollectionList::create($data);
             }
@@ -254,6 +262,7 @@ class CollectionsController extends Controller
             ]);
             $data = $request->only('title','brief','body');
             $data['lastupdated_at'] = Carbon::now();
+            $data['anonymous']=request('anonymous') ? true:false;
             $collection_list->update($data);
             return redirect()->route('collections.collection_list_show',$collection_list->id)->with('success','您已经成功修改收藏单描述！');
         }
@@ -286,6 +295,9 @@ class CollectionsController extends Controller
 
     public function collection_list_show(CollectionList $collection_list)
     {
+        if(!Auth::check()||(Auth::id()!=$collection_list->user_id)){
+            $collection_list->increment('viewed');
+        }
         $collection_list->load('creator');
         $collected_items = $this->find_collected_items($collection_list->id, $collection_list->type, $collection_list->user_id);
         return view('collections.collections_list_show', compact('collected_items','collection_list'))->with('show_as_collections',2)->with('show_channel',true);

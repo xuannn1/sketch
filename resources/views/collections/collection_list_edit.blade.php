@@ -9,7 +9,7 @@
             </div>
             <div class="panel-body">
                 @include('shared.errors')
-                <form method="POST" action="{{ route('collections.collection_list_update', $collection_list->id) }}" name="create_collection_list">
+                <form method="POST" action="{{ route('collections.collection_list_update', $collection_list->id) }}" name="edit_collection_list">
                     {{ method_field('PATCH') }}
                     {{ csrf_field() }}
                     <div class="form-group">
@@ -34,6 +34,14 @@
                         <button href="#" type="button" onclick="wordscount('mainbody');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
                         <br>
                     </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="anonymous" {{ $collection_list->anonymous ? 'checked' : '' }}>马甲？</label>
+                        <div class="form-group text-right grayout" id="majia" style="display:block">
+                            <input type="text" name="majia" class="form-control" value="{{ $collection_list->majia }}" disabled>
+                            <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary sosad-button">发布收藏单修改结果</button>
                 </form>
             </div>

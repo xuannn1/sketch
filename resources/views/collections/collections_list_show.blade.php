@@ -6,7 +6,16 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4><a href="{{ route('user.show', $collection_list->user_id) }}">{{ $collection_list->creator->name }}</a>&nbsp;的收藏单</h4>
+                <h4>
+                    @if ($collection_list->anonymous)
+                    <span>{{ $collection_list->majia ?? '匿名咸鱼'}}</span>
+                    @if((Auth::check()&&(Auth::user()->admin)))
+                    <span class="admin-anonymous"><a href="{{ route('user.show', $collection_list->user_id) }}">{{ $collection_list->creator->name }}</a></span>
+                    @endif
+                    @else
+                    <a href="{{ route('user.show', $collection_list->user_id) }}">{{ $collection_list->creator->name }}</a>
+                    @endif
+                    &nbsp;的收藏单</h4>
                 <h1><a href="{{ route('collections.collection_list_show', $collection_list->id) }}">{{ $collection_list->title }}</a></h1>
                 <div class="text-center main-text">
                     {!! Helper::wrapParagraphs($collection_list->body) !!}
