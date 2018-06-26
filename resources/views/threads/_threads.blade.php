@@ -17,6 +17,23 @@
             </span>
             @elseif($show_as_collections==2)
             <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{$thread->thread_id}},2,{{$collection_list->id}})">取消收藏</button>
+            <a class="btn btn-xs btn-danger sosad-button hidden cancel-button" href="#" data-toggle="modal" data-target="#TriggerCollectionComment{{ $thread->collection_id }}">添加心得</a>
+            <div class="modal fade" id="TriggerCollectionComment{{ $thread->collection_id }}" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ route('collection.store_comment', $thread->collection_id)}}" method="POST">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <textarea name="body" rows="6" class="form-control" placeholder="留下对这个收藏的评论心得：" data-provide="markdown"  id="collectioncomment{{$thread->collection_id}}">{{ $thread->collection_body }}</textarea>
+                                <button type="button" onclick="retrievecache('collectioncomment{{$thread->collection_id}}')" class="sosad-button-control addon-button">恢复数据</button>
+                            </div>
+                            <div class="">
+                                <button type="submit" class="btn btn-primary sosad-button btn-sm">提交收藏心得</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             @endif
             <!-- thread title -->
             <span>
@@ -75,6 +92,20 @@
             <span class="smaller-10"><a href="{{ route('thread.showpost', $thread->last_post_id) }}"> {!! Helper::trimtext($thread->last_post_body,20) !!}</a></span>
             <span class="pull-right smaller-10">{{ Carbon\Carbon::parse($thread->created_at)->diffForHumans() }}/{{ Carbon\Carbon::parse($thread->lastresponded_at)->diffForHumans() }}</span>
         </div>
+        @if(($show_as_collections==2)&&($thread->collection_body))
+        <div class="col-xs-12 h5">
+            <div id="full{{$thread->collection_id}}" class="hidden main-text indentation">
+                收藏心得：{!! Helper::wrapParagraphs($thread->collection_body) !!}
+            </div>
+            <span id="abbreviated{{$thread->collection_id}}">
+                收藏心得：
+                <span class="grayout">
+                    {!! Helper::trimtext($thread->collection_body,70) !!}
+                </span>
+            </span>
+            <a type="button" name="button" id="expand{{$thread->collection_id}}" onclick="expandpost('{{$thread->collection_id}}')" >展开</a>
+        </div>
+        @endif
     </div>
     <hr>
 </article>

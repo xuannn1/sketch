@@ -17,7 +17,7 @@
             </span>
             @elseif($show_as_collections==2)
             <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{ $book->thread_id }},1,{{ $collection_list->id }})">取消收藏</button>
-            <a class="btn btn-xs btn-danger sosad-button hidden cancel-button" href="#" data-toggle="modal" data-target="#TriggerCollectionComment{{ $book->collection_id }}">评论</a>
+            <a class="btn btn-xs btn-danger sosad-button hidden cancel-button" href="#" data-toggle="modal" data-target="#TriggerCollectionComment{{ $book->collection_id }}">添加心得</a>
             <div class="modal fade" id="TriggerCollectionComment{{ $book->collection_id }}" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -28,7 +28,7 @@
                                 <button type="button" onclick="retrievecache('collectioncomment{{$book->collection_id}}')" class="sosad-button-control addon-button">恢复数据</button>
                             </div>
                             <div class="">
-                                <button type="submit" class="btn btn-primary sosad-button btn-sm">提交评论</button>
+                                <button type="submit" class="btn btn-primary sosad-button btn-sm">提交收藏心得</button>
                             </div>
                         </form>
                     </div>
@@ -94,9 +94,14 @@
         @if(($show_as_collections==2)&&($book->collection_body))
         <div class="col-xs-12 h5">
             <div id="full{{$book->collection_id}}" class="hidden main-text indentation">
-                {!! Helper::wrapParagraphs($book->collection_body) !!}
+                收藏心得：{!! Helper::wrapParagraphs($book->collection_body) !!}
             </div>
-            <span id="abbreviated{{$book->collection_id}}" class="grayout">{!! Helper::trimtext($book->collection_body,70) !!}</span>
+            <span id="abbreviated{{$book->collection_id}}">
+                收藏心得：
+                <span class="grayout">
+                    {!! Helper::trimtext($book->collection_body,70) !!}
+                </span>
+            </span>
             <a type="button" name="button" id="expand{{$book->collection_id}}" onclick="expandpost('{{$book->collection_id}}')" >展开</a>
         </div>
         @endif
