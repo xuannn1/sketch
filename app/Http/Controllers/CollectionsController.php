@@ -188,8 +188,8 @@ class CollectionsController extends Controller
     {
         $user = Auth::user();
         $own_collection_lists = Auth::user()->own_collection_lists->load('creator');
-        $collected_list=Auth::user()->collected_list();
-        $collected_lists = $collected_list->collected_items->load('creator');
+        $collected_list = Auth::user()->collected_list();
+        $collected_lists = $collected_list? $collected_list->collected_items->load('creator'):[];
         $updates = [Auth::user()->collection_books_updated,Auth::user()->collection_threads_updated,Auth::user()->collection_statuses_updated, Auth::user()->collection_lists_updated];
         $collections = true;
         Auth::user()->collection_lists_updated = 0;
