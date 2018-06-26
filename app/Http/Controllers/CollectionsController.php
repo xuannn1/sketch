@@ -316,7 +316,8 @@ class CollectionsController extends Controller
                     'collection_lists.viewed', 'collection_lists.collected', 'collection_lists.xianyu', 'collection_lists.shengfan', 'collection_lists.created_at', 'collection_lists.lastupdated_at'
                 )
                 ->orderBy('collection_lists.lastupdated_at','desc')
-                ->paginate(config('constants.index_per_page'));
+                ->get();
+                //->paginate(config('constants.index_per_page'));
             break;
             case "5"://某人建立的所有收藏单
             return DB::table('collection_lists')
@@ -332,7 +333,8 @@ class CollectionsController extends Controller
                     'collection_lists.viewed', 'collection_lists.collected', 'collection_lists.xianyu', 'collection_lists.shengfan', 'collection_lists.created_at', 'collection_lists.lastupdated_at'
                 )
                 ->orderBy('collection_lists.lastupdated_at','desc')
-                ->paginate(config('constants.index_per_page'));
+                ->get();
+                //->paginate(config('constants.index_per_page'));
             break;
             case "6"://所有收藏单
             return DB::table('collection_lists')
