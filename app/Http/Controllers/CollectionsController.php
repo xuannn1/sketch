@@ -305,7 +305,7 @@ class CollectionsController extends Controller
 
     public function all_collection_index()
     {
-        $collection_lists = CollectionList::with('creator')->where('type','<>',4)->where('private',false)->orderBy('lastupdated_at','desc')->simplePaginate(config('constants.index_per_page'));
-        return view('collections.collection_list_index', compact('collection_lists'))->with('show_as_collections',0);
+        $collection_lists = CollectionList::with('creator')->where('type','<>',4)->where('private',false)->orderBy('lastupdated_at','desc')->paginate(config('constants.index_per_page'));
+        return view('collections.collection_list_index', compact('collection_lists'))->with('show_as_collections',0)->with('active',2);;
     }
 }
