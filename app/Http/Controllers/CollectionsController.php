@@ -80,15 +80,15 @@ class CollectionsController extends Controller
                         'user_id' => Auth::id(),
                         'lastupdated_at' => Carbon::now(),
                     ]);
-                    $collecttion = Collection::create([
-                        'user_id' => Auth::id(),
-                        'item_id' => $collection_list_to_add->id,
-                        'collection_list_id' => $master_collection_list->id,
-                    ]);
-                    $collection_list_to_add->increment('collected');
-                    $data['success']="您已收藏本文!";
-                    $data['collection']=$collection_list_to_add->collected;
                 }
+                $collecttion = Collection::create([
+                    'user_id' => Auth::id(),
+                    'item_id' => $collection_list_to_add->id,
+                    'collection_list_id' => $master_collection_list->id,
+                ]);
+                $collection_list_to_add->increment('collected');
+                $data['success']="您已收藏本文!";
+                $data['collection']=$collection_list_to_add->collected;
             }
             return $data;
         }
