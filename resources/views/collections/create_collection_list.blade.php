@@ -12,6 +12,7 @@
                 <form method="POST" action="{{ route('collections.collection_list_store') }}" name="create_collection_list">
                     {{ csrf_field() }}
                     <div class="form-group">
+                        <h6 style="color:#d66666">（收藏单的标题/简介不得含有性描写、性暗示，还请委婉含蓄）</h6>
                         <label for="title"><h4>名称：</h4></label>
                         <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="收藏单名称">
                     </div>

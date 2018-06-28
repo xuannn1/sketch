@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label for="title"><h4>标题：</h4></label>
                     <div id="biaotiguiding" class="h6">
-                        标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，<span style="color:red">不要放入标题。标题、简介、章节名不得含有性描写、性暗示。<span>
+                        标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，<span style="color:#d66666">不要放入标题。标题、简介、章节名不得含有性描写、性暗示。<span>
                     </div>
                     <input type="text" name="title" class="form-control" value="{{ $thread->title }}">
                 </div>
@@ -23,7 +23,7 @@
                 <div class="form-group">
                     <label for="brief"><h4>简介：</h4></label>
                     <div id="biaotiguiding" class="h6">
-                        <span style="color:red">简介中不得含有性描写、性暗示成分。<span>
+                        <span style="color:#d66666">简介中不得含有性描写、性暗示成分。<span>
                     </div>
                     <input type="text" name="brief" class="form-control" value="{{ $thread->brief }}">
                 </div>
@@ -112,7 +112,7 @@
                 <div>
                     <label for="bianyuan"><h4>5. 是否边缘敏感题材？</h4></label>
                     <div id="bianyuan" class="h6">
-                        文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含NP、人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转……等边缘敏感题材，或估计不适合未成年人观看的，请勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。<span style="color:red">边缘题材未勾选边缘即发文的，严肃处理。</span>
+                        文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含NP、人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转……等边缘敏感题材，或估计不适合未成年人观看的，请勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。<span style="color:#d66666">边缘题材未勾选边缘即发文的，严肃处理。</span>
                     </div>
                     <div>
                         <label class="radio-inline"><input type="radio" name="bianyuan" value="0" onclick="uncheckAll('bianyuantags');document.getElementById('bianyuantags').style.display = 'none'" {{ $thread->bianyuan?'':'checked'}}>非边缘</label>

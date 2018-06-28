@@ -12,7 +12,7 @@
             <form method="POST" action="{{ route('book.store') }}" name="create_book">
                 {{ csrf_field() }}
                 <div>
-                    <h6>（<span style="color:red">发文前请务必阅读：<a href="http://sosad.fun/threads/136">《版规的详细说明》</a>，违反版规发文的严肃处理</span>。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">《关于本站》</a>，<a href="{{ route('help') }}">《使用帮助》</a>。除文章原创性之外，其他内容均可修改。感谢发文！）</h6>
+                    <h6>（<span style="color:#d66666">发文前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a>，不要违反版规哦</span>。“原创小说”，“同人小说”从这里发文。但如果文章属于“随笔”、“诗歌”、”读书心得”、“私人笔记”、”日记”等不能用传统小说归纳的类目，请移步首页，选择对应板块发布文章。除文章原创性之外，其他内容均可日后修改，需要帮助可以前往版务区<a href="http://sosad.fun/threads/88">《<u>文章帖子删除、转移、编辑等专楼</u> 》</a>求助。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">《<u>关于本站</u>》</a>，<a href="{{ route('help') }}">《<u>使用帮助</u>》</a>。感谢发文！）</h6>
                     <h4>1. 请选择文章原创性</h4>
                     <label class="radio-inline"><input type="radio" name="channel_id" value="1"  onclick="document.getElementById('yuanchuang').style.display = 'block'; document.getElementById('tongren').style.display = 'none';uncheckAll('tongrentags');document.getElementById('tongrentags').style.display = 'none'" {{ old('channel_id')=='1'?'checked':''}}>原创</label>
                     <label class="radio-inline"><input type="radio" name="channel_id" value="2"  onclick="document.getElementById('tongren').style.display = 'block'; document.getElementById('yuanchuang').style.display = 'none';document.getElementById('tongrentags').style.display = 'block'"{{ old('channel_id')=='2'?'checked':''}}>同人</label>
@@ -87,7 +87,7 @@
                         <div>
                             <label for="bianyuan"><h4>5. 是否边缘敏感题材？</h4></label>
                             <div id="bianyuan" class="h6">
-                                文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含NP、人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转……等边缘敏感题材，或估计不适合未成年人观看的，请务必勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。<span style="color:red">边缘题材未勾选边缘即发文的，严肃处理。</span>
+                                文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含NP、人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转……等边缘敏感题材，或估计不适合未成年人观看的，请务必勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。<span style="color:#d66666">边缘题材未勾选边缘即发文的，严肃处理。</span>
                             </div>
                             <div>
                                 <label class="radio-inline"><input type="radio" name="bianyuan" value="0" onclick="uncheckAll('bianyuantags');document.getElementById('bianyuantags').style.display = 'none'" {{ old('bianyuan')=='0'?'checked':''}}>非边缘</label>
@@ -98,7 +98,7 @@
                         <div class="form-group">
                             <label for="title"><h4>6. 标题：</h4></label>
                             <div id="biaotiguiding" class="h6">
-                                标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，<span style="color:red">不要放入标题。标题不得含有性描写、性暗示。<span>
+                                标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，<span style="color:#d66666">不要放入标题。标题不得含有性描写、性暗示。<span>
                             </div>
                             <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="请输入不超过20字的标题">
                         </div>
@@ -106,7 +106,7 @@
                         <div class="form-group">
                             <label for="brief"><h4>7. 简介：</h4></label>
                             <div id="biaotiguiding" class="h6">
-                                <span style="color:red">简介中不得含有性描写、性暗示成分。<span>
+                                <span style="color:#d66666">简介中不得含有性描写、性暗示成分。<span>
                             </div>
                             <input type="text" name="brief" class="form-control" value="{{ old('brief') }}" placeholder="请输入不超过25字的简介">
                         </div>
