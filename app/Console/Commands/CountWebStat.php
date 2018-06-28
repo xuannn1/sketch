@@ -49,6 +49,6 @@ class CountWebStat extends Command
         $data['new_users']=DB::table('users')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
         $data['daily_clicks']=DB::table('users')->sum('daily_clicks');
         WebStat::create($data);
-        DB::table('users')->update(['daily_clicks'=>0]);
+        DB::table('users')->update(['clicks'=>DB::raw('daily_clicks + clicks'), 'daily_clicks'=>0]);
     }
 }
