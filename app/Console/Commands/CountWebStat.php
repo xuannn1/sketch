@@ -47,6 +47,8 @@ class CountWebStat extends Command
         $data['posts_reply']=DB::table('posts')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->where('maintext','=','0')->count();
         $data['post_comments']=DB::table('post_comments')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
         $data['new_users']=DB::table('users')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
+        $data['daily_clicks']=DB::table('users')->sum('daily_clicks');
         WebStat::create($data);
+        DB::table('users')->update(['daily_clicks'=>0]);
     }
 }
