@@ -11,6 +11,7 @@ use App\Models\Collection;
 use App\Models\CollectionList;
 use App\Models\Thread;
 use Carbon\Carbon;
+use App\Helpers\Helper;
 use App\Models\Follower;
 
 class CollectionsController extends Controller
@@ -224,6 +225,12 @@ class CollectionsController extends Controller
                 'majia' => 'string|max:10',
             ]);
             $data = $request->only('title','brief','body');
+            while(Helper::convert_to_public($data['title'])!=$data['title']){
+               $data['title'] = Helper::convert_to_public($data['title']);
+            }
+            while(Helper::convert_to_public($data['brief'])!=$data['brief']){
+               $data['brief'] = Helper::convert_to_public($data['brief']);
+            }
             $data['user_id'] = auth()->id();
             $data['type'] = request('collection_type');
             $data['lastupdated_at'] = Carbon::now();
@@ -275,6 +282,12 @@ class CollectionsController extends Controller
                 'body' => 'nullable|string|max:5000',
             ]);
             $data = $request->only('title','brief','body');
+            while(Helper::convert_to_public($data['title'])!=$data['title']){
+               $data['title'] = Helper::convert_to_public($data['title']);
+            }
+            while(Helper::convert_to_public($data['brief'])!=$data['brief']){
+               $data['brief'] = Helper::convert_to_public($data['brief']);
+            }
             $data['lastupdated_at'] = Carbon::now();
             $data['anonymous']=request('anonymous') ? true:false;
             $collection_list->update($data);
