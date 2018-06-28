@@ -23,6 +23,10 @@ class QuotesController extends Controller
         ]);
         $data['quote'] = request('quote');
         $data['user_id'] = auth()->id();
+        $data['notsad'] = request('notsad')? 1:0;
+        if((Auth::user()->admin)){
+            $data['approved']=true;
+        }
         if (request('anonymous')){
             $this->validate($request, [
                 'majia' => 'required|string|max:10',
@@ -30,7 +34,7 @@ class QuotesController extends Controller
             $data['anonymous'] = true;
             $data['majia'] = request('majia');
         }
-        if (!$this->isDuplicateQuote($data)){
+        if ((Auth::user()->admin)||(!$this->isDuplicateQuote($data))){
             $quote = Quote::create($data);
         }else{
             return back()->with('warning','请不要重复提交题头！');

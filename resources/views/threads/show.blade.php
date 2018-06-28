@@ -21,7 +21,7 @@
                 @endif
             </div>
             <div class="panel-vote">
-                <!-- 对主题进行投票／收藏／点赞等操作 -->
+                <!-- 对主题进行投票／收藏／赞赏等操作 -->
                 @if(Auth::check())
                 @include('threads._thread_vote')
                 @else

@@ -36,7 +36,7 @@ class VotePostsController extends Controller
                 $post->increment('up_voted');
                 if($candidate){
                     $candidate->increment('upvoted');
-                    if(!$candidate->no_upvote_reminders){//假如这位被点赞用户设定接收点赞提醒
+                    if(!$candidate->no_upvote_reminders){//假如这位被赞赏用户设定接收赞赏提醒
                         $candidate->increment('upvote_reminders');
                         $candidate->increment('unread_reminders');
                     }
@@ -73,7 +73,7 @@ class VotePostsController extends Controller
                         $post->increment('up_voted');
                         if($candidate){
                             $candidate->increment('upvoted');
-                            if(!$candidate->no_upvote_reminders){//假如这位被点赞用户设定接收点赞提醒
+                            if(!$candidate->no_upvote_reminders){//假如这位被赞赏用户设定接收赞赏提醒
                                 $candidate->increment('upvote_reminders');
                                 $candidate->increment('unread_reminders');
                             }

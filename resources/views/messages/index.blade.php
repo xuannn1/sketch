@@ -67,7 +67,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
-                <h4><a href="{{ route('messages.upvotes') }}">帖子点赞：</a></h4>
+                <h4><a href="{{ route('messages.upvotes') }}">帖子赞赏：</a></h4>
                 @include('messages._upvotes')
                 @if($upvotes->hasMorePages())
                 <div class="text-center">

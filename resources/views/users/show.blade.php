@@ -64,13 +64,13 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4><a href="{{ route('user.showupvotes', $user->id) }}">点赞目录</a></h4>
+                <h4><a href="{{ route('user.showupvotes', $user->id) }}">赞赏目录</a></h4>
             </div>
             <div class="panel-body">
                 @include('posts._upvotes')
                 @if($upvotes->hasMorePages())
                 <div class="text-center h5">
-                    <a href="{{ route('user.showupvotes', $user->id) }}">全部点赞</a>
+                    <a href="{{ route('user.showupvotes', $user->id) }}">全部赞赏</a>
                 </div>
                 @endif
             </div>

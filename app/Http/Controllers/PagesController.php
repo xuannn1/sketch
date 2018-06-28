@@ -39,7 +39,11 @@ class PagesController extends Controller
         ->orderBy('orderby','asc')
         ->get();
         $channels->load('recent_thread_1.creator','recent_thread_2.creator');
-        $quote = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->first();
+        if(mt_rand(0,100)>50){
+            $quote = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->first();
+        }else{
+            $quote = Quote::where('approved', true)->where('notsad', true)->inRandomOrder()->first();
+        }
         return view('pages/home',compact('channels', 'quote'));
     }
     public function about()

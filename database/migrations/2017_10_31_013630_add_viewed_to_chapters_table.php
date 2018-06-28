@@ -16,7 +16,7 @@ class AddViewedToChaptersTable extends Migration
         Schema::table('chapters', function (Blueprint $table) {
            $table->integer('characters')->unsigned()->default(0);//字数
            $table->integer('viewed')->unsigned()->default(0);//点击浏览次数
-           $table->integer('responded')->unsigned()->default(0);//各类回应统计（点赞，回帖，点评）
+           $table->integer('responded')->unsigned()->default(0);//各类回应统计（赞赏，回帖，点评）
         });
     }
 

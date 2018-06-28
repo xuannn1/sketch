@@ -12,7 +12,7 @@
                         您共有新跟帖{{ Auth::user()->post_reminders }}条，
                         新回复{{ Auth::user()->reply_reminders }}条，
                         新点评{{ Auth::user()->postcomment_reminders }}条，
-                        新点赞{{ Auth::user()->upvote_reminders }}条，
+                        新赞赏{{ Auth::user()->upvote_reminders }}条，
                         新系统消息{{ Auth::user()->system_reminders }}条，
                         新消息{{ Auth::user()->message_reminders }}条，
                     </h5>
@@ -73,7 +73,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
-                <h4>未读点赞：</h4>
+                <h4>未读赞赏：</h4>
                 @include('messages._upvotes')
                 @if($upvotes->hasMorePages())
                 <div class="text-center">

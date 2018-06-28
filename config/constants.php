@@ -78,7 +78,7 @@ return [
       '2' => '回复帖子',
       '3' => '点评帖子',
       '4' => '点评点评',
-      '5' => '点赞帖子',
+      '5' => '喜欢帖子',
       '6' => '有人提问',
    ],
    //1:post to one's thread 2: post to one's post 3: comment to one's post 4: comment to one's comment; 5:upvote to one's post
