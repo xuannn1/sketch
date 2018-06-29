@@ -19,7 +19,7 @@ class QuotesController extends Controller
     {
         $data = [];
         $this->validate($request, [
-            'quote' => 'required|string|max:80|unique:quotes',
+            'quote' => 'required|string|max:120|unique:quotes',
         ]);
         $data['quote'] = request('quote');
         $data['user_id'] = auth()->id();
