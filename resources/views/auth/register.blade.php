@@ -36,7 +36,7 @@
                     </div>
                     <div class="form-group">
                         <label for="invitation_token">邀请码：</label>
-                        <h6 class="grayout">（邀请码可以从朋友处得到，也可以关注站长微博@文栈君，留言“邀请码”自动获取）</h6>
+                        <h6 class="grayout">（邀请码可以从朋友处得到，也可以关注站长微博@文栈君，私信留言关键词“邀请码”自动获取）</h6>
                         <input type="text" name="invitation_token" class="form-control" value="{{ old('invitation_token') }}">
                     </div>
                     <div class="panel panel-default text-center">
