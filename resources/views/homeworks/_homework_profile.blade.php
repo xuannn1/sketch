@@ -17,7 +17,7 @@
             @if($registration->thread->id>0)
             <span><a href="{{ route('user.show', $registration->user_id) }}">{{ $registration->student->name }}</a></span>：<span><a href="{{ route('thread.show', $registration->thread->id) }}">{{ $registration->thread->title }}</a></span>：
             @foreach($registration->thread->posts as $post)
-            @if(($post->id>0)&&($post->user_id!=$registration->user_id))
+            @if(($post->id>0)&&($post->user_id!=$registration->thread->user_id))
             <span><a href="{{ route('thread.showpost', $post->id) }}">{{ $post->owner->name }}{{'('.$post->up_voted.')'}}</a></span>，
             @endif
             @endforeach
