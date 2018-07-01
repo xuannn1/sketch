@@ -9,7 +9,7 @@ class RegisterHomework extends Model
     protected $guarded = [];
     public function thread()
     {
-        return $this->belongsTo(Thread::class, 'thread_id')->select(['id','anonymous','majia','title'])->withDefault();
+        return $this->belongsTo(Thread::class, 'thread_id')->select(['id','user_id', 'anonymous','majia','title'])->withDefault();
     }
     public function student()
     {
