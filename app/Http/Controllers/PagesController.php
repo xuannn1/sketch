@@ -117,8 +117,9 @@ class PagesController extends Controller
 
     public function search(Request $request){
         $user = Auth::user();
-        if((!Auth::user()->admin)&&($user->lastsearched_at>Carbon::now()->subMinutes(5)->toDateTimeString())){
-            return redirect()->back()->with('warning','5分钟内只能进行一次搜索');
+        $cool_time = Auth::user()->user_level>=3 ? 1:5;
+        if((!Auth::user()->admin)&&($user->lastsearched_at>Carbon::now()->subMinutes($cool_time)->toDateTimeString())){
+            return redirect()->back()->with('warning',(string)$cool_time.'分钟内只能进行一次搜索');
         }else{
             $user->lastsearched_at=Carbon::now();
             $user->save();
