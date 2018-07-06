@@ -52,6 +52,7 @@ class StoreChapter extends FormRequest
         $post_data['majia']=$thread->majia;
         $post_data['markdown']=$this->markdown? true: false;
         $post_data['indentation']=$this->indentation ? true:false;
+        $post_data['bianyuan']=$this->bianyuan? true: false;
         // chapter data
         $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post_data['body']);
         $chapter_data = $this->only('title','annotation');
@@ -133,6 +134,7 @@ class StoreChapter extends FormRequest
         $post_data['user_ip']=$this->getClientIp();
         $post_data['markdown']=$this->markdown? true: false;
         $post_data['indentation']=$this->indentation ? true:false;
+        $post_data['bianyuan']=$this->bianyuan? true: false;
         $post_data['edited_at'] = Carbon::now();
         // chapter data
         $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post_data['body']);

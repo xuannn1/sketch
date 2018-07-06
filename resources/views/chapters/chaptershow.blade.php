@@ -41,6 +41,11 @@
                 @if((Auth::check())&&(Auth::user()->admin))
                 @include('admin._delete_post')
                 @endif
+                @if(($chapter->mainpost->bianyuan)&&(!Auth::check()))
+                <div class="text-center">
+                    <h6 class="display-4"><a href="{{ route('login') }}">本章节为隐藏格式，请登录后查看</a></h6>
+                </div>
+                @else
                 <div class="text-left main-text {{ $chapter->mainpost->indentation? 'indentation':'' }}">
                     @if($chapter->mainpost->markdown)
                     {!! Helper::sosadMarkdown($chapter->mainpost->body) !!}
@@ -52,6 +57,7 @@
                 <div class="text-left grayout">
                     {!! Helper::wrapParagraphs($chapter->annotation) !!}
                 </div>
+                @endif
                 <div class="">
                     <a class="smaller-10" href="{{ route('thread.showpost', $chapter->post_id) }}"><u>论坛讨论模式</u></a>
                     <span class="pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span><span>{{ $chapter->characters }}/</span><span class="glyphicon glyphicon-eye-open"></span>{{ $chapter->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $chapter->responded }}</em></span>

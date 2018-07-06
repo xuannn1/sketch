@@ -45,6 +45,11 @@
                         <label><input type="checkbox" name="sendstatus" checked>更新动态？</label>
                     </div>
                     @endif
+                    @if(!$book->thread->bianyuan)
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="bianyuan" >是否限制阅读章节？（非边缘文，但本章节含有性描写等敏感内容字段的，请自觉勾选此项，本章将只对注册用户开放，避免搜索引擎抓取）</label>
+                    </div>
+                    @endif
                     <button type="submit" class="btn btn-primary sosad-button">发布新章节</button>
                 </form>
             </div>

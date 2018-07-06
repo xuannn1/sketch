@@ -1,6 +1,10 @@
 <div class="hidden-sm hidden-md hidden-lg">
     @foreach($book->chapters as $chapter)
-    <a href="{{ route('book.showchapter', $chapter->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">{{ $chapter->title }}：{{ $chapter->mainpost_info->title }}</a>
+    <a href="{{ route('book.showchapter', $chapter->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
+        @if($chapter->mainpost->bianyuan)
+            <span class="glyphicon glyphicon-info-sign"></span>
+        @endif
+        {{ $chapter->title }}：{{ $chapter->mainpost_info->title }}</a>
     @if(Auth::id()==$thread->user_id)
     <a href="{{ route('book.editchapter', $chapter->id) }}" class="text-center btn-block">编辑{{ $chapter->title }}</a>
     @endif
@@ -22,7 +26,11 @@
         <tbody>
             @foreach($book->chapters as $chapter)
             <tr>
-                <th><a href="{{ route('book.showchapter', $chapter->id) }}" class = "">{{ $chapter->title }}</a></th>
+                <th><a href="{{ route('book.showchapter', $chapter->id) }}" class = "">
+                    @if($chapter->mainpost->bianyuan)
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                    @endif
+                    {{ $chapter->title }}</a></th>
                 <th>{{ $chapter->mainpost_info->title }}</th>
                 <th>{{ $chapter->characters }}</th>
                 <th>{{ $chapter->viewed }}</th>
