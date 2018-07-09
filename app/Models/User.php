@@ -273,18 +273,18 @@ class User extends Authenticatable
             $this->increment('sangdian',1);
             break;
             case "homework_excellent":
+            $this->increment('jifen', 100);
+            $this->increment('experience_points', 100);
+            $this->increment('shengfan', 100);
+            $this->increment('xianyu', 50);
+            $this->increment('sangdian', 30);
+            break;
+            case "homework_regular":
             $this->increment('jifen', 50);
             $this->increment('experience_points', 50);
             $this->increment('shengfan', 50);
-            $this->increment('xianyu', 25);
-            $this->increment('sangdian', 10);
-            break;
-            case "homework_regular":
-            $this->increment('jifen', 20);
-            $this->increment('experience_points', 20);
-            $this->increment('shengfan', 10);
-            $this->increment('xianyu', 5);
-            $this->increment('sangdian', 5);
+            $this->increment('xianyu', 20);
+            $this->increment('sangdian', 15);
             break;
             default:
             echo "应该奖励什么呢？一个bug呀……";

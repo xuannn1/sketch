@@ -201,9 +201,9 @@ class HomeworksController extends Controller
                         $user->reward('homework_regular');
                     });
                 }elseif($rewards=='4'){//punishmeng-1months
-                    $user->no_registration = Carbon::now()->addMonth(1);
+                    $user->no_registration = Carbon::now()->addMonth(2);
                 }elseif($rewards=='5'){//punishmeng-3months
-                    $user->no_registration = Carbon::now()->addMonths(3);
+                    $user->no_registration = Carbon::now()->addMonths(6);
                 }
                 $user->save();
             }

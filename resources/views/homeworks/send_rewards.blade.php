@@ -16,8 +16,8 @@
                         <label class="radio-inline"><input type="radio" name="{{$student->id}}" value="1">超级奖励</label>,
                         <label class="radio-inline"><input type="radio" name="{{$student->id}}" value="2" checked>普通奖励</label>,
                         <label class="radio-inline"><input type="radio" name="{{$student->id}}" value="3">什么都不做</label>,
-                        <label class="radio-inline"><input type="radio" name="{{$student->id}}" value="4">惩罚1（1月）</label>,
-                        <label class="radio-inline"><input type="radio" name="{{$student->id}}" value="5">惩罚2（3月）</label>.
+                        <label class="radio-inline"><input type="radio" name="{{$student->id}}" value="4">惩罚1（2月）</label>,
+                        <label class="radio-inline"><input type="radio" name="{{$student->id}}" value="5">惩罚2（6月）</label>.
                     </div>
                     @endforeach
                     <br>

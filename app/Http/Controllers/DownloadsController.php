@@ -184,7 +184,7 @@ class DownloadsController extends Controller
     public function thread_txt(Thread $thread)
     {
         $user = Auth::user();
-        if (($user->id!=$thread->user_id)||(!$user->admin)) {//假如并非本人主题，登陆用户也不是管理员，首先看主人是否允许开放下载
+        if ((!$user->id==$thread->user_id)||(!$user->admin)) {//假如并非本人主题，登陆用户也不是管理员，首先看主人是否允许开放下载
             if ((!$thread->public)||(!$thread->download_as_thread)){
                 return redirect()->back()->with("danger","作者并未开放下载");
             }else{
