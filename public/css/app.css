@@ -11537,7 +11537,6 @@ button.close {
   clip: auto;
 }
 
-header .container,
 .status-wrapper {
   -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
           box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
@@ -11545,9 +11544,7 @@ header .container,
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-header .container:hover,
 .status-wrapper:hover,
-header .container:focus,
 .status-wrapper:focus {
   -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
           box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
@@ -11621,6 +11618,7 @@ header .container {
 .navbar-inverse .navbar-nav .open a i,
 .navbar-inverse .navbar-nav .open .dropdown-menu > li > a i {
   font-size: 0.8em;
+  display: none;
 }
 
 .navbar-inverse .navbar-nav li a:hover,
@@ -11635,21 +11633,13 @@ header .container {
 
 .navbar-inverse .navbar-nav li a,
 .navbar-inverse .navbar-nav .open a {
-  padding: 14px 20px;
-}
-
-.navbar-inverse .navbar-nav li a:hover,
-.navbar-inverse .navbar-nav li a:focus,
-.navbar-inverse .navbar-nav .open a:hover,
-.navbar-inverse .navbar-nav .open a:focus {
-  border-bottom: 2.5px solid #000;
+  padding: 14px 17px;
 }
 
 .navbar-inverse .navbar-toggle {
   border: none;
   border-radius: 0px;
-  border-left: solid 1px #efefef;
-  padding: 14px 20px;
+  padding: 14px 17px;
   margin: 0px 0px;
 }
 
@@ -11663,6 +11653,7 @@ header .container {
   background-color: #fff;
   border: none;
   border-radius: 0px;
+  height: 48px;
 }
 
 .navbar-collapse.in {
@@ -11684,10 +11675,13 @@ header .container {
 
 #logo {
   float: left;
+  position: absolute;
   margin-right: 10px;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   font-size: 1.7em;
   font-weight: 700;
+  -webkit-transition: width 0.1s;
+  transition: width 0.1s;
 }
 
 #logo img {
@@ -11698,14 +11692,12 @@ header .container {
 .navbar-inverse .navbar-nav .open .dropdown-menu {
   display: block;
   position: absolute;
-  top: 50px;
+  top: 48px;
   width: auto;
   z-index: 20;
   background-color: #fff;
   background-clip: padding-box;
   border: none;
-  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 
 .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
@@ -11729,8 +11721,76 @@ header .container {
 }
 
 .search-container {
-  display: block;
-  position: relative;
+  display: inline-block;
+  height: 48px;
+  width: 240px;
+  margin-bottom: -5px;
+  overflow: hidden;
+  z-index: 10;
+  -webkit-transition: width 0.3s;
+  transition: width 0.3s;
+  background: #fff;
+}
+
+.search-container form {
+  color: #999;
+}
+
+.search-container form select {
+  float: left;
+  padding: 12px 0px 12px 15px;
+  width: 75px;
+  height: 48px;
+  background: #f9f9f9;
+  text-align: center;
+  border: none;
+}
+
+.search-container form select:focus,
+.search-container form selectactive {
+  border: none;
+  outline: none;
+}
+
+.search-container form input {
+  color: #999;
+  float: left;
+  padding: 14px 0px;
+  width: 105px;
+  background: transparent;
+  margin-left: 10px;
+  border: none;
+}
+
+.search-container form input:focus,
+.search-container form inputactive {
+  border: none;
+  outline: none;
+}
+
+.search-container form ::-webkit-input-placeholder {
+  color: #999 !important;
+}
+
+.search-submit {
+  width: 53px;
+  height: 48px;
+  display: inline-block;
+  position: absolute;
+  right: 3px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: 48px;
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+}
+
+.search-submit:focus,
+.search-submitactive {
+  border: none;
+  outline: none;
 }
 
 /*footer*/
@@ -11783,15 +11843,27 @@ footer .slogon {
   margin-bottom: 15px;
   padding-top: 70px;
   padding-bottom: 40px;
-  padding-left: 18% !important;
-  padding-right: 18% !important;
+  padding-left: 15% !important;
+  padding-right: 15% !important;
   border: none;
 }
 
 #daily-quote {
-  font-weight: 300;
-  font-size: 1.8em;
-  margin: 0px auto 20px auto;
+  font-weight: 400;
+  font-size: 1.6em;
+  margin: 0px auto 10px auto;
+}
+
+#daily-quote::before {
+  content: "\300C";
+  color: #FF2121;
+  padding-right: 5px;
+}
+
+#daily-quote::after {
+  content: "\300D";
+  color: #FF2121;
+  padding-left: 5px;
 }
 
 #quote-author {
@@ -12039,6 +12111,10 @@ code {
 .panel-body {
   padding-top: 0;
   padding-bottom: 0.5em;
+}
+
+.panel-thread {
+  padding-top: 15px;
 }
 
 #channel-name {
@@ -12572,9 +12648,19 @@ hr {
   font-weight: 500;
 }
 
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 99;
+  cursor: pointer;
+}
+
 @media (max-width: 480px) {
   p {
     text-align: justify;
+    word-break: normal;
   }
 
   .text-center p {
@@ -12595,37 +12681,59 @@ hr {
 
   .navbar-collapse.in {
     position: absolute;
-    top: 55px;
+    top: 48px;
     right: 0px;
-    width: 45%;
+    width: 100%;
     height: auto;
     border: 1px #efefef;
     background: #fff;
     background-clip: padding-box;
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
     overflow-y: visible;
   }
 
   .navbar-collapse.collapsing {
     position: absolute;
-    top: 55px;
+    top: 48px;
     right: 0px;
-    width: 45%;
+    width: 100%;
     height: auto;
     border: none;
+  }
+
+  .navbar-inverse .navbar-nav > li > a i {
+    display: inline;
   }
 
   .navbar-inverse .navbar-nav .open .dropdown-menu {
     width: 100%;
     position: absolute;
-    top: 50px;
+    top: 48px;
     left: 0px;
     border: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
   }
 
   .navbar-inverse .navbar-nav .open .dropdown-menu > li {
     padding: 2px 0px;
+  }
+
+  .search-container {
+    width: 100%;
+    background: #f9f9f9;
+  }
+
+  .search-container form select {
+    background: #f3f3f3;
+    width: 90px;
+    padding: 14px 4px 14px 34px;
+  }
+
+  .search-container form input {
+    width: 165px;
   }
 
   #daily-quote {
@@ -12707,7 +12815,7 @@ hr {
   }
 
   .nav-pills > li > a {
-    padding: 10px 18px;
+    padding: 10px 1em;
   }
 }
 

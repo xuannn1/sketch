@@ -8,103 +8,80 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 
 class Post extends Model
 {
-   use SoftDeletes;
-   use Traits\PostFilterable;
-   use Traits\RegularTraits;
+    use SoftDeletes;
+    use Traits\PostFilterable;
+    use Traits\RegularTraits;
 
-   protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at'];
 
-   protected $guarded = [];
-   //需要移动到helper
-    // public function sub_str($str, $length = 0, $append = true)
+    protected $guarded = [];
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withDefault();
+    }
+
+    public function thread()
+    {
+        return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(PostComment::class)->orderBy('created_at','desc');
+    }
+    public function allcomments()
+    {
+        return $this->hasMany(PostComment::class)->orderBy('created_at','desc');
+    }
+    public function shengfans()
+    {
+        return $this->hasMany(Shengfan::class)->orderBy('created_at','desc');
+    }
+    public function shengfan_voted(User $user)
+    {
+        return Shengfan::where('post_id', $this->id)->where('user_id', $user->id)->first();
+    }
+    public function reply_to_post()
+    {
+        return $this->belongsTo(Post::class, 'reply_to_post_id')->withDefault();
+    }
+    public function chapter()
+    {
+        return $this->belongsTo(Chapter::class, 'chapter_id')->withDefault();
+    }
+    // public function trim($str, $len)
     // {
-    //     $str = trim($str);
-    //     $strlength = strlen($str);
-    //     if ($length == 0 || $length >= $strlength) {
-    //         return $str;
-    //     } elseif ($length < 0) {
-    //         $length = $strlength + $length;
-    //         if ($length < 0) {
-    //             $length = $strlength;
-    //         }
-    //     }
-    //     if (function_exists('mb_substr')) {
-    //         $newstr = mb_substr($str, 0, $length, 'utf-8');
-    //     } elseif (function_exists('iconv_substr')) {
-    //         $newstr = iconv_substr($str, 0, $length, 'utf-8');
-    //     } else {
-    //         $newstr = substr($str, 0, $length);
-    //     }
-    //     if ($append && $str != $newstr) {
-    //         $newstr .= '...';
-    //     }
-    //     return $newstr;
+    //    $body = preg_replace('/[[:punct:]\s\n\t\r]/','',$str);
+    //    $body = trim($body);
+    //    if (strlen($body)>$len){
+    //       return $this->sub_str($body, $len, true);
+    //    }else{
+    //       return $body;
+    //    }
     // }
-
-   public function owner()
-   {
-     return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
-   }
-
-   public function user()
-   {
-     return $this->belongsTo(User::class, 'user_id')->withDefault();
-   }
-
-
-   public function thread()
-   {
-      return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
-   }
-
-   public function comments()
-   {
-      return $this->hasMany(PostComment::class)->orderBy('created_at','desc');
-   }
-   public function allcomments()
-   {
-      return $this->hasMany(PostComment::class)->orderBy('created_at','desc');
-   }
-
-   public function shengfan_voted(User $user)
-   {
-      return (Shengfan::where('post_id', $this->id)->where('user_id', $user->id)->first());
-   }
-   public function reply_to_post()
-   {
-      return $this->belongsTo(Post::class, 'reply_to_post_id')->withDefault();
-   }
-   public function chapter()
-   {
-      return $this->belongsTo(Chapter::class, 'chapter_id')->withDefault();
-   }
-   // public function trim($str, $len)
-   // {
-   //    $body = preg_replace('/[[:punct:]\s\n\t\r]/','',$str);
-   //    $body = trim($body);
-   //    if (strlen($body)>$len){
-   //       return $this->sub_str($body, $len, true);
-   //    }else{
-   //       return $body;
-   //    }
-   // }
-   public function checklongcomment()//新建章节之后，检查是否属于长评范畴，如果属于，加入推荐队列
-   {
-      if (!$this->maintext){//必须不能是某章节正文
-         $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$this->body);
-         $lenth = iconv_strlen($string, 'utf-8');
-         if($lenth>=config('constants.longcomment_lenth')){
-            $longcomment = LongComment::firstOrCreate(['post_id' => $this->id,]);
-            $this->update(['long_comment'=>1,'long_comment_id'=>$longcomment->id]);
-            $this->user->reward('longcomment');
-        }else{
-            $longcomment = LongComment::where('post_id',$this->id)->first();
-            if($longcomment){
-                $longcomment->delete();
+    public function checklongcomment()//新建章节之后，检查是否属于长评范畴，如果属于，加入推荐队列
+    {
+        if (!$this->maintext){//必须不能是某章节正文
+            $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$this->body);
+            $lenth = iconv_strlen($string, 'utf-8');
+            if($lenth>=config('constants.longcomment_lenth')){
+                $longcomment = LongComment::firstOrCreate(['post_id' => $this->id,]);
+                $this->update(['long_comment'=>1,'long_comment_id'=>$longcomment->id]);
+                $this->user->reward('longcomment');
+            }else{
+                $longcomment = LongComment::where('post_id',$this->id)->first();
+                if($longcomment){
+                    $longcomment->delete();
+                }
+                $this->update(['long_comment'=>0,'long_comment_id'=>0]);
             }
-            $this->update(['long_comment'=>0,'long_comment_id'=>0]);
         }
-      }
-      return;
-   }
+        return;
+    }
 }

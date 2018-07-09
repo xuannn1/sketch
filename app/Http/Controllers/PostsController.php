@@ -18,66 +18,75 @@ use App\Models\Collection;
 class PostsController extends Controller
 {
 
-   public function __construct()
-   {
-      $this->middleware('auth');
-   }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function store(StorePost $form, Thread $thread)
     {
-        if ((!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id()))){
+        if ((Auth::user()->admin)||((!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id())))){
             $post = $form->generatePost($thread);
             $post->checklongcomment();
             event(new NewPost($post));
-           return redirect(route('thread.showpost',$post->id))->with("success", "您已成功回帖");
+            if(($thread->book_id>0)&&($post->chapter_id>0)&&($post->chapter->responded<=2)){
+                $post->user->reward("first_post");
+                return back()->with('success', '您得到了新章节率先回帖的特殊奖励');
+            }else{
+                $post->user->reward("regular_post");
+            }
+            return back()->with('success', '您已成功回帖');
         }else{
-           return redirect()->back()->with("danger", "抱歉，本主题锁定或设为隐私，不能回帖");
+            return back()->with('danger', '抱歉，本主题锁定或设为隐私，不能回帖');
         }
     }
-     public function edit(Post $post)
-     {
+    public function edit(Post $post)
+    {
         $thread=$post->thread;
-        if ($thread->locked){
-           return redirect()->route('error', ['error_code' => '403']);
-        }else{
-           return view('posts.post_edit', compact('post'));
-        }
-     }
-
-     public function update(StorePost $form, Post $post)
-     {
-        $thread=$post->thread;
-        if ((Auth::id() == $post->user_id)&&(!$thread->locked)){
-            $form->updatePost($post);
-            $post->checklongcomment();
-            return redirect()->route('thread.showpost', $post->id)->with("success", "您已成功修改帖子");
+        $channel=$thread->channel;
+        if ((Auth::user()->admin)||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($channel->channel_state!=2))){
+            return view('posts.post_edit', compact('post'));
         }else{
             return redirect()->route('error', ['error_code' => '403']);
         }
-     }
-     public function show(Post $post)
-     {
+    }
+
+    public function update(StorePost $form, Post $post)
+    {
+        $thread=$post->thread;
+        $channel=$thread->channel;
+        if ((Auth::user()->admin)||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($channel->channel_state!=2))){
+            $form->updatePost($post);
+            $post->checklongcomment();
+            return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
+        }else{
+            return redirect()->route('error', ['error_code' => '403']);
+        }
+    }
+    public function show(Post $post)
+    {
         $thread = $post->thread->load('label','channel');
+        $book = $thread->book;
         $post->load('owner','reply_to_post.owner');
         $postcomments = $post->allcomments()->with('owner')->paginate(config('constants.items_per_page'));
         $defaultchapter=$post->chapter_id;
-        return view('posts.show',compact('post','thread','postcomments','defaultchapter'));
-     }
+        return view('posts.show',compact('post','thread','postcomments','defaultchapter','book'));
+    }
 
-     public function destroy($id){
+    public function destroy($id){
         $post = Post::findOrFail($id);
         $thread=$post->thread;
         if((!$thread->locked)&&(Auth::id()==$post->user_id)){
-           if(($post->maintext)&&($post->chapter_id !=0)){
-             $chapter = $post->chapter;
-             if($chapter->post_id == $post->id){
-                $chapter->delete();
-             }
-          }
-           $post->delete();
-           return redirect()->route('home')->with("success","已经删帖");
+            if(($post->maintext)&&($post->chapter_id !=0)){
+                $chapter = $post->chapter;
+                if($chapter->post_id == $post->id){
+                    $chapter->delete();
+                }
+            }
+            $post->delete();
+            return redirect()->route('home')->with("success","已经删帖");
         }else{
-           return redirect()->route('error', ['error_code' => '403']);
+            return redirect()->route('error', ['error_code' => '403']);
         }
-     }
+    }
 }

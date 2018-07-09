@@ -8,20 +8,62 @@
       <input type="hidden" id="baseurl" name="baseurl" value= "{{route('home')}}"/>
       <nav>
           <div class="navbar-header">
-              <!-- <div class="search-container">
-                  <form method="GET" action="{{ route('search') }}">
-                      <input type="textarea" placeholder="搜索……" name="search">
-                      <button type="submit"><i class="fa fa-search"></i></button>
-                  </form>
-              </div> -->
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
                   <span class="sr-only">切换导航</span>
                   <i class="fa fa-bars"></i>
               </button>
+
           </div>
           <div class="collapse navbar-collapse" id="navbar-menu">
             <ul class="nav navbar-nav navbar-right text-right">
-
+                @if(Auth::check())
+                <li>
+                 <div class="search-container" id="search-container">
+                     <form method="GET" action="{{ route('search') }}" id="search_form">
+                         <!-- <div class="search-input"> -->
+                             <select name="search_options" form="search_form" onchange="if
+                             (this.options[this.selectedIndex].value=='tongren_yuanzhu')  {
+                                document.getElementById('tongren_cp_name').style.display = 'inline';
+                                if(document.body.clientWidth <= 330) {
+                                    document.getElementById('tongren_cp_name').style.width = '60px';
+                                    document.getElementById('search_keyword').style.width = '105px';
+                                }
+                                else if (document.body.clientWidth <= 480) {
+                                    document.getElementById('tongren_cp_name').style.width = '75px';
+                                }
+                                else {
+                                    document.getElementById('tongren_cp_name').style.width = '120px';
+                                    document.getElementById('search_keyword').style.width = '140px';
+                                    document.getElementById('search-container').style.width = '400px';
+                                    document.getElementById('logo').style.width = '0px';
+                                }
+                            }
+                            else {
+                                document.getElementById('tongren_cp_name').style.display = 'none';
+                                if(document.body.clientWidth > 480) {
+                                    document.getElementById('search-container').style.width = '240px';
+                                    document.getElementById('search_keyword').style.width = '105px';
+                                }
+                                else {
+                                    document.getElementById('search_keyword').style.width = '165px';
+                                    document.getElementById('logo').style.width = '142px';
+                                }
+                            }
+                            ">
+                             <option value ="threads">标题</option>
+                             <option value ="users">用户</option>
+                             <option value ="tongren_yuanzhu" >原著</option>
+                              </select>
+                              <input type="textarea" placeholder="搜索..." name="search" id="search_keyword">
+                              <input type="textarea" placeholder="+CP简称" name="tongren_cp" id="tongren_cp_name" style="display:none">
+                         <!-- </div> -->
+                         <button class="search-submit" type="submit" value="">
+                         <i class="fa fa-search"></i>
+                         </button>
+                     </form>
+                   </div>
+                 </li>
+                 @endif
                @if (Auth::check()&&(Auth::user()->admin))
                    <li><a href="{{ route('admin.index') }}" class="admin-symbol">管理员</a></li>
                @endif
@@ -30,20 +72,21 @@
                 <li><a href="{{ route('qiandao') }}" style="color:#d66666">我要签到</a></li>
                @endif
 
+                @if(Auth::check())
+                    <li><a href="{{ route('statuses.collections') }}">
+                        <i class="fa fa-heartbeat"></i>
+                        动态</a></li>
+                @else
+                    <li><a href="{{ route('statuses.index') }}">动态</a></li>
+                @endif
+
                <li><a href="{{ route('books.index') }}">
                    <i class="fa fa-book"></i>
                    文库</a></li>
-               <li class="dropdown">
-                 <a href="" class="dropdown-toggle" data-toggle="dropdown">
+               <li>
+                 <a href="{{ route('threads.index') }}">
                      <i class="fa fa-comment"></i>
-                   论坛 <b class="caret"></b>
-                 </a>
-                 <ul class="dropdown-menu dropdown-menu-right">
-                   <li><a href="{{ route('threads.index') }}">全部讨论</a></li>
-                   <li><a href="{{ route('longcomments.index') }}">长评列表</a></li>
-                   <li><a href="{{ route('users.index') }}">全部用户</a></li>
-                   <li><a href="{{ route('statuses.index') }}">全部动态</a></li>
-                 </ul>
+                   论坛</a>
                </li>
               @if (Auth::check())
               <?php $user = Auth::user();

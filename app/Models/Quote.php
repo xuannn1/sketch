@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quote extends Model
 {
-   protected $guarded = [];
+    protected $guarded = [];
 
-   public function creator()
-   {
-      return $this->belongsTo(User::class, 'user_id')->withDefault();
-   }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withDefault();
+    }
 }

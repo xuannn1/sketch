@@ -70,7 +70,7 @@ p a, label a {
 
 header .container {
     border-bottom: solid 1px $border-color-row;
-    @extend %light-shadow;
+    // @extend %light-shadow;
 }
 
 .navbar-inverse {
@@ -92,6 +92,7 @@ header .container {
     letter-spacing: 1px;
     i {
         font-size: 0.8em;
+        display: none;
     }
     &:hover, &:focus {
         background-color: $body-color;
@@ -102,18 +103,18 @@ header .container {
 .navbar-inverse .navbar-nav {
   li a, .open a {
     @extend %navbar-shared;
-    padding: 14px 20px;
-    &:hover, &:focus {
-        border-bottom: 2.5px solid $bold-color;
-    }
+    padding: 14px 17px;
+    // &:hover, &:focus {
+    //     border-bottom: 2.5px solid $bold-color;
+    // }
   }
 }
 
 .navbar-inverse .navbar-toggle {
     border: none;
     border-radius: 0px;
-    border-left: solid 1px $border-color-row;
-    padding: 14px 20px;
+    // border-left: solid 1px $border-color-row;
+    padding: 14px 17px;
     margin: 0px 0px;
     &:hover, &:focus {
         background-color: $navbar-color;
@@ -125,6 +126,7 @@ header .container {
     background-color: $navbar-color;
     border: none;
     border-radius: 0px;
+    height: 48px;
 }
 
 .navbar-collapse.in {
@@ -151,10 +153,12 @@ header .container {
 
 #logo {
   float: left;
+  position: absolute;
   margin-right: 10px;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   font-size: 1.7em;
   font-weight: 700;
+  transition: width 0.1s;
   img {
     height: 2em;
     vertical-align: middle;
@@ -164,15 +168,13 @@ header .container {
 .navbar-inverse .navbar-nav .open .dropdown-menu {
   display: block;
   position: absolute;
-  top: 50px;
+  top: 48px;
   width: auto;
   z-index: 20;
   background-color: $navbar-color;
   -webkit-background-clip: padding-box;
           background-clip: padding-box;
   border: none;
-  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
-          box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
     >li > a {
         @extend %navbar-shared;
         padding: 10px 20px;
@@ -194,9 +196,68 @@ header .container {
 }
 
 .search-container {
-    display: block;
-    position: relative;
+    display: inline-block;
+    height: 48px;
+    width: 240px;
+    margin-bottom: -5px;
+    overflow: hidden;
+    z-index: 10;
+    transition: width 0.3s;
+    background: $panel-color;
+    form {
+        color: $border-color;
+        select {
+            float: left;
+            padding: 12px 0px 12px 15px;
+            width: 75px;
+            height: 48px;
+            background: $body-color;
+            text-align: center;
+            border: none;
+            &:focus, &active {
+                border: none;
+                outline: none;
+            }
+        }
+        input {
+            color: $border-color;
+            float: left;
+            padding: 14px 0px;
+            width: 105px;
+            background: transparent;
+            margin-left: 10px;
+            border: none;
+            &:focus, &active {
+                border: none;
+                outline: none;
+            }
+        }
+        ::-webkit-input-placeholder {
+            color: $border-color !important;
+        }
+    }
 }
+
+// .search-icon,
+.search-submit {
+    width: 53px;
+    height: 48px;
+    display: inline-block;
+    position: absolute;
+    right: 3px;
+    border: none;
+    padding: 0;
+    margin: 0;
+    line-height: 48px;
+    text-align: center;
+    cursor: pointer;
+    background: transparent;
+    &:focus, &active {
+        border: none;
+        outline: none;
+    }
+}
+
 
 /*footer*/
 
@@ -249,15 +310,31 @@ footer {
   margin-bottom: 15px;
   padding-top: 70px;
   padding-bottom: 40px;
-  padding-left: 18% !important;
-  padding-right: 18% !important;
+  padding-left: 15% !important;
+  padding-right: 15% !important;
   border: none;
 }
 
 #daily-quote {
-    font-weight: 300;
-    font-size: 1.8em;
-    margin: 0px auto 20px auto;
+    font-weight: 400;
+    font-size: 1.6em;
+    margin: 0px auto 10px auto;
+    // writing-mode: vertical-rl;
+    // max-height: 15em;
+    // letter-spacing: 2px;
+    // text-align: justify;
+    &::before {
+        content: "「";
+        color: $link-hover-color;
+        padding-right: 5px;
+        // padding-bottom: 5px;
+    }
+    &::after {
+        content: "」";
+        color: $link-hover-color;
+        padding-left: 5px;
+        // padding-top: 5px;
+    }
 }
 
 #quote-author {
@@ -448,15 +525,20 @@ code {
     border-radius: 4px;
 }
 
-.panel{
+.panel {
     margin-bottom:15px;
     border: none;
 }
 
-.panel-body{
+.panel-body {
    padding-top: 0;
    padding-bottom: 0.5em;
 }
+
+.panel-thread {
+    padding-top: 15px;
+}
+
 #channel-name {
    margin-top:0px;
    color: $body-font-color;
@@ -941,10 +1023,20 @@ hr {
     font-weight: 500;
 }
 
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 99;
+  cursor: pointer;
+}
+
 
 @media (max-width: 480px) {
     p {
         text-align: justify;
+        word-break: normal;
     }
     .text-center p {
         text-align: center !important;
@@ -960,33 +1052,60 @@ hr {
     }
     .navbar-collapse.in {
         position: absolute;
-        top: 55px;
+        top: 48px;
         right: 0px;
-        width: 45%;
+        width: 100%;
         height: auto;
         border: 1px $border-color-row;
         background: $background-color;
         -webkit-background-clip: padding-box;
                 background-clip: padding-box;
-        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
-                box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
         overflow-y: visible;
     }
     .navbar-collapse.collapsing {
         position: absolute;
-        top: 55px;
+        top: 48px;
         right: 0px;
-        width: 45%;
+        width: 100%;
         height: auto;
         border: none;
     }
+
+    .navbar-inverse .navbar-nav {
+        > li {
+            > a i {
+                display: inline;
+            }
+        }
+
+    }
+
     .navbar-inverse .navbar-nav .open .dropdown-menu {
         width: 100%;
       position: absolute;
-      top: 50px;
+      top: 48px;
       left: 0px;
       border: none;
       > li { padding: 2px 0px; }
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
+    }
+
+    .search-container {
+        width: 100%;
+        background: $body-color;
+        form {
+            select {
+                background: #f3f3f3;
+                width: 90px;
+                padding: 14px 4px 14px 34px;
+            }
+            input {
+                width: 165px;
+            }
+        }
     }
 
     #daily-quote {
@@ -1051,7 +1170,7 @@ hr {
     }
     .nav-pills {
         > li > a {
-            padding: 10px 18px;;
+            padding: 10px 1em;
         }
     }
 

@@ -7,23 +7,13 @@ use Genert\BBCode\BBCode;
 
 class Helper
 {
-   // public static function wrapParagraphs($post= null)
-   // {
-   //    while(strip_tags($post,"<br>")!=$post){
-   //       $post = strip_tags($post,"<br>");
-   //    }
-   //    $post = str_replace("\r\n", "\n", $post);
-   //    $post = str_replace("\r", "\n", $post);
-   //    $post = preg_replace('/\n{1,}/', "</p><p>", $post);
-   //    $post = "<p>{$post}</p>";
-   //    return $post;
-   // }
-
-   public static function trimtext($text, int $len)
+   public static function trimtext($text=null, int $len)
    {
-      $str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
-      $substr = iconv_substr($str, 0, $len, 'utf-8');
-      if(iconv_strlen($str) > iconv_strlen($substr)){
+      $bbCode = new BBCode();
+      $text = $bbCode->stripBBCodeTags((string) $text);
+      //$str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
+      $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
+      if(iconv_strlen($text) > iconv_strlen($substr)){
          $substr.='…';
       }
       return $substr;
@@ -116,6 +106,30 @@ class Helper
             '<span style="background-color:$1">$2</span>',
             '$1'
         );
+        $bbCode->addParser(
+            'table',
+            '/\[table\](.*?)\[\/table\]/s',
+            '<table>$1</table>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table tr',
+            '/\[tr\](.*?)\[\/tr\]/s',
+            '<tr>$1</tr>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table td',
+            '/\[td\](.*?)\[\/td\]/s',
+            '<td>$1</td>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table th',
+            '/\[th\](.*?)\[\/th\]/s',
+            '<th>$1</th>',
+            '$1'
+        );
 
        $post = $bbCode->convertToHtml($post);
 
@@ -123,5 +137,24 @@ class Helper
        $post = preg_replace('/\n{1,}/', "</p><p>", $post);
        $post = "<p>{$post}</p>";
        return $post;
+   }
+
+   public static function convert_to_public($string= null)
+   {
+       $badstring = config('constants.word_filter.not_in_public');
+       return preg_replace("/$badstring/i",'',$string);
+   }
+
+   public static function convert_to_title($string= null)
+   {
+       $badstring = config('constants.word_filter.not_in_title');
+       $string = preg_replace("/$badstring/i",'',Helper::convert_to_public($string));
+       return $string;
+   }
+
+   public static function convertBBCodetoMarkdown($string){
+       $string = Markdown::convertFromHtml($string);
+       $string = BBCode::convertToHtml($string);
+       return $string;
    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Auth\Events\Registered;
@@ -55,7 +56,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
        $validator = Validator::make($data, [
-            'name' => 'required|string|alpha_dash|max:10|unique:users',
+            'name' => 'required|string|alpha_dash|max:12|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'have_read_policy' => 'required',
@@ -82,16 +83,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'invitation_token' => $data['invitation_token'],
-            'activated' => 1,
-        ]);
-        $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
-        $invitation_token->decrement('invitation_times');
-        $invitation_token->increment('invited');
+        $user = DB::transaction(function()use($data){
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+                'invitation_token' => $data['invitation_token'],
+            ]);
+            $user->activated = 1;
+            $user->save();
+            $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
+            $invitation_token->decrement('invitation_times');
+            $invitation_token->increment('invited');
+            return $user;
+        });
         return $user;
     }
 

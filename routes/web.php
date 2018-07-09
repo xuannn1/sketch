@@ -37,8 +37,9 @@
    Route::get('/quote/create', 'QuotesController@create')->name('quote.create');//贡献题头
    Route::post('/quote/create', 'QuotesController@store')->name('quote.store');//贡献题头
    Route::get('/quotes/review', 'AdminsController@quotesreview')->name('quotes.review');//编辑题头
-   Route::get('/quotes/{quote}/approve','AdminsController@quoteapprove')->name('quote.approve');//通过题头
-   Route::get('/quotes/{quote}/disapprove','AdminsController@quotedisapprove')->name('quote.disapprove');//取消通过题头
+   //Route::get('/quotes/{quote}/approve','AdminsController@quoteapprove')->name('quote.approve');//通过题头
+   //Route::get('/quotes/{quote}/disapprove','AdminsController@quotedisapprove')->name('quote.disapprove');//取消通过题头
+   Route::get('/quotes/{quote}/toggle_review','AdminsController@toggle_review')->name('quote.toggle_review');//通过题头
    Route::get('/quotes/{quote}/xianyu','QuotesController@xianyu')->name('quote.vote');//给题头投喂咸鱼
 }
 
@@ -46,9 +47,11 @@
    Route::get('/users/{id}', 'UsersController@show')->name('user.show');//展示某用户的个人页面
    Route::get('users/{id}/threads','UsersController@showthreads')->name('user.showthreads');//展示某用户的全部主题贴
    Route::get('users/{id}/books','UsersController@showbooks')->name('user.showbooks');//展示某用户的全部文章
-   Route::get('users/{id}/statuses','UsersController@showstatuses')->name('user.showstatuses');//展示某用户的全部文章
+   Route::get('users/{id}/statuses','UsersController@showstatuses')->name('user.showstatuses');//展示某用户的全部动态
    Route::get('users/{id}/longcomments','UsersController@showlongcomments')->name('user.showlongcomments');//展示某用户的全部长评
    Route::get('/users/{id}/upvotes', 'UsersController@showupvotes')->name('user.showupvotes');
+   Route::get('/users/{id}/xianyus', 'UsersController@showxianyus')->name('user.showxianyus');
+   //Route::get('/users/{id}/shengfans', 'UsersController@showshengfans')->name('user.showshengfans');
    Route::get('/users/{id}/followings', 'UsersController@followings')->name('users.followings');
    Route::get('/users/{id}/followers', 'UsersController@followers')->name('users.followers');
    Route::post('/users/followers/{id}', 'FollowersController@store')->name('followers.store');
@@ -96,7 +99,7 @@
    Route::post('/book/create', 'BooksController@store')->name('book.store');//发表新的文章
    Route::get('/books/{book}/edit', 'BooksController@edit')->name('book.edit');//修改文章
    Route::post('/books/{book}/update', 'BooksController@update')->name('book.update');//更新文章修改
-   Route::get('/books/{book}', 'BooksController@show')->name('book.show');//查看某本书的目录
+   Route::get('/books/{book}', 'BooksController@show')->name('book.show')->middleware('filter_book');//查看某本书的目录
 
    Route::get('/books/{book}/createchapter', 'ChaptersController@createChapterForm')->name('book.createchapter');//更新章节的表格
    Route::post('/books/{book}/storechapter', 'ChaptersController@store')->name('book.storechapter');//储存新章节
@@ -117,8 +120,8 @@
    Route::post('/posts/{post}/comments', 'PostCommentsController@store')->name('postcomment.store');//对某个回帖发点评
    Route::delete('/postcomments/{postcomment}', 'PostCommentsController@destroy')->name('postcomment.destroy');//对某个回帖发点评
    Route::get('/posts/{post}/', 'PostsController@show')->name('post.show')->middleware('filter_post');//查看某个回帖
-   Route::post('/posts/{post}/shengfan', 'ShengfansController@vote')->name('shengfan.vote');//为回帖投剩饭；
-   Route::get('/posts/{post}/shengfan', 'ShengfansController@index')->name('shengfan.index');//显示本条信息下所有剩饭投喂情况；
+   Route::get('/posts/{post}/shengfan', 'ShengfansController@vote_post')->name('shengfan.vote_post');//为回帖投剩饭；
+   Route::get('/posts/{post}/shengfan-index', 'ShengfansController@index')->name('shengfan.index');//显示本条信息下所有剩饭投喂情况；
 
    Route::get('/posts/{post}/upvote','VotePostsController@upvote')->name('voteposts.upvote');//为回帖投票赞
    Route::get('/posts/{post}/downvote','VotePostsController@downvote')->name('voteposts.downvote');//为回帖投票踩
@@ -137,6 +140,8 @@
    Route::get('/admin/advancedthreadform/{thread}','AdminsController@advancedthreadform')->name('admin.advancedthreadform');//高级管理主题贴页面
    Route::get('/admin/sendpublicmessageform', 'AdminsController@sendpublicmessageform')->name('admin.sendpublicmessageform')->middleware('admin');//发送提醒通知表格
    Route::post('/admin/sendpublicmessage', 'AdminsController@sendpublicmessage')->name('admin.sendpublicmessage')->middleware('admin');//发送提醒通知
+   Route::get('/admin/createtag', 'AdminsController@create_tag_form')->name('admin.createtag')->middleware('admin');//显示新建tag表格
+   Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//发送提醒通知
 
 }
 
@@ -144,10 +149,20 @@
    Route::get('/threads/{thread}/collection', 'CollectionsController@store')->name('collection.store')->middleware('filter_thread');//收藏某个主题帖
    Route::get('/collections/books', 'CollectionsController@books')->name('collections.books');//显示收藏夹内容（首先是书）
    Route::get('/collections/threads', 'CollectionsController@threads')->name('collections.threads');//显示收藏夹内容（其他讨论）
-   Route::get('/collections/statuses', 'CollectionsController@statuses')->name('collections.statuses');//显示收藏夹内容（其他讨论）
+   Route::get('/collections/statuses', 'CollectionsController@statuses')->name('collections.statuses');//显示收藏夹内容（用户动态）
+   Route::get('/collections/collection_lists', 'CollectionsController@collection_lists')->name('collections.collection_lists');//显示收藏夹内容（收藏列表中的更新）
    Route::post('/collections/cancel', 'CollectionsController@cancel')->name('collection.cancel');//取消收藏某个主题帖
+   Route::post('/collections/store', 'CollectionsController@storeitem')->name('collection.storeitem');//收藏某个主题帖
+   Route::post('/collections/{collection}/store_comment', 'CollectionsController@store_comment')->name('collection.store_comment');//增加对某个收藏的评论
    Route::post('/collections/togglekeepupdate', 'CollectionsController@togglekeepupdate')->name('collection.togglekeepupdate');//是否订阅更新提醒
    Route::post('/collections/clearupdates', 'CollectionsController@clearupdates')->name('collection.clearupdates');//清零更新提醒
+
+   Route::get('/collections/collection_lists/create', 'CollectionsController@collection_list_create')->name('collections.collection_list_create');//新增收藏夹
+   Route::post('/collections/collection_lists', 'CollectionsController@collection_list_store')->name('collections.collection_list_store');//储存新收藏夹
+   Route::get('/collections/collection_lists/{collection_list}', 'CollectionsController@collection_list_show')->name('collections.collection_list_show');//展示收藏单内容
+   Route::get('/collections/collection_lists/{collection_list}/edit', 'CollectionsController@collection_list_edit')->name('collections.collection_list_edit');//修改收藏单内容
+   Route::patch('/collections/collection_lists/{collection_list}', 'CollectionsController@collection_list_update')->name('collections.collection_list_update');//展示收藏单内容
+   Route::get('/collection_lists', 'CollectionsController@all_collection_index')->name('collection_lists.index');
 }
 
 {//消息提醒模块
@@ -155,7 +170,6 @@
    Route::get('/messages/index','MessagesController@index')->name('messages.index');
    Route::get('/messages/messagebox','MessagesController@messagebox')->name('messages.messagebox');
    Route::get('/messages/messages','MessagesController@messages')->name('messages.messages');
-   Route::get('/messages/messages_combineduser','MessagesController@messages_combineduser')->name('messages.messages_combineduser');
    Route::get('/messages/messages_sent','MessagesController@messages_sent')->name('messages.messages_sent');
    Route::get('/messages/posts','MessagesController@posts')->name('messages.posts');
    Route::get('/messages/postcomments','MessagesController@postcomments')->name('messages.postcomments');
@@ -176,6 +190,7 @@
    Route::resource('statuses', 'StatusesController', ['only' => [
        'index', 'store', 'destroy'
    ]]);
+   Route::get('/statuses/collections', 'StatusesController@collections')->name('statuses.collections');//显示关注对象的所有动态
    Route::post('/cache/save', 'CachesController@save')->name('cache.save');
    Route::get('/cache/retrieve', 'CachesController@retrieve')->name('cache.retrieve');
    Route::get('/cache/initcache','CachesController@initcache')->name('cache.initcache');
@@ -189,3 +204,12 @@
 
 }
     Route::resource('polls', 'PollsController');
+
+//留言箱功能
+{
+    Route::get('/users/{user}/questions/create','QuestionsController@create')->name('questions.create');//加载新建问题页面
+    Route::get('/users/{user}/question','QuestionsController@redirectcreate')->name('question.redirectcreate');//加载新建问题页面，旧api
+    Route::post('/users/{user}/questions','QuestionsController@store')->name('questions.store');//储存问题路径
+    Route::get('/users/{user}/questions', 'QuestionsController@index')->name('questions.index');//问题列表
+    Route::post('/users/{user}/questions/{question}/answer','QuestionsController@answer')->name('questions.answer');//储存回答路径
+}

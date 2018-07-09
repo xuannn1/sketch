@@ -11270,6 +11270,7 @@ window._ = __webpack_require__(13);
 
 try {
   window.$ = window.jQuery = __webpack_require__(3);
+
   __webpack_require__(15);
 } catch (e) {}
 
@@ -44796,7 +44797,14 @@ function uncheckAll(divid) {
 function checkAll(divid) {
     $('#' + divid + ' :checkbox').prop('checked', true);
 }
-
+function show_only_this_label_tongren(label_id){
+    $('.tongren_yuanzhu_tag').addClass('hidden');
+    $('.label_'+label_id).removeClass('hidden');
+}
+function show_only_this_cp_tags(mother_tag_id){
+    $('.tongren_cp_tag').addClass('hidden');
+    $('.tongren_yuanzhu_'+mother_tag_id).removeClass('hidden');
+}
 function vote_post(post_id, method){ //method = upvote,downvote,fold,funny
    $.ajaxSetup({
       headers: {
@@ -44822,6 +44830,153 @@ function vote_post(post_id, method){ //method = upvote,downvote,fold,funny
    });
 };
 
+function toggle_review_quote(quote_id){
+   $.ajaxSetup({
+      headers: {
+           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+   $.ajax({
+      type: 'GET',
+      url: web_base_url + '/quotes/' + quote_id + '/' + 'toggle_review',
+      data: {
+          },
+      success: function(data) {
+         if (data != "notwork"){
+             console.log(data.approved);
+             if (data.approved){
+                $( '.togglereviewquote'+quote_id ).html("对外显示").addClass('btn-success').removeClass('btn-danger');
+             }else{
+                $( '.togglereviewquote'+quote_id ).html("不显示").addClass('btn-danger').removeClass('btn-success');
+             }
+             $('.not_reviewed_'+quote_id).addClass('hidden');
+        }else{
+            console.log('having error approving/disaproving quote');
+        }
+      }
+   });
+};
+
+function thread_xianyu(thread_id){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'GET',
+        url: web_base_url + '/threads/' + thread_id + '/xianyu',
+        data: {
+        },
+        success: function(data) {
+            console.log(data);
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                }
+            });
+            if(!(data['xianyu'] === undefined)){
+                $( '#threadxianyu'+thread_id ).html('咸鱼'+data['xianyu']);
+            }
+        }
+    });
+};
+
+// function thread_add_to_collection(thread_id){
+//     $.ajaxSetup({
+//         headers: {
+//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//         }
+//     });
+//     $.ajax({
+//         type: 'GET',
+//         url: web_base_url + '/threads/' + thread_id + '/collection',
+//         data: {
+//         },
+//         success: function(data) {
+//             console.log(data);
+//             var message = ["success","info","warning","danger"];
+//             $.each(data, function( key, value ){
+//                 if ($.inArray(key,message)>-1){
+//                     console.log(key,value);
+//                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+//                 }
+//             });
+//             if(!(data['collection'] === undefined)){
+//                 $( '#threadcollection'+thread_id ).html('收藏'+data['collection']);
+//             }
+//         }
+//     });
+// };
+
+function item_add_to_collection(item_id, item_type, collection_list_id){
+   $.ajaxSetup({
+      headers: {
+           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+   $.ajax({
+      type: 'POST',
+      url: web_base_url + '/collections/store',
+      data: {
+         'item_id':item_id,
+         'item_type':item_type,
+         'collection_list_id':collection_list_id,
+          },
+      success: function(data) {
+          console.log(data);
+          var message = ["success","info","warning","danger"];
+          $.each(data, function( key, value ){
+              if ($.inArray(key,message)>-1){
+                  console.log(key,value);
+                  $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+              }
+          });
+          if(!(data['collection'] === undefined)){
+              $( '#itemcollection'+item_id ).html('收藏'+data['collection']);
+          }
+      }
+   });
+};
+
+
+function post_shengfan(post_id){
+    if ($.isNumeric($('#post'+post_id+'shengfan').val())){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type: 'GET',
+            url: web_base_url + '/posts/' + post_id + '/shengfan?num=' + $('#post'+post_id+'shengfan').val(),
+            data: {
+            },
+            success: function(data) {
+                console.log(data);
+                $('.shengfan-modal').modal('hide');
+                var message = ["success","info","warning","danger"];
+                $.each(data, function( key, value ){
+                    if ($.inArray(key,message)>-1){
+                        console.log(key,value);
+                        $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                    }
+                });
+                if(!(data['shengfan'] === undefined)){
+                    $( '#postshengfan'+post_id ).html('剩饭'+data['shengfan']);
+                }
+            }
+        });
+    }else{
+        $('.shengfan-modal').modal('hide');
+        console.log($('#post'+post_id+'shengfan').val());
+        console.log('error that is not a number');
+        $( '#ajax-message' ).html('抱歉，您输入的不是数字。').addClass('alert-danger').removeClass('hidden');
+    }
+};
+
 function replytopost(post_id, post_trim){
    document.getElementById("reply_to_post_id").value = post_id;
    document.getElementById("reply_to_post").classList.remove('hidden');
@@ -44838,6 +44993,16 @@ function wordscount(item){
    var post = document.getElementById(item).value;
    var str = post.replace(/[\[\]\*\#\_\-\s\n\t\r]/g,"");
    alert("字数统计：" + str.length);
+};
+function removespace(itemname){
+   var post = $('#'+itemname).val();
+   var res = post.split("\n");
+   var string = "";
+   $.each(res, function(key,value){
+       string += $.trim(value) + "\n"
+   });
+   console.log('cleared spaces');
+   $('#'+itemname).val(string);
 };
 
 function expandpost(id){
@@ -44879,7 +45044,7 @@ function toggleCancelButtons(){
    });
 };
 
-function cancelCollectionThread(thread_id){
+function cancelCollectionItem(item_id, item_type, collection_list_id){
    $.ajaxSetup({
       headers: {
            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -44889,11 +45054,13 @@ function cancelCollectionThread(thread_id){
       type: 'POST',
       url: web_base_url + '/collections/cancel',
       data: {
-         'thread_id': thread_id
+         'item_id':item_id,
+         'item_type':item_type,
+         'collection_list_id':collection_list_id,
           },
       success: function(data) {
          if (data != "notwork"){
-            $( '.thread'+thread_id ).addClass('hidden');
+            $( '.item'+item_type+'id'+item_id ).addClass('hidden');
          }
       }
    });
@@ -45050,29 +45217,33 @@ function destroystatus(status_id){
       }
    });
 };
+function initcache(){
+    console.log('goingto initiate cache');
+    $.ajaxSetup({
+      headers: {
+           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+   $.ajax({
+      type: "GET",
+      url: web_base_url + '/cache/initcache',
+      data: {
+          },
+      success: function(data) {
+         if (data != "notwork"){
+            console.log(data);
+         }
+      }
+   });
+};
 
 $(document).ready(function(){
-    $( 'textarea' ).click(function() {
-        console.log('goingto initiate cache');
-        $.ajaxSetup({
-          headers: {
-               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-       });
-       $.ajax({
-          type: "GET",
-          url: web_base_url + '/cache/initcache',
-          data: {
-              },
-          success: function(data) {
-             if (data != "notwork"){
-                console.log(data);
-             }
-          }
-       });
+    $( 'textarea'  ).one( "click", function() {
+        if($(this).attr('rows')>1){
+            initcache();
+        }
     });
 });
-
 
 $('textarea').keyup(_.debounce(function() {
    console.log('save');
@@ -45090,7 +45261,7 @@ $('textarea').keyup(_.debounce(function() {
           },
       success: function(data) {
          if (data != "notwork"){
-            console.log(item_value);
+            console.log(data);
          }
       }
    });
@@ -45247,4 +45418,8 @@ function addoption(thread_id){//让投票区增加分支选择项
     }else{
         alert("只能填写十项");
     }
+}
+
+function toggle_tags(){
+    $('.extra-tag').toggleClass('hidden');
 }

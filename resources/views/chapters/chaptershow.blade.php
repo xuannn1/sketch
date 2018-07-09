@@ -9,7 +9,7 @@
       </div>
       {{ $posts->links() }}
       @if($posts->currentPage()==1)
-      <div class="panel panel-default panel-thread">
+      <div class="panel panel-default">
          <div class="panel-heading">
             <div class="text-center h5">
                <div class="h4">
@@ -41,7 +41,7 @@
             @if((Auth::check())&&(Auth::user()->admin))
             @include('admin._delete_post')
             @endif
-            <div class="text-left main-text {{ $chapter->mainpost->indentation? 'indentation':'' }} chapter-text">
+            <div class="text-left main-text chapter-text {{ $chapter->mainpost->indentation? 'indentation':'' }}">
                @if($chapter->mainpost->markdown)
                {!! Helper::sosadMarkdown($chapter->mainpost->body) !!}
                @else

@@ -14,8 +14,8 @@ class AddUpvoteRemindersToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('upvote_reminders')->default(0);//点赞提醒
-            $table->boolean('no_upvote_reminders')->default(0);//是否不提醒他人点赞
+            $table->integer('upvote_reminders')->default(0);//赞赏提醒
+            $table->boolean('no_upvote_reminders')->default(0);//是否不提醒他人赞赏
         });
     }
 

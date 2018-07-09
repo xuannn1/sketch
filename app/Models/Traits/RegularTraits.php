@@ -17,6 +17,9 @@ trait RegularTraits
             case 'oldest':
                 return $query->oldest();
                 break;
+            case 'latest':
+                return $query->latest();
+                break;
             case 'recentaddedchapter':
                 return $query->recentAddedChapter();
                 break;

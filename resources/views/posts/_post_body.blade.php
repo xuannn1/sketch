@@ -29,7 +29,7 @@
         @if($post->chapter->annotation)
         <div class="grayout">
             <br>
-            {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
+            {!! Helper::wrapParagraphs($post->chapter->annotation) !!}
             <br>
         </div>
         @endif

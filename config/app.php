@@ -173,8 +173,6 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        Laravel\Scout\ScoutServiceProvider::class,
-        Yab\MySQLScout\Providers\MySQLScoutServiceProvider::class,
 
 
         // App\Providers\BroadcastServiceProvider::class,

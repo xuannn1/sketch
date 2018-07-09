@@ -335,7 +335,7 @@ class DefaultSettingsSeeder extends Seeder
                   'tag_group' => '20',
                ]);
             }
-            {//（边缘）-5 文章含肉超过20%，或题材包含人兽、触手、父子、乱伦、生子、产乳、abo、冰恋、军政、黑道、性转
+            {//（边缘）-5 文章含肉超过20%，或题材包含人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转
                tag::create([
                   'tagname' => '高H',
                   'tag_group' => '5',
@@ -367,15 +367,7 @@ class DefaultSettingsSeeder extends Seeder
                tag::create([
                   'tagname' => 'abo',
                   'tag_group' => '5',
-               ]);
-               tag::create([
-                  'tagname' => '冰恋',
-                  'tag_group' => '5',
-               ]);
-               tag::create([
-                  'tagname' => '军政',
-                  'tag_group' => '5',
-               ]);
+                ]);
                tag::create([
                   'tagname' => '黑道',
                   'tag_group' => '5',

@@ -11270,6 +11270,7 @@ window._ = __webpack_require__(13);
 
 try {
   window.$ = window.jQuery = __webpack_require__(3);
+
   __webpack_require__(15);
 } catch (e) {}
 

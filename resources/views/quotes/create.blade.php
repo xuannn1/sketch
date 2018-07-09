@@ -17,11 +17,6 @@
                 <textarea name="quote" id="markdowneditor" rows="5" class="form-control" placeholder="不丧不成活~">{{ old('quote') }}</textarea>
                 <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
               </div>
-              <div>
-                <span>够“丧”么?</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <label class="radio-inline"><input type="radio" name="notsad" value="false">已经！很丧了！</label>
-                <label class="radio-inline"><input type="radio" name="notsad" value="true">……好像？</label>
-              </div>
               <div class="checkbox">
                 <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majia').style.display = 'block'">马甲？</label>
                 <div class="form-group text-right" id="majia" style="display:none">
