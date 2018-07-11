@@ -168,7 +168,7 @@ class UsersController extends Controller
             $statuses=$this->findstatuses($id,config('constants.index_per_part'));
             $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
             $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
-            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus'))->with('show_as_collections',false)->with('show_channel',1);
+            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }

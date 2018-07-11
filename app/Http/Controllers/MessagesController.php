@@ -202,7 +202,7 @@ class MessagesController extends Controller
         $replies = $this->findreplies(0, config('constants.index_per_part'));
         $upvotes = $this->findupvotes(0, config('constants.index_per_part'));
         $system_reminders = $this->findsystemsreminders(0, config('constants.index_per_part'));
-        return view('messages.index', compact('messages','posts','postcomments','replies','upvotes','system_reminders'));
+        return view('messages.index', compact('messages','posts','postcomments','replies','upvotes','system_reminders'))->with('as_longcomments',0);
     }
     public function unread()//1:show unread activities;0:show all activities
     {
@@ -214,44 +214,44 @@ class MessagesController extends Controller
         $replies = $this->findreplies(1, config('constants.index_per_part'));
         $upvotes = $this->findupvotes(1, config('constants.index_per_part'));
         $system_reminders = $this->findsystemsreminders(1, config('constants.index_per_part'));
-        return view('messages.unread', compact('messages','posts','postcomments','replies','upvotes','system_reminders'));
+        return view('messages.unread', compact('messages','posts','postcomments','replies','upvotes','system_reminders'))->with('as_longcomments',0);
     }
     public function messagebox()//show all messages
     {
         $messages = $this->findmessages_combineduser(config('constants.items_per_part'));
         $messages_sent = $this->findmessagessent(config('constants.items_per_part'));
-        return view('messages.messagebox', compact('messages','messages_sent','group_messages'));
+        return view('messages.messagebox', compact('messages','messages_sent','group_messages'))->with('as_longcomments',0);
     }
 
     public function posts()
     {
-        $posts = $this->findposts(0, config('constants.index_per_page'));
+        $posts = $this->findposts(0, config('constants.index_per_page'))->with('as_longcomments',0);
         return view('messages.posts', compact('posts'));
     }
     public function postcomments()
     {
         $postcomments = $this->findpostcomments(0, config('constants.index_per_page'));
-        return view('messages.postcomments', compact('postcomments'));
+        return view('messages.postcomments', compact('postcomments'))->with('as_longcomments',0);
     }
     public function upvotes()
     {
         $upvotes = $this->findupvotes(0, config('constants.index_per_page'));
-        return view('messages.upvotes', compact('upvotes'));
+        return view('messages.upvotes', compact('upvotes'))->with('as_longcomments',0);
     }
     public function replies()
     {
         $replies = $this->findreplies(0, config('constants.index_per_page'));
-        return view('messages.replies', compact('replies'));
+        return view('messages.replies', compact('replies'))->with('as_longcomments',0);
     }
     public function messages()
     {
         $messages = $this->findmessages(0, config('constants.index_per_page'));
-        return view('messages.messages', compact('messages'));
+        return view('messages.messages', compact('messages'))->with('as_longcomments',0);
     }
     public function messages_sent()
     {
         $messages_sent = $this->findmessagessent(config('constants.index_per_page'));
-        return view('messages.messages_sent', compact('messages_sent'));
+        return view('messages.messages_sent', compact('messages_sent'))->with('as_longcomments',0);
     }
     public function clear()//make all reminders as seen
     {
@@ -269,7 +269,7 @@ class MessagesController extends Controller
 
     public function conversation(User $user, $is_group_messaging){
         $messages = $this->findconversation($user->id, config('constants.index_per_page'), $is_group_messaging);
-        return view('messages.conversations', compact('messages','user','is_group_messaging'));
+        return view('messages.conversations', compact('messages','user','is_group_messaging'))->with('as_longcomments',0);
     }
     public function create(User $user)
     {
