@@ -26,7 +26,7 @@ class LongCommentsController extends Controller
             ->join('threads','threads.id','=','posts.thread_id')
             ->join('channels', 'threads.channel_id','=','channels.id')
             ->join('long_comments','posts.id','=','long_comments.post_id')
-            ->where([['posts.deleted_at','=',null],['channels.channel_state','<=',10],['threads.public','=',1],['long_comments.approved','=',1],['posts.as_longcomment','=',1]]);
+            ->where([['posts.deleted_at','=',null],['channels.channel_state','<=',1],['threads.public','=',1],['long_comments.approved','=',1],['posts.as_longcomment','=',1]]);
             if (!Auth::check()){
                 $query->where('threads.bianyuan','=',0);
             }
