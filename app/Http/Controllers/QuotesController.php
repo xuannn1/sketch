@@ -26,6 +26,7 @@ class QuotesController extends Controller
         $data['notsad'] = request('notsad')? 1:0;
         if((Auth::user()->admin)){
             $data['approved']=true;
+            $data['reviewed']=true;
         }
         if (request('anonymous')){
             $this->validate($request, [

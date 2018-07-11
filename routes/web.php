@@ -36,10 +36,8 @@
 {//提头部分
    Route::get('/quote/create', 'QuotesController@create')->name('quote.create');//贡献题头
    Route::post('/quote/create', 'QuotesController@store')->name('quote.store');//贡献题头
-   Route::get('/quotes/review', 'AdminsController@quotesreview')->name('quotes.review');//编辑题头
-   //Route::get('/quotes/{quote}/approve','AdminsController@quoteapprove')->name('quote.approve');//通过题头
-   //Route::get('/quotes/{quote}/disapprove','AdminsController@quotedisapprove')->name('quote.disapprove');//取消通过题头
-   Route::get('/quotes/{quote}/toggle_review','AdminsController@toggle_review')->name('quote.toggle_review');//通过题头
+   Route::get('/quotes/review', 'AdminsController@quotesreview')->name('quotes.review');//审核题头
+   Route::get('/quotes/{quote}/toggle_review/{quote_method}','AdminsController@toggle_review_quote')->name('quote.toggle_review');//通过题头
    Route::get('/quotes/{quote}/xianyu','QuotesController@xianyu')->name('quote.vote');//给题头投喂咸鱼
 }
 
@@ -128,7 +126,7 @@
    Route::get('/posts/{post}/funny','VotePostsController@funny')->name('voteposts.funny');//为回帖投票踩
    Route::get('/posts/{post}/fold','VotePostsController@fold')->name('voteposts.fold');//为回帖投票踩
    Route::get('/longcomments', 'LongCommentsController@index')->name('longcomments.index');
-
+   Route::get('/posts/{post}/toggle_review/{longcomment_method}','AdminsController@toggle_review_longcomment')->name('longcomment.toggle_review');//通过长评
 }
 
 {//以下是admin
@@ -142,6 +140,7 @@
    Route::post('/admin/sendpublicmessage', 'AdminsController@sendpublicmessage')->name('admin.sendpublicmessage')->middleware('admin');//发送提醒通知
    Route::get('/admin/createtag', 'AdminsController@create_tag_form')->name('admin.createtag')->middleware('admin');//显示新建tag表格
    Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//发送提醒通知
+   Route::get('/admin/longcomments', 'AdminsController@longcommentsreview')->name('admin.review_longcomments');//审核是否允许成为长评
 
 }
 

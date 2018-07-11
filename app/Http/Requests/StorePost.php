@@ -46,6 +46,7 @@ class StorePost extends FormRequest
         }
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;
+        $data['as_longcomment']=$this->as_longcomment ? true:false;
 
         $data['chapter_id'] = (int)$this->default_chapter_id;
         if ($data['chapter_id']!=0){
@@ -92,6 +93,7 @@ class StorePost extends FormRequest
         $data['anonymous']=$this->anonymous ? 1:0;
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;
+        $data['as_longcomment']=$this->as_longcomment ? true:false;
         auth()->user()->update(['indentation'=>$data['indentation']]);
         $data['edited_at']=Carbon::now();
         $post->update($data);

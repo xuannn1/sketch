@@ -55,6 +55,7 @@ class Post extends Model
     {
         return $this->belongsTo(Chapter::class, 'chapter_id')->withDefault();
     }
+
     // public function trim($str, $len)
     // {
     //    $body = preg_replace('/[[:punct:]\s\n\t\r]/','',$str);

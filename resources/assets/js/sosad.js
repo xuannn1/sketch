@@ -46,7 +46,7 @@ function vote_post(post_id, method){ //method = upvote,downvote,fold,funny
    });
 };
 
-function toggle_review_quote(quote_id){
+function toggle_review_quote(quote_id, method){
    $.ajaxSetup({
       headers: {
            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -54,18 +54,45 @@ function toggle_review_quote(quote_id){
    });
    $.ajax({
       type: 'GET',
-      url: web_base_url + '/quotes/' + quote_id + '/' + 'toggle_review',
+      url: web_base_url + '/quotes/' + quote_id + '/toggle_review/' + method,
       data: {
           },
       success: function(data) {
          if (data != "notwork"){
              console.log(data.approved);
-             if (data.approved){
-                $( '.togglereviewquote'+quote_id ).html("对外显示").addClass('btn-success').removeClass('btn-danger');
-             }else{
-                $( '.togglereviewquote'+quote_id ).html("不显示").addClass('btn-danger').removeClass('btn-success');
-             }
-             $('.not_reviewed_'+quote_id).addClass('hidden');
+             $( '.quotebutton'+quote_id ).addClass('hidden');
+             $( '.quotereviewstatus'+quote_id ).html(data.approved);
+        }else{
+            console.log('having error approving/disaproving quote');
+        }
+      }
+   });
+};
+
+function toggle_re_review_buttons(item_id,approve_status){//approve_status = 0:not approved; 1:approved
+    if (approve_status === 1){
+        $( '.disapprovebutton' +  item_id).removeClass('hidden');
+    }else{
+        $( '.approvebutton' +  item_id).removeClass('hidden');
+    }
+    $( '.togglebutton' +  item_id).addClass('hidden');
+}
+
+function toggle_review_longcomment(post_id, method){ //method = approve; disapprove
+   $.ajaxSetup({
+      headers: {
+           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+   $.ajax({
+      type: 'GET',
+      url: web_base_url + '/posts/' + post_id + '/toggle_review/' + method,
+      data: {
+          },
+      success: function(data) {
+         if (data != "notwork"){
+             console.log(data);
+             $( '.longcommentbutton'+post_id ).addClass('hidden');
         }else{
             console.log('having error approving/disaproving quote');
         }

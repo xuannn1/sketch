@@ -11,6 +11,7 @@
                     <li><a href="#">普通投诉（人身攻击、三次元信息）</a></li>
                     <li><a href="#">侵权投诉</a></li>
                     <li><a href="{{ route('quotes.review') }}">文案摘句审核</a></li>
+                    <li><a href="{{ route('admin.review_longcomments') }}">长评审核</a></li>
                 </ul>
             </div>
         </div>

@@ -13,6 +13,7 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\PostComment;
+use App\Models\LongComment;
 use App\Models\Administration;
 use App\Models\Book;
 use App\Models\Message;
@@ -36,12 +37,69 @@ class AdminsController extends Controller
         return view('admin.quotesreview', compact('quotes'));
     }
 
-    public function toggle_review(Quote $quote)
+    public function longcommentsreview()
     {
-        $quote->approved = !$quote->approved;
-        $quote->reviewed = true;
-        $quote->update();
+        $posts = DB::table('posts')
+        ->join('users','users.id','=','posts.user_id')
+        ->join('threads','threads.id','=','posts.thread_id')
+        ->join('channels', 'threads.channel_id','=','channels.id')
+        ->join('long_comments','posts.id','=','long_comments.post_id')
+        ->where([['posts.deleted_at','=',null],['channels.channel_state','<=',10],['threads.public','=',1],['posts.as_longcomment','=',1]])
+        ->select('posts.*','threads.title as thread_title', 'users.name','long_comments.reviewed','long_comments.approved')
+        ->orderBy('posts.created_at', 'desc')
+        ->paginate(config('constants.index_per_page'));
+        return view('admin.longcommentsreview', compact('posts'))->with('as_longcomments',1);
+    }
+
+    public function toggle_review_quote(Quote $quote, $quote_method)
+    {
+        switch ($quote_method):
+            case "approve"://通过题头
+            if(!$quote->approved){
+                $quote->approved = 1;
+                $quote->reviewed = 1;
+                $quote->save();
+            }
+            break;
+            case "disapprove"://不通过题头(已经通过了的，不允许通过；或没有评价过的，不允许通过)
+            if((!$quote->reviewed)||($quote->approved)){
+                $quote->approved = 0;
+                $quote->reviewed = 1;
+                $quote->save();
+            }
+            break;
+            default:
+            echo "应该奖励什么呢？一个bug呀……";
+        endswitch;
         return $quote;
+    }
+
+    public function toggle_review_longcomment(Post $post, $longcomment_method)
+    {
+        $longcomment = LongComment::where('post_id',$post->id)->first();
+        if($longcomment){
+            switch ($longcomment_method):
+                case "approve"://通过长评
+                if(!$longcomment->approved){
+                    $longcomment->approved = 1;
+                    $longcomment->reviewed = 1;
+                    $longcomment->save();
+                }
+                break;
+                case "disapprove"://不通过长评(已经通过了的，不允许通过；或没有评价过的，不允许通过)
+                if((!$longcomment->reviewed)||($longcomment->approved)){
+                    $longcomment->approved = 0;
+                    $longcomment->reviewed = 1;
+                    $longcomment->save();
+                }
+                break;
+
+                default:
+                echo "应该奖励什么呢？一个bug呀……";
+            endswitch;
+            return 'works';
+        }
+        return 'notwork';
     }
 
     public function threadmanagement(Thread $thread, Request $request)
