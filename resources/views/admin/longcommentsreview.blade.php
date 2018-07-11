@@ -6,6 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4>审核长评</h4>
+                <h5>暂定标准：树洞吐槽不发，生活感悟发积极乐观的，书评拉踩谨慎选择，鼓励乐观的多发。</h5>
                 </div>
                 <div class="panel-body">
                     {{$posts->links()}}
