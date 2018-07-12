@@ -29,22 +29,62 @@ class PagesController extends Controller
         ]);
     }
 
+    public function findthreads($channel_id, $take)
+    {
+        $threads = Cache::remember('home_ch'.$channel_id, 2, function () use($channel_id, $take) {
+            return DB::table('threads')
+            ->join('users', 'threads.user_id', '=', 'users.id')
+            ->where([['threads.deleted_at', '=', null],['threads.channel_id','=',$channel_id],['threads.public','=',1],['threads.bianyuan','=',0]])
+            ->select('threads.*','users.name')
+            ->orderby('threads.lastresponded_at', 'desc')
+            ->take($take)
+            ->get();
+        });
+        return $threads;
+    }
+
+    public function findrecommendation($take)
+    {
+        $threads = Cache::remember('recommendation', 5, function () use($take) {
+            return DB::table('threads')
+            ->join('recommend_books', 'threads.id', '=', 'recommend_books.thread_id')
+            ->join('users', 'threads.user_id', '=', 'users.id')
+            ->where([['recommend_books.valid','=',1],['threads.deleted_at', '=', null],['threads.book_id','>',0],['threads.public','=',1]])
+            ->select('threads.*','users.name')
+            ->inRandomOrder()
+            ->take($take)
+            ->get();
+        });
+        return $threads;
+    }
+
     public function home()
     {
-        $group = 10;
-        if (Auth::check()){
-            $group = Auth::user()->group;
+        $threads = [];
+        $group = Auth::check()? Auth::user()->group : 10;
+        $channels = Channel::where('channel_state','<',$group)->orderBy('orderBy','asc')->get();
+        foreach($channels as $channel)
+        {
+            switch ($channel->id) {
+                case 1://原创，拿三个
+                    $take =3;
+                    break;
+                case 2://同人
+                case 3://作业
+                case 4://读写
+                case 5://日常
+                case 6://随笔
+                    $take = 2;
+                    break;
+                default://其他
+                    $take = 1;
+            }
+            $threads[$channel->id] = $this->findthreads($channel->id,$take);
         }
-        $channels = Channel::where('channel_state','<',$group)
-        ->orderBy('orderby','asc')
-        ->get();
-        $channels->load('recent_thread_1.creator','recent_thread_2.creator');
-        if(mt_rand(0,100)>20){
-            $quote = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->first();
-        }else{
-            $quote = Quote::where('approved', true)->where('notsad', true)->inRandomOrder()->first();
-        }
-        return view('pages/home',compact('channels', 'quote'));
+        $quotes1 = Quote::where('approved', true)->where('notsad', true)->inRandomOrder()->take(2);
+        $quotes = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->take(8)->union($quotes1)->inRandomOrder()->get();
+        $recommends = $this->findrecommendation(6);
+        return view('pages/home',compact('channels', 'quotes','threads','recommends'));
     }
     public function about()
     {

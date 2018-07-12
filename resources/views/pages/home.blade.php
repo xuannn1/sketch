@@ -1,68 +1,78 @@
 @extends('layouts.default')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         @if(Auth::check())
         <div class="search-container">
             <form method="GET" action="{{ route('search') }}" id="search_form">
                 <select name="search_options" form="search_form" onchange="if
                 (this.options[this.selectedIndex].value=='tongren_yuanzhu')  document.getElementById('tongren_cp_name').style.display = 'inline';">
-                <option value ="threads">标题</option>
-                <option value ="users">用户</option>
-                <option value ="tongren_yuanzhu" >同人原著</option>
-            </select>
-            <input type="textarea" placeholder="搜索..." name="search">
-            <input type="textarea" placeholder="人名，也可不填" name="tongren_cp" id="tongren_cp_name" style="display:none">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
-    </div>
-    @endif
-    <div class="jumbotron" >
-        <h2 id= "daily-quote" class="display-1">{{ $quote->quote }}</h2>
-        <div>
-            <div class="text-right">
-                @if ($quote->anonymous)
-                ——{{ $quote->majia }}
-                @else
-                ——<a href="#">{{ $quote->creator->name }}</a>
-                @endif
-                <br>
-            </div>
-        </div>
-        @if (Auth::check())
-        <div class="col-xs-6 text-left h6">
-            <u><a href="{{ route('quote.create') }}">贡献题头</a></u>
-        </div>
-        <div class="col-xs-6 text-right">
-            <a class="btn btn-xs btn-default" href="{{ route('quote.vote', $quote->id) }}">咸鱼{{ $quote->xianyu }}</a><br>
-        </div>
-        @else
-        <div class="text-center">
-            <a class="btn btn-lg btn-success sosad-button" href="{{ route('register') }}" role="button">一起来丧</a>
+                    <option value ="threads">标题</option>
+                    <option value ="users">用户</option>
+                    <option value ="tongren_yuanzhu" >同人原著</option>
+                </select>
+                <input type="textarea" placeholder="搜索..." name="search">
+                <input type="textarea" placeholder="人名，也可不填" name="tongren_cp" id="tongren_cp_name" style="display:none">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
         </div>
         @endif
+
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+              @foreach($quotes as $int=>$quote)
+              <div class="jumbotron item {{$int==0? 'active':''}}" >
+                  @include('pages._quote')
+              </div>
+              @endforeach
+            </div>
+
+            <!-- Left and right controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+            </a>
+
+        </div>
     </div>
-</div>
-<div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-    @foreach($channels as $channel)
-    <div class="panel panel-default">
-        <div class="panel-heading h4">
-            <a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>
+
+    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        @foreach($channels as $channel)
+        <div class="panel panel-default">
+            <div class="panel-heading h4">
+                <a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>
+                <span>{{ $channel->description }}</span>
+            </div>
+            @foreach($threads[$channel->id] as $thread)
+                <div class="panel-body">
+                    @include('threads._thread_info')
+                </div>
+            @endforeach
         </div>
-        <div class="panel-body">
-            <?php $thread = $channel->recent_thread_1; ?>
-            @if(($thread->title)&&($thread->public)&&(!$thread->bianyuan))
-            @include('threads._thread_info')
-            @endif
+        @if($channel->id === 2)
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        @foreach($recommends as $thread)
+                        <div class="col-md-2 col-sm-3 col-xs-4">
+                            <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ $thread->title }}<br>
+                            <span class="grayout smaller-15">{{ $thread->brief }}</span>
+                            </a>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="panel-body">
-            <?php $thread = $channel->recent_thread_2; ?>
-            @if(($thread->title)&&($thread->public)&&(!$thread->bianyuan))
-            @include('threads._thread_info')
-            @endif
-        </div>
+        @endif
+        @endforeach
     </div>
-    @endforeach
-</div>
 </div>
 @stop

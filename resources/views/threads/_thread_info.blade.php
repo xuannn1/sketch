@@ -8,10 +8,10 @@
                 @if($thread->anonymous)
                 <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
                 @if((Auth::check()&&(Auth::user()->admin)))
-                <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->creator->name }}</a></span>
+                <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->name }}</a></span>
                 @endif
                 @else
-                <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->creator->name }}</a>
+                <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->name }}</a>
                 @endif
             </span>
         </div>
