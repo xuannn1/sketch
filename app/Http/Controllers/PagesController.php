@@ -66,7 +66,7 @@ class PagesController extends Controller
             ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',0]])
             ->inRandomOrder()
             ->select('quotes.*','users.name')
-            ->take(17);
+            ->take(18);
             return DB::table('quotes')
             ->join('users', 'quotes.user_id', '=', 'users.id')
             ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',1]])
