@@ -57,6 +57,9 @@
         </div>
         @if($channel->id === 2)
         <div class="panel panel-default">
+            <div class="panel-heading h4">
+                <span>每周推荐</span>
+            </div>
             <div class="panel-body">
                 <div class="container-fluid">
                     <div class="row">
