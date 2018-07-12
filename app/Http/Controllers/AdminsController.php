@@ -14,6 +14,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\PostComment;
 use App\Models\LongComment;
+use App\Models\PublicNotice;
 use App\Models\Administration;
 use App\Models\Book;
 use App\Models\Message;
@@ -328,32 +329,22 @@ class AdminsController extends Controller
         return redirect()->back()->with("warning","什么都没做");
     }
 
-    public function sendpublicmessageform()
+    public function sendpublicnoticeform()
     {
-        return view('admin.send_publicmessage');
+        return view('admin.send_publicnotice');
     }
-    public function sendpublicmessage(Request $request)
+    public function sendpublicnotice(Request $request)
     {
-        //公共通知效率太低，取消
-        // $this->validate($request, [
-        //     'body' => 'required|string|max:20000|min:10',
-        //  ]);
-        //  $receivers = User::all();
-        //  $message_body = DB::table('message_bodies')->insertGetId([
-        //       'content' => request('body'),
-        //       'group_messaging' => 1,
-        //    ]);
-        //  foreach($receivers as $receiver){
-        //    Message::create([
-        //       'message_body' => $message_body,
-        //       'poster_id' => Auth::id(),
-        //       'receiver_id' => $receiver->id,
-        //       'private' => false,
-        //    ]);
-        //    $receiver->increment('message_reminders');
-        //    $receiver->increment('unread_reminders');
-        //  }
-        //  return redirect()->back()->with('success','您已成功发布公共通知');
+        $this->validate($request, [
+            'body' => 'required|string|max:20000|min:10',
+         ]);
+         $public_notice = PublicNotice::create([
+             'notice_body'=>$request->body,
+             'user_id'=>Auth::id(),
+         ]);
+         DB::table('users')->increment('unread_reminders');
+         DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
+         return redirect()->back()->with('success','您已成功发布公共通知');
 
     }
 

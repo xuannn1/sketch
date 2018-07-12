@@ -136,8 +136,8 @@
    Route::post('/admin/usermanagement/{user}','AdminsController@usermanagement')->name('admin.usermanagement');//管理员管理用户
    Route::post('/admin/postcommentmanagement/{postcomment}','AdminsController@postcommentmanagement')->name('admin.postcommentmanagement');//管理员管理点评
    Route::get('/admin/advancedthreadform/{thread}','AdminsController@advancedthreadform')->name('admin.advancedthreadform');//高级管理主题贴页面
-   Route::get('/admin/sendpublicmessageform', 'AdminsController@sendpublicmessageform')->name('admin.sendpublicmessageform')->middleware('admin');//发送提醒通知表格
-   Route::post('/admin/sendpublicmessage', 'AdminsController@sendpublicmessage')->name('admin.sendpublicmessage')->middleware('admin');//发送提醒通知
+   Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform')->middleware('admin');//发送提醒通知表格
+   Route::post('/admin/sendpublicnotice', 'AdminsController@sendpublicnotice')->name('admin.sendpublicnotice')->middleware('admin');//发送提醒通知
    Route::get('/admin/createtag', 'AdminsController@create_tag_form')->name('admin.createtag')->middleware('admin');//显示新建tag表格
    Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//发送提醒通知
    Route::get('/admin/longcomments', 'AdminsController@longcommentsreview')->name('admin.review_longcomments');//审核是否允许成为长评
@@ -173,6 +173,7 @@
    Route::get('/messages/posts','MessagesController@posts')->name('messages.posts');
    Route::get('/messages/postcomments','MessagesController@postcomments')->name('messages.postcomments');
    Route::get('/messages/upvotes','MessagesController@upvotes')->name('messages.upvotes');
+   Route::get('/messages/public_notices','MessagesController@public_notices')->name('messages.public_notices');
    Route::get('/messages/replies','MessagesController@replies')->name('messages.replies');
    Route::get('/messages/clear','MessagesController@clear')->name('messages.clear');
    Route::get('/messages/create/{user}','MessagesController@create')->name('messages.create');

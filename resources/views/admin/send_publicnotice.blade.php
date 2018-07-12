@@ -7,7 +7,7 @@
             <div class="panel-heading"><h4>发送公共通知</h4></div>
             <div class="panel-body">
                 @include('shared.errors')
-                <form method="POST" action="{{ route('admin.sendpublicmessage') }}">
+                <form method="POST" action="{{ route('admin.sendpublicnotice') }}">
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="body">消息正文：</label>

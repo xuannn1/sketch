@@ -16,6 +16,25 @@ class MessagesController extends Controller
     {
         $this->middleware('auth');
     }
+    public function findpublicnotices($unread, $paginate)//1:show unread public_notices;0:show all public_notices
+    {
+        if ($unread ==1){
+            return $public_notices = DB::table('public_notices')
+            ->join('users', 'public_notices.user_id', '=', 'users.id')
+            ->where('public_notices.id','>',Auth::user()->public_notices)
+            ->select('public_notices.*', 'users.name')
+            ->orderby('public_notices.created_at', 'desc')
+            ->simplePaginate($paginate);
+        }else{
+            return $public_notices = DB::table('public_notices')
+            ->join('users', 'public_notices.user_id', '=', 'users.id')
+            ->select('public_notices.*', 'users.name')
+            ->orderby('public_notices.created_at', 'desc')
+            ->simplePaginate($paginate);
+        }
+    }
+
+
     public function findposts($unread, $paginate)//1:show unread activities;0:show all activities
     {
         if ($unread ==1){
@@ -196,25 +215,27 @@ class MessagesController extends Controller
 
     public function index()//1:show unread activities;0:show all activities
     {
+        $public_notices = $this->findpublicnotices(0, config('constants.index_per_part'));
         $messages = $this->findmessages(0, config('constants.index_per_part'));
         $posts = $this->findposts(0, config('constants.index_per_part'));
         $postcomments = $this->findpostcomments(0, config('constants.index_per_part'));
         $replies = $this->findreplies(0, config('constants.index_per_part'));
         $upvotes = $this->findupvotes(0, config('constants.index_per_part'));
         $system_reminders = $this->findsystemsreminders(0, config('constants.index_per_part'));
-        return view('messages.index', compact('messages','posts','postcomments','replies','upvotes','system_reminders'))->with('as_longcomments',0);
+        return view('messages.index', compact('messages','posts','postcomments','replies','upvotes','system_reminders','public_notices'))->with('as_longcomments',0);
     }
     public function unread()//1:show unread activities;0:show all activities
     {
         Auth::user()->unread_reminders=0;
         Auth::user()->save();
+        $public_notices = $this->findpublicnotices(1, config('constants.index_per_part'));
         $messages = $this->findmessages(1, config('constants.index_per_part'));
         $posts = $this->findposts(1, config('constants.index_per_part'));
         $postcomments = $this->findpostcomments(1, config('constants.index_per_part'));
         $replies = $this->findreplies(1, config('constants.index_per_part'));
         $upvotes = $this->findupvotes(1, config('constants.index_per_part'));
         $system_reminders = $this->findsystemsreminders(1, config('constants.index_per_part'));
-        return view('messages.unread', compact('messages','posts','postcomments','replies','upvotes','system_reminders'))->with('as_longcomments',0);
+        return view('messages.unread', compact('messages','posts','postcomments','replies','upvotes','system_reminders','public_notices'))->with('as_longcomments',0);
     }
     public function messagebox()//show all messages
     {
@@ -248,6 +269,11 @@ class MessagesController extends Controller
         $messages = $this->findmessages(0, config('constants.index_per_page'));
         return view('messages.messages', compact('messages'))->with('as_longcomments',0);
     }
+    public function public_notices()
+    {
+        $public_notices = $this->findpublicnotices(0, config('constants.index_per_page'));
+        return view('messages.public_notices', compact('public_notices'))->with('as_longcomments',0);
+    }
     public function messages_sent()
     {
         $messages_sent = $this->findmessagessent(config('constants.index_per_page'));
@@ -263,6 +289,7 @@ class MessagesController extends Controller
         Auth::user()->message_reminders = 0;
         Auth::user()->upvote_reminders = 0;
         Auth::user()->system_reminders = 0;
+        Auth::user()->public_notices = DB::table('system_variables')->first()->latest_public_notice_id;
         Auth::user()->save();
         return redirect()->back()->with("success", "您已清除所有未读消息提醒");
     }

@@ -298,8 +298,13 @@ class User extends Authenticatable
         +$this->reply_reminders
         +$this->postcomment_reminders
         +$this->upvote_reminders
-        +$this->system_reminders;
+        +$this->unread_public_notices();
         return $unreadmessages;
+    }
+    public function unread_public_notices()
+    {
+        $unread_public_notices = DB::table('system_variables')->first()->latest_public_notice_id-$this->public_notices;
+        return $unread_public_notices;
     }
 
     public function unreadupdates()

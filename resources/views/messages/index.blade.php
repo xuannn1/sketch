@@ -23,6 +23,17 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
+                <h4>公共通知：</h4>
+                @include('messages._public_notices')
+                @if($public_notices->hasMorePages())
+                <div class="text-center">
+                    <a href="{{ route('messages.public_notices') }}">查看全部</a>
+                </div>
+                @endif
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
                 <h4><a href="{{ route('messages.messages') }}">个人信息：</a></h4>
                 @include('messages._messages')
                 @if($messages->hasMorePages())

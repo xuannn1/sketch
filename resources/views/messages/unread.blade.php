@@ -9,12 +9,14 @@
                 <div class="text-center">
                     <h4>您好&nbsp;<strong>{{Auth::user()->name}}</strong>！</h4>
                     <h5 class="text-center">
-                        您共有新跟帖{{ Auth::user()->post_reminders }}条，
+                        您共有
+                        新公共通知{{ Auth::user()->unread_public_notices() }}条，
+                        新消息{{ Auth::user()->message_reminders }}条，
+                        新跟帖{{ Auth::user()->post_reminders }}条，
                         新回复{{ Auth::user()->reply_reminders }}条，
                         新点评{{ Auth::user()->postcomment_reminders }}条，
                         新赞赏{{ Auth::user()->upvote_reminders }}条，
                         新系统消息{{ Auth::user()->system_reminders }}条，
-                        新消息{{ Auth::user()->message_reminders }}条，
                     </h5>
                     @include('messages._receive_stranger_messages_button')
                     @include('messages._receive_upvote_reminders_button')
@@ -25,6 +27,17 @@
                     <li role="presentation"><a href="{{ route('messages.messagebox') }}">信箱</a></li>
                     <li role="presentation" class="pull-right"><a class="btn btn-success sosad-button" href="{{ route('messages.clear') }}">清理未读</a></a></li>
                 </ul>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>公共通知：</h4>
+                @include('messages._public_notices')
+                @if($public_notices->hasMorePages())
+                <div class="text-center">
+                    <a href="{{ route('messages.public_notices') }}">查看全部</a>
+                </div>
+                @endif
             </div>
         </div>
         <div class="panel panel-default">
