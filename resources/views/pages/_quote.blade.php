@@ -5,7 +5,7 @@
             @if ($quote->anonymous)
             ——{{ $quote->majia }}
             @else
-            ——<a href="#">{{ $quote->creator->name }}</a>
+            ——<a href="#">{{ $quote->name }}</a>
             @endif
             <br>
         </div>

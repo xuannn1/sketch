@@ -31,7 +31,7 @@ class PagesController extends Controller
 
     public function findthreads($channel_id, $take)
     {
-        $threads = Cache::remember('home_ch'.$channel_id, 2, function () use($channel_id, $take) {
+        $threads = Cache::remember('home_ch'.$channel_id, 1, function () use($channel_id, $take) {
             return DB::table('threads')
             ->join('users', 'threads.user_id', '=', 'users.id')
             ->where([['threads.deleted_at', '=', null],['threads.channel_id','=',$channel_id],['threads.public','=',1],['threads.bianyuan','=',0]])
@@ -45,7 +45,7 @@ class PagesController extends Controller
 
     public function findrecommendation($take)
     {
-        $threads = Cache::remember('recommendation', 2, function () use($take) {
+        $threads = Cache::remember('recommendation', 1, function () use($take) {
             return DB::table('threads')
             ->join('recommend_books', 'threads.id', '=', 'recommend_books.thread_id')
             ->join('users', 'threads.user_id', '=', 'users.id')
@@ -56,6 +56,28 @@ class PagesController extends Controller
             ->get();
         });
         return $threads;
+    }
+
+    public function findquotes()
+    {
+        $quotes = Cache::remember('quotes', 1, function () {
+            $quotes1 = DB::table('quotes')
+            ->join('users', 'quotes.user_id', '=', 'users.id')
+            ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',0]])
+            ->inRandomOrder()
+            ->select('quotes.*','users.name')
+            ->take(17);
+            return DB::table('quotes')
+            ->join('users', 'quotes.user_id', '=', 'users.id')
+            ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',1]])
+            ->inRandomOrder()
+            ->select('quotes.*','users.name')
+            ->take(2)
+            ->union($quotes1)
+            ->inRandomOrder()
+            ->get();
+        });
+        return $quotes;
     }
 
     public function home()
@@ -81,8 +103,7 @@ class PagesController extends Controller
             }
             $threads[$channel->id] = $this->findthreads($channel->id,$take);
         }
-        $quotes1 = Quote::where('approved', true)->where('notsad', true)->inRandomOrder()->take(2);
-        $quotes = Quote::where('approved', true)->where('notsad', false)->inRandomOrder()->take(8)->union($quotes1)->inRandomOrder()->get();
+        $quotes = $this->findquotes();
         $recommends = $this->findrecommendation(6);
         return view('pages/home',compact('channels', 'quotes','threads','recommends'));
     }
