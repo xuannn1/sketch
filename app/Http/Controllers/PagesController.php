@@ -45,7 +45,7 @@ class PagesController extends Controller
 
     public function findrecommendation($take)
     {
-        $threads = Cache::remember('recommendation', 5, function () use($take) {
+        $threads = Cache::remember('recommendation', 2, function () use($take) {
             return DB::table('threads')
             ->join('recommend_books', 'threads.id', '=', 'recommend_books.thread_id')
             ->join('users', 'threads.user_id', '=', 'users.id')
