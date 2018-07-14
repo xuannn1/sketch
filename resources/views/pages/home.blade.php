@@ -57,18 +57,22 @@
         </div>
         @if($channel->id === 2)
         <div class="panel panel-default">
-            <div class="panel-heading h4">
-                <span>每周推荐</span>
-            </div>
             <div class="panel-body">
-                <div class="container-fluid">
+                <div class="h5 text-center">
+                    <span>每周推荐</span>
+                </div>
+                <div class="container-fluid text-center">
                     <div class="row">
-                        @foreach($recommends as $thread)
-                        <div class="col-md-2 col-sm-3 col-xs-4">
+                        @foreach($recommends as $int => $thread)
+                        <div class="col-xs-4">
                             <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ $thread->title }}<br>
                             <span class="grayout smaller-15">{{ $thread->brief }}</span>
                             </a>
                         </div>
+                        @if ($int ===2 )
+                        </div>
+                        <div class="row">
+                        @endif
                         @endforeach
                     </div>
                 </div>
