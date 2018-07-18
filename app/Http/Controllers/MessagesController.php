@@ -246,8 +246,8 @@ class MessagesController extends Controller
 
     public function posts()
     {
-        $posts = $this->findposts(0, config('constants.index_per_page'))->with('as_longcomments',0);
-        return view('messages.posts', compact('posts'));
+        $posts = $this->findposts(0, config('constants.index_per_page'));
+        return view('messages.posts', compact('posts'))->with('as_longcomments',0);
     }
     public function postcomments()
     {
