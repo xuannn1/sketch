@@ -10,6 +10,7 @@ use App\Models\Channel;
 use App\Models\Label;
 use App\Models\Tag;
 use App\Models\Thread;
+use App\Models\Chapter;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\PostComment;
@@ -237,7 +238,7 @@ class AdminsController extends Controller
                 'reason' => request('reason'),
             ]);
             if($post->chapter_id !=0){
-                App\Models\Chapter::destroy($post->chapter_id);
+                Chapter::destroy($post->chapter_id);
             }
             $post->delete();
             return redirect()->back()->with("success","已经成功处理该贴");

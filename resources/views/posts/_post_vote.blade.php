@@ -9,7 +9,7 @@
 @endif
 
 @if($post->user_id == Auth::id()&&(!$thread->locked)&&($thread->channel->channel_state!=2))
-@if($post->maintext)
+@if(($post->maintext)&&($thread->channel->channel_state==1))
 <span><a class="btn btn-danger sosad-button btn-xs" href="{{ route('book.editchapter', $post->chapter_id) }}">编辑</a></span>
 @else
 <span><a class="btn btn-danger sosad-button btn-xs" href="{{ route('post.edit', $post->id) }}">编辑</a></span>

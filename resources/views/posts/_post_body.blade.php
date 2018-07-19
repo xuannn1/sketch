@@ -10,7 +10,7 @@
 @endif
 
 <div class="main-text {{ $post->indentation? 'indentation':'' }}">
-    @if($post->maintext)
+    @if(($post->maintext)&&($thread->channel->channel_state==1))
     <!-- 章节-标题 -->
     <div class="text-center h5">
         <strong>{{ $post->chapter->title }}</strong>

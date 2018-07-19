@@ -193,7 +193,7 @@ class UsersController extends Controller
         $group = Auth::check() ? Auth::user()->group : 10;
         if ($user){
             $posts=$this->findlongcomments($id,config('constants.index_per_page'),$group);
-            return view('users.showlongcomments', compact('user','posts'));
+            return view('users.showlongcomments', compact('user','posts'))->with('as_longcomments',0);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
@@ -233,7 +233,7 @@ class UsersController extends Controller
             $group = Auth::check() ? Auth::user()->group : 10;
             $posts=$this->findupvotes($id,config('constants.index_per_page'), $group);
             $collections = false;
-            return view('users.showupvotes', compact('user','posts','collections'));
+            return view('users.showupvotes', compact('user','posts','collections'))->with('as_longcomments',0);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
