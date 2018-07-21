@@ -52,7 +52,7 @@
                 <a class="btn btn-xs btn-warning tag-button-right tag-yellow" href="{{ route('books.booktag', $book->tongren_cp_tag_id) }}">{{$book->tongren_cp_tagname}}</a>
                 @endif
                 @if( $book->bianyuan == 1)
-                <span class="badge bianyuan-tag badge-tag">边</span>
+                <span class="badge bianyuan-tag badge-tag">限</span>
                 @endif
                 @if(($book->last_chapter_title)&&($book->last_chapter_post_id == $book->last_post_id)&&($book->lastaddedchapter_at > Carbon\Carbon::now()->subHours(12)->toDateTimeString()))
                 <span class="badge newchapter-badge badge-tag">新</span>

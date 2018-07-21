@@ -53,7 +53,7 @@
                 @endif
                 @endif
                 @if( $thread->bianyuan == 1)
-                <span class="badge bianyuan-tag badge-tag">边</span>
+                <span class="badge bianyuan-tag badge-tag">限</span>
                 @endif
                 @if(($show_as_collections)&&($thread->updated))
                 <span class="badge newchapter-badge badge-tag">有更新</span>

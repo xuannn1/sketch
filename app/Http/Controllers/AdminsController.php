@@ -201,20 +201,20 @@ class AdminsController extends Controller
             $thread->save();
             return redirect()->route('thread.show', $thread)->with("success","已经转移操作");
         }
-        if ($var=="5"){//打边缘
+        if ($var=="5"){//打边缘限制
             $thread->bianyuan = !$thread->bianyuan;
             $thread->save();
             if($thread->bianyuan){
                 Administration::create([
                     'user_id' => Auth::id(),
-                    'operation' => '15',//15:转为边缘
+                    'operation' => '15',//15:转为边缘限制
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
                 ]);
             }else{
                 Administration::create([
                     'user_id' => Auth::id(),
-                    'operation' => '16',//16:转为非边缘
+                    'operation' => '16',//16:转为非边缘限制
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
                 ]);

@@ -30,7 +30,7 @@ class UsersController extends Controller
                 $query->where('threads.public','=',1)
                 ->where('threads.anonymous','=',0);
             }
-        }else{//未登陆，看不见边缘文章,私密文章，匿名文章
+        }else{//未登陆，看不见边缘限制文章,私密文章，匿名文章
             $query->where('threads.bianyuan','=',0)
             ->where('threads.public','=',1)
             ->where('threads.anonymous','=',0);
@@ -52,7 +52,7 @@ class UsersController extends Controller
                 $query->where('threads.public','=',1)
                 ->where('threads.anonymous','=',0);
             }
-        }else{//未登陆，看不见边缘文章,私密文章，匿名文章
+        }else{//未登陆，看不见边缘限制文章,私密文章，匿名文章
             $query->where('threads.bianyuan','=',0)
             ->where('threads.public','=',1)
             ->where('threads.anonymous','=',0);

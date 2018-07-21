@@ -40,7 +40,7 @@
             </p>
             <p>
                 @if( $thread->bianyuan == 1)
-                <span class="badge">边</span>
+                <span class="badge">限</span>
                 @endif
                 <a href="{{ route('books.index',['label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>
                 @foreach ($thread->tags as $int=>$tag)

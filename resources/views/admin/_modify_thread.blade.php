@@ -17,7 +17,7 @@
                     <label><input type="radio" name="controlthread" value="2">{{ $thread->public ? '转为私密' : '转为公开' }}</label>
                 </div>
                 <div class="radio">
-                    <label><input type="radio" name="controlthread" value="5">{{ $thread->bianyuan ? '改为非边缘' : '改为边缘' }}</label>
+                    <label><input type="radio" name="controlthread" value="5">{{ $thread->bianyuan ? '改为非边缘限制' : '改为边缘限制' }}</label>
                 </div>
                 <div class="radio">
                     <p class="lead admin-symbol pull-right"><label><input type="radio" name="controlthread" value="3">{{ $thread->deleted_at ? '恢复删除' : '删除帖子' }}</label></p>

@@ -34,7 +34,7 @@
             </ul>
         </span>
         <span class="button-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">边缘<span class="caret"></span></button>
+            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">限制<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach($book_info['rating_info'] as $key=>$rating)
                 <li><input type="checkbox" name="rating[]" value={{$key}} checked />&nbsp;{{$rating}}</li>
