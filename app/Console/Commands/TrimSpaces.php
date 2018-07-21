@@ -39,6 +39,7 @@ class TrimSpaces extends Command
      */
     public function handle()
     {
+        //这个命令，是为了去除数据库里，posts列表中，对body进行安插段落前空行数据的行为
         $number = Post::latest()->first()->id;
         echo $number.'-';
         $count = 0;
