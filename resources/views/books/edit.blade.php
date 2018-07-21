@@ -155,6 +155,9 @@
                     <br>
                     <label><input type="checkbox" name="download_as_thread" {{ $thread->download_as_thread ? 'checked' : '' }}>开放书评下载？</label>&nbsp;
                     <label><input type="checkbox" name="download_as_book" {{  $thread->download_as_book ? 'checked' : '' }}>开放书籍下载？</label>
+                    <div class="">
+                        <h6>提示：站内会自动去除段落间多余空行，请使用[br]换行。</h6>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-danger sosad-button">确认修改</button>
