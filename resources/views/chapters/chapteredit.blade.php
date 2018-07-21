@@ -44,6 +44,9 @@
                 </div>
                 @endif
             </div>
+            <div class="">
+                <h6>提示：站内会自动去除段落间多余空行，请使用[br]换行。</h6>
+            </div>
             <button type="submit" class="btn btn-primary sosad-button">确认修改</button>
         </form>
         <form method="POST" action="{{ route('post.destroy', $chapter->post_id) }}">

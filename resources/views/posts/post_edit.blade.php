@@ -30,6 +30,9 @@
                     <input type="text" name="majia" class="form-control" value="{{ $post->majia ?? '匿名咸鱼'}}" disabled>
                     <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>
                 </div>
+                <div class="">
+                    <h6>提示：站内会自动去除段落间多余空行，请使用[br]换行。</h6>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary sosad-button">确认修改</button>
 

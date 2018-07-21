@@ -182,3 +182,11 @@ $posts = App\Models\Post::whereIn('thread_id',[2145, 2148, 2152, 2153, 2163, 216
 
 //测试是否成立
 App\Helpers\Helper::trimSpaces("   wejr askdj 中文是顶峰。　");
+
+$posts = App\Models\Post::all();
+foreach($posts as $post){
+    if($post->body !== App\Helpers\Helper::trimSpaces($post->body)){
+        $post->body = App\Helpers\Helper::trimSpaces($post->body);
+        $post->save();
+    }
+}

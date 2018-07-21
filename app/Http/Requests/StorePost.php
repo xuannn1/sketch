@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Helpers\Helper;
 use App\Models\Chapter;
 use App\Models\Thread;
 use App\Models\Post;
@@ -36,6 +37,7 @@ class StorePost extends FormRequest
 
     public function generatePost(Thread $thread){
         $data = $this->only('body');
+        $data['body'] = Helper::trimSpaces($data['body']);
         $data['user_ip'] = $this->getClientIp();
         if ($this->anonymous){
             $data['anonymous']=1;
@@ -90,6 +92,7 @@ class StorePost extends FormRequest
     public function updatePost(Post $post)
     {
         $data = $this->only('body');
+        $data['body'] = Helper::trimSpaces($data['body']);
         $data['anonymous']=$this->anonymous ? 1:0;
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;

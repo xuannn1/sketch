@@ -27,7 +27,6 @@ class Helper
        }
        $text = str_replace("\r\n", "\n", $text);
        $text = str_replace("\r", "\n", $text);
-       $text = preg_replace('/\n{2,}/', "", $text);
        return $text;
    }
 
@@ -39,7 +38,10 @@ class Helper
        $lines = preg_split("/(\r\n|\n|\r)/",$text);
        $text = "";
        foreach ($lines as $line){
-           $text.= mb_ereg_replace('(^(　| )+|(　| )+$)', '', $line)."\n";
+           $line = mb_ereg_replace('(^(　| )+|(　| )+$)', '', $line);
+           if($line){
+               $text.= $line."\n";
+           }
        }
        return $text;
    }
@@ -150,9 +152,9 @@ class Helper
 //test bbcodeparser
    public static function wrapParagraphs($post= null)
    {
+       $post = self::trimSpaces($post);
        $bbCode = new BBCode();
        $bbCode = self::addCustomParserBBCode($bbCode);
-       $post = self::trimParagraphs($post);
        $post = $bbCode->convertToHtml($post);
        $post = str_replace("<br>", "</p><br><p>", $post);
        $post = preg_replace('/\n{1,}/', "</p><p>", $post);
