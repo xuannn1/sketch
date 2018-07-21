@@ -179,3 +179,6 @@ foreach($collection_lists as $list){
 
 //抽出在联文楼下互动的成员：
 $posts = App\Models\Post::whereIn('thread_id',[2145, 2148, 2152, 2153, 2163, 2164, 2160])->where('deleted_at','=',null)->where('body','<>',null)->inRandomOrder()->first();
+
+//测试是否成立
+App\Helpers\Helper::trimSpaces("   wejr askdj 中文是顶峰。　");

@@ -16,13 +16,7 @@
             </div>
         </div>
         <div class="panel-body post-body">
-            @if(($post->bianyuan)&&(!Auth::check()))
-            <div class="text-center">
-                <h6 class="display-4"><a href="{{ route('login') }}">本回贴为隐藏格式，请登录后查看</a></h6>
-            </div>
-            @else
-                @include('posts._post_body')
-            @endif
+            @include('posts._post_body')
         </div>
 
         @if(Auth::check())

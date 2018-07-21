@@ -51,14 +51,27 @@
     </div>
     <!-- 书本文案 -->
     <div class="panel-body text-center main-text">
-        @if($thread->mainpost->markdown)
-        {!! Helper::sosadMarkdown($thread->mainpost->body) !!}
+        @if(($thread->bianyuan)&&(!Auth::check())&&($thread->mainpost->body))
+        <div class="text-center">
+            <h6 class="display-4"><a href="{{ route('login') }}">本文为限制级，文案暂时隐藏，只对注册用户开放，请登录后查看</a></h6>
+        </div>
         @else
-        {!! Helper::wrapParagraphs($thread->mainpost->body) !!}
+            @if($thread->mainpost->markdown)
+            {!! Helper::sosadMarkdown($thread->mainpost->body) !!}
+            @else
+            {!! Helper::wrapParagraphs($thread->mainpost->body) !!}
+            @endif
         @endif
     </div>
-    <div class="">
-        <!-- 这个地方，是整本书的信息汇总：总字数，阅读数，回应数，下载数 -->
-        <span class = "pull-right smaller-10"><em><span class="glyphicon glyphicon-pencil"></span>{{ $book->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon-comment"></span>{{ $thread->responded }}/<span class="glyphicon glyphicon-save"></span>{{ $thread->downloaded }}</em>&nbsp;&nbsp;<span><a href="{{ route('download.index', $thread) }}">下载</a></span>
+    <div class="text-left">
+        @if($show_as_book)
+            <a href="{{ route('thread.show', $thread) }}">论坛讨论模式</a>
+        @else
+            <a href="{{ route('book.show', $book) }}">文库阅读模式</a>
+        @endif
+        <span class="pull-right">
+            <!-- 这个地方，是整本书的信息汇总：总字数，阅读数，回应数，下载数 -->
+            <span class = "pull-right smaller-10"><em><span class="glyphicon glyphicon-pencil"></span>{{ $book->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon-comment"></span>{{ $thread->responded }}/<span class="glyphicon glyphicon-save"></span>{{ $thread->downloaded }}</em>&nbsp;&nbsp;<span><a href="{{ route('download.index', $thread) }}">下载</a></span>
+        </span>
     </div>
 </div>

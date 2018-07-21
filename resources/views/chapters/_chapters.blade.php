@@ -1,4 +1,4 @@
-<div class="hidden-sm hidden-md hidden-lg">
+<div class="hidden-sm hidden-md hidden-lg overflow-hidden">
     @foreach($book->chapters as $chapter)
     <a href="{{ route('book.showchapter', $chapter->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
         @if($chapter->mainpost->bianyuan)

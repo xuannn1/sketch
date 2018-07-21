@@ -30,13 +30,7 @@ class FilterThread
                     }
                 }
                 return redirect('login')->with("warning", "请登陆后再访问该版面");
-            }elseif($thread->bianyuan){
-                if (Auth::check()) {
-                    return $next($request);
-                }else{
-                    return redirect('login')->with("warning", "边缘文章请登陆后查看");
-                }
-            }else{
+            }else{//这里新去掉了关于边缘的限制（20180721）
                 return $next($request);
             }
         }elseif(Auth::check()){//假如这个人是合作者

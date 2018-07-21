@@ -16,10 +16,16 @@
     </div>
     <!-- 首楼正文 -->
     <div class="main-text {{ $thread->mainpost->indentation ? 'indentation':'' }}">
-        @if($thread->mainpost->markdown)
-        {!! Helper::sosadMarkdown($thread->mainpost->body) !!}
+        @if(($thread->bianyuan)&&(!Auth::check()))
+        <div class="text-center">
+            <h6 class="display-4 grayout"><a href="{{ route('login') }}">主楼隐藏，请登录后查看</a></h6>
+        </div>
         @else
-        {!! Helper::wrapParagraphs($thread->mainpost->body) !!}
+            @if($thread->mainpost->markdown)
+            {!! Helper::sosadMarkdown($thread->mainpost->body) !!}
+            @else
+            {!! Helper::wrapParagraphs($thread->mainpost->body) !!}
+            @endif
         @endif
     </div>
     <!-- 是否附加作业信息 -->

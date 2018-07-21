@@ -29,12 +29,6 @@ class FilterPost
                     }
                 }
                 return redirect('login')->with("warning", "请登陆后再访问该版面");
-            }elseif($thread->bianyuan){
-                if (Auth::check()) {
-                    return $next($request);
-                }else{
-                    return redirect('login')->with("warning", "边缘文章请登陆后查看");
-                }
             }else{
                 return $next($request);
             }

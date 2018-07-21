@@ -19,15 +19,7 @@ class FilterChapter
         $chapter = $request->route('chapter');
         $thread = $chapter->book->thread;
         if ($thread->public){
-            if($thread->bianyuan){
-                if (Auth::check()) {
-                    return $next($request);
-                }else{
-                    return redirect('login')->with("warning", "边缘文章请登陆后查看");
-                }
-            }else{
-                return $next($request);
-            }
+            return $next($request);//新去掉了边缘限制20180720
         }else{//并非公开贴
             if ((Auth::check())&&((Auth::user()->admin)||($thread->user_id == Auth::id()))){//本人或管理员可见
                 return $next($request);

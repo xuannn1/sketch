@@ -14,8 +14,6 @@
             <!-- 主题介绍部分 -->
             <div class="panel-body">
                 @include('books._book_profile')
-                <div><a href="{{ route('thread.show', $thread) }}">论坛讨论模式</a>
-                </div>
             </div>
             <!-- 对主题进行投票／收藏／赞赏等操作 -->
             <div class="panel-vote">

@@ -14,8 +14,6 @@
                 <!-- 主题介绍部分 -->
                 @if($thread->book_id>0)
                 @include('books._book_profile')
-                <div><a href="{{ route('book.show', $thread->book_id) }}">文库阅读模式</a>
-                </div>
                 @else
                 @include('threads._thread_profile')
                 @endif
