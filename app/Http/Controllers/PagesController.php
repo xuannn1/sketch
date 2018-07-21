@@ -187,33 +187,33 @@ class PagesController extends Controller
         }
         $group = 10;
         if(Auth::check()){$group = Auth::user()->group;}
-        if($request->search){
-            if( $request->search_options=='threads'){
-                $query = $this->join_thread_tables()
-                ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1],['threads.title','like','%'.$request->search.'%']]);
-                $threads = $this->return_thread_fields($query)
-                ->orderby('threads.lastresponded_at', 'desc')
-                ->simplePaginate(config('constants.index_per_page'));
-                $show = ['channel' => false,'label' => false,];
-                return view('pages.search_threads',compact('threads','show'))->with('show_as_collections',0)->with('show_channel',1);
-            }
-            if($request->search_options=='users'){
-                $users = User::where('name','like', '%'.$request->search.'%')->simplePaginate(config('constants.index_per_page'));
-                return view('pages.search_users',compact('users'));
-            }
-            if($request->search_options=='tongren_yuanzhu'){
-                $query = $this->join_book_tables()
-                ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['threads.channel_id','=',2]]);
-                $query->where('tongrens.tongren_yuanzhu','like','%'.$request->search.'%');
-                if ($request->tongren_cp){
-                    $query->where('tongrens.tongren_cp','like','%'.$request->tongren_cp.'%');
-                }
-                $books = $this->return_book_fields($query)
-                ->orderby('threads.lastresponded_at', 'desc')
-                ->simplePaginate(config('constants.index_per_page'));
-
-                return view('pages.search_books', compact('books'))->with('show_as_collections', false);
-            }
+        if(($request->search)&&($request->search_options=='threads')){
+            $query = $this->join_thread_tables()
+            ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1],['threads.title','like','%'.$request->search.'%']]);
+            $threads = $this->return_thread_fields($query)
+            ->orderby('threads.lastresponded_at', 'desc')
+            ->simplePaginate(config('constants.index_per_page'));
+            $show = ['channel' => false,'label' => false,];
+            return view('pages.search_threads',compact('threads','show'))->with('show_as_collections',0)->with('show_channel',1);
         }
+        if(($request->search)&&($request->search_options=='users')){
+            $users = User::where('name','like', '%'.$request->search.'%')->simplePaginate(config('constants.index_per_page'));
+            return view('pages.search_users',compact('users'));
+        }
+        if($request->search_options=='tongren_yuanzhu'){
+            $query = $this->join_book_tables()
+                ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['threads.channel_id','=',2]]);
+            if ($request->search){
+                $query->where('tongrens.tongren_yuanzhu','like','%'.$request->search.'%');
+            }
+            if ($request->tongren_cp){
+                $query->where('tongrens.tongren_cp','like','%'.$request->tongren_cp.'%');
+            }
+            $books = $this->return_book_fields($query)
+            ->orderby('threads.lastresponded_at', 'desc')
+            ->simplePaginate(config('constants.index_per_page'));
+            return view('pages.search_books', compact('books'))->with('show_as_collections', false);
+        }
+        return redirect()->back()->with('warning','请输入搜索内容');
     }
 }

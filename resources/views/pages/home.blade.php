@@ -2,22 +2,6 @@
 @section('content')
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-        @if(Auth::check())
-        <div class="search-container">
-            <form method="GET" action="{{ route('search') }}" id="search_form">
-                <select name="search_options" form="search_form" onchange="if
-                (this.options[this.selectedIndex].value=='tongren_yuanzhu')  document.getElementById('tongren_cp_name').style.display = 'inline';">
-                    <option value ="threads">标题</option>
-                    <option value ="users">用户</option>
-                    <option value ="tongren_yuanzhu" >同人原著</option>
-                </select>
-                <input type="textarea" placeholder="搜索..." name="search">
-                <input type="textarea" placeholder="人名，也可不填" name="tongren_cp" id="tongren_cp_name" style="display:none">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
-        </div>
-        @endif
-
         <div id="myCarousel" class="carousel slide" data-ride="carousel">
 
             <!-- Wrapper for slides -->

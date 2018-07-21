@@ -10,6 +10,7 @@
 <body>
     @include('layouts._header')
     @include('shared.messages')
+    @include('layouts._search')
     @yield('content')
     @include('layouts._footer')
     <script src="{{ mix('/js/all.js') }}"></script>
