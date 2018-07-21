@@ -18,7 +18,7 @@ class ChannelsController extends Controller
 
     public function show(Request $request, Channel $channel)
     {
-        $logged = Auth::check()? ture:false;
+        $logged = Auth::check()? true:false;
         $threadqueryid = '-tQCh'.$channel->id
         .($logged?'Lgd':'nLg')
         .($request->label? 'L'.$request->label:'')
