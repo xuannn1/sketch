@@ -39,13 +39,17 @@ class TrimSpaces extends Command
      */
     public function handle()
     {
-        $posts = Post::where('maintext','=',1)->get();
+        $number = Post::latest()->first()->id;
+        echo $number.'-';
         $count = 0;
-        foreach($posts as $post){
-            if($post->body !== Helper::trimSpaces($post->body)){
-                $post->body = Helper::trimSpaces($post->body);
-                $post->save();
-                $count +=1;
+        for($x = 1; $x <= $number; $x++){
+            $post = Post::find($x);
+            if ($post){
+                if ($post->body !== Helper::trimSpaces($post->body)){
+                    $post->body = Helper::trimSpaces($post->body);
+                    $post->save();
+                    $count++;
+                }
             }
         }
         echo $count;
