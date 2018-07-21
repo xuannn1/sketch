@@ -24,19 +24,15 @@ class UsersController extends Controller
     public function findbooks($id, $paginate)
     {
         $query = $this->join_book_tables();
+        $query->where('threads.deleted_at', '=', null);//已删除的也不能看
+        $query->where('threads.book_id', '>', 0);//只能是图书
         $query->where('threads.user_id','=',$id);//属于这个人
-        if(Auth::check()){//登陆,但不是本人，也不是管理员，则不能看私密文章，不能看匿名文章
-            if(($id != Auth::id())&&(!Auth::user()->admin)){
-                $query->where('threads.public','=',1)
-                ->where('threads.anonymous','=',0);
-            }
-        }else{//未登陆，看不见边缘限制文章,私密文章，匿名文章
-            $query->where('threads.bianyuan','=',0)
-            ->where('threads.public','=',1)
+
+        if((Auth::check())&&(($id == Auth::id())||(Auth::user()->admin))){//管理员或本人，可见私密+匿名。未登录用户，或其他人，只能看到全部文章
+        }else{
+            $query->where('threads.public','=',1)
             ->where('threads.anonymous','=',0);
         }
-        //已删除的也不能看
-        $query->where('threads.deleted_at', '=', null);
         $books = $this->return_book_fields($query)
         ->orderby('books.lastaddedchapter_at', 'desc')
         ->simplePaginate($paginate);
@@ -46,22 +42,17 @@ class UsersController extends Controller
     public function findthreads($id, $paginate, $group)
     {
         $query = $this->join_no_book_thread_tables();
+        $query->where('threads.deleted_at', '=', null);//已删除的也不能看
+        $query->where('threads.book_id', '=', 0);//不能是图书，只能是讨论帖
         $query->where('threads.user_id','=',$id);//属于这个人
-        if(Auth::check()){//登陆,但不是本人，也不是管理员，则不能看私密文章，不能看匿名文章
-            if(($id != Auth::id())&&(!Auth::user()->admin)){
-                $query->where('threads.public','=',1)
-                ->where('threads.anonymous','=',0);
-            }
-        }else{//未登陆，看不见边缘限制文章,私密文章，匿名文章
-            $query->where('threads.bianyuan','=',0)
-            ->where('threads.public','=',1)
+
+        if((Auth::check())&&(($id == Auth::id())||(Auth::user()->admin))){//管理员或本人，可见私密+匿名。未登录用户，或其他人，只能看到全部文章
+        }else{//未登陆，看不见私密文章，匿名文章
+            $query->where('threads.public','=',1)
             ->where('threads.anonymous','=',0);
+            $query->where('channels.channel_state', '<', $group);//权限限制
         }
-        //已删除的也不能看
-        $query->where('threads.deleted_at', '=', null);
-        //不能是图书，只能是讨论帖
-        $query->where('threads.book_id', '=', 0);
-        $query->where('channels.channel_state', '<', $group);
+
         $threads = $this->return_no_book_thread_fields($query)
         ->orderby('threads.lastresponded_at', 'desc')
         ->simplePaginate($paginate);
@@ -101,41 +92,21 @@ class UsersController extends Controller
     }
     public function findupvotes($id, $paginate, $group)
     {
-        if ($id == Auth::id()){
-            return $upvotes = DB::table('vote_posts')
-            ->join('posts','vote_posts.post_id','=','posts.id')
-            ->join('users as upvoter', 'vote_posts.user_id', '=', 'upvoter.id')
-            ->join('users as poster', 'posts.user_id', '=', 'poster.id')
-            ->join('threads','posts.thread_id','=','threads.id')
-            ->join('channels', 'threads.channel_id','=','channels.id')
-            ->where([
-                ['posts.deleted_at', '=', null],
-                ['vote_posts.user_id','=',$id],
-                ['vote_posts.upvoted','=',1],
-                ['channels.channel_state','<',$group]
-            ])
-            ->select('posts.*', 'upvoter.name as upvoter_name', 'poster.name', 'threads.title as thread_title','vote_posts.user_id as upvoter_id','vote_posts.upvoted_at as upvoted_at')
-            ->orderby('vote_posts.upvoted_at', 'desc')
-            ->simplePaginate($paginate);
-        }else{
-            return $upvotes = DB::table('vote_posts')
-            ->join('posts','vote_posts.post_id','=','posts.id')
-            ->join('users as upvoter', 'vote_posts.user_id', '=', 'upvoter.id')
-            ->join('users as poster', 'posts.user_id', '=', 'poster.id')
-            ->join('threads','posts.thread_id','=','threads.id')
-            ->join('channels', 'threads.channel_id','=','channels.id')
-            ->where([
-                ['posts.deleted_at', '=', null],
-                ['vote_posts.user_id','=',$id],
-                ['vote_posts.upvoted','=',1],
-                ['threads.bianyuan','=',0],
-                ['channels.channel_state','<',$group]
-            ])
-            ->select('posts.*', 'upvoter.name as upvoter_name', 'poster.name', 'threads.title as thread_title','vote_posts.user_id as upvoter_id','vote_posts.upvoted_at as upvoted_at')
-            ->orderby('vote_posts.upvoted_at', 'desc')
-            ->simplePaginate($paginate);
-        }
-
+        return $upvotes = DB::table('vote_posts')
+        ->join('posts','vote_posts.post_id','=','posts.id')
+        ->join('users as upvoter', 'vote_posts.user_id', '=', 'upvoter.id')
+        ->join('users as poster', 'posts.user_id', '=', 'poster.id')
+        ->join('threads','posts.thread_id','=','threads.id')
+        ->join('channels', 'threads.channel_id','=','channels.id')
+        ->where([
+            ['posts.deleted_at', '=', null],
+            ['vote_posts.user_id','=',$id],
+            ['vote_posts.upvoted','=',1],
+            ['channels.channel_state','<',$group]
+        ])
+        ->select('posts.*', 'upvoter.name as upvoter_name', 'poster.name', 'threads.title as thread_title','vote_posts.user_id as upvoter_id','vote_posts.upvoted_at as upvoted_at')
+        ->orderby('vote_posts.upvoted_at', 'desc')
+        ->simplePaginate($paginate);
     }
 
     public function findxianyus($id, $paginate, $group)
@@ -148,9 +119,6 @@ class UsersController extends Controller
             ['channels.channel_state','<',$group],
             ['xianyus.user_id','=',$id]
         ]);
-        if (!Auth::check()){
-            $query->where('threads.bianyuan','=',0);
-        }
         $xianyus = $this->return_thread_fields($query)
         ->orderby('xianyus.created_at', 'desc')
         ->simplePaginate($paginate);
