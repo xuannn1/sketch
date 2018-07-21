@@ -10,8 +10,8 @@
                     <option value ="users">用户</option>
                     <option value ="tongren_yuanzhu" >同人</option>
                 </select>
-                <input type="textarea" id="search_input" placeholder="搜索..." name="search">
-                <input type="textarea" placeholder="同人CP" name="tongren_cp" id="tongren_cp_name" style="display:none">
+                <input type="textarea" id="search_input" placeholder="搜索..." name="search" style="max-width:30%">
+                <input type="textarea" placeholder="同人CP" name="tongren_cp" id="tongren_cp_name" style="max-width:30%;display:none">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
