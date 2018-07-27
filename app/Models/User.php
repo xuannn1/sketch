@@ -318,7 +318,8 @@ class User extends Authenticatable
 
     public function isOnline()
     {
-        return Cache::has('-usr-on-' . $this->id);
+        return LoggingStatus::where('user_id',$this->id)->first();
+        //return Cache::has('-usr-on-' . $this->id);
     }
 
 }
