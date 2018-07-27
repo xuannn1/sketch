@@ -43,19 +43,36 @@ class PagesController extends Controller
         return $threads;
     }
 
-    public function findrecommendation($take)
+    public function findrecommendedbooks_short($take, $bianyuan)//寻找合适的边缘/非边缘推荐，非长评:需要valid，新的（非past）$take-1个，past 1个
     {
-        $threads = Cache::remember('recommendation', 1, function () use($take) {
-            return DB::table('threads')
-            ->join('recommend_books', 'threads.id', '=', 'recommend_books.thread_id')
-            ->join('users', 'threads.user_id', '=', 'users.id')
-            ->where([['recommend_books.valid','=',1],['threads.deleted_at', '=', null],['threads.book_id','>',0],['threads.public','=',1]])
-            ->select('threads.*','users.name')
+        $recommendation = Cache::remember('recom-sr'.'-'.$bianyuan, 1, function () use($take, $bianyuan) {
+            $recommendation1 = DB::table('recommend_books')
+            ->where([['valid','=',1],['past','=',1],['long','=',0],['bianyuan','=',$bianyuan]])
+            ->select('*')
+            ->inRandomOrder()
+            ->take(1);
+            return DB::table('recommend_books')
+            ->where([['valid','=',1],['past','=',0],['long','=',0],['bianyuan','=',$bianyuan]])
+            ->select('*')
+            ->inRandomOrder()
+            ->take($take-1)
+            ->union($recommendation1)
+            ->get();
+        });
+        return $recommendation;
+    }
+
+    public function findrecommendedbooks_long($take)//寻找合适的长评推荐
+    {
+        $recommendation = Cache::remember('recom-lg', 1, function () use($take) {
+            return DB::table('recommend_books')
+            ->where([['valid','=',1],['past','=',0],['long','=',1]])
+            ->select('*')
             ->inRandomOrder()
             ->take($take)
             ->get();
         });
-        return $threads;
+        return $recommendation;
     }
 
     public function findquotes()
@@ -104,7 +121,9 @@ class PagesController extends Controller
             $threads[$channel->id] = $this->findthreads($channel->id,$take);
         }
         $quotes = $this->findquotes();
-        $recommends = $this->findrecommendation(6);
+        $recommends['short_not_bianyuan'] = $this->findrecommendedbooks_short(3,0);
+        $recommends['short_bianyuan'] = $this->findrecommendedbooks_short(3,1);
+        $recommends['long'] = $this->findrecommendedbooks_long(1);
         return view('pages/home',compact('channels', 'quotes','threads','recommends'));
     }
     public function about()

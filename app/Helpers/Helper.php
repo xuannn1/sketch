@@ -46,16 +46,16 @@ class Helper
        return $text;
    }
 
-   public static function clearcache()
-   {
-      if(Cache::has(Auth::id() . 'new')){
-         Cache::forget(Auth::id() . 'new');
-      }
-      if(Cache::has(Auth::id() . 'old')){
-         Cache::forget(Auth::id() . 'old');
-      }
-      return true;
-   }
+   // public static function clearcache()
+   // {
+   //    if(Cache::has(Auth::id() . 'new')){
+   //       Cache::forget(Auth::id() . 'new');
+   //    }
+   //    if(Cache::has(Auth::id() . 'old')){
+   //       Cache::forget(Auth::id() . 'old');
+   //    }
+   //    return true;
+   // }
    public static function htmltotext($post= null)
    {
       $post = str_replace("</p>", "\n", $post);
