@@ -190,3 +190,12 @@ foreach($posts as $post){
         $post->save();
     }
 }
+//20180728
+$lastpost = App\Models\Post::latest()->first();
+for($i=1;$i++;$i< $lastpost->id){
+    $post = App\Models\Post::find($i);
+    if($post){
+        $post->trim_body = \App\Helpers\Helper::trimtext($post->body, 50);
+        $post->save();
+    }
+}

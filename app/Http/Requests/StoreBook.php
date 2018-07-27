@@ -102,6 +102,7 @@ class StoreBook extends FormRequest
         //post_data
         $post_data = [];
         $post_data['body']=Helper::trimSpaces($this->wenan);
+        $post_data['trim_body']=Helper::trimtext($post_data['body'], 50);
         $post_data['user_ip'] = $this->getClientIp();
         $post_data['user_id'] = auth()->id();
         $post_data['markdown']=$this->markdown ? true:false;
@@ -192,6 +193,7 @@ class StoreBook extends FormRequest
 
         //post_data
         $post_data['body']=Helper::trimSpaces($this->wenan);
+        $post_data['trim_body']=Helper::trimtext($post_data['body'], 50);
         $post_data['markdown']=$this->markdown ? true:false;
         $post_data['indentation']=$this->indentation ? true:false;
         //tags_data
