@@ -48,7 +48,7 @@
                 <div class="container-fluid text-center">
                     <div class="row">
                         @foreach($recommends['short'] as $int => $recommendation)
-                        <div class="col-xs-4">
+                        <div class="col-xs-4 recommendation">
                             <a href="{{ route('thread.show', ['thread' => $recommendation->thread_id, 'recommendation' => $recommendation->id]) }}" class="bigger-10">{{ $recommendation->title }}<br>
                             <span class="grayout smaller-15">{{ $recommendation->recommendation }}</span>
                             </a>

@@ -50,12 +50,12 @@ class PagesController extends Controller
             ->where([['valid','=',1],['past','=',1],['long','=',0]])
             ->select('*')
             ->inRandomOrder()
-            ->take(3);
+            ->take(2);
             return DB::table('recommend_books')
             ->where([['valid','=',1],['past','=',0],['long','=',0]])
             ->select('*')
             ->inRandomOrder()
-            ->take($take-3)
+            ->take($take-2)
             ->union($recommendation1)
             ->get();
         });
