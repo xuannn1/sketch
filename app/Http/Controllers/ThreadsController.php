@@ -17,6 +17,7 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\Channel;
+use App\Models\RecommendBook;
 use Carbon\Carbon;
 use Auth;
 use App\Models\User;
@@ -58,6 +59,12 @@ class threadsController extends Controller
 
     public function show(Thread $thread, Request $request)
     {
+        if (request('recommendation')){
+            $recommendation = RecommendBook::find(request('recommendation'));
+            if($recommendation){
+                $recommendation->increment('clicks');
+            }
+        }
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
         ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
         if(!Auth::check()||(Auth::id()!=$thread->user_id)){

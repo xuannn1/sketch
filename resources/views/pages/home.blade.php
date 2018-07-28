@@ -47,19 +47,28 @@
                 </div>
                 <div class="container-fluid text-center">
                     <div class="row">
-                        @foreach($recommends as $int => $thread)
+                        @foreach($recommends['short'] as $int => $recommendation)
                         <div class="col-xs-4">
-                            <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ $thread->title }}<br>
-                            <span class="grayout smaller-15">{{ $thread->brief }}</span>
+                            <a href="{{ route('thread.show', ['thread' => $recommendation->thread_id, 'recommendation' => $recommendation->id]) }}" class="bigger-10">{{ $recommendation->title }}<br>
+                            <span class="grayout smaller-15">{{ $recommendation->recommendation }}</span>
                             </a>
                         </div>
-                        @if ($int ===2 )
-                        </div>
-                        <div class="row">
+                        @if($int==2)
+                    </div>
+                    <div class="row">
                         @endif
                         @endforeach
                     </div>
                 </div>
+                <!-- <div class="container-fluid text-center">
+                    <div>
+                        @foreach($recommends['long'] as $int => $recommendation)
+                            <a href="{{ route('thread.show', ['thread' => $recommendation->thread_id, 'recommendation' => $recommendation->id]) }}" class="bigger-10">{{ $recommendation->title }}<br>
+                            <span class="grayout smaller-15">{{ $recommendation->recommendation }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>  -->
             </div>
         </div>
         @endif

@@ -31,7 +31,7 @@ class PagesController extends Controller
 
     public function findthreads($channel_id, $take)
     {
-        $threads = Cache::remember('home_ch'.$channel_id, 1, function () use($channel_id, $take) {
+        $threads = Cache::remember('home_ch'.$channel_id, 3, function () use($channel_id, $take) {
             return DB::table('threads')
             ->join('users', 'threads.user_id', '=', 'users.id')
             ->where([['threads.deleted_at', '=', null],['threads.channel_id','=',$channel_id],['threads.public','=',1],['threads.bianyuan','=',0]])
@@ -43,19 +43,19 @@ class PagesController extends Controller
         return $threads;
     }
 
-    public function findrecommendedbooks_short($take, $bianyuan)//寻找合适的边缘/非边缘推荐，非长评:需要valid，新的（非past）$take-1个，past 1个
+    public function findrecommendedbooks_short($take)//寻找合适的推荐，非长评:需要valid，新的（非past）$take-3个，past 3个
     {
-        $recommendation = Cache::remember('recom-sr'.'-'.$bianyuan, 1, function () use($take, $bianyuan) {
+        $recommendation = Cache::remember('recom-sr', 3, function () use($take) {
             $recommendation1 = DB::table('recommend_books')
-            ->where([['valid','=',1],['past','=',1],['long','=',0],['bianyuan','=',$bianyuan]])
+            ->where([['valid','=',1],['past','=',1],['long','=',0]])
             ->select('*')
             ->inRandomOrder()
-            ->take(1);
+            ->take(3);
             return DB::table('recommend_books')
-            ->where([['valid','=',1],['past','=',0],['long','=',0],['bianyuan','=',$bianyuan]])
+            ->where([['valid','=',1],['past','=',0],['long','=',0]])
             ->select('*')
             ->inRandomOrder()
-            ->take($take-1)
+            ->take($take-3)
             ->union($recommendation1)
             ->get();
         });
@@ -64,7 +64,7 @@ class PagesController extends Controller
 
     public function findrecommendedbooks_long($take)//寻找合适的长评推荐
     {
-        $recommendation = Cache::remember('recom-lg', 1, function () use($take) {
+        $recommendation = Cache::remember('recom-lg', 3, function () use($take) {
             return DB::table('recommend_books')
             ->where([['valid','=',1],['past','=',0],['long','=',1]])
             ->select('*')
@@ -77,7 +77,7 @@ class PagesController extends Controller
 
     public function findquotes()
     {
-        $quotes = Cache::remember('quotes', 1, function () {
+        $quotes = Cache::remember('quotes', 2, function () {
             $quotes1 = DB::table('quotes')
             ->join('users', 'quotes.user_id', '=', 'users.id')
             ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',0]])
@@ -121,8 +121,7 @@ class PagesController extends Controller
             $threads[$channel->id] = $this->findthreads($channel->id,$take);
         }
         $quotes = $this->findquotes();
-        $recommends['short_not_bianyuan'] = $this->findrecommendedbooks_short(3,0);
-        $recommends['short_bianyuan'] = $this->findrecommendedbooks_short(3,1);
+        $recommends['short'] = $this->findrecommendedbooks_short(6);
         $recommends['long'] = $this->findrecommendedbooks_long(1);
         return view('pages/home',compact('channels', 'quotes','threads','recommends'));
     }
@@ -133,7 +132,7 @@ class PagesController extends Controller
 
     public function help()
     {
-        $users_online = Cache::remember('-users-online-count', 5, function () {
+        $users_online = Cache::remember('-users-online-count', 20, function () {
             $users_online = DB::table('logging_statuses')
             ->where('logged_on','>', time()-60*30)
             ->count();

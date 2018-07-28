@@ -199,3 +199,17 @@ for($i=1;$i++;$i< $lastpost->id){
         $post->save();
     }
 }
+//20180729
+$lastrecommendedBook = App\Models\RecommendBook::orderby('id','desc')->first();
+for($i=1;$i++;$i< $lastrecommendedBook->id){
+    $recommend = App\Models\RecommendBook::find($i);
+    if($recommend){
+        $thread = App\Models\Thread::find($recommend->thread_id);
+        if($thread){
+            $recommend->update([
+                'title' => $thread->title,
+                'recommendation' => $thread->brief
+            ]);
+        }
+    }
+}
