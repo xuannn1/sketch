@@ -666,3 +666,66 @@ function addoption(thread_id){//让投票区增加分支选择项
 function toggle_tags(){
     $('.extra-tag').toggleClass('hidden');
 }
+
+// $(function() {
+//
+//     var $quote = $("#daily-quote");
+//     console.log($quote);
+//     var $numWords = $quote.text().length;
+//     console.log($numWords);
+//
+//     if (($numWords >= 1) && ($numWords < 10)) {
+//         $quote.css("font-size", "36px");
+//     }
+//     else if (($numWords >= 10) && ($numWords < 20)) {
+//         $quote.css("font-size", "32px");
+//     }
+//     else if (($numWords >= 20) && ($numWords < 30)) {
+//         $quote.css("font-size", "28px");
+//     }
+//     else if (($numWords >= 30) && ($numWords < 40)) {
+//         $quote.css("font-size", "24px");
+//     }
+//     else {
+//         $quote.css("font-size", "20px");
+//     }
+//
+// });
+
+$( ".daily-quote" ).each(function( quote ) {
+
+  var $quote = $( this );
+  var $quotestring = $quote.text();
+  var $numWords = $quotestring.length;
+  var $len = 0;
+  for (var i=0; i<$numWords; i++) {
+    if ($quotestring.charCodeAt(i)>127 || $quotestring.charCodeAt(i)==94) {
+       $len += 2;
+     } else {
+       $len ++;
+     }
+   }
+  console.log(quote + ": " + $quotestring + ": " +$len);
+
+  if (($len >= 1) && ($len < 20)) {
+      $quote.css("font-size", "3.5em");
+  }
+  else if (($len >= 20) && ($len < 40)) {//ok
+      $quote.css("font-size", "3em");
+  }
+  else if (($len >= 40) && ($len < 60)) {
+      $quote.css("font-size", "2.4em");
+  }
+  else if (($len >= 60) && ($len < 90)) {
+      $quote.css("font-size", "2.0em");
+  }
+  else if (($len >= 90) && ($len < 120)) {
+      $quote.css("font-size", "1.8em");
+  }
+  else if (($len >= 120) && ($len < 160)) {
+      $quote.css("font-size", "1.5em");
+  }
+  else {
+      $quote.css("font-size", "1em");
+  }
+});
