@@ -705,7 +705,7 @@ $( ".daily-quote" ).each(function( quote ) {
        $len ++;
      }
    }
-  console.log(quote + ": " + $quotestring + ": " +$len);
+  //console.log(quote + ": " + $quotestring + ": " +$len);
 
   if (($len >= 1) && ($len < 20)) {
       $quote.css("font-size", "3.5em");
