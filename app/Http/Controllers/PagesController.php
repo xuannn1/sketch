@@ -31,99 +31,99 @@ class PagesController extends Controller
 
     public function findthreads($channel_id, $take)
     {
-        $threads = Cache::remember('home_ch'.$channel_id, 3, function () use($channel_id, $take) {
-            return DB::table('threads')
-            ->join('users', 'threads.user_id', '=', 'users.id')
-            ->where([['threads.deleted_at', '=', null],['threads.channel_id','=',$channel_id],['threads.public','=',1],['threads.bianyuan','=',0]])
-            ->select('threads.*','users.name')
-            ->orderby('threads.lastresponded_at', 'desc')
-            ->take($take)
-            ->get();
-        });
-        return $threads;
+        return DB::table('threads')
+        ->join('users', 'threads.user_id', '=', 'users.id')
+        ->where([['threads.deleted_at', '=', null],['threads.channel_id','=',$channel_id],['threads.public','=',1],['threads.bianyuan','=',0]])
+        ->select('threads.*','users.name')
+        ->orderby('threads.lastresponded_at', 'desc')
+        ->take($take)
+        ->get();
     }
 
     public function findrecommendedbooks_short($take)//寻找合适的推荐，非长评:需要valid，新的（非past）$take-3个，past 3个
     {
-        $recommendation = Cache::remember('recom-sr', 3, function () use($take) {
-            $recommendation1 = DB::table('recommend_books')
-            ->where([['valid','=',1],['past','=',1],['long','=',0]])
-            ->select('*')
-            ->inRandomOrder()
-            ->take(2);
-            return DB::table('recommend_books')
-            ->where([['valid','=',1],['past','=',0],['long','=',0]])
-            ->select('*')
-            ->inRandomOrder()
-            ->take($take-2)
-            ->union($recommendation1)
-            ->get();
-        });
-        return $recommendation;
+        $recommendation1 = DB::table('recommend_books')
+        ->where([['valid','=',1],['past','=',1],['long','=',0]])
+        ->select('*')
+        ->inRandomOrder()
+        ->take(3);
+        return DB::table('recommend_books')
+        ->where([['valid','=',1],['past','=',0],['long','=',0]])
+        ->select('*')
+        ->inRandomOrder()
+        ->take($take-3)
+        ->union($recommendation1)
+        ->get();
     }
 
     public function findrecommendedbooks_long($take)//寻找合适的长评推荐
     {
-        $recommendation = Cache::remember('recom-lg', 3, function () use($take) {
-            return DB::table('recommend_books')
-            ->where([['valid','=',1],['past','=',0],['long','=',1]])
-            ->select('*')
-            ->inRandomOrder()
-            ->take($take)
-            ->get();
-        });
-        return $recommendation;
+        return DB::table('recommend_books')
+        ->where([['valid','=',1],['past','=',0],['long','=',1]])
+        ->select('*')
+        ->inRandomOrder()
+        ->take($take)
+        ->get();
     }
 
     public function findquotes()
     {
-        $quotes = Cache::remember('quotes', 2, function () {
-            $quotes1 = DB::table('quotes')
-            ->join('users', 'quotes.user_id', '=', 'users.id')
-            ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',0]])
-            ->inRandomOrder()
-            ->select('quotes.*','users.name')
-            ->take(18);
-            return DB::table('quotes')
-            ->join('users', 'quotes.user_id', '=', 'users.id')
-            ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',1]])
-            ->inRandomOrder()
-            ->select('quotes.*','users.name')
-            ->take(2)
-            ->union($quotes1)
-            ->inRandomOrder()
-            ->get();
-        });
-        return $quotes;
+        $quotes1 = DB::table('quotes')
+        ->join('users', 'quotes.user_id', '=', 'users.id')
+        ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',0]])
+        ->inRandomOrder()
+        ->select('quotes.*','users.name')
+        ->take(18);
+        return DB::table('quotes')
+        ->join('users', 'quotes.user_id', '=', 'users.id')
+        ->where([['quotes.approved', '=', 1], ['quotes.notsad','=',1]])
+        ->inRandomOrder()
+        ->select('quotes.*','users.name')
+        ->take(2)
+        ->union($quotes1)
+        ->inRandomOrder()
+        ->get();
     }
 
     public function home()
     {
         $threads = [];
         $group = Auth::check()? Auth::user()->group : 10;
-        $channels = Channel::where('channel_state','<',$group)->orderBy('orderBy','asc')->get();
-        foreach($channels as $channel)
-        {
-            switch ($channel->id) {
-                case 1://原创，拿三个
-                    $take =3;
-                    break;
-                case 2://同人
-                case 3://作业
-                case 4://读写
-                case 5://日常
-                case 6://随笔
-                    $take = 2;
-                    break;
-                default://其他
-                    $take = 1;
+        $home_info = Cache::remember('home_g'.$group, 5, function () use ($group) {
+            $home_info = [];
+            $channels = Channel::where('channel_state','<',$group)->orderBy('orderBy','asc')->select('id','channelname','channel_state','orderBy')->get();
+            $home_info['channels']=$channels;
+            $home_info['quotes']=$this->findquotes();
+            $home_info['recom_sr'] = $this->findrecommendedbooks_short(6);
+            $home_info['recom_lg'] = $this->findrecommendedbooks_long(1);
+            $threads = [];
+            foreach($channels as $channel)
+            {
+                switch ($channel->id) {
+                    case 1://原创，拿三个
+                        $take =3;
+                        break;
+                    case 2://同人
+                    case 3://作业
+                    case 4://读写
+                    case 5://日常
+                    case 6://随笔
+                        $take = 2;
+                        break;
+                    default://其他
+                        $take = 1;
+                }
+                $threads[$channel->id] = $this->findthreads($channel->id,$take);
             }
-            $threads[$channel->id] = $this->findthreads($channel->id,$take);
-        }
-        $quotes = $this->findquotes();
-        $recommends['short'] = $this->findrecommendedbooks_short(6);
-        $recommends['long'] = $this->findrecommendedbooks_long(1);
-        return view('pages/home',compact('channels', 'quotes','threads','recommends'));
+            $home_info['threads'] = $threads;
+            return $home_info;
+        });
+        $channels=$home_info['channels'];
+        $quotes = $home_info['quotes'];
+        $recom_sr = $home_info['recom_sr'];
+        $recom_lg = $home_info['recom_lg'];
+        $threads = $home_info['threads'];
+        return view('pages/home',compact('channels','quotes','recom_sr','recom_lg','threads'));
     }
     public function about()
     {
