@@ -122,21 +122,26 @@
 
                 <div id="alltags">
                     <h4>6. 请从以下标签中选择不多于三个标签：</h4>
+                    <?php $tag_info = 0; ?>
                     <div id="feibianyuantags">
                         @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
-                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}
+                        @if(($tag_info<$tag->tag_info)&&($tag_info>0))
+                        <br>
+                        @endif
+                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}&nbsp;&nbsp;
+                        <?php $tag_info = $tag->tag_info ?>
                         @endforeach
                     </div>
                     <div id="bianyuantags" style="display:{{ $thread->bianyuan?'block':'none'}}">
                         <hr>
                         @foreach ($all_book_tags['tags_bianyuan'] as $tag)
-                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}
+                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}&nbsp;&nbsp;
                         @endforeach
                     </div>
                     <div id="tongrentags" style="display: {{ ($thread->channel_id)==1 ? 'none':'block'}}">
                         <hr>
                         @foreach ($all_book_tags['tags_tongren'] as $tag)
-                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}
+                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}&nbsp;&nbsp;
                         @endforeach
                     </div>
                 </div>

@@ -16,7 +16,7 @@
                         @foreach($book_info['book_lenth_info'] as $key=>$book_lenth)
                         <a class="badge badge-tag" href="{{ route('books.index',['book_length'=>$key]) }}">{{$book_lenth}}</a>
                         @endforeach
-                        <!-- 书本状态标记 -->
+                        <!-- 书本连载进度标记 -->
                         @foreach($book_info['book_status_info'] as $key=>$book_status)
                         <a class="badge badge-tag" href="{{ route('books.index',['book_status'=>$key]) }}">{{$book_status}}</a>
                         @endforeach
@@ -24,27 +24,16 @@
                         @foreach($book_info['sexual_orientation_info'] as $key=>$sexual_orientation)
                         <a class="badge badge-tag" href="{{ route('books.index',['sexual_orientation'=>$key]) }}">{{$sexual_orientation}}</a>
                         @endforeach
+                        <!-- 书本边缘与否标记 -->
                         @foreach($book_info['rating_info'] as $key=>$rating)
                         <a class="badge badge-tag" href="{{ route('books.index',['rating'=>($key)]) }}">{{$rating}}</a>
                         @endforeach
-                        <!-- 不是边缘的tag -->
-                        @foreach ($all_book_tags['tags_feibianyuan'] as $key=>$tag)
+                        <!-- 全部tag -->
+                        @foreach ($all_book_tags['tags'] as $key=>$tag)
+                        @if((Auth::check())||($tag->tag_group!==5))
                         <a class="book-tag tags_feibianyuan badge newchapter-badge badge-tag {{$key>5? 'hidden extra-tag':''}} " href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
-                        @endforeach
-                        <!-- 同人特殊tag -->
-                        @foreach ($all_book_tags['tags_tongren'] as $key=>$tag)
-                        <a class="book-tag tags_tongren badge bianyuan-tag badge-tag {{$key>1? 'hidden extra-tag':''}}" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
-                        @endforeach
-                        <!-- 同人原著tag -->
-                        @foreach ($all_book_tags['tags_tongren_yuanzhu'] as $key=>$tag)
-                        <a class="book-tag tags_tongren_yuanzhu badge bianyuan-tag badge-tag {{$key>3? 'hidden extra-tag':''}}" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
-                        @endforeach
-                        @if(Auth::check())
-                        <!-- 边缘特殊tag -->
-                        @foreach ($all_book_tags['tags_bianyuan'] as $key=>$tag)
-                        <a class="book-tag tags_bianyuan badge newchapter-badge badge-tag hidden extra-tag" href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
-                        @endforeach
                         @endif
+                        @endforeach
                         <br>
                     </div>
                     <div class="col-xs-2">

@@ -26,7 +26,7 @@ class BooksController extends Controller
 
     public function create()
     {
-        $all_book_tags = $this->all_book_tags();
+        $all_book_tags = $this->extra_book_tags();
         return view('books.create',compact('all_book_tags'));
     }
 
@@ -38,12 +38,11 @@ class BooksController extends Controller
     }
     public function edit(Book $book)
     {
-        $all_book_tags = $this->all_book_tags();
         if ((Auth::id() == $book->thread->user_id)&&(!$book->thread->locked)){
             $thread = $book->thread->load('mainpost');
             $book->load('tongren');
             $tags = $thread->tags->pluck('id')->toArray();
-            $all_book_tags = $this->all_book_tags();
+            $all_book_tags = $this->extra_book_tags();
             return view('books.edit',compact('book', 'thread','tags', 'all_book_tags'));
         }else{
             return redirect()->route('error', ['error_code' => '405']);

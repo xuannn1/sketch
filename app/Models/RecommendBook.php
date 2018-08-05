@@ -10,5 +10,9 @@ class RecommendBook extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $guarded = [];
-    
+
+    public function thread()
+    {
+        return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
+    }
 }

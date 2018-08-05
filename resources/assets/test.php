@@ -213,3 +213,20 @@ for($i=1;$i++;$i< $lastrecommendedBook->id){
         }
     }
 }
+
+
+//20180804 怎样快速输出短评信息
+$outfile = "";
+$recommends = App\Models\RecommendBook::where('long','=',0)->where('past','=',1)->orderby('clicks','desc')->get();
+foreach($recommends as $recommend){
+    $thread = $recommend->thread;
+    $outfile .= "《".$thread->title."》 by ".$thread->creator->name."\n"."链接：[url]https://sosad.fun/threads/".$recommend->thread_id."[/url]\n"."编推短评：".$recommend->recommendation."\n[br]";
+}
+
+
+//20180804 重新统计每个tag有多少本书信息
+$tags = App\Models\Tag::where('tag_group','<>',10)->where('tag_group','<>',20)->orderby('id','asc')->get();
+foreach($tags as $tag){
+    $tag->books = $tag->threads()->count();
+    $tag->save();
+}
