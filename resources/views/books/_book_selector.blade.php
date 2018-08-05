@@ -2,21 +2,50 @@
 <div class="dropdown">
     <form method="POST" action="{{ route('books.filter') }}"  name="book_filter">
         {{ csrf_field() }}
-        <span class="button-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">原创性<span class="caret"></span></button>
-            <ul class="dropdown-menu">
-                <li><input type="checkbox" name="original[]" value="1"checked />&nbsp;原创</li>
-                <li><input type="checkbox" name="original[]" value="2"checked />&nbsp;同人</li>
-            </ul>
-        </span>
-        <span class="button-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">篇幅<span class="caret"></span></button>
-            <ul class="dropdown-menu">
+        <div class="">
+            <h4>原创性：</h4>
+            <div class="">
+                <input type="checkbox" name="original[]" value="1"checked />&nbsp;原创&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" name="original[]" value="2"checked />&nbsp;同人&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+
+        <div class="">
+            <h4>篇幅：</h4>
+            <div class="">
                 @foreach($book_info['book_lenth_info'] as $key=>$book_lenth)
-                <li><input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_lenth}}</li>
+                <input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_lenth}}&nbsp;&nbsp;&nbsp;
                 @endforeach
-            </ul>
-        </span>
+            </div>
+        </div>
+
+        <div class="">
+            <h4>进度：</h4>
+            <div class="">
+                @foreach($book_info['book_status_info'] as $key=>$book_status)
+                <input type="checkbox" name="status[]" value={{$key}} checked />&nbsp;{{$book_status}}&nbsp;&nbsp;&nbsp;
+                @endforeach
+            </div>
+        </div>
+
+        <div class="">
+            <h4>篇幅：</h4>
+            <div class="">
+                @foreach($book_info['book_lenth_info'] as $key=>$book_lenth)
+                <input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_lenth}}&nbsp;&nbsp;&nbsp;
+                @endforeach
+            </div>
+        </div>
+
+        <div class="">
+            <h4>篇幅：</h4>
+            <div class="">
+                @foreach($book_info['book_lenth_info'] as $key=>$book_lenth)
+                <input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_lenth}}&nbsp;&nbsp;&nbsp;
+                @endforeach
+            </div>
+        </div>
+
         <span class="button-group">
             <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">进度<span class="caret"></span></button>
             <ul class="dropdown-menu">
