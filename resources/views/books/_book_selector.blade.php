@@ -51,35 +51,35 @@
             <h4>类别筛选：</h4>
             <div class="">
                 <span class="lead">原创性：</span>
-                <input type="checkbox" name="original[]" value="1" checked/>&nbsp;原创&nbsp;&nbsp;&nbsp;
-                <input type="checkbox" name="original[]" value="2" checked/>&nbsp;同人&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" name="original[]" value="1" checked disabled/>&nbsp;原创&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" name="original[]" value="2" checked disabled/>&nbsp;同人&nbsp;&nbsp;&nbsp;
             </div>
 
             <div class="">
                 <span class="lead">篇幅：</span>
                 @foreach($book_info['book_lenth_info'] as $key=>$book_lenth)
-                <input type="checkbox" name="length[]" value={{$key}} checked/>&nbsp;{{$book_lenth}}&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" name="length[]" value={{$key}} checked disabled/>&nbsp;{{$book_lenth}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
 
             <div class="">
                 <span class="lead">进度：</span>
                 @foreach($book_info['book_status_info'] as $key=>$book_status)
-                <input type="checkbox" name="status[]" value={{$key}} checked/>&nbsp;{{$book_status}}&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" name="status[]" value={{$key}} checked disabled/>&nbsp;{{$book_status}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
 
             <div class="">
                 <span class="lead">性向：</span>
                 @foreach($book_info['sexual_orientation_info'] as $key=>$sexual_orientation)
-                <input type="checkbox" name="sexual_orientation[]" value={{$key}} checked/>&nbsp;{{$sexual_orientation}}&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" name="sexual_orientation[]" value={{$key}} checked disabled/>&nbsp;{{$sexual_orientation}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
 
             <div class="">
                 <span class="lead">限制：</span>
                 @foreach($book_info['rating_info'] as $key=>$rating)
-                <input type="checkbox" name="rating[]" value={{$key}} checked/>&nbsp;{{$rating}}&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" name="rating[]" value={{$key}} checked disabled/>&nbsp;{{$rating}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
             <div class="">
