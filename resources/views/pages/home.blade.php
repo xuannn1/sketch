@@ -60,15 +60,14 @@
                         @endforeach
                     </div>
                 </div>
-                <!-- <div class="container-fluid text-center">
-                    <div>
+                <div class="container-fluid text-left">
+                    <div class="recommendation">
                         @foreach($recom_lg as $int => $recommendation)
-                            <a href="{{ route('thread.show', ['thread' => $recommendation->thread_id, 'recommendation' => $recommendation->id]) }}" class="bigger-10">{{ $recommendation->title }}<br>
-                            <span class="grayout smaller-15">{{ $recommendation->recommendation }}</span>
+                            <a href="{{ route('thread.showpost', ['post' => $recommendation->thread_id, 'recommendation' => $recommendation->id]) }}" class="bigger-10">长评推荐《{{ $recommendation->title }}》：<span class="grayout smaller-15">{{ $recommendation->recommendation }}</span>
                             </a>
                         @endforeach
                     </div>
-                </div>  -->
+                </div>
             </div>
         </div>
         @endif

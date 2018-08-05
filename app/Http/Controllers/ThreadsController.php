@@ -111,8 +111,14 @@ class threadsController extends Controller
             return redirect()->route('error', ['error_code' => '403']);
         }
     }
-    public function showpost(Post $post)
+    public function showpost(Post $post, Request $request)
     {
+        if (request('recommendation')){
+            $recommendation = RecommendBook::find(request('recommendation'));
+            if($recommendation){
+                $recommendation->increment('clicks');
+            }
+        }
         $thread = $post->thread;
         $totalposts = Post::allPosts($thread->id,$thread->post_id)
         ->where('created_at', '<', $post->created_at)
