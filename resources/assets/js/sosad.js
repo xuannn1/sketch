@@ -729,3 +729,19 @@ $( ".daily-quote" ).each(function( quote ) {
       $quote.css("font-size", "1em");
   }
 });
+
+function show_book_selector(){
+    $('.detailed-selector').removeClass('hidden');
+    $('.detailed-selector input').attr('disabled', false);
+    $('.brief-selector').addClass('hidden');
+    $('.brief-selector input').attr('disabled', true);
+}
+function fold_book_selector(){
+    $('.brief-selector').removeClass('hidden');
+    $('.brief-selector input').attr('disabled', false);
+    $('.detailed-selector').addClass('hidden');
+    $('.detailed-selector input').attr('disabled', true);
+}
+function toggle_tags_tongren_yuanzhu(){
+    $('.tongren_yuanzhu').toggleClass('hidden');
+}
