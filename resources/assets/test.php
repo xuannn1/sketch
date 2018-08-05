@@ -220,7 +220,13 @@ $outfile = "";
 $recommends = App\Models\RecommendBook::where('long','=',0)->where('past','=',1)->orderby('clicks','desc')->get();
 foreach($recommends as $recommend){
     $thread = $recommend->thread;
-    $outfile .= "《".$thread->title."》 by ".$thread->creator->name."\n"."链接：[url]https://sosad.fun/threads/".$recommend->thread_id."[/url]\n"."编推短评：".$recommend->recommendation."\n[br]";
+    $outfile .= "[b]《".$thread->title."》 by ";
+    if($thread->anonymous){
+        $outfile .= $thread->majia ?? '匿名咸鱼';
+    }else{
+        $outfile .= $thread->creator->name;
+    }
+    $outfile .="[/b]\n"."链接：[url]https://sosad.fun/threads/".$recommend->thread_id."[/url]\n"."编推短评：".$recommend->recommendation."\n[br]";
 }
 
 
@@ -228,5 +234,5 @@ foreach($recommends as $recommend){
 $tags = App\Models\Tag::where('tag_group','<>',10)->where('tag_group','<>',20)->orderby('id','asc')->get();
 foreach($tags as $tag){
     $tag->books = $tag->threads()->count();
-    $tag->save();
+    $tag->save()
 }

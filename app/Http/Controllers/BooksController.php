@@ -124,8 +124,8 @@ class BooksController extends Controller
             array_push($bookinfo,array_map('intval',explode('_',$info)));
         }
         $logged = Auth::check()? true:false;
-        $books = Cache::remember('-bQry-'.($logged? 'Lgd':'nLg').$bookquery_original.(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($bookinfo, $request, $book_info, $logged) {
-            $query = $this->join_book_tables();
+        $books = Cache::remember('-bQry-'.($logged? 'Logged':'nLog').$bookquery_original.(is_numeric($request->page)? 'P'.$request->page:'P1'), 10, function () use($bookinfo, $request, $book_info, $logged) {
+            $query = $this->join_complex_book_tables();
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             if(!$logged){$query = $query->where('bianyuan','=',0);}
             if(count($bookinfo[0])==1){
@@ -142,6 +142,12 @@ class BooksController extends Controller
             }
             if(count($bookinfo[4])<count($book_info['rating_info'])){
                 $query->where('threads.bianyuan','=',$bookinfo[4][0]-1);
+            }
+            if((count($bookinfo[5])>0)&&($bookinfo[5][0]>0)){
+                $query->whereIn('tagging_threads.tag_id',$bookinfo[5]);
+            }
+            if((count($bookinfo[6])>0)&&($bookinfo[6][0]>0)){
+                $query->whereIn('tongrens.tongren_yuanzhu_tag_id',$bookinfo[6]);
             }
             $books = $this->return_book_fields($query)
             ->distinct()
@@ -225,6 +231,28 @@ class BooksController extends Controller
         $bookquery.='-';
         if(request('rating')){
             foreach(request('rating') as $i=>$query){
+                if($i>0){
+                    $bookquery.='_';
+                }
+                $bookquery.=$query;
+            }
+        }else{
+            $bookquery.=0;
+        }
+        $bookquery.='-';
+        if(request('tag')){
+            foreach(request('tag') as $i=>$query){
+                if($i>0){
+                    $bookquery.='_';
+                }
+                $bookquery.=$query;
+            }
+        }else{
+            $bookquery.=0;
+        }
+        $bookquery.='-';
+        if(request('tags_tongren_yuanzhu')){
+            foreach(request('tags_tongren_yuanzhu') as $i=>$query){
                 if($i>0){
                     $bookquery.='_';
                 }

@@ -22,6 +22,18 @@ trait BookTraits{
         ->leftjoin('tags as tongren_cp_tags','tongren_cp_tags.id','=', 'tongrens.tongren_cp_tag_id');
         return $query;
     }
+    public function join_complex_book_tables(){
+        $query = DB::table('threads')
+        ->join('books', 'threads.book_id', '=', 'books.id')
+        ->join('users', 'threads.user_id', '=', 'users.id')
+        ->join('labels', 'threads.label_id', '=', 'labels.id')
+        ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
+        ->leftjoin('tongrens','books.id','=', 'tongrens.book_id')
+        ->leftjoin('tagging_threads','tagging_threads.thread_id','=', 'threads.id')
+        ->leftjoin('tags as tongren_yuanzhu_tags','tongren_yuanzhu_tags.id','=', 'tongrens.tongren_yuanzhu_tag_id')
+        ->leftjoin('tags as tongren_cp_tags','tongren_cp_tags.id','=', 'tongrens.tongren_cp_tag_id');
+        return $query;
+    }
 
     public function return_book_fields($query){
         $query->select('books.thread_id','books.book_status', 'books.book_length', 'books.lastaddedchapter_at', 'books.total_char', 'books.last_chapter_id', 'books.sexual_orientation',
@@ -91,6 +103,6 @@ trait BookTraits{
             return $tags;
         });
         return $tags;
-
     }
+
 }
