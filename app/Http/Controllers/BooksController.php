@@ -125,7 +125,11 @@ class BooksController extends Controller
         }
         $logged = Auth::check()? true:false;
         $books = Cache::remember('-bQry-'.($logged? 'Logged':'nLog').$bookquery_original.(is_numeric($request->page)? 'P'.$request->page:'P1'), 10, function () use($bookinfo, $request, $book_info, $logged) {
-            $query = $this->join_complex_book_tables();
+            if((count($bookinfo[5])>0)&&($bookinfo[5][0]>0)){
+                $query = $this->join_complex_book_tables();
+            }else{
+                $query = $this->join_book_tables();
+            }
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             if(!$logged){$query = $query->where('bianyuan','=',0);}
             if(count($bookinfo[0])==1){

@@ -43,7 +43,7 @@
                     </ul>
                 </span>
                 <button type="submit" name="button" class="btn btn-xs btn-primary sosad-button">提交</button>
-                <button type="button" name="button" class="btn btn-xs btn-primary sosad-button-control pull-right" onclick="show_book_selector()">展开更多筛选</button>
+                <button type="button" name="button" class="btn btn-xs btn-primary sosad-button-control pull-right" onclick="show_book_selector()">展开筛选</button>
             </div>
         </div>
 
@@ -105,7 +105,7 @@
                 </div>
             </div>
             <button type="submit" name="button" class="btn btn-sm btn-primary sosad-button">提交</button>
-            <button type="button" name="button" class="btn btn-sm btn-primary sosad-button-control pull-right" onclick="fold_book_selector()">收起更多筛选</button>
+            <button type="button" name="button" class="btn btn-sm btn-primary sosad-button-control pull-right" onclick="fold_book_selector()">收起筛选</button>
         </div>
     </form>
 </div>

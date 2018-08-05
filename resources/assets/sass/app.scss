@@ -416,6 +416,10 @@ hr {
    &.indentation {
      p{
        text-indent: 32px;
+       img{
+           position:relative;
+           left:-32px;
+       }
      }
    }
 
