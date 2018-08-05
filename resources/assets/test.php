@@ -231,8 +231,13 @@ foreach($recommends as $recommend){
 
 
 //20180804 重新统计每个tag有多少本书信息
-$tags = App\Models\Tag::where('tag_group','<>',10)->where('tag_group','<>',20)->orderby('id','asc')->get();
+$tags = App\Models\Tag::where('tag_group','=',10)->orderby('id','asc')->get();
 foreach($tags as $tag){
-    $tag->books = $tag->threads()->count();
-    $tag->save()
+    $tag->books = App\Models\Tongren::where('tongren_yuanzhu_tag_id',$tag->id)->count();
+    $tag->save();
+}
+$tags = App\Models\Tag::where('tag_group','=',20)->orderby('id','asc')->get();
+foreach($tags as $tag){
+    $tag->books = App\Models\Tongren::where('tongren_CP_tag_id','=',$tag->id)->count();
+    $tag->save();
 }
