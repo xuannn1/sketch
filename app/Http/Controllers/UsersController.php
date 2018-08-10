@@ -9,9 +9,6 @@ use App\Sosadfun\Traits\ThreadTraits;
 use Auth;
 use Hash;
 use App\Models\User;
-use App\Models\Thread;
-use App\Models\Post;
-use App\Models\PostComment;
 use Carbon\Carbon;
 
 class UsersController extends Controller
@@ -128,50 +125,6 @@ class UsersController extends Controller
         return $xianyus;
     }
 
-    public function findAdminRecords($id, $paginate)
-    {
-        $user = User::find($id);
-        $thread_id = Thread::withTrashed()->where('user_id','=',$id)->get(['id']);
-        $post_id = Post::withTrashed()->where('user_id','=',$id)->get(['id']);
-        $postcomment_id = PostComment::withTrashed()->where('user_id','=',$id)->get(['id']);
-
-        $records = DB::table('administrations')
-        ->where('item_id', $id)
-        ->whereIn('operation', [13,14])
-        ->orWhereIn('item_id',$thread_id)
-        ->whereIn('operation',[1,2,3,4,5,6,9,15,16])
-        ->orWhereIn('item_id',$post_id)
-        ->whereIn('operation',[7,10,11,12])
-        ->orWhereIn('item_id',$postcomment_id)
-        ->where('operation','=',8)
-        ->join('users','administrations.user_id','=','users.id')
-        ->leftjoin('threads',function($join)
-        {
-            $join->whereIn('administrations.operation',[1,2,3,4,5,6,9,15,16]);
-            $join->on('administrations.item_id','=','threads.id');
-        })
-        ->leftjoin('posts',function($join)
-        {
-            $join->whereIn('administrations.operation',[7,10,11,12]);
-            $join->on('administrations.item_id','=','posts.id');
-        })
-        ->leftjoin('post_comments',function($join)
-        {
-            $join->where('administrations.operation','=',8);
-            $join->on('administrations.item_id','=','post_comments.id');
-        })
-        ->leftjoin('users as operated_users',function($join)
-        {
-            $join->whereIn('administrations.operation',[13,14]);
-            $join->on('administrations.item_id','=','operated_users.id');
-        })
-        ->where('administrations.deleted_at','=',null)
-        ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body','operated_users.name as operated_users_name' )
-        ->orderBy('administrations.created_at','desc')
-        ->simplePaginate($paginate);
-        return $records;
-    }
-
     public function show($id)
     {
         $user = User::find($id);
@@ -183,9 +136,7 @@ class UsersController extends Controller
             $statuses=$this->findstatuses($id,config('constants.index_per_part'));
             $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
             $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
-            $records=$this->findAdminRecords($id,config('constants.index_per_part'));
-            $admin_operation = config('constants.administrations');
-            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus','records','admin_operation'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
+            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
@@ -264,17 +215,6 @@ class UsersController extends Controller
             $collections = false;
             return view('users.showxianyus', compact('user','xianyus','collections'))->with('show_as_collections',false)->with('show_channel',1);
         }else{
-            return redirect()->route('error', ['error_code' => '404']);
-        }
-    }
-
-    public function showrecords($id){
-        $user = User::find($id);
-        if($user) {
-            $records=$this->findAdminRecords($id,config('constants.index_per_page'));
-            $admin_operation = config('constants.administrations');
-            return view('users.showrecords', compact('user','records','admin_operation'));
-        }else {
             return redirect()->route('error', ['error_code' => '404']);
         }
     }
