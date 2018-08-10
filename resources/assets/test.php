@@ -241,3 +241,12 @@ foreach($tags as $tag){
     $tag->books = App\Models\Tongren::where('tongren_CP_tag_id','=',$tag->id)->count();
     $tag->save();
 }
+
+//20180810 增加administratee_id列
+DB::table('administrations')->join('threads',function($join){ $join->whereIn('administrations.operation',[1,2,3,4,5,6,9,15,16]); $join->on('administrations.item_id','=','threads.id'); })->update(['administrations.administratee_id'=>DB::raw('threads.user_id')]);
+
+DB::table('administrations')->join('posts',function($join){ $join->whereIn('administrations.operation',[7,10,11,12]); $join->on('administrations.item_id','=','posts.id'); })->update(['administrations.administratee_id'=>DB::raw('posts.user_id')]);
+
+DB::table('administrations')->join('post_comments',function($join){ $join->where('administrations.operation','=',8); $join->on('administrations.item_id','=','post_comments.id'); })->update(['administrations.administratee_id'=>DB::raw('post_comments.user_id')]);
+
+DB::table('administrations')->whereIn('administrations.operation',[13,14]) ->update(['administrations.administratee_id'=>DB::raw('administrations.item_id')]);

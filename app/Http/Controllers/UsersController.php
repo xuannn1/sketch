@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Sosadfun\Traits\BookTraits;
 use App\Sosadfun\Traits\ThreadTraits;
+use App\Sosadfun\Traits\AdministrationTraits;
 use Auth;
 use Hash;
 use App\Models\User;
@@ -15,6 +16,8 @@ class UsersController extends Controller
 {
     use BookTraits;
     use ThreadTraits;
+    use AdministrationTraits;
+
     public function __construct()
     {
         $this->middleware('auth', [
@@ -125,71 +128,6 @@ class UsersController extends Controller
         return $xianyus;
     }
 
-    // public function show($id)
-    // {
-    //     $user = User::find($id);
-    //     if ($user){
-    //         $group = Auth::check() ? Auth::user()->group : 10;
-    //         $books=$this->findbooks($id,config('constants.index_per_part'));
-    //         $threads=$this->findthreads($id,config('constants.index_per_part'), $group);
-    //         $posts=$this->findlongcomments($id,config('constants.index_per_part'), $group);
-    //         $statuses=$this->findstatuses($id,config('constants.index_per_part'));
-    //         $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
-    //         $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
-    //         return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
-    //     }else{
-    //         return redirect()->route('error', ['error_code' => '404']);
-    //     }
-    // }
-
-    public function findAdminRecords($id, $paginate)
-    {
-        $records = DB::table('administrations')
-        ->join('users','administrations.user_id','=','users.id')
-        ->leftjoin('threads',function($join)
-        {
-            $join->whereIn('administrations.operation',[1,2,3,4,5,6,9,15,16]);
-            $join->on('administrations.item_id','=','threads.id');
-        })
-        ->leftjoin('posts',function($join)
-        {
-            $join->whereIn('administrations.operation',[7,10,11,12]);
-            $join->on('administrations.item_id','=','posts.id');
-        })
-        ->leftjoin('post_comments',function($join)
-        {
-            $join->where('administrations.operation','=',8);
-            $join->on('administrations.item_id','=','post_comments.id');
-        })
-        ->leftjoin('users as operated_users',function($join)
-        {
-            $join->whereIn('administrations.operation',[13,14]);
-            $join->on('administrations.item_id','=','operated_users.id');
-        })
-
-        ->where(function ($query) use ($id) {
-            $query->whereIn('administrations.operation',[1,2,3,4,5,6,9,15,16]);
-            $query->where('threads.user_id', '=', $id);
-        })
-        ->orWhere(function ($query) use ($id) {
-            $query->whereIn('administrations.operation',[7,10,11,12]);
-            $query->where('posts.user_id', '=', $id);
-        })
-        ->orWhere(function ($query) use ($id) {
-            $query->where('administrations.operation','=',8);
-            $query->where('post_comments.user_id', '=', $id);
-        })
-        ->orWhere(function ($query) use ($id) {
-            $query->whereIn('administrations.operation',[13,14]);
-            $query->where('administrations.item_id', '=', $id);
-        })
-        ->where('administrations.deleted_at','=',null)
-        ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body','operated_users.name as operated_users_name' )
-        ->orderBy('administrations.created_at','desc')
-        ->simplePaginate($paginate);
-        return $records;
-    }
-
     public function show($id)
     {
         $user = User::find($id);
@@ -284,6 +222,17 @@ class UsersController extends Controller
             $collections = false;
             return view('users.showxianyus', compact('user','xianyus','collections'))->with('show_as_collections',false)->with('show_channel',1);
         }else{
+            return redirect()->route('error', ['error_code' => '404']);
+        }
+    }
+
+    public function showrecords($id){
+        $user = User::find($id);
+        if($user) {
+            $records=$this->findAdminRecords($id,config('constants.index_per_page'));
+            $admin_operation = config('constants.administrations');
+            return view('users.showrecords', compact('user','records','admin_operation'));
+        }else {
             return redirect()->route('error', ['error_code' => '404']);
         }
     }
