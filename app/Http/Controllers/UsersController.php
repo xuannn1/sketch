@@ -125,6 +125,23 @@ class UsersController extends Controller
         return $xianyus;
     }
 
+    // public function show($id)
+    // {
+    //     $user = User::find($id);
+    //     if ($user){
+    //         $group = Auth::check() ? Auth::user()->group : 10;
+    //         $books=$this->findbooks($id,config('constants.index_per_part'));
+    //         $threads=$this->findthreads($id,config('constants.index_per_part'), $group);
+    //         $posts=$this->findlongcomments($id,config('constants.index_per_part'), $group);
+    //         $statuses=$this->findstatuses($id,config('constants.index_per_part'));
+    //         $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
+    //         $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
+    //         return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
+    //     }else{
+    //         return redirect()->route('error', ['error_code' => '404']);
+    //     }
+    // }
+
     public function show($id)
     {
         $user = User::find($id);
@@ -136,11 +153,15 @@ class UsersController extends Controller
             $statuses=$this->findstatuses($id,config('constants.index_per_part'));
             $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
             $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
-            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
+            $records=$this->findAdminRecords($id,config('constants.index_per_part'));
+            $admin_operation = config('constants.administrations');
+            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus','records','admin_operation'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
     }
+
+
 
     public function showbooks($id)
     {

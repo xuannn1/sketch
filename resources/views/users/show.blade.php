@@ -89,6 +89,21 @@
                 @endif
             </div>
         </div>
+        @if((Auth::check())&&(Auth::user()->admin))
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                   <h4><a href="{{ route('user.showrecords', $user->id) }}">管理目录</a></h4>
+                </div>
+                <div class="panel-body">
+                   @include('admin._records')
+                   @if($records->hasMorePages())
+                   <div class="text-center h5">
+                      <a href="{{ route('user.showrecords', $user->id) }}">全部管理记录</a>
+                   </div>
+                   @endif
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 @stop
