@@ -139,7 +139,7 @@ class UsersController extends Controller
             $statuses=$this->findstatuses($id,config('constants.index_per_part'));
             $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
             $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
-            $records=$this->findAdminRecords($id,config('constants.index_per_part'));
+            $records=$this->findAdminRecords($id,config('constants.items_per_part'));
             $admin_operation = config('constants.administrations');
             return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus','records','admin_operation'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
         }else{
