@@ -108,7 +108,7 @@ class StoreThread extends FormRequest
             abort(403,'数据冲突');
         }
         //题目不能敏感
-        while(Helper::convert_to_title($thread_data['title'])!=$thread_data['title']){
+        while(Helper::convert_to_public($thread_data['title'])!=$thread_data['title']){
            $thread_data['title'] = Helper::convert_to_title($thread_data['title']);
         }
         while(Helper::convert_to_public($thread_data['brief'])!=$thread_data['brief']){
