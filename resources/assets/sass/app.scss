@@ -32,10 +32,28 @@ $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
     }
 }
 
+%card-shadow {
+    box-shadow: 0 35px 40px -30px rgba(0, 0, 0, .04);
+    &:hover, &:focus {
+        box-shadow: 0 35px 30px -30px rgba(0, 0, 0, .08)
+    }
+}
 
+.loose {
+    letter-spacing: 1px;
+}
+
+.margin5 {
+    margin-bottom: 5px;
+}
+
+.long-foot {
+    padding-bottom: 30px;
+}
 
 
 html {
+    height: 100%;
    overflow-x:hidden;
    overflow-y: scroll; /* has to be scroll, not auto */
    -webkit-overflow-scrolling: touch;
@@ -43,12 +61,15 @@ html {
 
 body{
    padding-top: 60px;
+   padding-bottom: 60px;
    background-color: $body-color;
    font-family: $font-list;
    font-weight: 400;
    color: $body-font-color;
    width: 100%;
+   min-height: 100%;
    overflow-y:scroll;
+   position: relative;
 }
 
 a {
@@ -59,6 +80,7 @@ a {
 a:hover, a:focus {
     color: $link-hover-color;
     text-decoration: none;
+    outline: none;
 }
 
 p a, label a {
@@ -263,9 +285,9 @@ header .container {
 
 footer {
   margin: 0px 1rem;
-  margin-top: 45px;
+  // margin-top: 45px;
   padding: 10px 0px;
-  border-top: 1px solid #eaeaea;
+  // border-top: 1px solid #eaeaea;
   color: $body-font-color;
   opacity: 0.8;
   font-weight: 300;
@@ -285,7 +307,7 @@ footer {
   ul {
     float: right;
     list-style: none;
-    margin-right: 15px;
+    padding-left: 20px;
 
     li {
       float: left;
@@ -304,8 +326,14 @@ footer {
   }
 }
 
+#footer-container {
+    height: 48px;
+    position: absolute;
+    bottom: 0px;
+}
+
 .jumbotron{
-  background: $background-color;
+  background: none;
   text-align: center;
   margin-bottom: 15px;
   padding-top: 70px;
@@ -313,6 +341,11 @@ footer {
   padding-left: 15% !important;
   padding-right: 15% !important;
   border: none;
+  .container-fluid {
+      background: none;
+      max-height: 100vh;
+      transition: max-height 0.3s;
+  }
 }
 
 #daily-quote {
@@ -507,7 +540,7 @@ h1, .h1 {
 h2, .h2 {
     @extend %headings-shared;
     font-weight: 300;
-    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 h4, .h4, h5, .h5, h6, .h6 {
@@ -559,6 +592,50 @@ code {
    }
 }
 
+#recommendation {
+    background: none;
+    padding-bottom: 1.5em;
+    .panel-heading > span {
+        font-weight: 600;
+        padding-bottom:6px;
+        border-bottom: solid 2.5px $body-font-color;
+    }
+    a {
+        display: inline-block;
+        &:hover, &:focus {
+            color: inherit;
+        }
+    }
+}
+
+.recommendation-card {
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row nowrap;
+    -webkit-flex-flow: row nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    .card {
+        @extend %card-shadow;
+        display: inline-block;
+        background-color: $panel-color;
+        padding: 1.2em;
+        margin: 10px 10px 0px 0px;
+        min-width: 12em;
+    }
+}
+
+.recommendation-long {
+    .card {
+        @extend %card-shadow;
+        display: inline-block;
+        background-color: $panel-color;
+        padding: 1.5em;
+        width: 100%;
+    }
+}
+
 .static-article {
     padding: 1em 0.5em;
     line-height: 2;
@@ -592,7 +669,7 @@ hr {
     -webkit-flex-flow: row wrap;
     font-family: $font-list;
     a {
-        display: block;
+        display: inline-block;
     }
 }
 
@@ -609,12 +686,13 @@ hr {
 .thread-meta {
     display: flex;
     display: -webkit-flex;
-    flex-flow: column nowrap;
-    -webkit-flex-flow: column nowrap;
+    flex-flow: column wrap;
+    -webkit-flex-flow: column wrap;
     flex: 1 1 auto;
     -webkit-flex: 1 1 auto;
     align-items: flex-end;
     -webkit-align-items: flex-end;
+    justify-content: space-around;
     a {
         color: $body-font-color-light;
     }
@@ -713,6 +791,7 @@ hr {
 .pagination{
    margin-top:0px;
    margin-bottom:0px;
+   @extend %light-shadow;
 }
 .panel-footer{
    padding: 15px 15px;
@@ -782,6 +861,7 @@ hr {
     padding: 3px 7px;
     margin-bottom: 2px;
     margin-right: 2px;
+    font-weight: 500;
 }
 
 // 大分类
@@ -841,21 +921,17 @@ hr {
 }
 
 .badge {
-    background: none;
+    background: $body-color;
     color: $link-hover-color;
-    border: 1px solid $link-hover-color;
-    border-radius: 1em;
-    margin-bottom: 3px;
-    padding: 3px;
 }
 
 // tab badges
 .panel-default > .panel-heading .badge {
-    background: none;
+    background: $border-color-row;
     border: none;
     font-weight: 600;
     color: $link-hover-color;
-    padding: 0;
+    padding: 2px 3px;
 }
 
 .button-disabled{
@@ -938,7 +1014,7 @@ hr {
    border-radius:3px;
 }
 .thread-title {
-    font-weight: 300;
+    font-weight: 700;
     line-height: 2;
 }
 .thread-vote{
@@ -990,7 +1066,7 @@ hr {
 
 .nav-pills {
     border-bottom: none;
-    > li > a {
+    a {
         background: none;
         line-height: 1.2em;
         border: none;
@@ -1000,7 +1076,7 @@ hr {
             background: $body-color;
         }
     }
-    > li.active > a {
+    a.active {
         @extend %nav-pills-active;
         border-bottom: 2px solid $link-hover-color;
         &:hover {
@@ -1021,6 +1097,8 @@ hr {
     padding-left: 1em;
     letter-spacing: 1px;
     font-weight: 500;
+    white-space: nowrap;
+    overflow-x: auto;
 }
 
 #myBtn {
@@ -1030,6 +1108,47 @@ hr {
   right: 40px;
   z-index: 99;
   cursor: pointer;
+}
+
+.carousel-inner {
+    background: $panel-color;
+}
+
+.carousel-control {
+    &.right {
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.0001) 0%, rgba(255, 255, 255, 0.5) 100%);
+    }
+    &.left {
+        background-image: linear-gradient(to left, rgba(255, 255, 255, 0.0001) 0%, rgba(255, 255, 255, 0.5) 100%);
+    }
+    .glyphicon {
+        color: $bold-color;
+        text-shadow: none;
+        font-weight: 300;
+        font-size: 16px;
+    }
+}
+
+#book-selector {
+    display: flex;
+    display: -webkit-flex;
+    margin-bottom: 10px;
+    width: 100%;
+    flex: 1 1 auto;
+    -webkit-flex: 1 1 auto;
+    flex-flow: row nowrap;
+    -webkit-flex-flow: row nowrap;
+    align-content: stretch;
+    .button-group {
+        margin: 0;
+        padding: 2px;
+    }
+}
+
+.sosad-button-dropdown {
+    height: 2.5em;
+    border: none;
+    background-color: #f3f3f3;
 }
 
 
@@ -1125,6 +1244,11 @@ hr {
         -webkit-flex-flow: row;
         flex: auto;
         -webkit-flex: auto;
+        justify-content: flex-start;
+        line-height: 1.8;
+        span {
+            margin-right: 5px;
+        }
     }
     .status-editor {
         textarea:focus {

@@ -7,9 +7,10 @@ use Genert\BBCode\BBCode;
 
 class Helper
 {
-   public static function trimtext($text=null, int $len)
+   public static function trimtext($text=null, int $len)//截取一个特定长度的字串
    {
       $bbCode = new BBCode();
+      $bbCode = self::addCustomParserBBCode($bbCode);
       $text = $bbCode->stripBBCodeTags((string) $text);
       //$str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
       $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
@@ -19,16 +20,42 @@ class Helper
       return $substr;
    }
 
-   public static function clearcache()
+   public static function trimParagraphs($text=null)//去掉输入的一段文字里，多余的html-tag，和多余的换行
    {
-      if(Cache::has(Auth::id() . 'new')){
-         Cache::forget(Auth::id() . 'new');
-      }
-      if(Cache::has(Auth::id() . 'old')){
-         Cache::forget(Auth::id() . 'old');
-      }
-      return true;
+       while(strip_tags($text,"<br>")!=$text){
+          $text = strip_tags($text,"<br>");
+       }
+       $text = str_replace("\r\n", "\n", $text);
+       $text = str_replace("\r", "\n", $text);
+       return $text;
    }
+
+   public static function trimSpaces($text=null)//去掉输入的一段文字里，多余的html-tag，和每段开头多余的空格，和多余的换行
+   {
+       while(strip_tags($text,"<br>")!=$text){
+          $text = strip_tags($text,"<br>");
+       }
+       $lines = preg_split("/(\r\n|\n|\r)/",$text);
+       $text = "";
+       foreach ($lines as $line){
+           $line = mb_ereg_replace('(^(　| )+|(　| )+$)', '', $line);
+           if($line){
+               $text.= $line."\n";
+           }
+       }
+       return $text;
+   }
+
+   // public static function clearcache()
+   // {
+   //    if(Cache::has(Auth::id() . 'new')){
+   //       Cache::forget(Auth::id() . 'new');
+   //    }
+   //    if(Cache::has(Auth::id() . 'old')){
+   //       Cache::forget(Auth::id() . 'old');
+   //    }
+   //    return true;
+   // }
    public static function htmltotext($post= null)
    {
       $post = str_replace("</p>", "\n", $post);
@@ -39,25 +66,7 @@ class Helper
       return $post;
    }
 
-
-   public static function sosadMarkdown($post= null)
-   {
-      $post = Markdown::convertToHtml($post);
-      $post = str_replace("</p>\n", "</p>", $post);
-      $post = str_replace("\n", "</p><p>", $post);
-      return $post;
-   }
-//test bbcodeparser
-   public static function wrapParagraphs($post= null)
-   {
-       while(strip_tags($post,"<br>")!=$post){
-          $post = strip_tags($post,"<br>");
-       }
-       $post = str_replace("\r\n", "\n", $post);
-       $post = str_replace("\r", "\n", $post);
-
-
-       $bbCode = new BBCode();
+   public static function addCustomParserBBCode($bbCode){
        $bbCode->addParser(
             'blockquote',
             '/\[blockquote\](.*?)\[\/blockquote\]/s',
@@ -130,9 +139,23 @@ class Helper
             '<th>$1</th>',
             '$1'
         );
+        return $bbCode;
+   }
 
+   public static function sosadMarkdown($post= null)
+   {
+      $post = Markdown::convertToHtml($post);
+      $post = str_replace("</p>\n", "</p>", $post);
+      $post = str_replace("\n", "</p><p>", $post);
+      return $post;
+   }
+//test bbcodeparser
+   public static function wrapParagraphs($post= null)
+   {
+       $post = self::trimSpaces($post);
+       $bbCode = new BBCode();
+       $bbCode = self::addCustomParserBBCode($bbCode);
        $post = $bbCode->convertToHtml($post);
-
        $post = str_replace("<br>", "</p><br><p>", $post);
        $post = preg_replace('/\n{1,}/', "</p><p>", $post);
        $post = "<p>{$post}</p>";

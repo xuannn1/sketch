@@ -18,12 +18,13 @@ class ChannelsController extends Controller
 
     public function show(Request $request, Channel $channel)
     {
+        $logged = Auth::check()? true:false;
         $threadqueryid = '-tQCh'.$channel->id
-        .(Auth::check()?'Lgd':'nLg')
+        .($logged?'Lgd':'nLg')
         .($request->label? 'L'.$request->label:'')
         .($request->sexual_orientation? 'So'.$request->sexual_orientation:'')
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $threads = Cache::remember($threadqueryid, 2, function () use($request, $channel) {
+        $threads = Cache::remember($threadqueryid, 2, function () use($request, $channel, $logged) {
             if($channel->id==1){
                 $query = $this->join_no_tongren_thread_tables();
             }elseif($channel->id==2){
@@ -36,7 +37,7 @@ class ChannelsController extends Controller
             if($channel->id<=2){
                 if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
             }
-            if(!Auth::check()){$query = $query->where('threads.bianyuan','=',0);}
+            if(!$logged){$query = $query->where('threads.bianyuan','=',0);}
             if($channel->id==1){
                 $query = $this->return_no_tongren_thread_fields($query);
             }elseif($channel->id==2){

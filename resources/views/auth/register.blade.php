@@ -54,7 +54,7 @@
                    </label>
                 </div>
              </div>
-             <button type="submit" class="btn btn-danger sosad-button-auth">注册</button>
+             <button type="submit" class="btn sosad-button-auth">注册</button>
          </form>
        </div>
      </div>

@@ -17,6 +17,7 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\Channel;
+use App\Models\RecommendBook;
 use Carbon\Carbon;
 use Auth;
 use App\Models\User;
@@ -34,18 +35,19 @@ class threadsController extends Controller
     public function index(Request $request)
     {
         $group = 10;
+        $logged = Auth::check()? true:false;
         if(Auth::check()){$group = Auth::user()->group;}
         $threadqueryid = '-tQry-'.$group
-        .(Auth::check()?'Lgd':'nLg')
+        .($logged?'Lgd':'nLg')
         .($request->label? 'L'.$request->label:'')
         .($request->channel? 'Ch'.$request->channel:'')
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $threads = Cache::remember($threadqueryid, 2, function () use($group, $request) {
+        $threads = Cache::remember($threadqueryid, 2, function () use($group, $request, $logged) {
             $query = $this->join_no_book_thread_tables()
             ->where([['threads.book_id','=',0],['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]]);
             if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
             if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
-            if(!Auth::check()){$query = $query->where('threads.bianyuan','=',0);}
+            if(!$logged){$query = $query->where('threads.bianyuan','=',0);}
             $threads = $this->return_no_book_thread_fields($query)
             ->orderby('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'))
@@ -57,6 +59,12 @@ class threadsController extends Controller
 
     public function show(Thread $thread, Request $request)
     {
+        if (request('recommendation')){
+            $recommendation = RecommendBook::find(request('recommendation'));
+            if($recommendation){
+                $recommendation->increment('clicks');
+            }
+        }
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
         ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
         if(!Auth::check()||(Auth::id()!=$thread->user_id)){
@@ -67,7 +75,7 @@ class threadsController extends Controller
         $xianyus = $thread->xianyus;
         $shengfans = $thread->mainpost->shengfans;
         //dd($thread->homework->registered_students());
-        return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans'))->with('defaultchapter',0)->with('chapter_replied',true);
+        return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
     }
 
     public function createThreadForm(Channel $channel)
@@ -103,8 +111,14 @@ class threadsController extends Controller
             return redirect()->route('error', ['error_code' => '403']);
         }
     }
-    public function showpost(Post $post)
+    public function showpost(Post $post, Request $request)
     {
+        if (request('recommendation')){
+            $recommendation = RecommendBook::find(request('recommendation'));
+            if($recommendation){
+                $recommendation->increment('clicks');
+            }
+        }
         $thread = $post->thread;
         $totalposts = Post::allPosts($thread->id,$thread->post_id)
         ->where('created_at', '<', $post->created_at)

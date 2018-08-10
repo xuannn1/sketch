@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" id="footer-container">
    <div class="col-md-10 col-md-offset-1">
      <footer class="footer">
        <span class="slogon">

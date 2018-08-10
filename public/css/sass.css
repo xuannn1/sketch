@@ -8353,7 +8353,7 @@ button.close {
 .status-submit button,
 .sosad-button,
 .sosad-button-auth {
-  background: #222;
+  background: #222 !important;
   color: #f9f9f9;
   font-weight: 400;
   border: none;
@@ -11536,7 +11536,8 @@ button.close {
   clip: auto;
 }
 
-.status-wrapper {
+.status-wrapper,
+.pagination {
   -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
           box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
   -webkit-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -11544,12 +11545,41 @@ button.close {
 }
 
 .status-wrapper:hover,
-.status-wrapper:focus {
+.pagination:hover,
+.status-wrapper:focus,
+.pagination:focus {
   -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
           box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
 }
 
+.recommendation-card .card,
+.recommendation-long .card {
+  -webkit-box-shadow: 0 35px 40px -30px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 35px 40px -30px rgba(0, 0, 0, 0.04);
+}
+
+.recommendation-card .card:hover,
+.recommendation-long .card:hover,
+.recommendation-card .card:focus,
+.recommendation-long .card:focus {
+  -webkit-box-shadow: 0 35px 30px -30px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 35px 30px -30px rgba(0, 0, 0, 0.08);
+}
+
+.loose {
+  letter-spacing: 1px;
+}
+
+.margin5 {
+  margin-bottom: 5px;
+}
+
+.long-foot {
+  padding-bottom: 30px;
+}
+
 html {
+  height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
   /* has to be scroll, not auto */
@@ -11558,12 +11588,15 @@ html {
 
 body {
   padding-top: 60px;
+  padding-bottom: 60px;
   background-color: #f9f9f9;
   font-family: "Noto Sans SC", "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\5FAE\8F6F\96C5\9ED1", Helvetica, Arial, Verdana, sans-serif;
   font-weight: 400;
   color: #555;
   width: 100%;
+  min-height: 100%;
   overflow-y: scroll;
+  position: relative;
 }
 
 a {
@@ -11574,6 +11607,7 @@ a:hover,
 a:focus {
   color: #FF2121;
   text-decoration: none;
+  outline: none;
 }
 
 p a,
@@ -11796,9 +11830,7 @@ header .container {
 
 footer {
   margin: 0px 1rem;
-  margin-top: 45px;
   padding: 10px 0px;
-  border-top: 1px solid #eaeaea;
   color: #555;
   opacity: 0.8;
   font-weight: 300;
@@ -11819,7 +11851,7 @@ footer small {
 footer ul {
   float: right;
   list-style: none;
-  margin-right: 15px;
+  padding-left: 20px;
 }
 
 footer ul li {
@@ -11836,8 +11868,14 @@ footer .slogon {
   font-size: 14px;
 }
 
+#footer-container {
+  height: 48px;
+  position: absolute;
+  bottom: 0px;
+}
+
 .jumbotron {
-  background: #fff;
+  background: none;
   text-align: center;
   margin-bottom: 15px;
   padding-top: 70px;
@@ -11845,6 +11883,13 @@ footer .slogon {
   padding-left: 15% !important;
   padding-right: 15% !important;
   border: none;
+}
+
+.jumbotron .container-fluid {
+  background: none;
+  max-height: 100vh;
+  -webkit-transition: max-height 0.3s;
+  transition: max-height 0.3s;
 }
 
 #daily-quote {
@@ -12080,7 +12125,7 @@ h1,
 h2,
 .h2 {
   font-weight: 300;
-  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 h4,
@@ -12134,6 +12179,57 @@ code {
   border-color: #FF2121;
 }
 
+#recommendation {
+  background: none;
+  padding-bottom: 1.5em;
+}
+
+#recommendation .panel-heading > span {
+  font-weight: 600;
+  padding-bottom: 6px;
+  border-bottom: solid 2.5px #555;
+}
+
+#recommendation a {
+  display: inline-block;
+}
+
+#recommendation a:hover,
+#recommendation a:focus {
+  color: inherit;
+}
+
+.recommendation-card {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  display: -webkit-flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row nowrap;
+          flex-flow: row nowrap;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.recommendation-card .card {
+  display: inline-block;
+  background-color: #fff;
+  padding: 1.2em;
+  margin: 10px 10px 0px 0px;
+  min-width: 12em;
+}
+
+.recommendation-long .card {
+  display: inline-block;
+  background-color: #fff;
+  padding: 1.5em;
+  width: 100%;
+}
+
 .static-article {
   padding: 1em 0.5em;
   line-height: 2;
@@ -12174,7 +12270,7 @@ hr {
 }
 
 .thread a {
-  display: block;
+  display: inline-block;
 }
 
 .thread-info {
@@ -12200,8 +12296,8 @@ hr {
   display: -webkit-flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-flow: column nowrap;
-          flex-flow: column nowrap;
+      -ms-flex-flow: column wrap;
+          flex-flow: column wrap;
   -webkit-box-flex: 1;
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
@@ -12210,6 +12306,8 @@ hr {
       -ms-flex-align: end;
           align-items: flex-end;
   -webkit-align-items: flex-end;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
 }
 
 .thread-meta a {
@@ -12400,6 +12498,7 @@ hr {
   padding: 3px 7px;
   margin-bottom: 2px;
   margin-right: 2px;
+  font-weight: 500;
 }
 
 .sosad-button-tag-left {
@@ -12448,20 +12547,16 @@ hr {
 }
 
 .badge {
-  background: none;
+  background: #f9f9f9;
   color: #FF2121;
-  border: 1px solid #FF2121;
-  border-radius: 1em;
-  margin-bottom: 3px;
-  padding: 3px;
 }
 
 .panel-default > .panel-heading .badge {
-  background: none;
+  background: #efefef;
   border: none;
   font-weight: 600;
   color: #FF2121;
-  padding: 0;
+  padding: 2px 3px;
 }
 
 .button-disabled {
@@ -12554,7 +12649,7 @@ hr {
 }
 
 .thread-title {
-  font-weight: 300;
+  font-weight: 700;
   line-height: 2;
 }
 
@@ -12587,11 +12682,11 @@ hr {
   margin-bottom: 10px;
 }
 
-.nav-pills > li > a:hover,
-.nav-pills > li > a:focus,
-.nav-pills > li.active > a,
-.nav-pills > li.active > a:hover,
-.nav-pills > li.active > a:focus {
+.nav-pills a:hover,
+.nav-pills a:focus,
+.nav-pills a.active,
+.nav-pills a.active:hover,
+.nav-pills a.active:focus {
   background: none;
   border: none;
   border-radius: 0;
@@ -12614,28 +12709,28 @@ hr {
   border-bottom: none;
 }
 
-.nav-pills > li > a {
+.nav-pills a {
   background: none;
   line-height: 1.2em;
   border: none;
   padding: 5px 0;
 }
 
-.nav-pills > li > a:hover,
-.nav-pills > li > a:focus {
+.nav-pills a:hover,
+.nav-pills a:focus {
   background: #f9f9f9;
 }
 
-.nav-pills > li.active > a {
+.nav-pills a.active {
   border-bottom: 2px solid #FF2121;
 }
 
-.nav-pills > li.active > a:hover {
+.nav-pills a.active:hover {
   background: #f9f9f9;
   border-bottom: 2px solid #FF2121;
 }
 
-.nav-pills > li.active > a:focus {
+.nav-pills a.active:focus {
   background: none;
   border-bottom: 2px solid #FF2121;
 }
@@ -12645,6 +12740,8 @@ hr {
   padding-left: 1em;
   letter-spacing: 1px;
   font-weight: 500;
+  white-space: nowrap;
+  overflow-x: auto;
 }
 
 #myBtn {
@@ -12654,6 +12751,57 @@ hr {
   right: 40px;
   z-index: 99;
   cursor: pointer;
+}
+
+.carousel-inner {
+  background: #fff;
+}
+
+.carousel-control.right {
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0.0001)), to(rgba(255, 255, 255, 0.5)));
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.0001) 0%, rgba(255, 255, 255, 0.5) 100%);
+}
+
+.carousel-control.left {
+  background-image: -webkit-gradient(linear, right top, left top, from(rgba(255, 255, 255, 0.0001)), to(rgba(255, 255, 255, 0.5)));
+  background-image: linear-gradient(to left, rgba(255, 255, 255, 0.0001) 0%, rgba(255, 255, 255, 0.5) 100%);
+}
+
+.carousel-control .glyphicon {
+  color: #000;
+  text-shadow: none;
+  font-weight: 300;
+  font-size: 16px;
+}
+
+#book-selector {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  display: -webkit-flex;
+  margin-bottom: 10px;
+  width: 100%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row nowrap;
+          flex-flow: row nowrap;
+  -ms-flex-line-pack: stretch;
+      align-content: stretch;
+}
+
+#book-selector .button-group {
+  margin: 0;
+  padding: 2px;
+}
+
+.sosad-button-dropdown {
+  height: 2.5em;
+  border: none;
+  background-color: #f3f3f3;
 }
 
 @media (max-width: 480px) {
@@ -12762,6 +12910,14 @@ hr {
         -ms-flex: auto;
             flex: auto;
     -webkit-flex: auto;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+    line-height: 1.8;
+  }
+
+  .thread-meta span {
+    margin-right: 5px;
   }
 
   .status-editor textarea:focus {

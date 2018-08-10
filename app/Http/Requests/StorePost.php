@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Helpers\Helper;
 use App\Models\Chapter;
 use App\Models\Thread;
 use App\Models\Post;
@@ -36,6 +37,9 @@ class StorePost extends FormRequest
 
     public function generatePost(Thread $thread){
         $data = $this->only('body');
+        $data['body'] = Helper::trimSpaces($data['body']);
+        $data['trim_body']=Helper::trimtext($data['body'], 50);
+
         $data['user_ip'] = $this->getClientIp();
         if ($this->anonymous){
             $data['anonymous']=1;
@@ -46,6 +50,7 @@ class StorePost extends FormRequest
         }
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;
+        $data['as_longcomment']=$this->as_longcomment ? true:false;
 
         $data['chapter_id'] = (int)$this->default_chapter_id;
         if ($data['chapter_id']!=0){
@@ -89,9 +94,13 @@ class StorePost extends FormRequest
     public function updatePost(Post $post)
     {
         $data = $this->only('body');
+        $data['body'] = Helper::trimSpaces($data['body']);
+        $data['trim_body']=Helper::trimtext($data['body'], 50);
+        
         $data['anonymous']=$this->anonymous ? 1:0;
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;
+        $data['as_longcomment']=$this->as_longcomment ? true:false;
         auth()->user()->update(['indentation'=>$data['indentation']]);
         $data['edited_at']=Carbon::now();
         $post->update($data);

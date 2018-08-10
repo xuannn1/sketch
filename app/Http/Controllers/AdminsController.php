@@ -10,9 +10,12 @@ use App\Models\Channel;
 use App\Models\Label;
 use App\Models\Tag;
 use App\Models\Thread;
+use App\Models\Chapter;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\PostComment;
+use App\Models\LongComment;
+use App\Models\PublicNotice;
 use App\Models\Administration;
 use App\Models\Book;
 use App\Models\Message;
@@ -36,12 +39,69 @@ class AdminsController extends Controller
         return view('admin.quotesreview', compact('quotes'));
     }
 
-    public function toggle_review(Quote $quote)
+    public function longcommentsreview()
     {
-        $quote->approved = !$quote->approved;
-        $quote->reviewed = true;
-        $quote->update();
+        $posts = DB::table('posts')
+        ->join('users','users.id','=','posts.user_id')
+        ->join('threads','threads.id','=','posts.thread_id')
+        ->join('channels', 'threads.channel_id','=','channels.id')
+        ->join('long_comments','posts.id','=','long_comments.post_id')
+        ->where([['posts.deleted_at','=',null],['channels.channel_state','<=',1],['threads.public','=',1],['posts.as_longcomment','=',1]])
+        ->select('posts.*','threads.title as thread_title', 'users.name','long_comments.reviewed','long_comments.approved')
+        ->orderBy('posts.created_at', 'desc')
+        ->paginate(config('constants.index_per_page'));
+        return view('admin.longcommentsreview', compact('posts'))->with('as_longcomments',1);
+    }
+
+    public function toggle_review_quote(Quote $quote, $quote_method)
+    {
+        switch ($quote_method):
+            case "approve"://通过题头
+            if(!$quote->approved){
+                $quote->approved = 1;
+                $quote->reviewed = 1;
+                $quote->save();
+            }
+            break;
+            case "disapprove"://不通过题头(已经通过了的，不允许通过；或没有评价过的，不允许通过)
+            if((!$quote->reviewed)||($quote->approved)){
+                $quote->approved = 0;
+                $quote->reviewed = 1;
+                $quote->save();
+            }
+            break;
+            default:
+            echo "应该奖励什么呢？一个bug呀……";
+        endswitch;
         return $quote;
+    }
+
+    public function toggle_review_longcomment(Post $post, $longcomment_method)
+    {
+        $longcomment = LongComment::where('post_id',$post->id)->first();
+        if($longcomment){
+            switch ($longcomment_method):
+                case "approve"://通过长评
+                if(!$longcomment->approved){
+                    $longcomment->approved = 1;
+                    $longcomment->reviewed = 1;
+                    $longcomment->save();
+                }
+                break;
+                case "disapprove"://不通过长评(已经通过了的，不允许通过；或没有评价过的，不允许通过)
+                if((!$longcomment->reviewed)||($longcomment->approved)){
+                    $longcomment->approved = 0;
+                    $longcomment->reviewed = 1;
+                    $longcomment->save();
+                }
+                break;
+
+                default:
+                echo "应该奖励什么呢？一个bug呀……";
+            endswitch;
+            return 'works';
+        }
+        return 'notwork';
     }
 
     public function threadmanagement(Thread $thread, Request $request)
@@ -141,20 +201,20 @@ class AdminsController extends Controller
             $thread->save();
             return redirect()->route('thread.show', $thread)->with("success","已经转移操作");
         }
-        if ($var=="5"){//打边缘
+        if ($var=="5"){//打边缘限制
             $thread->bianyuan = !$thread->bianyuan;
             $thread->save();
             if($thread->bianyuan){
                 Administration::create([
                     'user_id' => Auth::id(),
-                    'operation' => '15',//15:转为边缘
+                    'operation' => '15',//15:转为边缘限制
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
                 ]);
             }else{
                 Administration::create([
                     'user_id' => Auth::id(),
-                    'operation' => '16',//16:转为非边缘
+                    'operation' => '16',//16:转为非边缘限制
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
                 ]);
@@ -178,7 +238,7 @@ class AdminsController extends Controller
                 'reason' => request('reason'),
             ]);
             if($post->chapter_id !=0){
-                App\Models\Chapter::destroy($post->chapter_id);
+                Chapter::destroy($post->chapter_id);
             }
             $post->delete();
             return redirect()->back()->with("success","已经成功处理该贴");
@@ -270,32 +330,22 @@ class AdminsController extends Controller
         return redirect()->back()->with("warning","什么都没做");
     }
 
-    public function sendpublicmessageform()
+    public function sendpublicnoticeform()
     {
-        return view('admin.send_publicmessage');
+        return view('admin.send_publicnotice');
     }
-    public function sendpublicmessage(Request $request)
+    public function sendpublicnotice(Request $request)
     {
-        //公共通知效率太低，取消
-        // $this->validate($request, [
-        //     'body' => 'required|string|max:20000|min:10',
-        //  ]);
-        //  $receivers = User::all();
-        //  $message_body = DB::table('message_bodies')->insertGetId([
-        //       'content' => request('body'),
-        //       'group_messaging' => 1,
-        //    ]);
-        //  foreach($receivers as $receiver){
-        //    Message::create([
-        //       'message_body' => $message_body,
-        //       'poster_id' => Auth::id(),
-        //       'receiver_id' => $receiver->id,
-        //       'private' => false,
-        //    ]);
-        //    $receiver->increment('message_reminders');
-        //    $receiver->increment('unread_reminders');
-        //  }
-        //  return redirect()->back()->with('success','您已成功发布公共通知');
+        $this->validate($request, [
+            'body' => 'required|string|max:20000|min:10',
+         ]);
+         $public_notice = PublicNotice::create([
+             'notice_body'=>$request->body,
+             'user_id'=>Auth::id(),
+         ]);
+         DB::table('users')->increment('unread_reminders');
+         DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
+         return redirect()->back()->with('success','您已成功发布公共通知');
 
     }
 

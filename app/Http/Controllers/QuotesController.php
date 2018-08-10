@@ -19,13 +19,14 @@ class QuotesController extends Controller
     {
         $data = [];
         $this->validate($request, [
-            'quote' => 'required|string|max:120|unique:quotes',
+            'quote' => 'required|string|max:80|unique:quotes',
         ]);
         $data['quote'] = request('quote');
         $data['user_id'] = auth()->id();
         $data['notsad'] = request('notsad')? 1:0;
         if((Auth::user()->admin)){
             $data['approved']=true;
+            $data['reviewed']=true;
         }
         if (request('anonymous')){
             $this->validate($request, [

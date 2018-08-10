@@ -23,7 +23,7 @@
                 <label for="checkbox-input" class="input-helper input-helper--checkbox">记住我</label>
                 <p class="small" style="display:inline;float:right"><a href="{{ route('password.request') }}" style="opacity:0.6;border:none">忘记密码/重新激活</a></p>
               </div>
-              <button type="submit" class="btn btn-danger sosad-button-auth">登录</button>
+              <button type="submit" class="btn sosad-button-auth">登录</button>
             </form>
             <hr>
             <p>还没账号？ <a href="{{ route('register') }}">现在注册</a>！</p>

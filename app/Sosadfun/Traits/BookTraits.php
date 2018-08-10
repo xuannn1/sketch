@@ -22,6 +22,18 @@ trait BookTraits{
         ->leftjoin('tags as tongren_cp_tags','tongren_cp_tags.id','=', 'tongrens.tongren_cp_tag_id');
         return $query;
     }
+    public function join_complex_book_tables(){
+        $query = DB::table('threads')
+        ->join('books', 'threads.book_id', '=', 'books.id')
+        ->join('users', 'threads.user_id', '=', 'users.id')
+        ->join('labels', 'threads.label_id', '=', 'labels.id')
+        ->leftjoin('chapters','books.last_chapter_id','=', 'chapters.id')
+        ->leftjoin('tongrens','books.id','=', 'tongrens.book_id')
+        ->leftjoin('tagging_threads','tagging_threads.thread_id','=', 'threads.id')
+        ->leftjoin('tags as tongren_yuanzhu_tags','tongren_yuanzhu_tags.id','=', 'tongrens.tongren_yuanzhu_tag_id')
+        ->leftjoin('tags as tongren_cp_tags','tongren_cp_tags.id','=', 'tongrens.tongren_cp_tag_id');
+        return $query;
+    }
 
     public function return_book_fields($query){
         $query->select('books.thread_id','books.book_status', 'books.book_length', 'books.lastaddedchapter_at', 'books.total_char', 'books.last_chapter_id', 'books.sexual_orientation',
@@ -33,43 +45,64 @@ trait BookTraits{
     }
 
     public function all_book_tags(){
-        $tags=[];
+
         $remember = 30;
-        $tags['labels_yuanchuang']= Cache::remember('-labels_yuanchuang', $remember, function () {
-            $labels_yuanchuang = Label::where('channel_id',1)
+        $tags =  Cache::remember('tags', $remember, function () {
+            $tags=[];
+            $tags['labels_yuanchuang'] = $labels_yuanchuang = Label::where('channel_id',1)
             ->get();
-            return $labels_yuanchuang;
+            $tags['labels_tongren'] = Label::where('channel_id',2)
+            ->get();
+            $tags['tags'] = Tag::whereIn('tag_group',[0,5,25])
+            ->orderBy('tag_info','asc')
+            ->orderBy('books','desc')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
+            ->get();
+            $tags['tags_tongren_yuanzhu']=Tag::where('tag_group',10)
+            ->orderBy('books','desc')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
+            ->get();
+            return $tags;
         });
-        $tags['labels_tongren']=Cache::remember('-labels_tongren', $remember, function () {
-            $labels_tongren = Label::where('channel_id',2)
+        return $tags;
+
+    }
+    public function extra_book_tags(){
+
+        $remember = 30;
+        $tags =  Cache::remember('ext_tags', $remember, function () {
+            $tags=[];
+            $tags['labels_yuanchuang'] = $labels_yuanchuang = Label::where('channel_id',1)
             ->get();
-            return $labels_tongren;
-        });
-        $tags['tags_feibianyuan']=Cache::remember('-tags-feibianyuan', $remember, function () {
-            $tags_feibianyuan = Tag::where('tag_group',0)
+            $tags['labels_tongren'] = Label::where('channel_id',2)
             ->get();
-            return $tags_feibianyuan;
-        });
-        $tags['tags_bianyuan']=Cache::remember('-tags-bianyuan', $remember, function () {
-            $tags_bianyuan = Tag::where('tag_group',5)
+            $tags['tags_feibianyuan'] = Tag::where('tag_group',0)
+            ->orderBy('tag_info','asc')
+            ->orderBy('books','desc')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
             ->get();
-            return $tags_bianyuan;
-        });
-        $tags['tags_tongren']=Cache::remember('-tags-tongren', $remember, function () {
-            $tags_tongren = Tag::where('tag_group',25)
+            $tags['tags_bianyuan'] = Tag::where('tag_group',5)
+            ->orderBy('tag_info','asc')
+            ->orderBy('books','desc')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
             ->get();
-            return $tags_tongren;
-        });
-        $tags['tags_tongren_yuanzhu']=Cache::remember('-tags-tongren-yuanzhu', $remember, function () {
-            $tags_tongren_yuanzhu = Tag::where('tag_group',10)
+            $tags['tags_tongren'] = Tag::where('tag_group',25)
+            ->orderBy('tag_info','asc')
+            ->orderBy('books','desc')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
             ->get();
-            return $tags_tongren_yuanzhu;
-        });
-        $tags['tags_tongren_cp']=Cache::remember('-tags-tongren-cp', $remember, function () {
-            $tags_tongren_cp = Tag::where('tag_group',20)
+            $tags['tags_tongren_yuanzhu']=Tag::where('tag_group',10)
+            ->orderBy('books','desc')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
             ->get();
-            return $tags_tongren_cp;
+            $tags['tags_tongren_cp']= Tag::where('tag_group',20)
+            ->orderBy('books','desc')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
+            ->get();
+
+            return $tags;
         });
         return $tags;
     }
+
 }

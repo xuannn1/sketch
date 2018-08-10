@@ -26,7 +26,7 @@ class BooksController extends Controller
 
     public function create()
     {
-        $all_book_tags = $this->all_book_tags();
+        $all_book_tags = $this->extra_book_tags();
         return view('books.create',compact('all_book_tags'));
     }
 
@@ -38,12 +38,11 @@ class BooksController extends Controller
     }
     public function edit(Book $book)
     {
-        $all_book_tags = $this->all_book_tags();
         if ((Auth::id() == $book->thread->user_id)&&(!$book->thread->locked)){
             $thread = $book->thread->load('mainpost');
             $book->load('tongren');
             $tags = $thread->tags->pluck('id')->toArray();
-            $all_book_tags = $this->all_book_tags();
+            $all_book_tags = $this->extra_book_tags();
             return view('books.edit',compact('book', 'thread','tags', 'all_book_tags'));
         }else{
             return redirect()->route('error', ['error_code' => '405']);
@@ -74,7 +73,7 @@ class BooksController extends Controller
             ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
             $xianyus = $thread->xianyus;
             $shengfans = $thread->mainpost->shengfans;
-            return view('books.show', compact('book','thread', 'posts', 'xianyus', 'shengfans'))->with('defaultchapter',0)->with('chapter_replied',true);
+            return view('books.show', compact('book','thread', 'posts', 'xianyus', 'shengfans'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
@@ -86,7 +85,8 @@ class BooksController extends Controller
     public function index(Request $request)
     {
         $all_book_tags = $this->all_book_tags();
-        $bookqueryid = '-bQ-'.(Auth::check()?'Lgd':'nLg')//logged or not
+        $logged = Auth::check()? true:false;
+        $bookqueryid = '-bQ-'.($logged? 'Lgd':'nLg')//logged or not
         .($request->label? 'L'.$request->label:'')
         .($request->channel? 'Ch'.$request->channel:'')
         .($request->book_length? 'Bl'.$request->book_length:'')
@@ -94,9 +94,9 @@ class BooksController extends Controller
         .($request->sexual_orientation? 'So'.$request->sexual_orientation:'')
         .($request->rating? 'R'.$request->rating:'nR')
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $books = Cache::remember($bookqueryid, 2, function () use($request) {
+        $books = Cache::remember($bookqueryid, 2, function () use($request, $logged) {
             $query = $this->join_book_tables();
-            if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
+            if(!$logged){$query = $query->where('bianyuan','=',0);}
             if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
             if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
             if($request->book_length){$query = $query->where('books.book_length','=',$request->book_length);}
@@ -123,10 +123,15 @@ class BooksController extends Controller
         foreach($bookquery as $info){
             array_push($bookinfo,array_map('intval',explode('_',$info)));
         }
-        $books = Cache::remember('-bQry'.$bookquery_original.(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($bookinfo, $request, $book_info) {
-            $query = $this->join_book_tables();
+        $logged = Auth::check()? true:false;
+        $books = Cache::remember('-bQry-'.($logged? 'Logged':'nLog').$bookquery_original.(is_numeric($request->page)? 'P'.$request->page:'P1'), 10, function () use($bookinfo, $request, $book_info, $logged) {
+            if((count($bookinfo[5])>0)&&($bookinfo[5][0]>0)){
+                $query = $this->join_complex_book_tables();
+            }else{
+                $query = $this->join_book_tables();
+            }
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-            if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
+            if(!$logged){$query = $query->where('bianyuan','=',0);}
             if(count($bookinfo[0])==1){
                 $query->where('threads.channel_id','=', $bookinfo[0][0]);
             }
@@ -142,6 +147,12 @@ class BooksController extends Controller
             if(count($bookinfo[4])<count($book_info['rating_info'])){
                 $query->where('threads.bianyuan','=',$bookinfo[4][0]-1);
             }
+            if((count($bookinfo[5])>0)&&($bookinfo[5][0]>0)){
+                $query->whereIn('tagging_threads.tag_id',$bookinfo[5]);
+            }
+            if((count($bookinfo[6])>0)&&($bookinfo[6][0]>0)){
+                $query->whereIn('tongrens.tongren_yuanzhu_tag_id',$bookinfo[6]);
+            }
             $books = $this->return_book_fields($query)
             ->distinct()
             ->orderby('books.lastaddedchapter_at', 'desc')
@@ -153,8 +164,9 @@ class BooksController extends Controller
 
     public function booktag(Tag $booktag, Request $request){
         $all_book_tags = $this->all_book_tags();
+        $logged = Auth::check()? true:false;
 
-        $books = Cache::remember('-tag'.$booktag->id.(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($request, $booktag) {
+        $books = Cache::remember('-tag-'.($logged? 'Lgd':'nLg').$booktag->id.(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($request, $booktag, $logged) {
             $query = $this->join_book_tables();
             if($booktag->tag_group==10){
                 $query->where('tongren_yuanzhu_tags.id','=',$booktag->id);
@@ -165,7 +177,7 @@ class BooksController extends Controller
                 $query->where('tagging_threads.tag_id','=',$booktag->id);//for regular tag
             }
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-            if(!Auth::check()){$query = $query->where('bianyuan','=',0);}
+            if(!$logged){$query = $query->where('bianyuan','=',0);}
             $books = $this->return_book_fields($query)
             ->orderby('books.lastaddedchapter_at', 'desc')
             ->paginate(config('constants.index_per_page'));
@@ -223,6 +235,28 @@ class BooksController extends Controller
         $bookquery.='-';
         if(request('rating')){
             foreach(request('rating') as $i=>$query){
+                if($i>0){
+                    $bookquery.='_';
+                }
+                $bookquery.=$query;
+            }
+        }else{
+            $bookquery.=0;
+        }
+        $bookquery.='-';
+        if(request('tag')){
+            foreach(request('tag') as $i=>$query){
+                if($i>0){
+                    $bookquery.='_';
+                }
+                $bookquery.=$query;
+            }
+        }else{
+            $bookquery.=0;
+        }
+        $bookquery.='-';
+        if(request('tags_tongren_yuanzhu')){
+            foreach(request('tags_tongren_yuanzhu') as $i=>$query){
                 if($i>0){
                     $bookquery.='_';
                 }

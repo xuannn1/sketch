@@ -44830,7 +44830,7 @@ function vote_post(post_id, method){ //method = upvote,downvote,fold,funny
    });
 };
 
-function toggle_review_quote(quote_id){
+function toggle_review_quote(quote_id, method){
    $.ajaxSetup({
       headers: {
            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -44838,18 +44838,45 @@ function toggle_review_quote(quote_id){
    });
    $.ajax({
       type: 'GET',
-      url: web_base_url + '/quotes/' + quote_id + '/' + 'toggle_review',
+      url: web_base_url + '/quotes/' + quote_id + '/toggle_review/' + method,
       data: {
           },
       success: function(data) {
          if (data != "notwork"){
              console.log(data.approved);
-             if (data.approved){
-                $( '.togglereviewquote'+quote_id ).html("对外显示").addClass('btn-success').removeClass('btn-danger');
-             }else{
-                $( '.togglereviewquote'+quote_id ).html("不显示").addClass('btn-danger').removeClass('btn-success');
-             }
-             $('.not_reviewed_'+quote_id).addClass('hidden');
+             $( '.quotebutton'+quote_id ).addClass('hidden');
+             $( '.quotereviewstatus'+quote_id ).html(data.approved);
+        }else{
+            console.log('having error approving/disaproving quote');
+        }
+      }
+   });
+};
+
+function toggle_re_review_buttons(item_id,approve_status){//approve_status = 0:not approved; 1:approved
+    if (approve_status === 1){
+        $( '.disapprovebutton' +  item_id).removeClass('hidden');
+    }else{
+        $( '.approvebutton' +  item_id).removeClass('hidden');
+    }
+    $( '.togglebutton' +  item_id).addClass('hidden');
+}
+
+function toggle_review_longcomment(post_id, method){ //method = approve; disapprove
+   $.ajaxSetup({
+      headers: {
+           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+   $.ajax({
+      type: 'GET',
+      url: web_base_url + '/posts/' + post_id + '/toggle_review/' + method,
+      data: {
+          },
+      success: function(data) {
+         if (data != "notwork"){
+             console.log(data);
+             $( '.longcommentbutton'+post_id ).addClass('hidden');
         }else{
             console.log('having error approving/disaproving quote');
         }
@@ -45422,4 +45449,83 @@ function addoption(thread_id){//让投票区增加分支选择项
 
 function toggle_tags(){
     $('.extra-tag').toggleClass('hidden');
+}
+
+// $(function() {
+//
+//     var $quote = $("#daily-quote");
+//     console.log($quote);
+//     var $numWords = $quote.text().length;
+//     console.log($numWords);
+//
+//     if (($numWords >= 1) && ($numWords < 10)) {
+//         $quote.css("font-size", "36px");
+//     }
+//     else if (($numWords >= 10) && ($numWords < 20)) {
+//         $quote.css("font-size", "32px");
+//     }
+//     else if (($numWords >= 20) && ($numWords < 30)) {
+//         $quote.css("font-size", "28px");
+//     }
+//     else if (($numWords >= 30) && ($numWords < 40)) {
+//         $quote.css("font-size", "24px");
+//     }
+//     else {
+//         $quote.css("font-size", "20px");
+//     }
+//
+// });
+
+$( ".daily-quote" ).each(function( quote ) {
+
+  var $quote = $( this );
+  var $quotestring = $quote.text();
+  var $numWords = $quotestring.length;
+  var $len = 0;
+  for (var i=0; i<$numWords; i++) {
+    if ($quotestring.charCodeAt(i)>127 || $quotestring.charCodeAt(i)==94) {
+       $len += 2;
+     } else {
+       $len ++;
+     }
+   }
+  //console.log(quote + ": " + $quotestring + ": " +$len);
+
+  if (($len >= 1) && ($len < 20)) {
+      $quote.css("font-size", "3.5em");
+  }
+  else if (($len >= 20) && ($len < 40)) {//ok
+      $quote.css("font-size", "3em");
+  }
+  else if (($len >= 40) && ($len < 60)) {
+      $quote.css("font-size", "2.4em");
+  }
+  else if (($len >= 60) && ($len < 90)) {
+      $quote.css("font-size", "2.0em");
+  }
+  else if (($len >= 90) && ($len < 120)) {
+      $quote.css("font-size", "1.8em");
+  }
+  else if (($len >= 120) && ($len < 160)) {
+      $quote.css("font-size", "1.5em");
+  }
+  else {
+      $quote.css("font-size", "1em");
+  }
+});
+
+function show_book_selector(){
+    $('.detailed-selector').removeClass('hidden');
+    $('.detailed-selector input').attr('disabled', false);
+    $('.brief-selector').addClass('hidden');
+    $('.brief-selector input').attr('disabled', true);
+}
+function fold_book_selector(){
+    $('.brief-selector').removeClass('hidden');
+    $('.brief-selector input').attr('disabled', false);
+    $('.detailed-selector').addClass('hidden');
+    $('.detailed-selector input').attr('disabled', true);
+}
+function toggle_tags_tongren_yuanzhu(){
+    $('.tongren_yuanzhu').toggleClass('hidden');
 }

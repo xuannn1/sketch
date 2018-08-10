@@ -112,7 +112,9 @@
                         </div>
 
                         <div class="checkbox">
-                            <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majia').style.display = 'block'" {{ old('anonymous')? 'checked':'' }}>马甲？</label>
+                            <!-- <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majia').style.display = 'block'" {{ old('anonymous')? 'checked':'' }}>马甲？</label> -->
+                            <input type="checkbox" name="anonymous" id="checkbox-majia" onclick="document.getElementById('majia').style.display = 'block'" {{ old('anonymous')? 'checked':'' }}>
+                            <label for="checkbox-majia" class="input-helper input-helper--checkbox">马甲？</label>
                             <div class="form-group text-right" id="majia" style="display:{{ old('anonymous')? 'block':'none' }}">
                                 <input type="text" name="majia" class="form-control" value="{{Auth::user()->majia ?:'匿名咸鱼'}}">
                                 <label for="majia"><small>(请输入不超过10字的马甲。马甲仅勾选“匿名”时有效，可以更改披马与否，但马甲名称不能再修改)</small></label>
@@ -128,20 +130,27 @@
                                 <h4>8. 请从以下标签中选择不多于三个标签：</h4>
                                 <div id="feibianyuantags">
                                     @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
-                                    <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
+                                    <!-- <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }} -->
+                                    <input type="checkbox" class="tags" id="checkbox-fby-{{ $tag->id }}" value="{{ $tag->id }}">
+                                    <label for="checkbox-fby-{{ $tag->id }}" class="input-helper input-helper--checkbox">{{ $tag->tagname }}</label>
                                     @endforeach
                                 </div>
                                 <div id="bianyuantags" style="display: {{ old('bianyuan')=='1'? 'block':'none'}}">
                                     <hr>
                                     @foreach ($all_book_tags['tags_bianyuan'] as $tag)
-                                    <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
+                                    <!-- <input type="checkbox" class="tags" name="tags[]" id="checkbox-input" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}> -->
+                                    <input type="checkbox" class="tags" id="checkbox-by-{{ $tag->id }}" value="{{ $tag->id }}">
+                                    <label for="checkbox-by-{{ $tag->id }}" class="input-helper input-helper--checkbox">{{ $tag->tagname }}</label>
+                                    <!-- <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}  -->
                                     @endforeach
                                 </div>
 
                                 <div id="tongrentags" style="display: {{ old('channel_id')=='2'? 'block':'none'}}">
                                     <hr>
                                     @foreach ($all_book_tags['tags_tongren'] as $tag)
-                                    <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}
+                                    <!-- <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }} -->
+                                    <input type="checkbox" class="tags" id="checkbox-tr-{{ $tag->id }}" value="{{ $tag->id }}">
+                                    <label for="checkbox-tr-{{ $tag->id }}" class="input-helper input-helper--checkbox">{{ $tag->tagname }}</label>
                                     @endforeach
                                 </div>
                             </div>
@@ -158,18 +167,28 @@
 
                             <div class="checkbox">
                                 <!-- <label><input type="checkbox" name="markdown" >使用Markdown语法？</label>&nbsp; -->
-                                <label><input type="checkbox" name="indentation" checked>段首缩进（自动空两格）？</label>&nbsp;
+                                <!-- <label><input type="checkbox" name="indentation" checked>段首缩进（自动空两格）？</label> -->
+                                <input type="checkbox" id="checkbox-indentation" name="indentation" checked>
+                                <label for="checkbox-indentation" class="input-helper input-helper--checkbox">段首缩进（自动空两格）？</label>&nbsp;
                                 <br>
-                                <label><input type="checkbox" name="public" checked>是否公开可见？</label>&nbsp;
-                                <label><input type="checkbox" name="noreply">是否禁止回帖？</label>&nbsp;
+                                <!-- <label><input type="checkbox" name="public" checked>是否公开可见？</label> -->
+                                <input type="checkbox" id="checkbox-public" name="public" checked>
+                                <label for="checkbox-public" class="input-helper input-helper--checkbox">是否公开可见？</label>&nbsp;
+                                <!-- <label><input type="checkbox" name="noreply">是否禁止回帖？</label>&nbsp; -->
+                                <input type="checkbox" id="checkbox-noreply" name="noreply">
+                                <label for="checkbox-noreply" class="input-helper input-helper--checkbox">是否禁止回帖？</label>&nbsp;
                                 <br>
-                                <label><input type="checkbox" name="download_as_thread" checked>开放书评下载？</label>&nbsp;
-                                <label><input type="checkbox" name="download_as_book" >开放书籍下载？</label>
+                                <!-- <label><input type="checkbox" name="download_as_thread" checked>开放书评下载？</label>&nbsp; -->
+                                <input type="checkbox" id="checkbox-download-as-thread" name="download-as-thread" checked>
+                                <label for="checkbox-download-as-thread" class="input-helper input-helper--checkbox">开放书评下载？</label>&nbsp;
+                                <!-- <label><input type="checkbox" name="download-as-book" >开放书籍下载？</label> -->
+                                <input type="checkbox" id="checkbox-download-as-book" name="download-as-book">
+                                <label for="checkbox-download-as-book" class="input-helper input-helper--checkbox">开放书籍下载？</label>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-danger sosad-button">发布</button>
+                    <button type="submit" class="btn btn-danger sosad-button-thread" style="width: 100%">发布</button>
                 </form>
             </div>
         </div>

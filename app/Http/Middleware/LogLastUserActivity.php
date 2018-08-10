@@ -4,8 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Auth;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
+use App\Models\LoggingStatus;
 
 class LogLastUserActivity
 {
@@ -19,8 +18,12 @@ class LogLastUserActivity
     public function handle($request, Closure $next)
     {
         if(Auth::check()) {
-            $expiresAt = Carbon::now()->addMinutes(30);
-            Cache::put('-usr-on-' . Auth::user()->id, true, $expiresAt);
+            $record = LoggingStatus::updateOrCreate([
+                'user_id' => Auth::id(),
+            ],[
+                'logged_on' => time(),
+            ]);
+            //Cache::put('-usr-on-' . Auth::user()->id, true, $expiresAt);
             Auth::user()->increment('daily_clicks');
         }
         return $next($request);

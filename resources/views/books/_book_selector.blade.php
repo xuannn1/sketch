@@ -1,16 +1,16 @@
 
-<div class="dropdown">
+<div class="dropdown" id="book-selector">
    <form method="POST" action="{{ route('books.filter') }}"  name="book_filter">
          {{ csrf_field() }}
          <span class="button-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">原创性<span class="caret"></span></button>
+            <button type="button" class="dropdown-toggle dropdown-menu-narrow sosad-button-dropdown" data-toggle="dropdown">原创性<span class="caret"></span></button>
             <ul class="dropdown-menu">
                <li><input type="checkbox" name="original[]" value="1"checked />&nbsp;原创</li>
                <li><input type="checkbox" name="original[]" value="2"checked />&nbsp;同人</li>
             </ul>
          </span>
          <span class="button-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">篇幅<span class="caret"></span></button>
+            <button type="button" class="dropdown-toggle dropdown-menu-narrow sosad-button-dropdown" data-toggle="dropdown">篇幅<span class="caret"></span></button>
             <ul class="dropdown-menu">
                <li><input type="checkbox" name="length[]" value="1"checked />&nbsp;短篇</li>
                <li><input type="checkbox" name="length[]" value="2"checked />&nbsp;中篇</li>
@@ -18,7 +18,7 @@
             </ul>
          </span>
          <span class="button-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">进度<span class="caret"></span></button>
+            <button type="button" class="dropdown-toggle dropdown-menu-narrow sosad-button-dropdown" data-toggle="dropdown">进度<span class="caret"></span></button>
             <ul class="dropdown-menu">
                <li><input type="checkbox" name="status[]" value="1"checked />&nbsp;连载</li>
                <li><input type="checkbox" name="status[]" value="2"checked />&nbsp;完结</li>
@@ -26,7 +26,7 @@
             </ul>
          </span>
          <span class="button-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">性向<span class="caret"></span></button>
+            <button type="button" class="dropdown-toggle dropdown-menu-narrow sosad-button-dropdown" data-toggle="dropdown">性向<span class="caret"></span></button>
             <ul class="dropdown-menu">
                <li><input type="checkbox" name="sexual_orientation[]" value="0"checked />&nbsp;性向未知</li>
                <li><input type="checkbox" name="sexual_orientation[]" value="1"checked />&nbsp;BL</li>
@@ -39,12 +39,14 @@
             </ul>
          </span>
          <span class="button-group">
-            <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">边缘<span class="caret"></span></button>
+            <button type="button" class="dropdown-toggle dropdown-menu-narrow sosad-button-dropdown" data-toggle="dropdown">边缘<span class="caret"></span></button>
             <ul class="dropdown-menu">
                <li><input type="checkbox" name="bianyuan[]" value="0"checked />&nbsp;非边缘</li>
                <li><input type="checkbox" name="bianyuan[]" value="1"checked />&nbsp;边缘</li>
             </ul>
          </span>
-        <button type="submit" name="button" class="btn btn-xs btn-primary sosad-button">提交</button>
+        <button type="submit" name="button" class="sosad-button-dropdown sosad-button">
+            <span class="glyphicon glyphicon-send"></span>
+        </button>
  </form>
 </div>
