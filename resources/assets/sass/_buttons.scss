@@ -9,7 +9,7 @@
     transition: background-color 0.2s, color 0.2s, outline 0.2s;
     &:hover, &:focus, &:active {
         outline: 1px solid $button-color;
-        color: $button-color;
+        color: $body-color;
         background: $panel-color;
         text-decoration: none;
     }
@@ -48,6 +48,7 @@
         font-weight: 600;
         background-color: $panel-color;
         border: 1px solid $bold-color;
+        outline: none;
         box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
         transform: translateY(-7px);
     }
@@ -84,5 +85,15 @@
         color: $link-hover-color;
         border: solid 1px $link-hover-color;
         text-decoration: none;
+    }
+}
+
+%button-clear {
+    &:active, &:hover, &:focus {
+        border: none;
+        outline: none;
+        text-decoration: none;
+        box-shadow: none;
+        color: $link-hover-color;
     }
 }

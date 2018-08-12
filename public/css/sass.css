@@ -8372,7 +8372,7 @@ button.close {
 .sosad-button:active,
 .sosad-button-auth:active {
   outline: 1px solid #222;
-  color: #222;
+  color: #f9f9f9;
   background: #fff;
   text-decoration: none;
 }
@@ -8403,7 +8403,8 @@ button.close {
 
 .quote-join,
 .sosad-button-thread,
-.sosad-button-post {
+.sosad-button-post,
+.sosad-button-float {
   font-weight: 350;
   color: #fff;
   letter-spacing: 2px;
@@ -8420,16 +8421,20 @@ button.close {
 .quote-join:hover,
 .sosad-button-thread:hover,
 .sosad-button-post:hover,
+.sosad-button-float:hover,
 .quote-join:focus,
 .sosad-button-thread:focus,
 .sosad-button-post:focus,
+.sosad-button-float:focus,
 .quote-join:active,
 .sosad-button-thread:active,
-.sosad-button-post:active {
+.sosad-button-post:active,
+.sosad-button-float:active {
   color: #000;
   font-weight: 600;
   background-color: #fff;
   border: 1px solid #000;
+  outline: none;
   -webkit-box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
           box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
   -webkit-transform: translateY(-7px);
@@ -8481,6 +8486,35 @@ button.close {
   color: #FF2121;
   border: solid 1px #FF2121;
   text-decoration: none;
+}
+
+.voteposts button:active,
+.pagination > .disabled > span:active,
+.pagination > .active > span:active,
+.pagination > li > a:active,
+.sosad-button-ghost:active,
+.sosad-button-dropdown:active,
+.sosad-button-more:active,
+.voteposts button:hover,
+.pagination > .disabled > span:hover,
+.pagination > .active > span:hover,
+.pagination > li > a:hover,
+.sosad-button-ghost:hover,
+.sosad-button-dropdown:hover,
+.sosad-button-more:hover,
+.voteposts button:focus,
+.pagination > .disabled > span:focus,
+.pagination > .active > span:focus,
+.pagination > li > a:focus,
+.sosad-button-ghost:focus,
+.sosad-button-dropdown:focus,
+.sosad-button-more:focus {
+  border: none;
+  outline: none;
+  text-decoration: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  color: #FF2121;
 }
 
 /*!
@@ -11537,19 +11571,33 @@ button.close {
 }
 
 .status-wrapper,
-.pagination {
-  -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
-          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+.pagination,
+.dropdown-filter {
+  -webkit-box-shadow: 0 10px 30px -2px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 10px 30px -2px rgba(0, 0, 0, 0.04);
   -webkit-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .status-wrapper:hover,
 .pagination:hover,
+.dropdown-filter:hover,
 .status-wrapper:focus,
-.pagination:focus {
+.pagination:focus,
+.dropdown-filter:focus {
   -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
           box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 20px 60px rgba(0, 0, 0, 0.04);
+}
+
+.status {
+  -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1), 0 50px 60px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1), 0 50px 60px rgba(0, 0, 0, 0.04);
+}
+
+.status:hover,
+.status:focus {
+  -webkit-box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 50px 60px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 50px 60px rgba(0, 0, 0, 0.04);
 }
 
 .recommendation-card .card,
@@ -11564,6 +11612,17 @@ button.close {
 .recommendation-long .card:focus {
   -webkit-box-shadow: 0 35px 30px -30px rgba(0, 0, 0, 0.08);
           box-shadow: 0 35px 30px -30px rgba(0, 0, 0, 0.08);
+}
+
+#channel-name,
+#recommendation .panel-heading > span,
+.filter-heading {
+  letter-spacing: 1px;
+  font-weight: 600;
+  font-size: 0.8em;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  border-bottom: solid 2.5px #555;
 }
 
 .loose {
@@ -11870,8 +11929,10 @@ footer .slogon {
 
 #footer-container {
   height: 48px;
+  padding-top: 4px;
   position: absolute;
   bottom: 0px;
+  background: #efefef;
 }
 
 .jumbotron {
@@ -11892,19 +11953,20 @@ footer .slogon {
   transition: max-height 0.3s;
 }
 
-#daily-quote {
+.daily-quote {
   font-weight: 400;
   font-size: 1.6em;
   margin: 0px auto 10px auto;
+  color: #000;
 }
 
-#daily-quote::before {
+.daily-quote::before {
   content: "\300C";
   color: #FF2121;
   padding-right: 5px;
 }
 
-#daily-quote::after {
+.daily-quote::after {
   content: "\300D";
   color: #FF2121;
   padding-left: 5px;
@@ -11944,7 +12006,7 @@ footer .slogon {
 }
 
 #markdowneditor {
-  background: #fff;
+  background: #f9f9f9;
 }
 
 .input-helper {
@@ -11963,7 +12025,7 @@ footer .slogon {
 }
 
 .input-helper--checkbox:before {
-  top: 4px;
+  top: 3px;
   left: 0;
   width: 1em;
   height: 1em;
@@ -11999,10 +12061,6 @@ label,
           box-shadow: none;
   -webkit-transition: height 0.2s linear;
   transition: height 0.2s linear;
-}
-
-.status-editor .form-control {
-  background-color: #fff;
 }
 
 .status-submit {
@@ -12134,9 +12192,7 @@ h5,
 .h5,
 h6,
 .h6 {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  line-height: normal;
+  line-height: 1.5em;
 }
 
 code {
@@ -12153,8 +12209,7 @@ code {
 }
 
 .panel-body {
-  padding-top: 0;
-  padding-bottom: 0.5em;
+  padding: 1em;
 }
 
 .panel-thread {
@@ -12164,12 +12219,6 @@ code {
 #channel-name {
   margin-top: 0px;
   color: #555;
-  letter-spacing: 1px;
-  font-weight: 600;
-  font-size: 0.8em;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  border-bottom: solid 2.5px #555;
 }
 
 #channel-name:hover,
@@ -12185,9 +12234,7 @@ code {
 }
 
 #recommendation .panel-heading > span {
-  font-weight: 600;
-  padding-bottom: 6px;
-  border-bottom: solid 2.5px #555;
+  font-size: 1em;
 }
 
 #recommendation a {
@@ -12223,11 +12270,23 @@ code {
   min-width: 12em;
 }
 
+.recommendation-card .card:last-child {
+  margin-right: 0;
+}
+
 .recommendation-long .card {
   display: inline-block;
   background-color: #fff;
   padding: 1.5em;
   width: 100%;
+}
+
+.status {
+  width: 100%;
+  display: inline-block;
+  background: #fff;
+  margin: 0.5em auto;
+  padding: 0.5em;
 }
 
 .static-article {
@@ -12319,6 +12378,22 @@ hr {
   color: #FF2121;
 }
 
+.thread-cancel {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: column;
+          flex-flow: column;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  margin-top: 5px;
+  background: #f9f9f9;
+}
+
+.thread-cancel > button {
+  padding: 0.5em;
+}
+
 .scrollwrapper {
   height: 150px;
   overflow: scroll;
@@ -12333,7 +12408,16 @@ hr {
 
 .voteposts {
   /* 这里安排投票栏格式 */
-  padding: 0px;
+  display: inline-block;
+  padding: 10px 0px;
+  background: none;
+  font-size: 0.8em;
+}
+
+.voteposts button {
+  background: none;
+  border: none;
+  color: #555;
 }
 
 .vote {
@@ -12427,8 +12511,39 @@ hr {
 }
 
 .pagination {
-  margin-top: 0px;
-  margin-bottom: 0px;
+  margin: 1em 0;
+}
+
+.pagination > .disabled > span {
+  background: #f9f9f9;
+  color: #999;
+  border: none;
+  border-radius: 0;
+}
+
+.pagination > .disabled > span:hover {
+  color: #999;
+}
+
+.pagination > .active > span {
+  background-color: #222;
+  border: none;
+  border-radius: 0;
+}
+
+.pagination > .active > span:hover {
+  color: #fff;
+  background: #222;
+}
+
+.pagination > li > a {
+  color: #555;
+  border: none;
+  border-radius: 0;
+}
+
+.pagination > li > a:hover {
+  background: #f9f9f9;
 }
 
 .panel-footer {
@@ -12481,7 +12596,6 @@ hr {
   background: none;
   border: none;
   padding-bottom: 0;
-  margin-bottom: 1em;
 }
 
 .container-fluid {
@@ -12537,6 +12651,13 @@ hr {
   font-size: 1em;
 }
 
+.sosad-button-float {
+  width: 2em;
+  height: 2em;
+  font-size: 1.5em;
+  padding: 0;
+}
+
 .sosad-button-control {
   background-color: #fff !important;
   border-color: #222;
@@ -12544,6 +12665,11 @@ hr {
   border-width: 2px;
   font-weight: bold;
   border-style: solid;
+}
+
+.sosad-button-ghost {
+  background: none;
+  border: none;
 }
 
 .badge {
@@ -12625,7 +12751,7 @@ hr {
 
 .main-text p {
   white-space: pre-wrap !important;
-  margin: 0 0 25px 0;
+  margin: 0 0 1em 0;
 }
 
 .main-text.indentation p {
@@ -12666,15 +12792,6 @@ hr {
           box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
   padding: 5px 15px;
   z-index: 5;
-}
-
-.pagination > .active > span {
-  background-color: #222;
-  border-color: #222;
-}
-
-.pagination > li > a {
-  color: #555;
 }
 
 .chapters {
@@ -12774,13 +12891,41 @@ hr {
   font-size: 16px;
 }
 
-#book-selector {
+.selector {
+  background: #f3f3f3;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.selector form {
+  width: 100%;
+}
+
+.selector .button-group {
+  display: inline-block;
+  position: relative;
+}
+
+.selector .button-group:first-child .dropdown-filter {
+  left: 0;
+}
+
+.selector .button-group:last-child .dropdown-filter {
+  left: auto;
+  right: 0;
+}
+
+.selector-panel {
+  padding: 1em 1em;
+}
+
+.brief-selector {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   display: -webkit-flex;
-  margin-bottom: 10px;
-  width: 100%;
+  width: 90%;
+  margin: auto;
   -webkit-box-flex: 1;
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
@@ -12789,19 +12934,54 @@ hr {
   -webkit-box-direction: normal;
       -ms-flex-flow: row nowrap;
           flex-flow: row nowrap;
-  -ms-flex-line-pack: stretch;
-      align-content: stretch;
-}
-
-#book-selector .button-group {
-  margin: 0;
-  padding: 2px;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
 }
 
 .sosad-button-dropdown {
-  height: 2.5em;
+  height: 3.5em;
   border: none;
   background-color: #f3f3f3;
+  color: #000;
+}
+
+.dropdown-filter {
+  top: 3.5em;
+  left: -50%;
+  min-width: 8.5em;
+  width: auto;
+  border: none;
+  border-radius: 0px;
+}
+
+.dropdown-filter li {
+  padding: 7px 20px;
+}
+
+.sosad-button-more {
+  background: #fff;
+  text-align: center;
+  width: 100%;
+  border: none;
+  padding: 5px 0;
+}
+
+.filter-heading {
+  display: table;
+  margin: 10px auto;
+  margin-top: 0;
+  width: auto;
+  text-align: center;
+}
+
+.sosad-heading {
+  padding: 1em 0;
+  margin: 0;
+  text-align: center;
+}
+
+.user {
+  padding: 0.5em;
 }
 
 @media (max-width: 480px) {
@@ -12883,7 +13063,7 @@ hr {
     width: 165px;
   }
 
-  #daily-quote {
+  .daily-quote {
     font-size: 1.6em;
   }
 
@@ -12916,7 +13096,7 @@ hr {
     line-height: 1.8;
   }
 
-  .thread-meta span {
+  .thread-meta > span {
     margin-right: 5px;
   }
 
@@ -12946,6 +13126,7 @@ hr {
     text-align: center;
     border: 1px solid #000;
     border-radius: 0;
+    outline: none;
     -webkit-transition: none;
     transition: none;
     opacity: 1;

@@ -7,11 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-xs-10 col-xs-offset-1">
-                                <h2>帮助</h2>
-                            </div>
-                        </div>
+                        <h2 class="sosad-heading">帮助</h2>
                     </div>
                 </div>
                 <div class="panel-body">
@@ -330,7 +326,9 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-md btn-danger sosad-button" onclick="topFunction()" id="myBtn" title="Go to top">回到页面顶部</button>
+            <button class="sosad-button-float" onclick="topFunction()" id="myBtn" title="Go to top">
+                <i class="fa fa-angle-double-up"></i>
+            </button>
         </div>
     </div>
     <script>

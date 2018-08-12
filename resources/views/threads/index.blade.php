@@ -5,10 +5,13 @@
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <!-- 首页／版块／类型 -->
         <div class="site-map">
-            <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>&nbsp;/&nbsp;全部主题
+            <a href="{{ route('home') }}">
+                <span><i class="fa fa-home"></i>&nbsp;首页</span>
+            </a>&nbsp;/&nbsp;
+            全部主题
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading lead">所有主题贴</div>
+            <h2 class="sosad-heading">所有主题贴</h2>
             <div class="panel-body">
                 @include('threads._threads')
                 {{ $threads->links() }}

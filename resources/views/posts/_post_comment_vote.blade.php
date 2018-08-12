@@ -14,5 +14,7 @@
   </ul>
 </span> -->
 @if(Auth::id()==$postcomment->user_id)
-<button type="button" class="btn btn-xs btn-danger sosad-button" onclick="deletepostcomment({{$postcomment->id}})">删除点评</button>
+<button type="button" class="sosad-button-ghost grayout smaller-10" onclick="deletepostcomment({{$postcomment->id}})">
+    删除点评
+</button>
 @endif

@@ -40,9 +40,7 @@
         <div class="panel panel-default" id="recommendation">
             <div class="panel-heading h5 text-center">
                 <i class="fa fa-quote-left"></i> &nbsp;
-                <span>
-                    每周推荐
-                </span>
+                <span>每周推荐</span>
                 &nbsp; <i class="fa fa-quote-right"></i>
             </div>
             <div class="panel-body">

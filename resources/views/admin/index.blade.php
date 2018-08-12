@@ -11,6 +11,7 @@
                     <li><a href="#">普通投诉（人身攻击、三次元信息）</a></li>
                     <li><a href="#">侵权投诉</a></li>
                     <li><a href="{{ route('quotes.review') }}">文案摘句审核</a></li>
+                    <li><a href="{{ route('admin.review_longcomments') }}">长评审核</a></li>
                 </ul>
             </div>
         </div>
@@ -28,7 +29,7 @@
                 <h4>用户（user）管理</h4>
                 <ul>
                     <li><a href="#">用户列表</a></li>
-                    <li><a href="{{route('admin.sendpublicmessageform')}}">发送公共通知</a></li>
+                    <li><a href="{{route('admin.sendpublicnoticeform')}}">发送公共通知</a></li>
                 </ul>
                 <h4>主题（thread）管理</h4>
                 <ul>

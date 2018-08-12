@@ -303,7 +303,10 @@ class User extends Authenticatable
     }
     public function unread_public_notices()
     {
-        $unread_public_notices = DB::table('system_variables')->first()->latest_public_notice_id-$this->public_notices;
+        $system_variable = Cache::remember('system_variable', 30, function () {
+            return DB::table('system_variables')->first();
+        });
+        $unread_public_notices = $system_variable->latest_public_notice_id-$this->public_notices;
         return $unread_public_notices;
     }
 
@@ -318,8 +321,8 @@ class User extends Authenticatable
 
     public function isOnline()
     {
-        return LoggingStatus::where('user_id',$this->id)->first();
-        //return Cache::has('-usr-on-' . $this->id);
+        //return LoggingStatus::where('user_id',$this->id)->first();
+        return Cache::has('-usr-on-' . $this->id);
     }
 
 }

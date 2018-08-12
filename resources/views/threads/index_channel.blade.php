@@ -5,7 +5,9 @@
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
        <!-- 首页／版块／类型 -->
        <div class="site-map">
-          <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
+           <a href="{{ route('home') }}">
+               <span><i class="fa fa-home"></i>&nbsp;首页</span>
+           </a>
           &nbsp;/&nbsp;
           <a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>
        </div>
@@ -26,7 +28,7 @@
                @endforeach
             </ul>
             @if($channel->channel_state==1)
-            <ul class="nav nav-pills nav-fill nav-justified">
+            <ul class="nav nav-pills nav-fill">
                  @foreach($sexual_orientation_info as $key=>$value)
                      @if(!$key==0)
                      <li role="presentation" id="sexual_orientation-{{ $key }}">

@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', '全站动态')
+@section('title', '全部用户')
 @section('content')
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
@@ -13,13 +13,10 @@
             @include('statuses._status_form')
             @endif
             <div class="panel-body">
-
+                {{ $users->links() }}
+                @include('users._users')
+                {{ $users->links() }}
             </div>
-        </div>
-        <div class="status-container">
-            {{ $statuses->links() }}
-            @include('statuses._statuses')
-            {{ $statuses->links() }}
         </div>
     </div>
 </div>

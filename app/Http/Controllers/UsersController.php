@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Sosadfun\Traits\BookTraits;
 use App\Sosadfun\Traits\ThreadTraits;
+use App\Sosadfun\Traits\AdministrationTraits;
 use Auth;
 use Hash;
 use App\Models\User;
@@ -15,6 +16,8 @@ class UsersController extends Controller
 {
     use BookTraits;
     use ThreadTraits;
+    use AdministrationTraits;
+
     public function __construct()
     {
         $this->middleware('auth', [
@@ -136,11 +139,18 @@ class UsersController extends Controller
             $statuses=$this->findstatuses($id,config('constants.index_per_part'));
             $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
             $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
-            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
+            $records = [];
+            if((Auth::check())&&(Auth::user()->admin)){
+                $records=$this->findAdminRecords($id,config('constants.items_per_part'));
+            }
+            $admin_operation = config('constants.administrations');
+            return view('users.show', compact('user','books','threads','posts','statuses','upvotes','xianyus','records','admin_operation'))->with('show_as_collections',false)->with('show_channel',1)->with('as_longcomments',0);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
     }
+
+
 
     public function showbooks($id)
     {
@@ -215,6 +225,17 @@ class UsersController extends Controller
             $collections = false;
             return view('users.showxianyus', compact('user','xianyus','collections'))->with('show_as_collections',false)->with('show_channel',1);
         }else{
+            return redirect()->route('error', ['error_code' => '404']);
+        }
+    }
+
+    public function showrecords($id){
+        $user = User::find($id);
+        if($user) {
+            $records=$this->findAdminRecords($id,config('constants.index_per_page'));
+            $admin_operation = config('constants.administrations');
+            return view('users.showrecords', compact('user','records','admin_operation'));
+        }else {
             return redirect()->route('error', ['error_code' => '404']);
         }
     }

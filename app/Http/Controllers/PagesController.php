@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Sosadfun\Traits\ThreadTraits;
 use App\Sosadfun\Traits\BookTraits;
+use App\Sosadfun\Traits\AdministrationTraits;
 use Auth;
 use App\Models\Channel;
 use App\Models\User;
@@ -21,6 +22,7 @@ class PagesController extends Controller
 {
     use ThreadTraits;
     use BookTraits;
+    use AdministrationTraits;
 
     public function __construct()
     {
@@ -132,13 +134,13 @@ class PagesController extends Controller
 
     public function help()
     {
-        $users_online = Cache::remember('-users-online-count', 20, function () {
-            $users_online = DB::table('logging_statuses')
-            ->where('logged_on','>', time()-60*30)
-            ->count();
-            return $users_online;
-        });
-
+        // $users_online = Cache::remember('-users-online-count', 20, function () {
+        //     $users_online = DB::table('logging_statuses')
+        //     ->where('logged_on','>', time()-60*30)
+        //     ->count();
+        //     return $users_online;
+        // });
+        $users_online = 0;
         $data = config('constants');
         $webstat = WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
         return view('pages/help',compact('data','webstat','users_online'));
@@ -163,32 +165,7 @@ class PagesController extends Controller
     }
     public function administrationrecords()
     {
-        $records = DB::table('administrations')
-        ->join('users','administrations.user_id','=','users.id')
-        ->leftjoin('threads',function($join)
-        {
-            $join->whereIn('administrations.operation',[1,2,3,4,5,6,9,15,16]);
-            $join->on('administrations.item_id','=','threads.id');
-        })
-        ->leftjoin('posts',function($join)
-        {
-            $join->whereIn('administrations.operation',[7,10,11,12]);
-            $join->on('administrations.item_id','=','posts.id');
-        })
-        ->leftjoin('post_comments',function($join)
-        {
-            $join->where('administrations.operation','=',8);
-            $join->on('administrations.item_id','=','post_comments.id');
-        })
-        ->leftjoin('users as operated_users',function($join)
-        {
-            $join->whereIn('administrations.operation',[13,14]);
-            $join->on('administrations.item_id','=','operated_users.id');
-        })
-        ->where('administrations.deleted_at','=',null)
-        ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body','operated_users.name as operated_users_name' )
-        ->orderBy('administrations.created_at','desc')
-        ->paginate(config('constants.index_per_page'));
+        $records = $this->findAdminRecords(0,config('constants.index_per_page'));
         $admin_operation = config('constants.administrations');
         return view('pages.adminrecords',compact('records','admin_operation'));
     }

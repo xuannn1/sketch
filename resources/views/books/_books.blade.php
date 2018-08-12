@@ -1,11 +1,7 @@
 @foreach($books as $book)
-<article class="{{ 'thread'.$book->thread_id }} margin5">
+<article class="{{ 'item1id'.$book->thread_id }} margin5">
    <div class="row thread">
       <div class="thread-info">
-         @if($show_as_collections)
-         <button class="btn btn-xs btn-danger sosad-button hidden cancel-button" type="button" name="button" onClick="cancelCollectionThread({{$book->thread_id}})">取消收藏</button>
-         <button class="btn btn-xs btn-warning sosad-button hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$book->thread_id}})" Id="togglekeepupdatethread{{$book->thread_id}}">{{$book->keep_updated?'不再提醒':'接收提醒'}}</button>
-         @endif
          <span class="thread-title">
             <strong>
                <span>
@@ -77,7 +73,18 @@
              <span class="glyphicon glyphicon glyphicon-comment"></span>
              {{ $book->responded }}
          </span>
-
+      </div>
+      <div class="thread-cancel">
+          @if($show_as_collections)
+          <button class="btn-xs sosad-button-ghost hidden cancel-button" type="button" name="button" onClick="cancelCollectionItem({{$book->thread_id}},1,0)">
+              <i class="fa fa-trash"></i>
+              取消收藏
+          </button>
+          <button class="btn-xs sosad-button-ghost hidden cancel-button" type="button" name="button" onClick="ToggleKeepUpdateThread({{$book->thread_id}})" id="togglekeepupdatethread{{$book->thread_id}}">
+              <i class="fa fa-bell{{$book->keep_updated?'-slash':''}}"></i>
+              {{$book->keep_updated?'不再提醒':'接收提醒'}}
+          </button>
+          @endif
       </div>
    </div>
 </article>

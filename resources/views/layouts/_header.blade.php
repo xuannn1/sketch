@@ -65,7 +65,7 @@
                  </li>
                  @endif
                @if (Auth::check()&&(Auth::user()->admin))
-                   <li><a href="{{ route('admin.index') }}" class="admin-symbol">管理员</a></li>
+                  <li><a href="{{ route('admin.index') }}" class="admin-symbol">管理员</a></li>
                @endif
 
                @if (Auth::check()&&(Auth::user()->lastrewarded_at <= Carbon\Carbon::today()->toDateTimeString()))

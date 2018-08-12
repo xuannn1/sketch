@@ -119,6 +119,7 @@ class AdminsController extends Controller
                     'operation' => '1',//1:锁帖
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
+                    'administratee_id' => $thread->user_id,
                 ]);
             }else{
                 Administration::create([
@@ -126,6 +127,7 @@ class AdminsController extends Controller
                     'operation' => '2',//1:解锁
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
+                    'administratee_id' => $thread->user_id,
                 ]);
             }
             return redirect()->back()->with("success","已经成功处理该主题");
@@ -139,6 +141,7 @@ class AdminsController extends Controller
                     'operation' => '3',//3:转为私密
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
+                    'administratee_id' => $thread->user_id,
                 ]);
             }else{
                 Administration::create([
@@ -146,6 +149,7 @@ class AdminsController extends Controller
                     'operation' => '4',//4:转为公开
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
+                    'administratee_id' => $thread->user_id,
                 ]);
             }
             return redirect()->back()->with("success","已经成功处理该主题");
@@ -156,6 +160,7 @@ class AdminsController extends Controller
                 'operation' => '5',//5:删帖
                 'item_id' => $thread->id,
                 'reason' => request('reason'),
+                'administratee_id' => $thread->user_id,
             ]);
             $thread->delete();
             return redirect('/')->with("success","已经删帖");
@@ -167,6 +172,7 @@ class AdminsController extends Controller
                     'operation' => '9',//转移版块
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
+                    'administratee_id' => $thread->user_id,
                 ]);
                 $label = Label::findOrFail(request('label'));
                 $channel = Channel::findOrFail(request('channel'));
@@ -210,6 +216,7 @@ class AdminsController extends Controller
                     'operation' => '15',//15:转为边缘限制
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
+                    'administratee_id' => $thread->user_id,
                 ]);
             }else{
                 Administration::create([
@@ -217,6 +224,7 @@ class AdminsController extends Controller
                     'operation' => '16',//16:转为非边缘限制
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
+                    'administratee_id' => $thread->user_id,
                 ]);
             }
             return redirect()->back()->with("success","已经成功处理该主题");
@@ -236,6 +244,7 @@ class AdminsController extends Controller
                 'operation' => '7',//:删回帖
                 'item_id' => $post->id,
                 'reason' => request('reason'),
+                'administratee_id' => $post->user_id,
             ]);
             if($post->chapter_id !=0){
                 Chapter::destroy($post->chapter_id);
@@ -257,6 +266,7 @@ class AdminsController extends Controller
                 'operation' => '10',//:修改马甲
                 'item_id' => $post->id,
                 'reason' => request('reason'),
+                'administratee_id' => $post->user_id,
             ]);
             return redirect()->back()->with("success","已经成功处理该回帖");
         }
@@ -268,6 +278,7 @@ class AdminsController extends Controller
                 'operation' => ($post->fold_state? '11':'12'),//11 => '折叠帖子',12 => '解折帖子'
                 'item_id' => $post->id,
                 'reason' => request('reason'),
+                'administratee_id' => $post->user_id,
             ]);
             return redirect()->back()->with("success","已经成功处理该回帖");
         }
@@ -284,6 +295,7 @@ class AdminsController extends Controller
                 'operation' => '8',//:删回帖
                 'item_id' => $postcomment->id,
                 'reason' => request('reason'),
+                'administratee_id' => $postcomment->user_id,
             ]);
             $postcomment->delete();
             return redirect()->back()->with("success","已经成功处理该点评");
@@ -310,6 +322,7 @@ class AdminsController extends Controller
                 'operation' => '13',//:增加禁言时间
                 'item_id' => $user->id,
                 'reason' => request('reason'),
+                'administratee_id' => $user->id,
             ]);
             $user->no_posting = Carbon::now()->addDays(request('days'))->addHours(request('hours'));
             $user->save();
@@ -321,6 +334,7 @@ class AdminsController extends Controller
                 'operation' => '14',//:增加禁言时间
                 'item_id' => $user->id,
                 'reason' => request('reason'),
+                'administratee_id' => $user->id,
             ]);
             $user->no_posting = Carbon::now();
             $user->save();

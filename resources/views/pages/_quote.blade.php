@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <h2 id= "daily-quote" class="display-1">
+    <h2 class="daily-quote display-1">
         <!-- <i class="fa fa-quote-left"></i> &nbsp; -->
         {{ $quote->quote }}
         <!-- &nbsp; <i class="fa fa-quote-right"></i> -->

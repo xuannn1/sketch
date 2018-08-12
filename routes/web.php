@@ -49,6 +49,7 @@
    Route::get('users/{id}/longcomments','UsersController@showlongcomments')->name('user.showlongcomments');//展示某用户的全部长评
    Route::get('/users/{id}/upvotes', 'UsersController@showupvotes')->name('user.showupvotes');
    Route::get('/users/{id}/xianyus', 'UsersController@showxianyus')->name('user.showxianyus');
+   Route::get('/users/{id}/records', 'UsersController@showrecords')->name('user.showrecords')->middleware('admin');//展示某用户的全部管理记录
    //Route::get('/users/{id}/shengfans', 'UsersController@showshengfans')->name('user.showshengfans');
    Route::get('/users/{id}/followings', 'UsersController@followings')->name('users.followings');
    Route::get('/users/{id}/followers', 'UsersController@followers')->name('users.followers');

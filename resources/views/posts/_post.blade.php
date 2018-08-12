@@ -17,13 +17,12 @@
         </div>
         <div class="panel-body post-body">
             @include('posts._post_body')
+            @if(Auth::check())
+            <div class="text-right post-vote">
+                @include('posts._post_vote')
+            </div>
+            @endif
         </div>
-
-        @if(Auth::check())
-        <div class="text-right post-vote">
-            @include('posts._post_vote')
-        </div>
-        @endif
 
         @if ($post->comments->count() > 0)
         <div class="panel-footer">

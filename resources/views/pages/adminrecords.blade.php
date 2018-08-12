@@ -5,9 +5,7 @@
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
       <div class="panel-group">
          <div class="panel panel-default">
-            <div class="panel-heading">
-               <h1>管理记录列表</h1>
-            </div>
+            <h2 class="sosad-heading">管理记录列表</h2>
             <div class="panel-body">
                @foreach($records as $record)
                <div class="">

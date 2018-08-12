@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Cache;
 
 use Auth;
 use App\Models\Message;
@@ -281,6 +281,9 @@ class MessagesController extends Controller
     }
     public function clear()//make all reminders as seen
     {
+        $system_variable = Cache::remember('system_variable', 30, function () {
+            return DB::table('system_variables')->first();
+        });
         DB::table('activities')->where('user_id','=', Auth::id())->update(['seen'=>1]);
         DB::table('messages')->where('receiver_id','=', Auth::id())->update(['seen'=>1]);
         Auth::user()->post_reminders = 0;
@@ -289,7 +292,7 @@ class MessagesController extends Controller
         Auth::user()->message_reminders = 0;
         Auth::user()->upvote_reminders = 0;
         Auth::user()->system_reminders = 0;
-        Auth::user()->public_notices = DB::table('system_variables')->first()->latest_public_notice_id;
+        Auth::user()->public_notices = $system_variable->latest_public_notice_id;
         Auth::user()->save();
         return redirect()->back()->with("success", "您已清除所有未读消息提醒");
     }

@@ -1,25 +1,33 @@
 @foreach($statuses as $status)
-<article class="{{ 'status'.$status->id }} {{ 'followuser'.$status->user_id}}">
-    <div class="row">
-        <div class="col-xs-12 h5">
+<article class="card status {{ 'status'.$status->id }} {{ 'followuser'.$status->user_id}}">
+    <div class="panel-heading grayout smaller-10">
+        <span>
+            <a href="{{ route('user.show', $status->user_id) }}">{{ $status->name }}</a>&nbsp;
+            {{ Carbon\Carbon::parse($status->created_at)->diffForHumans() }}
+        </span>
+        <span class="pull-right">
+            @if ((Auth::check())&&($status->user_id != Auth::user()->id))
+            <button type="button" class="sosad-button-ghost btn-xs {{'follow'.$status->user_id}} {{Auth::user()->isFollowing($status->user_id) ? 'hidden':''}}" onclick="follow({{$status->user_id}})">
+                <i class="fa fa-plus"></i>
+                关注
+            </button>
+            <button type="button" class="sosad-button-ghost btn-xs {{'cancelfollow'.$status->user_id}} {{Auth::user()->isFollowing($status->user_id) ? '':'hidden'}}" onclick="cancelfollow({{$status->user_id}})">
+                <i class="fa fa-minus"></i>
+                取消关注
+            </button>
+            @endif
             @if($show_as_collections)
-            <button type="button" class="btn btn-xs btn-danger sosad-button hidden cancel-button" onclick="cancelfollow({{$status->user_id}})">取消关注</button>
-            <button class="btn btn-xs btn-warning sosad-button hidden cancel-button {{'togglekeepupdateuser'.$status->user_id}}" type="button" name="button" onClick="ToggleKeepUpdateUser({{$status->user_id}})">{{$status->keep_updated? '不再提醒':'接收提醒'}}</button>
+            <button class="hidden sosad-button-ghost smaller-10 grayout {{'togglekeepupdateuser'.$status->user_id}}" type="button" name="button" onClick="ToggleKeepUpdateUser({{$status->user_id}})">{{$status->keep_updated? '不再提醒':'接收提醒'}}</button>
             @endif
-            <span>
-                <a href="{{ route('user.show', $status->user_id) }}">{{ $status->name }}</a>&nbsp;
-                {{ Carbon\Carbon::parse($status->created_at)->diffForHumans() }}
-            </span>
-            @if((Auth::check())&&(Auth::id()==$status->user_id))
-            <button type="button" name="button" class="sosad-button btn btn-xs btn-danger pull-right" onclick="destroystatus({{$status->id}})">删除动态</button>
-            @endif
-        </div>
-        <div class="col-xs-12 h5 brief">
-            <span class="smaller-10">
-                {!! Helper::wrapParagraphs($status->content) !!}
-            </span>
+        </span>
+    </div>
+    <div class="panel-body post-body">
+        <div class="main-text">
+            {!! Helper::wrapParagraphs($status->content) !!}
         </div>
     </div>
-    <hr class="narrow">
+    @if((Auth::check())&&(Auth::id()==$status->user_id))
+    <button type="button" name="button" class="sosad-button-ghost btn-xs grayout pull-right" onclick="destroystatus({{$status->id}})">删除</button>
+    @endif
 </article>
 @endforeach

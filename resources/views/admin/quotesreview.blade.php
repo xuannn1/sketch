@@ -12,10 +12,11 @@
                 <div class="panel-body">
                     @foreach ($quotes as $quote)
                     <div class="row text-center">
-                        <div class="col-xs-6">
+                        <div class="col-xs-7">
                             <h5>{{ $quote->quote }}</h5>
-                        </div><small>
-                            <div class="col-xs-3">
+                        </div>
+                        <small>
+                            <div class="col-xs-2">
                                 <p><a href="#">{{ $quote->creator->name }}</a></p>
                                 @if ($quote->anonymous)
                                 <p>马甲：{{ $quote->majia ?? '匿名咸鱼'}}</p>
@@ -26,9 +27,14 @@
                                 @if(!$quote->reviewed)
                                 <span class="not_reviewed_{{ $quote->id }}"><code>未审核</code></span>
                                 @endif
+                                <span class="quotereviewstatus{{ $quote->id }}">{{$quote->approved? '对外显示':'不对外显示'}}</span>
                             </div>
-                            <div class="col-xs-3">
-                                <button class="btn btn-small {{ $quote->approved? "btn-success":"btn-danger" }} cancel-button {{'togglereviewquote'.$quote->id}}" type="button" name="button" onClick="toggle_review_quote({{$quote->id}},'{{$quote->approved ? "disapprove":"approve"}}')">{{$quote->approved? '对外显示':'不显示'}}</button>
+                            <div class="col-xs-3 quotebutton{{$quote->id}}">
+                                @if(!$quote->notsad)
+                                    <button class="btn btn-small btn-success cancel-button approvebutton{{$quote->id}} {{$quote->reviewed? 'hidden':''}}"  type="button" name="button" onClick="toggle_review_quote({{$quote->id}},'approve')">对外显示</button>
+                                    <button class="btn btn-small btn-danger cancel-button disapprovebutton{{$quote->id}} {{$quote->reviewed? 'hidden':''}}"  type="button" name="button" onClick="toggle_review_quote({{$quote->id}},'disapprove')">不显示</button>
+                                    <button class="btn btn-small btn-info cancel-button togglebutton{{$quote->id}} {{$quote->reviewed? '':'hidden'}}"  type="button" name="button" onClick="toggle_re_review_buttons({{$quote->id}},{{$quote->approved}})">重新审核</button>
+                                @endif
                             </div></small>
                         </div>
                         <hr>
