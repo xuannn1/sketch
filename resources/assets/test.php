@@ -217,7 +217,7 @@ for($i=1;$i++;$i< $lastrecommendedBook->id){
 
 //20180804 怎样快速输出短评信息
 $outfile = "";
-$recommends = App\Models\RecommendBook::where('long','=',0)->where('past','=',1)->orderby('clicks','desc')->get();
+$recommends = App\Models\RecommendBook::where('long','=',0)->where('past','=',0)->orderby('clicks','desc')->get();
 foreach($recommends as $recommend){
     $thread = $recommend->thread;
     $outfile .= "[b]《".$thread->title."》 by ";
