@@ -10,6 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(['middleware' => 'fw-block-blacklisted'], function ()
+{
 
 {//以下是用户注册与验证模块
    Auth::routes();
@@ -24,13 +26,14 @@
 }
 
 {//以下是静态页面模块
-   Route::get('/', 'PagesController@home')->name('home');
-   Route::get('about', 'PagesController@about')->name('about');
-   Route::get('help', 'PagesController@help')->name('help');
-   Route::get('/search','PagesController@search')->name('search');
-   Route::get('error/{error_code}', 'PagesController@error')->name('error');
-   Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
-   Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
+
+    Route::get('/', 'PagesController@home')->name('home');
+    Route::get('about', 'PagesController@about')->name('about');
+    Route::get('help', 'PagesController@help')->name('help');
+    Route::get('/search','PagesController@search')->name('search');
+    Route::get('error/{error_code}', 'PagesController@error')->name('error');
+    Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
+    Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
 }
 
 {//提头部分
@@ -214,3 +217,5 @@
     Route::get('/users/{user}/questions', 'QuestionsController@index')->name('questions.index');//问题列表
     Route::post('/users/{user}/questions/{question}/answer','QuestionsController@answer')->name('questions.answer');//储存回答路径
 }
+
+});
