@@ -11,6 +11,9 @@
                 {{ csrf_field() }}
                 <div class="form-group">
                     <label for="title">章节名称：</label>
+                    <div id="biaotiguiding" class="h6">
+                        <span style="color:#d66666">章节名中不得具有性描写、性暗示，不得使用直白的脏话、黄暴词和明显涉及边缘的词汇。<span>
+                    </div>
                     <input type="text" name="title" class="form-control" value="{{ $chapter->title }}">
                 </div>
                 <div class="form-group">
