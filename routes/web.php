@@ -10,8 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::group(['middleware' => 'fw-block-blacklisted'], function ()
-{
+
 
 {//以下是用户注册与验证模块
    Auth::routes();
@@ -26,8 +25,10 @@ Route::group(['middleware' => 'fw-block-blacklisted'], function ()
 }
 
 {//以下是静态页面模块
-
+    Route::group(['middleware' => 'fw-block-blacklisted'], function ()
+    {
     Route::get('/', 'PagesController@home')->name('home');
+    });
     Route::get('about', 'PagesController@about')->name('about');
     Route::get('help', 'PagesController@help')->name('help');
     Route::get('/search','PagesController@search')->name('search');
@@ -217,5 +218,3 @@ Route::group(['middleware' => 'fw-block-blacklisted'], function ()
     Route::get('/users/{user}/questions', 'QuestionsController@index')->name('questions.index');//问题列表
     Route::post('/users/{user}/questions/{question}/answer','QuestionsController@answer')->name('questions.answer');//储存回答路径
 }
-
-});

@@ -168,6 +168,7 @@ return [
          */
         Laravel\Tinker\TinkerServiceProvider::class,
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+        //PragmaRX\Firewall\Vendor\Laravel\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -232,6 +233,7 @@ return [
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
         'Helper' => App\Helpers\Helper::class,
         'BBCode' => \Genert\BBCode\Facades\BBCode::class,
+        //'Firewall' => PragmaRX\Firewall\Vendor\Laravel\Facade::class,
 
     ],
 

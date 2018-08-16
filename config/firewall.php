@@ -25,9 +25,11 @@ return [
 
     'blacklist' => [
         '119.191.172.131',//2018-08-15 该IP不友善发言，屏蔽之。
+        //'127.0.0.1',//测试用
     ],
 
     'whitelist' => [
+        //'127.0.0.1',
     ],
 
     /*
@@ -111,7 +113,7 @@ return [
      *
      */
 
-    'enable_range_search' => true,
+    'enable_range_search' => false,
 
     /*
      * Search by country range allow you to store country ids in your
