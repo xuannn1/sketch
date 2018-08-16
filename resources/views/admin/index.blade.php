@@ -54,6 +54,11 @@
                     <li><a href="{{ route('homework.create') }}">新建作业</a></li>
                     <li><a href="{{ route('homework.index') }}">作业列表</a></li>
                 </ul>
+                <h4>推荐书籍（Recommend Book）管理</h4>
+                <ul>
+                    <li><a href="{{ route('recommend_books.create') }}">添加推荐书籍</a></li>
+                    <li><a href="{{ route('recommend_books.index') }}">推荐书籍列表</a></li>
+                </ul>
             </div>
         </div>
     </div>
