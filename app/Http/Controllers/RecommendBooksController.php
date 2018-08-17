@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RecommendBook;
 use App\Models\Thread;
+use App\Models\Post;
 use App\Sosadfun\Traits\BookTraits;
 use Illuminate\Support\Facades\DB;
 
@@ -24,19 +25,32 @@ class RecommendBooksController extends Controller
             'recommendation' => 'required|string',
         ]);
 
-        $thread = Thread::find($request->thread_id);
-
-        RecommendBook::create([
+        $recommend_book = RecommendBook::create([
             'thread_id' => $request->thread_id,
             'recommendation' => $request->recommendation,
-            'long' => $request->long? '1' : '0',
-            'deleted_at' => $thread->deleted_at,
-            'created_at' => $thread->created_at,
-            'updated_at' => $thread->updated_at,
-            'bianyuan' => $thread->bianyuan,
-            'title' => $thread->title,
+            'long' => $request->long? 1 : 0,
             'clicks' => 0
         ]);
+
+        if(!$recommend_book->long) {
+              $thread = Thread::find($request->thread_id);
+              $recommend_book->update([
+                  'deleted_at' => $thread->deleted_at,
+                  'created_at' => $thread->created_at,
+                  'updated_at' => $thread->updated_at,
+                  'bianyuan' => $thread->bianyuan,
+                  'title' => $thread->title,
+              ]);
+        } else {
+            $post = Post::find($request->thread_id);
+            $recommend_book->update([
+                'deleted_at' => $post->deleted_at,
+                'created_at' => $post->created_at,
+                'updated_at' => $post->updated_at,
+                'bianyuan' => $post->thread->bianyuan,
+                'title' => $post->thread->title,
+            ]);
+        }
 
         return redirect()->route('recommend_books.index')->with("success", "您已成功添加推荐书籍");
     }
@@ -80,15 +94,14 @@ class RecommendBooksController extends Controller
     public function longcomments()
     {
         $recommend_longcomments = DB::table('recommend_books')
-            ->join('threads','threads.id','=','recommend_books.thread_id')
-            ->join('posts', 'posts.thread_id', '=', 'threads.id')
+            ->join('posts', 'posts.id', '=', 'recommend_books.thread_id')
+            ->join('threads', 'threads.id', '=', 'posts.thread_id')
             ->join('users','users.id','=','posts.user_id')
             ->join('long_comments','posts.id','=','long_comments.post_id')
             ->where('long', '=', '1')
             ->select('posts.*', 'recommend_books.title as thread_title', 'recommend_books.id as recommend_id', 'recommend_books.recommendation', 'users.name', 'long_comments.reviewed','long_comments.approved')
             ->orderBy('recommend_books.id','desc')
             ->paginate(config('constants.items_per_page'));
-// dd($recommend_longcomments);
         return view('recommend_books.longcomments', compact('recommend_longcomments'))->with('active', 2);
     }
 }
