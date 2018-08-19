@@ -93,11 +93,11 @@ trait BookTraits{
             ->get();
             $tags['tags_tongren_yuanzhu']=Tag::where('tag_group',10)
             ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books', 'tag_belongs_to', 'label_id')
             ->get();
             $tags['tags_tongren_cp']= Tag::where('tag_group',20)
             ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
+            ->select('id','tagname','tag_explanation','tag_group','tag_info','books', 'tag_belongs_to', 'label_id')
             ->get();
 
             return $tags;
