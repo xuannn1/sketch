@@ -75,8 +75,16 @@
                 </div>
                 <div style="width: 100%;">
                     <span class="filter-label">原创性：</span>
-                    @include('shared._checkbox', ['name' => 'original[]', 'value' => '1', 'isChecked' => 'checked', 'label' => '原创', 'id' => 'filterd-orig']) &nbsp;
-                    @include('shared._checkbox', ['name' => 'original[]', 'value' => '2', 'isChecked' => 'checked', 'label' => '同人', 'id' => 'filterd-tongren']) &nbsp;
+                    <input type="checkbox" name='original[]' value='1' id='filterd-orig' checked>
+                    <label for='filterd-orig' class="input-helper input-helper--checkbox">
+                        原创
+                    </label>
+                    &nbsp;
+                    <input type="checkbox" name='original[]' value='2' id='filterd-tongren' checked>
+                    <label for='filterd-tongren' class="input-helper input-helper--checkbox">
+                        同人
+                    </label>
+                    &nbsp;
                 </div>
 
                 <div class="">

@@ -259,8 +259,8 @@ function expandpost(id){
       z.classList.remove('pull-right');
       z.classList.add('text-center');
    } else {
-      y.classList.remove('hidden');
       x.classList.add('hidden');
+      y.classList.remove('hidden');
       z.innerHTML = '展开';
       z.classList.add('pull-right');
       z.classList.remove('text-center');
@@ -773,7 +773,6 @@ function toggle_tags_tongren_yuanzhu(){
 (function ($) {
     var editor = $("#markdowneditor");
    editor.keyup(function(){
-         var length = 360;
          var content = editor.val();
          var content_len = 0;
          for (let i = 0; i < content.length; i++) {
@@ -783,17 +782,47 @@ function toggle_tags_tongren_yuanzhu(){
                     content_len = content_len + 1;
                 }
             }
-         var in_len = length - content_len;
 
-         if(content_len > 0 && content_len <= 360){
-            $("#word-count").html(Math.floor (content_len / 2)).css("color","#333");
+         if(content_len > 0){
+            $("#word-count").html(Math.ceil (content_len / 2)).css("color","#333");
             $("#button-post").attr("disabled",false);
             // 可以继续执行其他操作
          }else{
-            $("#word-count").html(Math.floor (content_len / 2)).css("color","#FF2121");
+            $("#word-count").html(Math.ceil (content_len / 2)).css("color","#FF2121");
             $("#button-post").attr("disabled",true);
             return false;
          }
 
     });
+})(jQuery);
+
+// TODO: 合并两个函数
+(function ($) {
+    var editors = $('.comment-editor');
+    for (let j = 0; j < editors.length; j++) {
+      let editor = editors.eq(j);
+      let id = editor.attr("id");
+      editor.keyup(function(){
+        let content = editor.val();
+        let content_len = 0;
+        for (let i = 0; i < content.length; i++) {
+          if (/[\u4E00-\u9FA5\uF900-\uFA2D]/.test(content.charAt(i))) { // 判断中英文
+            content_len = content_len + 2;
+          } else {
+            content_len = content_len + 1;
+          }
+        }
+
+        if(content_len > 0){
+          $("#word-count-"+id).html(Math.ceil (content_len / 2)).css("color","#333");
+          $("#button-post-"+id).attr("disabled",false);
+          // 可以继续执行其他操作
+        }else{
+          $("#word-count-"+id).html(Math.ceil (content_len / 2)).css("color","#FF2121");
+          $("#button-post-"+id).attr("disabled",true);
+          return false;
+        }
+
+      });
+    }
 })(jQuery);

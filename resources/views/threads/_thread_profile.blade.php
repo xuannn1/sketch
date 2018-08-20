@@ -1,5 +1,5 @@
 <!-- 标题部分 -->
-<div class="article-title">
+<div class="article-title text-center">
     <h2>
         @include('threads._thread_title')
         @if((Auth::check())&&(Auth::user()->admin))
@@ -10,7 +10,7 @@
 <!-- 一句话简介 -->
 
 <div class="article-body">
-    <div>{{ $thread->brief }}</div>
+    <div class="text-center">{{ $thread->brief }}</div>
     <div class="text-center">
         @include('threads._thread_author_time')
     </div>

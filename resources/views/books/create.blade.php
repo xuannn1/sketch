@@ -188,7 +188,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-danger sosad-button-thread" style="width: 100%">发布</button>
+                    <button type="submit" class="btn sosad-button-thread width100">发布</button>
                 </form>
             </div>
         </div>

@@ -27,15 +27,17 @@
                </div>
             </div>
          </div>
-         <div class="panel-body post-body">
-            @include('posts._post_body')
-         </div>
+         <div class="panel-body">
+           <div class="post-body">
+             @include('posts._post_body')
+           </div>
 
-         @if(Auth::check())
-            <div class="text-right post-vote">
-               @include('posts._post_vote')
-            </div>
-         @endif
+           @if(Auth::check())
+           <div class="text-right post-vote">
+             @include('posts._post_vote')
+           </div>
+           @endif
+         </div>
          <div class="panel-footer">
             @foreach($postcomments as $comment_no=>$postcomment)
                   @include('posts._post_comment')

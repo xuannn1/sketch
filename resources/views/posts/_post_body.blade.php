@@ -35,8 +35,11 @@
         @endif
         <!-- 章节-数据统计 -->
         <div class="container-fluid">
-            <u><a class="smaller-10" href="{{ route('book.showchapter', $post->chapter_id) }}">前往文库阅读</a></u>
-            <span class="pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->chapter->characters }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->chapter->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->chapter->responded }}</em></span>
+            <a class="sosad-button-tag pull-right" href="{{ route('book.showchapter', $post->chapter_id) }}">
+              <i class="fa fa-book"></i>
+              前往文库阅读
+            </a>
+            <span class="smaller-20"><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{ $post->chapter->characters }} / <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ $post->chapter->viewed }} / <span class="glyphicon glyphicon glyphicon-comment"></span>&nbsp;{{ $post->chapter->responded }}</span>
         </div>
     @else
         <!-- 普通章节展开式 -->

@@ -16,6 +16,7 @@
 // font-awesome
 $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
 @import "node_modules/font-awesome/scss/font-awesome.scss";
+@import "~@fortawesome/fontawesome-free/css/all.css";
 
 %light-shadow {
     box-shadow: 0 10px 30px -2px rgba(0, 0, 0, 0.04);
@@ -55,6 +56,10 @@ $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
 
 .margin5 {
     margin-bottom: 5px;
+}
+
+.width100 {
+  width: 100% !important;
 }
 
 .long-foot {
@@ -414,6 +419,16 @@ footer {
     @extend %button-plain;
 }
 
+.modal-content {
+  background: $panel-color;
+  border: none;
+  border-radius: 0;
+  padding: 1em;
+  padding-bottom: 1.5em;
+  margin: 1em;
+  box-shadow: none;
+}
+
 // Customize all input fields.
 
 .form-control {
@@ -432,7 +447,46 @@ footer {
 
 #markdowneditor {
     background: $body-color;
+    margin-bottom: 1em;
 }
+
+.sosad-button-md {
+  border: none;
+  &:hover, &:focus, > * {
+      border: none;
+      border-color: none;
+      outline: none;
+      text-decoration: none;
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      color: $body-font-color;
+  }
+  background: none;
+  font-size: 0.9em;
+  padding: 10px;
+}
+
+.md-editor {
+  border: none;
+  @extend %button-clear;
+  margin-bottom: 1em;
+  > textarea, &:focus, &:active {
+    background: $body-color;
+    border: none;
+    padding: 0.5em;
+  }
+
+  .md-preview {
+    border: none;
+    padding: 0.5em;
+  }
+}
+
+.md-header {
+  border: none;
+  background: $dark-gray;
+}
+
 
 // https://gist.github.com/martinwolf/6434799
 
@@ -719,7 +773,25 @@ hr {
     justify-content: flex-end;
     margin-top: 5px;
     background: $body-color;
-    > button {
+    // max-width: 100%;
+    > button, a, .abbr {
+        padding: 0.5em;
+    }
+}
+
+.abbr {
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+.dropdown-cancel {
+    @extend %button-shadow;
+    top: 100%;
+    left: -50%;
+    width: auto;
+    border: none;
+    border-radius: 0px;
+    li {
         padding: 0.5em;
     }
 }
@@ -735,7 +807,7 @@ hr {
 }
 .voteposts{ /* 这里安排投票栏格式 */
    display: inline-block;
-   padding: 10px 0px;
+   padding: 0 0 10px 0;
    background: none;
    font-size: 0.8em;
    button {
@@ -859,28 +931,24 @@ hr {
    border: none;
 }
 .panel-vote{
-
+  margin-top: 0.5em;
+  border-top: 2px solid $body-color;
+  padding: 1em 2.5em;
 }
 .post-reply{
    padding-left:20px;
    padding-top:5px;
 }
 .post-body{
-   padding-top:0px;
-   padding-bottom:0px;
+   padding: 1em 2.5em;
 }
 .post-vote{
-   padding-top:0px;
-   padding-left:5px;
-   padding-right:5px;
-   padding-bottom:5px;
+  padding: 0 5px;
 }
 .book-intro{
-   margin-top:5px;
-   margin-bottom:10px;
-   p{
-      line-height:0.8;
-   }
+   margin-top:10px;
+   margin-bottom:20px;
+   line-height: 2.5;
 }
 .admin-button{
    background-color: $background-color !important;
@@ -946,17 +1014,34 @@ hr {
 
 // 新建章节，修改文案
 .sosad-button-edit {
-    @extend %button-plain;
-    width: 49%;
+  @extend %button-plain;
+  font-weight: 600;
+  padding: 10px 20px;
+  letter-spacing: normal;
+  display: inline-block;
+  &:first-child {
+    border: none;
+  }
 
 }
 .sosad-button-thread {
     @extend %button-fancy;
-    font-weight: 600;
+    font-weight: 400;
     display: inline-block;
-    padding: 5px 20px;
-    letter-spacing: normal;
+    padding: 7px 20px;
+    letter-spacing: 1px;
     // border-radius: 0;
+}
+
+.sosad-button-danger {
+  background-color: $link-hover-color !important;
+  border-color: $link-hover-color !important;
+  outline-color: $link-hover-color !important;
+  &:hover, &:focus, &:active {
+    background: $link-hover-color !important;
+    border-color: $link-hover-color !important;
+    outline-color: $link-hover-color !important;
+  }
 }
 
 .sosad-button-kudos {
@@ -1064,7 +1149,7 @@ hr {
    }
    &.indentation {
      p{
-       text-indent: 32px;
+       text-indent: 2em;
      }
    }
 
@@ -1094,13 +1179,25 @@ hr {
    .sosad-button{
       margin-bottom:5px;
    }
-   padding: 5px 30px 15px 30px;
+}
+.thread-voters {
+  background: $body-color;
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
 }
 .thread-edit {
-    // border-top: 2px solid $bold-color;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
-    padding: 5px 15px;
-    z-index: 5;
+    // // border-top: 2px solid $bold-color;
+    // box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+    // padding: 5px 15px;
+    // z-index: 5;
+
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row nowrap;
+    -webkit-flex-flow: row nowrap;
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+    width: 100%;
 }
 
 .chapters{
@@ -1196,7 +1293,7 @@ hr {
 
 .selector {
 
-    background: #f3f3f3;
+    background: $dark-gray;
     margin-bottom: 10px;
     width: 100%;
 
@@ -1234,9 +1331,18 @@ hr {
 .sosad-button-dropdown {
     height: 3.5em;
     border: none;
-    background-color: #f3f3f3;
+    background-color: $dark-gray;
     color: $bold-color;
     @extend %button-clear;
+}
+
+.sosad-button-chapter {
+  display: block;
+  background-color: $dark-gray;
+  color: $bold-color;
+  font-weight: 600;
+  padding: 7px 0;
+  margin: 3px 0;
 }
 
 .dropdown-filter {
@@ -1279,6 +1385,13 @@ hr {
 
 .user {
     padding: 0.5em;
+}
+
+.table > tbody > tr > td, .table > thead > tr > th {
+  border: none;
+  padding: 0.5em;
+  vertical-align: middle;
+  font-size: 0.9em;
 }
 
 
@@ -1347,7 +1460,7 @@ hr {
         background: $body-color;
         form {
             select {
-                background: #f3f3f3;
+                background: $dark-gray;
                 width: 90px;
                 padding: 14px 4px 14px 34px;
             }
@@ -1405,7 +1518,7 @@ hr {
         line-height: 2.75rem;
         position: fixed;
         width: 50%;
-        bottom: 0;
+        bottom: -5px;
         text-align: center;
         border: 1px solid $bold-color;
         border-radius: 0;
@@ -1418,16 +1531,19 @@ hr {
         transform: none;
         // 回复显示在右边，容易按到
         &:first-child {
-            right: 0;
+            left: 0;
         }
         &:last-child {
-            left: 0;
+            right: 0;
         }
     }
     .nav-pills {
         > li > a {
             padding: 10px 1em;
         }
+    }
+    .post-body, .panel-vote {
+        padding: 1em;
     }
 
 }

@@ -12,10 +12,10 @@
       @if($posts->currentPage()==1)
           <div class="panel panel-default panel-thread">
            <!-- 主题介绍部分 -->
-             <div class="panel-body">
+             <div class="panel-body post-body">
                 @include('books._book_profile')
-                <div><a href="{{ route('thread.show', $thread) }}">论坛讨论模式</a>
-                </div>
+                <!-- <div><a href="{{ route('thread.show', $thread) }}">论坛讨论模式</a>
+                </div> -->
              </div>
              <!-- 对主题进行投票／收藏／点赞等操作 -->
              <div class="panel-vote">
@@ -46,13 +46,13 @@
               @endif
           </div>
       @endif
+      @if(Auth::check())
+         @include('threads._reply')
+      @endif
       @foreach($posts as $key=>$post)
          @include('posts._post')
       @endforeach
       {{ $posts->links() }}
-      @if(Auth::check())
-         @include('threads._reply')
-      @endif
    </div>
 </div>
 @stop

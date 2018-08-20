@@ -21,8 +21,11 @@
                 <h4><a href="">我收藏的清单：</a></h4>
                 @include('collections._collection_lists')
             </div>
+            <div class="panel-heading">
+                <a class="btn-lg sosad-button-post" href="{{ route('collections.collection_list_create') }}">新建清单</a>
+            </div>
             <div class="panel-body">
-                <a class="btn btn-lg btn-primary sosad-button" href="{{ route('collections.collection_list_create') }}">新建收藏单</a>
+
             </div>
         </div>
     </div>

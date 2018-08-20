@@ -2,18 +2,18 @@
     <!-- 显示作者名称 -->
    @if ($post->maintext)
       @if ($thread->anonymous)
-         <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
+         <span class="smaller-10">{{ $thread->majia ?? '匿名咸鱼'}}</span>
          @if((Auth::check()&&(Auth::user()->admin)))
-         <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->creator->name }}</a></span>
+         <span class="admin-anonymous smaller-10"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->creator->name }}</a></span>
          @endif
       @else
-         <a href="{{ route('user.show', $post->user_id) }}">{{ $thread->creator->name }}</a>
+         <a class="smaller-10" href="{{ route('user.show', $post->user_id) }}">{{ $thread->creator->name }}</a>
       @endif
    @else
       @if ($post->anonymous)
-         <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
+         <span class="smaller-10">{{ $post->majia ?? '匿名咸鱼'}}</span>
          @if((Auth::check()&&(Auth::user()->admin)))
-         <span class="admin-anonymous"><a href="{{ route('user.show', $post->user_id) }}">{{ $post->owner->name }}</a></span>
+         <span class="admin-anonymous smaller-10"><a href="{{ route('user.show', $post->user_id) }}">{{ $post->owner->name }}</a></span>
          @endif
       @else
          <a href="{{ route('user.show', $post->user_id) }}">{{ $post->owner->name }}</a>

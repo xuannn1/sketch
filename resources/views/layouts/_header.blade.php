@@ -77,7 +77,10 @@
                         <i class="fa fa-heartbeat"></i>
                         动态</a></li>
                 @else
-                    <li><a href="{{ route('statuses.index') }}">动态</a></li>
+                    <li><a href="{{ route('statuses.index') }}">
+                      <i class="fa fa-heartbeat"></i>
+                      动态
+                    </a></li>
                 @endif
 
                <li><a href="{{ route('books.index') }}">

@@ -1,12 +1,12 @@
 <div class="hidden-sm hidden-md hidden-lg overflow-hidden">
     @foreach($book->chapters as $chapter)
-    <a href="{{ route('book.showchapter', $chapter->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
+    <a href="{{ route('book.showchapter', $chapter->id) }}" type="button" class = "sosad-button-chapter text-center">
         @if($chapter->mainpost->bianyuan)
             <span class="glyphicon glyphicon-info-sign"></span>
         @endif
         {{ $chapter->title }}：{{ $chapter->mainpost_info->title }}</a>
     @if(Auth::id()==$thread->user_id)
-    <a href="{{ route('book.editchapter', $chapter->id) }}" class="text-center btn-block">编辑{{ $chapter->title }}</a>
+    <a href="{{ route('book.editchapter', $chapter->id) }}" class="text-center btn-block sosad-button-more grayout smaller-10">编辑{{ $chapter->title }}</a>
     @endif
     @endforeach
 </div>
@@ -26,18 +26,18 @@
         <tbody>
             @foreach($book->chapters as $chapter)
             <tr>
-                <th><a href="{{ route('book.showchapter', $chapter->id) }}" class = "">
+                <td><a href="{{ route('book.showchapter', $chapter->id) }}" class = "">
                     @if($chapter->mainpost->bianyuan)
                         <span class="glyphicon glyphicon-info-sign"></span>
                     @endif
-                    {{ $chapter->title }}</a></th>
-                <th>{{ $chapter->mainpost_info->title }}</th>
-                <th>{{ $chapter->characters }}</th>
-                <th>{{ $chapter->viewed }}</th>
-                <th>{{ $chapter->responded }}</th>
-                <th>{{ Carbon\Carbon::parse($chapter->created_at)->setTimezone('Asia/Shanghai') }}</th>
-                <th>{{ Carbon\Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai')
-                     }}</th>
+                    {{ $chapter->title }}</a></td>
+                <td class="grayout">{{ $chapter->mainpost_info->title }}</td>
+                <td>{{ $chapter->characters }}</td>
+                <td>{{ $chapter->viewed }}</td>
+                <td>{{ $chapter->responded }}</td>
+                <td>{{ Carbon\Carbon::parse($chapter->created_at)->setTimezone('Asia/Shanghai') }}</td>
+                <td>{{ Carbon\Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai')
+                }}</td>
             </tr>
             @endforeach
         </tbody>
