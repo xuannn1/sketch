@@ -57,15 +57,21 @@
               @else
                  <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->name }}</a>
               @endif
-          </span>
+          </span>&nbsp;&nbsp;
           <!-- author end -->
           <!-- time -->
           <div class="brief">
              <span>{{ Carbon\Carbon::parse($thread->created_at)->diffForHumans() }}/{{ Carbon\Carbon::parse($thread->lastresponded_at)->diffForHumans() }}</span>
-          </div>
+          </div>&nbsp;&nbsp;
 
           <!-- viewed/replied -->
-          <span class="loose"><span class="glyphicon glyphicon-eye-open"></span>{{ $thread->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->responded }}</span>
+          <span>
+            <span class="glyphicon glyphicon-eye-open"></span>
+            {{ $thread->viewed }}
+            /
+            <span class="glyphicon glyphicon glyphicon-comment"></span>
+            {{ $thread->responded }}
+          </span>
       </div>
       <div class="thread-cancel">
           @if($show_as_collections)

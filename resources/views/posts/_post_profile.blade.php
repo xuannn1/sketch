@@ -25,11 +25,11 @@
       @if(request('useronly'))
          <span class="grayout smaller-20"><a href="{{ route('thread.show',$thread) }}">取消只看该用户</a></span>
       @else
-         <span class="grayout smaller-20"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'useronly'=>$post->user_id]) }}">只看该用户</a></span>
+         <span class="grayout smaller-20 sosad-button-tag"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'useronly'=>$post->user_id]) }}">只看该用户</a></span>
       @endif
    @endif
    <!-- 发表时间 -->
-   <span class="smaller-20">
+   <span class="smaller-20 grayout">
       发表于 {{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}
       @if($post->created_at < $post->edited_at )
         修改于 {{ Carbon\Carbon::parse($post->edited_at)->diffForHumans() }}

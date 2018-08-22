@@ -4,42 +4,64 @@
 @include('shared.errors')
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-        <div>
-            <a type="btn btn-primary" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>/<a href="{{ route('user.show', $user) }}">{{ $user->name }}</a>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div>
-                    <a href="{{ route('questions.index', $user) }}" class="h4">{{ $user->name }}问答记录</a>
-                    <a class="h4 pull-right" href="{{ route('questions.create', $user) }}">提新问题</a>
+          <div class="site-map">
+               <a href="{{ route('home') }}">
+                   <span><i class="fa fa-home"></i>&nbsp;首页</span></a>
+               /
+               <a href="{{ route('user.show', $user) }}">{{ $user->name }}</a>
+          </div>
 
-                </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div>
+              <a href="{{ route('questions.index', $user) }}" class="h4">{{ $user->name }} 问答记录</a>
+
             </div>
+          </div>
             <div class="panel-body">
+              @if(!(Auth::check())||!(Auth::id()==$user->id))
+              <div class="row text-center">
+                <a class="sosad-button-thread width100" href="{{ route('questions.create', $user) }}">
+                  <i class="fas fa-hand-paper"></i>
+                  提新问题
+                </a>
+              </div>
+              @endif
                 @foreach ($questions as $question)
-                <div class="row {{ $question->answer_id>0? 'grayout':'' }} main-text ">
-                    <div class="col-xs-2">
+                <div class="row {{ $question->answer_id>0? 'grayout':'' }} main-text">
+                    <div class="margin5 smaller-10 grayout">
+                      ·
                         {{ Carbon\Carbon::parse($question->created_at)->diffForHumans() }}提问
+                      ·
                     </div>
-                    <div class="col-xs-10">
-                        {!! Helper::wrapParagraphs($question->question_body) !!}
-                        @if((Auth::check())&&(Auth::id()==$user->id)&&($question->answer_id==0))
-                            <button onclick="document.getElementById('answeringquestion{{$question->id}}').style.display = 'block'" class="btn btn-primary btn-sm sosad-button pull-right">回答</button>
-                        @endif
+                    <div class="margin5 text-center">
+                      <span>
+                        <i class="fas fa-quote-left"></i>&nbsp;——&nbsp;&nbsp;
+                      </span>
+                      <p></p>
+                      {!! Helper::wrapParagraphs($question->question_body) !!}
+                      <span>
+                        &nbsp;&nbsp;——&nbsp;<i class="fas fa-quote-right"></i>
+                      </span>
+                      @if((Auth::check())&&(Auth::id()==$user->id)&&($question->answer_id==0))
+                          <button onclick="document.getElementById('answeringquestion{{$question->id}}').style.display = 'block'" class="btn-sm sosad-button-tag pull-right">回答</button>
+                      @endif
                     </div>
                 </div>
                 @if($question->answer_id>0)
                     <div class="row main-text">
-                        <div class="col-xs-2">
+                        <div class="margin5 smaller-10 grayout">
+                          ·
                             {{ Carbon\Carbon::parse($question->answer->created_at)->diffForHumans() }}回答
                             @if($question->answer->updated_at > $question->answer->created_at)
                             {{ Carbon\Carbon::parse($question->answer->updated_at)->diffForHumans() }}修改
                             @endif
+                          ·
                         </div>
-                        <div class="col-xs-10">
+                        <div class="margin5">
                             {!! Helper::wrapParagraphs($question->answer->answer_body) !!}
                             @if((Auth::check())&&(Auth::id()==$user->id))
-                            <button onclick="document.getElementById('answeringquestion{{$question->id}}').style.display = 'block'" class="btn btn-primary btn-sm sosad-button pull-right">修改回答</button>
+                            <button onclick="document.getElementById('answeringquestion{{$question->id}}').style.display = 'block'" class="btn-sm sosad-button-tag pull-right">修改回答</button>
                             @endif
                         </div>
                     </div>
@@ -50,11 +72,12 @@
                         <div class="form-group">
                             <textarea id="answerofquestion{{$question->id}}" name="body" rows="10" class="form-control" data-provide="markdown" placeholder="问题正文">{{ $question->answer? $question->answer->answer_body : old('body') }}</textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary sosad-button">发布回答</button>
+                        <div class="text-right">
+                          <button type="submit" class="sosad-button-post">发布回答</button>
+                        </div>
                         <br>
                     </form>
                 </div>
-                <hr>
                 @endforeach
                 {{ $questions->links() }}
             </div>

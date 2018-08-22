@@ -15,6 +15,7 @@
         <div class="text-center h5">
             <strong>{{ $post->chapter->title }}</strong>
             <p class="grayout smaller-10">{{ $post->title }}</p>
+            <span class="smaller-20"><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{ $post->chapter->characters }} / <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ $post->chapter->viewed }} / <span class="glyphicon glyphicon glyphicon-comment"></span>&nbsp;{{ $post->chapter->responded }}</span>
         </div>
         <!-- 章节-正文 -->
         <div>
@@ -34,12 +35,12 @@
         </div>
         @endif
         <!-- 章节-数据统计 -->
-        <div class="container-fluid">
-            <a class="sosad-button-tag pull-right" href="{{ route('book.showchapter', $post->chapter_id) }}">
+        <div class="text-center">
+            <a class="sosad-button-tag" href="{{ route('book.showchapter', $post->chapter_id) }}">
               <i class="fa fa-book"></i>
               前往文库阅读
             </a>
-            <span class="smaller-20"><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{ $post->chapter->characters }} / <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ $post->chapter->viewed }} / <span class="glyphicon glyphicon glyphicon-comment"></span>&nbsp;{{ $post->chapter->responded }}</span>
+
         </div>
     @else
         <!-- 普通章节展开式 -->

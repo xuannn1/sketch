@@ -248,7 +248,8 @@ function removespace(itemname){
    $('#'+itemname).val(string);
 };
 
-function expandpost(id){
+function expandpost(id, pullright){
+  pullright = typeof pullright !== 'undefined' ?  pullright : false;
    var x = document.getElementById('full'+id);
    var y = document.getElementById('abbreviated'+id);
    var z = document.getElementById('expand'+id);
@@ -256,13 +257,13 @@ function expandpost(id){
       x.classList.remove('hidden');
       y.classList.add('hidden');
       z.innerHTML = '收起';
-      z.classList.remove('pull-right');
+      if (pullright) {z.classList.remove('pull-right');}
       z.classList.add('text-center');
    } else {
       x.classList.add('hidden');
       y.classList.remove('hidden');
       z.innerHTML = '展开';
-      z.classList.add('pull-right');
+      if (pullright) {z.classList.add('pull-right');}
       z.classList.remove('text-center');
    }
 };

@@ -34,9 +34,9 @@
                         文案不是正文，文案属于对文章的简单介绍。文案采用“居中排列”的板式，而不是“向左对齐”。如果在这里发布正文，阅读效果不好。正文请在发布文章后，于文案下选择“新建章节”来建立。
                     </div>
                     <textarea name="wenan" id="markdowneditor" data-provide="markdown" rows="5" class="form-control">{{ $thread->mainpost->body }}</textarea>
-                    <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
-                    <button type="button" onclick="removespace('markdowneditor')" class="sosad-button-control addon-button">清理段首空格</button>
-                    <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
+                    <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-ghost">恢复数据</button>
+                    <button type="button" onclick="removespace('markdowneditor')" class="sosad-button-ghost">清理段首空格</button>
+                    <button href="#" type="button" class="pull-right sosad-button-ghost">字数统计：<span id="word-count">0</span></button>
                 </div>
 
                 <div class="grayout">

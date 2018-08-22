@@ -44,11 +44,18 @@
                         <label for="introduction">个人介绍：</label>
                         <textarea name="introduction" data-provide="markdown" rows="12" class="form-control">{{$user->introduction}}</textarea>
                     </div>
-
-                    <button type="submit" class="btn btn-danger sosad-button">更新个人资料</button>
-                    @if(Auth::user()->user_level>=3)
-                    <a href="{{ route('linkedaccounts.create') }}" class="btn btn-danger sosad-button pull-right">关联其他账户</a>
-                    @endif
+                    <div class="">
+                      @if(Auth::user()->user_level>=3)
+                      <a href="{{ route('linkedaccounts.create') }}" class="sosad-button-thread">
+                        <i class="fas fa-link"></i>
+                        关联其他账户
+                      </a>
+                      @endif
+                      <button type="submit" class="sosad-button-thread {{Auth::user()->user_level<3 ? 'width100' : ''}}">
+                        <i class="fas fa-sync-alt"></i>
+                        更新个人资料
+                      </button>
+                    </div>
                 </form>
             </div>
         </div>

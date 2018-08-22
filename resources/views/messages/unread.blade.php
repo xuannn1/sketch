@@ -6,10 +6,10 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-body">
-                <div class="text-center">
+                <div class="text-center margin5">
                     <h4>您好&nbsp;<strong>{{Auth::user()->name}}</strong>！</h4>
-                    <h5 class="text-center">
-                        您共有
+                    <h5 class="post-body text-left smaller-10">
+                        您共有：
                         新公共通知{{ Auth::user()->unread_public_notices() }}条，
                         新消息{{ Auth::user()->message_reminders }}条，
                         新跟帖{{ Auth::user()->post_reminders }}条，
@@ -18,14 +18,17 @@
                         新赞赏{{ Auth::user()->upvote_reminders }}条，
                         新系统消息{{ Auth::user()->system_reminders }}条，
                     </h5>
-                    @include('messages._receive_stranger_messages_button')
-                    @include('messages._receive_upvote_reminders_button')
+                      @include('messages._receive_stranger_messages_button')
+                      @include('messages._receive_upvote_reminders_button')
                 </div>
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class = "active"><a href="{{ route('messages.unread') }}">未读</a></li>
+                <ul class="nav nav-pills nav-fill nav-justified">
+                    <li role="presentation"><a href="{{ route('messages.unread') }}" class = "active">未读</a></li>
                     <li role="presentation"><a href="{{ route('messages.index') }}">全部</a></li>
                     <li role="presentation"><a href="{{ route('messages.messagebox') }}">信箱</a></li>
-                    <li role="presentation" class="pull-right"><a class="btn btn-success sosad-button" href="{{ route('messages.clear') }}">清理未读</a></a></li>
+                    <li role="presentation" class="pull-right"><a class="btn sosad-button-ghost grayout" href="{{ route('messages.clear') }}">
+                      <i class="fas fa-check"></i>
+                      清理未读
+                    </a></li>
                 </ul>
             </div>
         </div>

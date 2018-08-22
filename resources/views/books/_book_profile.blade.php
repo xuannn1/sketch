@@ -46,6 +46,12 @@
                 &nbsp;<a href="{{ route('books.booktag', $tag->id) }}" class="sosad-button-tag">{{ $tag->tagname }}</a>
                 @endforeach
             </div>
+            <div class="">
+              <span class="">
+                <!-- 这个地方，是整本书的信息汇总：总字数，阅读数，回应数，下载数 -->
+                <span class = "smaller-10"><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{ $book->total_char }} / <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ $thread->viewed }} / <span class="glyphicon glyphicon-comment"></span>&nbsp;{{ $thread->responded }} / <span class="glyphicon glyphicon-save"></span>{{ $thread->downloaded }}&nbsp;&nbsp;<span>
+                </span>
+            </div>
     </div>
     <!-- 书本文案 -->
     <div class="text-center grayout main-text">
@@ -61,8 +67,8 @@
             @endif
         @endif
     </div>
-    <div>
-      <span class="pull-right">
+    <div class="text-center">
+      <span>
         @if($show_as_book)
         <a href="{{ route('thread.show', $thread) }}" class="sosad-button-tag">
           <i class="fa fa-comment"></i>
@@ -75,9 +81,6 @@
         </a>
         @endif
       </span>
-      <span class="">
-        <!-- 这个地方，是整本书的信息汇总：总字数，阅读数，回应数，下载数 -->
-        <span class = "smaller-10"><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{ $book->total_char }} / <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ $thread->viewed }} / <span class="glyphicon glyphicon-comment"></span>&nbsp;{{ $thread->responded }} / <span class="glyphicon glyphicon-save"></span>{{ $thread->downloaded }}&nbsp;&nbsp;<span>
-        </span>
+
       </div>
 </div>

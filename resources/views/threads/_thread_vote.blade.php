@@ -12,18 +12,25 @@
         @endif
     </span>
     <span class="pull-right">
-        <a class="btn-sm sosad-button-tag" href="#" data-toggle="modal" id="postshengfan{{$thread->post_id}}" data-target="#TriggerVoteForShengfan{{ $thread->mainpost->id }}">剩饭 {{ $thread->shengfan }}</a>
+        <a class="btn-sm sosad-button-kudos" href="#" data-toggle="modal" id="postshengfan{{$thread->post_id}}" data-target="#TriggerVoteForShengfan{{ $thread->mainpost->id }}">
+          <i class="fas fa-cookie-bite"></i>
+          剩饭 {{ $thread->shengfan }}
+        </a>
 
-        <button class="btn-sm sosad-button-tag" id="threadxianyu{{$thread->id}}" onclick="thread_xianyu({{$thread->id}})">咸鱼 {{ $thread->xianyu }}</button>
+        <button class="btn-sm sosad-button-kudos" id="threadxianyu{{$thread->id}}" onclick="thread_xianyu({{$thread->id}})">
+          <i class="fas fa-fish"></i>
+          咸鱼 {{ $thread->xianyu }}
+        </button>
 
         @if((Auth::user()->admin)||((!$thread->locked)&&(!$thread->noreply)&&(($thread->public)||($thread->user_id==Auth::id()))&&(Auth::user()->no_posting < Carbon\Carbon::now())))
-        <a class="btn-sm sosad-button-tag" href="#" data-toggle="modal" data-target="#TriggerPostComment{{ $thread->mainpost->id }}">点评</a>
+        <a class="btn-sm sosad-button-kudos" href="#" data-toggle="modal" data-target="#TriggerPostComment{{ $thread->mainpost->id }}">点评</a>
         @endif
-        <a class="btn-sm sosad-button-tag" href="{{ route('download.index', $thread) }}">下载</a>
+        <a class="btn-sm sosad-button-kudos" href="{{ route('download.index', $thread) }}">下载</a>
       </span>
 </div>
     <!-- 已有的咸鱼和剩饭投掷 -->
-<div class="smaller-10 thread-voters">
+@if(count($xianyus)>0 || count($shengfans)>0)
+<div class="smaller-10 thread-voters text-right">
     @if(count($xianyus)>0)
         @foreach($xianyus as $xianyu)
         <a href="{{ route('user.show', $xianyu->user_id) }}" class="grayout">{{ $xianyu->creator->name }}</a>，
@@ -37,7 +44,7 @@
         投掷了剩饭
     @endif
 </div>
-
+@endif
 
 <div class="thread-edit">
     @if ((Auth::id() == $thread->user_id)&&(!$thread->locked))

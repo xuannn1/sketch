@@ -42,6 +42,7 @@
              @endif
          </div>
          <div class="panel-body">
+               {{ $threads->appends(request()->query())->links() }}
                @include('threads._threads')
                {{ $threads->appends(request()->query())->links() }}
          </div>
@@ -52,7 +53,7 @@
            @else
               @if ($channel->channel_state == 1)
                  <a class="btn btn-primary sosad-button-post" href="{{ route('book.create') }}" role="button">
-                     <i class="fa fa-book"></i>
+                     <i class="fas fa-feather-alt"></i>
                      发布文章
                  </a>
               @else

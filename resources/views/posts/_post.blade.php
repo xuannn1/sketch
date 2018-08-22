@@ -9,13 +9,13 @@
             <div class="row">
                 <div class="col-xs-12">
                     @include('posts._post_profile')
-                    <span class="pull-right">
-                        <a href="{{ route('thread.showpost', $post) }}">No.{{ ($posts->currentPage()-1)*$posts->perPage()+$key+1 }}</a>
+                    <span class="pull-right grayout">
+                        <a href="{{ route('thread.showpost', $post) }}">#{{ ($posts->currentPage()-1)*$posts->perPage()+$key+1 }}</a>
                     </span>
                 </div>
             </div>
         </div>
-        <div class="panel-body">      
+        <div class="panel-body">
           <div class="post-body">
             @include('posts._post_body')
           </div>

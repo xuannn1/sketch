@@ -1,12 +1,12 @@
 @foreach($upvotes as $post)
 <article class="">
    <div class="row">
-      <div class="col-xs-12 h5">
+      <div class="thread-info">
          <span>
-            <a href="{{ route('thread.showpost', $post->id) }}">
-            <em>回复主题：{{ $post->thread_title }}</a></em>
+            <a href="{{ route('thread.showpost', $post->id) }}" class="thread-title">
+            回复主题：{{ $post->thread_title }}</a>
          </span>
-         <span class="pull-right smaller-15">
+         <span class="smaller-15">
             <span>
             @if($post->anonymous)
                {{ $post->majia ?? '匿名咸鱼'}}
@@ -24,7 +24,7 @@
             </span>
          </span>
       </div>
-      <div class="col-xs-12 h5">
+      <div class="">
          <div id="full{{$post->id}}" class="hidden main-text">
             <h5 class="text-center"><strong>{{ $post->title }}</strong></h5>
             @if($post->markdown)
@@ -34,10 +34,9 @@
             @endif
          </div>
          <span id="abbreviated{{$post->id}}"><strong>{{ $post->title }}</strong>{{ $post->title ? ' ': ''}}{!! Helper::trimtext($post->body,60) !!}</span>
-         <a type="button" name="button" id="expand{{$post->id}}" onclick="expandpost('{{$post->id}}')">展开</a>
+         <a type="button" name="button" id="expand{{$post->id}}" onclick="expandpost('{{$post->id}}')" class="grayout">展开</a>
          @include('posts._post_simplevote')
       </div>
    </div>
-   <hr>
 </article>
 @endforeach

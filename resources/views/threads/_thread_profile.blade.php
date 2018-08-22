@@ -17,9 +17,9 @@
    <!-- 首楼正文 -->
    <div class="main-text {{ $thread->mainpost->indentation ? 'indentation':'' }}">
       @if($thread->mainpost->markdown)
-      {!! Helper::sosadMarkdown($thread->body) !!}
+      {!! Helper::sosadMarkdown($thread->mainpost->body) !!}
       @else
-      {!! Helper::wrapParagraphs($thread->body) !!}
+      {!! Helper::wrapParagraphs($thread->mainpost->body) !!}
       @endif
    </div>
    <!-- 是否附加作业信息 -->

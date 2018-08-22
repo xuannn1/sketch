@@ -14,7 +14,7 @@
             </div>
             <div class="row">
                 <button type="submit" class="pull-right sosad-button-post" id="button-post" disabled="disabled">
-                    <i class="fa fa-feather"></i>
+                    <i class="fas fa-feather"></i>
                     发布
                 </button>
                 <!-- <span class="pull-right smaller-10 grayout">状态字数限制180&nbsp;</span> -->

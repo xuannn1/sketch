@@ -34,11 +34,18 @@
                 <span class="grayout smaller-10">{{ Carbon\Carbon::parse($collection_list->created_at)->diffForHumans() }}/{{ Carbon\Carbon::parse($collection_list->lastupdated_at)->diffForHumans() }}
                 </span>
 
-            </span>
-            <span class=" grayout smaller-10 loose">
+            </span>&nbsp;&nbsp;
+            <span class="grayout smaller-10">
                 <!-- 查看/收藏/含有帖子数目 -->
-                <em><span class="glyphicon glyphicon-eye-open"></span>{{ $collection_list->viewed }}/<span class="glyphicon glyphicon glyphicon-heart"></span>{{ $collection_list->collected }}/<span class="glyphicon glyphicon-duplicate"></span>{{ $collection_list->item_number }}</em>
-            </span>
+                <span class="glyphicon glyphicon-eye-open"></span>
+                {{ $collection_list->viewed }}
+                /
+                <span class="glyphicon glyphicon glyphicon-heart"></span>
+                {{ $collection_list->collected }}
+                /
+                <span class="glyphicon glyphicon-duplicate"></span>
+                {{ $collection_list->item_number }}
+            </span>&nbsp;&nbsp;
             <!-- author  -->
             <span class = "">
                 @if ($collection_list->anonymous)

@@ -43,7 +43,7 @@ $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
 %little-black-heading {
     letter-spacing: 1px;
     font-weight: 600;
-    font-size: 0.8em;
+    font-size: 0.9em;
     padding-top:5px;
     padding-bottom:6px;
     border-bottom: solid 2.5px $body-font-color;
@@ -56,10 +56,6 @@ $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
 
 .margin5 {
     margin-bottom: 5px;
-}
-
-.width100 {
-  width: 100% !important;
 }
 
 .long-foot {
@@ -244,6 +240,7 @@ header .container {
     form {
         color: $border-color;
         select {
+          -webkit-appearance: none;
             float: left;
             padding: 12px 0px 12px 15px;
             width: 75px;
@@ -442,6 +439,8 @@ footer {
     &:focus{
         background-color: $border-color-row;
         box-shadow: none;
+        outline: none;
+        border: none;
     }
 }
 
@@ -470,15 +469,22 @@ footer {
   border: none;
   @extend %button-clear;
   margin-bottom: 1em;
-  > textarea, &:focus, &:active {
+  > textarea {
     background: $body-color;
     border: none;
     padding: 0.5em;
+  }
+  > textarea:focus, textarea:active {
+    background: $dark-gray;
   }
 
   .md-preview {
     border: none;
     padding: 0.5em;
+  }
+
+  &:hover, &:active, &:focus {
+    color: $body-font-color;
   }
 }
 
@@ -524,6 +530,10 @@ input[type="checkbox"] {
 
 label, .label {
     font-weight: 400;
+}
+
+.status-container {
+  margin-bottom: 2em;
 }
 
 .status-wrapper {
@@ -610,6 +620,12 @@ h2, .h2 {
 h4, .h4, h5, .h5, h6, .h6 {
     @extend %headings-shared;
     line-height: 1.5em;
+}
+
+h4, .h4 {
+  margin-top: 1em;
+  font-weight: 600;
+  font-size: 1em;
 }
 
 code {
@@ -932,18 +948,19 @@ hr {
 }
 .panel-vote{
   margin-top: 0.5em;
-  border-top: 2px solid $body-color;
-  padding: 1em 2.5em;
+  border-top: 1px solid $body-color;
+  padding: 0.5em 2.5em;
 }
 .post-reply{
-   padding-left:20px;
+  //  padding-left:20px;
    padding-top:5px;
 }
 .post-body{
-   padding: 1em 2.5em;
+   padding: 0em 2.5em;
 }
 .post-vote{
-  padding: 0 5px;
+  padding: 1em 0.5em 0 0.5em;
+  margin-bottom: -0.5em;
 }
 .book-intro{
    margin-top:10px;
@@ -1081,6 +1098,7 @@ hr {
 .badge {
     background: $body-color;
     color: $link-hover-color;
+    padding: 2px 3px;
 }
 
 // tab badges
@@ -1156,8 +1174,9 @@ hr {
 }
 
 .chapter-text {
-    line-height: 1.8;
-    font-size: 1.2em;
+    // line-height: 2;
+    // font-size: 1.2em;
+    // font-weight: 400;
 }
 
 .md-preview{
@@ -1175,11 +1194,11 @@ hr {
     font-weight: 700;
     line-height: 2;
 }
-.thread-vote{
-   .sosad-button{
-      margin-bottom:5px;
-   }
+
+.thread-vote > .pull-right {
+  padding: 0.5em 0;
 }
+
 .thread-voters {
   background: $body-color;
   padding: 0.5em 1em;
@@ -1319,13 +1338,14 @@ hr {
 .brief-selector {
     display: flex;
     display: -webkit-flex;
-    width: 90%;
+    width: 100%;
     margin: auto;
     flex: 1 1 auto;
     -webkit-flex: 1 1 auto;
     flex-flow: row nowrap;
     -webkit-flex-flow: row nowrap;
     justify-content: space-around;
+    -webkit-justify-content: space-around;
 }
 
 .sosad-button-dropdown {
@@ -1334,6 +1354,7 @@ hr {
     background-color: $dark-gray;
     color: $bold-color;
     @extend %button-clear;
+    margin: 0;
 }
 
 .sosad-button-chapter {
@@ -1387,11 +1408,55 @@ hr {
     padding: 0.5em;
 }
 
+.offline {
+  opacity: 0.3;
+}
+
 .table > tbody > tr > td, .table > thead > tr > th {
   border: none;
   padding: 0.5em;
   vertical-align: middle;
   font-size: 0.9em;
+}
+
+.stats {
+  padding: 0.5em;
+  display: flex;
+  display: -webkit-flex;
+  flex-flow: row nowrap;
+  -webkit-flex-flow: row nowrap;
+  align-items: center;
+  -webkit-align-items: center;
+  justify-content: space-around;
+  -webkit-justify-content: space-around;
+  width: 350px;
+  margin: 0 auto;
+}
+
+.stats-item {
+  display: flex;
+  display: -webkit-flex;
+  flex-flow: column nowrap;
+  -webkit-flex-flow: column nowrap;
+  > span:last-child {
+    color: $bold-color;
+    font-size: 1.5em;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+  > span:first-child {
+    font-weight: 600;
+  }
+}
+
+.well {
+  border: none;
+  border-radius: 0px;
+  background-color: $dark-gray;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 
 
@@ -1542,8 +1607,18 @@ hr {
             padding: 10px 1em;
         }
     }
-    .post-body, .panel-vote {
-        padding: 1em;
+    .post-body {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    .panel-vote {
+      padding: 0.5em 1em;
+    }
+    .width100 {
+      width: 100% !important;
+    }
+    .stats {
+      width: 100%;
     }
 
 }

@@ -105,11 +105,12 @@
                       <form action="{{ route('collection.store_comment', $book->collection_id)}}" method="POST">
                           {{ csrf_field() }}
                           <div class="form-group">
-                              <textarea name="body" rows="6" class="form-control" placeholder="留下对这个收藏的评论心得：" data-provide="markdown"  id="collectioncomment{{$book->collection_id}}">{{ $book->collection_body }}</textarea>
-                              <button type="button" onclick="retrievecache('collectioncomment{{$book->collection_id}}')" class="sosad-button-control addon-button">恢复数据</button>
+                              <textarea name="body" rows="6" class="form-control comment-editor" placeholder="留下对这个收藏的评论心得：" data-provide="markdown"  id="collectioncomment{{$book->collection_id}}">{{ $book->collection_body }}</textarea>
+                              <button type="button" onclick="retrievecache('collectioncomment{{$book->collection_id}}')" class="sosad-button-ghost grayout">恢复数据</button>
+                              <button href="#" type="button" class="pull-right sosad-button-ghost grayout">字数统计：<span id="collectioncomment{{$book->collection_id}}">0</span></button>
                           </div>
                           <div class="">
-                              <button type="submit" class="btn btn-primary sosad-button btn-sm">提交收藏心得</button>
+                              <button type="submit" class="pull-right sosad-button-post btn-sm">提交收藏心得</button>
                           </div>
                       </form>
                   </div>

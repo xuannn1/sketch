@@ -2,7 +2,7 @@
 <div class="dropdown selector">
    <form method="POST" action="{{ route('books.filter') }}"  name="book_filter">
          {{ csrf_field() }}
-         <div class="brief-selector">
+         <div class="brief-selector smaller-10">
              <span class="button-group">
                 <button type="button" id="dropdown-orig" class="dropdown-toggle dropdown-menu-narrow sosad-button-dropdown" data-toggle="dropdown">原创性 <span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-filter" aria-labelledby="dropdown-orig">

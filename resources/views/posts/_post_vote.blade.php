@@ -3,16 +3,16 @@
 </span>
 @if((!$thread->locked)&&(Auth::user()->no_posting < Carbon\Carbon::now()))
 <span class="voteposts">
-  <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostComment{{ $post->id }}" class="btn-xs sosad-button-ghost">点评</a>
+  <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostComment{{ $post->id }}" class="btn-xs sosad-button-ghost grayout">点评</a>
 </span>
-<span ><a href = "#replyToThread" class="btn-xs sosad-button-ghost" onclick="replytopost({{ $post->id }}, '{{ Helper::trimtext($post->body, 10)}}')">回复</a></span>
+<span ><a href = "#replyToThread" class="btn-xs sosad-button-ghost grayout" onclick="replytopost({{ $post->id }}, '{{ Helper::trimtext($post->body, 10)}}')">回复</a></span>
 @endif
 
 @if($post->user_id == Auth::id()&&(!$thread->locked))
    @if($post->maintext)
-      <span><a class="btn-xs sosad-button-ghost" href="{{ route('book.editchapter', $post->chapter_id) }}">编辑</a></span>
+      <span><a class="btn-xs sosad-button-ghost grayout" href="{{ route('book.editchapter', $post->chapter_id) }}">编辑</a></span>
    @else
-      <span><a class="btn-xs sosad-button-ghost" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
+      <span><a class="btn-xs sosad-button-ghost grayout" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
    @endif
 @endif
 

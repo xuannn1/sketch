@@ -41,6 +41,7 @@
                           修改于 {{ Carbon\Carbon::parse($chapter->mainpost->edited_at)->diffForHumans() }}
                           @endif
                         </p>
+                        <span class="smaller-20"><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{ $chapter->characters }} / <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ $chapter->viewed }} / <span class="glyphicon glyphicon glyphicon-comment"></span>&nbsp;{{ $chapter->responded }}</span>
                     </div>
                 </div>
             </div>
@@ -56,22 +57,23 @@
                 </div>
                 @else
                 <div class="text-left main-text {{ $chapter->mainpost->indentation? 'indentation':'' }}">
-                  @if($chapter->mainpost->markdown)
-                  {!! Helper::sosadMarkdown($chapter->mainpost->body) !!}
-                  @else
-                  {!! Helper::wrapParagraphs($chapter->mainpost->body) !!}
-                  @endif
-                  <br>
+                  <div class="chapter-text">
+                    @if($chapter->mainpost->markdown)
+                    {!! Helper::sosadMarkdown($chapter->mainpost->body) !!}
+                    @else
+                    {!! Helper::wrapParagraphs($chapter->mainpost->body) !!}
+                    @endif
+                  </div>
                   <div class="text-left grayout">
                     {!! Helper::wrapParagraphs($chapter->annotation) !!}
                   </div>
                   @endif
-                  <div class="container-fluid">
-                    <a class="sosad-button-tag pull-right" href="{{ route('thread.showpost', $chapter->post_id) }}">
+                  <div class="container-fluid text-center">
+                    <a class="sosad-button-tag" href="{{ route('thread.showpost', $chapter->post_id) }}">
                       <i class="fas fa-book-open"></i>
                       论坛讨论模式
                     </a>
-                    <span class="smaller-20"><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{ $chapter->characters }} / <span class="glyphicon glyphicon-eye-open"></span>&nbsp;{{ $chapter->viewed }} / <span class="glyphicon glyphicon glyphicon-comment"></span>&nbsp;{{ $chapter->responded }}</span>
+
                   </div>
                 </div>
 
@@ -88,7 +90,7 @@
               @endif
             </div>
 
-            <div class="chapters">
+            <div class="">
               <div class="row thread-edit smaller-10">
                 @if(!$previous)
                 <a href="#" class = "sosad-button-thread disabled">这是第一章</a>
@@ -117,7 +119,7 @@
           @include('posts._post_comments')
         </div>
         @endif
-        
+
         @foreach($posts as $key=>$post)
         @if(!$post->maintext)
         @include('posts._post')

@@ -5,12 +5,16 @@
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
-            <div class="">
+            <div class="panel-heading">
                 <a href="{{ route('messages.index') }}">全部消息</a>&nbsp;/&nbsp;<a href="{{ route('messages.messagebox') }}">信箱</a>
             </div>
-            <div class="panel-heading text-center">
-                <h5>和&nbsp;<strong><a href="{{ route('user.show', $user) }}">{{$user->name}}</a></strong>&nbsp;的对话</h5>
+            <br>
+            <div class="text-center">
+              <span id="channel-name">
+                和&nbsp;<strong><a href="{{ route('user.show', $user) }}">{{$user->name}}</a></strong>&nbsp;的对话
+              </span>
             </div>
+            <br>
             <div class="panel-body">
                 @include('messages._conversations')
                 {{ $messages->links() }}

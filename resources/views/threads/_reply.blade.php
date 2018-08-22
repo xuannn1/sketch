@@ -6,7 +6,7 @@
     <div class="panel-body">
       <form id="replyToThread" action="{{ route('post.store', $thread) }}" method="POST">
           {{ csrf_field() }}
-          <div class="hidden" id="reply_to_post">
+          <div class="hidden margin5" id="reply_to_post">
               <span class="" id="reply_to_post_info"></span>
               <button type="button" class="sosad-button-ghost"><span class="glyphicon glyphicon glyphicon-remove" onclick="cancelreplytopost()"></span></button>
           </div>
@@ -31,8 +31,8 @@
                 显示编辑器
             </label>&nbsp;
 
-            <input type="checkbox" name="indentation" checked>
-            <label for="anonymous" class="input-helper input-helper--checkbox">
+            <input type="checkbox" name="indentation" id="indentation" checked>
+            <label for="indentation" class="input-helper input-helper--checkbox">
                 段首缩进（自动空两格）
             </label>&nbsp;
           </div>
