@@ -2,7 +2,7 @@
   <div class="container">
     <div class="col-md-offset-1 col-md-10">
       <a href="{{ route('home') }}" id="logo">
-          <img src="../img/sosad-logo.png" alt="废文网">
+          <img src="/img/sosad-logo.png" alt="废文网">
           <!-- 废文网 -->
       </a>
       <input type="hidden" id="baseurl" name="baseurl" value= "{{route('home')}}"/>
