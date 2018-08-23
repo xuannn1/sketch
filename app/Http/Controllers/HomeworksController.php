@@ -52,15 +52,14 @@ class HomeworksController extends Controller
             'label_id' => 12,//needs adjust for now's datafile
             'brief' => ' ',
             'homework_id' => $homework->id,
-            'body'=>request('requirement'),
         ]);
         $thread->update_channel();
         $markdown = request('markdown')? true: false;
         $post = Post::create([
             'user_id' => auth()->id(),
-            'body' => null,
             'thread_id' => $thread->id,
             'markdown' => $markdown,
+            'body'=>request('requirement'),
         ]);
         $thread->update(['post_id'=>$post->id]);
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
