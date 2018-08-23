@@ -16,10 +16,14 @@
                     <textarea name="requirement" id="requirement" rows="12" class="form-control" data-provide="markdown" placeholder="作业时间-流程……etc">{{ old('requirement') }}</textarea>
                     <button type="button" onclick="retrievecache('requirement')" class="sosad-button-control addon-button">恢复数据</button>
                     <button href="#" type="button" onclick="wordscount('requirement');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
+
                 </div>
-                <!-- <div class="">
-                <label><input type="checkbox" name="markdown" checked>使用Markdown语法？</label>
-            </div> -->
+                <div class="">
+                    <label for="hold_sangdian">抵押丧点<input type="number" name="hold_sangdian" min="0" max="500">，</label>
+                    <label for="register_number">报名人数<input type="number" name="register_number" min="5" max="50">，</label>
+                    <label for="start_time">开始报名时间<input id="start_time" type="datetime-local" name="start_time" value="{{ Carbon\Carbon::now('Asia/Shanghai')->format('Y-m-d\TH:i') }}">，</label>
+
+                </div>
             <button type="submit" class="btn btn-danger sosad-button">发布</button>
         </form>
     </div>

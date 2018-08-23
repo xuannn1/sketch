@@ -31,6 +31,7 @@
     });
     Route::get('about', 'PagesController@about')->name('about');
     Route::get('help', 'PagesController@help')->name('help');
+    Route::get('contacts', 'PagesController@contacts')->name('contacts');
     Route::get('/search','PagesController@search')->name('search');
     Route::get('error/{error_code}', 'PagesController@error')->name('error');
     Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');

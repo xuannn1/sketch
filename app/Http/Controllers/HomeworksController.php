@@ -27,12 +27,21 @@ class HomeworksController extends Controller
     }
     public function store(Request $request)
     {
-        //dd($request);
         $user = Auth::user();
         $this->validate($request, [
             'requirement' => 'required|string|min:10',
+            'hold_sangdian' => 'required|numeric|min:0|max:500',
+            'register_number' => 'required|numeric|min:5|max:50',
+            'start_time' => 'required|date',
         ]);
-        $homework = Homework::create();
+        $starttime = Carbon::createFromFormat('Y-m-d\TH:i', $request->start_time, 'Asia/Shanghai')->setTimezone('UTC');
+        $homework = Homework::create([
+            'hold_sangdian' => $request->hold_sangdian,
+            'register_number' => 5,
+            'register_at' => $starttime->toDateTimeString(),
+            'register_number_b' => $request->register_number-5,
+            'register_at_b' => $starttime->addHours(12)->toDateTimeString(),
+        ]);
         $channel = Channel::find(4);
         $thread = Thread::create([
             'title' => "第{$homework->id}次作业报名入口",
@@ -189,16 +198,17 @@ class HomeworksController extends Controller
     {
         if($homework->active){
             $registered = $homework->registered_students();
+            $base = $homework->hold_sangdian;
             foreach($registered as $student){
                 $rewards=request($student->id);
                 $user = User::find($student->id);
                 if($rewards=='1'){//super-reward
-                    DB::transaction(function()use($user){
-                        $user->reward('homework_excellent');
+                    DB::transaction(function()use($user, $base){
+                        $user->reward('homework_excellent', $base);
                     });
                 }elseif($rewards=='2'){//regular-reward
-                    DB::transaction(function()use($user){
-                        $user->reward('homework_regular');
+                    DB::transaction(function()use($user, $base){
+                        $user->reward('homework_regular', $base);
                     });
                 }elseif($rewards=='4'){//punishmeng-1months
                     $user->no_registration = Carbon::now()->addMonth(2);

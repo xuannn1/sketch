@@ -4,6 +4,7 @@
             <small class="slogon">
                 <img class="brand-icon" src="/img/icon.png" alt="sosad-logo">
                 <a href="/">首页</a>
+                <a href="{{route('contacts')}}">联系我们</a>
             </small>
             <div>
                 <ul>

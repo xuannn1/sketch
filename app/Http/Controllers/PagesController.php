@@ -210,4 +210,9 @@ class PagesController extends Controller
         }
         return redirect()->back()->with('warning','请输入搜索内容');
     }
+
+    public function contacts()
+    {
+        return view('pages.contacts');
+    }
 }
