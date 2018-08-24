@@ -58,6 +58,8 @@ $factory->define(App\Models\Post::class, function (Faker\Generator $faker){
       'thread_id' => function(){
          return factory('App\Models\Thread')->create()->id;
       },
+      'long_comment' => 1,
+      'as_longcomment' => 1,
       'body' => $faker->paragraph,
    ];
 });
@@ -70,5 +72,25 @@ $factory->define(App\Models\PostComment::class, function (Faker\Generator $faker
          return factory('App\Models\Post')->create()->id;
       },
       'body' => $faker->sentence,
+   ];
+});
+
+$factory->define(App\Models\LongComment::class, function (Faker\Generator $faker){
+   return [
+      'post_id' => function(){
+         return factory('App\Models\Post')->create()->id;
+      },
+      'reviewed' => 1,
+      'approved' => 1,
+   ];
+});
+
+$factory->define(App\Models\Book::class, function (Faker\Generator $faker){
+   return [
+      'thread_id' => function() {
+          return factory('App\Models\Thread')->create()->id;
+      },
+      'book_status' => 1,
+      'book_length' => 1,
    ];
 });

@@ -219,3 +219,14 @@
     Route::get('/users/{user}/questions', 'QuestionsController@index')->name('questions.index');//问题列表
     Route::post('/users/{user}/questions/{question}/answer','QuestionsController@answer')->name('questions.answer');//储存回答路径
 }
+
+//推荐书籍功能
+{
+    Route::get('/recommend_books/create', 'RecommendBooksController@create')->name('recommend_books.create');//添加推荐书籍
+    Route::post('/recommend_books/store', 'RecommendBooksController@store')->name('recommend_books.store');//储存推荐书籍
+    Route::get('/recommend_books/index', 'RecommendBooksController@index')->name('recommend_books.index');//查看推荐书籍
+    Route::get('/recommend_books/recommend_longcomments', 'RecommendBooksController@longcomments')->name('recommend_books.longcomments');//查看推荐长评
+    Route::get('/recommend_books/{recommend_book}', 'RecommendBooksController@show')->name('recommend_books.show');//推荐书籍信息
+    Route::get('/recommend_books/{recommend_book}/edit', 'RecommendBooksController@edit')->name('recommend_books.edit');//修改书籍信息
+    Route::post('/recommend_books/{recommend_book}/update', 'RecommendBooksController@update')->name('recommend_books.update');//保存修改
+}
