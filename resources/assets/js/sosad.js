@@ -827,3 +827,14 @@ function toggle_tags_tongren_yuanzhu(){
       });
     }
 })(jQuery);
+
+// function switchTheme() {
+//   document.documentElement.style.setProperty('--body-color', '#111');
+//   document.documentElement.style.setProperty('--panel-color', '#000');
+//   document.documentElement.style.setProperty('--body-font-color', '#f9f9f9');
+//   document.documentElement.style.setProperty('--link-color', '#f9f9f9');
+//   document.documentElement.style.setProperty('--bold-color', '#fff');
+//   document.documentElement.style.setProperty('--border-color', '#555');
+//   document.documentElement.style.setProperty('--border-color-light', '#222');
+//   document.documentElement.style.setProperty('--dark-gray', '#111');
+// }

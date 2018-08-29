@@ -35723,7 +35723,8 @@ function removespace(itemname){
    $('#'+itemname).val(string);
 };
 
-function expandpost(id){
+function expandpost(id, pullright){
+  pullright = typeof pullright !== 'undefined' ?  pullright : false;
    var x = document.getElementById('full'+id);
    var y = document.getElementById('abbreviated'+id);
    var z = document.getElementById('expand'+id);
@@ -35731,13 +35732,13 @@ function expandpost(id){
       x.classList.remove('hidden');
       y.classList.add('hidden');
       z.innerHTML = '收起';
-      z.classList.remove('pull-right');
+      if (pullright) {z.classList.remove('pull-right');}
       z.classList.add('text-center');
    } else {
       x.classList.add('hidden');
       y.classList.remove('hidden');
       z.innerHTML = '展开';
-      z.classList.add('pull-right');
+      if (pullright) {z.classList.add('pull-right');}
       z.classList.remove('text-center');
    }
 };
@@ -36301,3 +36302,14 @@ function toggle_tags_tongren_yuanzhu(){
       });
     }
 })(jQuery);
+
+// function switchTheme() {
+//   document.documentElement.style.setProperty('--body-color', '#111');
+//   document.documentElement.style.setProperty('--panel-color', '#000');
+//   document.documentElement.style.setProperty('--body-font-color', '#f9f9f9');
+//   document.documentElement.style.setProperty('--link-color', '#f9f9f9');
+//   document.documentElement.style.setProperty('--bold-color', '#fff');
+//   document.documentElement.style.setProperty('--border-color', '#555');
+//   document.documentElement.style.setProperty('--border-color-light', '#222');
+//   document.documentElement.style.setProperty('--dark-gray', '#111');
+// }

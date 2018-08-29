@@ -13,8 +13,8 @@
 
         <div class="panel panel-default">
           <div class="panel-heading">
-            <div>
-              <a href="{{ route('questions.index', $user) }}" class="h4">{{ $user->name }} 问答记录</a>
+            <div class="h2 sosad-heading">
+              <a href="{{ route('questions.index', $user) }}">{{ $user->name }} 问答记录</a>
 
             </div>
           </div>
@@ -27,7 +27,7 @@
                 </a>
               </div>
               @endif
-                @foreach ($questions as $question)
+                @foreach ($questions->reverse() as $question)
                 <div class="row {{ $question->answer_id>0? 'grayout':'' }} main-text">
                     <div class="margin5 smaller-10 grayout">
                       ·

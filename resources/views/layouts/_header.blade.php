@@ -139,6 +139,11 @@
                     <i class="fa fa-key"></i>
                     登录</a></li>
               @endif
+              <!-- <li>
+                <a href="#" onclick="switchTheme()">
+                  <i class="far fa-lightbulb"></i> 切换主题
+                </a>
+              </li> -->
             </ul>
           <div>
       </nav>

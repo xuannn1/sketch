@@ -12,6 +12,7 @@
         @if(Auth::check())
             @if((($thread->homework->register_at < Carbon\Carbon::now())&&($thread->homework->register_number>0))||(($thread->homework->register_at_b < Carbon\Carbon::now())&&($thread->homework->register_number_b>0)))
             <div class="text-center post-body">
+              <br>
                 <a href="#" data-toggle="modal" data-target="#TriggerRegister" class="btn-md sosad-button-post">我要报名</a>
             </div>
             <div class="modal fade" id="TriggerRegister" role="dialog">

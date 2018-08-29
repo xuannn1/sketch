@@ -28,22 +28,25 @@
                     </div>
                     <div class="form-group">
                         <label for="body"><h4>描述（非必填）：</h4></label>
-                        <textarea id="mainbody" name="body" rows="8" class="form-control" data-provide="markdown" placeholder="收藏单描述正文">{{ old('body') }}</textarea>
-                        <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-control addon-button">恢复数据</button>
-                        <button type="button" onclick="removespace('mainbody')" class="sosad-button-control addon-button">清理段首空格</button>
-                        <button href="#" type="button" onclick="wordscount('mainbody');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
+                        <textarea id="mainbody" name="body" rows="8" class="form-control comment-editor" data-provide="markdown" placeholder="收藏单描述正文">{{ old('body') }}</textarea>
+                        <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-ghost grayout">恢复数据</button>
+                        <button type="button" onclick="removespace('mainbody')" class="sosad-button-ghost grayout">清理段首空格</button>
+                        <button href="#" type="button" class="pull-right sosad-button-ghost grayout">字数统计：<span id="word-count-mainbody">0</span></button>
                         <br>
                     </div>
 
                     <div class="checkbox">
-                        <label><input type="checkbox" name="anonymous" onclick="document.getElementById('majia').style.display = 'block'">马甲？</label>
+                      <input type="checkbox" name="anonymous" id="anonymous" onclick="document.getElementById('majia').style.display = 'block'">
+                      <label for="anonymous" class="input-helper input-helper--checkbox">
+                          马甲？
+                      </label>
                         <div class="form-group text-right" id="majia" style="display:none">
                             <input type="text" name="majia" class="form-control" value="{{Auth::user()->majia ?:'匿名咸鱼'}}">
                             <label for="majia"><small>(请输入不超过10字的马甲。马甲仅勾选“匿名”时有效)</small></label>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary sosad-button">发布新收藏单</button>
+                    <button type="submit" class="sosad-button-thread width100">发布新收藏单</button>
                 </form>
             </div>
         </div>
