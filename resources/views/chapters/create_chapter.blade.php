@@ -33,7 +33,7 @@
                         <div class="">
                             <label><input type="checkbox" name="indentation" {{ $book->indentation? 'checked':'' }}>段首缩进(每段前两个空格)？</label>
                             <br>
-                            <label><input type="checkbox" name="markdown">使用Markdown语法？（建议：如果您对markdwon语法并不熟悉，请直接忽略该选项）</label>
+                            <label><input type="checkbox" name="markdown">使用Markdown语法？（建议：如果您对markdown语法并不熟悉，请直接忽略该选项）</label>
                         </div>
                     </div>
                     <div class="form-group">

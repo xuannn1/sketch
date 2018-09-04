@@ -168,8 +168,8 @@
                                 <label><input type="checkbox" name="public" checked>是否公开可见？</label>&nbsp;
                                 <label><input type="checkbox" name="noreply">是否禁止回帖？</label>&nbsp;
                                 <br>
-                                <label><input type="checkbox" name="download_as_thread" checked>开放书评下载？</label>&nbsp;
-                                <label><input type="checkbox" name="download_as_book" >开放书籍下载？</label>
+                                <label><input type="checkbox" name="download_as_thread" checked>开放讨论帖形式的书评下载？（正文+全部评论，按回帖时间顺序排列）</label>&nbsp;
+                                <label><input type="checkbox" name="download_as_book" >开放脱水书籍下载？（不含回帖的正文章节）</label>
                             </div>
                         </div>
                     </div>
