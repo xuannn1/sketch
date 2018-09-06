@@ -1,5 +1,5 @@
 
-window._ = require('lodash');
+//window._ = require('lodash');//去除lodash，因为至今似乎未曾使用removed lodash because not used yet
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
