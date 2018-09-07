@@ -298,6 +298,7 @@ class User extends Authenticatable
         +$this->reply_reminders
         +$this->postcomment_reminders
         +$this->upvote_reminders
+        +$this->system_reminders
         +$this->unread_public_notices();
         return $unreadmessages;
     }
