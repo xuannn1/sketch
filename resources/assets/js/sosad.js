@@ -488,8 +488,8 @@ $(document).ready(function(){
     });
 });
 
-$('textarea').keyup(_.debounce(function() {
-   console.log('save');
+$('textarea').keyup(debounce(function() {
+   //console.log('save');
    item_value = $(this).val();
    $.ajaxSetup({
       headers: {
@@ -504,14 +504,14 @@ $('textarea').keyup(_.debounce(function() {
           },
       success: function(data) {
          if (data != "notwork"){
-            console.log(data);
+            //console.log(data);
          }
       }
    });
 }, 1000));
 
 function retrievecache(itemname){
-   console.log('going to retrieve cache');
+   //console.log('going to retrieve cache');
    $.ajaxSetup({
       headers: {
            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -524,11 +524,11 @@ function retrievecache(itemname){
           },
       success: function(data) {
          if (data != "notwork"){
-            console.log('cache retrieved');
+            //console.log('cache retrieved');
             //console.log(data);
             $('#'+itemname).val(data);
          }else{
-            console.log('no cache retrieved');
+            //console.log('no cache retrieved');
          }
       }
    });
