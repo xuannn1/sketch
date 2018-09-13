@@ -15245,10 +15245,9 @@ button.close {
 }
 
 :root {
-  --body-color: #f9f9f9;
   --admin-symbol-color: #c49d8d;
   --reminder-symbol-color: #FF2121;
-  --body-color: #f9f9f9;
+  --body-color: #f3f3f3;
   --border-color: #999;
   --border-color-light: #efefef;
   --button-color: #666666;
@@ -15260,7 +15259,7 @@ button.close {
   --body-font-color-light: #999;
   --button-color: #222;
   --bold-color: #000;
-  --panel-color: #fff;
+  --panel-color: #fefefe;
   --dark-gray: #f3f3f3;
   --gradient-thin: rgba(255, 255, 255, 0.0001);
   --gradient-dense: rgba(255, 255, 255, 0.5);
@@ -17004,4 +17003,3 @@ hr {
     width: 100%;
   }
 }
-
