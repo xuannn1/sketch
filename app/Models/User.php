@@ -207,7 +207,7 @@ class User extends Authenticatable
         return Activity::where('user_id',$this->id)->where('seen',0)->count();
     }
 
-    public function reward($kind){
+    public function reward($kind, $base = 0){
         switch ($kind):
             case "regular_status"://普通状态奖励
             $this->increment('experience_points',1);
@@ -277,14 +277,14 @@ class User extends Authenticatable
             $this->increment('experience_points', 100);
             $this->increment('shengfan', 100);
             $this->increment('xianyu', 50);
-            $this->increment('sangdian', 30);
+            $this->increment('sangdian', $base*3);
             break;
             case "homework_regular":
             $this->increment('jifen', 50);
             $this->increment('experience_points', 50);
             $this->increment('shengfan', 50);
             $this->increment('xianyu', 20);
-            $this->increment('sangdian', 15);
+            $this->increment('sangdian', $base*2);
             break;
             default:
             echo "应该奖励什么呢？一个bug呀……";
@@ -298,6 +298,7 @@ class User extends Authenticatable
         +$this->reply_reminders
         +$this->postcomment_reminders
         +$this->upvote_reminders
+        +$this->system_reminders
         +$this->unread_public_notices();
         return $unreadmessages;
     }

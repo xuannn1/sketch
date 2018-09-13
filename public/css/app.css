@@ -15245,23 +15245,23 @@ button.close {
 }
 
 :root {
-  --body-color: #f9f9f9;
+  --body-color: #f3f3f3;
   --admin-symbol-color: #c49d8d;
   --reminder-symbol-color: #FF2121;
-  --body-color: #f9f9f9;
+  --body-color: #f3f3f3;
   --border-color: #999;
   --border-color-light: #efefef;
   --button-color: #666666;
   --button-disabled: #e1e1e1;
-  --admin-button-color: #7c5454;
+  --admin-button-color: #d08770;
   --link-color: #555;
-  --link-hover-color: #FF2121;
+  --link-hover-color: #bf616a;
   --body-font-color: #555;
   --body-font-color-light: #999;
   --button-color: #222;
   --bold-color: #000;
-  --panel-color: #fff;
-  --dark-gray: #f3f3f3;
+  --panel-color: #f9f9f9;
+  --dark-gray: #ececec;
   --gradient-thin: rgba(255, 255, 255, 0.0001);
   --gradient-dense: rgba(255, 255, 255, 0.5);
 }
@@ -15629,7 +15629,7 @@ footer .slogon {
   padding-top: 4px;
   position: absolute;
   bottom: 0px;
-  background: var(--border-color-light);
+  background: var(--dark-gray);
 }
 
 .jumbotron {
@@ -16339,15 +16339,25 @@ hr {
 }
 
 .admin-button {
-  background-color: var(--panel-color) !important;
-  color: var(--admin-button-color) !important;
-  border-color: var(--admin-button-color) !important;
-  border-width: 1.5px !important;
+  background-color: var(--admin-button-color) !important;
+  color: var(--panel-color) !important;
+  letter-spacing: 1px;
+  margin: 2px;
+  padding: 0.5em;
+  border-radius: 4px;
+}
+
+.admin-button:hover,
+.admin-button:active,
+.admin-button:focus {
+  outline: none;
+  border: none;
 }
 
 .panel-default {
   background: var(--panel-color);
   border: none;
+  border-radius: 0;
   -webkit-box-shadow: none;
           box-shadow: none;
 }
@@ -16526,6 +16536,10 @@ hr {
 
 .main-text.indentation p {
   text-indent: 2em;
+}
+
+.chapter-text {
+  font-size: 1.2em;
 }
 
 .md-preview p {
@@ -16901,6 +16915,7 @@ hr {
     background: var(--dark-gray);
     width: 90px;
     padding: 14px 4px 14px 34px;
+    border-radius: 0;
   }
 
   .search-container form input {
@@ -16988,8 +17003,8 @@ hr {
   }
 
   .post-body {
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: .5em;
+    padding-right: .5em;
   }
 
   .panel-vote {

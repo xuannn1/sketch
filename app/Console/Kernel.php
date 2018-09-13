@@ -24,9 +24,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('webstat:count')
+        $schedule->command('webstat:count')
                   ->daily();
                   //->everyFiveMinutes();
+        $schedule->command('cache:clear')
+               ->daily()
+               ->timezone('Asia/Shanghai')
+               ->between('3:00', '5:00')
+               ->withoutOverlapping(10);
     }
 
     /**

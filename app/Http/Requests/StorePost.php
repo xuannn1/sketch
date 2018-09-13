@@ -39,7 +39,6 @@ class StorePost extends FormRequest
         $data = $this->only('body');
         $data['body'] = Helper::trimSpaces($data['body']);
         $data['trim_body']=Helper::trimtext($data['body'], 50);
-
         $data['user_ip'] = $this->getClientIp();
         if ($this->anonymous){
             $data['anonymous']=1;
@@ -96,7 +95,6 @@ class StorePost extends FormRequest
         $data = $this->only('body');
         $data['body'] = Helper::trimSpaces($data['body']);
         $data['trim_body']=Helper::trimtext($data['body'], 50);
-        
         $data['anonymous']=$this->anonymous ? 1:0;
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;

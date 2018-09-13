@@ -11,6 +11,7 @@
 |
 */
 
+
 {//以下是用户注册与验证模块
    Auth::routes();
    Route::get('/test', 'PagesController@test')->name('test');
@@ -24,13 +25,17 @@
 }
 
 {//以下是静态页面模块
-   Route::get('/', 'PagesController@home')->name('home');
-   Route::get('about', 'PagesController@about')->name('about');
-   Route::get('help', 'PagesController@help')->name('help');
-   Route::get('/search','PagesController@search')->name('search');
-   Route::get('error/{error_code}', 'PagesController@error')->name('error');
-   Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
-   Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
+    Route::group(['middleware' => 'fw-block-blacklisted'], function ()
+    {
+    Route::get('/', 'PagesController@home')->name('home');
+    });
+    Route::get('about', 'PagesController@about')->name('about');
+    Route::get('help', 'PagesController@help')->name('help');
+    Route::get('contacts', 'PagesController@contacts')->name('contacts');
+    Route::get('/search','PagesController@search')->name('search');
+    Route::get('error/{error_code}', 'PagesController@error')->name('error');
+    Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
+    Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
 }
 
 {//提头部分
@@ -213,4 +218,15 @@
     Route::post('/users/{user}/questions','QuestionsController@store')->name('questions.store');//储存问题路径
     Route::get('/users/{user}/questions', 'QuestionsController@index')->name('questions.index');//问题列表
     Route::post('/users/{user}/questions/{question}/answer','QuestionsController@answer')->name('questions.answer');//储存回答路径
+}
+
+//推荐书籍功能
+{
+    Route::get('/recommend_books/create', 'RecommendBooksController@create')->name('recommend_books.create');//添加推荐书籍
+    Route::post('/recommend_books/store', 'RecommendBooksController@store')->name('recommend_books.store');//储存推荐书籍
+    Route::get('/recommend_books/index', 'RecommendBooksController@index')->name('recommend_books.index');//查看推荐书籍
+    Route::get('/recommend_books/recommend_longcomments', 'RecommendBooksController@longcomments')->name('recommend_books.longcomments');//查看推荐长评
+    Route::get('/recommend_books/{recommend_book}', 'RecommendBooksController@show')->name('recommend_books.show');//推荐书籍信息
+    Route::get('/recommend_books/{recommend_book}/edit', 'RecommendBooksController@edit')->name('recommend_books.edit');//修改书籍信息
+    Route::post('/recommend_books/{recommend_book}/update', 'RecommendBooksController@update')->name('recommend_books.update');//保存修改
 }

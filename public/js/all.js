@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,8 +70,8 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
-var isBuffer = __webpack_require__(18);
+var bind = __webpack_require__(3);
+var isBuffer = __webpack_require__(17);
 
 /*global toString:true*/
 
@@ -375,33 +375,6 @@ module.exports = {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -424,10 +397,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(4);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(4);
   }
   return adapter;
 }
@@ -498,10 +471,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10872,7 +10845,7 @@ return jQuery;
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10890,197 +10863,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11091,7 +10874,7 @@ var settle = __webpack_require__(21);
 var buildURL = __webpack_require__(23);
 var parseHeaders = __webpack_require__(24);
 var isURLSameOrigin = __webpack_require__(25);
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(5);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(26);
 
 module.exports = function xhrAdapter(config) {
@@ -11267,7 +11050,7 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11292,7 +11075,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11304,7 +11087,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11330,15 +11113,15 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(11);
-module.exports = __webpack_require__(40);
+__webpack_require__(9);
+module.exports = __webpack_require__(37);
 
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -11348,9 +11131,9 @@ module.exports = __webpack_require__(40);
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(12);
+__webpack_require__(10);
 
-__webpack_require__(35);
+__webpack_require__(36);
 
 // window.Vue = require('vue');
 
@@ -11367,11 +11150,11 @@ __webpack_require__(35);
 // });
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(13);
+window._ = __webpack_require__(11);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -11380,9 +11163,9 @@ window._ = __webpack_require__(13);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(3);
+  window.$ = window.jQuery = __webpack_require__(2);
 
-  __webpack_require__(15);
+  __webpack_require__(14);
 } catch (e) {}
 
 /**
@@ -11391,7 +11174,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(16);
+window.axios = __webpack_require__(15);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -11424,10 +11207,10 @@ if (token) {
 //     key: 'your-pusher-key'
 // });
 
-__webpack_require__(56);
+__webpack_require__(35);
 
 /***/ }),
-/* 13 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -28537,10 +28320,37 @@ __webpack_require__(56);
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(14)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(13)(module)))
 
 /***/ }),
-/* 14 */
+/* 12 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -28568,7 +28378,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /*!
@@ -30951,22 +30761,22 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(17);
+module.exports = __webpack_require__(16);
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
-var Axios = __webpack_require__(19);
-var defaults = __webpack_require__(2);
+var bind = __webpack_require__(3);
+var Axios = __webpack_require__(18);
+var defaults = __webpack_require__(1);
 
 /**
  * Create an instance of Axios
@@ -30999,9 +30809,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(9);
+axios.Cancel = __webpack_require__(7);
 axios.CancelToken = __webpack_require__(33);
-axios.isCancel = __webpack_require__(8);
+axios.isCancel = __webpack_require__(6);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -31016,7 +30826,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /*!
@@ -31043,13 +30853,13 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(2);
+var defaults = __webpack_require__(1);
 var utils = __webpack_require__(0);
 var InterceptorManager = __webpack_require__(28);
 var dispatchRequest = __webpack_require__(29);
@@ -31136,6 +30946,196 @@ module.exports = Axios;
 
 
 /***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -31161,7 +31161,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(5);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -31580,8 +31580,8 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(30);
-var isCancel = __webpack_require__(8);
-var defaults = __webpack_require__(2);
+var isCancel = __webpack_require__(6);
+var defaults = __webpack_require__(1);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -31733,7 +31733,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(9);
+var Cancel = __webpack_require__(7);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -31826,1487 +31826,6 @@ module.exports = function spread(callback) {
 
 /***/ }),
 /* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/* ===================================================
- * bootstrap-markdown.js v2.10.0
- * http://github.com/toopay/bootstrap-markdown
- * ===================================================
- * Copyright 2013-2016 Taufan Aditya
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ========================================================== */
-
-/* ===================================================
- * modified by lyn510
- * ========================================================== */
-
-(function (factory) {
-  if (true) {
-    //RequireJS
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if ((typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object') {
-    //Backbone.js
-    factory(require('jquery'));
-  } else {
-    //Jquery plugin
-    factory(jQuery);
-  }
-})(function ($) {
-  "use strict"; // jshint ;_;
-
-  /* MARKDOWN CLASS DEFINITION
-   * ========================== */
-
-  var Markdown = function Markdown(element, options) {
-    // @TODO : remove this BC on next major release
-    // @see : https://github.com/toopay/bootstrap-markdown/issues/109
-    var opts = ['autofocus', 'savable', 'hideable', 'width', 'height', 'resize', 'iconlibrary', 'language', 'footer', 'fullscreen', 'hiddenButtons', 'disabledButtons'];
-    $.each(opts, function (_, opt) {
-      if (typeof $(element).data(opt) !== 'undefined') {
-        options = (typeof options === "undefined" ? "undefined" : _typeof(options)) == 'object' ? options : {};
-        options[opt] = $(element).data(opt);
-      }
-    });
-    // End BC
-
-    // Class Properties
-    this.$ns = 'bootstrap-markdown';
-    this.$element = $(element);
-    this.$editable = { el: null, type: null, attrKeys: [], attrValues: [], content: null };
-    this.$options = $.extend(true, {}, $.fn.markdown.defaults, options, this.$element.data('options'));
-    this.$oldContent = null;
-    this.$isPreview = false;
-    this.$isFullscreen = false;
-    this.$editor = null;
-    this.$textarea = null;
-    this.$handler = [];
-    this.$callback = [];
-    this.$nextTab = [];
-
-    this.showEditor();
-  };
-
-  Markdown.prototype = {
-
-    constructor: Markdown,
-
-    __alterButtons: function __alterButtons(name, alter) {
-      var handler = this.$handler,
-          isAll = name == 'all',
-          that = this;
-
-      $.each(handler, function (k, v) {
-        var halt = true;
-        if (isAll) {
-          halt = false;
-        } else {
-          halt = v.indexOf(name) < 0;
-        }
-
-        if (halt === false) {
-          alter(that.$editor.find('button[data-handler="' + v + '"]'));
-        }
-      });
-    },
-
-    __buildButtons: function __buildButtons(buttonsArray, container) {
-      var i,
-          ns = this.$ns,
-          handler = this.$handler,
-          callback = this.$callback;
-
-      for (i = 0; i < buttonsArray.length; i++) {
-        // Build each group container
-        var y,
-            btnGroups = buttonsArray[i];
-        for (y = 0; y < btnGroups.length; y++) {
-          // Build each button group
-          var z,
-              buttons = btnGroups[y].data,
-              btnGroupContainer = $('<div/>', {
-            'class': 'btn-group'
-          });
-
-          for (z = 0; z < buttons.length; z++) {
-            var button = buttons[z],
-                buttonContainer,
-                buttonIconContainer,
-                buttonHandler = ns + '-' + button.name,
-                buttonIcon = this.__getIcon(button.icon),
-                btnText = button.btnText ? button.btnText : '',
-                btnClass = button.btnClass ? button.btnClass : 'btn',
-                tabIndex = button.tabIndex ? button.tabIndex : '-1',
-                hotkey = typeof button.hotkey !== 'undefined' ? button.hotkey : '',
-                hotkeyCaption = typeof jQuery.hotkeys !== 'undefined' && hotkey !== '' ? ' (' + hotkey + ')' : '';
-
-            // Construct the button object
-            buttonContainer = $('<button></button>');
-            buttonContainer.text(' ' + this.__localize(btnText)).addClass('sosad-button-md').addClass(btnClass);
-            if (btnClass.match(/btn\-(primary|success|info|warning|danger|link)/)) {
-              buttonContainer.removeClass('btn-default');
-            }
-            buttonContainer.attr({
-              'type': 'button',
-              'title': this.__localize(button.title) + hotkeyCaption,
-              'tabindex': tabIndex,
-              'data-provider': ns,
-              'data-handler': buttonHandler,
-              'data-hotkey': hotkey
-            });
-            if (button.toggle === true) {
-              buttonContainer.attr('data-toggle', 'button');
-            }
-            buttonIconContainer = $('<span/>');
-            buttonIconContainer.addClass(buttonIcon);
-            buttonIconContainer.prependTo(buttonContainer);
-
-            // Attach the button object
-            btnGroupContainer.append(buttonContainer);
-
-            // Register handler and callback
-            handler.push(buttonHandler);
-            callback.push(button.callback);
-          }
-
-          // Attach the button group into container dom
-          container.append(btnGroupContainer);
-        }
-      }
-
-      return container;
-    },
-    __setListener: function __setListener() {
-      // Set size and resizable Properties
-      var hasRows = typeof this.$textarea.attr('rows') !== 'undefined',
-          maxRows = this.$textarea.val().split("\n").length > 5 ? this.$textarea.val().split("\n").length : '5',
-          rowsVal = hasRows ? this.$textarea.attr('rows') : maxRows;
-
-      this.$textarea.attr('rows', rowsVal);
-      if (this.$options.resize) {
-        this.$textarea.css('resize', this.$options.resize);
-      }
-
-      this.$textarea.on({
-        'focus': $.proxy(this.focus, this),
-        'keyup': $.proxy(this.keyup, this),
-        'change': $.proxy(this.change, this),
-        'select': $.proxy(this.select, this)
-      });
-
-      if (this.eventSupported('keydown')) {
-        this.$textarea.on('keydown', $.proxy(this.keydown, this));
-      }
-
-      if (this.eventSupported('keypress')) {
-        this.$textarea.on('keypress', $.proxy(this.keypress, this));
-      }
-
-      // Re-attach markdown data
-      this.$textarea.data('markdown', this);
-    },
-
-    __handle: function __handle(e) {
-      var target = $(e.currentTarget),
-          handler = this.$handler,
-          callback = this.$callback,
-          handlerName = target.attr('data-handler'),
-          callbackIndex = handler.indexOf(handlerName),
-          callbackHandler = callback[callbackIndex];
-
-      // Trigger the focusin
-      $(e.currentTarget).focus();
-
-      callbackHandler(this);
-
-      // Trigger onChange for each button handle
-      this.change(this);
-
-      // Unless it was the save handler,
-      // focusin the textarea
-      if (handlerName.indexOf('cmdSave') < 0) {
-        this.$textarea.focus();
-      }
-
-      e.preventDefault();
-    },
-
-    __localize: function __localize(string) {
-      var messages = $.fn.markdown.messages,
-          language = this.$options.language;
-      if (typeof messages !== 'undefined' && typeof messages[language] !== 'undefined' && typeof messages[language][string] !== 'undefined') {
-        return messages[language][string];
-      }
-      return string;
-    },
-
-    __getIcon: function __getIcon(src) {
-      return (typeof src === "undefined" ? "undefined" : _typeof(src)) == 'object' ? src[this.$options.iconlibrary] : src;
-    },
-
-    setFullscreen: function setFullscreen(mode) {
-      var $editor = this.$editor,
-          $textarea = this.$textarea;
-
-      if (mode === true) {
-        $editor.addClass('md-fullscreen-mode');
-        $('body').addClass('md-nooverflow');
-        this.$options.onFullscreen(this);
-      } else {
-        $editor.removeClass('md-fullscreen-mode');
-        $('body').removeClass('md-nooverflow');
-
-        if (this.$isPreview == true) this.hidePreview().showPreview();
-      }
-
-      this.$isFullscreen = mode;
-      $textarea.focus();
-    },
-
-    showEditor: function showEditor() {
-      var instance = this,
-          textarea,
-          ns = this.$ns,
-          container = this.$element,
-          originalHeigth = container.css('height'),
-          originalWidth = container.css('width'),
-          editable = this.$editable,
-          handler = this.$handler,
-          callback = this.$callback,
-          options = this.$options,
-          editor = $('<div/>', {
-        'class': 'md-editor',
-        click: function click() {
-          instance.focus();
-        }
-      });
-
-      // Prepare the editor
-      if (this.$editor === null) {
-        // Create the panel
-        var editorHeader = $('<div/>', {
-          'class': 'md-header btn-toolbar'
-        });
-
-        // Merge the main & additional button groups together
-        var allBtnGroups = [];
-        if (options.buttons.length > 0) allBtnGroups = allBtnGroups.concat(options.buttons[0]);
-        if (options.additionalButtons.length > 0) {
-          // iterate the additional button groups
-          $.each(options.additionalButtons[0], function (idx, buttonGroup) {
-
-            // see if the group name of the addional group matches an existing group
-            var matchingGroups = $.grep(allBtnGroups, function (allButtonGroup, allIdx) {
-              return allButtonGroup.name === buttonGroup.name;
-            });
-
-            // if it matches add the addional buttons to that group, if not just add it to the all buttons group
-            if (matchingGroups.length > 0) {
-              matchingGroups[0].data = matchingGroups[0].data.concat(buttonGroup.data);
-            } else {
-              allBtnGroups.push(options.additionalButtons[0][idx]);
-            }
-          });
-        }
-
-        // Reduce and/or reorder the button groups
-        if (options.reorderButtonGroups.length > 0) {
-          allBtnGroups = allBtnGroups.filter(function (btnGroup) {
-            return options.reorderButtonGroups.indexOf(btnGroup.name) > -1;
-          }).sort(function (a, b) {
-            if (options.reorderButtonGroups.indexOf(a.name) < options.reorderButtonGroups.indexOf(b.name)) return -1;
-            if (options.reorderButtonGroups.indexOf(a.name) > options.reorderButtonGroups.indexOf(b.name)) return 1;
-            return 0;
-          });
-        }
-
-        // Build the buttons
-        if (allBtnGroups.length > 0) {
-          editorHeader = this.__buildButtons([allBtnGroups], editorHeader);
-        }
-
-        if (options.fullscreen.enable) {
-          editorHeader.append('<div class="md-controls"><a class="md-control md-control-fullscreen" href="#"><span class="' + this.__getIcon(options.fullscreen.icons.fullscreenOn) + '"></span></a></div>').on('click', '.md-control-fullscreen', function (e) {
-            e.preventDefault();
-            instance.setFullscreen(true);
-          });
-        }
-
-        editor.append(editorHeader);
-
-        // Wrap the textarea
-        if (container.is('textarea')) {
-          container.before(editor);
-          textarea = container;
-          textarea.addClass('md-input');
-          editor.append(textarea);
-        } else {
-          var rawContent = typeof toMarkdown == 'function' ? toMarkdown(container.html()) : container.html(),
-              currentContent = $.trim(rawContent);
-
-          // This is some arbitrary content that could be edited
-          textarea = $('<textarea/>', {
-            'class': 'md-input',
-            'val': currentContent
-          });
-
-          editor.append(textarea);
-
-          // Save the editable
-          editable.el = container;
-          editable.type = container.prop('tagName').toLowerCase();
-          editable.content = container.html();
-
-          $(container[0].attributes).each(function () {
-            editable.attrKeys.push(this.nodeName);
-            editable.attrValues.push(this.nodeValue);
-          });
-
-          // Set editor to blocked the original container
-          container.replaceWith(editor);
-        }
-
-        var editorFooter = $('<div/>', {
-          'class': 'md-footer'
-        }),
-            createFooter = false,
-            footer = '';
-        // Create the footer if savable
-        if (options.savable) {
-          createFooter = true;
-          var saveHandler = 'cmdSave';
-
-          // Register handler and callback
-          handler.push(saveHandler);
-          callback.push(options.onSave);
-
-          editorFooter.append('<button class="btn btn-success" data-provider="' + ns + '" data-handler="' + saveHandler + '"><i class="icon icon-white icon-ok"></i> ' + this.__localize('Save') + '</button>');
-        }
-
-        footer = typeof options.footer === 'function' ? options.footer(this) : options.footer;
-
-        if ($.trim(footer) !== '') {
-          createFooter = true;
-          editorFooter.append(footer);
-        }
-
-        if (createFooter) editor.append(editorFooter);
-
-        // Set width
-        if (options.width && options.width !== 'inherit') {
-          if (jQuery.isNumeric(options.width)) {
-            editor.css('display', 'table');
-            textarea.css('width', options.width + 'px');
-          } else {
-            editor.addClass(options.width);
-          }
-        }
-
-        // Set height
-        if (options.height && options.height !== 'inherit') {
-          if (jQuery.isNumeric(options.height)) {
-            var height = options.height;
-            if (editorHeader) height = Math.max(0, height - editorHeader.outerHeight());
-            if (editorFooter) height = Math.max(0, height - editorFooter.outerHeight());
-            textarea.css('height', height + 'px');
-          } else {
-            editor.addClass(options.height);
-          }
-        }
-
-        // Reference
-        this.$editor = editor;
-        this.$textarea = textarea;
-        this.$editable = editable;
-        this.$oldContent = this.getContent();
-
-        this.__setListener();
-
-        // Set editor attributes, data short-hand API and listener
-        this.$editor.attr('id', new Date().getTime());
-        this.$editor.on('click', '[data-provider="bootstrap-markdown"]', $.proxy(this.__handle, this));
-
-        if (this.$element.is(':disabled') || this.$element.is('[readonly]')) {
-          this.$editor.addClass('md-editor-disabled');
-          this.disableButtons('all');
-        }
-
-        if (this.eventSupported('keydown') && _typeof(jQuery.hotkeys) === 'object') {
-          editorHeader.find('[data-provider="bootstrap-markdown"]').each(function () {
-            var $button = $(this),
-                hotkey = $button.attr('data-hotkey');
-            if (hotkey.toLowerCase() !== '') {
-              textarea.bind('keydown', hotkey, function () {
-                $button.trigger('click');
-                return false;
-              });
-            }
-          });
-        }
-
-        if (options.initialstate === 'preview') {
-          this.showPreview();
-        } else if (options.initialstate === 'fullscreen' && options.fullscreen.enable) {
-          this.setFullscreen(true);
-        }
-      } else {
-        this.$editor.show();
-      }
-
-      if (options.autofocus) {
-        this.$textarea.focus();
-        // this.$editor.addClass('active');
-      }
-
-      if (options.fullscreen.enable && options.fullscreen !== false) {
-        this.$editor.append('<div class="md-fullscreen-controls">' + '<a href="#" class="exit-fullscreen" title="Exit fullscreen"><span class="' + this.__getIcon(options.fullscreen.icons.fullscreenOff) + '">' + '</span></a>' + '</div>');
-        this.$editor.on('click', '.exit-fullscreen', function (e) {
-          e.preventDefault();
-          instance.setFullscreen(false);
-        });
-      }
-
-      // hide hidden buttons from options
-      this.hideButtons(options.hiddenButtons);
-
-      // disable disabled buttons from options
-      this.disableButtons(options.disabledButtons);
-
-      // Trigger the onShow hook
-      options.onShow(this);
-
-      return this;
-    },
-
-    parseContent: function parseContent(val) {
-      var content;
-
-      // parse with supported markdown parser
-      var val = val || this.$textarea.val();
-
-      if ((typeof bbcodeParser === "undefined" ? "undefined" : _typeof(bbcodeParser)) == 'object') {
-        content = bbcodeParser.bbcodeToHtml(sosadpretreat(val));
-      } else if ((typeof markdown === "undefined" ? "undefined" : _typeof(markdown)) == 'object') {
-        content = markdown.toHTML(val);
-      } else if (typeof marked == 'function') {
-        content = marked(val);
-      } else {
-        content = val;
-      }
-
-      return content;
-    },
-
-    showPreview: function showPreview() {
-      var options = this.$options,
-          container = this.$textarea,
-          afterContainer = container.next(),
-          replacementContainer = $('<div/>', { 'class': 'md-preview', 'data-provider': 'markdown-preview' }),
-          content,
-          callbackContent;
-
-      if (this.$isPreview == true) {
-        // Avoid sequenced element creation on missused scenario
-        // @see https://github.com/toopay/bootstrap-markdown/issues/170
-        return this;
-      }
-
-      // Give flag that tell the editor enter preview mode
-      this.$isPreview = true;
-      // Disable all buttons
-      this.disableButtons('all').enableButtons('cmdPreview');
-
-      // Try to get the content from callback
-      callbackContent = options.onPreview(this);
-      // Set the content based from the callback content if string otherwise parse value from textarea
-      content = typeof callbackContent == 'string' ? callbackContent : this.parseContent();
-
-      // Build preview element
-      replacementContainer.html(content);
-
-      if (afterContainer && afterContainer.attr('class') == 'md-footer') {
-        // If there is footer element, insert the preview container before it
-        replacementContainer.insertBefore(afterContainer);
-      } else {
-        // Otherwise, just append it after textarea
-        container.parent().append(replacementContainer);
-      }
-
-      // Set the preview element dimensions
-      replacementContainer.css({
-        width: container.outerWidth() + 'px',
-        height: container.outerHeight() + 'px'
-      });
-
-      if (this.$options.resize) {
-        replacementContainer.css('resize', this.$options.resize);
-      }
-
-      // Hide the last-active textarea
-      container.hide();
-
-      // Attach the editor instances
-      replacementContainer.data('markdown', this);
-
-      if (this.$element.is(':disabled') || this.$element.is('[readonly]')) {
-        this.$editor.addClass('md-editor-disabled');
-        this.disableButtons('all');
-      }
-
-      return this;
-    },
-
-    hidePreview: function hidePreview() {
-      // Give flag that tell the editor quit preview mode
-      this.$isPreview = false;
-
-      // Obtain the preview container
-      var container = this.$editor.find('div[data-provider="markdown-preview"]');
-
-      // Remove the preview container
-      container.remove();
-
-      // Enable all buttons
-      this.enableButtons('all');
-      // Disable configured disabled buttons
-      this.disableButtons(this.$options.disabledButtons);
-
-      // Back to the editor
-      this.$textarea.show();
-      this.__setListener();
-
-      return this;
-    },
-
-    isDirty: function isDirty() {
-      return this.$oldContent != this.getContent();
-    },
-
-    getContent: function getContent() {
-      return this.$textarea.val();
-    },
-
-    setContent: function setContent(content) {
-      this.$textarea.val(content);
-
-      return this;
-    },
-
-    findSelection: function findSelection(chunk) {
-      var content = this.getContent(),
-          startChunkPosition;
-
-      if (startChunkPosition = content.indexOf(chunk), startChunkPosition >= 0 && chunk.length > 0) {
-        var oldSelection = this.getSelection(),
-            selection;
-
-        this.setSelection(startChunkPosition, startChunkPosition + chunk.length);
-        selection = this.getSelection();
-
-        this.setSelection(oldSelection.start, oldSelection.end);
-
-        return selection;
-      } else {
-        return null;
-      }
-    },
-
-    getSelection: function getSelection() {
-
-      var e = this.$textarea[0];
-
-      return ('selectionStart' in e && function () {
-        var l = e.selectionEnd - e.selectionStart;
-        return { start: e.selectionStart, end: e.selectionEnd, length: l, text: e.value.substr(e.selectionStart, l) };
-      } ||
-
-      /* browser not supported */
-      function () {
-        return null;
-      })();
-    },
-
-    setSelection: function setSelection(start, end) {
-
-      var e = this.$textarea[0];
-
-      return ('selectionStart' in e && function () {
-        e.selectionStart = start;
-        e.selectionEnd = end;
-        return;
-      } ||
-
-      /* browser not supported */
-      function () {
-        return null;
-      })();
-    },
-
-    replaceSelection: function replaceSelection(text) {
-
-      var e = this.$textarea[0];
-
-      return ('selectionStart' in e && function () {
-        e.value = e.value.substr(0, e.selectionStart) + text + e.value.substr(e.selectionEnd, e.value.length);
-        // Set cursor to the last replacement end
-        e.selectionStart = e.value.length;
-        return this;
-      } ||
-
-      /* browser not supported */
-      function () {
-        e.value += text;
-        return jQuery(e);
-      })();
-    },
-
-    getNextTab: function getNextTab() {
-      // Shift the nextTab
-      if (this.$nextTab.length === 0) {
-        return null;
-      } else {
-        var nextTab,
-            tab = this.$nextTab.shift();
-
-        if (typeof tab == 'function') {
-          nextTab = tab();
-        } else if ((typeof tab === "undefined" ? "undefined" : _typeof(tab)) == 'object' && tab.length > 0) {
-          nextTab = tab;
-        }
-
-        return nextTab;
-      }
-    },
-
-    setNextTab: function setNextTab(start, end) {
-      // Push new selection into nextTab collections
-      if (typeof start == 'string') {
-        var that = this;
-        this.$nextTab.push(function () {
-          return that.findSelection(start);
-        });
-      } else if (typeof start == 'number' && typeof end == 'number') {
-        var oldSelection = this.getSelection();
-
-        this.setSelection(start, end);
-        this.$nextTab.push(this.getSelection());
-
-        this.setSelection(oldSelection.start, oldSelection.end);
-      }
-
-      return;
-    },
-
-    __parseButtonNameParam: function __parseButtonNameParam(names) {
-      return typeof names == 'string' ? names.split(' ') : names;
-    },
-
-    enableButtons: function enableButtons(name) {
-      var buttons = this.__parseButtonNameParam(name),
-          that = this;
-
-      $.each(buttons, function (i, v) {
-        that.__alterButtons(buttons[i], function (el) {
-          el.removeAttr('disabled');
-        });
-      });
-
-      return this;
-    },
-
-    disableButtons: function disableButtons(name) {
-      var buttons = this.__parseButtonNameParam(name),
-          that = this;
-
-      $.each(buttons, function (i, v) {
-        that.__alterButtons(buttons[i], function (el) {
-          el.attr('disabled', 'disabled');
-        });
-      });
-
-      return this;
-    },
-
-    hideButtons: function hideButtons(name) {
-      var buttons = this.__parseButtonNameParam(name),
-          that = this;
-
-      $.each(buttons, function (i, v) {
-        that.__alterButtons(buttons[i], function (el) {
-          el.addClass('hidden');
-        });
-      });
-
-      return this;
-    },
-
-    showButtons: function showButtons(name) {
-      var buttons = this.__parseButtonNameParam(name),
-          that = this;
-
-      $.each(buttons, function (i, v) {
-        that.__alterButtons(buttons[i], function (el) {
-          el.removeClass('hidden');
-        });
-      });
-
-      return this;
-    },
-
-    eventSupported: function eventSupported(eventName) {
-      var isSupported = eventName in this.$element;
-      if (!isSupported) {
-        this.$element.setAttribute(eventName, 'return;');
-        isSupported = typeof this.$element[eventName] === 'function';
-      }
-      return isSupported;
-    },
-
-    keyup: function keyup(e) {
-      var blocked = false;
-      switch (e.keyCode) {
-        case 40: // down arrow
-        case 38: // up arrow
-        case 16: // shift
-        case 17: // ctrl
-        case 18:
-          // alt
-          break;
-
-        case 9:
-          // tab
-          var nextTab;
-          if (nextTab = this.getNextTab(), nextTab !== null) {
-            // Get the nextTab if exists
-            var that = this;
-            setTimeout(function () {
-              that.setSelection(nextTab.start, nextTab.end);
-            }, 500);
-
-            blocked = true;
-          } else {
-            // The next tab memory contains nothing...
-            // check the cursor position to determine tab action
-            var cursor = this.getSelection();
-
-            if (cursor.start == cursor.end && cursor.end == this.getContent().length) {
-              // The cursor already reach the end of the content
-              blocked = false;
-            } else {
-              // Put the cursor to the end
-              this.setSelection(this.getContent().length, this.getContent().length);
-
-              blocked = true;
-            }
-          }
-
-          break;
-
-        case 13:
-          // enter
-          blocked = false;
-          break;
-        case 27:
-          // escape
-          if (this.$isFullscreen) this.setFullscreen(false);
-          blocked = false;
-          break;
-
-        default:
-          blocked = false;
-      }
-
-      if (blocked) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-
-      this.$options.onChange(this);
-    },
-
-    change: function change(e) {
-      this.$options.onChange(this);
-      return this;
-    },
-    select: function select(e) {
-      this.$options.onSelect(this);
-      return this;
-    },
-    focus: function focus(e) {
-      var options = this.$options,
-          isHideable = options.hideable,
-          editor = this.$editor;
-
-      // editor.addClass('active');
-
-      // Blur other markdown(s)
-      $(document).find('.md-editor').each(function () {
-        if ($(this).attr('id') !== editor.attr('id')) {
-          var attachedMarkdown;
-
-          if (attachedMarkdown = $(this).find('textarea').data('markdown'), attachedMarkdown === null) {
-            attachedMarkdown = $(this).find('div[data-provider="markdown-preview"]').data('markdown');
-          }
-
-          if (attachedMarkdown) {
-            attachedMarkdown.blur();
-          }
-        }
-      });
-
-      // Trigger the onFocus hook
-      options.onFocus(this);
-
-      return this;
-    },
-
-    blur: function blur(e) {
-      var options = this.$options,
-          isHideable = options.hideable,
-          editor = this.$editor,
-          editable = this.$editable;
-
-      if (editor.hasClass('active') || this.$element.parent().length === 0) {
-        editor.removeClass('active');
-
-        if (isHideable) {
-          // Check for editable elements
-          if (editable.el !== null) {
-            // Build the original element
-            var oldElement = $('<' + editable.type + '/>'),
-                content = this.getContent(),
-                currentContent = this.parseContent(content);
-
-            $(editable.attrKeys).each(function (k, v) {
-              oldElement.attr(editable.attrKeys[k], editable.attrValues[k]);
-            });
-
-            // Get the editor content
-            oldElement.html(currentContent);
-
-            editor.replaceWith(oldElement);
-          } else {
-            editor.hide();
-          }
-        }
-
-        // Trigger the onBlur hook
-        options.onBlur(this);
-      }
-
-      return this;
-    }
-
-  };
-
-  /* MARKDOWN PLUGIN DEFINITION
-   * ========================== */
-
-  var old = $.fn.markdown;
-
-  $.fn.markdown = function (option) {
-    return this.each(function () {
-      var $this = $(this),
-          data = $this.data('markdown'),
-          options = (typeof option === "undefined" ? "undefined" : _typeof(option)) == 'object' && option;
-      if (!data) $this.data('markdown', data = new Markdown(this, options));
-    });
-  };
-
-  $.fn.markdown.messages = {};
-
-  $.fn.markdown.defaults = {
-    /* Editor Properties */
-    autofocus: false,
-    hideable: false,
-    savable: false,
-    width: 'inherit',
-    height: 'inherit',
-    resize: 'none',
-    iconlibrary: 'fa',
-    language: 'zh',
-    initialstate: 'editor',
-    parser: null,
-
-    /* Buttons Properties */
-    buttons: [[{
-      name: 'groupFont',
-      data: [{
-        name: 'cmdBold',
-        hotkey: 'Ctrl+B',
-        title: 'Bold',
-        icon: { glyph: 'glyphicon glyphicon-bold', fa: 'fa fa-bold', 'fa-3': 'icon-bold' },
-        callback: function callback(e) {
-          // Give/remove ** surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('strong text');
-          } else {
-            chunk = selected.text;
-          }
-
-          // transform selection and set the cursor into chunked text
-          if (content.substr(selected.start - 3, 3) === '[b]' && content.substr(selected.end, 4) === '[/b]') {
-            e.setSelection(selected.start - 3, selected.end + 4);
-            e.replaceSelection(chunk);
-            cursor = selected.start - 3;
-          } else {
-            e.replaceSelection('[b]' + chunk + '[/b]');
-            cursor = selected.start + 3;
-          }
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }, {
-        name: 'cmdItalic',
-        title: 'Italic',
-        hotkey: 'Ctrl+I',
-        icon: { glyph: 'glyphicon glyphicon-italic', fa: 'fa fa-italic', 'fa-3': 'icon-italic' },
-        callback: function callback(e) {
-          // Give/remove * surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('emphasized text');
-          } else {
-            chunk = selected.text;
-          }
-
-          // transform selection and set the cursor into chunked text
-          if (content.substr(selected.start - 3, 3) === '[i]' && content.substr(selected.end, 4) === '[/i]') {
-            e.setSelection(selected.start - 3, selected.end + 4);
-            e.replaceSelection(chunk);
-            cursor = selected.start - 3;
-          } else {
-            e.replaceSelection('[i]' + chunk + '[/i]');
-            cursor = selected.start + 3;
-          }
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }, {
-        name: 'cmdUnderline',
-        title: 'Underline',
-        hotkey: 'Ctrl+U',
-        icon: { glyph: 'glyphicon glyphicons-text-underline', fa: 'fa fa-underline', 'fa-3': 'icon-underline' },
-        callback: function callback(e) {
-          // Give/remove * surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('emphasized text');
-          } else {
-            chunk = selected.text;
-          }
-
-          // transform selection and set the cursor into chunked text
-          if (content.substr(selected.start - 3, 3) === '[u]' && content.substr(selected.end, 4) === '[/u]') {
-            e.setSelection(selected.start - 3, selected.end + 4);
-            e.replaceSelection(chunk);
-            cursor = selected.start - 3;
-          } else {
-            e.replaceSelection('[u]' + chunk + '[/u]');
-            cursor = selected.start + 3;
-          }
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }, {
-        name: 'cmdHeading',
-        title: 'Heading',
-        hotkey: 'Ctrl+H',
-        icon: { glyph: 'glyphicon glyphicon-header', fa: 'fa fa-header', 'fa-3': 'icon-font' },
-        callback: function callback(e) {
-          // Give/remove * surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('emphasized text');
-          } else {
-            chunk = selected.text;
-          }
-
-          // transform selection and set the cursor into chunked text
-          if (content.substr(selected.start - 9, 9) === '[size=20]' && content.substr(selected.end, 7) === '[/size]') {
-            e.setSelection(selected.start - 9, selected.end + 7);
-            e.replaceSelection(chunk);
-            cursor = selected.start - 9;
-          } else {
-            e.replaceSelection('[size=20]' + chunk + '[/size]');
-            cursor = selected.start + 9;
-          }
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }]
-    }, {
-      name: 'groupLink',
-      data: [{
-        name: 'cmdUrl',
-        title: 'URL/Link',
-        hotkey: 'Ctrl+L',
-        icon: { glyph: 'glyphicon glyphicon-link', fa: 'fa fa-link', 'fa-3': 'icon-link' },
-        callback: function callback(e) {
-          // Give [] surround the selection and prepend the link
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent(),
-              link;
-
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('enter link description here');
-          } else {
-            chunk = selected.text;
-          }
-
-          link = prompt(e.__localize('Insert Hyperlink'), 'http://');
-
-          var urlRegex = new RegExp('^((http|https)://|(mailto:)|(//))[a-z0-9]', 'i');
-          if (link !== null && link !== '' && link !== 'http://' && urlRegex.test(link)) {
-            var sanitizedLink = $('<div>' + link + '</div>').text();
-
-            // transform selection and set the cursor into chunked text
-            e.replaceSelection('[url]' + sanitizedLink + '[/url]');
-            //[url=http://step.pgc.edu/]ECAT[/url]
-            //'[url='+sanitizedLink+']'+chunk+'[/url]'
-            cursor = selected.start + 5;
-
-            // Set the cursor
-            e.setSelection(cursor, cursor + chunk.length);
-          }
-        }
-      }, {
-        name: 'cmdImage',
-        title: 'Image',
-        hotkey: 'Ctrl+G',
-        icon: { glyph: 'glyphicon glyphicon-picture', fa: 'fa fa-picture-o', 'fa-3': 'icon-picture' },
-        callback: function callback(e) {
-          // Give ![] surround the selection and prepend the image link
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent(),
-              link;
-
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('enter image description here');
-          } else {
-            chunk = selected.text;
-          }
-
-          link = prompt(e.__localize('Insert Image Hyperlink'), 'http://');
-
-          var urlRegex = new RegExp('^((http|https)://|(//))[a-z0-9]', 'i');
-          if (link !== null && link !== '' && link !== 'http://' && urlRegex.test(link)) {
-            var sanitizedLink = $('<div>' + link + '</div>').text();
-
-            // transform selection and set the cursor into chunked text
-            e.replaceSelection('[img]' + sanitizedLink + '[/img]');
-            cursor = selected.start + 5;
-
-            // Set the next tab
-            e.setNextTab(e.__localize('enter image title here'));
-
-            // Set the cursor
-            e.setSelection(cursor, cursor + chunk.length);
-          }
-        }
-      }]
-    }, {
-      name: 'groupMisc',
-      data: [{
-        name: 'cmdList',
-        hotkey: 'Ctrl+U',
-        title: 'Unordered List',
-        icon: { glyph: 'glyphicon glyphicon-list', fa: 'fa fa-list', 'fa-3': 'icon-list-ul' },
-        callback: function callback(e) {
-          // Prepend/Give - surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          // transform selection and set the cursor into chunked text
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('list text here');
-
-            e.replaceSelection('[ul][li]' + chunk + '[/li][li]' + chunk + '[/li][/ul]');
-            // Set the cursor
-            cursor = selected.start + 8;
-          } else {
-            if (selected.text.indexOf('\n') < 0) {
-              chunk = selected.text;
-
-              e.replaceSelection('[ul][li]' + chunk + '[/li][/ul]');
-
-              // Set the cursor
-              cursor = selected.start + 8;
-            } else {
-              var list = [];
-
-              list = selected.text.split('\n');
-              chunk = list[0];
-
-              $.each(list, function (k, v) {
-                list[k] = '[li]' + v + '[/li]';
-              });
-
-              e.replaceSelection('[ul]' + list.join('') + '[/ul]');
-
-              // Set the cursor
-              cursor = selected.start + 8;
-            }
-          }
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }, {
-        name: 'cmdListO',
-        hotkey: 'Ctrl+O',
-        title: 'Ordered List',
-        icon: { glyph: 'glyphicon glyphicon-th-list', fa: 'fa fa-list-ol', 'fa-3': 'icon-list-ol' },
-        callback: function callback(e) {
-
-          // Prepend/Give - surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          // transform selection and set the cursor into chunked text
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('list text here');
-            e.replaceSelection('[ol][li]' + chunk + '[/li][li]' + chunk + '[/li][/ol]');
-            // Set the cursor
-            cursor = selected.start + 8;
-          } else {
-            if (selected.text.indexOf('\n') < 0) {
-              chunk = selected.text;
-
-              e.replaceSelection('[ol][li]' + chunk + '[/li][/ol]');
-
-              // Set the cursor
-              cursor = selected.start + 8;
-            } else {
-              var list = [];
-
-              list = selected.text.split('\n');
-              chunk = list[0];
-
-              $.each(list, function (k, v) {
-                list[k] = '[li]' + v + '[/li]';
-              });
-
-              e.replaceSelection('[ol]' + list.join('') + '[/ol]');
-
-              // Set the cursor
-              cursor = selected.start + 8;
-            }
-          }
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }, {
-        name: 'cmdCode',
-        hotkey: 'Ctrl+K',
-        title: 'Code',
-        icon: { glyph: 'glyphicon glyphicon-asterisk', fa: 'fa fa-code', 'fa-3': 'icon-code' },
-        callback: function callback(e) {
-          // Give/remove ** surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('code text here');
-          } else {
-            chunk = selected.text;
-          }
-
-          // transform selection and set the cursor into chunked text
-          if (content.substr(selected.start - 6, 6) === '[code]' && content.substr(selected.end, 7) === '[/code]') {
-            e.setSelection(selected.start - 6, selected.end + 7);
-            e.replaceSelection(chunk);
-            cursor = selected.start - 6;
-          } else {
-            e.replaceSelection('[code]' + chunk + '[/code]');
-            cursor = selected.start + 6;
-          }
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }, {
-        name: 'cmdQuote',
-        hotkey: 'Ctrl+Q',
-        title: 'Quote',
-        icon: { glyph: 'glyphicon glyphicon-comment', fa: 'fa fa-quote-left', 'fa-3': 'icon-quote-left' },
-        callback: function callback(e) {
-          // Prepend/Give - surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          // transform selection and set the cursor into chunked text
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('quote here');
-          } else {
-            chunk = selected.text;
-          }
-
-          // transform selection and set the cursor into chunked text
-          if (content.substr(selected.start - 12, 12) === '[blockquote]' && content.substr(selected.end, 13) === '[/blockquote]') {
-            e.setSelection(selected.start - 12, selected.end + 13);
-            e.replaceSelection(chunk);
-            cursor = selected.start - 12;
-          } else {
-            e.replaceSelection('[blockquote]' + chunk + '[/blockquote]');
-            cursor = selected.start + 12;
-          }
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }, {
-        name: 'cmdParagraph',
-        hotkey: 'Ctrl+P',
-        title: 'paragraph',
-        icon: { glyph: 'glyphicon glyphicon-align-left', fa: 'fa fa-paragraph ', 'fa-3': 'icon-code' },
-        callback: function callback(e) {
-          // Give/remove ** surround the selection
-          var chunk,
-              cursor,
-              selected = e.getSelection(),
-              content = e.getContent();
-
-          if (selected.length === 0) {
-            // Give extra word
-            chunk = e.__localize('');
-          } else {
-            chunk = selected.text;
-          }
-
-          // transform selection and set the cursor into chunked text
-
-          e.replaceSelection('[br]\n' + chunk);
-          cursor = selected.start + 5;
-
-          // Set the cursor
-          e.setSelection(cursor, cursor + chunk.length);
-        }
-      }]
-    }, {
-      name: 'groupUtil',
-      data: [{
-        name: 'cmdPreview',
-        toggle: true,
-        hotkey: 'Ctrl+P',
-        title: 'Preview',
-        btnText: 'Preview',
-        btnClass: 'sosad-button-md',
-        icon: { glyph: 'glyphicon glyphicon-search', fa: 'fa fa-search', 'fa-3': 'icon-search' },
-        callback: function callback(e) {
-          // Check the preview mode and toggle based on this flag
-          var isPreview = e.$isPreview,
-              content;
-
-          if (isPreview === false) {
-            // Give flag that tell the editor enter preview mode
-            e.showPreview();
-          } else {
-            e.hidePreview();
-          }
-        }
-      }]
-    }]],
-    additionalButtons: [], // Place to hook more buttons by code
-    reorderButtonGroups: [],
-    hiddenButtons: [], // Default hidden buttons
-    disabledButtons: [], // Default disabled buttons
-    footer: '',
-    fullscreen: {
-      enable: true,
-      icons: {
-        fullscreenOn: {
-          fa: 'fa fa-expand',
-          glyph: 'glyphicon glyphicon-fullscreen',
-          'fa-3': 'icon-resize-full'
-        },
-        fullscreenOff: {
-          fa: 'fa fa-compress',
-          glyph: 'glyphicon glyphicon-fullscreen',
-          'fa-3': 'icon-resize-small'
-        }
-      }
-    },
-
-    /* Events hook */
-    onShow: function onShow(e) {},
-    onPreview: function onPreview(e) {},
-    onSave: function onSave(e) {},
-    onBlur: function onBlur(e) {},
-    onFocus: function onFocus(e) {},
-    onChange: function onChange(e) {},
-    onFullscreen: function onFullscreen(e) {},
-    onSelect: function onSelect(e) {}
-  };
-
-  $.fn.markdown.Constructor = Markdown;
-
-  /* MARKDOWN NO CONFLICT
-   * ==================== */
-
-  $.fn.markdown.noConflict = function () {
-    $.fn.markdown = old;
-    return this;
-  };
-
-  /* MARKDOWN GLOBAL FUNCTION & DATA-API
-  * ==================================== */
-  var initMarkdown = function initMarkdown(el) {
-    var $this = el;
-
-    if ($this.data('markdown')) {
-      $this.data('markdown').showEditor();
-      return;
-    }
-
-    $this.markdown();
-  };
-
-  var blurNonFocused = function blurNonFocused(e) {
-    var $activeElement = $(document.activeElement);
-
-    // Blur event
-    $(document).find('.md-editor').each(function () {
-      var $this = $(this),
-          focused = $activeElement.closest('.md-editor')[0] === this,
-          attachedMarkdown = $this.find('textarea').data('markdown') || $this.find('div[data-provider="markdown-preview"]').data('markdown');
-
-      if (attachedMarkdown && !focused) {
-        attachedMarkdown.blur();
-      }
-    });
-  };
-
-  $(document).on('click.markdown.data-api', '[data-provide="markdown-editable"]', function (e) {
-    initMarkdown($(this));
-    e.preventDefault();
-  }).on('click focusin', function (e) {
-    blurNonFocused(e);
-  }).ready(function () {
-    $('textarea[data-provide="markdown"]').each(function () {
-      initMarkdown($(this));
-    });
-  });
-});
-
-/**
- * Chinese translation for bootstrap-markdown
- * benhaile <denghaier@163.com>
- */
-(function ($) {
-  $.fn.markdown.messages.zh = {
-    'Bold': "粗体",
-    'Italic': "斜体",
-    'Heading': "标题",
-    'URL/Link': "链接",
-    'Image': "图片",
-    'List': "列表",
-    'Unordered List': "无序列表",
-    'Ordered List': "有序列表",
-    'Code': "代码",
-    'Quote': "引用",
-    'Preview': "预览",
-    'strong text': "粗体",
-    'emphasized text': "强调",
-    'heading text': "标题",
-    'enter link description here': "输入链接说明",
-    'Insert Hyperlink': "URL地址",
-    'enter image description here': "输入图片说明",
-    'Insert Image Hyperlink': "图片URL地址",
-    'enter image title here': "在这里输入图片标题",
-    'list text here': "这里是列表文本",
-    'code text here': "这里输入代码",
-    'quote here': "这里输入引用文本"
-
-  };
-})(jQuery);
-
-/***/ }),
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */
 /***/ (function(module, exports) {
 
 /*!
@@ -35289,6 +33808,1468 @@ bunker(bootstrap);
 }());
 
 
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/* ===================================================
+ * bootstrap-markdown.js v2.10.0
+ * http://github.com/toopay/bootstrap-markdown
+ * ===================================================
+ * Copyright 2013-2016 Taufan Aditya
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================== */
+
+/* ===================================================
+ * modified by lyn510
+ * ========================================================== */
+
+(function (factory) {
+  if (true) {
+    //RequireJS
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if ((typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object') {
+    //Backbone.js
+    factory(require('jquery'));
+  } else {
+    //Jquery plugin
+    factory(jQuery);
+  }
+})(function ($) {
+  "use strict"; // jshint ;_;
+
+  /* MARKDOWN CLASS DEFINITION
+   * ========================== */
+
+  var Markdown = function Markdown(element, options) {
+    // @TODO : remove this BC on next major release
+    // @see : https://github.com/toopay/bootstrap-markdown/issues/109
+    var opts = ['autofocus', 'savable', 'hideable', 'width', 'height', 'resize', 'iconlibrary', 'language', 'footer', 'fullscreen', 'hiddenButtons', 'disabledButtons'];
+    $.each(opts, function (_, opt) {
+      if (typeof $(element).data(opt) !== 'undefined') {
+        options = (typeof options === "undefined" ? "undefined" : _typeof(options)) == 'object' ? options : {};
+        options[opt] = $(element).data(opt);
+      }
+    });
+    // End BC
+
+    // Class Properties
+    this.$ns = 'bootstrap-markdown';
+    this.$element = $(element);
+    this.$editable = { el: null, type: null, attrKeys: [], attrValues: [], content: null };
+    this.$options = $.extend(true, {}, $.fn.markdown.defaults, options, this.$element.data('options'));
+    this.$oldContent = null;
+    this.$isPreview = false;
+    this.$isFullscreen = false;
+    this.$editor = null;
+    this.$textarea = null;
+    this.$handler = [];
+    this.$callback = [];
+    this.$nextTab = [];
+
+    this.showEditor();
+  };
+
+  Markdown.prototype = {
+
+    constructor: Markdown,
+
+    __alterButtons: function __alterButtons(name, alter) {
+      var handler = this.$handler,
+          isAll = name == 'all',
+          that = this;
+
+      $.each(handler, function (k, v) {
+        var halt = true;
+        if (isAll) {
+          halt = false;
+        } else {
+          halt = v.indexOf(name) < 0;
+        }
+
+        if (halt === false) {
+          alter(that.$editor.find('button[data-handler="' + v + '"]'));
+        }
+      });
+    },
+
+    __buildButtons: function __buildButtons(buttonsArray, container) {
+      var i,
+          ns = this.$ns,
+          handler = this.$handler,
+          callback = this.$callback;
+
+      for (i = 0; i < buttonsArray.length; i++) {
+        // Build each group container
+        var y,
+            btnGroups = buttonsArray[i];
+        for (y = 0; y < btnGroups.length; y++) {
+          // Build each button group
+          var z,
+              buttons = btnGroups[y].data,
+              btnGroupContainer = $('<div/>', {
+            'class': 'btn-group'
+          });
+
+          for (z = 0; z < buttons.length; z++) {
+            var button = buttons[z],
+                buttonContainer,
+                buttonIconContainer,
+                buttonHandler = ns + '-' + button.name,
+                buttonIcon = this.__getIcon(button.icon),
+                btnText = button.btnText ? button.btnText : '',
+                btnClass = button.btnClass ? button.btnClass : 'btn',
+                tabIndex = button.tabIndex ? button.tabIndex : '-1',
+                hotkey = typeof button.hotkey !== 'undefined' ? button.hotkey : '',
+                hotkeyCaption = typeof jQuery.hotkeys !== 'undefined' && hotkey !== '' ? ' (' + hotkey + ')' : '';
+
+            // Construct the button object
+            buttonContainer = $('<button></button>');
+            buttonContainer.text(' ' + this.__localize(btnText)).addClass('sosad-button-md').addClass(btnClass);
+            if (btnClass.match(/btn\-(primary|success|info|warning|danger|link)/)) {
+              buttonContainer.removeClass('btn-default');
+            }
+            buttonContainer.attr({
+              'type': 'button',
+              'title': this.__localize(button.title) + hotkeyCaption,
+              'tabindex': tabIndex,
+              'data-provider': ns,
+              'data-handler': buttonHandler,
+              'data-hotkey': hotkey
+            });
+            if (button.toggle === true) {
+              buttonContainer.attr('data-toggle', 'button');
+            }
+            buttonIconContainer = $('<span/>');
+            buttonIconContainer.addClass(buttonIcon);
+            buttonIconContainer.prependTo(buttonContainer);
+
+            // Attach the button object
+            btnGroupContainer.append(buttonContainer);
+
+            // Register handler and callback
+            handler.push(buttonHandler);
+            callback.push(button.callback);
+          }
+
+          // Attach the button group into container dom
+          container.append(btnGroupContainer);
+        }
+      }
+
+      return container;
+    },
+    __setListener: function __setListener() {
+      // Set size and resizable Properties
+      var hasRows = typeof this.$textarea.attr('rows') !== 'undefined',
+          maxRows = this.$textarea.val().split("\n").length > 5 ? this.$textarea.val().split("\n").length : '5',
+          rowsVal = hasRows ? this.$textarea.attr('rows') : maxRows;
+
+      this.$textarea.attr('rows', rowsVal);
+      if (this.$options.resize) {
+        this.$textarea.css('resize', this.$options.resize);
+      }
+
+      this.$textarea.on({
+        'focus': $.proxy(this.focus, this),
+        'keyup': $.proxy(this.keyup, this),
+        'change': $.proxy(this.change, this),
+        'select': $.proxy(this.select, this)
+      });
+
+      if (this.eventSupported('keydown')) {
+        this.$textarea.on('keydown', $.proxy(this.keydown, this));
+      }
+
+      if (this.eventSupported('keypress')) {
+        this.$textarea.on('keypress', $.proxy(this.keypress, this));
+      }
+
+      // Re-attach markdown data
+      this.$textarea.data('markdown', this);
+    },
+
+    __handle: function __handle(e) {
+      var target = $(e.currentTarget),
+          handler = this.$handler,
+          callback = this.$callback,
+          handlerName = target.attr('data-handler'),
+          callbackIndex = handler.indexOf(handlerName),
+          callbackHandler = callback[callbackIndex];
+
+      // Trigger the focusin
+      $(e.currentTarget).focus();
+
+      callbackHandler(this);
+
+      // Trigger onChange for each button handle
+      this.change(this);
+
+      // Unless it was the save handler,
+      // focusin the textarea
+      if (handlerName.indexOf('cmdSave') < 0) {
+        this.$textarea.focus();
+      }
+
+      e.preventDefault();
+    },
+
+    __localize: function __localize(string) {
+      var messages = $.fn.markdown.messages,
+          language = this.$options.language;
+      if (typeof messages !== 'undefined' && typeof messages[language] !== 'undefined' && typeof messages[language][string] !== 'undefined') {
+        return messages[language][string];
+      }
+      return string;
+    },
+
+    __getIcon: function __getIcon(src) {
+      return (typeof src === "undefined" ? "undefined" : _typeof(src)) == 'object' ? src[this.$options.iconlibrary] : src;
+    },
+
+    setFullscreen: function setFullscreen(mode) {
+      var $editor = this.$editor,
+          $textarea = this.$textarea;
+
+      if (mode === true) {
+        $editor.addClass('md-fullscreen-mode');
+        $('body').addClass('md-nooverflow');
+        this.$options.onFullscreen(this);
+      } else {
+        $editor.removeClass('md-fullscreen-mode');
+        $('body').removeClass('md-nooverflow');
+
+        if (this.$isPreview == true) this.hidePreview().showPreview();
+      }
+
+      this.$isFullscreen = mode;
+      $textarea.focus();
+    },
+
+    showEditor: function showEditor() {
+      var instance = this,
+          textarea,
+          ns = this.$ns,
+          container = this.$element,
+          originalHeigth = container.css('height'),
+          originalWidth = container.css('width'),
+          editable = this.$editable,
+          handler = this.$handler,
+          callback = this.$callback,
+          options = this.$options,
+          editor = $('<div/>', {
+        'class': 'md-editor',
+        click: function click() {
+          instance.focus();
+        }
+      });
+
+      // Prepare the editor
+      if (this.$editor === null) {
+        // Create the panel
+        var editorHeader = $('<div/>', {
+          'class': 'md-header btn-toolbar'
+        });
+
+        // Merge the main & additional button groups together
+        var allBtnGroups = [];
+        if (options.buttons.length > 0) allBtnGroups = allBtnGroups.concat(options.buttons[0]);
+        if (options.additionalButtons.length > 0) {
+          // iterate the additional button groups
+          $.each(options.additionalButtons[0], function (idx, buttonGroup) {
+
+            // see if the group name of the addional group matches an existing group
+            var matchingGroups = $.grep(allBtnGroups, function (allButtonGroup, allIdx) {
+              return allButtonGroup.name === buttonGroup.name;
+            });
+
+            // if it matches add the addional buttons to that group, if not just add it to the all buttons group
+            if (matchingGroups.length > 0) {
+              matchingGroups[0].data = matchingGroups[0].data.concat(buttonGroup.data);
+            } else {
+              allBtnGroups.push(options.additionalButtons[0][idx]);
+            }
+          });
+        }
+
+        // Reduce and/or reorder the button groups
+        if (options.reorderButtonGroups.length > 0) {
+          allBtnGroups = allBtnGroups.filter(function (btnGroup) {
+            return options.reorderButtonGroups.indexOf(btnGroup.name) > -1;
+          }).sort(function (a, b) {
+            if (options.reorderButtonGroups.indexOf(a.name) < options.reorderButtonGroups.indexOf(b.name)) return -1;
+            if (options.reorderButtonGroups.indexOf(a.name) > options.reorderButtonGroups.indexOf(b.name)) return 1;
+            return 0;
+          });
+        }
+
+        // Build the buttons
+        if (allBtnGroups.length > 0) {
+          editorHeader = this.__buildButtons([allBtnGroups], editorHeader);
+        }
+
+        if (options.fullscreen.enable) {
+          editorHeader.append('<div class="md-controls"><a class="md-control md-control-fullscreen" href="#"><span class="' + this.__getIcon(options.fullscreen.icons.fullscreenOn) + '"></span></a></div>').on('click', '.md-control-fullscreen', function (e) {
+            e.preventDefault();
+            instance.setFullscreen(true);
+          });
+        }
+
+        editor.append(editorHeader);
+
+        // Wrap the textarea
+        if (container.is('textarea')) {
+          container.before(editor);
+          textarea = container;
+          textarea.addClass('md-input');
+          editor.append(textarea);
+        } else {
+          var rawContent = typeof toMarkdown == 'function' ? toMarkdown(container.html()) : container.html(),
+              currentContent = $.trim(rawContent);
+
+          // This is some arbitrary content that could be edited
+          textarea = $('<textarea/>', {
+            'class': 'md-input',
+            'val': currentContent
+          });
+
+          editor.append(textarea);
+
+          // Save the editable
+          editable.el = container;
+          editable.type = container.prop('tagName').toLowerCase();
+          editable.content = container.html();
+
+          $(container[0].attributes).each(function () {
+            editable.attrKeys.push(this.nodeName);
+            editable.attrValues.push(this.nodeValue);
+          });
+
+          // Set editor to blocked the original container
+          container.replaceWith(editor);
+        }
+
+        var editorFooter = $('<div/>', {
+          'class': 'md-footer'
+        }),
+            createFooter = false,
+            footer = '';
+        // Create the footer if savable
+        if (options.savable) {
+          createFooter = true;
+          var saveHandler = 'cmdSave';
+
+          // Register handler and callback
+          handler.push(saveHandler);
+          callback.push(options.onSave);
+
+          editorFooter.append('<button class="btn btn-success" data-provider="' + ns + '" data-handler="' + saveHandler + '"><i class="icon icon-white icon-ok"></i> ' + this.__localize('Save') + '</button>');
+        }
+
+        footer = typeof options.footer === 'function' ? options.footer(this) : options.footer;
+
+        if ($.trim(footer) !== '') {
+          createFooter = true;
+          editorFooter.append(footer);
+        }
+
+        if (createFooter) editor.append(editorFooter);
+
+        // Set width
+        if (options.width && options.width !== 'inherit') {
+          if (jQuery.isNumeric(options.width)) {
+            editor.css('display', 'table');
+            textarea.css('width', options.width + 'px');
+          } else {
+            editor.addClass(options.width);
+          }
+        }
+
+        // Set height
+        if (options.height && options.height !== 'inherit') {
+          if (jQuery.isNumeric(options.height)) {
+            var height = options.height;
+            if (editorHeader) height = Math.max(0, height - editorHeader.outerHeight());
+            if (editorFooter) height = Math.max(0, height - editorFooter.outerHeight());
+            textarea.css('height', height + 'px');
+          } else {
+            editor.addClass(options.height);
+          }
+        }
+
+        // Reference
+        this.$editor = editor;
+        this.$textarea = textarea;
+        this.$editable = editable;
+        this.$oldContent = this.getContent();
+
+        this.__setListener();
+
+        // Set editor attributes, data short-hand API and listener
+        this.$editor.attr('id', new Date().getTime());
+        this.$editor.on('click', '[data-provider="bootstrap-markdown"]', $.proxy(this.__handle, this));
+
+        if (this.$element.is(':disabled') || this.$element.is('[readonly]')) {
+          this.$editor.addClass('md-editor-disabled');
+          this.disableButtons('all');
+        }
+
+        if (this.eventSupported('keydown') && _typeof(jQuery.hotkeys) === 'object') {
+          editorHeader.find('[data-provider="bootstrap-markdown"]').each(function () {
+            var $button = $(this),
+                hotkey = $button.attr('data-hotkey');
+            if (hotkey.toLowerCase() !== '') {
+              textarea.bind('keydown', hotkey, function () {
+                $button.trigger('click');
+                return false;
+              });
+            }
+          });
+        }
+
+        if (options.initialstate === 'preview') {
+          this.showPreview();
+        } else if (options.initialstate === 'fullscreen' && options.fullscreen.enable) {
+          this.setFullscreen(true);
+        }
+      } else {
+        this.$editor.show();
+      }
+
+      if (options.autofocus) {
+        this.$textarea.focus();
+        // this.$editor.addClass('active');
+      }
+
+      if (options.fullscreen.enable && options.fullscreen !== false) {
+        this.$editor.append('<div class="md-fullscreen-controls">' + '<a href="#" class="exit-fullscreen" title="Exit fullscreen"><span class="' + this.__getIcon(options.fullscreen.icons.fullscreenOff) + '">' + '</span></a>' + '</div>');
+        this.$editor.on('click', '.exit-fullscreen', function (e) {
+          e.preventDefault();
+          instance.setFullscreen(false);
+        });
+      }
+
+      // hide hidden buttons from options
+      this.hideButtons(options.hiddenButtons);
+
+      // disable disabled buttons from options
+      this.disableButtons(options.disabledButtons);
+
+      // Trigger the onShow hook
+      options.onShow(this);
+
+      return this;
+    },
+
+    parseContent: function parseContent(val) {
+      var content;
+
+      // parse with supported markdown parser
+      var val = val || this.$textarea.val();
+
+      if ((typeof bbcodeParser === "undefined" ? "undefined" : _typeof(bbcodeParser)) == 'object') {
+        content = bbcodeParser.bbcodeToHtml(sosadpretreat(val));
+      } else if ((typeof markdown === "undefined" ? "undefined" : _typeof(markdown)) == 'object') {
+        content = markdown.toHTML(val);
+      } else if (typeof marked == 'function') {
+        content = marked(val);
+      } else {
+        content = val;
+      }
+
+      return content;
+    },
+
+    showPreview: function showPreview() {
+      var options = this.$options,
+          container = this.$textarea,
+          afterContainer = container.next(),
+          replacementContainer = $('<div/>', { 'class': 'md-preview', 'data-provider': 'markdown-preview' }),
+          content,
+          callbackContent;
+
+      if (this.$isPreview == true) {
+        // Avoid sequenced element creation on missused scenario
+        // @see https://github.com/toopay/bootstrap-markdown/issues/170
+        return this;
+      }
+
+      // Give flag that tell the editor enter preview mode
+      this.$isPreview = true;
+      // Disable all buttons
+      this.disableButtons('all').enableButtons('cmdPreview');
+
+      // Try to get the content from callback
+      callbackContent = options.onPreview(this);
+      // Set the content based from the callback content if string otherwise parse value from textarea
+      content = typeof callbackContent == 'string' ? callbackContent : this.parseContent();
+
+      // Build preview element
+      replacementContainer.html(content);
+
+      if (afterContainer && afterContainer.attr('class') == 'md-footer') {
+        // If there is footer element, insert the preview container before it
+        replacementContainer.insertBefore(afterContainer);
+      } else {
+        // Otherwise, just append it after textarea
+        container.parent().append(replacementContainer);
+      }
+
+      // Set the preview element dimensions
+      replacementContainer.css({
+        width: container.outerWidth() + 'px',
+        height: container.outerHeight() + 'px'
+      });
+
+      if (this.$options.resize) {
+        replacementContainer.css('resize', this.$options.resize);
+      }
+
+      // Hide the last-active textarea
+      container.hide();
+
+      // Attach the editor instances
+      replacementContainer.data('markdown', this);
+
+      if (this.$element.is(':disabled') || this.$element.is('[readonly]')) {
+        this.$editor.addClass('md-editor-disabled');
+        this.disableButtons('all');
+      }
+
+      return this;
+    },
+
+    hidePreview: function hidePreview() {
+      // Give flag that tell the editor quit preview mode
+      this.$isPreview = false;
+
+      // Obtain the preview container
+      var container = this.$editor.find('div[data-provider="markdown-preview"]');
+
+      // Remove the preview container
+      container.remove();
+
+      // Enable all buttons
+      this.enableButtons('all');
+      // Disable configured disabled buttons
+      this.disableButtons(this.$options.disabledButtons);
+
+      // Back to the editor
+      this.$textarea.show();
+      this.__setListener();
+
+      return this;
+    },
+
+    isDirty: function isDirty() {
+      return this.$oldContent != this.getContent();
+    },
+
+    getContent: function getContent() {
+      return this.$textarea.val();
+    },
+
+    setContent: function setContent(content) {
+      this.$textarea.val(content);
+
+      return this;
+    },
+
+    findSelection: function findSelection(chunk) {
+      var content = this.getContent(),
+          startChunkPosition;
+
+      if (startChunkPosition = content.indexOf(chunk), startChunkPosition >= 0 && chunk.length > 0) {
+        var oldSelection = this.getSelection(),
+            selection;
+
+        this.setSelection(startChunkPosition, startChunkPosition + chunk.length);
+        selection = this.getSelection();
+
+        this.setSelection(oldSelection.start, oldSelection.end);
+
+        return selection;
+      } else {
+        return null;
+      }
+    },
+
+    getSelection: function getSelection() {
+
+      var e = this.$textarea[0];
+
+      return ('selectionStart' in e && function () {
+        var l = e.selectionEnd - e.selectionStart;
+        return { start: e.selectionStart, end: e.selectionEnd, length: l, text: e.value.substr(e.selectionStart, l) };
+      } ||
+
+      /* browser not supported */
+      function () {
+        return null;
+      })();
+    },
+
+    setSelection: function setSelection(start, end) {
+
+      var e = this.$textarea[0];
+
+      return ('selectionStart' in e && function () {
+        e.selectionStart = start;
+        e.selectionEnd = end;
+        return;
+      } ||
+
+      /* browser not supported */
+      function () {
+        return null;
+      })();
+    },
+
+    replaceSelection: function replaceSelection(text) {
+
+      var e = this.$textarea[0];
+
+      return ('selectionStart' in e && function () {
+        e.value = e.value.substr(0, e.selectionStart) + text + e.value.substr(e.selectionEnd, e.value.length);
+        // Set cursor to the last replacement end
+        e.selectionStart = e.value.length;
+        return this;
+      } ||
+
+      /* browser not supported */
+      function () {
+        e.value += text;
+        return jQuery(e);
+      })();
+    },
+
+    getNextTab: function getNextTab() {
+      // Shift the nextTab
+      if (this.$nextTab.length === 0) {
+        return null;
+      } else {
+        var nextTab,
+            tab = this.$nextTab.shift();
+
+        if (typeof tab == 'function') {
+          nextTab = tab();
+        } else if ((typeof tab === "undefined" ? "undefined" : _typeof(tab)) == 'object' && tab.length > 0) {
+          nextTab = tab;
+        }
+
+        return nextTab;
+      }
+    },
+
+    setNextTab: function setNextTab(start, end) {
+      // Push new selection into nextTab collections
+      if (typeof start == 'string') {
+        var that = this;
+        this.$nextTab.push(function () {
+          return that.findSelection(start);
+        });
+      } else if (typeof start == 'number' && typeof end == 'number') {
+        var oldSelection = this.getSelection();
+
+        this.setSelection(start, end);
+        this.$nextTab.push(this.getSelection());
+
+        this.setSelection(oldSelection.start, oldSelection.end);
+      }
+
+      return;
+    },
+
+    __parseButtonNameParam: function __parseButtonNameParam(names) {
+      return typeof names == 'string' ? names.split(' ') : names;
+    },
+
+    enableButtons: function enableButtons(name) {
+      var buttons = this.__parseButtonNameParam(name),
+          that = this;
+
+      $.each(buttons, function (i, v) {
+        that.__alterButtons(buttons[i], function (el) {
+          el.removeAttr('disabled');
+        });
+      });
+
+      return this;
+    },
+
+    disableButtons: function disableButtons(name) {
+      var buttons = this.__parseButtonNameParam(name),
+          that = this;
+
+      $.each(buttons, function (i, v) {
+        that.__alterButtons(buttons[i], function (el) {
+          el.attr('disabled', 'disabled');
+        });
+      });
+
+      return this;
+    },
+
+    hideButtons: function hideButtons(name) {
+      var buttons = this.__parseButtonNameParam(name),
+          that = this;
+
+      $.each(buttons, function (i, v) {
+        that.__alterButtons(buttons[i], function (el) {
+          el.addClass('hidden');
+        });
+      });
+
+      return this;
+    },
+
+    showButtons: function showButtons(name) {
+      var buttons = this.__parseButtonNameParam(name),
+          that = this;
+
+      $.each(buttons, function (i, v) {
+        that.__alterButtons(buttons[i], function (el) {
+          el.removeClass('hidden');
+        });
+      });
+
+      return this;
+    },
+
+    eventSupported: function eventSupported(eventName) {
+      var isSupported = eventName in this.$element;
+      if (!isSupported) {
+        this.$element.setAttribute(eventName, 'return;');
+        isSupported = typeof this.$element[eventName] === 'function';
+      }
+      return isSupported;
+    },
+
+    keyup: function keyup(e) {
+      var blocked = false;
+      switch (e.keyCode) {
+        case 40: // down arrow
+        case 38: // up arrow
+        case 16: // shift
+        case 17: // ctrl
+        case 18:
+          // alt
+          break;
+
+        case 9:
+          // tab
+          var nextTab;
+          if (nextTab = this.getNextTab(), nextTab !== null) {
+            // Get the nextTab if exists
+            var that = this;
+            setTimeout(function () {
+              that.setSelection(nextTab.start, nextTab.end);
+            }, 500);
+
+            blocked = true;
+          } else {
+            // The next tab memory contains nothing...
+            // check the cursor position to determine tab action
+            var cursor = this.getSelection();
+
+            if (cursor.start == cursor.end && cursor.end == this.getContent().length) {
+              // The cursor already reach the end of the content
+              blocked = false;
+            } else {
+              // Put the cursor to the end
+              this.setSelection(this.getContent().length, this.getContent().length);
+
+              blocked = true;
+            }
+          }
+
+          break;
+
+        case 13:
+          // enter
+          blocked = false;
+          break;
+        case 27:
+          // escape
+          if (this.$isFullscreen) this.setFullscreen(false);
+          blocked = false;
+          break;
+
+        default:
+          blocked = false;
+      }
+
+      if (blocked) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      this.$options.onChange(this);
+    },
+
+    change: function change(e) {
+      this.$options.onChange(this);
+      return this;
+    },
+    select: function select(e) {
+      this.$options.onSelect(this);
+      return this;
+    },
+    focus: function focus(e) {
+      var options = this.$options,
+          isHideable = options.hideable,
+          editor = this.$editor;
+
+      // editor.addClass('active');
+
+      // Blur other markdown(s)
+      $(document).find('.md-editor').each(function () {
+        if ($(this).attr('id') !== editor.attr('id')) {
+          var attachedMarkdown;
+
+          if (attachedMarkdown = $(this).find('textarea').data('markdown'), attachedMarkdown === null) {
+            attachedMarkdown = $(this).find('div[data-provider="markdown-preview"]').data('markdown');
+          }
+
+          if (attachedMarkdown) {
+            attachedMarkdown.blur();
+          }
+        }
+      });
+
+      // Trigger the onFocus hook
+      options.onFocus(this);
+
+      return this;
+    },
+
+    blur: function blur(e) {
+      var options = this.$options,
+          isHideable = options.hideable,
+          editor = this.$editor,
+          editable = this.$editable;
+
+      if (editor.hasClass('active') || this.$element.parent().length === 0) {
+        editor.removeClass('active');
+
+        if (isHideable) {
+          // Check for editable elements
+          if (editable.el !== null) {
+            // Build the original element
+            var oldElement = $('<' + editable.type + '/>'),
+                content = this.getContent(),
+                currentContent = this.parseContent(content);
+
+            $(editable.attrKeys).each(function (k, v) {
+              oldElement.attr(editable.attrKeys[k], editable.attrValues[k]);
+            });
+
+            // Get the editor content
+            oldElement.html(currentContent);
+
+            editor.replaceWith(oldElement);
+          } else {
+            editor.hide();
+          }
+        }
+
+        // Trigger the onBlur hook
+        options.onBlur(this);
+      }
+
+      return this;
+    }
+
+  };
+
+  /* MARKDOWN PLUGIN DEFINITION
+   * ========================== */
+
+  var old = $.fn.markdown;
+
+  $.fn.markdown = function (option) {
+    return this.each(function () {
+      var $this = $(this),
+          data = $this.data('markdown'),
+          options = (typeof option === "undefined" ? "undefined" : _typeof(option)) == 'object' && option;
+      if (!data) $this.data('markdown', data = new Markdown(this, options));
+    });
+  };
+
+  $.fn.markdown.messages = {};
+
+  $.fn.markdown.defaults = {
+    /* Editor Properties */
+    autofocus: false,
+    hideable: false,
+    savable: false,
+    width: 'inherit',
+    height: 'inherit',
+    resize: 'none',
+    iconlibrary: 'fa',
+    language: 'zh',
+    initialstate: 'editor',
+    parser: null,
+
+    /* Buttons Properties */
+    buttons: [[{
+      name: 'groupFont',
+      data: [{
+        name: 'cmdBold',
+        hotkey: 'Ctrl+B',
+        title: 'Bold',
+        icon: { glyph: 'glyphicon glyphicon-bold', fa: 'fa fa-bold', 'fa-3': 'icon-bold' },
+        callback: function callback(e) {
+          // Give/remove ** surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('strong text');
+          } else {
+            chunk = selected.text;
+          }
+
+          // transform selection and set the cursor into chunked text
+          if (content.substr(selected.start - 3, 3) === '[b]' && content.substr(selected.end, 4) === '[/b]') {
+            e.setSelection(selected.start - 3, selected.end + 4);
+            e.replaceSelection(chunk);
+            cursor = selected.start - 3;
+          } else {
+            e.replaceSelection('[b]' + chunk + '[/b]');
+            cursor = selected.start + 3;
+          }
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }, {
+        name: 'cmdItalic',
+        title: 'Italic',
+        hotkey: 'Ctrl+I',
+        icon: { glyph: 'glyphicon glyphicon-italic', fa: 'fa fa-italic', 'fa-3': 'icon-italic' },
+        callback: function callback(e) {
+          // Give/remove * surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('emphasized text');
+          } else {
+            chunk = selected.text;
+          }
+
+          // transform selection and set the cursor into chunked text
+          if (content.substr(selected.start - 3, 3) === '[i]' && content.substr(selected.end, 4) === '[/i]') {
+            e.setSelection(selected.start - 3, selected.end + 4);
+            e.replaceSelection(chunk);
+            cursor = selected.start - 3;
+          } else {
+            e.replaceSelection('[i]' + chunk + '[/i]');
+            cursor = selected.start + 3;
+          }
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }, {
+        name: 'cmdUnderline',
+        title: 'Underline',
+        hotkey: 'Ctrl+U',
+        icon: { glyph: 'glyphicon glyphicons-text-underline', fa: 'fa fa-underline', 'fa-3': 'icon-underline' },
+        callback: function callback(e) {
+          // Give/remove * surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('emphasized text');
+          } else {
+            chunk = selected.text;
+          }
+
+          // transform selection and set the cursor into chunked text
+          if (content.substr(selected.start - 3, 3) === '[u]' && content.substr(selected.end, 4) === '[/u]') {
+            e.setSelection(selected.start - 3, selected.end + 4);
+            e.replaceSelection(chunk);
+            cursor = selected.start - 3;
+          } else {
+            e.replaceSelection('[u]' + chunk + '[/u]');
+            cursor = selected.start + 3;
+          }
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }, {
+        name: 'cmdHeading',
+        title: 'Heading',
+        hotkey: 'Ctrl+H',
+        icon: { glyph: 'glyphicon glyphicon-header', fa: 'fa fa-header', 'fa-3': 'icon-font' },
+        callback: function callback(e) {
+          // Give/remove * surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('emphasized text');
+          } else {
+            chunk = selected.text;
+          }
+
+          // transform selection and set the cursor into chunked text
+          if (content.substr(selected.start - 9, 9) === '[size=20]' && content.substr(selected.end, 7) === '[/size]') {
+            e.setSelection(selected.start - 9, selected.end + 7);
+            e.replaceSelection(chunk);
+            cursor = selected.start - 9;
+          } else {
+            e.replaceSelection('[size=20]' + chunk + '[/size]');
+            cursor = selected.start + 9;
+          }
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }]
+    }, {
+      name: 'groupLink',
+      data: [{
+        name: 'cmdUrl',
+        title: 'URL/Link',
+        hotkey: 'Ctrl+L',
+        icon: { glyph: 'glyphicon glyphicon-link', fa: 'fa fa-link', 'fa-3': 'icon-link' },
+        callback: function callback(e) {
+          // Give [] surround the selection and prepend the link
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent(),
+              link;
+
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('enter link description here');
+          } else {
+            chunk = selected.text;
+          }
+
+          link = prompt(e.__localize('Insert Hyperlink'), 'http://');
+
+          var urlRegex = new RegExp('^((http|https)://|(mailto:)|(//))[a-z0-9]', 'i');
+          if (link !== null && link !== '' && link !== 'http://' && urlRegex.test(link)) {
+            var sanitizedLink = $('<div>' + link + '</div>').text();
+
+            // transform selection and set the cursor into chunked text
+            e.replaceSelection('[url]' + sanitizedLink + '[/url]');
+            //[url=http://step.pgc.edu/]ECAT[/url]
+            //'[url='+sanitizedLink+']'+chunk+'[/url]'
+            cursor = selected.start + 5;
+
+            // Set the cursor
+            e.setSelection(cursor, cursor + chunk.length);
+          }
+        }
+      }, {
+        name: 'cmdImage',
+        title: 'Image',
+        hotkey: 'Ctrl+G',
+        icon: { glyph: 'glyphicon glyphicon-picture', fa: 'fa fa-picture-o', 'fa-3': 'icon-picture' },
+        callback: function callback(e) {
+          // Give ![] surround the selection and prepend the image link
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent(),
+              link;
+
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('enter image description here');
+          } else {
+            chunk = selected.text;
+          }
+
+          link = prompt(e.__localize('Insert Image Hyperlink'), 'http://');
+
+          var urlRegex = new RegExp('^((http|https)://|(//))[a-z0-9]', 'i');
+          if (link !== null && link !== '' && link !== 'http://' && urlRegex.test(link)) {
+            var sanitizedLink = $('<div>' + link + '</div>').text();
+
+            // transform selection and set the cursor into chunked text
+            e.replaceSelection('[img]' + sanitizedLink + '[/img]');
+            cursor = selected.start + 5;
+
+            // Set the next tab
+            e.setNextTab(e.__localize('enter image title here'));
+
+            // Set the cursor
+            e.setSelection(cursor, cursor + chunk.length);
+          }
+        }
+      }]
+    }, {
+      name: 'groupMisc',
+      data: [{
+        name: 'cmdList',
+        hotkey: 'Ctrl+U',
+        title: 'Unordered List',
+        icon: { glyph: 'glyphicon glyphicon-list', fa: 'fa fa-list', 'fa-3': 'icon-list-ul' },
+        callback: function callback(e) {
+          // Prepend/Give - surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          // transform selection and set the cursor into chunked text
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('list text here');
+
+            e.replaceSelection('[ul][li]' + chunk + '[/li][li]' + chunk + '[/li][/ul]');
+            // Set the cursor
+            cursor = selected.start + 8;
+          } else {
+            if (selected.text.indexOf('\n') < 0) {
+              chunk = selected.text;
+
+              e.replaceSelection('[ul][li]' + chunk + '[/li][/ul]');
+
+              // Set the cursor
+              cursor = selected.start + 8;
+            } else {
+              var list = [];
+
+              list = selected.text.split('\n');
+              chunk = list[0];
+
+              $.each(list, function (k, v) {
+                list[k] = '[li]' + v + '[/li]';
+              });
+
+              e.replaceSelection('[ul]' + list.join('') + '[/ul]');
+
+              // Set the cursor
+              cursor = selected.start + 8;
+            }
+          }
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }, {
+        name: 'cmdListO',
+        hotkey: 'Ctrl+O',
+        title: 'Ordered List',
+        icon: { glyph: 'glyphicon glyphicon-th-list', fa: 'fa fa-list-ol', 'fa-3': 'icon-list-ol' },
+        callback: function callback(e) {
+
+          // Prepend/Give - surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          // transform selection and set the cursor into chunked text
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('list text here');
+            e.replaceSelection('[ol][li]' + chunk + '[/li][li]' + chunk + '[/li][/ol]');
+            // Set the cursor
+            cursor = selected.start + 8;
+          } else {
+            if (selected.text.indexOf('\n') < 0) {
+              chunk = selected.text;
+
+              e.replaceSelection('[ol][li]' + chunk + '[/li][/ol]');
+
+              // Set the cursor
+              cursor = selected.start + 8;
+            } else {
+              var list = [];
+
+              list = selected.text.split('\n');
+              chunk = list[0];
+
+              $.each(list, function (k, v) {
+                list[k] = '[li]' + v + '[/li]';
+              });
+
+              e.replaceSelection('[ol]' + list.join('') + '[/ol]');
+
+              // Set the cursor
+              cursor = selected.start + 8;
+            }
+          }
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }, {
+        name: 'cmdCode',
+        hotkey: 'Ctrl+K',
+        title: 'Code',
+        icon: { glyph: 'glyphicon glyphicon-asterisk', fa: 'fa fa-code', 'fa-3': 'icon-code' },
+        callback: function callback(e) {
+          // Give/remove ** surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('code text here');
+          } else {
+            chunk = selected.text;
+          }
+
+          // transform selection and set the cursor into chunked text
+          if (content.substr(selected.start - 6, 6) === '[code]' && content.substr(selected.end, 7) === '[/code]') {
+            e.setSelection(selected.start - 6, selected.end + 7);
+            e.replaceSelection(chunk);
+            cursor = selected.start - 6;
+          } else {
+            e.replaceSelection('[code]' + chunk + '[/code]');
+            cursor = selected.start + 6;
+          }
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }, {
+        name: 'cmdQuote',
+        hotkey: 'Ctrl+Q',
+        title: 'Quote',
+        icon: { glyph: 'glyphicon glyphicon-comment', fa: 'fa fa-quote-left', 'fa-3': 'icon-quote-left' },
+        callback: function callback(e) {
+          // Prepend/Give - surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          // transform selection and set the cursor into chunked text
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('quote here');
+          } else {
+            chunk = selected.text;
+          }
+
+          // transform selection and set the cursor into chunked text
+          if (content.substr(selected.start - 12, 12) === '[blockquote]' && content.substr(selected.end, 13) === '[/blockquote]') {
+            e.setSelection(selected.start - 12, selected.end + 13);
+            e.replaceSelection(chunk);
+            cursor = selected.start - 12;
+          } else {
+            e.replaceSelection('[blockquote]' + chunk + '[/blockquote]');
+            cursor = selected.start + 12;
+          }
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }, {
+        name: 'cmdParagraph',
+        hotkey: 'Ctrl+P',
+        title: 'paragraph',
+        icon: { glyph: 'glyphicon glyphicon-align-left', fa: 'fa fa-paragraph ', 'fa-3': 'icon-code' },
+        callback: function callback(e) {
+          // Give/remove ** surround the selection
+          var chunk,
+              cursor,
+              selected = e.getSelection(),
+              content = e.getContent();
+
+          if (selected.length === 0) {
+            // Give extra word
+            chunk = e.__localize('');
+          } else {
+            chunk = selected.text;
+          }
+
+          // transform selection and set the cursor into chunked text
+
+          e.replaceSelection('[br]\n' + chunk);
+          cursor = selected.start + 5;
+
+          // Set the cursor
+          e.setSelection(cursor, cursor + chunk.length);
+        }
+      }]
+    }, {
+      name: 'groupUtil',
+      data: [{
+        name: 'cmdPreview',
+        toggle: true,
+        hotkey: 'Ctrl+P',
+        title: 'Preview',
+        btnText: 'Preview',
+        btnClass: 'sosad-button-md',
+        icon: { glyph: 'glyphicon glyphicon-search', fa: 'fa fa-search', 'fa-3': 'icon-search' },
+        callback: function callback(e) {
+          // Check the preview mode and toggle based on this flag
+          var isPreview = e.$isPreview,
+              content;
+
+          if (isPreview === false) {
+            // Give flag that tell the editor enter preview mode
+            e.showPreview();
+          } else {
+            e.hidePreview();
+          }
+        }
+      }]
+    }]],
+    additionalButtons: [], // Place to hook more buttons by code
+    reorderButtonGroups: [],
+    hiddenButtons: [], // Default hidden buttons
+    disabledButtons: [], // Default disabled buttons
+    footer: '',
+    fullscreen: {
+      enable: true,
+      icons: {
+        fullscreenOn: {
+          fa: 'fa fa-expand',
+          glyph: 'glyphicon glyphicon-fullscreen',
+          'fa-3': 'icon-resize-full'
+        },
+        fullscreenOff: {
+          fa: 'fa fa-compress',
+          glyph: 'glyphicon glyphicon-fullscreen',
+          'fa-3': 'icon-resize-small'
+        }
+      }
+    },
+
+    /* Events hook */
+    onShow: function onShow(e) {},
+    onPreview: function onPreview(e) {},
+    onSave: function onSave(e) {},
+    onBlur: function onBlur(e) {},
+    onFocus: function onFocus(e) {},
+    onChange: function onChange(e) {},
+    onFullscreen: function onFullscreen(e) {},
+    onSelect: function onSelect(e) {}
+  };
+
+  $.fn.markdown.Constructor = Markdown;
+
+  /* MARKDOWN NO CONFLICT
+   * ==================== */
+
+  $.fn.markdown.noConflict = function () {
+    $.fn.markdown = old;
+    return this;
+  };
+
+  /* MARKDOWN GLOBAL FUNCTION & DATA-API
+  * ==================================== */
+  var initMarkdown = function initMarkdown(el) {
+    var $this = el;
+
+    if ($this.data('markdown')) {
+      $this.data('markdown').showEditor();
+      return;
+    }
+
+    $this.markdown();
+  };
+
+  var blurNonFocused = function blurNonFocused(e) {
+    var $activeElement = $(document.activeElement);
+
+    // Blur event
+    $(document).find('.md-editor').each(function () {
+      var $this = $(this),
+          focused = $activeElement.closest('.md-editor')[0] === this,
+          attachedMarkdown = $this.find('textarea').data('markdown') || $this.find('div[data-provider="markdown-preview"]').data('markdown');
+
+      if (attachedMarkdown && !focused) {
+        attachedMarkdown.blur();
+      }
+    });
+  };
+
+  $(document).on('click.markdown.data-api', '[data-provide="markdown-editable"]', function (e) {
+    initMarkdown($(this));
+    e.preventDefault();
+  }).on('click focusin', function (e) {
+    blurNonFocused(e);
+  }).ready(function () {
+    $('textarea[data-provide="markdown"]').each(function () {
+      initMarkdown($(this));
+    });
+  });
+});
+
+/**
+ * Chinese translation for bootstrap-markdown
+ * benhaile <denghaier@163.com>
+ */
+(function ($) {
+  $.fn.markdown.messages.zh = {
+    'Bold': "粗体",
+    'Italic': "斜体",
+    'Heading': "标题",
+    'URL/Link': "链接",
+    'Image': "图片",
+    'List': "列表",
+    'Unordered List': "无序列表",
+    'Ordered List': "有序列表",
+    'Code': "代码",
+    'Quote': "引用",
+    'Preview': "预览",
+    'strong text': "粗体",
+    'emphasized text': "强调",
+    'heading text': "标题",
+    'enter link description here': "输入链接说明",
+    'Insert Hyperlink': "URL地址",
+    'enter image description here': "输入图片说明",
+    'Insert Image Hyperlink': "图片URL地址",
+    'enter image title here': "在这里输入图片标题",
+    'list text here': "这里是列表文本",
+    'code text here': "这里输入代码",
+    'quote here': "这里输入引用文本"
+
+  };
+})(jQuery);
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
 /***/ })
 /******/ ]);
 // JS function to convert BBCode and HTML code - http;//coursesweb.net/javascript/
@@ -36303,13 +36284,16 @@ function toggle_tags_tongren_yuanzhu(){
     }
 })(jQuery);
 
-// function switchTheme() {
-//   document.documentElement.style.setProperty('--body-color', '#111');
-//   document.documentElement.style.setProperty('--panel-color', '#000');
-//   document.documentElement.style.setProperty('--body-font-color', '#f9f9f9');
-//   document.documentElement.style.setProperty('--link-color', '#f9f9f9');
-//   document.documentElement.style.setProperty('--bold-color', '#fff');
-//   document.documentElement.style.setProperty('--border-color', '#555');
-//   document.documentElement.style.setProperty('--border-color-light', '#222');
-//   document.documentElement.style.setProperty('--dark-gray', '#111');
-// }
+(function () {
+  document.documentElement.style.setProperty('--body-color', '#141d26');
+  document.documentElement.style.setProperty('--panel-color', '#243447');
+  document.documentElement.style.setProperty('--body-font-color', '#eceff4');
+  document.documentElement.style.setProperty('--link-color', '#f9f9f9');
+  document.documentElement.style.setProperty('--bold-color', '#fff');
+  document.documentElement.style.setProperty('--border-color', '#555');
+  document.documentElement.style.setProperty('--border-color-light', '#4c566a');
+  document.documentElement.style.setProperty('--dark-gray', '#4c566a');
+  document.documentElement.style.setProperty('--link-hover-color', '#c51f5d');
+  document.documentElement.style.setProperty('--gradient-thin', 'rgba(36, 52, 71, 0.0001)');
+  document.documentElement.style.setProperty('--gradient-dense', 'rgba(36, 52, 71, 0.5)');
+})();

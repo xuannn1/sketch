@@ -11,8 +11,10 @@ class Helper
    {
       $bbCode = new BBCode();
       $bbCode = self::addCustomParserBBCode($bbCode);
+
+      $text = self::trimSpaces($text);//去除字串中多余的空行，html-tag，每一段开头的空格
       $text = $bbCode->stripBBCodeTags((string) $text);
-      //$str = preg_replace('/[[:punct:]\s\n\t\r]/','',$text);
+      $text = preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text);
       $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
       if(iconv_strlen($text) > iconv_strlen($substr)){
          $substr.='…';
@@ -20,15 +22,15 @@ class Helper
       return $substr;
    }
 
-   public static function trimParagraphs($text=null)//去掉输入的一段文字里，多余的html-tag，和多余的换行
-   {
-       while(strip_tags($text,"<br>")!=$text){
-          $text = strip_tags($text,"<br>");
-       }
-       $text = str_replace("\r\n", "\n", $text);
-       $text = str_replace("\r", "\n", $text);
-       return $text;
-   }
+   // public static function trimParagraphs($text=null)//去掉输入的一段文字里，多余的html-tag，和多余的换行
+   // {
+   //     while(strip_tags($text,"<br>")!=$text){
+   //        $text = strip_tags($text,"<br>");
+   //     }
+   //     $text = str_replace("\r\n", "\n", $text);
+   //     $text = str_replace("\r", "\n", $text);
+   //     return $text;
+   // }
 
    public static function trimSpaces($text=null)//去掉输入的一段文字里，多余的html-tag，和每段开头多余的空格，和多余的换行
    {
@@ -175,7 +177,7 @@ class Helper
        return $string;
    }
 
-   public static function convertBBCodetoMarkdown($string){
+   public static function convertBBCodetoMarkdown($string){//其实反过来的。。
        $string = Markdown::convertFromHtml($string);
        $string = BBCode::convertToHtml($string);
        return $string;
