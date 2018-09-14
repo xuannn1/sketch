@@ -25,11 +25,11 @@
                 @if(($book->last_chapter_title)&&($book->last_chapter_responded==0))
                 <span class="badge">新</span>
                 @endif
+                @if(($show_as_collections)&&($book->updated))
+                <span class="badge">有更新</span>
+                @endif
             </small>
-         </span>
-         @if(($show_as_collections)&&($book->updated))
-         <span class="badge">有更新</span>
-         @endif
+          </span>
 
         <span class="smaller-15">{{ $book->brief }}</span>
 

@@ -828,16 +828,16 @@ function toggle_tags_tongren_yuanzhu(){
     }
 })(jQuery);
 
-(function () {
-  document.documentElement.style.setProperty('--body-color', '#141d26');
-  document.documentElement.style.setProperty('--panel-color', '#243447');
-  document.documentElement.style.setProperty('--body-font-color', '#eceff4');
-  document.documentElement.style.setProperty('--link-color', '#f9f9f9');
-  document.documentElement.style.setProperty('--bold-color', '#fff');
-  document.documentElement.style.setProperty('--border-color', '#555');
-  document.documentElement.style.setProperty('--border-color-light', '#4c566a');
-  document.documentElement.style.setProperty('--dark-gray', '#4c566a');
-  document.documentElement.style.setProperty('--link-hover-color', '#c51f5d');
-  document.documentElement.style.setProperty('--gradient-thin', 'rgba(36, 52, 71, 0.0001)');
-  document.documentElement.style.setProperty('--gradient-dense', 'rgba(36, 52, 71, 0.5)');
-})();
+// (function () {
+//   document.documentElement.style.setProperty('--body-color', '#141d26');
+//   document.documentElement.style.setProperty('--panel-color', '#243447');
+//   document.documentElement.style.setProperty('--body-font-color', '#eceff4');
+//   document.documentElement.style.setProperty('--link-color', '#f9f9f9');
+//   document.documentElement.style.setProperty('--bold-color', '#fff');
+//   document.documentElement.style.setProperty('--border-color', '#555');
+//   document.documentElement.style.setProperty('--border-color-light', '#4c566a');
+//   document.documentElement.style.setProperty('--dark-gray', '#4c566a');
+//   document.documentElement.style.setProperty('--link-hover-color', '#c51f5d');
+//   document.documentElement.style.setProperty('--gradient-thin', 'rgba(36, 52, 71, 0.0001)');
+//   document.documentElement.style.setProperty('--gradient-dense', 'rgba(36, 52, 71, 0.5)');
+// })();

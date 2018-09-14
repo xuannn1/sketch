@@ -69,7 +69,7 @@
                @endif
 
                @if (Auth::check()&&(Auth::user()->lastrewarded_at <= Carbon\Carbon::today()->toDateTimeString()))
-                <li><a href="{{ route('qiandao') }}" style="color:#d66666">
+                <li><a href="{{ route('qiandao') }}" style="color:var(--link-hover-color)">
                   <i class="far fa-calendar-check"></i>
                   签到
                 </a></li>

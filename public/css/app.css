@@ -12081,7 +12081,7 @@ button.close {
   margin: 5px 0;
   border: none;
   border-radius: 0.5em;
-  background: var(--bold-color);
+  background: var(--button-color);
   -webkit-box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.3);
           box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.3);
   -webkit-transition: all 0.25s ease 0s;
@@ -12100,10 +12100,10 @@ button.close {
 .sosad-button-thread:active,
 .sosad-button-post:active,
 .sosad-button-float:active {
-  color: var(--bold-color);
+  color: var(--button-color);
   font-weight: 600;
   background-color: var(--panel-color);
-  border: 1px solid var(--bold-color);
+  border: 1px solid var(--button-color);
   outline: none;
   -webkit-box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
           box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
@@ -12156,6 +12156,7 @@ button.close {
   color: var(--link-hover-color);
   border: solid 1px var(--link-hover-color);
   text-decoration: none;
+  outline: none;
 }
 
 .md-editor:active,
@@ -15248,19 +15249,18 @@ button.close {
   --body-color: #f3f3f3;
   --admin-symbol-color: #c49d8d;
   --reminder-symbol-color: #FF2121;
-  --body-color: #f3f3f3;
   --border-color: #999;
   --border-color-light: #efefef;
-  --button-color: #666666;
+  --button-color: #000;
   --button-disabled: #e1e1e1;
-  --admin-button-color: #d08770;
+  --admin-button-color: #ea234a;
   --link-color: #555;
-  --link-hover-color: #bf616a;
+  --link-hover-color: #ea234a;
   --body-font-color: #555;
   --body-font-color-light: #999;
   --button-color: #222;
   --bold-color: #000;
-  --panel-color: #f9f9f9;
+  --panel-color: #fefefe;
   --dark-gray: #ececec;
   --gradient-thin: rgba(255, 255, 255, 0.0001);
   --gradient-dense: rgba(255, 255, 255, 0.5);
@@ -15533,6 +15533,7 @@ header .container {
   background: var(--body-color);
   text-align: center;
   border: none;
+  border-radius: 0;
 }
 
 .search-container form select:focus,
@@ -16915,7 +16916,6 @@ hr {
     background: var(--dark-gray);
     width: 90px;
     padding: 14px 4px 14px 34px;
-    border-radius: 0;
   }
 
   .search-container form input {
@@ -16963,7 +16963,7 @@ hr {
   .sosad-button-thread:hover,
   .sosad-button-thread:focus,
   .sosad-button-thread:active {
-    background: var(--bold-color);
+    background: var(--button-color);
     color: var(--panel-color);
     display: inline-block;
     font-weight: 400;
@@ -16972,7 +16972,7 @@ hr {
     width: 50%;
     bottom: -5px;
     text-align: center;
-    border: 1px solid var(--bold-color);
+    border: 1px solid var(--button-color);
     border-radius: 0;
     outline: none;
     -webkit-transition: none;
