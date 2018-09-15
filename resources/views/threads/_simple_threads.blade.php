@@ -7,7 +7,7 @@
                 @if( $thread->top == 1)
                 <span class="btn btn-xs btn-success sosad-button tag-button-left tag-red">置顶</span>
                 @endif
-                <span class="bigger-20"><strong><a href="{{ route('thread.show', $thread->thread_id) }}">
+                <span class="bigger-20"><strong><a href="{{ route('thread.show', $thread->id) }}">
                     {{ $thread->title }}
                 </a></strong></span>
                 @if( $thread->bianyuan == 1)
