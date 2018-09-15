@@ -50,11 +50,18 @@ class ChannelsController extends Controller
             return $threads;
         });
 
-        $labels = Cache::remember('-channel-'.$channel->id.'-labels', 10, function () use($channel) {
+        $labels = Cache::remember('-channel-'.$channel->id.'-labels', 20, function () use($channel) {
             $labels = Label::inChannel($channel->id)
             ->withCount('threads')->orderBy('created_at','asc')
             ->get();
             return $labels;
+        });
+
+        $simplethreads = Cache::remember('-ch-'.$channel->id.'-tops', 60, function () use($channel) {
+            $tops = Thread::where('channel_id','=',$channel->id)->where('top','=',1)
+            ->orderBy('lastresponded_at','desc')
+            ->get();
+            return $tops;
         });
 
         if ($channel->channel_state==1){
@@ -72,9 +79,9 @@ class ChannelsController extends Controller
                 $s_count[$dataset->sexual_orientation]=$dataset->total;
             }
             $sexual_orientation_info = config('constants.book_info.sexual_orientation_info');
-            return view('threads.index_channel', compact('threads', 'labels','channel','sexual_orientation_info','s_count'))->with('show_as_collections', false)->with('show_channel', false);
+            return view('threads.index_channel', compact('threads', 'labels','channel','sexual_orientation_info','s_count','simplethreads'))->with('show_as_collections', false)->with('show_channel', false);
         }else{
-            return view('threads.index_channel', compact('threads', 'labels','channel'))->with('show_as_collections', false)->with('show_channel', false);
+            return view('threads.index_channel', compact('threads', 'labels','channel','simplethreads'))->with('show_as_collections', false)->with('show_channel', false);
         }
     }
 }
