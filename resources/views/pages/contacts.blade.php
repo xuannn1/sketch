@@ -24,11 +24,12 @@
                     </ul>
                 </div>
                 <div class="panel-body">
-                    <h4>豆奶</h4>
+                    <h4>Duvet</h4>
                     <ul>
-                        <li>荤素不忌，偏好日常向现实文。</li>
-                        <li>联系方式：废文<a href="{{ route('user.show', 58233) }}">@无机豆奶</a> </li>
-                        <li>欢迎来嘬~</li>
+                        <li>素食爱好者，小众风格，翻译风爱好者。</li>
+                        <li>不吃甜，爱中短篇。</li>
+                        <li>联系方式：废文<a href="{{ route('user.show', 68644) }}">@Duvet</a> </li>
+                        <li>请大家多多投喂(((o(*ﾟ▽ﾟ*)o)))</li>
                     </ul>
                 </div>
 
