@@ -14,3 +14,8 @@ yarn-error.log
 .env-y
 /public/css
 /public/js
+
+# frontend
+frontend/node_modules
+frontend/dst
+frontend/yarn-error.log
