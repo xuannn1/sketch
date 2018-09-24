@@ -1,6 +1,6 @@
 import { DB } from "./db";
 
-export class Handler {
+export class Core {
     public db:DB;
 
     constructor () {

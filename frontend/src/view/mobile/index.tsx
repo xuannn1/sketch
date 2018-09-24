@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Handler } from '../../handlers';
+import { Core } from '../../core';
 
 interface Props {
-    h:Handler;
+    core:Core;
 }
 
 interface State {
