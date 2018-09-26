@@ -17,7 +17,7 @@ yarn-error.log
 
 # frontend
 frontend/node_modules
-frontend/dst
+frontend/dist
 frontend/yarn-error.log
 
 # ide
