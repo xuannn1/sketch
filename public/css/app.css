@@ -15266,6 +15266,27 @@ button.close {
   --gradient-dense: rgba(255, 255, 255, 0.5);
 }
 
+:root.dark {
+  --body-color: #141d26;
+  --admin-symbol-color: #c49d8d;
+  --reminder-symbol-color: #FF2121;
+  --border-color: #999;
+  --border-color-light: #efefef;
+  --button-color: #000;
+  --button-disabled: #e1e1e1;
+  --admin-button-color: #ea234a;
+  --link-color: #555;
+  --link-hover-color: #ea234a;
+  --body-font-color: #555;
+  --body-font-color-light: #999;
+  --button-color: #222;
+  --bold-color: #000;
+  --panel-color: #fefefe;
+  --dark-gray: #ececec;
+  --gradient-thin: rgba(255, 255, 255, 0.0001);
+  --gradient-dense: rgba(255, 255, 255, 0.5);
+}
+
 .pagination,
 .dropdown-filter {
   -webkit-box-shadow: 0 10px 30px -2px rgba(0, 0, 0, 0.04);
@@ -15812,7 +15833,7 @@ label,
 
 blockquote {
   padding: 2px 1em;
-  color: var(--body-font-color) -light;
+  color: var(--body-font-color-light);
   font-size: 1em;
 }
 

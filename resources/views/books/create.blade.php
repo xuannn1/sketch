@@ -131,7 +131,7 @@
                                 <div id="feibianyuantags">
                                     @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
                                     <!-- <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }} -->
-                                    <input type="checkbox" class="tags" id="checkbox-fby-{{ $tag->id }}" value="{{ $tag->id }}">
+                                    <input type="checkbox" class="tags" name="tags[]" id="checkbox-fby-{{ $tag->id }}" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>
                                     <label for="checkbox-fby-{{ $tag->id }}" class="input-helper input-helper--checkbox">{{ $tag->tagname }}</label>
                                     @endforeach
                                 </div>
