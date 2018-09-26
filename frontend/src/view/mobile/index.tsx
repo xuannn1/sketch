@@ -9,7 +9,7 @@ interface State {
 
 }
 
-export class MainMobile extends React.Component<Props, State> {
+export class Main_m extends React.Component<Props, State> {
     public render () {
         return (<div>
 

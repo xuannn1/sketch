@@ -2,8 +2,8 @@ import * as React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Core } from '../../core';
 import { Navbar } from './header';
-import { AlertMsg } from '../../components/alert-msg';
-import { Search } from '../../components/search';
+import { AlertMsg } from '../components/alert-msg';
+import { Search } from '../components/search';
 import { Content } from './content';
 import { Footer } from './footer';
 
