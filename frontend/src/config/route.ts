@@ -2,55 +2,55 @@ export const ROUTE = {
     home: '/',
 
     // register and validation
-    login: '',
-    register: '',
-    linkedAccounts: '',
+    login: '/login',
+    register: '/register',
+    linkedAccounts: '/linkedAccounts',
 
     // static pages
-    about: '',
-    help: '',
-    contacts: '',
-    search: '',
-    error: '',
-    adminstrationRecoreds: '',
-    qiandao: '', 
+    about: '/about',
+    help: '/help',
+    contacts: '/contacts',
+    search: '/search',
+    error: '/error',
+    adminstrationRecords: '/adminstrationRecords',
+    qiandao: '/qiandao', 
 
     // quote
-    quote: '',
+    quote: '/quote',
 
     // users
-    users: '',
+    users: '/users',
 
     // chanels
-    channels: '',
+    channels: '/channels',
 
     // threads
-    threads: '',
+    threads: '/threads',
 
     // homework
-    homeworks: '',
+    homeworks: '/homeworks',
 
     // book
-    book_create: '',
-    books: '',
+    book_create: '/book/create',
+    books: '/books',
 
     // posts
-    posts: '',
-    thread_posts: '',
-    longComments: '',
-    postComments: '',
+    posts: '/posts',
+    thread_posts: '/thread/posts',
+    longComments: '/longComments',
+    postComments: '/postComments',
 
     // admin
-    admin: '',
+    admin: '/admin',
 
     // collections
-    collections: '',
+    collections: '/collections',
 
     // message
-    messages: '',
+    messages: '/messages',
 
-    statuses: '',
-    cache: '',
-    downloads: '',
-    recommendBooks: '',
+    statuses: '/statuses',
+    cache: '/cache',
+    downloads: '/downloads',
+    recommendBooks: '/recommend_books',
 }

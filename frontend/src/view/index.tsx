@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Core } from '../core';
 import { isMobile } from '../utils/mobile';
 import { MainMobile } from './mobile';
-import { MainPC } from './pc';
+import { Main_pc } from './pc';
 
 interface Props {
     core:Core;
@@ -17,7 +17,7 @@ export class Main extends React.Component<Props, State> {
         if (isMobile()) {
             return <MainMobile core={this.props.core} />
         } else {
-            return <MainPC core={this.props.core} />
+            return <Main_pc core={this.props.core} />
         }
     }
 }
