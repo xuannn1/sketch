@@ -1,3 +1,15 @@
+# Startup
+开发:
+```
+npm run start
+```
+之后修改前端代码, 浏览器窗口也会即时刷新.
+
+生产环境打包:
+```
+npm run build
+```
+
 # 需要学习:
 
 - React
