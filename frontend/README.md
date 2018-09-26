@@ -25,13 +25,13 @@
   - `index.html` 
 
 - `frontend/src`
-  - `components` 小块的页面组件
   - `config` 设置类, 如网站url, 如path, 等
   - `core` 所有控制组件
     - `index.ts` 负责初始化其他所有控制组件实例并提供一个统一的入口
     - `db.ts` 数据库操作相关
   - `utils` 其他常用function/class
   - `view` 页面渲染
+    - `components` 小块的页面组件, 手机端和电脑端可共用的
     - `mobile` 手机端
     - `pc` 电脑端
       - `index.tsx` 初始化、入口文件

@@ -11,7 +11,9 @@ interface State {
 
 export class Footer extends React.Component<Props, State> {
     public render () {
-        return (<div>
+        return (<div className="container">
+            <div className="col-md-10 col-md-offset-1">
+            </div>
         </div>);
     }
 }
