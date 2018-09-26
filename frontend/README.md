@@ -16,7 +16,7 @@
 
 - `frontend`
   - `src` 源码目录
-  - `dst` 生成后的代码目录, 由webpack生成, 一般需要在ide搜索目录中排除出去
+  - `dist` 生成后的代码目录, 由webpack生成, 一般需要在ide搜索目录中排除出去
   - `tsconfig.json` ts设置文件
   - `tslint.json` ts lint文件
   - `webpack.config.js` webpack设置文件

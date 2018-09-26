@@ -5,11 +5,11 @@ export function preventTouchDefault () {
     document.body.addEventListener('touchmove', preventDefaultEv, <any>{passive: false});
 }
 
-export function enableTouchDefault() {
+export function enableTouchDefault () {
     document.body.removeEventListener('touchmove', preventDefaultEv);
 }
 
-function preventDefaultEv(ev) {
+export function preventDefaultEv (ev) {
     ev.preventDefault();
 }
 

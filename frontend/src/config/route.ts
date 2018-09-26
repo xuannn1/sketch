@@ -53,4 +53,7 @@ export const ROUTE = {
     cache: '/cache',
     downloads: '/downloads',
     recommendBooks: '/recommend_books',
+
+    // others
+    github: 'https://github.com/lyn510/sketch',
 }

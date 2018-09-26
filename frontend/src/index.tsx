@@ -1,6 +1,6 @@
 import * as ReactDOM from 'react-dom';
 import React from 'react';
-import { Main } from './view';
+import { App } from './view';
 import { Core } from './core';
 
 (function () {
@@ -10,7 +10,7 @@ import { Core } from './core';
     const core = new Core();
 
     ReactDOM.render(
-        <Main core={core} />,
+        <App core={core} />,
         root,
     );
 })();

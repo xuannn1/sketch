@@ -10,7 +10,7 @@
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "noImplicitAny": false,
-    "outDir": "dst",
+    "outDir": "./dist",
     "rootDir": "./src",
     "plugins": [
       {
@@ -18,9 +18,9 @@
       }
     ],
     "removeComments": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "strict": true,
-    "target": "es6",
+    "target": "es5",
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
@@ -30,11 +30,11 @@
       ]
   },
   "include": [
-    "src/**/*",
+    "./src/**/*",
     "types"
   ],
   "exclude": [
-    "build",
+    "dist",
     "node_modules"
   ]
 }
