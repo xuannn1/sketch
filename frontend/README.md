@@ -12,7 +12,7 @@
 - React-router 4.0
 - ES6 async
 
-# 前端基本框架
+# 前端目录
 
 - `frontend`
   - `src` 源码目录
@@ -24,7 +24,7 @@
   - `package.json` node包管理文件
   - `index.html` 
 
-- `src`:
+- `frontend/src`
   - `components` 小块的页面组件
   - `config` 设置类, 如网站url, 如path, 等
   - `core` 所有控制组件
