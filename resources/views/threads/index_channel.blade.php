@@ -10,6 +10,7 @@
             <a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>
         </div>
         <div class="panel panel-default">
+            <!-- 分级目录 -->
             <div class="panel-heading">
                 <ul class="nav nav-tabs">
                     <li role="presentation" class="{{ request('label') ? '': 'active' }}"><a href="{{ route('channel.show', $channel) }}">全部<span class="badge"></span></a></li>
@@ -33,6 +34,11 @@
                     @endif
                 </ul>
             </div>
+            <!-- 置顶 -->
+            <div class="panel-body">
+                @include('threads._simple_threads')
+            </div>
+            <!-- 单独的帖子列表 -->
             <div class="panel-body">
                 {{ $threads->appends(request()->query())->links() }}
                 @include('threads._threads')
