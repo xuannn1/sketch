@@ -22,7 +22,7 @@ export class Search extends React.Component<Props, State> {
         tongrenValue: '',
     }
 
-    public state = Object.assign(this.defaultState);
+    public state = Object.assign({}, this.defaultState);
 
     public render () {
         return (<div className="container-fluid">
