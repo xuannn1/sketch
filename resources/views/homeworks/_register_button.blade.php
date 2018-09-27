@@ -21,7 +21,8 @@
                             {{ csrf_field() }}
                             <div class="form-group">
                                 <label>请输入您的报名马甲：</label>
-                                <input type="text" name="majia" class="form-control" value="{{ Auth::user()->name}}">
+                                <code>温馨提示，请不要偷懒使用“匿名咸鱼”作为报名马甲呦！</code>
+                                <input type="text" name="majia" class="form-control" value="">
                             </div>
                             <div class="">
                                 <button type="submit" class="btn btn-primary sosad-button btn-sm">确认报名</button>
