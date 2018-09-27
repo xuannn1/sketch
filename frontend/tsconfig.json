@@ -24,6 +24,9 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
+  "awesomeTypescriptLoaderOptions": {
+    "sourceMap": true,
+  },
   "paths": {
       "*": [
         "./types/*"

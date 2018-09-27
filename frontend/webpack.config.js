@@ -8,7 +8,7 @@ var config = {
         filename: 'bundle.js',
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js'],
+        extensions: ['.ts', '.tsx', '.js', '.json'],
         modules: ['node_modules'],
     },
     module: {
@@ -17,7 +17,7 @@ var config = {
             { test: /\.scss$/, use: [ // sass parser
                 { loader: 'style-loader' },
                 { loader: 'css-loader' },
-                { loader: 'postcss-loader', options: {
+                { loader: 'postcss-loader', options: { // for bootstrap
                     plugins: () => [ require('precss'), require('autoprefixer') ]
                 }},
                 { loader: 'sass-loader' },
@@ -34,25 +34,32 @@ var config = {
     plugins: [
         new LiveReloadPlugin(),
     ],
-    devServer: {
-        contentBase: path.join(__dirname),
-        compress: true,
-        port: 2333,
-        allowedHosts: [
-            'sosad.fun',
-            'wenzhan.org',
-        ],
-    },
 };
 
 module.exports = (env, argv) => {
     switch (argv.mode) {
         case 'development':
+            console.log('--- Development Mode ---');
+            config.mode = 'development';
             config.devtool = 'source-map';
-            config.module.rules.push({ enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }); // for dev
+            config.module.rules.push({ enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' });
+            config.devServer = {
+                contentBase: path.join(__dirname),
+                compress: true,
+                port: 2333,
+                open: true,
+                allowedHosts: [
+                    'sosad.fun',
+                    'wenzhan.org',
+                ],
+            };
             break;
         case 'production':
+            console.log('--- Production Mode ---');
+            config.mode = 'production';
             break;
+        case 'default':
+            config.mode = 'none';
     }
 
     return config;
