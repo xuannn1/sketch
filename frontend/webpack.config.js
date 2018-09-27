@@ -2,7 +2,10 @@ var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 
 var config = {
-    entry: ['./src/index.tsx'],
+    entry: [
+        'babel-polyfill', // for ie8
+        './src/index.tsx',
+    ],
     output: {
         path: path.resolve(__dirname, './dist'),
         filename: 'bundle.js',
@@ -32,7 +35,6 @@ var config = {
         'react-dom': 'ReactDOM',
     },
     plugins: [
-        new LiveReloadPlugin(),
     ],
 };
 
@@ -53,6 +55,7 @@ module.exports = (env, argv) => {
                     'wenzhan.org',
                 ],
             };
+            config.plugins.push(new LiveReloadPlugin());
             break;
         case 'production':
             console.log('--- Production Mode ---');

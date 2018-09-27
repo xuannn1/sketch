@@ -17,7 +17,7 @@ export class Navbar extends React.Component<Props, State> {
         return (<div className="navbar">
             <div className="container">
                 <div className="col-md-offset-1 col-md-10">
-                    <a href={ROUTE.home}>废文网</a>
+                    <a href={ROUTE.home}><img src={core.db.getLogo()} alt="废文网" /></a>
                     <input type="hidden" name="baseurl" value={ROUTE.home} />
                     <nav>
                         <ul className="nav navbar-nav navbar-right text-right">
