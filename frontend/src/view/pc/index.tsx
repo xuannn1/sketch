@@ -5,6 +5,7 @@ import { AlertMsg } from '../components/alert-msg';
 import { Search } from '../components/search';
 import { Content } from './content';
 import { Footer } from './footer';
+import './index.scss';
 
 interface Props {
     core:Core;

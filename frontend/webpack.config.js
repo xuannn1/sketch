@@ -17,6 +17,9 @@ var config = {
             { test: /\.scss$/, use: [ // sass parser
                 { loader: 'style-loader' },
                 { loader: 'css-loader' },
+                { loader: 'postcss-loader', options: {
+                    plugins: () => [ require('precss'), require('autoprefixer') ]
+                }},
                 { loader: 'sass-loader' },
             ] },
             { test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/, use: [
