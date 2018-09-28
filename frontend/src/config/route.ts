@@ -56,4 +56,6 @@ export const ROUTE = {
 
     // others
     github: 'https://github.com/lyn510/sketch',
+
+    notifications: '',
 }

@@ -15,11 +15,12 @@ interface State {
 
 export class App extends React.Component<Props, State> {
     public renderApp () {
-        if (isMobile()) {
-            return <Main_m core={this.props.core} />
-        } else {
-            return <Main_pc core={this.props.core} />
-        }
+        return <Main_m core={this.props.core} />;
+        // if (isMobile()) {
+        //     return <Main_m core={this.props.core} />
+        // } else {
+        //     return <Main_pc core={this.props.core} />
+        // }
     }
 
     public render () {

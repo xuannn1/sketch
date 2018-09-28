@@ -51,6 +51,15 @@ npm run build
   - `view` 页面渲染
     - `components` 小块的页面组件, 手机端和电脑端可共用的
     - `mobile` 手机端
+      - `index.tsx` 入口文件
+      - `navbar.tsx` 一级导航条
+      - `common.scss` 公用css组件
+      - `index.scss` css入口文件
+      - `home` 首页
+      - `collection` 收藏
+      - `notification` 通知
+      - `status` 动态
+      - `user` 我
     - `pc` 电脑端
       - `index.tsx` 初始化、入口文件
       - `content.tsx` 路由文件

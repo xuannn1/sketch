@@ -17,4 +17,5 @@ export class Content extends React.Component<Props, State> {
         return (<Switch>
             <Route exact path={ROUTE.home} app={Home} />
         </Switch>);
-    }}
+    }
+}
