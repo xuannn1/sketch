@@ -12,7 +12,7 @@ interface State {
 export class Notification_m extends React.Component<Props, State> {
     public render () {
         return (<div>
-
+            notification
         </div>);
     }
 }

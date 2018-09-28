@@ -12,7 +12,7 @@ interface State {
 export class Forum_m extends React.Component<Props, State> {
     public render () {
         return (<div>
-
+            forum
         </div>);
     }
 }

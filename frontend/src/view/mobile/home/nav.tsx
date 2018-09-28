@@ -3,14 +3,14 @@ import { Core } from '../../../core';
 
 interface Props {
     core:Core;
-    nav:(page:HomeNav) => void;
+    nav:(page:HomeNavE) => void;
 }
 
 interface State {
 
 }
 
-export enum HomeNav {
+export enum HomeNavE {
     default,
     article,
     forum,
@@ -19,8 +19,14 @@ export enum HomeNav {
 
 export class HomeNav_m extends React.Component<Props, State> {
     public render () {
-        return (<div>
-            <span><a onClick={() => this.props.nav(HomeNav.default)}>首页</a></span>
+        return (<div className="nav">
+            { this.renderButton(HomeNavE.default, '首页') }
+            { this.renderButton(HomeNavE.article, '文库') }
+            { this.renderButton(HomeNavE.forum, '论坛') }
         </div>);
+    }
+
+    public renderButton (nav:HomeNavE, text:string) {
+        return <div><button onClick={() => this.props.nav(nav)}>{ text }</button></div>
     }
 }

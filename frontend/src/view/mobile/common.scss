@@ -1,3 +1,24 @@
+// common content styles
 .content {
     background-color: white;
+}
+
+// common nav styles
+.nav {
+    display: flex;
+    padding: 0 30vw;
+
+    div {
+        margin: auto;
+        
+        button {
+            text-decoration: underline;
+            border: none;
+            font-size: 80%;
+
+            &:click {
+                border: none;
+            }
+        }
+    }
 }

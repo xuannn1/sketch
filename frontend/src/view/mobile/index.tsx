@@ -25,11 +25,11 @@ export class Main_m extends React.Component<Props, State> {
         return (<div>
             <div className="main-frame">
                 <Switch>
-                    <Route exact path={ROUTE.home} app={Home_m} />
-                    <Route path={ROUTE.collections} app={Collection_m} />
-                    <Route path={ROUTE.users} app={User_m} />
-                    <Route path={ROUTE.statuses} app={Status_m} />
-                    <Route path={ROUTE.notifications} app={Notification_m} />
+                    <Route exact path={ROUTE.home} component={Home_m} />
+                    <Route path={ROUTE.collections} component={Collection_m} />
+                    <Route path={ROUTE.users} component={User_m} />
+                    <Route path={ROUTE.statuses} component={Status_m} />
+                    <Route path={ROUTE.notifications} component={Notification_m} />
                 </Switch>
             </div>
 
