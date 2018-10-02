@@ -14,9 +14,10 @@
 
 
 // font-awesome
-$fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
-@import "node_modules/font-awesome/scss/font-awesome.scss";
-@import "~@fortawesome/fontawesome-free/css/all.css";
+// $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
+// @import "node_modules/font-awesome/scss/font-awesome.scss";
+// @import "~@fortawesome/fontawesome-free/css/all.css";
+// @import url("https://use.fontawesome.com/releases/v5.3.1/css/all.css");
 
 :root {
   --body-color: #f3f3f3;
@@ -24,7 +25,6 @@ $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
   --reminder-symbol-color:#FF2121;
   --border-color:#999;
   --border-color-light:#efefef;
-  --button-color:#000;
   --button-disabled:#e1e1e1;
   --admin-button-color:#ea234a;
   --link-color: #555;
@@ -42,26 +42,53 @@ $fa-font-path: "../../../node_modules/font-awesome/fonts" !default;
 }
 
 :root.dark {
-  --body-color: #141d26;
+  --body-color: #1e2022;
   --admin-symbol-color:#c49d8d;
   --reminder-symbol-color:#FF2121;
   --border-color:#999;
-  --border-color-light:#efefef;
-  --button-color:#000;
+  --border-color-light:#504945;
+  --button-disabled:#e1e1e1;
+  --admin-button-color:#cc241d;
+  --link-color: #ddd;
+  --link-hover-color: #fb4934;
+  // --link-hover-color: #FF2121;
+  --body-font-color:#ddd;
+  --body-font-color-light:#6f7373;
+  --button-color: #fb4934;
+  --bold-color: #cbdbe4;
+  --panel-color:#2c2d31;
+  --dark-gray:#383b3d;
+
+  --gradient-thin: rgba(44, 45, 49, 0.0001);
+  --gradient-dense: rgba(44, 45, 49, 0.5);
+}
+
+:root.solarized {
+  --body-color: #eee8d5;
+  --admin-symbol-color:#c49d8d;
+  --reminder-symbol-color:#FF2121;
+  --border-color:#999;
+  --border-color-light:#eee8d5;
   --button-disabled:#e1e1e1;
   --admin-button-color:#ea234a;
-  --link-color: #555;
-  --link-hover-color: #ea234a;
+  --link-color: #073642;
+  --link-hover-color: #cb4b16;
   // --link-hover-color: #FF2121;
-  --body-font-color:#555;
-  --body-font-color-light:#999;
-  --button-color: #222;
-  --bold-color: #000;
-  --panel-color:#fefefe;
-  --dark-gray:#ececec;
+  --body-font-color:#073642;
+  --body-font-color-light:#6f7373;
+  --button-color: #586e75;
+  --bold-color: #002b36;
+  --panel-color:#fdf6e3;
+  --dark-gray:#93a1a1;
 
-  --gradient-thin: rgba(255, 255, 255, 0.0001);
-  --gradient-dense: rgba(255, 255, 255, 0.5);
+  --gradient-thin: rgba(253, 246, 227, 0.0001);
+  --gradient-dense: rgba(253, 246, 227, 0.5);
+}
+
+:root.sosad {
+  --panel-color:#f6f6f6 ;
+  --dark-gray:#e3e3e3 ;
+  --body-color: #efefef ;
 }
 
 %light-shadow {
@@ -147,10 +174,6 @@ p a, label a {
     }
 }
 
-header .container {
-    border-bottom: solid 1px var(--border-color-light);
-}
-
 .navbar-inverse {
     margin-bottom: 5px;
     background: none;
@@ -204,6 +227,7 @@ header .container {
 
 .navbar-collapse.in {
     height: auto;
+    border: none;
 }
 
 .navbar-nav {
@@ -465,11 +489,23 @@ footer {
     resize: none;
     transition: background-color 0.5s;
     &:focus{
-        background-color: var(--border-color-light);
+        background-color: var(--dark-gray);
         box-shadow: none;
         outline: none;
         border: none;
     }
+}
+
+.form-control[disabled] {
+  background: var(--border-color-light);
+}
+
+textarea.form-control {
+  color: var(--body-font-color);
+}
+
+[id^="word-count"] {
+  color: var(--body-font-color);
 }
 
 #markdowneditor {
@@ -503,7 +539,7 @@ footer {
     padding: 0.5em;
   }
   > textarea:focus, textarea:active {
-    background: var(--dark-gray);
+    background: var(--body-color);
   }
 
   .md-preview {
@@ -516,7 +552,7 @@ footer {
   }
 }
 
-.md-header {
+.md-editor>.md-header {
   border: none;
   background: var(--dark-gray);
 }
@@ -566,10 +602,9 @@ blockquote {
   font-size: 1em;
 }
 
-.img {
-   width: 50%;
+img, .img {
    height: auto;
-   max-width: 50%;
+   max-width: 100%;
    text-align: center;
    float: none;
 }
@@ -742,7 +777,6 @@ hr {
 }
 
 .thread {
-    // border-bottom: solid 1px var(--border-color-light);
     display: flex;
     display: -webkit-flex;
     flex-flow: row wrap;
@@ -984,7 +1018,6 @@ hr {
       background: none;
       border: none;
       color: var(--bold-color);
-    //   border-bottom: solid 1px var(--border-color-light);
       padding-bottom: 0;
    }
 }
@@ -1087,6 +1120,9 @@ hr {
     background: none;
     border: none;
     @extend %button-clear;
+    &:active, &:hover, &:focus {
+      background: none !important;
+    }
 }
 
 .badge {
@@ -1153,7 +1189,7 @@ hr {
    padding-top: 5px;
    p{
       white-space: pre-wrap !important;
-      margin: 0 0 1em 0;
+      margin: 1em 0 1em 0;
    }
    &.indentation {
      p{
@@ -1241,7 +1277,7 @@ hr {
         @extend %nav-pills-active;
         border-bottom: 2px solid var(--link-hover-color);
         &:hover {
-            background: var(--body-color);
+            background: none;
             @extend %nav-pills-active;
             border-bottom: 2px solid var(--link-hover-color);
         }
@@ -1251,6 +1287,11 @@ hr {
             border-bottom: 2px solid var(--link-hover-color);
         }
     }
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+  @extend %nav-pills-active;
+  border-bottom: 2px solid var(--link-hover-color);
 }
 
 .site-map {
@@ -1439,6 +1480,26 @@ hr {
   padding-bottom: 1em;
 }
 
+.theme-changer {
+  float: right;
+  -webkit-appearance: none;
+  position: fixed;
+  top: 2px;
+  right: 20px;
+  z-index: 9999;
+  border: none;
+  padding: 10px 0 0 10px;
+  background: var(--panel-color);
+  select {
+    border: none;
+    width: 4em;
+    background: var(--panel-color);
+    &:hover, &:active, &:focus {
+      outline: none;
+    }
+  }
+}
+
 
 @media (max-width: 480px) {
     p {
@@ -1463,7 +1524,6 @@ hr {
         right: 0px;
         width: 100%;
         height: auto;
-        border: 1px var(--border-color-light);
         background: var(--panel-color);
         -webkit-background-clip: padding-box;
                 background-clip: padding-box;
@@ -1586,6 +1646,10 @@ hr {
     }
     .stats {
       width: 100%;
+    }
+
+    .theme-changer {
+      right: 50px;
     }
 
 }

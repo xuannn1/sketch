@@ -773,6 +773,9 @@ function toggle_tags_tongren_yuanzhu(){
 
 (function ($) {
     var editor = $("#markdowneditor");
+    var bodyStyles = window.getComputedStyle(document.body);
+    var warn_color = bodyStyles.getPropertyValue('--link-hover-color');
+    var normal_color = bodyStyles.getPropertyValue('--body-font-color');
    editor.keyup(function(){
          var content = editor.val();
          var content_len = 0;
@@ -785,11 +788,11 @@ function toggle_tags_tongren_yuanzhu(){
             }
 
          if(content_len > 0){
-            $("#word-count").html(Math.ceil (content_len / 2)).css("color","#333");
+            $("#word-count").html(Math.ceil (content_len / 2)).css("color", normal_color);
             $("#button-post").attr("disabled",false);
             // 可以继续执行其他操作
          }else{
-            $("#word-count").html(Math.ceil (content_len / 2)).css("color","#FF2121");
+            $("#word-count").html(Math.ceil (content_len / 2)).css("color", warn_color);
             $("#button-post").attr("disabled",true);
             return false;
          }
@@ -800,6 +803,9 @@ function toggle_tags_tongren_yuanzhu(){
 // TODO: 合并两个函数
 (function ($) {
     var editors = $('.comment-editor');
+    var bodyStyles = window.getComputedStyle(document.body);
+    var warn_color = bodyStyles.getPropertyValue('--link-hover-color');
+    var normal_color = bodyStyles.getPropertyValue('--body-font-color');
     for (let j = 0; j < editors.length; j++) {
       let editor = editors.eq(j);
       let id = editor.attr("id");
@@ -815,11 +821,11 @@ function toggle_tags_tongren_yuanzhu(){
         }
 
         if(content_len > 0){
-          $("#word-count-"+id).html(Math.ceil (content_len / 2)).css("color","#333");
+          $("#word-count-"+id).html(Math.ceil (content_len / 2)).css("color", normal_color);
           $("#button-post-"+id).attr("disabled",false);
           // 可以继续执行其他操作
         }else{
-          $("#word-count-"+id).html(Math.ceil (content_len / 2)).css("color","#FF2121");
+          $("#word-count-"+id).html(Math.ceil (content_len / 2)).css("color", warn_color);
           $("#button-post-"+id).attr("disabled",true);
           return false;
         }
@@ -828,16 +834,33 @@ function toggle_tags_tongren_yuanzhu(){
     }
 })(jQuery);
 
-// (function () {
-//   document.documentElement.style.setProperty('--body-color', '#141d26');
-//   document.documentElement.style.setProperty('--panel-color', '#243447');
-//   document.documentElement.style.setProperty('--body-font-color', '#eceff4');
-//   document.documentElement.style.setProperty('--link-color', '#f9f9f9');
-//   document.documentElement.style.setProperty('--bold-color', '#fff');
-//   document.documentElement.style.setProperty('--border-color', '#555');
-//   document.documentElement.style.setProperty('--border-color-light', '#4c566a');
-//   document.documentElement.style.setProperty('--dark-gray', '#4c566a');
-//   document.documentElement.style.setProperty('--link-hover-color', '#c51f5d');
-//   document.documentElement.style.setProperty('--gradient-thin', 'rgba(36, 52, 71, 0.0001)');
-//   document.documentElement.style.setProperty('--gradient-dense', 'rgba(36, 52, 71, 0.5)');
-// })();
+function searchBarAdjust() {
+  if
+  (this.options[this.selectedIndex].value=='tongren_yuanzhu')  {
+     document.getElementById('tongren_cp_name').style.display = 'inline';
+     if(document.body.clientWidth <= 330) {
+         document.getElementById('tongren_cp_name').style.width = '60px';
+         document.getElementById('search_keyword').style.width = '105px';
+     }
+     else if (document.body.clientWidth <= 480) {
+         document.getElementById('tongren_cp_name').style.width = '75px';
+     }
+     else {
+         document.getElementById('tongren_cp_name').style.width = '120px';
+         document.getElementById('search_keyword').style.width = '140px';
+         document.getElementById('search-container').style.width = '400px';
+         document.getElementById('logo').style.width = '0px';
+     }
+ }
+ else {
+     document.getElementById('tongren_cp_name').style.display = 'none';
+     if(document.body.clientWidth > 480) {
+         document.getElementById('search-container').style.width = '240px';
+         document.getElementById('search_keyword').style.width = '105px';
+     }
+     else {
+         document.getElementById('search_keyword').style.width = '165px';
+         document.getElementById('logo').style.width = '142px';
+     }
+ }
+}

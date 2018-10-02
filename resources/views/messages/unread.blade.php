@@ -25,7 +25,7 @@
                     <li role="presentation"><a href="{{ route('messages.unread') }}" class = "active">未读</a></li>
                     <li role="presentation"><a href="{{ route('messages.index') }}">全部</a></li>
                     <li role="presentation"><a href="{{ route('messages.messagebox') }}">信箱</a></li>
-                    <li role="presentation" class="pull-right"><a class="btn sosad-button-ghost grayout" href="{{ route('messages.clear') }}">
+                    <li role="presentation"><a class="btn sosad-button-ghost grayout" href="{{ route('messages.clear') }}">
                       <i class="fas fa-check"></i>
                       清理未读
                     </a></li>

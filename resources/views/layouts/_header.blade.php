@@ -11,6 +11,22 @@
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
                   <span class="sr-only">切换导航</span>
                   <i class="fa fa-bars"></i>
+                  @if (Auth::check())
+                    <?php $user = Auth::user();
+                    $unreadmessages = $user->message_reminders
+                    +$user->post_reminders
+                    +$user->reply_reminders
+                    +$user->postcomment_reminders
+                    +$user->upvote_reminders;
+                    $unreadupdates = $user->collection_books_updated
+                    + $user->collection_threads_updated
+                    + $user->collection_statuses_updated;
+                    $linkedaccounts = $user->linkedaccounts();
+                    ?>
+                    <span class="badge {{$unreadmessages>0? 'blink_me':'hidden'}}">
+                      {{ $unreadmessages!=0? $unreadmessages :''}}
+                    </span>
+                  @endif
               </button>
 
           </div>
@@ -21,35 +37,7 @@
                  <div class="search-container" id="search-container">
                      <form method="GET" action="{{ route('search') }}" id="search_form">
                          <!-- <div class="search-input"> -->
-                             <select name="search_options" form="search_form" onchange="if
-                             (this.options[this.selectedIndex].value=='tongren_yuanzhu')  {
-                                document.getElementById('tongren_cp_name').style.display = 'inline';
-                                if(document.body.clientWidth <= 330) {
-                                    document.getElementById('tongren_cp_name').style.width = '60px';
-                                    document.getElementById('search_keyword').style.width = '105px';
-                                }
-                                else if (document.body.clientWidth <= 480) {
-                                    document.getElementById('tongren_cp_name').style.width = '75px';
-                                }
-                                else {
-                                    document.getElementById('tongren_cp_name').style.width = '120px';
-                                    document.getElementById('search_keyword').style.width = '140px';
-                                    document.getElementById('search-container').style.width = '400px';
-                                    document.getElementById('logo').style.width = '0px';
-                                }
-                            }
-                            else {
-                                document.getElementById('tongren_cp_name').style.display = 'none';
-                                if(document.body.clientWidth > 480) {
-                                    document.getElementById('search-container').style.width = '240px';
-                                    document.getElementById('search_keyword').style.width = '105px';
-                                }
-                                else {
-                                    document.getElementById('search_keyword').style.width = '165px';
-                                    document.getElementById('logo').style.width = '142px';
-                                }
-                            }
-                            ">
+                             <select name="search_options" form="search_form" onchange=searchBarAdjust()>
                              <option value ="threads">标题</option>
                              <option value ="users">用户</option>
                              <option value ="tongren_yuanzhu" >原著</option>
@@ -68,7 +56,7 @@
                   <li><a href="{{ route('admin.index') }}" class="admin-symbol">管理员</a></li>
                @endif
 
-               @if (Auth::check()&&(Auth::user()->lastrewarded_at <= Carbon\Carbon::today()->toDateTimeString()))
+               @if (Auth::check()&&(Auth::user()->lastrewarded_at <= Carbon\Carbon::today()->subHours(2)->toDateTimeString()))
                 <li><a href="{{ route('qiandao') }}" style="color:var(--link-hover-color)">
                   <i class="far fa-calendar-check"></i>
                   签到
@@ -95,17 +83,6 @@
                    论坛</a>
                </li>
               @if (Auth::check())
-              <?php $user = Auth::user();
-              $unreadmessages = $user->message_reminders
-              +$user->post_reminders
-              +$user->reply_reminders
-              +$user->postcomment_reminders
-              +$user->upvote_reminders;
-              $unreadupdates = $user->collection_books_updated
-              + $user->collection_threads_updated
-              + $user->collection_statuses_updated;
-              $linkedaccounts = $user->linkedaccounts();
-              ?>
                 <li><a href="{{ route('collections.books') }}">
                     <i class="fa fa-star"></i>
                     收藏<span class="badge">{{ $unreadupdates!=0? $unreadupdates :''}}</span></a></li>
@@ -119,7 +96,11 @@
                     <li><a href="{{ route('user.show', $user->id) }}">个人主页</a></li>
                     <li><a href="{{ route('users.edit') }}">编辑资料</a></li>
                     <li><a href="{{ route('book.create') }}">我要发文</a></li>
-                    <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ $unreadmessages!=0? $unreadmessages :''}}</span></a></li>
+                    <li><a href="{{ route('messages.unread') }}">消息中心
+                      <span class="badge">
+                        {{ $unreadmessages!=0? $unreadmessages :''}}
+                      </span></a>
+                    </li>
                    @foreach($linkedaccounts as $account)
                    <li><a href="{{ route('linkedaccounts.switch', $account->id) }}">切换：{{ $account->name }}</a></li>
                    @endforeach
@@ -151,3 +132,15 @@
   </div>
 
 </header>
+
+<div class="theme-changer">
+  <label id="theme-changer">
+    <i class="fas fa-tshirt"></i>
+     <select name="theme" id="theme">
+       <option value="default">白天</option>
+       <option value="dark">黑夜</option>
+       <option value="solarized">黄昏</option>
+       <option value="sosad">阴雨</option>
+     </select>
+   </label>
+</div>

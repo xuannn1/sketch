@@ -11,7 +11,7 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div class="container-fluid">
+                    <div class="container-fluid post-body">
                         <div class="help-navigation h5">
                             <ol>
                                 <li><a href="#help-1" class="h4">网站界面</a></li>

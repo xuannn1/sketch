@@ -4,13 +4,13 @@
 <div class="container">
    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
       <div class="panel-group">
-         <div class="panel panel-default">
+         <div class="panel panel-default panel-body">
             <div class="panel-heading">
                <div class="container-fluid">
                    <h2 class="sosad-heading">关于</h2>
                </div>
             </div>
-            <div class="panel-body post-body">
+            <div class="post-body">
               <div class="main-text">
                  <p>大家好，欢迎来废文网玩。</p>
                  <p>请把这里当作一个，自由存文，自由交流感想的地方吧。</p>

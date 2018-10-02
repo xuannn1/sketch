@@ -6,11 +6,8 @@
       <meta name="csrf-token" content="{{ csrf_token() }}">
       <title>@yield('title', '废文网') - 每日一丧</title>
       <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
-      <script type="text/javascript">
-      var root = document.querySelector(':root')
-      // get values of custom properties and apply
-      root.className = "dark";
-      </script>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+      <script src="{{ mix('/js/theme.js') }}"></script>
    </head>
    <body>
          @include('layouts._header')

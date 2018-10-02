@@ -27,7 +27,7 @@
                 </a>
               </div>
               @endif
-                @foreach ($questions->reverse() as $question)
+                @foreach ($questions as $question)
                 <div class="row {{ $question->answer_id>0? 'grayout':'' }} main-text">
                     <div class="margin5 smaller-10 grayout">
                       ·
