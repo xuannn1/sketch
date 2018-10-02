@@ -8553,7 +8553,7 @@ button.close {
   --link-hover-color: #fb4934;
   --body-font-color: #ddd;
   --body-font-color-light: #6f7373;
-  --button-color: #fb4934;
+  --button-color: #7c6f64;
   --bold-color: #cbdbe4;
   --panel-color: #2c2d31;
   --dark-gray: #383b3d;
@@ -10188,7 +10188,6 @@ hr {
 
 .theme-changer {
   float: right;
-  -webkit-appearance: none;
   position: fixed;
   top: 2px;
   right: 20px;
@@ -10199,6 +10198,7 @@ hr {
 }
 
 .theme-changer select {
+  -webkit-appearance: none;
   border: none;
   width: 4em;
   background: var(--panel-color);

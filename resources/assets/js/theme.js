@@ -1,4 +1,3 @@
-// test for localStorage support
 var hasLocalStorage = function () {
 	var mod = 'a';
 	try {
@@ -10,40 +9,48 @@ var hasLocalStorage = function () {
 	}
 };
 
-var themeName = localStorage.getItem("theme") || 'default';
+var changeLogo = function (theme) {
+  if (theme == "dark") {
+    document.getElementById('logo').children[0].src='/img/sosad-logo-dark.png';
+  }
+  else {
+    document.getElementById('logo').children[0].src='/img/sosad-logo.png';
+  }
+};
+
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
+var themeName = localStorage.getItem("theme") || getCookie("theme") || 'default';
 var root = document.querySelector(':root');
 root.className = themeName;
 
 window.onload = function () {
+  var themeChanger = document.querySelector('#theme-changer'),
+        themeInput = document.querySelector('#theme'),
+        selectOption;
   if (hasLocalStorage() && window.CSS && window.CSS.supports && window.CSS.supports('--a', 0)) {
-    // get values of custom properties and apply
-    var themeChanger = document.querySelector('#theme-changer'),
-          themeInput = document.querySelector('#theme'),
-          selectOption;
     themeInput.addEventListener('change', function (e) {
 			selectOption = this.options[this.selectedIndex];
 			themeName = selectOption.value;
 			root.className = themeName;
 			localStorage.setItem('theme', themeName);
-      if (themeName == "dark") {
-        document.getElementById('logo').children[0].src='/img/sosad-logo-dark.png';
-      }
-      else {
-        document.getElementById('logo').children[0].src='/img/sosad-logo.png';
-      }
+      changeLogo(themeName);
 		});
-
-
-    themeInput.value = themeName;
-    if (themeName == "dark") {
-      document.getElementById('logo').children[0].src='/img/sosad-logo-dark.png';
-    }
-    else {
-      document.getElementById('logo').children[0].src='/img/sosad-logo.png';
-    }
   }
   else {
-  		// CSS custom properties not supported - don't show the theme changer
-  		alert("浏览器不支持换肤功能 (つд`) 只能使用默认主题");
+    themeInput.addEventListener('change', function (e) {
+			selectOption = this.options[this.selectedIndex];
+			themeName = selectOption.value;
+			root.className = themeName;
+      document.cookie = "theme="+themeName+";";
+      changeLogo(themeName);
+		});
   }
+
+  themeInput.value = themeName;
+  changeLogo(themeName);
 };
