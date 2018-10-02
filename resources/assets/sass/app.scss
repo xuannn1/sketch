@@ -86,9 +86,11 @@
 }
 
 :root.sosad {
-  --panel-color:#f6f6f6 ;
-  --dark-gray:#e3e3e3 ;
-  --body-color: #efefef ;
+  --panel-color:#f6f6f6;
+  --dark-gray:#e3e3e3;
+  --body-color: #efefef;
+  --gradient-thin: rgba(246, 246, 246, 0.0001);
+  --gradient-dense: rgba(246, 246, 246, 0.5);
 }
 
 %light-shadow {
