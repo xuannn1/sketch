@@ -27,6 +27,11 @@
                </li>
                @endforeach
             </ul>
+            <!-- 置顶 -->
+            <div>
+                @include('threads._simple_threads')
+            </div>
+
             @if($channel->channel_state==1)
             <ul class="nav nav-pills nav-fill">
                  @foreach($sexual_orientation_info as $key=>$value)
