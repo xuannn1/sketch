@@ -45,7 +45,7 @@
       @foreach($posts as $key=>$post)
          @include('posts._post')
       @endforeach
-      {{ $posts->links() }}
+      {{ $posts->appends(request()->input())->links() }}
       <!-- 回复输入框 -->
       @if(Auth::check())
          @include('threads._reply')
