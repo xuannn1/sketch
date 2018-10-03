@@ -12,19 +12,8 @@
                   <span class="sr-only">切换导航</span>
                   <i class="fa fa-bars"></i>
                   @if (Auth::check())
-                    <?php $user = Auth::user();
-                    $unreadmessages = $user->message_reminders
-                    +$user->post_reminders
-                    +$user->reply_reminders
-                    +$user->postcomment_reminders
-                    +$user->upvote_reminders;
-                    $unreadupdates = $user->collection_books_updated
-                    + $user->collection_threads_updated
-                    + $user->collection_statuses_updated;
-                    $linkedaccounts = $user->linkedaccounts();
-                    ?>
-                    <span class="badge {{$unreadmessages>0? 'blink_me':'hidden'}}">
-                      {{ $unreadmessages!=0? $unreadmessages :''}}
+                    <span class="badge {{Auth::user()->unread_reminders>0? 'blink_me':'hidden'}}">
+                      {{ auth()->user()->unreadmessages()>0 ? auth()->user()->unreadmessages():''}}
                     </span>
                   @endif
               </button>
@@ -85,25 +74,25 @@
               @if (Auth::check())
                 <li><a href="{{ route('collections.books') }}">
                     <i class="fa fa-star"></i>
-                    收藏<span class="badge">{{ $unreadupdates!=0? $unreadupdates :''}}</span></a></li>
+                    收藏<span class="badge">{{ Auth::user()->unreadupdates()!=0? Auth::user()->unreadupdates() :''}}</span></a></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{$unreadmessages>0? 'blink_me reminder-sign':''}}">
-                    <span class="glyphicon glyphicon-bell {{$unreadmessages>0? :'hidden'}}"></span>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{auth()->user()->unread_reminders>0? 'blink_me reminder-sign':''}}">
+                    <span class="glyphicon glyphicon-bell {{auth()->user()->unreadmessages()>0? :'hidden'}}"></span>
                     <i class="fa fa-user-circle"></i>
-                    {{ $user->name }} <b class="caret"></b></span>
+                    {{ auth()->user()->name }} <b class="caret"></b></span>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="{{ route('user.show', $user->id) }}">个人主页</a></li>
+                    <li><a href="{{ route('user.show', auth()->user()->id) }}">个人主页</a></li>
                     <li><a href="{{ route('users.edit') }}">编辑资料</a></li>
                     <li><a href="{{ route('book.create') }}">我要发文</a></li>
                     <li><a href="{{ route('messages.unread') }}">消息中心
                       <span class="badge">
-                        {{ $unreadmessages!=0? $unreadmessages :''}}
+                        {{ auth()->user()->unreadmessages()!=0? auth()->user()->unreadmessages() :''}}
                       </span></a>
                     </li>
-                   @foreach($linkedaccounts as $account)
-                   <li><a href="{{ route('linkedaccounts.switch', $account->id) }}">切换：{{ $account->name }}</a></li>
-                   @endforeach
+                    @foreach(Auth::user()->linkedaccounts() as $account)
+                        <li><a href="{{ route('linkedaccounts.switch', $account->id) }}">切换：{{ $account->name }}</a></li>
+                    @endforeach
                     <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                       document.getElementById('logout-form').submit();">退出</a>
                       <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
