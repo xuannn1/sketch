@@ -144,3 +144,6 @@
      </select>
    </label>
 </div>
+
+<div class="hidden alert" id="ajax-message">
+</div>
