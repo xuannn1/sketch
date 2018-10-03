@@ -19,7 +19,7 @@ mix.js('resources/assets/js/app.js', 'public/js')
     ], 'public/css/app.css')
     .browserSync('localhost:8000')
     .disableSuccessNotifications();
-mix.scripts([
+mix.babel([
     'public/js/app.js',
     'resources/assets/js/bbcode_parser.js',
     'resources/assets/js/sosad.js'
