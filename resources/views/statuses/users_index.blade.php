@@ -5,8 +5,7 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3>全部用户</h3>
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-pills nav-fill">
                     @include('statuses._statuses_stats')
                 </ul>
             </div>

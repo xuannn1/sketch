@@ -10,6 +10,5 @@
 	   &nbsp;
 	   原因：{{ $record->reason }}
 	</h5>
-	<hr class="narrow">
 </div>
 @endforeach

@@ -7,15 +7,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-xs-10 col-xs-offset-1">
-                                <h2>帮助</h2>
-                            </div>
-                        </div>
+                        <h2 class="sosad-heading">帮助</h2>
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div class="container-fluid">
+                    <div class="container-fluid post-body">
                         <div class="help-navigation h5">
                             <ol>
                                 <li><a href="#help-1" class="h4">网站界面</a></li>
@@ -261,7 +257,7 @@
                                         <div id="help-5-1">
                                             <h4>5.1 当前页面数据</h4>
                                             <ul>
-                                                <!-- <li>当前在线注册用户数：{{ $users_online }}人</li> -->
+                                                <li>当前在线注册用户数：{{ $users_online }}人</li>
                                                 <li>信息每页显示：{{ $data['items_per_page'] }}个</li>
                                                 <li>信息每分区显示：{{ $data['items_per_part'] }}个</li>
                                                 <li>目录每页显示：{{ $data['index_per_page'] }}个</li>
@@ -330,7 +326,9 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-md btn-danger sosad-button" onclick="topFunction()" id="myBtn" title="Go to top">回到页面顶部</button>
+            <button class="sosad-button-float" onclick="topFunction()" id="myBtn" title="Go to top">
+                <i class="fa fa-angle-double-up"></i>
+            </button>
         </div>
     </div>
     <script>

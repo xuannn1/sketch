@@ -13,11 +13,14 @@
                 </div>
 
                 <br>
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-pills nav-fill nav-justified">
                     <li role="presentation" class = ""><a href="{{ route('messages.unread') }}">未读</a></li>
-                    <li role="presentation" class = "active"><a href="{{ route('messages.index') }}">全部</a></li>
+                    <li role="presentation"><a href="{{ route('messages.index') }}" class = "active">全部</a></li>
                     <li role="presentation"><a href="{{ route('messages.messagebox') }}">信箱</a></li>
-                    <li role="presentation" class="pull-right"><a class="btn btn-success sosad-button" href="{{ route('messages.clear') }}">清理未读</a></a></li>
+                    <li role="presentation"><a class="btn sosad-button-ghost grayout" href="{{ route('messages.clear') }}">
+                      <i class="fas fa-check"></i>
+                      清理未读
+                    </a></li>
                 </ul>
             </div>
         </div>

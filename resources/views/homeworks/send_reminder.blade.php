@@ -11,7 +11,10 @@
                     <h4>请选择用户：</h4>
                     <div class="" id="students">
                         @foreach ($homework->registered as $student)
-                        <input type="checkbox" class="students" name="students[]" value="{{ $student->id }}">{{ $student->name }}，
+                        <input type="checkbox" name="students[]" value="{{ $student->id }}" id="student-{{ $student->id }}" class="students">
+                        <label for="student-{{ $student->id }}" class="input-helper input-helper--checkbox">
+                            {{ $student->name }}
+                        </label> &nbsp;
                         @endforeach
                     </div>
                     <br>

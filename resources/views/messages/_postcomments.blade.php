@@ -1,15 +1,14 @@
 @foreach($postcomments as $postcomment)
-<article class="">
-    <hr>
+<article class="margin5">
     <div class="row">
         <div class="col-xs-12">
-            <span id="simple{{$postcomment->id}}"><em><a href="{{ route('thread.showpost', $postcomment->post_id) }}">
+            <span id="simple{{$postcomment->id}}" class="grayout"><a href="{{ route('thread.showpost', $postcomment->post_id) }}">
                 {{ $postcomment->anonymous ? ($postcomment->majia ?? '匿名咸鱼'): $postcomment->name }}&nbsp;{{ Carbon\Carbon::parse($postcomment->created_at)->diffForHumans() }}点评了您的帖子&nbsp;
                 {!! Helper::trimtext($postcomment->post_body,10) !!}
-            </a></em></span>
+            </a></span>
         </div>
         <div class="col-xs-12">
-            <span id="full{{$postcomment->id}}">
+            <span id="full{{$postcomment->id}}" class="main-text">
                 {{ $postcomment->body }}
             </span>
         </div>

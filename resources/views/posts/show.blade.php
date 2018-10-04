@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', $thread->title )
+@section('title', Helper::convert_to_title($thread->title))
 
 @section('content')
 <div class="container-fluid">
@@ -30,22 +30,28 @@
             <div class="panel-body post-body">
                 @include('posts._post_body')
             </div>
+         </div>
+         <div class="panel-body">
+           <div class="post-body">
+             @include('posts._post_body')
+           </div>
 
-            @if(Auth::check())
-            <div class="text-right post-vote">
-                @include('posts._post_vote')
-            </div>
-            @endif
-            <div class="panel-footer">
-                @foreach($postcomments as $comment_no=>$postcomment)
-                @include('posts._post_comment')
-                @endforeach
-                {{ $postcomments->links() }}
-            </div>
-        </div>
-        @if(auth()->check())
-        @include('threads._reply')
-        @endif
-    </div>
+           @if(Auth::check())
+           <div class="text-right post-vote">
+             @include('posts._post_vote')
+           </div>
+           @endif
+         </div>
+         <div class="panel-footer">
+            @foreach($postcomments as $comment_no=>$postcomment)
+                  @include('posts._post_comment')
+            @endforeach
+            {{ $postcomments->links() }}
+         </div>
+      </div>
+      @if(auth()->check())
+         @include('threads._reply')
+      @endif
+   </div>
 </div>
 @stop

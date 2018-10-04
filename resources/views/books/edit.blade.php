@@ -34,9 +34,9 @@
                         文案不是正文，文案属于对文章的简单介绍。文案采用“居中排列”的板式，而不是“向左对齐”。如果在这里发布正文，阅读效果不好。正文请在发布文章后，于文案下选择“新建章节”来建立。
                     </div>
                     <textarea name="wenan" id="markdowneditor" data-provide="markdown" rows="5" class="form-control">{{ $thread->mainpost->body }}</textarea>
-                    <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
-                    <button type="button" onclick="removespace('markdowneditor')" class="sosad-button-control addon-button">清理段首空格</button>
-                    <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
+                    <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-ghost">恢复数据</button>
+                    <button type="button" onclick="removespace('markdowneditor')" class="sosad-button-ghost">清理段首空格</button>
+                    <button href="#" type="button" class="pull-right sosad-button-ghost">字数统计：<span id="word-count">0</span></button>
                 </div>
 
                 <div class="grayout">
@@ -125,47 +125,65 @@
                     <?php $tag_info = 0; ?>
                     <div id="feibianyuantags">
                         @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
-                        @if(($tag_info<$tag->tag_info)&&($tag_info>0))
-                        <br>
-                        @endif
-                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}&nbsp;&nbsp;
-                        <?php $tag_info = $tag->tag_info ?>
+                          @if(($tag_info<$tag->tag_info)&&($tag_info>0))
+                          <br>
+                          @endif
+                          <input type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag-{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>
+                          <label for="tag-{{ $tag->id }}" class="input-helper input-helper--checkbox">
+                              {{ $tag->tagname }}&nbsp;&nbsp;
+                          </label>
+                          <?php $tag_info = $tag->tag_info ?>
+
                         @endforeach
                     </div>
                     <div id="bianyuantags" style="display:{{ $thread->bianyuan?'block':'none'}}">
                         <hr>
                         @foreach ($all_book_tags['tags_bianyuan'] as $tag)
-                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}&nbsp;&nbsp;
+                          <input type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag-{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>
+                          <label for="tag-{{ $tag->id }}" class="input-helper input-helper--checkbox">
+                              {{ $tag->tagname }}&nbsp;&nbsp;
+                          </label>
                         @endforeach
                     </div>
                     <div id="tongrentags" style="display: {{ ($thread->channel_id)==1 ? 'none':'block'}}">
                         <hr>
                         @foreach ($all_book_tags['tags_tongren'] as $tag)
-                        <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>{{ $tag->tagname }}&nbsp;&nbsp;
+                          <input type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag-{{ $tag->id }}" {{ (is_array($tags))&&(in_array($tag->id, $tags))? 'checked':'' }}>
+                          <label for="tag-{{ $tag->id }}" class="input-helper input-helper--checkbox">
+                              {{ $tag->tagname }}&nbsp;&nbsp;
+                          </label>
                         @endforeach
                     </div>
                 </div>
                 <br>
                 <div class="checkbox">
-                    <label><input type="checkbox" name="anonymous" {{ $thread->anonymous? 'checked':'' }}>马甲？</label>
+                    <input type="checkbox" name="anonymous" id="anonymous" {{ $thread->anonymous? 'checked':'' }}>
+                    <label for="anonymous" class="input-helper input-helper--checkbox">
+                        马甲？
+                    </label>
                     <div class="form-group text-right" id="majia">
                         <input type="text" name="majia" class="form-control" value="{{ $thread->majia ?? '匿名咸鱼' }}" readonly>
                         <label for="majia"><small>(马甲仅勾选“匿名”时有效，可以更改披马与否，但马甲名称不能再修改)</small></label>
                     </div>
 
-                    <label><input type="checkbox" name="indentation" {{ $book->indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>&nbsp;
+                    <input type="checkbox" id="checkbox-indentation" name="indentation" checked>
+                    <label for="checkbox-indentation" class="input-helper input-helper--checkbox">段首缩进（自动空两格）？</label>&nbsp;
                     <br>
-                    <label><input type="checkbox" name="public" {{ $thread->public ? 'checked' : '' }}>是否公开可见？</label>&nbsp;
-                    <label><input type="checkbox" name="noreply" {{ $thread->noreply ? 'checked' : '' }}>是否禁止回帖？</label>&nbsp;
+                    <input type="checkbox" id="checkbox-public" name="public" checked>
+                    <label for="checkbox-public" class="input-helper input-helper--checkbox">是否公开可见？</label>&nbsp;
+                    <input type="checkbox" id="checkbox-noreply" name="noreply">
+                    <label for="checkbox-noreply" class="input-helper input-helper--checkbox">是否禁止回帖？</label>&nbsp;
                     <br>
-                    <label><input type="checkbox" name="download_as_thread" {{ $thread->download_as_thread ? 'checked' : '' }}>开放讨论帖形式的书评下载？（正文+全部评论，按回帖时间顺序排列）</label>&nbsp;
-                    <label><input type="checkbox" name="download_as_book" {{  $thread->download_as_book ? 'checked' : '' }}>开放脱水书籍下载？（不含回帖的正文章节）</label>
+                    <input type="checkbox" id="checkbox-download-as-thread" name="download-as-thread" checked>
+                    <label for="checkbox-download-as-thread" class="input-helper input-helper--checkbox">开放书评下载？</label>&nbsp;
+                    <input type="checkbox" id="checkbox-download-as-book" name="download-as-book">
+                    <label for="checkbox-download-as-book" class="input-helper input-helper--checkbox">开放书籍下载？</label>
                     <div class="">
-                        <h6>提示：站内会自动去除段落间多余空行，请使用[br]换行。</h6>
+                        <h6>提示：站内会自动去除段落间多余空行，请使用<code>[br]</code>换行。</h6>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-danger sosad-button">确认修改</button>
+                <button type="submit" class="btn sosad-button-thread width100">确认修改</button>
             </form>
         </div>
     </div>

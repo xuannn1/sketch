@@ -180,7 +180,7 @@ function item_add_to_collection(item_id, item_type, collection_list_id){
               }
           });
           if(!(data['collection'] === undefined)){
-              $( '#itemcollection'+item_id ).html('收藏'+data['collection']);
+              $( '#itemcollection'+item_id ).html('<i class="fa fa-star"></i> 收藏 '+data['collection']);
           }
       }
    });
@@ -250,7 +250,8 @@ function removespace(itemname){
    $('#'+itemname).val(string);
 };
 
-function expandpost(id){
+function expandpost(id, pullright){
+  pullright = typeof pullright !== 'undefined' ?  pullright : false;
    var x = document.getElementById('full'+id);
    var y = document.getElementById('abbreviated'+id);
    var z = document.getElementById('expand'+id);
@@ -258,13 +259,13 @@ function expandpost(id){
       x.classList.remove('hidden');
       y.classList.add('hidden');
       z.innerHTML = '收起';
-      z.classList.remove('pull-right');
+      if (pullright) {z.classList.remove('pull-right');}
       z.classList.add('text-center');
    } else {
-      y.classList.remove('hidden');
       x.classList.add('hidden');
+      y.classList.remove('hidden');
       z.innerHTML = '展开';
-      z.classList.add('pull-right');
+      if (pullright) {z.classList.add('pull-right');}
       z.classList.remove('text-center');
    }
 };
@@ -482,8 +483,16 @@ function initcache(){
    });
 };
 
-$('textarea').keyup(debounce(function() {
-   //console.log('save');
+$(document).ready(function(){
+    $( 'textarea'  ).one( "click", function() {
+        if($(this).attr('rows')>1){
+            initcache();
+        }
+    });
+});
+
+$('textarea').keyup(_.debounce(function() {
+   console.log('save');
    item_value = $(this).val();
    $.ajaxSetup({
       headers: {
@@ -498,7 +507,7 @@ $('textarea').keyup(debounce(function() {
           },
       success: function(data) {
          if (data != "notwork"){
-            //console.log(data);
+            console.log(data);
          }
       }
    });
@@ -714,56 +723,174 @@ function toggle_tags(){
 //
 // });
 
-$( ".daily-quote" ).each(function( quote ) {
+(function ($) {
+    // 求出 jumbotron 的最大高度
+    var maxHeight = 0;
+    $('.jumbotron').each(
+        function(quote) {
+            maxHeight = Math.max(maxHeight, $(this).outerHeight());
+        }
+    );
+    // 修改 jumbotron 高度并使子元素居中
+    $('.jumbotron').each(
+        function(quote) {
+            let $j = $(this);
+            let origHeight = $j.outerHeight();
+            $j.css('height', parseInt(maxHeight) + 'px');
+            let $c = $j.children().first();
+            $c.css('margin-top', parseInt((maxHeight - origHeight) / 2) + 'px');
+        }
+    );
+})(jQuery);
 
-  var $quote = $( this );
-  var $quotestring = $quote.text();
-  var $numWords = $quotestring.length;
-  var $len = 0;
-  for (var i=0; i<$numWords; i++) {
-    if ($quotestring.charCodeAt(i)>127 || $quotestring.charCodeAt(i)==94) {
-       $len += 2;
-     } else {
-       $len ++;
-     }
-   }
-  //console.log(quote + ": " + $quotestring + ": " +$len);
-
-  if (($len >= 1) && ($len < 20)) {
-      $quote.css("font-size", "3.5em");
-  }
-  else if (($len >= 20) && ($len < 40)) {//ok
-      $quote.css("font-size", "3em");
-  }
-  else if (($len >= 40) && ($len < 60)) {
-      $quote.css("font-size", "2.4em");
-  }
-  else if (($len >= 60) && ($len < 90)) {
-      $quote.css("font-size", "2.0em");
-  }
-  else if (($len >= 90) && ($len < 120)) {
-      $quote.css("font-size", "1.8em");
-  }
-  else if (($len >= 120) && ($len < 160)) {
-      $quote.css("font-size", "1.5em");
-  }
-  else {
-      $quote.css("font-size", "1em");
-  }
-});
+// $( ".daily-quote" ).each(function( quote ) {
+//
+//   var $quote = $( this );
+//   var $quotestring = $quote.text();
+//   var $numWords = $quotestring.length;
+//   var $len = 0;
+//   for (var i=0; i<$numWords; i++) {
+//     if ($quotestring.charCodeAt(i)>127 || $quotestring.charCodeAt(i)==94) {
+//        $len += 2;
+//      } else {
+//        $len ++;
+//      }
+//    }
+//   // console.log(quote + ": " + $quotestring + ": " +$len);
+//
+//   if (($len >= 1) && ($len < 20)) {
+//       $quote.css("font-size", "1.8 em");
+//   }
+//   else if (($len >= 20) && ($len < 40)) {//ok
+//       $quote.css("font-size", "1.6 em");
+//   }
+//   else if (($len >= 40) && ($len < 60)) {
+//       $quote.css("font-size", "1.4 em");
+//   }
+//   else if (($len >= 60) && ($len < 90)) {
+//       $quote.css("font-size", "1.2 em");
+//   }
+//   else if (($len >= 90) && ($len < 120)) {
+//       $quote.css("font-size", "1.0 em");
+//   }
+//   else if (($len >= 120) && ($len < 160)) {
+//       $quote.css("font-size", "0.8 em");
+//   }
+//   else {
+//       $quote.css("font-size", "0.6em");
+//   }
+// });
 
 function show_book_selector(){
+    $('.fold-book').removeClass('hidden');
     $('.detailed-selector').removeClass('hidden');
     $('.detailed-selector input').attr('disabled', false);
     $('.brief-selector').addClass('hidden');
     $('.brief-selector input').attr('disabled', true);
+    $('.show-book').addClass('hidden');
 }
 function fold_book_selector(){
+    $('.show-book').removeClass('hidden');
     $('.brief-selector').removeClass('hidden');
     $('.brief-selector input').attr('disabled', false);
     $('.detailed-selector').addClass('hidden');
     $('.detailed-selector input').attr('disabled', true);
+    $('.fold-book').addClass('hidden');
 }
 function toggle_tags_tongren_yuanzhu(){
     $('.tongren_yuanzhu').toggleClass('hidden');
+}
+
+(function ($) {
+    var editor = $("#markdowneditor");
+    var bodyStyles = window.getComputedStyle(document.body);
+    var warn_color = bodyStyles.getPropertyValue('--link-hover-color');
+    var normal_color = bodyStyles.getPropertyValue('--body-font-color');
+   editor.keyup(function(){
+         var content = editor.val();
+         var content_len = 0;
+         for (let i = 0; i < content.length; i++) {
+                if (/[\u4E00-\u9FA5\uF900-\uFA2D]/.test(content.charAt(i))) { // 判断中英文
+                    content_len = content_len + 2;
+                } else {
+                    content_len = content_len + 1;
+                }
+            }
+
+         if(content_len > 0){
+            $("#word-count").html(Math.ceil (content_len / 2)).css("color", normal_color);
+            $("#button-post").attr("disabled",false);
+            // 可以继续执行其他操作
+         }else{
+            $("#word-count").html(Math.ceil (content_len / 2)).css("color", warn_color);
+            $("#button-post").attr("disabled",true);
+            return false;
+         }
+
+    });
+})(jQuery);
+
+// TODO: 合并两个函数
+(function ($) {
+    var editors = $('.comment-editor');
+    var bodyStyles = window.getComputedStyle(document.body);
+    var warn_color = bodyStyles.getPropertyValue('--link-hover-color');
+    var normal_color = bodyStyles.getPropertyValue('--body-font-color');
+    for (let j = 0; j < editors.length; j++) {
+      let editor = editors.eq(j);
+      let id = editor.attr("id");
+      editor.keyup(function(){
+        let content = editor.val();
+        let content_len = 0;
+        for (let i = 0; i < content.length; i++) {
+          if (/[\u4E00-\u9FA5\uF900-\uFA2D]/.test(content.charAt(i))) { // 判断中英文
+            content_len = content_len + 2;
+          } else {
+            content_len = content_len + 1;
+          }
+        }
+
+        if(content_len > 0){
+          $("#word-count-"+id).html(Math.ceil (content_len / 2)).css("color", normal_color);
+          $("#button-post-"+id).attr("disabled",false);
+          // 可以继续执行其他操作
+        }else{
+          $("#word-count-"+id).html(Math.ceil (content_len / 2)).css("color", warn_color);
+          $("#button-post-"+id).attr("disabled",true);
+          return false;
+        }
+
+      });
+    }
+})(jQuery);
+
+function searchBarAdjust() {
+  if
+  (this.options[this.selectedIndex].value=='tongren_yuanzhu')  {
+     document.getElementById('tongren_cp_name').style.display = 'inline';
+     if(document.body.clientWidth <= 330) {
+         document.getElementById('tongren_cp_name').style.width = '60px';
+         document.getElementById('search_keyword').style.width = '105px';
+     }
+     else if (document.body.clientWidth <= 480) {
+         document.getElementById('tongren_cp_name').style.width = '75px';
+     }
+     else {
+         document.getElementById('tongren_cp_name').style.width = '120px';
+         document.getElementById('search_keyword').style.width = '140px';
+         document.getElementById('search-container').style.width = '400px';
+         document.getElementById('logo').style.width = '0px';
+     }
+ }
+ else {
+     document.getElementById('tongren_cp_name').style.display = 'none';
+     if(document.body.clientWidth > 480) {
+         document.getElementById('search-container').style.width = '240px';
+         document.getElementById('search_keyword').style.width = '105px';
+     }
+     else {
+         document.getElementById('search_keyword').style.width = '165px';
+         document.getElementById('logo').style.width = '142px';
+     }
+ }
 }

@@ -1,8 +1,7 @@
 @foreach($messages as $message)
-<article class="">
-    <hr>
+<article class="margin5">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-12 margin5">
             <span class="badge">{{$message->group_messaging ? '群发消息' : ''}}</span>&nbsp;<span id="simple{{$message->id}}"><a href="{{ route('user.show', $message->poster_id) }}">{{ $message->poster_name }}</a>&nbsp;{{ Carbon\Carbon::parse($message->created_at)->diffForHumans() }}：
             </span>
         </div>

@@ -1,5 +1,5 @@
 
-<div class="">
+<div class="main-text">
     已报名：<br>
     @if((Auth::check()&&(Auth::user()->admin)))
     @foreach($thread->homework->registered_students() as $i=>$student)

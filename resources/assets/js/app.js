@@ -9,7 +9,7 @@ require('./bootstrap');
 
 require('./bootstrap-markdown');
 
-//window.Vue = require('vue');
+// window.Vue = require('vue');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -17,7 +17,7 @@ require('./bootstrap-markdown');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-//Vue.component('example', require('./components/Example.vue'));
+// Vue.component('example', require('./components/Example.vue'));
 
 // const app = new Vue({
 //     el: '#app'

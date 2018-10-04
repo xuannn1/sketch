@@ -13,6 +13,8 @@
 <li><div class="text-center"><a href="#" class="glyphicon glyphicon-ban-circle">举报</a></div></li>
 </ul>
 </span> -->
-@if((Auth::id()==$postcomment->user_id)&&($thread->channel->channel_state!=2))
-<button type="button" class="btn btn-xs btn-danger sosad-button" onclick="deletepostcomment({{$postcomment->id}})">删除点评</button>
+@if(Auth::id()==$postcomment->user_id)
+<button type="button" class="sosad-button-ghost grayout smaller-10" onclick="deletepostcomment({{$postcomment->id}})">
+    删除点评
+</button>
 @endif

@@ -7,5 +7,5 @@
     <span id="abbreviated{{$message->id}}" class="">
         {!! Helper::trimtext($message->content, 20) !!}
     </span>
-    <small><a type="button" name="button" id="expand{{$message->id}}" onclick="expandpost('{{$message->id}}')">展开</a></small>
+    <a type="button" name="button" id="expand{{$message->id}}" onclick="expandpost('{{$message->id}}')" class="grayout pull-right">展开</a>
 </div>

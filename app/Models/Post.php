@@ -41,7 +41,7 @@ class Post extends Model
     }
     public function shengfans()
     {
-        return $this->hasMany(Shengfan::class)->orderBy('created_at','asc');
+        return $this->hasMany(Shengfan::class)->orderBy('created_at','desc');
     }
     public function shengfan_voted(User $user)
     {
