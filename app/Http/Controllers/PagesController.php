@@ -182,9 +182,9 @@ class PagesController extends Controller
         $group = 10;
         if(Auth::check()){$group = Auth::user()->group;}
         if(($request->search)&&($request->search_options=='threads')){
-            $query = $this->join_thread_tables()
+            $query = $this->join_no_book_thread_tables()
             ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1],['threads.title','like','%'.$request->search.'%']]);
-            $threads = $this->return_thread_fields($query)
+            $threads = $this->return_no_book_thread_fields($query)
             ->orderby('threads.lastresponded_at', 'desc')
             ->simplePaginate(config('constants.index_per_page'));
             $show = ['channel' => false,'label' => false,];
