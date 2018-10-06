@@ -323,9 +323,9 @@ class MessagesController extends Controller
             ]);
             $user->increment('message_reminders');
             $user->increment('unread_reminders');
-            if (!Auth::user()->isFollowing($user->id)) {
-                Auth::user()->follow($user->id);
-            }
+            // if (!Auth::user()->isFollowing($user->id)) {
+            //     Auth::user()->follow($user->id);
+            // }
             if ((!Auth::user()->admin)&&(!$user->isFollowing(Auth::id()))){
                 Auth::user()->decrement('message_limit');
             }
