@@ -12,7 +12,7 @@ export class User {
         return true;
     }
 
-    public hasSigned () : boolean {
+    public isLoggedIn () : boolean {
         // fixme:
         return false;
     }

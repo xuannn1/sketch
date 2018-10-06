@@ -22,7 +22,7 @@ export class Navbar extends React.Component<Props, State> {
                     <nav>
                         <ul className="nav navbar-nav navbar-right text-right">
                             { core.user.isAdmin() && <li><a href={ROUTE.admin} className="admin-symbol">管理员</a></li> }
-                            { !core.user.hasSigned() && <li><a href={ROUTE.qiandao} style={{ color: '#d66666' }}>我要签到</a></li> }
+                            { !core.user.isLoggedIn() && <li><a href={ROUTE.qiandao} style={{ color: '#d66666' }}>我要签到</a></li> }
                             <li><a href={ROUTE.statuses}>动态</a></li>
                             <li><a href={ROUTE.books}>文库</a></li>
                             <li><a href={ROUTE.threads}>论坛</a></li>

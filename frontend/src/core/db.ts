@@ -1,3 +1,5 @@
+import { Quote } from "./data-types";
+
 export class DB {
     private host:string;
     private protocol:string;
@@ -23,5 +25,21 @@ export class DB {
 
     public search (type:string, value:string, tongrenCP:string) {
         return ''; // fixme:
+    }
+
+    public getQuotes () : Quote[] {
+        const testData = {
+            id: 0,
+            quote: 'this is a test quote',
+            anonymous: 0,
+            majia: 'majia',
+            notsad: 0,
+            approved: 1,
+            reviewed: 2,
+            xianyu: 3,
+            user_name: 'username',
+        };
+
+        return (new Array(4)).fill(testData);
     }
 }

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Core } from '../../core';
+import { Banner } from '../components/banner';
 
 interface Props {
     core:Core;
