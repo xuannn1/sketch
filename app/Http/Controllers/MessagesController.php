@@ -323,6 +323,7 @@ class MessagesController extends Controller
             ]);
             $user->increment('message_reminders');
             $user->increment('unread_reminders');
+            //取消自动关注私信对象
             // if (!Auth::user()->isFollowing($user->id)) {
             //     Auth::user()->follow($user->id);
             // }
