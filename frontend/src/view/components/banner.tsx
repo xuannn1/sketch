@@ -1,7 +1,8 @@
 import * as React from 'react';
+// import 'bootstrap/js/dist/carousel'; //fixme:
 import { Core } from '../../core';
-import { ROUTE } from '../../config/route';
 import { Quote } from '../../core/data-types';
+import './styles/banner.scss';
 
 interface Props {
     core:Core;
@@ -38,28 +39,33 @@ export class Banner extends React.Component<Props, State> {
     }
 
     public render () {
-        return <div className="">
-            <div className="">
-                { Carousel(this.renderQuotes()) }
+        return <div className="banner">
+            <div>
+                {/* <Carousel items={this.renderQuotes()} /> */}
+                <div>BANNER</div>
             </div>
         </div>;
     }
 }
 
-function Carousel (props:JSX.Element[]) {
-    return <div className="carousel slide" data-ride="carousel">
-        <div className="carousel-inner">
-            { props.map((el, i) => <div className={`jumbotron item ${i === 0 ? 'active' : ''}`} key={i}>
-                { el }
-            </div>) }
+class Carousel extends React.Component<{
+    items:JSX.Element[],
+}, {}> {
+    public render () {
+        return <div className="carousel slide" data-ride="carousel" data-interval="5000">
+            <div className="carousel-inner">
+                { this.props.items.map((el, i) => <div className={`jumbotron carousel-item ${i === 0 ? 'active' : ''}`} key={i}>
+                    { el }
+                </div>) }
+            </div>
+            <a className="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span className="sr-only">Previous</span>
+            </a>
+            <a className="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                <span className="sr-only">Next</span>
+            </a>
         </div>
-        <a className="left carousel-control" href="#myCarousel" data-slide="prev">
-            <span className="glyphicon glyphicon-chevron-left"></span>
-            <span className="sr-only">Previous</span>
-            </a>
-            <a className="right carousel-control" href="#myCarousel" data-slide="next">
-            <span className="glyphicon glyphicon-chevron-right"></span>
-            <span className="sr-only">Next</span>
-            </a>
-    </div>
+    }
 }
