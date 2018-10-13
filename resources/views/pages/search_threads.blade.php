@@ -6,8 +6,8 @@
       <div class="panel panel-default">
          <div class="panel-heading lead">搜索主题</div>
          <div class="panel-body">
-            @include('threads._threads')
-            {{ $threads->links() }}
+            @include('threads._simple_threads')
+            {{ $simplethreads->links() }}
          </div>
       </div>
    </div>
