@@ -16,7 +16,7 @@ var config = {
     },
     module: {
         rules: [
-            { test: /\.tsx?$/, use: ['awesome-typescript-loader'] }, // ts parser
+            { test: /\.tsx?$/, use: ['ts-loader'] }, // ts parser
             { test: /\.scss$/, use: [ // sass parser
                 { loader: 'style-loader' },
                 { loader: 'css-loader' },
