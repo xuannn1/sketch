@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { Core } from '../../core';
 import { ROUTE } from '../../config/route';
 import { MyBottomNavigation } from '../components/common';
-import { BottomNavigationAction } from '@material-ui/core';
-import { HomeRounded, FavoriteRounded, PersonRounded, NotificationsRounded, WhatshotRounded } from '@material-ui/icons';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
 interface Props {
     core:Core;
@@ -20,11 +19,11 @@ export class Navbar_m extends React.Component<Props, State> {
     public state = {
         value: 2,
         spec: [
-            {link:ROUTE.home, label: 'home', icon: <HomeRounded />},
-            {link:ROUTE.statuses,label: 'status', icon: <WhatshotRounded />},
-            {link:ROUTE.collections, label: 'collection', icon: <FavoriteRounded />},
-            {link:ROUTE.users,label: 'users', icon: <PersonRounded />},
-            {link:ROUTE.notifications,label: 'notification', icon: <NotificationsRounded />},
+            {link:ROUTE.home, label: 'home'},
+            {link:ROUTE.statuses,label: 'status'},
+            {link:ROUTE.collections, label: 'collection'},
+            {link:ROUTE.users,label: 'users'},
+            {link:ROUTE.notifications,label: 'notification'},
         ],
     };
 
@@ -33,9 +32,12 @@ export class Navbar_m extends React.Component<Props, State> {
     } 
 
     public render () {
+        const { classes } = this.props as any;
+
         return <MyBottomNavigation
             value={this.state.value}
             showLabels
+            className={classes.root}
             onChange={this.handleChange}>
             { this.state.spec.map((s) => this.renderLink(s)) }
         </MyBottomNavigation>
