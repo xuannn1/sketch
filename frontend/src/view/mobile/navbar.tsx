@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Core } from '../../core';
 import { ROUTE } from '../../config/route';
 import { MyBottomNavigation } from '../components/common';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import { BottomNavigationAction } from '@material-ui/core';
 
 interface Props {
     core:Core;

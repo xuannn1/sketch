@@ -6,7 +6,7 @@
     "experimentalDecorators": true,
     "jsx": "react",
     "lib": ["dom", "es6", "es2015", "es5"],
-    "module": "commonjs",
+    "module": "es6",
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "noImplicitAny": false,
@@ -21,7 +21,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es6",
-    "resolveJsonModule": true,
+    // "resolveJsonModule": true,
     "esModuleInterop": true
   },
   "paths": {

@@ -1,7 +1,4 @@
-// import Card from '@material-ui/core/Card';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import withStyles from '@material-ui/core/styles/withStyles';
-import { Card } from '@material-ui/core';
+import { Card, withStyles, BottomNavigation } from '@material-ui/core';
 
 export const MyCard = withStyles({
     root: {

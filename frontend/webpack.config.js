@@ -25,8 +25,8 @@ const config = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         modules: ['node_modules'],
         alias: {
-            // '@material-ui/core': '@material-ui/core/es',
-            // '@material-ui/icons': '@material-ui/icons/es',
+            '@material-ui/core': '@material-ui/core/es',
+            '@material-ui/icons': '@material-ui/icons/es',
         }
     },
     module: {
@@ -53,7 +53,6 @@ const config = {
         'react-dom': 'ReactDOM',
     },
     plugins: [
-        new UglifyJsPlugin(),
         new MiniCssExtractPlugin({
             filename: 'style.css',
         }),
@@ -81,7 +80,7 @@ module.exports = (env, argv) => {
     } else {
         // production mode
         config.mode = 'production';
-        config.plugins.push(new UglifyJsPlugin());
+        // config.plugins.push(new UglifyJsPlugin());
     }
 
     return config;
