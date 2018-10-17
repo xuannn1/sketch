@@ -1,5 +1,6 @@
 var path = require('path');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 var config = {
     entry: [
@@ -60,6 +61,7 @@ module.exports = (env, argv) => {
         case 'production':
             console.log('--- Production Mode ---');
             config.mode = 'production';
+            config.plugins.push(new UglifyJsPlugin());
             break;
         case 'default':
             config.mode = 'none';
