@@ -26,7 +26,7 @@ const config = {
         modules: ['node_modules'],
         alias: {
             '@material-ui/core': '@material-ui/core/es',
-            '@material-ui/icons': '@material-ui/icons/es',
+            '@material-ui/icons': '@material-ui/icons/index.es',
         }
     },
     module: {
