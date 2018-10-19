@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Core } from '../../core';
 import { ROUTE } from '../../config/route';
@@ -7,26 +8,47 @@ import { HomeRounded, FavoriteRounded, PersonRounded, NotificationsRounded, What
 
 interface Props {
     core:Core;
-    classes: {
-        root: string;
-    };
+    classes: { root: string; };
 }
 
-type LinkSpec = {link:string, label:string, icon?:JSX.Element};
+type LinkSpec = {to:string, label:string, icon?:JSX.Element};
 interface State {
     value:number;
     spec:LinkSpec[];
 }
 
-class MyNavBar extends React.Component<Props, State> {
+const _BottomNavigationAction = withStyles({
+    root: {
+        minWidth: '0'
+    }
+})(
+    class extends React.Component<{
+        link:LinkSpec;
+        classes:{root:string};
+    }, {}> {
+        public link = (props) => <Link to={this.props.link.to} {...props} />
+        public render () {
+            const { link, classes, ...others } = this.props;
+            return <BottomNavigationAction
+                label={link.label}
+                icon={link.icon}
+                component={this.link}
+                className={classes.root}
+                {...others}
+            />;
+        }
+    }
+);
+
+export class MyNavBar extends React.Component<Props, State> {
     public state = {
         value: 2,
         spec: [
-            {link:ROUTE.home, label: 'home', icon: <HomeRounded />},
-            {link:ROUTE.statuses,label: 'status', icon: <WhatshotRounded />},
-            {link:ROUTE.collections, label: 'collection', icon: <FavoriteRounded />},
-            {link:ROUTE.users,label: 'users', icon: <PersonRounded />},
-            {link:ROUTE.notifications,label: 'notification', icon: <NotificationsRounded />},
+            {to:ROUTE.home, label: 'home', icon: <HomeRounded />},
+            {to:ROUTE.statuses,label: 'status', icon: <WhatshotRounded />},
+            {to:ROUTE.collections, label: 'collection', icon: <FavoriteRounded />},
+            {to:ROUTE.users,label: 'users', icon: <PersonRounded />},
+            {to:ROUTE.notifications,label: 'notification', icon: <NotificationsRounded />},
         ],
     };
 
@@ -34,25 +56,13 @@ class MyNavBar extends React.Component<Props, State> {
         this.setState({ value })
     }
 
-    public renderLink = (spec:LinkSpec) => {
-        const link = (props) => <Link to={spec.link} {...props} />;
-        return <BottomNavigationAction 
-            label={spec.label}
-            icon={spec.icon}
-            key={spec.label}
-            component={link} 
-        />;
-    }
-
     public render = () => {
-        const { classes } =  this.props;
-
         return <BottomNavigation
             value={this.state.value}
-            className={classes.root}
+            className={this.props.classes.root}
             showLabels
             onChange={this.handleChange}>
-            { this.state.spec.map((s) => this.renderLink(s)) }
+            { this.state.spec.map((link, i) => <_BottomNavigationAction link={link} key={i} />) }
         </BottomNavigation>
     }
 }
