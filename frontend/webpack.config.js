@@ -1,18 +1,19 @@
-var path = require('path');
-var webpack = require("webpack");
-var OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var CleanWebpackPlugin = require("clean-webpack-plugin");
-var merge = require("webpack-merge");
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path');
+const webpack = require("webpack");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const merge = require("webpack-merge");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 function commonConfig (devMode) {
     return {
         entry: {
-            // polyfill: 'babel-polyfill', // for ie8
-            // './src/index.tsx',
-            app: './src/test/index.tsx',
+            polyfill: 'babel-polyfill', // for ie8
+            app: './src/index.tsx',
+            // app: './src/test/index.tsx', // only for webpack test
+            vendor: ['react', 'react-dom'],
         },
         output: {
             path: path.resolve(__dirname, 'dist'),
@@ -63,6 +64,38 @@ function commonConfig (devMode) {
                 ]},
             ]
         },
+        optimization: {
+            runtimeChunk: {
+                name: entrypoint => `runtime~${entrypoint.name}`
+            },
+            splitChunks: {
+                chunks: 'async',
+                minSize: 30000,
+                maxSize: 0,
+                minChunks: 1,
+                maxAsyncRequests: 5,
+                maxInitialRequests: 3,
+                automaticNameDelimiter: '~',
+                name: true,
+                cacheGroups: {
+                    vendors: {
+                        test: /\/node_modules\//,
+                        priority: -10,
+                        chunks: 'initial',
+                    },
+                    'react-vendor': {
+                        test: /react/, //(module, chunks) => /react/.test(module.context),
+                        priority: 1,
+                        chunks: 'initial',
+                    },
+                    default: {
+                        minChunks: 2,
+                        priority: -20,
+                        reuseExistingChunk: true,
+                    },
+                },
+            },
+        },
         plugins: [
             new HtmlWebpackPlugin({
                 filename: "index.html",
@@ -76,7 +109,7 @@ function commonConfig (devMode) {
     };
 }
 
-var devConfig = {
+const devConfig = {
     mode: 'development',
     devtool: 'source-map',
     module: {
@@ -103,9 +136,10 @@ var devConfig = {
     ],
 };
 
-var prodConfig = {
+const prodConfig = {
     mode: 'production',
     plugins: [
+        new BundleAnalyzerPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].min.css',
             chunkFilename: '[id].min.css',
@@ -113,14 +147,14 @@ var prodConfig = {
         new OptimizeCSSAssetsPlugin({}),
         new CleanWebpackPlugin(["dist"], {
             root: path.resolve(__dirname),
-            verbose: true
+            verbose: true,
         }),
     ]
 };
 
 module.exports = (env, argv) => {
-    console.log('---', env, '---');
-    var devMode = env !== 'production';
-    var config = devMode ? devConfig : prodConfig;
+    console.log('---', env || argv.mode, '---');
+    const devMode = argv.mode === 'development' || env !== 'production';
+    const config = devMode ? devConfig : prodConfig;
     return merge(commonConfig(devMode), config);
 };

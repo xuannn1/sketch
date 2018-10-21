@@ -7,7 +7,7 @@ import { Home_m } from './home';
 import { User_m } from './user';
 import { Status_m } from './status';
 import { Notification_m } from './notification';
-// import { Navbar_m } from './navbar';
+import { Navbar_m } from './navbar';
 import './common.scss';
 import './index.scss';
 
@@ -40,7 +40,7 @@ export class Main_m extends React.Component<Props, State> {
                 </Switch>
             </div>
 
-            {/* <Navbar_m core={this.props.core} /> */}
+            <Navbar_m core={this.props.core} />
         </div>);
     }
 }

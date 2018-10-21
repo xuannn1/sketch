@@ -1,3 +1,6 @@
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
 import './test.scss';
 import { a } from './a';
 
@@ -15,3 +18,8 @@ btn.onclick = (ev) => {
     })
 }
 document.body.appendChild(btn);
+
+const root = document.createElement('div');
+document.body.appendChild(root);
+
+ReactDOM.render(<div> react part </div>, root);
