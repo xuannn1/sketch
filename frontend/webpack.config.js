@@ -1,87 +1,126 @@
 var path = require('path');
-var LiveReloadPlugin = require('webpack-livereload-plugin');
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-var MiniCssExtractPlugin = require("mini-css-extract-plugin");
+var webpack = require("webpack");
 var OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var CleanWebpackPlugin = require("clean-webpack-plugin");
+var merge = require("webpack-merge");
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const mode = process.env.NODE_ENV;
-const devMode = mode !== 'production';
-
-if (devMode) {
-    process.env.NODE_ENV = 'development';
+function commonConfig (devMode) {
+    return {
+        entry: {
+            // polyfill: 'babel-polyfill', // for ie8
+            // './src/index.tsx',
+            app: './src/test/index.tsx',
+        },
+        output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: devMode ? '[name].bundle.js' : '[name].bundle.min.js',
+            chunkFilename: devMode ? '[name].chunk.js' : '[name].chunk.min.js',
+        },
+        resolve: {
+            extensions: ['.ts', '.tsx', '.js', '.json'],
+            modules: ['node_modules'],
+            alias: {
+                '@material-ui/core': '@material-ui/core/es',
+                '@material-ui/icons': '@material-ui/icons/index.es',
+            }
+        },
+        module: {
+            rules: [
+                { test: '/\.html$/', use: [
+                    { loader: 'html-loader', options: {
+                        attrs: ['img:src'],
+                    }},
+                ]},
+                { test: /\.tsx?$/, use: [
+                    { loader: 'babel-loader', options: {
+                        exclude: 'node_modules',
+                    }},
+                    'ts-loader',
+                ]},
+                { test: /\.scss$/, use: [
+                    devMode ? { loader: 'style-loader', options: {
+                        singleton: true,
+                    }} : MiniCssExtractPlugin.loader,
+                    { loader: 'css-loader', options: {
+                        minimize: true,
+                        sourceMap: devMode ? true : false,
+                    }},
+                    { loader: 'postcss-loader', options: {
+                        plugins: () => [ require('precss'), require('autoprefixer')],
+                    }},
+                    { loader: 'sass-loader' },
+                ]},
+                { test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/, use: [
+                    { loader: 'url-loader', options: {
+                        name: "[name]-[hash:5].min.[ext]",
+                        limit: 8192,
+                        publicPath: "assets/",
+                        outputPath: "dist/assets/",
+                    }},
+                ]},
+            ]
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                filename: "index.html",
+                template: "index.html",
+                minify: {
+                    collapseWhitespace: true,
+                    removeComments: true,
+                },
+            }),
+        ],
+    };
 }
 
-const config = {
-    entry: [
-        // 'babel-polyfill', // for ie8
-        './src/index.tsx',
-    ],
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
-    },
-    resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.json'],
-        modules: ['node_modules'],
-        alias: {
-            '@material-ui/core': '@material-ui/core/es',
-            '@material-ui/icons': '@material-ui/icons/index.es',
-        }
-    },
+var devConfig = {
+    mode: 'development',
+    devtool: 'source-map',
     module: {
         rules: [
-            { test: /\.tsx?$/, use: [
-                'babel-loader',
-                'ts-loader',
-            ]},
-            { test: /\.scss$/, use: [
-                devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-                'css-loader',
-            { loader: 'postcss-loader', options: {
-                    plugins: () => [ require('precss'), require('autoprefixer')],
-                }},
-                'sass-loader',
-            ]},
-            { test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/, use: [
-                { loader: 'url-loader', options: { limit: 8192 } }
-            ]}, // file parser
-        ]
+            { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }, 
+        ],
     },
-    externals: { // for improving packing speed
-        'react': 'React',
-        'react-dom': 'ReactDOM',
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        compress: true,
+        port: 2333,
+        open: true,
+        hot: true,
+        overlay: true,
+        allowedHosts: [
+            'sosad.fun',
+            'wenzhan.org',
+        ],
+        historyApiFallback: true,
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: 'style.css',
-        }),
-        new OptimizeCSSAssetsPlugin({}),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin(), // also for hot updates
     ],
 };
 
-module.exports = (env, argv) => {
-    if (devMode) {
-        // development mode
-        config.mode = 'development';
-        config.devtool = 'source-map';
-        config.module.rules.push({ enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' });
-        config.devServer = {
-            contentBase: path.join(__dirname),
-            compress: true,
-            port: 2333,
-            open: true,
-            allowedHosts: [
-                'sosad.fun',
-                'wenzhan.org',
-            ],
-        };
-        config.plugins.push(new LiveReloadPlugin());
-    } else {
-        // production mode
-        config.mode = 'production';
-        // config.plugins.push(new UglifyJsPlugin());
-    }
+var prodConfig = {
+    mode: 'production',
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].min.css',
+            chunkFilename: '[id].min.css',
+        }),
+        new OptimizeCSSAssetsPlugin({}),
+        new CleanWebpackPlugin(["dist"], {
+            root: path.resolve(__dirname),
+            verbose: true
+        }),
+    ]
+};
 
-    return config;
+module.exports = (env, argv) => {
+    console.log('---', env, '---');
+    var devMode = env !== 'production';
+    var config = devMode ? devConfig : prodConfig;
+    return merge(commonConfig(devMode), config);
 };
