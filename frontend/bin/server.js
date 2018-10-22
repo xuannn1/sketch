@@ -13,12 +13,18 @@ app.use(async (ctx) => {
     const resData = config[reqPath];
     console.log('receive: ' + reqPath);
     if (resData) {
-        ctx.response.message = JSON.stringify(resData);
+        ctx.response.body = JSON.stringify(resData);
+        ctx.response.set('Content-Type', 'application/json');
+        ctx.status = 200;
     } else {
         const errorMsg = 'server: cannot find ' + reqPath;
         console.log(errorMsg);
-        ctx.response.message = errorMsg;
+        ctx.response.body = errorMsg;
+        ctx.status = 400;
     }
+    ctx.response.set('Access-Control-Allow-Origin', '*');
+    ctx.response.set('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
+    ctx.response.set('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
 });
 
 app.listen(PORT);

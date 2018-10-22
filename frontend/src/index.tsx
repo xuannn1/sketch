@@ -4,7 +4,7 @@ import { App } from './view';
 import { Core } from './core';
 import './theme.scss';
 
-(function () {
+(async function () {
     const root = document.createElement('div');
     document.body.appendChild(root);
 

@@ -2,19 +2,26 @@ import { Quote } from "./data-types";
 
 export class DB {
     private host:string;
+    private port:number;
     private protocol:string;
 
     constructor() {
         this.protocol = 'http';
-        this.host = 'sosad.fun'; //fixme:
+        // this.host = 'sosad.fun'; //fixme:
+        this.host = 'localhost'; // for test
+        this.port = 3001; // for test
     }
 
-    private async request (uri:string) {
+    public async request (uri:string) {
         try {
-            const res = await fetch(`${this.protocol}://${this.host}/${uri}`);
-            return res;
+            const url = `${this.protocol}://${this.host}:${this.port}/${uri}`;
+            console.log('request: ', url);
+            const res = await fetch(url, {
+                method: 'post',
+            });
+            return res.json();
         } catch (e) {
-            console.log('Fetch Error: ' + e);
+            console.error('Fetch Error: ' + e);
             return null;
         }
     }
