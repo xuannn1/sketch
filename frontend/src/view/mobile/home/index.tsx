@@ -19,9 +19,9 @@ export class Home_m extends React.Component<Props, State> {
     };
 
     public render () {
-        return (<div className="home">
+        return (<div>
             <HomeNav_m core={this.props.core} nav={(page:HomeNavE) => this.setState({ nav:page })} />
-            <div className="content">
+            <div>
                 { this.renderContent() }
             </div>
         </div>);

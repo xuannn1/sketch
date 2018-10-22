@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Core } from '../../../core';
+import { NavTop } from '../../components/common';
 
 interface Props {
     core:Core;
@@ -16,17 +17,13 @@ export enum HomeNavE {
     forum,
 }
 
-
 export class HomeNav_m extends React.Component<Props, State> {
     public render () {
-        return (<div className="nav">
-            { this.renderButton(HomeNavE.default, '首页') }
-            { this.renderButton(HomeNavE.article, '文库') }
-            { this.renderButton(HomeNavE.forum, '论坛') }
-        </div>);
-    }
-
-    public renderButton (nav:HomeNavE, text:string) {
-        return <div><button onClick={() => this.props.nav(nav)}>{ text }</button></div>
+        return (<NavTop items={[
+            {to:HomeNavE.default, label: '首页', onClick:this.props.nav},
+            {to:HomeNavE.article, label: '文库', onClick:this.props.nav},
+            {to:HomeNavE.forum, label: '论坛', onClick:this.props.nav},
+        ]}>
+        </NavTop>);
     }
 }

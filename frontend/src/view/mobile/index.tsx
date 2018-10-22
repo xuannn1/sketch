@@ -8,9 +8,6 @@ import { User_m } from './user';
 import { Status_m } from './status';
 import { Notification_m } from './notification';
 import { Navbar_m } from './navbar';
-import './common.scss';
-import './index.scss';
-
 
 interface Props {
     core:Core;

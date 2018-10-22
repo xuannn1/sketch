@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Core } from '../../core';
-import { MyCard } from './common';
 
 import './styles/banner.scss';
+import { Card } from './common';
 
 interface Props {
     core:Core;
@@ -16,8 +16,8 @@ export class Banner extends React.Component<Props, State> {
     }
 
     public render () {
-        return <MyCard>
+        return <Card>
 
-        </MyCard>;
+        </Card>;
     }
 }
