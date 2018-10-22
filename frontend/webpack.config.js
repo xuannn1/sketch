@@ -13,7 +13,11 @@ function commonConfig (devMode) {
             polyfill: 'babel-polyfill', // for ie8
             app: './src/index.tsx',
             // app: './src/test/index.tsx', // only for webpack test
-            vendor: ['react', 'react-dom'],
+            vendor: [
+                'react',
+                'react-dom',
+                'react-router-dom',
+            ],
         },
         output: {
             path: path.resolve(__dirname, 'dist'),
@@ -24,8 +28,6 @@ function commonConfig (devMode) {
             extensions: ['.ts', '.tsx', '.js', '.json'],
             modules: ['node_modules'],
             alias: {
-                '@material-ui/core': '@material-ui/core/es',
-                '@material-ui/icons': '@material-ui/icons/index.es',
             }
         },
         module: {
@@ -84,7 +86,7 @@ function commonConfig (devMode) {
                         chunks: 'initial',
                     },
                     'react-vendor': {
-                        test: /react/, //(module, chunks) => /react/.test(module.context),
+                        test: /react/,
                         priority: 1,
                         chunks: 'initial',
                     },

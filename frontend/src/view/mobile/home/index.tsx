@@ -4,7 +4,6 @@ import { HomeNav_m, HomeNavE } from './nav';
 import { HomeDefault_m } from './default';
 import { Article_m } from './article';
 import { Forum_m } from './forum';
-import './home.scss';
 
 interface Props {
     core:Core;

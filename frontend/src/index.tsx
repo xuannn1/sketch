@@ -2,6 +2,7 @@ import * as ReactDOM from 'react-dom';
 import * as React from 'react';
 import { App } from './view';
 import { Core } from './core';
+import './theme.scss';
 
 (function () {
     const root = document.createElement('div');
