@@ -17,7 +17,7 @@ export class Banner extends React.Component<Props, State> {
 
     public render () {
         return <Card>
-
+            题头
         </Card>;
     }
 }

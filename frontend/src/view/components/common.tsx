@@ -6,11 +6,14 @@ export function Page (props) {
     }}>{props.children}</div>
 }
 
-export function Card (props) {
-    return <div className="card" style={{
+export function Card (props:{
+    children:React.ReactNode,
+    style?:React.CSSProperties,
+}) {
+    return <div className="card" style={Object.assign({
         marginTop: '10px',
         padding: '5px',
-    }}>{props.children}</div>
+    }, props.style || {})}>{props.children}</div>
 }
 
 export function NavTop<NavType> (props:{

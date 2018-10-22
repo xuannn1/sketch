@@ -8,6 +8,7 @@ import { User_m } from './user';
 import { Status_m } from './status';
 import { Notification_m } from './notification';
 import { Navbar_m } from './navbar';
+import { Login_m } from './login';
 
 interface Props {
     core:Core;
@@ -34,6 +35,8 @@ export class Main_m extends React.Component<Props, State> {
                         render={(props) => <Status_m {...props} core={core} />} />
                     <Route path={ROUTE.notifications}
                         render={(props) => <Notification_m {...props} core={core} />} />
+                    <Route path={ROUTE.login}
+                        render={(props) => <Login_m {...props} core={core} />} />
                 </Switch>
             </div>
 
