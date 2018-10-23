@@ -64,7 +64,7 @@ npm run build
     - `index.tsx` 页面组件入口文件, 负责做一些公共(mobile和pc)的初始化处理
   - `index.tsx` 前端入口文件
 
-# 数据fetch(ajax)测试
+# 前后端数据交互 (原ajax)
 
 将想要测试的数据和对应路径添加到 `bin/server.js` 文件中:  
 
@@ -77,5 +77,11 @@ const config = {
 
 之后开一个新的终端页面开启测试服务器: `npm run server`
 
+前端代码发送和获取数据范例:
 
-
+```js
+const data = core.db.request('example');
+console.log(data); // {data:'this is an example msg', code: 1}
+```
+
+为了方便以后修改数据接口, 建议在 `src/core/db.ts` 文件中的 `class DB` 下, 添加新的方法来处理数据, 在react component中只调用该方法来获得返回数据.
