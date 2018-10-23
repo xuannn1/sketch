@@ -30,7 +30,7 @@ npm run build
 - React-router 4.0
 - ES6 async
 
-# 前端目录
+# 前端目录结构
 
 - `frontend`
   - `src` 源码目录
@@ -53,15 +53,29 @@ npm run build
     - `mobile` 手机端
       - `index.tsx` 入口文件
       - `navbar.tsx` 一级导航条
-      - `common.scss` 公用css组件
-      - `index.scss` css入口文件
-      - `home` 首页
-      - `collection` 收藏
-      - `notification` 通知
-      - `status` 动态
-      - `user` 我
+      - `home` 首页页面
+      - `collection` 收藏页面
+      - `notification` 通知页面
+      - `status` 动态页面
+      - `user` 用户页面
     - `pc` 电脑端
       - `index.tsx` 初始化、入口文件
       - `content.tsx` 路由文件
     - `index.tsx` 页面组件入口文件, 负责做一些公共(mobile和pc)的初始化处理
   - `index.tsx` 前端入口文件
+
+# 数据fetch(ajax)测试
+
+将想要测试的数据和对应路径添加到 `bin/server.js` 文件中:  
+
+```js
+const config = {
+    '/example': {data:'this is an example msg', code: 1},
+    // 可按照上面示范继续添加测试数据, data下可以放任意数据, 目前code = 1表示数据获取成功, code = 0表示数据获取失败
+}
+```
+
+之后开一个新的终端页面开启测试服务器: `npm run server`
+
+
+
