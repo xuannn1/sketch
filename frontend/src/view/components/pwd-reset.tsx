@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Core } from '../../core';
 import { Card, NotificationError } from './common';
-import { checkEmail } from '../../utils/validates';
+import { validEmail } from '../../utils/validates';
 
 interface Props {
     core:Core;
@@ -39,7 +39,7 @@ export class PasswordReset extends React.Component<Props, State> {
                     this.setState({ errorMsg: '邮箱不能为空' });
                     return;
                 }
-                if (!checkEmail(this.state.email)) {
+                if (!validEmail(this.state.email)) {
                     this.setState({ errorMsg: '邮箱格式不正确' });
                     return;
                 }
