@@ -64,9 +64,9 @@ npm run build
     - `index.tsx` 页面组件入口文件, 负责做一些公共(mobile和pc)的初始化处理
   - `index.tsx` 前端入口文件
 
-# 前后端数据交互 (原ajax)
+# 前后端数据交互(原ajax)
 
-将想要测试的数据和对应路径添加到 `bin/server.js` 文件中:  
+将想要测试的数据和对应路径添加到`bin/server.js`文件中:  
 
 ```js
 const config = {
@@ -84,4 +84,4 @@ const data = core.db.request('example');
 console.log(data); // {data:'this is an example msg', code: 1}
 ```
 
-为了方便以后修改数据接口, 建议在 `src/core/db.ts` 文件中的 `class DB` 下, 添加新的方法来处理数据, 在react component中只调用该方法来获得返回数据.
+为了方便以后修改数据接口, 建议在`src/core/db.ts`文件中的`class DB`下, 添加新的方法来处理数据, 在react component中只调用该方法来获得返回数据.
