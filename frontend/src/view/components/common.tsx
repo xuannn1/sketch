@@ -7,7 +7,7 @@ export function Page (props) {
 }
 
 export function Card (props:{
-    children:React.ReactNode,
+    children?:React.ReactNode,
     style?:React.CSSProperties,
 }) {
     return <div className="card" style={Object.assign({
@@ -34,4 +34,12 @@ export function NavTop<NavType> (props:{
             >{item.label}</div>
         })}
     </nav>;
+}
+
+export function NotificationError (props:{
+    children:React.ReactNode,
+}) {
+    return <div className="notification is-danger">
+        <button className="delete">{props.children}</button>
+    </div>;
 }

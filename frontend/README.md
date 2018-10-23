@@ -64,7 +64,7 @@ npm run build
     - `index.tsx` 页面组件入口文件, 负责做一些公共(mobile和pc)的初始化处理
   - `index.tsx` 前端入口文件
 
-# 前后端数据交互(原ajax)
+# 前后端据交互(原ajax)
 
 将想要测试的数据和对应路径添加到`bin/server.js`文件中:  
 

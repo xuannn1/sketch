@@ -26,6 +26,10 @@ export class DB {
         }
     }
 
+    public async resetPwd (email:string) {
+        return await this.request('/resetPwd');
+    }
+
     public getLogo () { //fixme:
         return '';
     } 

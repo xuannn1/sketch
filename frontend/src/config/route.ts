@@ -3,7 +3,9 @@ export const ROUTE = {
 
     // register and validation
     login: '/login',
-    register: '/register',
+    register: '/login/register',
+    reset_pwd: '/login/reset-password',
+
     linkedAccounts: '/linkedAccounts',
 
     // static pages

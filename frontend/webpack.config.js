@@ -21,6 +21,7 @@ function commonConfig (devMode) {
         },
         output: {
             path: path.resolve(__dirname, 'dist'),
+            publicPath: '/',
             filename: devMode ? '[name].bundle.js' : '[name].bundle.min.js',
             chunkFilename: devMode ? '[name].chunk.js' : '[name].chunk.min.js',
         },
@@ -123,19 +124,16 @@ const devConfig = {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
         port: 2333,
-        open: true,
+        // open: true,
         hot: true,
+        noInfo: true,
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
             "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
         },
         overlay: true,
-        allowedHosts: [
-            'sosad.fun',
-            'wenzhan.org',
-        ],
-        historyApiFallback: true,
+        historyApiFallback: true, 
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
