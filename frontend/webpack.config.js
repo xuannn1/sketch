@@ -124,7 +124,7 @@ const devConfig = {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
         port: 2333,
-        // open: true,
+        open: true,
         hot: true,
         noInfo: true,
         headers: {

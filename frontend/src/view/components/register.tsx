@@ -69,8 +69,30 @@ export class Register extends React.Component<Props, State> {
                     onChange={(ev) => this.setState({token: ev.target.value})}
                 />
 
-                <div className="checkbox" style={{ textAlign: 'center', width: '100%' }}>
+                <div style={{
+                    textAlign: 'center',
+                    fontSize: '90%',
+                    margin: '15px 0',
+                }}>
+                    <h3 style={{
+                        fontWeight: 'bold',
+                        fontSize: '100%',
+                    }}>注册协议</h3>
+                    {[
+                        '丧病之家，您的精神墓园',
+                        '比欲哭无泪更加down，不抑郁不要钱',
+                        '本站禁抄袭，禁人身攻击，禁人肉，禁恋童',
+                        '请不要发布侵犯他人版权的文字',
+                        '请确保您已年满十八岁',
+                        '祝您玩得愉快',
+                    ].map((text, i) => <p key={i} style={{ margin: '8px 0' }}>{text}</p>)}
+                </div>
+
+                <div className="checkbox"
+                    onClick={(ev) => this.setState((prevState) => this.setState({accept: !prevState.accept}))}
+                    style={{ textAlign: 'center', width: '100%', margin: '10px 0' }}>
                     <input type="checkbox"
+                        checked={this.state.accept}
                         onChange={(ev) => this.setState({accept: ev.target.checked})}
                     />
                     我已阅读并同意注册协议 更多内容

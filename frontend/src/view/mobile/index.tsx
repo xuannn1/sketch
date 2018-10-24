@@ -21,8 +21,21 @@ interface State {
 export class Main_m extends React.Component<Props, State> {
     public render () {
         const { core } = this.props;
-        return (<div>
-            <div className="main-frame">
+        const h = window.innerHeight;
+
+        return (<div style={{
+            position: 'absolute',
+            height: '100%',
+            width: `100%`,
+        }}>
+            <div className="container" style={{
+                backgroundColor: '#f3f3f3',
+                top: '0',
+                height: `${(1 - (3.25 * 16 / h)) * 100}%`, // 3.25 rem is the bottom navbar height
+                overflow: 'auto',
+                width: '100%',
+                position: 'relative',
+            }}>
                 <Switch>
                     <Route exact path={ROUTE.home}
                         render={(props) => <Home_m {...props} core={core} />}
