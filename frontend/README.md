@@ -70,8 +70,17 @@ npm run build
 
 ```js
 const config = {
-    '/example': {data:'this is an example msg', code: 1},
+    '/example':  (req) => ({data: 'this is an example msg', code: 1}),
     // 可按照上面示范继续添加测试数据, data下可以放任意数据, 目前code = 1表示数据获取成功, code = 0表示数据获取失败
+}
+```
+以上采用了es6的函数箭头写法, 上面写法等同于:
+```js
+'/example': function (req) {
+  return {
+    data: '...',
+    code: 1,
+  };
 }
 ```
 
@@ -80,8 +89,8 @@ const config = {
 前端代码发送和获取数据范例:
 
 ```js
-const data = core.db.request('example');
+const data = await core.db.request('example');
 console.log(data); // {data:'this is an example msg', code: 1}
 ```
 
-为了方便以后修改数据接口, 建议在`src/core/db.ts`文件中的`class DB`下, 添加新的方法来处理数据, 在react component中只调用该方法来获得返回数据.
+为了方便以后修改数据接口, 建议将数据交互添加在`src/core`目录的对应文件中, 添加新的方法来处理数据, 在react component中只调用该方法来获得返回数据. 具体可以参考login和register页面的写法.

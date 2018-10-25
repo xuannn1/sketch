@@ -1,11 +1,12 @@
 import { Quote } from "./data-types";
+import { History } from '.';
 
 export class DB {
     private host:string;
     private port:number;
     private protocol:string;
 
-    constructor() {
+    constructor (history:History) {
         this.protocol = 'http';
         // this.host = 'sosad.fun'; //fixme:
         this.host = 'localhost'; // for test
@@ -14,6 +15,9 @@ export class DB {
 
     public async request (uri:string) {
         try {
+            if (uri[0] === '/') {
+                uri = uri.substr(1);
+            }
             const url = `${this.protocol}://${this.host}:${this.port}/${uri}`;
             console.log('request: ', url);
             const res = await fetch(url, {
@@ -26,7 +30,7 @@ export class DB {
         }
     }
 
-    public async resetPwd (email:string) {
+    public async resetPassword (email:string) {
         return await this.request('/resetPwd');
     }
 

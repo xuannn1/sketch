@@ -20,11 +20,13 @@ export class HomeDefault_m extends React.Component<Props, State> {
         return (<Page>
             <Banner core={this.props.core} />
 
-            <Card style={{
+            { !this.props.core.user.isLoggedIn() &&
+                <Card style={{
                 border: 'none',
                 textAlign: 'center',
                 boxShadow: 'none',
-            }}><Link to={ROUTE.login} className="button is-dark">Login</Link></Card>
+                }}><Link to={ROUTE.login} className="button is-dark">Login</Link></Card>
+            }
 
             <SuggestionShort />
             <ThreadShort />

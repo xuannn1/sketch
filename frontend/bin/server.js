@@ -4,16 +4,33 @@ const ip = require('ip');
 const PORT = 3001;
 
 const config = {
-    '/example': {data:'this is an example msg', code: 1},
+    '/example': (req) => ({data: 'this is an example msg', code: 1}),
+    '/login': (req) => {
+        if (req.query.email === 'test@email.com' && req.query.pwd === '123456') {
+            return {
+                code: 1,
+                data: 'valid user',
+            };
+        } else {
+            return {
+                code: 0,
+                data: 'invalid user',
+            }
+        }
+    },
+    '/register': (req) => {
+        return { code: 1, data: '' };
+    },
 }
 
 const app = new Koa();
 app.use(async (ctx) => {
     const reqPath = ctx.request.path;
-    const resData = config[reqPath];
+    console.log(reqPath);
+    const reqHandler = config[reqPath];
     console.log('receive: ' + reqPath);
-    if (resData) {
-        ctx.response.body = JSON.stringify(resData);
+    if (reqHandler) {
+        ctx.response.body = JSON.stringify(reqHandler(ctx.request));
         ctx.response.set('Content-Type', 'application/json');
         ctx.status = 200;
     } else {

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Core } from '../core';
 import { isMobile } from '../utils/mobile';
-import { Main_m } from './mobile';
+import { Main_m } from './mobile/router';
 import { Main_pc } from './pc';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 
 interface Props {
     core:Core;
@@ -25,9 +25,9 @@ export class App extends React.Component<Props, State> {
 
     public render () {
         return (
-            <BrowserRouter>
+            <Router history={this.props.core.history}>
                 { this.renderApp() }
-            </BrowserRouter>
+            </Router>
         )
     }
 }

@@ -98,7 +98,7 @@ export class Register extends React.Component<Props, State> {
                     我已阅读并同意注册协议 更多内容
                 </div>
 
-                <a className="button is-normal is-fullwidth" onClick={(ev) => {
+                <a className="button is-normal is-fullwidth" onClick={async (ev) => {
                     if (this.state.email === '') {
                         this.setState({errMsg: '邮箱 不能为空。'});
                     } else if (this.state.pwd === '') {
@@ -116,7 +116,15 @@ export class Register extends React.Component<Props, State> {
                     } else if (this.state.pwd !== this.state.pwd2) {
                         this.setState({errMsg: '密码和确认密码不相匹配'});
                     } else {
-
+                        const success = this.props.core.user.register({
+                            email: this.state.email,
+                            pwd: this.state.pwd,
+                            username: this.state.username,
+                        });
+                        if (!success) {
+                            // todo:
+                            this.setState({errMsg: '注册失败'})
+                        }
                     }
                 }}>注册</a>
             </div>

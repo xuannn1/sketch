@@ -40,6 +40,7 @@ export function NotificationError (props:{
     children:React.ReactNode,
 }) {
     return <div className="notification is-danger">
-        <button className="delete">{props.children}</button>
+        <button className="delete"></button>
+        {props.children}
     </div>;
 }

@@ -43,7 +43,7 @@ export class PasswordReset extends React.Component<Props, State> {
                     this.setState({ errorMsg: '邮箱格式不正确' });
                     return;
                 }
-                this.props.core.db.resetPwd(this.state.email);
+                this.props.core.db.resetPassword(this.state.email);
             }}>发送重置邮件</a>
 
             </div>
