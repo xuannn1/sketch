@@ -1,5 +1,5 @@
 # Startup
-第一次拉下代码后需要初始化:
+第一次拉下代码后需要初始化: (注意当前路径需要在frontend目录中)
 ```
 npm install
 ```
@@ -51,8 +51,9 @@ npm run build
   - `view` 页面渲染
     - `components` 小块的页面组件, 手机端和电脑端可共用的
     - `mobile` 手机端
-      - `index.tsx` 入口文件
+      - `router.tsx` 路由文件
       - `navbar.tsx` 一级导航条
+      - `login.tsx` 登录/注册等页面
       - `home` 首页页面
       - `collection` 收藏页面
       - `notification` 通知页面
@@ -94,3 +95,10 @@ console.log(data); // {data:'this is an example msg', code: 1}
 ```
 
 为了方便以后修改数据接口, 建议将数据交互添加在`src/core`目录的对应文件中, 添加新的方法来处理数据, 在react component中只调用该方法来获得返回数据. 具体可以参考login和register页面的写法.
+
+# 备注
+- 目前代码都在`mobile`目录里, 我们优先开发手机端界面
+- 非页面交互方面的逻辑功能, 建议在`core`目录下建议相应的类来处理, 比如`core`下`user`类负责管理所有用户数据.
+- 页面分为两部分, 上面的部分由路由控制切换页面, 具体的页面内容需要包裹在`<Page>`标签下(参考`/src/view/mobile/home/default.tsx`). 下面的是一级导航菜单, 对应的按钮分别跳转到对应的mobile主目录.
+- 每一个可以考虑同时插入在手机端和pc端的组件, 需要包裹在`<Card>`标签下, 并放在`src/view/components`目录内(参考`src/view/components`里的各文件).
+- 使用率较高的简单组件, 可以自行创建并放在`src/view/components/common.tsx`文件内.
