@@ -99,7 +99,12 @@ class threadsController extends Controller
 
     public function edit(Thread $thread)
     {
-        return view('threads.edit', compact('thread'));
+        if ((Auth::user()->admin)||($thread->user_id == Auth::id()&&(!$thread->locked)&&($thread->channel->channel_state!=2))){
+            return view('threads.edit', compact('thread'));
+        }else{
+            return redirect()->back()->with("danger","本版面无法编辑内容");
+        }
+
     }
 
     public function update(StoreThread $form, Thread $thread)
