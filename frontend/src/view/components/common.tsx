@@ -9,8 +9,9 @@ export function Page (props) {
 export function Card (props:{
     children?:React.ReactNode,
     style?:React.CSSProperties,
+    className?:string;
 }) {
-    return <div className="card" style={Object.assign({
+    return <div className={`card ${props.className || ''}`} style={Object.assign({
         marginTop: '10px',
         padding: '5px',
     }, props.style || {})}>{props.children}</div>
