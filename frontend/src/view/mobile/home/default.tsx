@@ -22,7 +22,7 @@ export class HomeDefault_m extends React.Component<Props, State> {
                 <span>one</span>,
                 <span>two</span>,
                 <span>three</span>,
-            ]} />
+            ]} indicator={true} />
 
             { !this.props.core.user.isLoggedIn() &&
                 <Card style={{
