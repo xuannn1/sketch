@@ -4,22 +4,24 @@
     margin: auto;
     min-height: 150px;
 
-    .slides {
-        position: absolute;
-        height: 100%;
-        width: 100%;
+    .slide-wrap {
+        overflow: hidden;
+        direction: ltr;
+        cursor: -webkit-grab;
+        min-height: inherit;
 
-        .slide {
-            width: 100%;
-            position: absolute;
-            height: 100%;
+        .slide-container {
+            display: flex;
             justify-content: center;
             align-items: center;
-            display: flex;
+            min-height: inherit;
+
+            .slide {
+                flex: 1;
+                text-align: center;
+            }
         }
     }
-
-
 
     %arrows {
         cursor: pointer;
