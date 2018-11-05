@@ -1,24 +1,23 @@
 .carousel {
-    max-width: 1000px;
-    position: relative;
-    margin: auto;
     min-height: 150px;
 
     .slide-wrap {
         overflow: hidden;
-        direction: ltr;
-        cursor: -webkit-grab;
         min-height: inherit;
 
         .slide-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: inherit;
 
-            .slide {
-                flex: 1;
-                text-align: center;
+            .slider {
+                min-height: inherit;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .slide {
+                    flex: 1;
+                    text-align: center;
+                }
             }
         }
     }

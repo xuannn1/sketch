@@ -6,7 +6,6 @@ import { Page, Card } from '../../components/common';
 import { Link } from 'react-router-dom';
 import { ROUTE } from '../../../config/route';
 import { Carousel } from '../../components/carousel';
-import { Slider } from '../../components/slider';
 
 interface Props {
     core:Core;
@@ -19,11 +18,12 @@ interface State {
 export class HomeDefault_m extends React.Component<Props, State> {
     public render () {
         return (<Page>
-            <Slider slides={[
+            <Carousel slides={[
                 <span>one</span>,
                 <span>two</span>,
                 <span>three</span>,
-            ]} />
+            ]}
+                indicator={true} />
 
             { !this.props.core.user.isLoggedIn() &&
                 <Card style={{

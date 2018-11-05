@@ -1,135 +1,200 @@
 import * as React from 'react';
-import './styles/carousel.scss';
-import './styles/animate_slide.scss';
 import { Card } from './common';
+import './styles/carousel.scss';
 
 interface Props {
     slides:JSX.Element[];
     indicator?:boolean;
-    autoSwitchTime?:number; //ms
 }
 
 interface State {
 }
 
 export class Carousel extends React.Component<Props, State> {
-    public slideCount = this.props.slides.length;
-    public slides:(HTMLDivElement|null)[] = new Array(this.slideCount);
-    public el:HTMLDivElement|null = null;
-    public slideContainerEl:HTMLDivElement|null = null;
-    public slideWrapEl:HTMLDivElement|null = null;
+    // elements
+    public container:HTMLDivElement = document.createElement('div');
+    public slider:HTMLDivElement = document.createElement('div');
 
-    public animIn = 'slideInRight';
-    public animOut = 'slideOutLeft';
-    public container_width = 0;
-    public translateX = 0;
+    // configs
+    public duration = 200;
     public easing = 'ease-out';
-    public loop = true;
-    public currentSlide = 0;
+    public startIndex = 0;
+    public draggable = true;
     public threshold = 20;
+    public loop = true;
+
+    // dynamic updates
+    public slideCount = this.props.slides.length;
+    public current = this.startIndex % this.slideCount;
+    public lastOffset = 0;
+    public startX = 0;
+    public endX = 0;
+    public mouseDown = false;
 
     public componentDidMount () {
-        const { autoSwitchTime } = this.props;
-        if (autoSwitchTime) {
-            setInterval(this.updateSlide, autoSwitchTime);
-        }
+    }
 
-        if (this.el) {
-            this.container_width = this.el.offsetWidth;
+    public getSlideOffset (index?:number) {
+        const i = index === undefined ? this.current : index;
+        const width = this.container.offsetWidth;
+        return -i * width;
+    }
+
+    public translate (offset:number) {
+        this.slider.style.transform = `translate3d(${offset}px, 0, 0)`;
+    }
+
+    public toggleTransition (enable:boolean) {
+        if (enable) {
+            this.slider.style.transition = `all ${this.duration}ms ${this.easing}`;
+        } else {
+            this.slider.style.transition = `all 0ms ${this.easing}`;
         }
     }
 
-    public updateSlide = (index?:number) => {
-        const slideCount = this.props.slides.length;
-        let target = index;
+    public slideTo (to:number) {
+        const from = this.lastOffset;
+        const dir = Math.sign(to - from);
+        const speed = 10;
 
-        if (target === undefined) {
-            target = this.currentSlide + 1;
-        } else if (target < 0) {
-            target = this.currentSlide + target;
+        this.toggleTransition(true);
+        
+        const step = (dt) => {
+            const move = dir * speed;
+            this.lastOffset += move;
+            this.translate(this.lastOffset);
+            if (move * (this.lastOffset - to) > 0) {
+                this.lastOffset = to;
+                this.translate(this.lastOffset);
+                this.forceUpdate();
+            } else {
+                requestAnimationFrame(step);
+            }
         }
-
-        this.currentSlide = (target + slideCount) % slideCount;
+        requestAnimationFrame(step);
     }
 
-    public endX = 0;
-    public startX = 0;
-
-    public handleDragStart = (pageX:number) => {
-        if (!this.slideContainerEl || !this.slideWrapEl) { return; }
-        this.slideWrapEl.style.cursor = '-webkit-grabbing';
-        this.startX = pageX;
+    public handleDragStart = (x:number) => {
+        this.startX = this.endX = x;
     }
 
-    public handleDrag = (pageX:number) => {
-        if (!this.slideContainerEl || !this.slideWrapEl) { return; }
-        this.slideContainerEl.style.transition = `all 0ms ${this.easing}`;
-        this.slideContainerEl.style.webkitTransition = `all 0ms ${this.easing}`;
-
-        this.endX = pageX
-
-        const currentSlide = this.loop ? this.currentSlide + this.slideCount : this.currentSlide;
-        const currentOffset = this.currentSlide * (this.container_width / this.slideCount);
-        const offset = currentOffset - (this.endX - this.startX);
-        this.slideContainerEl.style.transform = `translate3d(${-1 * offset}px, 0, 0)`;
+    public handleDrag = (x:number) => {
+        this.endX = x;
+        this.toggleTransition(false);
+        
+        const dx = this.endX - this.startX;
+        this.translate(dx + this.lastOffset);
     }
 
-    public handleDragCancel = () => {
-        if (!this.slideContainerEl || !this.slideWrapEl) { return; }
-        this.slideContainerEl.style.transition = `all 200ms ${this.easing}`;
-        this.slideWrapEl.style.cursor = '-webkit-grab';
-
-        if (this.endX) {
-            const dx = this.endX - this.startX;
-            const distance = Math.abs(dx);
+    public handleDragEnd = () => {
+        this.toggleTransition(true);
+        const dx = this.endX - this.startX;
+        this.lastOffset += dx;
+        const distance = Math.abs(dx);
+        if (distance > 0) {
+            if (distance > this.threshold) {
+                if (dx > 0) {
+                    this.prev();
+                } else {
+                    this.next();
+                }
+            } else {
+                const currentSlideOffset = this.getSlideOffset();
+                this.slideTo(currentSlideOffset);
+            }
         }
+    }
+
+    public prev () {
+        if (this.current === 0) {
+            const currentSlideOffset = this.getSlideOffset();
+            this.slideTo(currentSlideOffset);
+            return;
+        }
+        this.current -= 1;
+        const prevSlideOffset = this.getSlideOffset();
+        this.slideTo(prevSlideOffset);
+    }
+
+    public next () {
+        if (this.current === this.slideCount - 1) {
+            const currentSlideOffset = this.getSlideOffset();
+            this.slideTo(currentSlideOffset);
+            return;
+        }
+        this.current += 1;
+        const nextSlideOffset = this.getSlideOffset();
+        this.slideTo(nextSlideOffset);
     }
 
     public render () {
-        return <Card className="carousel" ref={(el) => this.el = el}>
-
-            <div className="slide-wrap" 
-                ref={(el) => this.slideWrapEl = el}
-                onMouseDown={(ev) => this.handleDragStart(ev.pageX)}
-                onMouseMove={(ev) => {
-                    ev.preventDefault();
-                    this.handleDrag(ev.pageX);
-                }}
-                onMouseUp={(ev) => this.handleDragCancel()}
-                onTouchEnd={(ev) => this.handleDragCancel()}
-                onTouchMove={(ev) => {
-                    if (!ev.touches.length) { return; }
-                    ev.preventDefault();
-                    this.handleDrag(ev.touches[0].pageX);
-                }}
-                onTouchStart={(ev) => this.handleDragStart(ev.touches[0] && ev.touches[0].pageX)}>
-
+        return <Card className="carousel">
+            <div className="slide-wrap">
                 <div className="slide-container"
-                    ref={(el) => this.slideContainerEl = el}
-                    style={{
-                        width: `${this.slideCount}00%`,
-                        transition: '200ms all ease-out 0s',
+                    ref={(el) => el && (this.container = el)}
+                    onTouchStart={(ev) => {
+                        ev.stopPropagation();
+                        ev.touches[0] && this.handleDragStart(ev.touches[0].pageX);
+                    }}
+                    onTouchEnd={(ev) => {
+                        ev.stopPropagation();
+                        this.handleDragEnd();
+                    }}
+                    onTouchMove={(ev) => {
+                        ev.stopPropagation();
+                        ev.preventDefault();
+                        ev.touches[0] && this.handleDrag(ev.touches[0].pageX);
+                    }}
+                    onMouseDown={(ev) => {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        this.mouseDown = true;
+                        this.container.style.cursor = '-webkit-grabbing';
+                        this.handleDragStart(ev.pageX);
+                    }}
+                    onMouseUp={(ev) => {
+                        ev.stopPropagation();
+                        this.mouseDown = false;
+                        this.container.style.cursor = '-webkit-grab';
+                        this.handleDragEnd();
+                    }}
+                    onMouseMove={(ev) => {
+                        if (!this.mouseDown) { return; }
+                        ev.preventDefault();
+                        this.handleDrag(ev.pageX);
+                    }}
+                    onMouseLeave={(ev) => {
+                        if (!this.mouseDown) { return; }
+                        this.mouseDown = false;
+                        this.container.style.cursor = '-webkit-grab';
+                        this.endX = ev.pageX;
+                        this.handleDragEnd();
                     }}>
 
-                    { this.props.slides.map((el, i) => 
-                        <div key={i}
-                            ref={(el) => this.slides[i] = el}
-                            className={`slide`}>
-                            { el }
-                    </div>) } 
+                    <div className="slider"
+                        style={{
+                            width: `${this.slideCount}00%`,
+                        }}
+                        ref={(el) => el && (this.slider = el)}>
+
+                        { this.props.slides.map((slide, i) => 
+                            <div key={i} className="slide">{slide}</div>)
+                        }
+                    </div>
+
 
                 </div>
             </div>
 
-            <a className="prev" onClick={() => this.updateSlide(-1)}>&#10094;</a>
-            <a className="next" onClick={() => this.updateSlide()}>&#10095;</a>
+            <a className="prev" onClick={() => this.prev()}>&#10094;</a>
+            <a className="next" onClick={() => this.next()}>&#10095;</a>
 
             { this.props.indicator &&
                 <div className="indicator">
                     { this.props.slides.map((el, i) => 
                         <span key={i}
-                            className={`dot`}
-                            onClick={() => this.updateSlide(i)}>
+                            className={`dot ${this.current === i && 'active'}`}
+                            onClick={() => this.slideTo(this.getSlideOffset(i))}>
                         </span>)
                     }
                 </div>
