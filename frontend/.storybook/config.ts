@@ -1,4 +1,5 @@
 import { configure } from '@storybook/react';
+import { configureViewport, INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 function loadStories() {
     // automatically import all files ending in *.stories.ts
@@ -7,3 +8,6 @@ function loadStories() {
 }
 
 configure(loadStories, module);
+configureViewport({
+    defaultViewport: 'iphone8p'
+});

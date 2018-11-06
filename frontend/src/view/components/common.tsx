@@ -17,6 +17,7 @@ export function Card (props:{
         style={Object.assign({
             marginTop: '10px',
             padding: '5px',
+            position: 'relative',
         }, props.style || {})}>
 
         {props.children}

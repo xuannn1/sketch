@@ -26,6 +26,7 @@
     "@babel/preset-react": "^7.0.0",
     "@storybook/addon-actions": "^4.0.3",
     "@storybook/addon-info": "^4.0.3",
+    "@storybook/addon-viewport": "^4.0.4",
     "@storybook/react": "^4.0.3",
     "@types/jest": "^23.3.9",
     "@types/koa": "^2.0.46",

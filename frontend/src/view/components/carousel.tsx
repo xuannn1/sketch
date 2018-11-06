@@ -55,7 +55,7 @@ export class Carousel extends React.Component<Props, State> {
     public slideTo (to:number) {
         const from = this.lastOffset;
         const dir = Math.sign(to - from);
-        const speed = 10;
+        const speed = 20;
 
         this.toggleTransition(true);
         
