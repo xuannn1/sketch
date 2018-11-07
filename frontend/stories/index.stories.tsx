@@ -1,23 +1,30 @@
 import * as React from 'react';
-import { storiesOf } from '@storybook/react';
+import { storiesOf, addDecorator } from '@storybook/react';
 import { Carousel } from '../src/view/components/carousel';
-import { CardDecorator } from './decorator';
 import { withViewport } from '@storybook/addon-viewport';
+import { withConsole } from '@storybook/addon-console';
+import { withKnobs, boolean } from '@storybook/addon-knobs';
+import { Core } from '../src/core';
+import { SuggestionShort } from '../src/view/components/suggestion-short';
 
 // import { action } from '@storybook/addon-actions';
 
-storiesOf('Carousel', module)
+const core = new Core();
+
+addDecorator((storyFn, context) => withConsole()(storyFn)(context));
+
+storiesOf('Home', module)
     .addDecorator(withViewport())
-    .add('text', () => 
+    .addDecorator(withKnobs)
+    .add('Carousel', () => 
         <Carousel slides={[
             <span>one</span>,
             <span>two</span>,
             <span>three</span>,
-        ]} />)
-    .add('text indicator', () => 
-        <Carousel slides={[
-            <span>one</span>,
-            <span>two</span>,
-            <span>three</span>, 
-        ]} indicator={true} />
-    );
+        ]} indicator={boolean(true)} />)
+    .add('Suggestion', () => 
+        <SuggestionShort
+            core={core}
+        ></SuggestionShort>
+    )
+;

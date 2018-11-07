@@ -34,7 +34,7 @@ export class HomeDefault_m extends React.Component<Props, State> {
                 }}><Link to={ROUTE.login} className="button is-dark">Login</Link></Card>
             }
 
-            <SuggestionShort />
+            <SuggestionShort core={this.props.core} />
             <ThreadShort />
         </Page>);
     }

@@ -11,3 +11,16 @@ export interface Quote {
     update_at?:Date;
     user_name:string;
 }
+
+export interface RecommendationShort {
+    title:string;
+    content:string;
+    thread?:number;
+    recommendation?:number;
+}
+
+export interface HomeRecommendation {
+    cards:RecommendationShort[];
+    long:RecommendationShort;
+}
+
