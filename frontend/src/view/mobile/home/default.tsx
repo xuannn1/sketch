@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Core } from '../../../core';
-import { SuggestionShort } from '../../components/suggestion-short';
+import { Recommendation } from '../../components/recommendation';
 import { ThreadShort } from '../../components/thread-short';
 import { Page, Card } from '../../components/common';
 import { Link } from 'react-router-dom';
@@ -34,7 +34,7 @@ export class HomeDefault_m extends React.Component<Props, State> {
                 }}><Link to={ROUTE.login} className="button is-dark">Login</Link></Card>
             }
 
-            <SuggestionShort core={this.props.core} />
+            <Recommendation core={this.props.core} />
             <ThreadShort />
         </Page>);
     }

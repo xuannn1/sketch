@@ -5,7 +5,7 @@ import { withViewport } from '@storybook/addon-viewport';
 import { withConsole } from '@storybook/addon-console';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { Core } from '../src/core';
-import { SuggestionShort } from '../src/view/components/suggestion-short';
+import '../src/theme.scss';
 
 // import { action } from '@storybook/addon-actions';
 
@@ -22,9 +22,4 @@ storiesOf('Home', module)
             <span>two</span>,
             <span>three</span>,
         ]} indicator={boolean(true)} />)
-    .add('Suggestion', () => 
-        <SuggestionShort
-            core={core}
-        ></SuggestionShort>
-    )
 ;

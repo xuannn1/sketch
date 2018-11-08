@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+export const COLOR_GREY = '#555';
+
 export function Page (props) {
     return <div style={{
         margin: '5px 10px',
@@ -52,4 +54,30 @@ export function NotificationError (props:{
         <button className="delete"></button>
         {props.children}
     </div>;
+}
+
+export function ShortThread (props:{
+    title:string;
+    content:string;
+    link:string;
+    username?:string;
+    createDate?:string;
+    updateDate?:string;
+    style?:React.CSSProperties;
+}) {
+    return <div style={Object.assign({}, props.style || {})}>
+        <div><a href={props.link} style={{
+            display: 'inline-block',
+            fontWeight: 700,
+            lineHeight: 2,
+            color: COLOR_GREY,
+            textDecoration: 'none',
+        }}>{props.title}</a></div>
+
+        <div style={{
+            color: COLOR_GREY,
+            opacity: 0.7,
+            fontSize: '85%',
+        }}>{props.content}</div>
+    </div>
 }
