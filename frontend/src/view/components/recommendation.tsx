@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { Card, ShortThread } from './common';
 import { Core } from '../../core/index';
-import { HomeRecommendation } from '../../config/data-types';
+import { DataType } from '../../config/data-types';
 import { Styles } from '../../utils/types';
-import { timingSafeEqual } from 'crypto';
 
 interface Props {
     core:Core;
 }
 
 interface State {
-    data:HomeRecommendation;
+    data:DataType.Home.RecommendationCard;
 }
 
 export class Recommendation extends React.Component<Props, State> {
@@ -78,8 +77,10 @@ export class Recommendation extends React.Component<Props, State> {
                                 style={s.card}
                                 key={i}
                                 link={'#'}
-                                title={card.title}
-                                content={card.content} />
+                                thread={{
+                                    title: card.title,
+                                    content: card.content,
+                                }} />
                         )}
                     </div> 
                 </div>
@@ -87,8 +88,10 @@ export class Recommendation extends React.Component<Props, State> {
                 <ShortThread
                     style={s.long}
                     link={'#'}
-                    title={this.state.data.long.title}
-                    content={this.state.data.long.content} />
+                    thread={{
+                        title: long.title,
+                        content: long.content,
+                    }} />
             </div>
         </Card>;
     }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Core } from '../../../core';
 import { Recommendation } from '../../components/recommendation';
-import { ThreadShort } from '../../components/thread-short';
+import { HomeThread } from '../../components/thread-short';
 import { Page, Card } from '../../components/common';
 import { Link } from 'react-router-dom';
 import { ROUTE } from '../../../config/route';
@@ -12,7 +12,6 @@ interface Props {
 }
 
 interface State {
-
 }
 
 export class HomeDefault_m extends React.Component<Props, State> {
@@ -35,7 +34,7 @@ export class HomeDefault_m extends React.Component<Props, State> {
             }
 
             <Recommendation core={this.props.core} />
-            <ThreadShort />
+            <HomeThread core={this.props.core} />
         </Page>);
     }
 }

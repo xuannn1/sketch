@@ -1,4 +1,3 @@
-import { Quote, HomeRecommendation } from "../config/data-types";
 import { History } from '.';
 import { ResponseList } from '../config/response-data';
 

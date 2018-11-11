@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { DataType } from '../../config/data-types';
 
 export const COLOR_GREY = '#555';
 
@@ -18,7 +19,7 @@ export function Card (props:{
         ref={(el) => props.ref && props.ref(el)}
         style={Object.assign({
             marginTop: '10px',
-            padding: '5px',
+            padding: '10px',
             position: 'relative',
         }, props.style || {})}>
 
@@ -57,27 +58,38 @@ export function NotificationError (props:{
 }
 
 export function ShortThread (props:{
-    title:string;
-    content:string;
-    link:string;
-    username?:string;
-    createDate?:string;
-    updateDate?:string;
-    style?:React.CSSProperties;
+    thread:DataType.Home.Thread,
+    link:string,
+    showDetail?:boolean,
+    style?:React.CSSProperties,
 }) {
     return <div style={Object.assign({}, props.style || {})}>
-        <div><a href={props.link} style={{
-            display: 'inline-block',
-            fontWeight: 700,
-            lineHeight: 2,
-            color: COLOR_GREY,
-            textDecoration: 'none',
-        }}>{props.title}</a></div>
+            <div>
+            <div><a href={props.link} style={{
+                display: 'inline-block',
+                fontWeight: 700,
+                lineHeight: 2,
+                color: COLOR_GREY,
+                textDecoration: 'none',
+            }}>{props.thread.title}</a></div>
 
-        <div style={{
-            color: COLOR_GREY,
-            opacity: 0.7,
-            fontSize: '85%',
-        }}>{props.content}</div>
+            <div style={{
+                color: COLOR_GREY,
+                opacity: 0.7,
+                fontSize: '85%',
+            }}>{props.thread.content}</div>
+        </div> 
+
+        { props.showDetail && props.thread.create_date && props.thread.update_date && 
+            <div style={{
+                color: COLOR_GREY,
+                opacity: 0.7,
+                fontSize: '85%',
+            }}>
+                <span style={{marginRight: '5px'}}>{props.thread.username}</span>
+                {/* FIXME: <span>{props.thread.create_date} / {props.thread.update_date}</span> */}
+                <span>五个月前 / 8小时前</span>
+            </div>
+        }
     </div>
 }

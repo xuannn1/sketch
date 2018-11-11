@@ -37,6 +37,32 @@ const config = {
                 long: {title: '长评推荐《浪潮》', content: '孟小满跳楼自尽后，学校里就他的死因流传了两种截然不同的说法……魔幻现实笔法下的灰色青春校园，真假痛欲与人性："他们抛弃一切，在迷狂的浪潮中前进。"', thread: 2, recommendation: 2},
             },
         }
+    },
+    '/homeThread': (req) => {
+        const latest = {
+            title: '乱七八糟的耽美碎碎念',
+            content: '弃文率极高，不限原耽，也可能出现同人，口味挑剔，极易读者引起不适',
+            username: '谨慎阅读',
+            thread: 1,            
+            create_date: 1,
+            update_date: 1,
+        };
+        const best = {
+            title: '没有天赋的人要努力到什么程度才能写好',
+            content: '一个社畜的树洞',
+            username: '丧气满满',
+            thread: 1,
+            create_date: 1,
+            update_date: 1,
+        }
+
+        return {
+            code: 1,
+            data: {
+                latest: [latest, latest],
+                best: [best, best],
+            }
+        }
     }
 }
 
