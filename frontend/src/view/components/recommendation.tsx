@@ -32,13 +32,12 @@ export class Recommendation extends React.Component<Props, State> {
             data: res.data,
         });
 
-        this.props.core.windowResizeEvent.sub((undefined) => this.forceUpdate());
+        this.props.core.windowResizeEvent.sub(() => this.forceUpdate());
     }
 
     public render () {
         const cardWrapperWidth = this.cardWrapperEl && this.cardWrapperEl.offsetWidth || 1;
         const { cards, long } = this.state.data;
-        const overflowX = cardWrapperWidth >= cards.length * this.CARD_MIN_WIDTH ? 'auto' : 'scroll';
 
         const s:Styles = {
             main: {
