@@ -3,6 +3,7 @@ import { Card, ShortThread } from './common';
 import { Core } from '../../core/index';
 import { HomeRecommendation } from '../../config/data-types';
 import { Styles } from '../../utils/types';
+import { timingSafeEqual } from 'crypto';
 
 interface Props {
     core:Core;
@@ -13,6 +14,9 @@ interface State {
 }
 
 export class Recommendation extends React.Component<Props, State> {
+    public cardWrapperEl:HTMLDivElement|null = null;
+    public CARD_MIN_WIDTH = 200; //px
+
     public state:State = {
         data: {
             cards: [],
@@ -27,9 +31,15 @@ export class Recommendation extends React.Component<Props, State> {
         this.setState({
             data: res.data,
         });
+
+        this.props.core.windowResizeEvent.sub((undefined) => this.forceUpdate());
     }
 
     public render () {
+        const cardWrapperWidth = this.cardWrapperEl && this.cardWrapperEl.offsetWidth || 1;
+        const { cards, long } = this.state.data;
+        const overflowX = cardWrapperWidth >= cards.length * this.CARD_MIN_WIDTH ? 'auto' : 'scroll';
+
         const s:Styles = {
             main: {
             },
@@ -41,16 +51,18 @@ export class Recommendation extends React.Component<Props, State> {
                 fontSize: '150%',
             },
             cardsWrapper: {
-                overflowX: 'scroll',
+                overflowX: 'auto',
             },
             cardsContainer: {
-                width: `${this.state.data.cards.length / 2}00%`,
+                width: `${this.state.data.cards.length / Math.ceil(cardWrapperWidth / this.CARD_MIN_WIDTH) * 100}%`,
+                backgroundColor: 'white',
                 display: 'flex',
-                overflowX: 'scroll',
                 minHeight: '130px',
             },
             card: {
                 flex: 1,
+                padding: '0px 5px 5px 5px',
+                marginRight: '10xp',
             },
             long: {
     
@@ -60,7 +72,7 @@ export class Recommendation extends React.Component<Props, State> {
         return <Card style={s.main}>
             <div style={s.heading}>每周推荐</div>
             <div>
-                <div style={s.cardsWrapper}>
+                <div style={s.cardsWrapper} ref={(el) => this.cardWrapperEl = el}>
                     <div style={s.cardsContainer}>
                         { this.state.data.cards.map((card, i) => 
                             <ShortThread
