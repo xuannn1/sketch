@@ -1,12 +1,21 @@
 import * as React from 'react';
 import { DataType } from '../../config/data-types';
+import { Topnav } from './topnav';
 
 export const COLOR_GREY = '#555';
 
-export function Page (props) {
-    return <div style={{
-        margin: '5px 10px',
-    }}>{props.children}</div>
+export function Page (props:{
+    children?:React.ReactNode,
+    nav?:JSX.Element,
+}) {
+    return <div>
+        {props.nav}
+        <div style={{
+            margin: '5px 10px',
+        }}>{props.children}</div>
+    </div>; 
+    
+
 }
 
 export function Card (props:{
