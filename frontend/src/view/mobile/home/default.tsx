@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Core } from '../../../core';
 import { Recommendation } from '../../components/recommendation';
-import { HomeThread } from '../../components/thread-short';
+import { HomeThread } from '../../components/thread/thread-short';
 import { Page, Card } from '../../components/common';
 import { Link } from 'react-router-dom';
 import { ROUTE } from '../../../config/route';

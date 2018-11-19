@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Core } from '../../core';
 import { Page } from '../components/common';
-import { Login } from '../components/login';
+import { Login } from '../components/login/login';
 import { ROUTE } from '../../config/route';
-import { PasswordReset } from '../components/pwd-reset';
-import { Register } from '../components/register';
+import { PasswordReset } from '../components/login/pwd-reset';
+import { Register } from '../components/login/register';
 import { Topnav } from '../components/topnav';
 
 interface Props {

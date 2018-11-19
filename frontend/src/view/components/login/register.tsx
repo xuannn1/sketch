@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Core } from '../../core';
-import { Card, NotificationError } from './common';
-import { validEmail, validPwd } from '../../utils/validates';
+import { Core } from '../../../core/index';
+import { Card, NotificationError } from '../common';
+import { validEmail, validPwd } from '../../../utils/validates';
 
 interface Props {
     core:Core;

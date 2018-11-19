@@ -15,7 +15,7 @@ export namespace DataType {
 
     export interface User {
         id:number;
-        text:string;
+        name:string;
     }
 
     export namespace Home {

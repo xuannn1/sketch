@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Card, ShortThread } from './common';
-import { Core } from '../../core/index';
-import { DataType } from '../../config/data-types';
+import { Card, ShortThread } from '../common';
+import { Core } from '../../../core/index';
+import { DataType } from '../../../config/data-types';
 
 enum ActiveTab {
     latest,
