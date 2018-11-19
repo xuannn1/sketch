@@ -5,6 +5,7 @@ import { Card } from '../common';
 interface Props {
     core:Core;
 }
+
 interface State {
 }
 
