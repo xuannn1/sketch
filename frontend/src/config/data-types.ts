@@ -27,19 +27,20 @@ export namespace DataType {
             create_date?:Date;
             update_date?:Date;
         }
+
+        export function allocThread () : Thread {
+            return {
+                title: '',
+                content: '',
+            };
+        }
     
         export interface Recommendation extends Thread {
             recommendation?:number;
         }
-    
-        export interface RecommendationCard {
-            cards:Recommendation[];
-            long:Recommendation;
-        }
-        
-        export interface ThreadCard {
-            latest:Thread[];
-            best:Thread[];
+
+        export function allocRecommendation () : Recommendation {
+            return allocThread();
         }
     }
 

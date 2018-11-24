@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Card } from './common';
 import './styles/carousel.scss';
+import { Core } from '../../core/index';
 
 interface Props {
     slides:JSX.Element[];
     indicator?:boolean;
+    core:Core;
 }
 
 interface State {
@@ -32,6 +34,7 @@ export class Carousel extends React.Component<Props, State> {
     public mouseDown = false;
 
     public componentDidMount () {
+        this.props.core.windowResizeEvent.sub(() => this.forceUpdate());
     }
 
     public getSlideOffset (index?:number) {

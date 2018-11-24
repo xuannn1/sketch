@@ -3,7 +3,7 @@ import { Core } from '../../core/index';
 
 interface Props {
     core:Core;
-    text?:string;
+    title?:string;
 }
 
 interface State {}
@@ -33,7 +33,7 @@ export class Topnav extends React.Component<Props, State> {
                 flex: 1,
             }}>
                 <a className="navbar-item">
-                    { this.props.text }
+                    { this.props.title }
                 </a>
             </div>
         </div>;

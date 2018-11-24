@@ -13,7 +13,7 @@ interface State {
     spec:LinkSpec[];
 }
 
-export class Navbar_m extends React.Component<Props, State> {
+export class Navbar extends React.Component<Props, State> {
     public state = {
         spec: [
             {to:ROUTE.home, label: 'home'},

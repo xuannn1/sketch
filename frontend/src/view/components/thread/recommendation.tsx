@@ -1,42 +1,40 @@
 import * as React from 'react';
-import { Card, ShortThread } from './common';
-import { Core } from '../../core/index';
-import { DataType } from '../../config/data-types';
-import { Styles } from '../../utils/types';
+import { Card, ShortThread } from '../common';
+import { DataType } from '../../../config/data-types';
+import { Styles } from '../../../utils/types';
+import { Core } from '../../../core/index';
+
+export function allocRecommendationData () : RecommendationData {
+    return {
+        cards: [],
+        long: DataType.Home.allocRecommendation(),
+    }
+}
+
+export interface RecommendationData {
+    cards:DataType.Home.Recommendation[];
+    long:DataType.Home.Recommendation;
+}
 
 interface Props {
     core:Core;
+    data:RecommendationData;
 }
 
 interface State {
-    data:DataType.Home.RecommendationCard;
 }
 
 export class Recommendation extends React.Component<Props, State> {
     public cardWrapperEl:HTMLDivElement|null = null;
     public CARD_MIN_WIDTH = 200; //px
 
-    public state:State = {
-        data: {
-            cards: [],
-            long: {title: '', content: '', thread: 0, recommendation: 0},
-        }
-    }
-
-    public async componentDidMount () {
-        const res = await this.props.core.db.request('/homeRecommendation');
-        if (!res) { return; }
-
-        this.setState({
-            data: res.data,
-        });
-
+    public componentDidMount () {
         this.props.core.windowResizeEvent.sub(() => this.forceUpdate());
     }
 
     public render () {
         const cardWrapperWidth = this.cardWrapperEl && this.cardWrapperEl.offsetWidth || 1;
-        const { cards, long } = this.state.data;
+        const { cards, long } = this.props.data;
 
         const s:Styles = {
             main: {
@@ -52,7 +50,9 @@ export class Recommendation extends React.Component<Props, State> {
                 overflowX: 'auto',
             },
             cardsContainer: {
-                width: `${this.state.data.cards.length / Math.ceil(cardWrapperWidth / this.CARD_MIN_WIDTH) * 100}%`,
+                width: `${cards.length
+                    && cards.length / Math.ceil(cardWrapperWidth / this.CARD_MIN_WIDTH) * 100
+                    || 100}%`,
                 backgroundColor: 'white',
                 display: 'flex',
                 minHeight: '130px',
@@ -72,7 +72,7 @@ export class Recommendation extends React.Component<Props, State> {
             <div>
                 <div style={s.cardsWrapper} ref={(el) => this.cardWrapperEl = el}>
                     <div style={s.cardsContainer}>
-                        { this.state.data.cards.map((card, i) => 
+                        { cards.map((card, i) => 
                             <ShortThread
                                 style={s.card}
                                 key={i}

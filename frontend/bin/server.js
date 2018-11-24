@@ -22,23 +22,7 @@ const config = {
     '/register': (req) => {
         return { code: 1, data: '' };
     },
-    '/homeRecommendation': (req) => {
-        return {
-            code: 1,
-            data: {
-                cards: [
-                    {title: '死者苏生', content: '适合空气充斥着生活困顿、辞职待业、前途茫茫等大人的烦恼的失眠的深夜。', thread: 1, recommendation: 1},
-                    {title: '死者苏生', content: '适合空气充斥着生活困顿、辞职待业、前途茫茫等大人的烦恼的失眠的深夜。', thread: 1, recommendation: 1},
-                    {title: '死者苏生', content: '适合空气充斥着生活困顿、辞职待业、前途茫茫等大人的烦恼的失眠的深夜。', thread: 1, recommendation: 1},
-                    {title: '死者苏生', content: '适合空气充斥着生活困顿、辞职待业、前途茫茫等大人的烦恼的失眠的深夜。', thread: 1, recommendation: 1},
-                    {title: '死者苏生', content: '适合空气充斥着生活困顿、辞职待业、前途茫茫等大人的烦恼的失眠的深夜。', thread: 1, recommendation: 1},
-                    {title: '死者苏生', content: '适合空气充斥着生活困顿、辞职待业、前途茫茫等大人的烦恼的失眠的深夜。', thread: 1, recommendation: 1},
-                ],
-                long: {title: '长评推荐《浪潮》', content: '孟小满跳楼自尽后，学校里就他的死因流传了两种截然不同的说法……魔幻现实笔法下的灰色青春校园，真假痛欲与人性："他们抛弃一切，在迷狂的浪潮中前进。"', thread: 2, recommendation: 2},
-            },
-        }
-    },
-    '/homeThread': (req) => {
+    '/home': (req) => {
         const latest = {
             title: '乱七八糟的耽美碎碎念',
             content: '弃文率极高，不限原耽，也可能出现同人，口味挑剔，极易读者引起不适',
@@ -55,15 +39,23 @@ const config = {
             create_date: 1,
             update_date: 1,
         }
+        const recommendationCards = new Array(5);
+        recommendationCards.fill({title: '死者苏生', content: '适合空气充斥着生活困顿、辞职待业、前途茫茫等大人的烦恼的失眠的深夜。', thread: 1, recommendation: 1});
 
         return {
             code: 1,
             data: {
-                latest: [latest, latest],
-                best: [best, best],
+                recommendation: {
+                    cards: recommendationCards,
+                    long: {title: '长评推荐《浪潮》', content: '孟小满跳楼自尽后，学校里就他的死因流传了两种截然不同的说法……魔幻现实笔法下的灰色青春校园，真假痛欲与人性："他们抛弃一切，在迷狂的浪潮中前进。"', thread: 2, recommendation: 2},
+                },
+                thread: {
+                    latest: [latest, latest],
+                    best: [best, best],
+                }
             }
-        }
-    }
+        } 
+    },
 }
 
 const app = new Koa();

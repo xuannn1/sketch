@@ -9,7 +9,7 @@ interface State {
 
 }
 
-export class Notification_m extends React.Component<Props, State> {
+export class Notification extends React.Component<Props, State> {
     public render () {
         return (<div>
             notification

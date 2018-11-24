@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { DataType } from '../../config/data-types';
-import { Topnav } from './topnav';
 
 export const COLOR_GREY = '#555';
 

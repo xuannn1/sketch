@@ -1,4 +1,4 @@
-import { DataType } from './data-types';
+import { HomeDefaultData } from '../view/mobile/home/default';
 
 export type Response<DataType> = {
     code:number,
@@ -6,8 +6,7 @@ export type Response<DataType> = {
 }
 
 export interface ResponseList {
-    '/homeRecommendation':Response<DataType.Home.RecommendationCard>,
-    '/homeThread':Response<DataType.Home.ThreadCard>,
+    '/home':Response<HomeDefaultData>,
     '/resetPwd':Response<boolean>,
     '/login':Response<boolean>,
     '/register':Response<boolean>,

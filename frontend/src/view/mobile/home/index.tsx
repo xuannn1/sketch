@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Core } from '../../../core';
-import { HomeDefault_m } from './default';
-import { Article_m } from './article';
-import { Forum_m } from './forum';
+import { HomeDefault } from './default';
+import { Article } from './article';
+import { Forum } from './forum';
 import { NavTop } from '../../components/common';
 
 interface Props {
@@ -19,7 +19,7 @@ export enum HomeNavE {
     forum,
 }
 
-export class Home_m extends React.Component<Props, State> {
+export class Home extends React.Component<Props, State> {
     public state = {
         nav: HomeNavE.default,
     };
@@ -44,11 +44,11 @@ export class Home_m extends React.Component<Props, State> {
     public renderContent () {
         switch (this.state.nav) {
             case HomeNavE.article:
-                return <Article_m core={this.props.core} />
+                return <Article core={this.props.core} />
             case HomeNavE.forum:
-                return <Forum_m core={this.props.core} />
+                return <Forum core={this.props.core} />
             default:
-                return <HomeDefault_m core={this.props.core} />
+                return <HomeDefault core={this.props.core} />
         }
     }
 }

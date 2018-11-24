@@ -13,13 +13,13 @@ interface Props {
 interface State {
 }
 
-export class Login_m extends React.Component<Props, State> {
+export class LoginRoute extends React.Component<Props, State> {
     public location = '';
 
     public render () {
         const content = this.renderContent();
 
-        return <Page nav={<Topnav core={this.props.core} text={this.location} />}>
+        return <Page nav={<Topnav core={this.props.core} title={this.location} />}>
             { content }
         </Page>;
     }

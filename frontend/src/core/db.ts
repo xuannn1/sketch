@@ -17,7 +17,7 @@ export class DB {
         try {
             const url = `${this.protocol}://${this.host}:${this.port}${_path}`;
             console.log('request: ', url);
-            const res = await fetch(url, {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -25,7 +25,11 @@ export class DB {
                 },
                 body: JSON.stringify(data || {}),
             });
-            return res.json();
+            const result = response.json();
+
+
+
+            return result
         } catch (e) {
             console.error('Fetch Error: ' + e);
             return null;

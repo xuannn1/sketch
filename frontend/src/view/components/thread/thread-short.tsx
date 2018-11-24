@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Card, ShortThread } from '../common';
-import { Core } from '../../../core/index';
 import { DataType } from '../../../config/data-types';
 
 enum ActiveTab {
@@ -8,31 +7,30 @@ enum ActiveTab {
     best,
 }
 
-interface Props {
-    core:Core;
+export function allocHomeThreadData () : HomeThreadData {
+    return {
+        latest: [],
+        best: [],
+    };
 }
+
+export interface HomeThreadData {
+    latest:DataType.Home.Thread[];
+    best:DataType.Home.Thread[];
+}
+
+interface Props {
+    data:HomeThreadData;
+}
+
 interface State {
-    data:DataType.Home.ThreadCard;
     activeTab:ActiveTab;
 }
 
 export class HomeThread extends React.Component<Props, State> {
     public state = {
-        data: {
-            latest: [],
-            best: [],
-        },
         activeTab: ActiveTab.latest,
     };
-
-    public async componentDidMount () {
-        const res = await this.props.core.db.request('/homeThread');
-        if (!res) { return; }
-
-        this.setState({
-            data: res.data,
-        });
-    }
 
     public render () {
         return <Card>
@@ -49,7 +47,7 @@ export class HomeThread extends React.Component<Props, State> {
                 </ul>
             </div>
 
-            { this.state.data[ActiveTab[this.state.activeTab]].map((thread, i) => 
+            { this.props.data[ActiveTab[this.state.activeTab]].map((thread, i) => 
                 <ShortThread
                     key={i} 
                     link={'#'}

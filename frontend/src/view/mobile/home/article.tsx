@@ -10,7 +10,7 @@ interface State {
 
 }
 
-export class Article_m extends React.Component<Props, State> {
+export class Article extends React.Component<Props, State> {
     public render () {
         return (<Page>
             article

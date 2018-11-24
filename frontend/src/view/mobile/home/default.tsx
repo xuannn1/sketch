@@ -1,23 +1,45 @@
 import * as React from 'react';
 import { Core } from '../../../core';
-import { Recommendation } from '../../components/recommendation';
-import { HomeThread } from '../../components/thread/thread-short';
+import { Recommendation, RecommendationData, allocRecommendationData } from '../../components/thread/recommendation';
+import { HomeThread, HomeThreadData, allocHomeThreadData } from '../../components/thread/thread-short';
 import { Page, Card } from '../../components/common';
 import { Link } from 'react-router-dom';
 import { ROUTE } from '../../../config/route';
 import { Carousel } from '../../components/carousel';
+import { checkType } from '../../../utils/types';
+
+export interface HomeDefaultData {
+    recommendation:RecommendationData;
+    thread:HomeThreadData;
+}
 
 interface Props {
     core:Core;
 }
 
 interface State {
+    data:HomeDefaultData;
 }
 
-export class HomeDefault_m extends React.Component<Props, State> {
+export class HomeDefault extends React.Component<Props, State> {
+    public state = {
+        data:{
+            recommendation: allocRecommendationData(),
+            thread: allocHomeThreadData(), 
+        }
+    }
+
+    public async componentDidMount () {
+        const res = await this.props.core.db.request('/home');
+        if (!res) { return; }
+        if (checkType(res.data, this.state.data)) {
+            this.setState({data: res.data});
+        }
+    }
+
     public render () {
         return (<Page>
-            <Carousel slides={[
+            <Carousel core={this.props.core} slides={[
                 <span>one</span>,
                 <span>two</span>,
                 <span>three</span>,
@@ -33,8 +55,8 @@ export class HomeDefault_m extends React.Component<Props, State> {
                 }}><Link to={ROUTE.login} className="button is-dark">Login</Link></Card>
             }
 
-            <Recommendation core={this.props.core} />
-            <HomeThread core={this.props.core} />
+            <Recommendation data={this.state.data.recommendation} core={this.props.core} />
+            <HomeThread data={this.state.data.thread} />
         </Page>);
     }
 }

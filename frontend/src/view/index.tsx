@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Core } from '../core';
 import { isMobile } from '../utils/mobile';
-import { Main_m } from './mobile/router';
+import { MobileRoute } from './mobile/router';
 import { Router } from 'react-router-dom';
 
 interface Props {
@@ -14,7 +14,7 @@ interface State {
 
 export class App extends React.Component<Props, State> {
     public renderApp () {
-        return <Main_m core={this.props.core} />;
+        return <MobileRoute core={this.props.core} />;
         // if (isMobile()) {
         //     return <Main_m core={this.props.core} />
         // } else {
