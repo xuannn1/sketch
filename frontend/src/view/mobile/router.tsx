@@ -9,6 +9,9 @@ import { Status } from './status';
 import { Notification } from './notification';
 import { Navbar } from './navbar';
 import { LoginRoute } from './login';
+import { HomeMain } from './home/main';
+import { Books } from './home/books';
+import { Threads } from './home/threads';
 
 interface Props {
     core:Core;
@@ -38,8 +41,11 @@ export class MobileRoute extends React.Component<Props, State> {
             }}>
                 <Switch>
                     <Route exact path={ROUTE.home}
-                        render={(props) => <Home {...props} core={core} />}
-                        core={this.props.core} />
+                        render={(props) => <Home {...props} core={core} page={<HomeMain core={core} />} />} />
+                    <Route path={ROUTE.books}
+                        render={(props) => <Home {...props} core={core} page={<Books core={core} />} />} />
+                    <Route path={ROUTE.threads}
+                        render={(props) => <Home {...props} core={core} page={<Threads core={core} />} />} />
                     <Route path={ROUTE.collections}
                         render={(props) => <Collection {...props} core={core} />} />
                     <Route path={ROUTE.users}

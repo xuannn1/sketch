@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { DataType } from '../../config/data-types';
 import { parseDate } from '../../utils/date';
+import { ROUTE } from '../../config/route';
+import { Link } from 'react-router-dom';
 
 export const COLOR_GREY = '#555';
 
@@ -37,22 +39,22 @@ export function Card (props:{
     </div>;
 }
 
-export function NavTop<NavType> (props:{
-    items:{to:NavType, label:string, onClick:(nav:NavType) => void}[],
+export function TopMenu (props:{
+    items:{to:string, label:string}[],
 }) {
     return <nav className="navbar" style={{
         display: 'flex',
         padding: '0 30vw',
     }}>
         {props.items.map((item, i) => {
-            return <div className="navbar-item"
+            return <Link className="navbar-item"
                 key={i}
-                onClick={() => item.onClick(item.to)}
+                to={item.to}
                 style={{
                     margin: 'auto',
                     textDecoration: 'underline',
                 }}
-            >{item.label}</div>
+            >{item.label}</Link>
         })}
     </nav>;
 }
