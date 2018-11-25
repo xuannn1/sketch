@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { DataType } from '../../config/data-types';
+import { parseDate } from '../../utils/date';
 
 export const COLOR_GREY = '#555';
 
@@ -95,8 +96,7 @@ export function ShortThread (props:{
                 fontSize: '85%',
             }}>
                 <span style={{marginRight: '5px'}}>{props.thread.username}</span>
-                {/* FIXME: <span>{props.thread.create_date} / {props.thread.update_date}</span> */}
-                <span>五个月前 / 8小时前</span>
+                <span>{parseDate(props.thread.create_date)} / {parseDate(props.thread.update_date)}</span>
             </div>
         }
     </div>

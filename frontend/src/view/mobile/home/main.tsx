@@ -8,7 +8,7 @@ import { ROUTE } from '../../../config/route';
 import { Carousel } from '../../components/carousel';
 import { checkType } from '../../../utils/types';
 
-export interface HomeDefaultData {
+export interface HomeMainData {
     recommendation:RecommendationData;
     thread:HomeThreadData;
 }
@@ -18,10 +18,10 @@ interface Props {
 }
 
 interface State {
-    data:HomeDefaultData;
+    data:HomeMainData;
 }
 
-export class HomeDefault extends React.Component<Props, State> {
+export class HomeMain extends React.Component<Props, State> {
     public state = {
         data:{
             recommendation: allocRecommendationData(),

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Core } from '../../../core';
-import { HomeDefault } from './default';
-import { Article } from './article';
+import { HomeMain } from './main';
+import { Books } from './books';
 import { Forum } from './forum';
 import { NavTop } from '../../components/common';
+import { Switch } from 'react-router';
 
 interface Props {
     core:Core;
@@ -44,11 +45,11 @@ export class Home extends React.Component<Props, State> {
     public renderContent () {
         switch (this.state.nav) {
             case HomeNavE.article:
-                return <Article core={this.props.core} />
+                return <Books core={this.props.core} />
             case HomeNavE.forum:
                 return <Forum core={this.props.core} />
             default:
-                return <HomeDefault core={this.props.core} />
+                return <HomeMain core={this.props.core} />
         }
     }
 }

@@ -78,6 +78,7 @@ export class Recommendation extends React.Component<Props, State> {
                                 key={i}
                                 link={'#'}
                                 thread={{
+                                    id: card.id,
                                     title: card.title,
                                     content: card.content,
                                 }} />
@@ -89,6 +90,7 @@ export class Recommendation extends React.Component<Props, State> {
                     style={s.long}
                     link={'#'}
                     thread={{
+                        id: long.id,
                         title: long.title,
                         content: long.content,
                     }} />

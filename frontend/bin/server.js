@@ -56,6 +56,37 @@ const config = {
             }
         } 
     },
+    '/books': (req) => {
+        return {
+            code: 1,
+            data: {
+                profile: {
+                    id: 1,
+                    title: '超人幻想 神化49年',  
+                    brief: '《超人幻想》TV5话-20话之间的故事',
+                    user: {
+                        id: 1,
+                        name: '人吉尔朗',
+                    },
+                    publishDate: new Date(),
+                    updateDate: new Date(),
+                    tags: (new Array(8)).fill({
+                        name: '同人',
+                        id: 1,
+                    }),
+                    wordCounter: 163396,
+                    viewCounter: 70,
+                    commentCounter: 0,
+                    downloadCounter: 0,
+                    threadId: 1,
+                },
+                chapters: (new Array(13)).fill({
+                    title: '超人幻想 神化49年 - 上篇 日本妖怪史 01:',
+                    id: 1,
+                }),
+            },
+        }
+    }
 }
 
 const app = new Koa();

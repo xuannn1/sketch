@@ -26,9 +26,6 @@ export class DB {
                 body: JSON.stringify(data || {}),
             });
             const result = response.json();
-
-
-
             return result
         } catch (e) {
             console.error('Fetch Error: ' + e);
