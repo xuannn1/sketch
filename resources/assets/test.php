@@ -250,3 +250,17 @@ DB::table('administrations')->join('posts',function($join){ $join->whereIn('admi
 DB::table('administrations')->join('post_comments',function($join){ $join->where('administrations.operation','=',8); $join->on('administrations.item_id','=','post_comments.id'); })->update(['administrations.administratee_id'=>DB::raw('post_comments.user_id')]);
 
 DB::table('administrations')->whereIn('administrations.operation',[13,14]) ->update(['administrations.administratee_id'=>DB::raw('administrations.item_id')]);
+
+
+//为编辑组成员增加积分
+$users = App\Models\User::whereIn('id',[68644,48493,58238,58227,56346,58229,58230,78653,58228,92230,92208,93086,92232,92222,92226,92227,92225,92224,92228,92244,92247,92260])->get();
+//$users->pluck('name')->toArray();
+foreach ($users as $editor){
+    $editor->shengfan +=500;
+    $editor->xianyu +=200;
+    $editor->jifen +=500;
+    $editor->experience_points +=500;
+    $editor->user_level = 7;
+    $editor->save();
+}
+//$users->pluck('user_level')->toArray();
