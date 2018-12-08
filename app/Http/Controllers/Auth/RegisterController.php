@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Cache;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Models\InvitationToken;
@@ -81,22 +81,29 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
+
     protected function create(array $data)
     {
-        $user = DB::transaction(function()use($data){
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => bcrypt($data['password']),
-                'invitation_token' => $data['invitation_token'],
-            ]);
-            $user->activated = 1;
-            $user->save();
-            $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
-            $invitation_token->decrement('invitation_times');
-            $invitation_token->increment('invited');
-            return $user;
-        });
+        if (!Cache::has('-registration-limit-' . request()->ip())){
+            $user = DB::transaction(function()use($data){
+                $user = User::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => bcrypt($data['password']),
+                    'invitation_token' => $data['invitation_token'],
+                ]);
+                $user->activated = 1;
+                $user->save();
+                $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
+                $invitation_token->decrement('invitation_times');
+                $invitation_token->increment('invited');
+                $expiresAt = Carbon::now()->addMinutes(10);
+                Cache::put('-registration-limit-' . request()->ip(), true, $expiresAt);
+                return $user;
+            });
+        }else{
+            $user = null;
+        }
         return $user;
     }
 
@@ -107,7 +114,11 @@ class RegisterController extends Controller
         // event(new Registered($user));
         // $this->sendEmailConfirmationTo($user);
         // session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
-        session()->flash('success', '账户已建立并激活，直接登录就可以玩耍了，快来试试吧！');
+        if ($user){
+            session()->flash('success', '账户已建立并激活，直接登录就可以玩耍了，快来试试吧！');
+        }else {
+            session()->flash('danger', '您的IP十分钟内已经成功注册，请尝试直接登陆您已注册的账户。');
+        }
         return redirect('/');
     }
 
