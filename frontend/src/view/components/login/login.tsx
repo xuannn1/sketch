@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Core } from '../../core';
-import { Card, Page, NotificationError } from './common';
+import { Core } from '../../../core/index';
+import { Card, NotificationError } from '../common';
 import { Link } from 'react-router-dom';
-import { ROUTE } from '../../config/route';
-import { validEmail } from '../../utils/validates';
+import { ROUTE } from '../../../config/route';
+import { validEmail } from '../../../utils/validates';
 
 interface Props {
     core:Core;

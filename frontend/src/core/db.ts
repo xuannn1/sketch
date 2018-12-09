@@ -1,5 +1,5 @@
-import { Quote } from "./data-types";
 import { History } from '.';
+import { ResponseList } from '../config/response-data';
 
 export class DB {
     private host:string;
@@ -13,17 +13,20 @@ export class DB {
         this.port = 3001; // for test
     }
 
-    public async request (uri:string) {
+    public async request<U extends keyof ResponseList> (_path:U, data?:{}) : Promise<ResponseList[U]|null> {
         try {
-            if (uri[0] === '/') {
-                uri = uri.substr(1);
-            }
-            const url = `${this.protocol}://${this.host}:${this.port}/${uri}`;
+            const url = `${this.protocol}://${this.host}:${this.port}${_path}`;
             console.log('request: ', url);
-            const res = await fetch(url, {
-                method: 'post',
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data || {}),
             });
-            return res.json();
+            const result = response.json();
+            return result
         } catch (e) {
             console.error('Fetch Error: ' + e);
             return null;
@@ -31,7 +34,7 @@ export class DB {
     }
 
     public async resetPassword (email:string) {
-        return await this.request('/resetPwd');
+        return await this.request('/resetPwd', {email});
     }
 
     public getLogo () { //fixme:
@@ -40,21 +43,5 @@ export class DB {
 
     public search (type:string, value:string, tongrenCP:string) {
         return ''; // fixme:
-    }
-
-    public getQuotes () : Quote[] {
-        const testData = {
-            id: 0,
-            quote: 'this is a test quote',
-            anonymous: 0,
-            majia: 'majia',
-            notsad: 0,
-            approved: 1,
-            reviewed: 2,
-            xianyu: 3,
-            user_name: 'username',
-        };
-
-        return (new Array(4)).fill(testData);
     }
 }

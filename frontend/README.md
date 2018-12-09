@@ -10,6 +10,11 @@ npm run start
 ```
 之后修改前端代码, 浏览器窗口也会即时刷新.
 
+使用 [storybook](https://github.com/storybooks/storybook) 来测试组件:
+```
+npm run storybook
+```
+
 
 生产环境打包:
 ```

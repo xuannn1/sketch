@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { Card } from './common';
+import { Card } from '../common';
 
 interface Props {
 }
 interface State {
 }
 
-export class ThreadShort extends React.Component<Props, State> {
+export class Post extends React.Component<Props, State> {
     public render () {
         return <Card>
-            Forum
+
         </Card>;
     }
 }

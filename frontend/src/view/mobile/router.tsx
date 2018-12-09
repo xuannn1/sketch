@@ -2,13 +2,16 @@ import * as React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Core } from '../../core';
 import { ROUTE } from '../../config/route';
-import { Collection_m } from './collection';
-import { Home_m } from './home';
-import { User_m } from './user';
-import { Status_m } from './status';
-import { Notification_m } from './notification';
-import { Navbar_m } from './navbar';
-import { Login_m } from './login';
+import { Collection } from './collection';
+import { Home } from './home';
+import { User } from './user';
+import { Status } from './status';
+import { Notification } from './notification';
+import { Navbar } from './navbar';
+import { LoginRoute } from './login';
+import { HomeMain } from './home/main';
+import { Books } from './home/books';
+import { Threads } from './home/threads';
 
 interface Props {
     core:Core;
@@ -18,7 +21,7 @@ interface State {
 
 }
 
-export class Main_m extends React.Component<Props, State> {
+export class MobileRoute extends React.Component<Props, State> {
     public render () {
         const { core } = this.props;
         const h = window.innerHeight;
@@ -38,22 +41,25 @@ export class Main_m extends React.Component<Props, State> {
             }}>
                 <Switch>
                     <Route exact path={ROUTE.home}
-                        render={(props) => <Home_m {...props} core={core} />}
-                        core={this.props.core} />
+                        render={(props) => <Home {...props} core={core} page={<HomeMain core={core} />} />} />
+                    <Route path={ROUTE.books}
+                        render={(props) => <Home {...props} core={core} page={<Books core={core} />} />} />
+                    <Route path={ROUTE.threads}
+                        render={(props) => <Home {...props} core={core} page={<Threads core={core} />} />} />
                     <Route path={ROUTE.collections}
-                        render={(props) => <Collection_m {...props} core={core} />} />
+                        render={(props) => <Collection {...props} core={core} />} />
                     <Route path={ROUTE.users}
-                        render={(props) => <User_m {...props} core={core} />} />
+                        render={(props) => <User {...props} core={core} />} />
                     <Route path={ROUTE.statuses}
-                        render={(props) => <Status_m {...props} core={core} />} />
+                        render={(props) => <Status {...props} core={core} />} />
                     <Route path={ROUTE.notifications}
-                        render={(props) => <Notification_m {...props} core={core} />} />
+                        render={(props) => <Notification {...props} core={core} />} />
                     <Route path={ROUTE.login}
-                        render={(props) => <Login_m {...props} core={core} />} />
+                        render={(props) => <LoginRoute {...props} core={core} />} />
                 </Switch>
             </div>
 
-            <Navbar_m core={this.props.core} />
+            <Navbar core={this.props.core} />
         </div>);
     }
 }

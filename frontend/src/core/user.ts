@@ -14,7 +14,9 @@ export class User {
 
     public async login (email:string, pwd:string) {
         //todo:
-        const res = await this.db.request(`/login?email=${email}&pwd=${pwd}`);
+        const res = await this.db.request(`/login`, {email, pwd});
+        if (!res) { return; }
+
         if (res.code) {
             this.loginFlag = true;
             this.history.push('/');
@@ -29,7 +31,9 @@ export class User {
         pwd:string,
         username:string,
     }) {
-        const res = await this.db.request(`/register?email=${spec.email}&pwd=${spec.pwd}&username=${spec.username}`);
+        const res = await this.db.request(`/register`, spec);
+        if (!res) { return; }
+
         if (res.code) {
             this.loginFlag = true;
             this.history.push('/');
