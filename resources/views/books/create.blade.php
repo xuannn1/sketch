@@ -179,10 +179,10 @@
                                 <label for="checkbox-noreply" class="input-helper input-helper--checkbox">是否禁止回帖？</label>&nbsp;
                                 <br>
                                 <!-- <label><input type="checkbox" name="download_as_thread" checked>开放书评下载？</label>&nbsp; -->
-                                <input type="checkbox" id="checkbox-download-as-thread" name="download-as-thread" checked>
+                                <input type="checkbox" id="checkbox-download-as-thread" name="download_as_thread" checked>
                                 <label for="checkbox-download-as-thread" class="input-helper input-helper--checkbox">开放书评下载？</label>&nbsp;
-                                <!-- <label><input type="checkbox" name="download-as-book" >开放书籍下载？</label> -->
-                                <input type="checkbox" id="checkbox-download-as-book" name="download-as-book">
+                                <!-- <label><input type="checkbox" name="download_as_book" >开放书籍下载？</label> -->
+                                <input type="checkbox" id="checkbox-download-as-book" name="download_as_book">
                                 <label for="checkbox-download-as-book" class="input-helper input-helper--checkbox">开放书籍下载？</label>
                             </div>
                         </div>

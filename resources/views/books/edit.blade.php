@@ -174,9 +174,9 @@
                     <input type="checkbox" id="checkbox-noreply" name="noreply">
                     <label for="checkbox-noreply" class="input-helper input-helper--checkbox">是否禁止回帖？</label>&nbsp;
                     <br>
-                    <input type="checkbox" id="checkbox-download-as-thread" name="download-as-thread" checked>
+                    <input type="checkbox" id="checkbox-download-as-thread" name="download_as_thread" {{ $thread->download_as_thread ? 'checked' : '' }}>
                     <label for="checkbox-download-as-thread" class="input-helper input-helper--checkbox">开放书评下载？</label>&nbsp;
-                    <input type="checkbox" id="checkbox-download-as-book" name="download-as-book">
+                    <input type="checkbox" id="checkbox-download-as-book" name="download_as_book" {{  $thread->download_as_book ? 'checked' : '' }}>
                     <label for="checkbox-download-as-book" class="input-helper input-helper--checkbox">开放书籍下载？</label>
                     <div class="">
                         <h6>提示：站内会自动去除段落间多余空行，请使用<code>[br]</code>换行。</h6>

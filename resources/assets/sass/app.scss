@@ -1494,7 +1494,7 @@ hr {
   select {
     -webkit-appearance: none;
     border: none;
-    width: 4em;
+    width: 3em;
     background: var(--panel-color);
     &:hover, &:active, &:focus {
       outline: none;
@@ -1649,9 +1649,16 @@ hr {
     .stats {
       width: 100%;
     }
-
     .theme-changer {
-      right: 50px;
+      right: 40px;
     }
 
+}
+
+@media (min-width: 768px) and (max-width: 992px){
+    .theme-changer {
+      left: 20px;
+      float:left;
+      right:auto;
+    }
 }
