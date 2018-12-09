@@ -1,2 +1,0 @@
-<button type="button" class="btn-xs sosad-button-tag receivemessagesfromstrangers {{Auth::user()->receive_messages_from_stranger ? 'hidden':''}}" onclick="receivemessagesfromstrangers()">接收陌生人私信</button>
-<button type="button" class="btn-xs sosad-button-tag cancelreceivemessagesfromstrangers {{Auth::user()->receive_messages_from_stranger ? '':'hidden'}}" onclick="cancelreceivemessagesfromstrangers()">取消接收陌生人私信</button>
