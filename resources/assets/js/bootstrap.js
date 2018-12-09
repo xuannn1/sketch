@@ -1,5 +1,6 @@
 
-window._ = require('lodash');
+//window._ = require('lodash');//去除lodash，因为至今似乎未曾使用removed lodash because not used yet
+window.debounce = require('lodash/debounce');//单独调用debounce
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support

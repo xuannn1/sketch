@@ -1,8 +1,8 @@
 @extends('layouts.default')
 @section('title', '编辑主题')
 @section('content')
-   <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-     <div class="panel panel-default">
+<div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+    <div class="panel panel-default">
         <?php $channel = $thread->channel ?>
        <div class="panel-heading">
          <h1>更新在&nbsp;<a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>&nbsp;板块的主题</h1>
@@ -10,24 +10,24 @@
        <div class="panel-body">
          @include('shared.errors')
 
-         <form method="POST" action="{{ route('thread.update', $thread->id) }}">
-           {{ csrf_field() }}
-            <?php $labels = $channel->labels()->get(); ?>
-              <h4>请选择主题对应类型：</h4>
-              @foreach ($labels as $index => $label)
-                 <label class="radio-inline"><input type="radio" name="label" value="{{ $label->id }}" {{ $label->id == $thread->label_id ? 'checked' : '' }}>{{ $label->labelname }}</label>
-              @endforeach
-              <br>
-              <br>
-             <div class="form-group">
-               <label for="title">标题：</label>
-               <input type="text" name="title" class="form-control" value="{{ $thread->title }}">
-             </div>
+            <form method="POST" action="{{ route('thread.update', $thread->id) }}">
+                {{ csrf_field() }}
+                <?php $labels = $channel->labels()->get(); ?>
+                <h4>请选择主题对应类型：</h4>
+                @foreach ($labels as $index => $label)
+                <label class="radio-inline"><input type="radio" name="label" value="{{ $label->id }}" {{ $label->id == $thread->label_id ? 'checked' : '' }}>{{ $label->labelname }}</label>
+                @endforeach
+                <br>
+                <br>
+                <div class="form-group">
+                    <label for="title">标题：</label>
+                    <input type="text" name="title" class="form-control" value="{{ $thread->title }}">
+                </div>
 
-             <div class="form-group">
-               <label for="brief">简介：</label>
-               <input type="text" name="brief" class="form-control" value="{{ $thread->brief }}">
-             </div>
+                <div class="form-group">
+                    <label for="brief">简介：</label>
+                    <input type="text" name="brief" class="form-control" value="{{ $thread->brief }}">
+                </div>
 
              <div class="form-group">
                <label for="body">正文：</label>

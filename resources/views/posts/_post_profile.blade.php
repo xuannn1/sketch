@@ -33,11 +33,11 @@
       发表于 {{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}
       @if($post->created_at < $post->edited_at )
         修改于 {{ Carbon\Carbon::parse($post->edited_at)->diffForHumans() }}
-      @endif
-   </span>
+        @endif
+    </span>
 
-  @if((Auth::check())&&(Auth::user()->admin))
-  @include('admin._delete_post')
-  @endif
+    @if((Auth::check())&&(Auth::user()->admin))
+    @include('admin._delete_post')
+    @endif
 
 </span>

@@ -1,5 +1,5 @@
 <span class="voteposts">
-   @include('posts._post_vote_buttons')
+    @include('posts._post_vote_buttons')
 </span>
 @if((!$thread->locked)&&(Auth::user()->no_posting < Carbon\Carbon::now()))
 <span class="voteposts">

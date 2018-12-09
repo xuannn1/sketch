@@ -8,19 +8,8 @@
          </span>
          <span class="smaller-15">
             <span>
-            @if($post->anonymous)
-               {{ $post->majia ?? '匿名咸鱼'}}
-               @if((Auth::check())&&(Auth::user()->admin))
-               <span class="admin-anonymous"><a href="{{ route('user.show', $post->user_id) }}">{{ $post->name }}</a></span>
-               @endif
-            @else
-               <a href="{{ route('user.show', $post->user_id) }}">{{ $post->name }}</a>
-            @endif
-            </span>&nbsp;
-            <span class="grayout">发表于{{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}
-               @if($post->created_at < $post->edited_at)
-               /修改于{{ Carbon\Carbon::parse($post->edited_at)->diffForHumans() }}
-               @endif
+                <a href="{{ route('thread.showpost', $post->id) }}">
+                <em>回复：{{ $post->thread_title }}</a></em>
             </span>
          </span>
       </div>

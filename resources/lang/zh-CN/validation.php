@@ -87,6 +87,7 @@ return [
     'unique'               => ':attribute 已经存在。',
     'uploaded'             => ':attribute 上传失败。',
     'url'                  => ':attribute 格式不正确。',
+    'mixedstring'                  => ':attribute 长度过长。',
 
     /*
     |--------------------------------------------------------------------------
@@ -154,7 +155,7 @@ return [
         'originalornot'         => '原创性',
         'book_status'           => '连载进度',
         'book_length'           => '篇幅',
-        'bianyuan'              => '是否边缘敏感题材',
+        'bianyuan'              => '是否边缘限制敏感题材',
         'wenan'                 => '文案',
         'majia'                 => '马甲',
         'notsad'                => '丧病属性',

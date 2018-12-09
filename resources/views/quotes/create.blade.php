@@ -2,8 +2,8 @@
 @section('title', '贡献题头')
 
 @section('content')
-   <div class="container">
-      <div class="col-sm-offset-3 col-sm-6">
+<div class="container">
+    <div class="col-sm-offset-3 col-sm-6">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h4>贡献题头</h4>
@@ -31,6 +31,6 @@
             </form>
           </div>
         </div>
-      </div>
-   </div>
+    </div>
+</div>
 @stop

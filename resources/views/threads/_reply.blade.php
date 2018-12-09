@@ -60,6 +60,6 @@
 
 @else
 <div class="text-center">
-   本帖锁定或由于作者设置，不能跟帖
+    本帖锁定或由于作者设置，不能跟帖
 </div>
 @endif

@@ -1,3 +1,5 @@
+// sosad.js
+
 var web_base_url = $('#baseurl').val();
 
 $('input.tags').on('change', function(evt) {
@@ -512,7 +514,7 @@ $('textarea').keyup(_.debounce(function() {
 }, 1000));
 
 function retrievecache(itemname){
-   console.log('going to retrieve cache');
+   //console.log('going to retrieve cache');
    $.ajaxSetup({
       headers: {
            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -525,22 +527,50 @@ function retrievecache(itemname){
           },
       success: function(data) {
          if (data != "notwork"){
-            console.log('cache retrieved');
+            //console.log('cache retrieved');
             //console.log(data);
             $('#'+itemname).val(data);
          }else{
-            console.log('no cache retrieved');
+            //console.log('no cache retrieved');
          }
       }
    });
 };
+
 $(document).ready(function(){
   $('.dropdown-submenu a.dropdown-test').on("click", function(e){
     $(this).next('ul').toggle();
     e.stopPropagation();
     e.preventDefault();
   });
-});
+  $( 'textarea'  ).one( "click", function() {
+    if($(this).attr('rows')>1){
+        initcache();
+    }
+  });
+
+  var textareas = document.querySelectorAll('textarea');
+  textareas.forEach(function(textarea) {
+    textarea.addEventListener('input', handleInputs);
+  });
+  document.querySelector('#replyToThread').addEventListener('submit', function(e){
+    console.log('hey');
+    console.log(e.target);
+  });
+})
+
+function handleInputs (e) {
+  var v = e.target.value;
+  window.r = v;
+  v = v.replace(/</gm, '&lt;');
+  v = v.replace(/>/gm, '&gt;');
+  v = v.replace('\'', '&#039;');
+  v = v.replace('"', '&quot;');
+  v = v.replace(' ', '&nbsq;');
+  e.target.value = v;
+  window.t = v;
+  console.log(v);
+}
 
 function cancellink(user_id){
    $.ajaxSetup({

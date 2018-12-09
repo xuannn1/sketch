@@ -20,14 +20,14 @@
              <!-- 对主题进行投票／收藏／点赞等操作 -->
              <div class="panel-vote">
                 @if(Auth::check())
-                    @include('threads._thread_vote')
+                @include('threads._thread_vote')
                 @else
                 <h6 class="display-4">请 <a href="{{ route('login') }}">登录</a> 后参与讨论</h6>
                 @endif
-             </div>
-             <!-- 对本主题的点评 -->
-             @if ($thread->mainpost->comments->count()>0)
-             <div class="panel-footer">
+            </div>
+            <!-- 对本主题的点评 -->
+            @if ($thread->mainpost->comments->count()>0)
+            <div class="panel-footer">
                 <?php $post = $thread->mainpost; $postcomments= $post->comments;?>
                 @include('posts._post_comments')
              </div>

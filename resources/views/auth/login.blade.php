@@ -2,8 +2,8 @@
 @section('title', '登录')
 
 @section('content')
-   <div class="container">
-      <div class="col-sm-offset-3 col-sm-6">
+<div class="container">
+    <div class="col-sm-offset-3 col-sm-6">
         <div class="panel panel-default">
           <div class="panel-heading h2">登录</div>
           <div class="panel-body">
@@ -29,7 +29,7 @@
             <p>还没账号？ <a href="{{ route('register') }}">现在注册</a>！</p>
           </div>
         </div>
-      </div>
-   </div>
+    </div>
+</div>
 
 @stop
