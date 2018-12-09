@@ -12,4 +12,6 @@ yarn-error.log
 .env
 .env-x
 .env-y
+/public/css
+/public/js
 **/.DS_Store
