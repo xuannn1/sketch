@@ -19,16 +19,17 @@ class LogLastUserActivity
     */
     public function handle($request, Closure $next)
     {
-        if(Auth::check()) {
-            // $record = LoggingStatus::updateOrCreate([
-            //     'user_id' => Auth::id(),
-            // ],[
-            //     'logged_on' => time(),
-            // ]);
-            $expiresAt = Carbon::now()->addMinutes(30);
-            Cache::put('-usr-on-' . Auth::user()->id, true, $expiresAt);
-            Auth::user()->increment('daily_clicks');
-        }
+        //20181209 因为网页卡顿，暂停统计点击数
+        // if(Auth::check()) {
+        //     // $record = LoggingStatus::updateOrCreate([
+        //     //     'user_id' => Auth::id(),
+        //     // ],[
+        //     //     'logged_on' => time(),
+        //     // ]);
+        //     $expiresAt = Carbon::now()->addMinutes(30);
+        //     Cache::put('-usr-on-' . Auth::user()->id, true, $expiresAt);
+        //     Auth::user()->increment('daily_clicks');
+        // }
         return $next($request);
     }
 }
