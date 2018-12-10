@@ -25,10 +25,10 @@ class Post extends Model
 
     public function votes()
     {
-        return $this->hasMany(Vote::class);
+        return $this->hasMany(Vote::class, 'item_id')->where('item_type', config('constants.vote_info.item_types.post'));
     }
     public function likevotes()
     {
-        return $this->hasMany(Vote::class)->where('attitude_type',1);
+        return $this->hasMany(Vote::class,'item_id')->where('item_type', config('constants.vote_info.item_types.post'))->where('attitude_type',1);
     }
 }

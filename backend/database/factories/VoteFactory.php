@@ -13,12 +13,13 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\Models\User::class, function (Faker $faker) {
+$factory->define(App\Models\Vote::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => bcrypt('secret'), // secret
-        'remember_token' => str_random(10),
+        'user_id' => factory('App\Models\User')->create()->id,
+        'item_id' => function(){
+            return \App\Models\Post::inRandomOrder()->first()->id;
+        },
+        'item_type' => config('constants.vote_info.item_types.post'),
+        'attitude_type' => rand(1,4),
     ];
 });

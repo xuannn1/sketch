@@ -17,12 +17,30 @@ class CreateThreadsTable extends Migration
             $table->increments('id');
             //$table->timestamps();
             $table->unsignedInteger('user_id')->index();//作者id
-            $table->unsignedInteger('post_id')->index();//主要的mainpost是谁
-            $table->unsignedInteger('book_id')->default(0)->index();//是否是图书，是的话书籍信息id
+            //$table->unsignedInteger('post_id')->index();//主要的mainpost是谁
             $table->unsignedInteger('channel_id')->default(0)->index();//是哪个频道下面的
             $table->unsignedInteger('label_id')->default(0)->index();//是哪个大类下面的
             $table->string('title')->nullable();//讨论帖总标题
-            $table->boolean('is_thread')->default(true);//(还可以是quote讨论，question_box，其他结构的东西等等)
+            $table->string('brief')->nullable();//讨论帖简介小灰字
+            $table->text('body')->nullable();//讨论帖正文
+            $table->unsignedInteger('last_post_id')->default(0);//最后回帖是谁
+            $table->boolean('is_anonymous')->default(false);//是否匿名
+            $table->string('majia', 10)->nullable();//作者马甲
+            $table->string('creation_ip', 45)->nullable();//创建时IP地址
+            $table->unsignedInteger('last_editor_id')->default(0)->index();//最后是谁编辑的（如果is_anonymous，这一项不应该显示给普通用户）
+            $table->boolean('use_markdown')->default(false);//是否使用md语法
+            $table->boolean('use_indentation')->default(true);//是否使用段首缩进格式
+
+            $table->integer('up_votes')->default(0);//赞
+            $table->integer('down_votes')->default(0);//踩
+            $table->integer('fold_votes')->default(0);//折叠
+            $table->integer('funny_votes')->default(0);//搞笑
+            $table->integer('xianyus')->default(0);//得到的咸鱼
+            $table->integer('shengfans')->default(0);//得到的咸鱼
+            $table->integer('replies')->default(0);//得到的回复数
+            $table->integer('collections')->default(0);//被收藏次数
+            $table->integer('downloads')->default(0);//被下载次数
+
             $table->boolean('is_locked')->default(false);//是否锁帖
             $table->boolean('is_public')->default(true);//是否公开
             $table->boolean('is_bianyuan')->default(false);//是否边缘限制
@@ -30,9 +48,10 @@ class CreateThreadsTable extends Migration
             $table->boolean('is_top')->default(false);//是否置顶
             $table->boolean('is_popular')->default(false);//是否飘火
             $table->boolean('is_highlighted')->default(false);//是否加高亮
-            $table->integer('collections')->default(0);//被收藏次数
-            $table->integer('downloads')->default(0);//被下载次数
+
             $table->dateTime('created_at')->nullable();//创建时间
+            $table->dateTime('last_edited_at')->nullable();//最后编辑时间
+            $table->dateTime('last_responded_at')->nullable();//最后被回应时间
             $table->softDeletes();//软删除必备
         });
     }

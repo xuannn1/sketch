@@ -19,8 +19,8 @@ class CreatePostsTable extends Migration
             $table->unsignedInteger('user_id')->index();//作者id
             $table->unsignedInteger('thread_id')->index();//讨论帖id
             $table->string('title')->nullable();//标题
-            $table->string('preview')->nullable();//帖子的一个简短的节选，方便对于帖子进行简单介绍
             $table->text('body')->nullable();//回帖文本本身
+            $table->string('preview')->nullable();//帖子的一个简短的节选，方便对于帖子进行简单介绍
             $table->boolean('is_anonymous')->default(false);//是否匿名回帖
             $table->string('majia', 10)->nullable();//作者马甲
             $table->string('creation_ip', 45)->nullable();//创建时IP地址
@@ -40,11 +40,10 @@ class CreatePostsTable extends Migration
             $table->integer('replies')->default(0);//得到的回复数
             $table->unsignedInteger('chapter_id')->default(0)->index();//是否属于某一个章节chapter下面
             $table->boolean('is_maintext')->default(false);//是否属于
-            $table->boolean('is_post')->default(true);//是否属于正常回帖，还是说特殊的？比如并非正常thread下面的，又或者属于quote本体，或者属于讨论部分
             $table->boolean('is_folded')->default(false);//是否属于折叠状态
             $table->boolean('is_popular')->default(false);//是否属于折叠状态
             $table->boolean('is_longpost')->default(false);//是否属于长评范围
-            $table->boolean('allow_as_longpost')->default(false);//作者是否允许展示为长评
+            $table->boolean('allow_as_longpost')->default(true);//作者是否允许展示为长评
             $table->boolean('is_bianyuan')->default(false);//是否属于边缘内容（以至于需要对非注册用户隐藏内容）
             $table->dateTime('last_responded_at')->nullable();//最后被回应时间
             $table->dateTime('created_at')->nullable();//创建时间

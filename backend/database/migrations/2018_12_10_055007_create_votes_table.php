@@ -16,8 +16,8 @@ class CreateVotesTable extends Migration
         Schema::create('votes', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->index();//投票人
-            $table->unsignedInteger('post_id')->index();//投票对象id
-
+            $table->integer('item_type');//post-1;thread-2;
+            $table->unsignedInteger('item_id')->index();//投票对象id
             $table->integer('attitude_type');//态度代码：1-upvote，2-downvote，3-funny，4-fold
             $table->dateTime('created_at')->nullable();//创建时间
         });
