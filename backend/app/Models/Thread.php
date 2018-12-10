@@ -22,4 +22,9 @@ class Thread extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+    public function mainpost()
+    {
+        return $this->belongsTo(Post::class, 'post_id');
+    }
 }

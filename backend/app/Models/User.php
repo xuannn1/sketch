@@ -33,4 +33,14 @@ class User extends Authenticatable
     {
       return $this->hasMany(Thread::class);
     }
+
+    public function posts()
+    {
+      return $this->hasMany(Post::class);
+    }
+
+    public function votes()
+    {
+      return $this->hasMany(Vote::class);
+    }
 }

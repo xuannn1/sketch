@@ -27,4 +27,8 @@ class Post extends Model
     {
         return $this->hasMany(Vote::class);
     }
+    public function likevotes()
+    {
+        return $this->hasMany(Vote::class)->where('attitude_type',1);
+    }
 }
