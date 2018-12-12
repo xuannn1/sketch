@@ -44,7 +44,7 @@ class StoreThread extends FormRequest
         $post_data = $this->only('body');
         $post_data['body'] = Helper::trimSpaces($post_data['body']);
         $post_data['trim_body']=Helper::trimtext($post_data['body'], 50);
-        $post_data['user_ip'] = $this->getClientIp();
+        $post_data['user_ip'] = $request->getClientIp();
 
         $thread_data['channel_id']=$channel_id;
         $thread_data['label_id']=(int)$this->label;

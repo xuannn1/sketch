@@ -39,7 +39,7 @@ class StorePost extends FormRequest
         $data = $this->only('body');
         $data['body'] = Helper::trimSpaces($data['body']);
         $data['trim_body']=Helper::trimtext($data['body'], 50);
-        $data['user_ip'] = $this->getClientIp();
+        $data['user_ip'] = request()->ip();
         if ($this->anonymous){
             $data['anonymous']=1;
             $data['majia']=$this->majia;
