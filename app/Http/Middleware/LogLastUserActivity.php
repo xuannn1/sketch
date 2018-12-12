@@ -40,9 +40,9 @@ class LogLastUserActivity
             if(!Cache::has('-guest-on-' . request()->ip())){//假如距离上次cache的时间已经超过了默认时间
                 $record = LoggingStatus::updateOrCreate([
                     'ip' => request()->ip(),
-                    'user_id' => 0,
                 ],[
                     'logged_on' => time(),
+                    'user_id' => 0,
                 ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_count_interval'));
                 Cache::put('-guest-on-' . request()->ip(), true, $expiresAt);
