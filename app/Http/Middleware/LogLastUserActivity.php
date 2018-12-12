@@ -44,8 +44,8 @@ class LogLastUserActivity
             if(!Cache::has('-session-on-' . Session::get('_token'))){//假如距离上次cache的时间已经超过了默认时间
                 $record = SessionStatus::updateOrCreate([
                     'session_token' => Session::get('_token'),
-                ],[
                     'logged_on' => time(),
+                    'session_ip' => request()->ip(),
                 ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_count_interval'));
                 Cache::put('-session-on-' . Session::get('_token'), true, $expiresAt);
