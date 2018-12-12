@@ -257,6 +257,7 @@
                                         <div id="help-5-1">
                                             <h4>5.1 当前页面数据</h4>
                                             <ul>
+                                                <li>当前在线人数：{{ $sessions_online }}人</li>
                                                 <li>当前在线注册用户数：{{ $users_online }}人</li>
                                                 <li>信息每页显示：{{ $data['items_per_page'] }}个</li>
                                                 <li>信息每分区显示：{{ $data['items_per_part'] }}个</li>

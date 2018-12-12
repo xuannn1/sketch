@@ -286,6 +286,9 @@ class User extends Authenticatable
             $this->increment('xianyu', 20);
             $this->increment('sangdian', $base*2);
             break;
+            case "online_reward"://保持登陆奖励
+            $this->increment('experience_points',1);
+            break;
             default:
             echo "应该奖励什么呢？一个bug呀……";
         endswitch;
@@ -322,7 +325,6 @@ class User extends Authenticatable
 
     public function isOnline()
     {
-        //return LoggingStatus::where('user_id',$this->id)->first();
         return Cache::has('-usr-on-' . $this->id);
     }
 

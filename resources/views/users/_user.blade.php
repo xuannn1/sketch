@@ -2,9 +2,9 @@
     <span type="button" class="{{$user->isOnline()? '' : 'offline' }}">
       <i class="fas fa-user{{$user->admin? '-secret' : '' }}"></i>
     </span>
-    <!-- @if($user->isOnline())
+    @if($user->isOnline())
     <span class="badge">在线</span>
-    @endif -->
+    @endif
     {{ $user->name }}
 </h2>
 
