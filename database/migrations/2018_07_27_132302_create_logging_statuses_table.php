@@ -15,7 +15,7 @@ class CreateLoggingStatusesTable extends Migration
     {
         Schema::create('logging_statuses', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->index()->unique();//登陆的用户名
+            $table->integer('user_id')->unsigned()->index()->default(0);//登陆的用户名
             $table->integer('logged_on')->unsigned()->default(0);//在机器时间的什么时候登陆
         });
     }
