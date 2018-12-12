@@ -52,9 +52,6 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => 'InnoDB',
-            'options' => [
-               \PDO::ATTR_PERSISTENT => true
-           ],
         ],
 
         'pgsql' => [
