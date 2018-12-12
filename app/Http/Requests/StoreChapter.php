@@ -124,7 +124,7 @@ class StoreChapter extends FormRequest
         ->where('maintext',true)
         ->orderBy('id', 'desc')
         ->first();
-        return count($last_post) && strcmp($last_post->body, $data['body']) === 0;
+        return !empty($last_post) && strcmp($last_post->body, $data['body']) === 0;
     }
 
     public function updateChapter(Chapter $chapter)
