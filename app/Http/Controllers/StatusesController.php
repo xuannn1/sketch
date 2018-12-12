@@ -28,7 +28,7 @@ class StatusesController extends Controller
         $last_status = Status::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        if (count($last_status) && strcmp($last_status->content, $content) === 0){
+        if (!empty($last_status) && strcmp($last_status->content, $content) === 0){
             return redirect()->back()->with('warning','您已成功提交状态，请不要重复提交哦！');
         }else{
             if(($last_status)&&(Carbon::now()->subMinutes(15)->toDateTimeString() < $last_status->created_at )){

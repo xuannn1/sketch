@@ -36,7 +36,7 @@
                 @include('chapters._chapters')
             </div>
             <!-- 对于短篇一发完结的情况，直接显示正文 -->
-            @if((count($book->chapters)==1)&&($book->book_status == 2)&&($book->book_length ==1))
+            @if(!empty($book->chapters)&&(count($book->chapters)==1)&&($book->book_status == 2)&&($book->book_length ==1))
             <?php $chapter = $book->chapters[0]; $post = $chapter->mainpost?>
             <div class="panel-body post-body">
                 @include('posts._post_body')

@@ -44,7 +44,7 @@ class ChaptersController extends Controller
         $last_post = Post::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        return count($last_post) && strcmp($last_post->body, $data) === 0;
+        return !empty($last_post) && strcmp($last_post->body, $data) === 0;
     }
 
     public function show(Chapter $chapter)

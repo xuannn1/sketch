@@ -66,7 +66,7 @@ class QuestionsController extends Controller
         $last_question = Question::where('questioner_ip', $data['questioner_ip'])
         ->orderBy('id', 'desc')
         ->first();
-        return (count($last_question) && ((strcmp($last_question->body, $data['question_body']) === 0)||($last_question->created_at>Carbon::today()->subHours(2)->toDateTimeString())));
+        return (!empty($last_question) && ((strcmp($last_question->body, $data['question_body']) === 0)||($last_question->created_at>Carbon::today()->subHours(2)->toDateTimeString())));
     }
 
     public function answer(User $user, Question $question, Request $request)

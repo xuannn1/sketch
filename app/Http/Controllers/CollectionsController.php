@@ -254,7 +254,7 @@ class CollectionsController extends Controller
         $last_collection_list = CollectionList::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        return count($last_collection_list) && strcmp($last_collection_list->title.$last_collection_list->brief.$last_collection_list->body, $data['title'].$data['brief'].$data['body']) === 0;
+        return !empty($last_collection_list) && strcmp($last_collection_list->title.$last_collection_list->brief.$last_collection_list->body, $data['title'].$data['brief'].$data['body']) === 0;
     }
 
     public function collection_list_create()

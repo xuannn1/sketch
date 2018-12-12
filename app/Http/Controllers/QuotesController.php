@@ -48,7 +48,7 @@ class QuotesController extends Controller
         $last_quote = Quote::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        return (count($last_quote) && ((strcmp($last_quote->quote, $data['quote']) === 0)||($last_quote->created_at>Carbon::today()->subHours(2)->toDateTimeString())));
+        return (!empty($last_quote) && ((strcmp($last_quote->quote, $data['quote']) === 0)||($last_quote->created_at>Carbon::today()->subHours(2)->toDateTimeString())));
     }
 
     public function create(){
