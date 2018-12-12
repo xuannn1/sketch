@@ -10,7 +10,7 @@ return [
    'longcomment_lenth' => 200, //“长评”必须达到该字数
    'default_user_group' => 10,
    'default_majia' => '匿名咸鱼',
-
+   'online_count_interval' => 10, //统计在线时间时，间隔多少分钟的时间算一次。
    'collection_type_info' => [
       1 => '书籍收藏单',
       2 => '讨论贴收藏单',

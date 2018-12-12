@@ -173,14 +173,6 @@
                 </div>
 
                 <div class="panel-body">
-                    <h4>清漆</h4>
-                    <ul>
-                        <li>偶尔沉默偶尔话痨,偏好耽美和无性向,欢迎投喂。</li>
-                        <li>联系方式：废文<a href="{{ route('user.show', 92244) }}">@Klarlack</a> </li>
-                    </ul>
-                </div>
-
-                <div class="panel-body">
                     <h4>秋秋</h4>
                     <ul>
                         <li>任何性向都吃，甜饼爱好者，不吃纯肉文，对西幻/翻译类不萌。</li>

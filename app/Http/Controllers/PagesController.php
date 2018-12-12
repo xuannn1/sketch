@@ -134,16 +134,21 @@ class PagesController extends Controller
 
     public function help()
     {
-        // $users_online = Cache::remember('-users-online-count', 20, function () {
-        //     $users_online = DB::table('logging_statuses')
-        //     ->where('logged_on','>', time()-60*30)
-        //     ->count();
-        //     return $users_online;
-        // });
-        $users_online = 0;
+        $guests_online = Cache::remember('-guests-online-count', config('constants.online_count_interval'), function () {
+            $guests_online = DB::table('session_statuses')
+            ->where('logged_on','>', time()-60*config('constants.online_count_interval'))
+            ->count();
+            return $guests_online;
+        });
+        $users_online = Cache::remember('-users-online-count', config('constants.online_count_interval'), function () {
+            $users_online = DB::table('logging_statuses')
+            ->where('logged_on','>', time()-60*config('constants.online_count_interval'))
+            ->count();
+            return $users_online;
+        });
         $data = config('constants');
         $webstat = WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
-        return view('pages/help',compact('data','webstat','users_online'));
+        return view('pages/help',compact('data','webstat','users_online', 'guests_online'));
     }
 
     public function test()
