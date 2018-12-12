@@ -72,8 +72,22 @@ class threadsController extends Controller
         }
         $thread->load('label','channel','mainpost');
         $book = $thread->book;
-        $xianyus = $thread->xianyus;
-        $shengfans = $thread->mainpost->shengfans;
+        $xianyus = [];
+        $shengfans = [];
+        if((!request()->page)||(request()->page == 1)){
+            //dd('front page');
+            $xianyus = Cache::remember('-t'.$thread->id.'-xianyus', 10, function () use($thread) {
+                $xianyus = $thread->xianyus;
+                $xianyus->load('creator');
+                return $xianyus;
+            });
+
+            $shengfans = Cache::remember('-t'.$thread->id.'-shengfans', 10, function () use($thread) {
+                $shengfans = $thread->mainpost->shengfans;
+                $shengfans->load('creator');
+                return $shengfans;
+            });
+        }
         //dd($thread->homework->registered_students());
         return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
     }
