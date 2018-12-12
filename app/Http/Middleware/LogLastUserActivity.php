@@ -4,9 +4,7 @@ use Closure;
 use Auth;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
-use Session;
 use App\Models\LoggingStatus;
-use App\Models\SessionStatus;
 class LogLastUserActivity
 {
     /**
@@ -30,6 +28,7 @@ class LogLastUserActivity
                     'user_id' => Auth::id(),
                 ],[
                     'logged_on' => time(),
+                    'ip' => request()->ip(),
                 ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_count_interval'));
                 Cache::put('-usr-on-' . Auth::id(), true, $expiresAt);
@@ -38,14 +37,15 @@ class LogLastUserActivity
             }
         }else{
             //统计游客在线数量（仅统计在默认登陆时间间隔内在线的人，避免过度操作数据库）
-            if(!Cache::has('-session-on-' . Session::get('_token'))){//假如距离上次cache的时间已经超过了默认时间
-                $record = SessionStatus::updateOrCreate([
-                    'session_token' => Session::get('_token'),
+            if(!Cache::has('-guest-on-' . request()->ip())){//假如距离上次cache的时间已经超过了默认时间
+                $record = LoggingStatus::updateOrCreate([
+                    'ip' => request()->ip(),
+                    'user_id' => 0,
+                ],[
                     'logged_on' => time(),
-                    'session_ip' => request()->ip(),
                 ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_count_interval'));
-                Cache::put('-session-on-' . Session::get('_token'), true, $expiresAt);
+                Cache::put('-guest-on-' . request()->ip(), true, $expiresAt);
             }
         }
         return $next($request);
