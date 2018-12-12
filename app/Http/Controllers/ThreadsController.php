@@ -67,13 +67,30 @@ class threadsController extends Controller
         }
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
         ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
+        $thread->load('label','channel','mainpost');
+        $book = $thread->book;
+
         if(!Auth::check()||(Auth::id()!=$thread->user_id)){
             $thread->increment('viewed');
         }
-        $thread->load('label','channel','mainpost');
-        $book = $thread->book;
-        $xianyus = $thread->xianyus;
-        $shengfans = $thread->mainpost->shengfans;
+
+        $xianyus = [];
+        $shengfans = [];
+        if((!request()->page)||(request()->page == 1)){
+            //dd('front page');
+            $xianyus = Cache::remember('-t'.$thread->id.'-xianyus', 10, function () use($thread) {
+                $xianyus = $thread->xianyus;
+                $xianyus->load('creator');
+                return $xianyus;
+            });
+
+            $shengfans = Cache::remember('-t'.$thread->id.'-shengfans', 10, function () use($thread) {
+                $shengfans = $thread->mainpost->shengfans;
+                $shengfans->load('creator');
+                return $shengfans;
+            });
+        }
+
         //dd($thread->homework->registered_students());
         return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
     }
