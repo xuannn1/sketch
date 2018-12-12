@@ -16,6 +16,8 @@ class CreateSessionStatusesTable extends Migration
         Schema::create('session_statuses', function (Blueprint $table) {
             $table->string('session_token')->primary();
             $table->integer('logged_on')->unsigned()->default(0);//在机器时间的什么时候登陆
+            $table->string('session_ip', 45)->nullable();
+
         });
     }
 

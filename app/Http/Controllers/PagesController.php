@@ -137,7 +137,8 @@ class PagesController extends Controller
         $guests_online = Cache::remember('-guests-online-count', config('constants.online_count_interval'), function () {
             $guests_online = DB::table('session_statuses')
             ->where('logged_on','>', time()-60*30)//统计过去三十分钟内有多少不同的人来过
-            ->count();
+            ->distinct('session_ip')
+            ->count('session_ip');
             return $guests_online;
         });
         $users_online = Cache::remember('-users-online-count', config('constants.online_count_interval'), function () {
