@@ -153,7 +153,7 @@ class StoreBook extends FormRequest
         $last_book = Thread::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        return count($last_book) && strcmp($last_book->title.$last_book->brief.$last_book->mainpost->body, $thread_data['title'].$thread_data['brief'].$post_data['body']) === 0;
+        return !empty($last_book) && strcmp($last_book->title.$last_book->brief.$last_book->mainpost->body, $thread_data['title'].$thread_data['brief'].$post_data['body']) === 0;
     }
 
     public function tongren_data_sync($data)
