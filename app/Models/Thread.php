@@ -104,7 +104,7 @@ class Thread extends Model
         return ($recent_xianyus);
     }
 
-    public function collection($user_id, $collection_list_id)
+    public function collection($user_id, $collection_list_id=0)
     {
         if($collection_list_id==0){
             return Collection::where('item_id', $this->id)->where('user_id', $user_id)->first();

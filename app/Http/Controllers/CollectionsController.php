@@ -141,9 +141,8 @@ class CollectionsController extends Controller
     }
     public function togglekeepupdate(Request $request)
     {
-        $user = Auth::user();
         $thread = Thread::find(request('thread_id'));
-        $collection = $thread->collection($user);
+        $collection = $thread->collection(Auth::id());
         if($collection){
             $collection->keep_updated = !$collection->keep_updated;
             $collection->save();
