@@ -18,6 +18,7 @@
 
    Route::post('login', 'Auth\LoginController@login')->name('login');
    Route::get('register/confirm/{token}', 'Auth\RegisterController@confirmEmail')->name('confirm_email');//确认邮箱正确
+    Route::get('/linkedaccounts','LinkedAccountsController@index')->name('linkedaccounts.index');
    Route::get('/linkedaccounts/create','LinkedAccountsController@create')->name('linkedaccounts.create');
    Route::post('/linkedaccounts/store','LinkedAccountsController@store')->name('linkedaccounts.store');
    Route::get('/linkedaccounts/switch/{id}','LinkedAccountsController@switch')->name('linkedaccounts.switch');

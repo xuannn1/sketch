@@ -28,7 +28,7 @@
             </div>
         </div>
         <button type="submit" name="store_button" value="Store" class="btn btn-danger sosad-button">回复</button>
-        @if((Auth::id()==$thread->creator->id)&&($thread->book_id!=0))
+        @if((Auth::id()==$thread->user_id)&&($thread->book_id!=0))
         <a href="{{ route('book.createchapter', $thread->book_id) }}" class="btn btn-warning sosad-button">去新页面更新</a>
         @endif
     </form>

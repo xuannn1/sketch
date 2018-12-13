@@ -42,7 +42,7 @@
                 @if( $thread->bianyuan == 1)
                 <span class="badge">限</span>
                 @endif
-                <a href="{{ route('books.index',['label'=>$thread->label_id]) }}">{{ $thread->label->labelname }}</a>
+                <a href="{{ route('books.index',['label'=>$thread->label_id]) }}">{{ $label->labelname }}</a>
                 @foreach ($thread->tags as $int=>$tag)
                 - <a href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
                 @endforeach

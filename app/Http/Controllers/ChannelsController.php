@@ -9,6 +9,7 @@ use App\Sosadfun\Traits\ThreadTraits;
 use App\Models\Channel;
 use App\Models\Thread;
 use App\Models\Label;
+use App\Helpers\Helper;
 use Auth;
 
 
@@ -16,8 +17,9 @@ class ChannelsController extends Controller
 {
     use ThreadTraits;
 
-    public function show(Request $request, Channel $channel)
+    public function show(Request $request, $channel)
     {
+        $channel = Helper::allChannels()->get($channel);
         $logged = Auth::check()? true:false;
         $threadqueryid = '-tQCh'.$channel->id
         .($logged?'Lgd':'nLg')

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 use App\Models\Channel;
+use App\Helpers\Helper;
 
 class FilterChannel
 {
@@ -17,7 +18,7 @@ class FilterChannel
     */
     public function handle($request, Closure $next)
     {
-        $channel = $request->route('channel');
+        $channel = Helper::allChannels()->get($request->route('channel'));
         if ($channel->channel_state>=10){
             if (Auth::check()){
                 if ($request->user()->group > $channel->channel_state){

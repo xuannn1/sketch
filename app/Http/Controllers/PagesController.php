@@ -17,6 +17,7 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Models\WebStat;
 use Carbon\Carbon;
+use App\Helpers\Helper;
 
 class PagesController extends Controller
 {
@@ -71,16 +72,13 @@ class PagesController extends Controller
 
     public function findrecommendedbooks_long($take)//寻找合适的长评推荐
     {
-        $recommendation = DB::table('recommend_books')
-        ->join('threads', 'threads.id', '=', 'recommend_books.thread_id')
+        return DB::table('recommend_books')
         ->where('recommend_books.valid','=',1)
         ->where('recommend_books.past','=', 1)
         ->where('recommend_books.long','=',1)
-        ->where('threads.deleted_at','=',null)
-        ->where('threads.public','=',1)
         ->inRandomOrder()
-        ->take($take);
-        return $this->return_recommend_book_fields($recommendation)->get();
+        ->take($take)
+        ->get();
     }
 
     public function findquotes()
@@ -104,43 +102,27 @@ class PagesController extends Controller
 
     public function home()
     {
-        $threads = [];
         $group = Auth::check()? Auth::user()->group : 10;
-        $home_info = Cache::remember('home_g'.$group, 5, function () use ($group) {
-            $home_info = [];
-            $channels = Channel::where('channel_state','<',$group)->orderBy('orderBy','asc')->select('id','channelname','channel_state','orderBy')->get();
-            $home_info['channels']=$channels;
-            $home_info['quotes']=$this->findquotes();
-            $home_info['recom_sr'] = $this->findrecommendedbooks_short(6);
-            $home_info['recom_lg'] = $this->findrecommendedbooks_long(1);
-            $threads = [];
-            foreach($channels as $channel)
-            {
-                switch ($channel->id) {
-                    case 1://原创，拿三个
-                        $take =3;
-                        break;
-                    case 2://同人
-                    case 3://作业
-                    case 4://读写
-                    case 5://日常
-                    case 6://随笔
-                        $take = 2;
-                        break;
-                    default://其他
-                        $take = 1;
-                }
-                $threads[$channel->id] = $this->findthreads($channel->id,$take);
-            }
-            $home_info['threads'] = $threads;
-            return $home_info;
+        $channels = Helper::allchannels();
+        $quotes = Cache::remember('homequotes',2, function () {
+            return $this->findquotes();
         });
-        $channels=$home_info['channels'];
-        $quotes = $home_info['quotes'];
-        $recom_sr = $home_info['recom_sr'];
-        $recom_lg = $home_info['recom_lg'];
-        $threads = $home_info['threads'];
-        return view('pages/home',compact('channels','quotes','recom_sr','recom_lg','threads'));
+        $recom_sr = Cache::remember('homerecom_sr',10, function () {
+            return $this->findrecommendedbooks_short(6);
+        });
+        $recom_lg = Cache::remember('homerecom_lg',10, function () {
+            return $this->findrecommendedbooks_long(1);
+        });
+        $threads = [];
+        foreach($channels as $channel){
+            if($channel->channel_state<$group){
+                $take = $channel->channel_state ===1? 3:2;
+                $threads[$channel->id] =  Cache::remember('homech'.$channel->id, 5, function() use ($channel, $take){
+                    return $this->findthreads($channel->id,$take);
+                });
+            }
+        }
+        return view('pages/home',compact('group','channels','quotes','recom_sr','recom_lg','threads'));
     }
     public function about()
     {

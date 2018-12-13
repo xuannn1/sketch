@@ -58,7 +58,6 @@ class XianyusController extends Controller
                 ]);
                 $thread->increment('xianyu');
                 $thread->update(['lastresponded_at' => Carbon::now()]);
-                $thread->update_channel();
                 $user->update(['lastresponded_at' => Carbon::now()]);
                 $user->decrement('xianyu');
                 $user->increment('jifen', 5);

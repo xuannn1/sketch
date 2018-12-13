@@ -96,7 +96,6 @@ class StoreChapter extends FormRequest
                     'lastresponded_at' => Carbon::now(),
                     'last_post_id' => $post->id,
                 ]);
-                $thread->update_channel();
                 $book->update([
                     'last_chapter_id' => $chapter->id,
                     'total_char' => $total_char,

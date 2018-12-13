@@ -29,9 +29,7 @@
                             <li><a href="{{ route('users.edit') }}">编辑资料</a></li>
                             <li><a href="{{ route('book.create') }}">我要发文</a></li>
                             <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ auth()->user()->unreadmessages()>0 ? auth()->user()->unreadmessages():''}}</span></a></li>
-                            @foreach(Auth::user()->linkedaccounts() as $account)
-                            <li><a href="{{ route('linkedaccounts.switch', $account->id) }}">切换：{{ $account->name }}</a></li>
-                            @endforeach
+                            <li><a href="{{ route('linkedaccounts.index') }}">切换马甲</a></li>
                             <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">退出</a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

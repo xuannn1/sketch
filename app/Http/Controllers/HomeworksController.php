@@ -53,7 +53,6 @@ class HomeworksController extends Controller
             'brief' => ' ',
             'homework_id' => $homework->id,
         ]);
-        $thread->update_channel();
         $markdown = request('markdown')? true: false;
         $post = Post::create([
             'user_id' => auth()->id(),

@@ -4,6 +4,9 @@ namespace App\Helpers;
 use Auth;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Genert\BBCode\BBCode;
+use App\Models\Channel;
+use App\Models\Label;
+use Cache;
 
 class Helper
 {
@@ -20,6 +23,20 @@ class Helper
          $substr.='…';
       }
       return $substr;
+   }
+
+   public static function allchannels()//获得站上所有的channel
+   {
+       return Cache::remember('allChannels', 60, function (){
+           return Channel::orderBy('orderBy','asc')->get();
+       });
+   }
+
+   public static function alllabels()//获得站上所有的label
+   {
+       return Cache::remember('allLabels', 60, function (){
+           return Label::all();
+       });
    }
 
    // public static function trimParagraphs($text=null)//去掉输入的一段文字里，多余的html-tag，和多余的换行

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 use Illuminate\Support\Facades\DB;
 use Closure;
 use Auth;
+use App\Helpers\Helper;
 
 class FilterThread
 {
@@ -17,7 +18,7 @@ class FilterThread
     public function handle($request, Closure $next)
     {
         $thread = $request->route('thread');
-        $channel= \App\Models\Channel::FindOrFail($thread->channel_id);
+        $channel= Helper::allChannels()->get($thread->channel_id);
         if ((Auth::check())&&((Auth::user()->admin)||($thread->user_id == Auth::id()))){//原作者本人或管理员可见帖子
             return $next($request);
         }elseif($thread->public){

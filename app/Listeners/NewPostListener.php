@@ -72,7 +72,6 @@ class NewPostListener
 
             //声明本帖已得到回应
             $thread->responded();
-            $thread->update_channel();
         });
 
     }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Hash;
 use App\Models\User;
 use Auth;
+use DB;
 use App\Models\Linkaccount;
 
 class LinkedAccountsController extends Controller
@@ -23,6 +24,13 @@ class LinkedAccountsController extends Controller
             return redirect()->back()->with("warning","您的等级限制了您能够关联的账户上限，请升级后再关联更多账户。");
         }
     }
+
+    public function index()
+    {
+        $accounts = Auth::user()->linkedaccounts();
+        return view('users.linkedaccounts', compact('accounts'));
+    }
+
     public function store(Request $request)
     {
         $this->validate($request, [

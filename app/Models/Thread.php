@@ -130,15 +130,4 @@ class Thread extends Model
         ->where('homeworks.active','=',true)
         ->update(['register_homeworks.thread_id' => $this->id]);
     }
-
-    public function update_channel(){
-        $channel = $this->channel;
-        if (((!$this->bianyuan)||($this->bianyuan==0))&&
-        ((!$this->public)||($this->public==1))&&
-        ($this->id!=$channel->recent_thread_1_id)){
-            $channel->recent_thread_2_id = $channel->recent_thread_1_id;
-            $channel->recent_thread_1_id = $this->id;
-            $channel->save();
-        }
-    }
 }

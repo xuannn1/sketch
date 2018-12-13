@@ -1,7 +1,7 @@
 <div class="hidden-sm hidden-md hidden-lg overflow-hidden">
     @foreach($book->chapters as $chapter)
     <a href="{{ route('book.showchapter', $chapter->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
-        @if($chapter->mainpost->bianyuan)
+        @if($chapter->mainpost_info->bianyuan)
             <span class="glyphicon glyphicon-info-sign"></span>
         @endif
         {{ $chapter->title }}：{{ $chapter->mainpost_info->title }}</a>
@@ -27,7 +27,7 @@
             @foreach($book->chapters as $chapter)
             <tr>
                 <th><a href="{{ route('book.showchapter', $chapter->id) }}" class = "">
-                    @if($chapter->mainpost->bianyuan)
+                    @if($chapter->mainpost_info->bianyuan)
                         <span class="glyphicon glyphicon-info-sign"></span>
                     @endif
                     {{ $chapter->title }}</a></th>

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Notifications\ResetPasswordNotification;
-use Illuminate\Support\Facades\DB;
+use DB;
 use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable
@@ -182,20 +182,6 @@ class User extends Authenticatable
         $link2 = Linkaccount::where([['account2','=',$id],['account1','=',$this->id]])->first();
         return ($link1||$link2);
     }
-    public function linkedaccounts()
-    {
-        $firstgroup = DB::table('linkaccounts')
-        ->where('account1','=',$this->id)
-        ->join('users','linkaccounts.account2','=','users.id')
-        ->select('users.id','users.name');
-        $secondgroup = DB::table('linkaccounts')
-        ->where('account2','=',$this->id)
-        ->join('users','linkaccounts.account1','=','users.id')
-        ->select('users.id','users.name')
-        ->union($firstgroup)
-        ->get();
-        return $secondgroup;
-    }
 
     public function postreminders()
     {
@@ -328,4 +314,12 @@ class User extends Authenticatable
         return Cache::has('-usr-on-' . $this->id);
     }
 
+    public function linkedaccounts()
+    {
+        $links = array_merge(
+            DB::table('linkaccounts')->where('account2','=',$this->id)->pluck('account1')->toArray(),
+            DB::table('linkaccounts')->where('account1','=',$this->id)->pluck('account2')->toArray()
+        );
+        return DB::table('users')->whereIn('id',$links)->select('id','name')->get();
+    }
 }

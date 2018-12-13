@@ -32,7 +32,7 @@ class LogLastUserActivity
                 ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_count_interval'));
                 Cache::put('-usr-on-' . Auth::id(), true, $expiresAt);
-                Auth::user()->increment('daily_clicks', Cache::pull('-usr-clicks-'.Auth::id()));
+                Auth::user()->increment('daily_clicks', (int)Cache::pull('-usr-clicks-'.Auth::id()));
                 Auth::user()->reward('online_reward');
             }
         }else{

@@ -21,6 +21,7 @@ use App\Models\RecommendBook;
 use Carbon\Carbon;
 use Auth;
 use App\Models\User;
+use App\Helpers\Helper;
 // use App\RegisterHomework;
 
 class threadsController extends Controller
@@ -65,19 +66,24 @@ class threadsController extends Controller
                 $recommendation->increment('clicks');
             }
         }
+        $channel = Helper::allChannels()->get($thread->channel_id);
+        $label = Helper::allLabels()->get($thread->label_id);
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
         ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
-        $thread->load('label','channel','mainpost');
-        $book = $thread->book;
+        $posts->load('chapter');
 
         if(!Auth::check()||(Auth::id()!=$thread->user_id)){
             $thread->increment('viewed');
         }
-
+        $book = [];
         $xianyus = [];
         $shengfans = [];
+        if ($thread->book_id>0){
+            $book = $thread->book;
+        }
         if((!request()->page)||(request()->page == 1)){
             //dd('front page');
+            $thread->load('mainpost','creator');
             $xianyus = Cache::remember('-t'.$thread->id.'-xianyus', 10, function () use($thread) {
                 $xianyus = $thread->xianyus;
                 $xianyus->load('creator');
@@ -92,7 +98,7 @@ class threadsController extends Controller
         }
 
         //dd($thread->homework->registered_students());
-        return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
+        return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans','channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
     }
 
     public function createThreadForm(Channel $channel)

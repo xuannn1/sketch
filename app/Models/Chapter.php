@@ -25,7 +25,7 @@ class Chapter extends Model
     }
     public function mainpost_info()
     {
-        return $this->belongsTo(Post::class, 'post_id')->select('id','title')->withDefault();
+        return $this->belongsTo(Post::class, 'post_id')->select('id','title','bianyuan')->withDefault();
     }
     public function volumn()
     {

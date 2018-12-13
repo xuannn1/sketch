@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\Book;
 use App\Models\Tag;
+use App\Helpers\Helper;
 use Auth;
 
 class BooksController extends Controller
@@ -65,7 +66,9 @@ class BooksController extends Controller
         $thread = $book->thread;
         if($thread->id>0){
             $book->load('chapters.mainpost_info','tongren');
-            $thread->load(['creator', 'tags','channel','label', 'mainpost.comments.owner']);
+            $channel = Helper::allChannels()->get($thread->channel_id);
+            $label = Helper::allLabels()->get($thread->label_id);
+            $thread->load(['creator', 'tags', 'mainpost.comments.owner']);
             if(!Auth::check()||(Auth::id()!=$thread->user_id)){
                 $thread->increment('viewed');
             }
@@ -88,7 +91,7 @@ class BooksController extends Controller
                     return $shengfans;
                 });
             }
-            return view('books.show', compact('book','thread', 'posts', 'xianyus', 'shengfans'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
+            return view('books.show', compact('book','thread', 'posts', 'xianyus', 'shengfans','channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }

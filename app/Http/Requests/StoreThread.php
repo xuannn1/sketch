@@ -79,7 +79,6 @@ class StoreThread extends FormRequest
                 $post_data['thread_id'] = $thread->id;
                 $post = Post::create($post_data);
                 $thread->update(['post_id'=>$post->id]);
-                $thread->update_channel();
                 return $thread;
             });
         }else{
