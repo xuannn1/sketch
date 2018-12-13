@@ -49,6 +49,8 @@ class PagesController extends Controller
         ->where('recommend_books.valid','=',1)
         ->where('recommend_books.past','=',1)
         ->where('recommend_books.long','=',0)
+        ->where('threads.deleted_at','=',null)
+        ->where('threads.public','=',1)
         ->inRandomOrder()
         ->take(3);
         $query1 = $this->return_recommend_book_fields($recommendation1);
@@ -58,6 +60,8 @@ class PagesController extends Controller
         ->where('recommend_books.valid','=',1)
         ->where('recommend_books.past','=',1)
         ->where('recommend_books.long','=',0)
+        ->where('threads.deleted_at','=',null)
+        ->where('threads.public','=',1)
         ->inRandomOrder()
         ->take($take-3);
         $query2 = $this->return_recommend_book_fields($recommendation2);
@@ -72,6 +76,8 @@ class PagesController extends Controller
         ->where('recommend_books.valid','=',1)
         ->where('recommend_books.past','=', 1)
         ->where('recommend_books.long','=',1)
+        ->where('threads.deleted_at','=',null)
+        ->where('threads.public','=',1)
         ->inRandomOrder()
         ->take($take);
         return $this->return_recommend_book_fields($recommendation)->get();
