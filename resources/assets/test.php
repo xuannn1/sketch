@@ -262,8 +262,13 @@ DB::table('administrations')->whereIn('administrations.operation',[13,14]) ->upd
 $threads = App\Models\Thread::all();
 foreach($threads as $thread){
     if($thread->channel_id<=2){
+        echo $thread->title."\n";
         if($thread->title!=App\Helpers\Helper::convert_to_title($thread->title)){
-            $thread->update(['title'=>App\Helpers\Helper::convert_to_title($thread->title)]);
+            echo $thread->title;
+            while($thread->title!=App\Helpers\Helper::convert_to_title($thread->title)){
+                $thread->title = App\Helpers\Helper::convert_to_title($thread->title);
+            }
+            $thread->save();
         }
     }
 }
