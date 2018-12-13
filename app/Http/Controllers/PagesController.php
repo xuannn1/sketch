@@ -42,30 +42,39 @@ class PagesController extends Controller
         ->get();
     }
 
-    public function findrecommendedbooks_short($take,$past)//寻找合适的推荐，非长评:需要valid，新的（非past）$take-3个，past 3个. 如果$past变量为false，一部分找最新的。否则都从往期中找
+    public function findrecommendedbooks_short($take)//寻找合适的推荐，非长评:需要valid，新的
     {
         $recommendation1 = DB::table('recommend_books')//这部分找旧的，也就是后三个
-        ->where([['valid','=',1],['past','=',1],['long','=',0]])
-        ->select('*')
+        ->join('threads', 'threads.id', '=', 'recommend_books.thread_id')
+        ->where('recommend_books.valid','=',1)
+        ->where('recommend_books.past','=',1)
+        ->where('recommend_books.long','=',0)
         ->inRandomOrder()
         ->take(3);
-        return DB::table('recommend_books')//这部分找新的，前三个
-        ->where([['valid','=',1],['past','=',$past],['long','=',0]])
-        ->select('*')
+        $query1 = $this->return_recommend_book_fields($recommendation1);
+
+        $recommendation2 = DB::table('recommend_books')//这部分找新的，前三个
+        ->join('threads', 'threads.id', '=', 'recommend_books.thread_id')
+        ->where('recommend_books.valid','=',1)
+        ->where('recommend_books.past','=',1)
+        ->where('recommend_books.long','=',0)
         ->inRandomOrder()
-        ->take($take-3)
-        ->union($recommendation1)
-        ->get();
+        ->take($take-3);
+        $query2 = $this->return_recommend_book_fields($recommendation2);
+
+        return $recommendation2->union($query1)->get();
     }
 
-    public function findrecommendedbooks_long($take,$past)//寻找合适的长评推荐
+    public function findrecommendedbooks_long($take)//寻找合适的长评推荐
     {
-        return DB::table('recommend_books')
-        ->where([['valid','=',1],['past','=',$past],['long','=',1]])
-        ->select('*')
+        $recommendation = DB::table('recommend_books')
+        ->join('threads', 'threads.id', '=', 'recommend_books.thread_id')
+        ->where('recommend_books.valid','=',1)
+        ->where('recommend_books.past','=', 1)
+        ->where('recommend_books.long','=',1)
         ->inRandomOrder()
-        ->take($take)
-        ->get();
+        ->take($take);
+        return $this->return_recommend_book_fields($recommendation)->get();
     }
 
     public function findquotes()
@@ -96,8 +105,8 @@ class PagesController extends Controller
             $channels = Channel::where('channel_state','<',$group)->orderBy('orderBy','asc')->select('id','channelname','channel_state','orderBy')->get();
             $home_info['channels']=$channels;
             $home_info['quotes']=$this->findquotes();
-            $home_info['recom_sr'] = $this->findrecommendedbooks_short(6,1);
-            $home_info['recom_lg'] = $this->findrecommendedbooks_long(1,1);
+            $home_info['recom_sr'] = $this->findrecommendedbooks_short(6);
+            $home_info['recom_lg'] = $this->findrecommendedbooks_long(1);
             $threads = [];
             foreach($channels as $channel)
             {
