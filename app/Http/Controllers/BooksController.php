@@ -66,7 +66,7 @@ class BooksController extends Controller
         $thread = $book->thread;
         if($thread->id>0){
             $book->load('chapters.mainpost_info','tongren');
-            $channel = Helper::allChannels()->get($thread->channel_id);
+            $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
             $label = Helper::allLabels()->get($thread->label_id);
             $thread->load(['creator', 'tags', 'mainpost.comments.owner']);
             if(!Auth::check()||(Auth::id()!=$thread->user_id)){

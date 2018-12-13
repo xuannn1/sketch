@@ -19,7 +19,7 @@ class ChannelsController extends Controller
 
     public function show(Request $request, $channel)
     {
-        $channel = Helper::allChannels()->get($channel);
+        $channel = Helper::allChannels()->keyBy('id')->get($channel);
         $logged = Auth::check()? true:false;
         $threadqueryid = '-tQCh'.$channel->id
         .($logged?'Lgd':'nLg')

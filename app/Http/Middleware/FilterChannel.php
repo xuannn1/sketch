@@ -18,7 +18,7 @@ class FilterChannel
     */
     public function handle($request, Closure $next)
     {
-        $channel = Helper::allChannels()->get($request->route('channel'));
+        $channel = Helper::allChannels()->keyBy('id')->get($request->route('channel'));
         if ($channel->channel_state>=10){
             if (Auth::check()){
                 if ($request->user()->group > $channel->channel_state){

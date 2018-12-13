@@ -66,7 +66,7 @@ class threadsController extends Controller
                 $recommendation->increment('clicks');
             }
         }
-        $channel = Helper::allChannels()->get($thread->channel_id);
+        $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
         $label = Helper::allLabels()->get($thread->label_id);
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
         ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
