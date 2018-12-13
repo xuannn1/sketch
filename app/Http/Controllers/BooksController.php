@@ -67,7 +67,7 @@ class BooksController extends Controller
         if($thread->id>0){
             $book->load('chapters.mainpost_info','tongren');
             $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
-            $label = Helper::allLabels()->get($thread->label_id);
+            $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
             $thread->load(['creator', 'tags', 'mainpost.comments.owner']);
             if(!Auth::check()||(Auth::id()!=$thread->user_id)){
                 $thread->increment('viewed');
