@@ -44,6 +44,11 @@ trait BookTraits{
         return $query;
     }
 
+    public function return_recommend_book_fields($query){
+        $query->select('recommend_books.id','recommend_books.thread_id','recommend_books.valid','recommend_books.clicks','recommend_books.recommendation','recommend_books.past','recommend_books.long','threads.title','threads.bianyuan');
+        return $query;
+    }
+
     public function all_book_tags(){
 
         $remember = 30;
