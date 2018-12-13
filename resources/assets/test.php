@@ -255,3 +255,15 @@ DB::table('administrations')->join('posts',function($join){ $join->whereIn('admi
 DB::table('administrations')->join('post_comments',function($join){ $join->where('administrations.operation','=',8); $join->on('administrations.item_id','=','post_comments.id'); })->update(['administrations.administratee_id'=>DB::raw('post_comments.user_id')]);
 
 DB::table('administrations')->whereIn('administrations.operation',[13,14]) ->update(['administrations.administratee_id'=>DB::raw('administrations.item_id')]);
+
+
+
+//去除文章里所有敏感词
+$threads = App\Models\Thread::all();
+foreach($threads as $thread){
+    if($thread->channel_id<=2){
+        if($thread->title!=App\Helpers\Helper::convert_to_title($thread->title)){
+            $thread->update(['title'=>App\Helpers\Helper::convert_to_title($thread->title)]);
+        }
+    }
+}
