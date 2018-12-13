@@ -162,10 +162,10 @@ class BooksController extends Controller
             if(count($bookinfo[4])<count($book_info['rating_info'])){
                 $query->where('threads.bianyuan','=',$bookinfo[4][0]-1);
             }
-            if((count($bookinfo[5])>0)&&($bookinfo[5][0]>0)){
+            if((!empty($bookinfo[5]))&&($bookinfo[5][0]>0)){
                 $query->whereIn('tagging_threads.tag_id',$bookinfo[5]);
             }
-            if((count($bookinfo[6])>0)&&($bookinfo[6][0]>0)){
+            if((!empty($bookinfo[6]))&&($bookinfo[6][0]>0)){
                 $query->whereIn('tongrens.tongren_yuanzhu_tag_id',$bookinfo[6]);
             }
             $books = $this->return_book_fields($query)
