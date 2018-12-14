@@ -47,7 +47,7 @@ class ChannelsController extends Controller
             }else{
                 $query = $this->return_no_book_thread_fields($query);
             }
-            $threads = $query->orderby('threads.lastresponded_at', 'desc')
+            $threads = $query->orderBy('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'));
             return $threads;
         });

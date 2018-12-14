@@ -50,7 +50,7 @@ class threadsController extends Controller
             if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
             if(!$logged){$query = $query->where('threads.bianyuan','=',0);}
             $threads = $this->return_no_book_thread_fields($query)
-            ->orderby('threads.lastresponded_at', 'desc')
+            ->orderBy('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'))
             ->appends($request->query());
             return $threads;

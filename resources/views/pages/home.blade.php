@@ -27,7 +27,7 @@
     </div>
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         @foreach($channels as $channel)
-        @if($channel->channel_state<$group)
+        <!-- each channel of the forum -->
         <div class="panel panel-default">
             <div class="panel-heading h4">
                 <a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>
@@ -39,6 +39,7 @@
             @endforeach
         </div>
         @if($channel->id === 2)
+        <!-- insert editor's recommendation after the second channel -->
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="h5 text-center">
@@ -69,7 +70,6 @@
                 </div>
             </div>
         </div>
-        @endif
         @endif
         @endforeach
     </div>

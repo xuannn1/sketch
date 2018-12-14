@@ -200,7 +200,7 @@ for($i=1;$i++;$i< $lastpost->id){
     }
 }
 //20180729
-$lastrecommendedBook = App\Models\RecommendBook::orderby('id','desc')->first();
+$lastrecommendedBook = App\Models\RecommendBook::orderBy('id','desc')->first();
 for($i=1;$i++;$i< $lastrecommendedBook->id){
     $recommend = App\Models\RecommendBook::find($i);
     if($recommend){
@@ -217,7 +217,7 @@ for($i=1;$i++;$i< $lastrecommendedBook->id){
 
 //20180804 怎样快速输出短评信息
 $outfile = "";
-$recommends = App\Models\RecommendBook::where('long','=',0)->where('past','=',0)->orderby('clicks','desc')->get();
+$recommends = App\Models\RecommendBook::where('long','=',0)->where('past','=',0)->orderBy('clicks','desc')->get();
 foreach($recommends as $recommend){
     $thread = $recommend->thread;
     $outfile .= "[b]《".$thread->title."》 by ";
@@ -231,17 +231,17 @@ foreach($recommends as $recommend){
 
 
 //20180804 重新统计每个tag有多少本书信息
-$tags = App\Models\Tag::whereNotIn('tag_group', [10, 20])->orderby('id','asc')->get();
+$tags = App\Models\Tag::whereNotIn('tag_group', [10, 20])->orderBy('id','asc')->get();
 foreach($tags as $tag){
     $tag->books = DB::table('tagging_threads')->where('tag_id',$tag->id)->count();
     $tag->save();
 }
-$tags = App\Models\Tag::where('tag_group','=',10)->orderby('id','asc')->get();
+$tags = App\Models\Tag::where('tag_group','=',10)->orderBy('id','asc')->get();
 foreach($tags as $tag){
     $tag->books = App\Models\Tongren::where('tongren_yuanzhu_tag_id',$tag->id)->count();
     $tag->save();
 }
-$tags = App\Models\Tag::where('tag_group','=',20)->orderby('id','asc')->get();
+$tags = App\Models\Tag::where('tag_group','=',20)->orderBy('id','asc')->get();
 foreach($tags as $tag){
     $tag->books = App\Models\Tongren::where('tongren_CP_tag_id','=',$tag->id)->count();
     $tag->save();

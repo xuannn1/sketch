@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Label;
 use App\Models\Tag;
 use Carbon\Carbon;
+use App\Helpers\Helper;
 
 use Auth;
 
@@ -49,65 +50,23 @@ trait BookTraits{
         return $query;
     }
 
-    public function all_book_tags(){
-
-        $remember = 30;
-        $tags =  Cache::remember('tags', $remember, function () {
-            $tags=[];
-            $tags['labels_yuanchuang'] = $labels_yuanchuang = Label::where('channel_id',1)
-            ->get();
-            $tags['labels_tongren'] = Label::where('channel_id',2)
-            ->get();
-            $tags['tags'] = Tag::whereIn('tag_group',[0,5,25])
-            ->orderBy('tag_info','asc')
-            ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
-            ->get();
-            $tags['tags_tongren_yuanzhu']=Tag::where('tag_group',10)
-            ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
-            ->get();
-            return $tags;
-        });
-        return $tags;
-
+    public function bookOrderBy($query, $orderby){//1:按最新章节, 2:按最新回贴时间, 3:积分排序, 4.字数均衡积分
+            switch ($orderby) {
+                case 2://最新回复
+                $query->orderBy('threads.lastresponded_at', 'desc');
+                return $query;
+                break;
+                case 3://总积分
+                $query->orderBy('threads.jifen', 'desc');
+                return $query;
+                break;
+                case 4://字数平衡积分
+                $query->orderBy('books.weighted_jifen', 'desc');
+                return $query;
+                break;
+                default://默认书籍按照最新章节排序
+                $query->orderBy('books.lastaddedchapter_at', 'desc');
+                return $query;
+            }
+        }
     }
-    public function extra_book_tags(){
-
-        $remember = 30;
-        $tags =  Cache::remember('ext_tags', $remember, function () {
-            $tags=[];
-            $tags['labels_yuanchuang'] = $labels_yuanchuang = Label::where('channel_id',1)
-            ->get();
-            $tags['labels_tongren'] = Label::where('channel_id',2)
-            ->get();
-            $tags['tags_feibianyuan'] = Tag::where('tag_group',0)
-            ->orderBy('tag_info','asc')
-            ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
-            ->get();
-            $tags['tags_bianyuan'] = Tag::where('tag_group',5)
-            ->orderBy('tag_info','asc')
-            ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
-            ->get();
-            $tags['tags_tongren'] = Tag::where('tag_group',25)
-            ->orderBy('tag_info','asc')
-            ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books')
-            ->get();
-            $tags['tags_tongren_yuanzhu']=Tag::where('tag_group',10)
-            ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books', 'tag_belongs_to', 'label_id')
-            ->get();
-            $tags['tags_tongren_cp']= Tag::where('tag_group',20)
-            ->orderBy('books','desc')
-            ->select('id','tagname','tag_explanation','tag_group','tag_info','books', 'tag_belongs_to', 'label_id')
-            ->get();
-
-            return $tags;
-        });
-        return $tags;
-    }
-
-}

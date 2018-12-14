@@ -13,7 +13,7 @@
                 <span class="button-group">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">篇幅<span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                        @foreach($book_info['book_lenth_info'] as $key=>$book_lenth)
+                        @foreach(config('constants.book_info.book_lenth_info') as $key=>$book_lenth)
                         <li><input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_lenth}}</li>
                         @endforeach
                     </ul>
@@ -21,7 +21,7 @@
                 <span class="button-group">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">进度<span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                        @foreach($book_info['book_status_info'] as $key=>$book_status)
+                        @foreach(config('constants.book_info.book_status_info') as $key=>$book_status)
                         <li><input type="checkbox" name="status[]" value={{$key}} checked />&nbsp;{{$book_status}}</li>
                         @endforeach
                     </ul>
@@ -29,7 +29,7 @@
                 <span class="button-group">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">性向<span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                        @foreach($book_info['sexual_orientation_info'] as $key=>$sexual_orientation)
+                        @foreach(config('constants.book_info.sexual_orientation_info') as $key=>$sexual_orientation)
                         <li><input type="checkbox" name="sexual_orientation[]" value={{$key}} checked />&nbsp;{{$sexual_orientation}}</li>
                         @endforeach
                     </ul>
@@ -37,8 +37,16 @@
                 <span class="button-group">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">限制<span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                        @foreach($book_info['rating_info'] as $key=>$rating)
+                        @foreach(config('constants.book_info.rating_info') as $key=>$rating)
                         <li><input type="checkbox" name="rating[]" value={{$key}} checked />&nbsp;{{$rating}}</li>
+                        @endforeach
+                    </ul>
+                </span>
+                <span class="button-group">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">排序<span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        @foreach(config('constants.book_info.orderby_info') as $key=>$orderby)
+                        <li><input type="radio" name="orderby" value={{$key}}>{{ $orderby }}</li>
                         @endforeach
                     </ul>
                 </span>
@@ -57,41 +65,49 @@
 
             <div class="">
                 <span class="lead">篇幅：</span>
-                @foreach($book_info['book_lenth_info'] as $key=>$book_lenth)
+                @foreach(config('constants.book_info.book_lenth_info') as $key=>$book_lenth)
                 <input type="checkbox" name="length[]" value={{$key}} checked disabled/>&nbsp;{{$book_lenth}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
 
             <div class="">
                 <span class="lead">进度：</span>
-                @foreach($book_info['book_status_info'] as $key=>$book_status)
+                @foreach(config('constants.book_info.book_status_info') as $key=>$book_status)
                 <input type="checkbox" name="status[]" value={{$key}} checked disabled/>&nbsp;{{$book_status}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
 
             <div class="">
                 <span class="lead">性向：</span>
-                @foreach($book_info['sexual_orientation_info'] as $key=>$sexual_orientation)
+                @foreach(config('constants.book_info.sexual_orientation_info') as $key=>$sexual_orientation)
                 <input type="checkbox" name="sexual_orientation[]" value={{$key}} checked disabled/>&nbsp;{{$sexual_orientation}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
 
             <div class="">
                 <span class="lead">限制：</span>
-                @foreach($book_info['rating_info'] as $key=>$rating)
+                @foreach(config('constants.book_info.rating_info') as $key=>$rating)
                 <input type="checkbox" name="rating[]" value={{$key}} checked disabled/>&nbsp;{{$rating}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
+
+            <div class="">
+                <span class="lead">排序：</span>
+                @foreach(config('constants.book_info.orderby_info') as $key=>$orderby)
+                <input type="radio" name="orderby" value={{$key}} />&nbsp;{{$orderby}}&nbsp;&nbsp;&nbsp;
+                @endforeach
+            </div>
+
             <div class="">
                 <div class="">
                     <h4>通用标签：</h4>
                         <?php $tag_info = 0; ?>
-                        @foreach($all_book_tags['tags'] as $key=>$tag)
+                        @foreach(Helper::tags_general() as $key=>$tag)
                             @if((Auth::check())||($tag->tag_group!==5))
                                 @if(($tag_info<$tag->tag_info)&&($tag_info>0))
                                     <br>
                                 @endif
-                                <input type="checkbox" name="tag[]" value={{$tag->id}} />&nbsp;{{ $tag->tagname }}&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" name="tag[]" value={{$tag->id}} />&nbsp;{{ $tag->tagname }}&nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php $tag_info = $tag->tag_info ?>
                             @endif
                         @endforeach
@@ -99,8 +115,8 @@
                 <button type="button" name="button" onclick="toggle_tags_tongren_yuanzhu()" class="btn btn-sm btn-primary sosad-button-control">同人原著标签</button>
                 <div class="tongren_yuanzhu hidden">
                     <h4>同人原著标签：</h4>
-                        @foreach($all_book_tags['tags_tongren_yuanzhu'] as $key=>$tag)
-                            <input type="checkbox" name="tags_tongren_yuanzhu[]" value={{$tag->id}} />&nbsp;{{ $tag->tagname }}&nbsp;&nbsp;&nbsp;
+                        @foreach(Helper::tags_tongren_yuanzhu() as $key=>$tag)
+                            <input type="checkbox" name="tags[]" value={{$tag->id}} />&nbsp;{{ $tag->tagname }}&nbsp;&nbsp;&nbsp;
                         @endforeach
                 </div>
             </div>
