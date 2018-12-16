@@ -11,6 +11,7 @@ use App\Models\Thread;
 use App\Sosadfun\Traits\ThreadTraits;
 use App\Http\Resources\ThreadResource;
 use App\Http\Resources\ThreadsResource;
+use App\Http\Resources\ThreadProfileResource;
 
 
 class ThreadController extends Controller
@@ -79,7 +80,7 @@ class ThreadController extends Controller
         $thread = Thread::withoutGlobalScope(FilterThreadScope::class)->find($id);
         if($thread){
             $thread->load('author', 'tags');
-            return response()->success(new ThreadResource($thread));
+            return response()->success(new ThreadProfileResource($thread));
         }else{
             return response()->error(config('error.404'), 404);
         }

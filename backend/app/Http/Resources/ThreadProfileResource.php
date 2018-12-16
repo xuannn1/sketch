@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Auth;
 
 class ThreadProfileResource extends JsonResource
 {
@@ -14,10 +15,10 @@ class ThreadProfileResource extends JsonResource
      */
     public function toArray($request)
     {
-        if((!$this->bianyuan)||(Auth::guard('api')->check())){
-            $body = $this->body,
+        if((!$this->is_bianyuan)||(Auth::guard('api')->check())){
+            $body = $this->body;
         }else{
-            $body = '',
+            $body = '';
         }
 
         return [
@@ -30,6 +31,10 @@ class ThreadProfileResource extends JsonResource
                 'is_anonymous' => $this->is_anonymous,
                 'majia' => $this->majia ?? '匿名咸鱼',
                 'created_at' => $this->created_at,
+                'last_editor_id' => $this->last_editor_id,
+                'last_edited_at' => $this->last_edited_at,
+                'use_markdown' => $this->use_markdown,
+                'use_indentation' => $this->use_indentation,
                 'xianyus' => $this->xianyus,
                 'shengfans' => $this->shengfans,
                 'views' => $this->views,
@@ -51,6 +56,7 @@ class ThreadProfileResource extends JsonResource
                 'sexual_orientation' => config('constants.book_info.sexual_orientation_info')[$this->sexual_orientation],
                 'last_added_chapter_at' =>$this->last_added_chapter_at,
                 'last_chapter_id' => $this->last_chapter_id,
+                'total_char' =>$this->total_char,
             ],
             'relationships' => new ThreadRelationshipResource($this),
         ];

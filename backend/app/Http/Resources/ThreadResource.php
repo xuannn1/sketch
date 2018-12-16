@@ -46,6 +46,7 @@ class ThreadResource extends JsonResource
                 'sexual_orientation' => config('constants.book_info.sexual_orientation_info')[$this->sexual_orientation],
                 'last_added_chapter_at' =>$this->last_added_chapter_at,
                 'last_chapter_id' => $this->last_chapter_id,
+                'total_char' => $this->total_char,
             ],
             'relationships' => new ThreadRelationshipResource($this),
         ];

@@ -21,9 +21,9 @@ class FilterThread
         $thread = Thread::find($request->route('thread'));
         if($thread){
             $channel= Helper::allChannels()->keyBy('id')->get($thread->channel_id);
-            $thread_group = max(($thread->is_bianyuan ? 3:0), $channel->channel_state);
+            //$thread_group = max(($thread->is_bianyuan ? 3:0), $channel->channel_state);
             $user_group = Auth::guard('api')->check()? Auth::guard('api')->user()->group :2;
-            if ((($thread->is_public)&&($user_group>$thread_group))||(Auth::guard('api')->check()&&((Auth::guard('api')->user()->is_admin)||(Auth::guard('api')->id()===$thread->user_id)))){
+            if ((($thread->is_public)&&($user_group>$channel->channel_state))||(Auth::guard('api')->check()&&((Auth::guard('api')->user()->is_admin)||(Auth::guard('api')->id()===$thread->user_id)))){
                 return $next($request);
             }
             return response()->error(config('error.403'),403);
