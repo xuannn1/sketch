@@ -13,8 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group( function(){
+    //Route::resource('thread', 'API\ThreadController');
 });
 Route::post('register', 'API\PassportController@register');
 Route::post('login', 'API\PassportController@login');
+
+Route::resource('thread', 'API\ThreadController');
+Route::resource('post', 'API\PostController');
+Route::resource('user', 'API\UserController');

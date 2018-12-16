@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Validator;
 use Illuminate\Http\Request;
-use Hash;
 use App\Http\Controllers\Controller;
+use Validator;
+use Hash;
 
+use App\Models\User;
 
 
 class PassportController extends Controller
 {
-
-    public $successStatus = 200;
 
     /**
      * Get a validator for an incoming registration request.
@@ -52,22 +50,22 @@ class PassportController extends Controller
     {
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
-            return response()->json(['error'=>$validator->errors()], 401);
+            return response()->error($validator->errors(), 422);
         }
         $user = $this->create($request->all());
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['name'] =  $user->name;
-        return response()->json(['success'=>$success], $this->successStatus);
+        return response()->success($success);
     }
 
     public function login(){
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
             $user = Auth::user();
             $success['token'] =  $user->createToken('MyApp')->accessToken;
-            return response()->json(['success' => $success], $this->successStatus);
+            return response()->success($success);
         }
         else{
-            return response()->json(['error'=>'Unauthorised'], 401);
+            return response()->error(config('error.401'), 401);
         }
     }
 }

@@ -13,6 +13,10 @@ class Post extends Model
 
     const UPDATED_AT = null;
 
+    protected $hidden = [
+        'creation_ip',
+    ];
+
     public function thread()
     {
         return $this->belongsTo(Thread::class);
@@ -21,6 +25,11 @@ class Post extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(User::class)->select('name');
     }
 
     public function votes()

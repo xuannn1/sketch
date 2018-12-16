@@ -1,69 +1,73 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Laravel-sosad 后端运行指南
+## 安装
+第一次使用时，运行
+```
+$composer update
+```
+补完需要加载的框架文件
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+下一步，将`.env.example`改写为`.env`，补完其中关于database信息的内容，其中环境变量DB_DATABASE应指向空白的本地mysql数据库。mac系统推荐使用sequel pro浏览数据库的情形。
 
-## About Laravel
+接下来，运行数据库migration，并通过预先写好的seeder，给数据库填充用于测试的假信息
+```
+$php artisan migrate
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+为了让oauth能够运行，还需要加载初始key
+```
+$php artisan passport:keys
+```
+还需要给Personal access client进行授权
+```
+$php artisan passport:client  --personal
+```
+这一步输入任意字符串即可。
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+使用valet的用户，只要进行到`backend`根目录再往外的地方，运行
+```
+$valet park
+```
+以后就可以通过`backend.test`这个网址对本工程进行访问。比如，访问`backend.test/api/register`，进行新用户的注册。
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+未使用valet的用户，可以运行指令
+```
+$php artisan serve
+```
+使用弹出的地址，访问本工程。一般是`http://127.0.0.1:8000/`。也就是说，以后可以使用`http://127.0.0.1:8000/api/register`，访问注册页面
 
-## Learning Laravel
+以下默认使用`http://127.0.0.1:8000/`作为访问路径
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+## 注册新用户
+打开postman，选择POST方式发送信息（记得不要变成GET！）
+网址设置为`http://127.0.0.1:8000/api/register`
+在下拉parameter内容中填写：
+name: tester
+email: tester@example.com
+password: password
+password_confirmation: password
+这里字串'password'是默认的密码，也可以设置成其他字串。
+然后点击发送，就会收到成功格式的json返回信息，其中`code:200`表示成功，所返回的`token`就是之后用户用于登陆的验证信息。
+如果信息不符合要求，会出现对应的validation错误提示
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+## 普通登陆
+普通登陆也可以获得token用于进一步访问，方法是：
+网址设置为`http://127.0.0.1:8000/api/login`，选择POST方式发送信息
+在下拉内容中填写：
+email: tester@example.com
+password: password
+然后点击发送，就可以和上面一步一样，得到正确的访问token
+如果这里发生了信息输入错误，导致信息于用户列表不匹配，这里会收到对应的错误代码：
+401:'unauthorised'
 
-## Laravel Sponsors
+## 得到token之后，使用token获取所需要的信息
+前端默认使用
+```
+'headers' => [
+    'Accept' => 'application/json',
+    'Authorization' => 'Bearer '.$accessToken,
+]
+```
+这样的格式，来表示自己是api终端，需要以xx用户的身份通过验证.在postman中下拽header并填写就行了，其他parameter照常填写在parameter部分。
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 错误处理 error
+全部error 列表目前存放在 config/error.php中
