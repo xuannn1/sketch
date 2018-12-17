@@ -35,6 +35,11 @@ class Thread extends Model
         return $this->belongsTo(User::class, 'user_id')->select('id','name');
     }
 
+    public function last_post()
+    {
+        return $this->belongsTo(Post::class, 'last_post_id')->select('id','brief')->withDefault();
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);

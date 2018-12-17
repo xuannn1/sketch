@@ -17,7 +17,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::where('thread_id', $id)
+        //other post filters
+        ->with('author')
+        ->paginate(config('constants.posts_per_page'));
     }
 
     /**

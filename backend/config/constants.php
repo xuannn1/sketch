@@ -1,7 +1,11 @@
 <?php
 
 return [
-    'items_per_page' => 5,//当一页只看某个内容，显示多少内容
+    'books_per_page' => 5,//一页显示多少书
+    'threads_per_page' => 5,//一页显示多少书/讨论帖
+    'chapters_per_page' => 10, //一页显示多少章节
+    'posts_per_page' => 5,//一页显示多少回帖
+
     'items_per_part' => 2,//当一个分区只看一个内容，显示多少内容
     'index_per_page' => 5,//当只搜索目录信息的时候，一页显示多少项目
     'index_per_part' => 2,//当index用于整合页面的时候，一个分区显示多少项目

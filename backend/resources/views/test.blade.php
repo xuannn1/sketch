@@ -1,5 +1,5 @@
-@foreach($threads as $thread)
+<!-- @foreach($posts as $i)
 <div class="">
-    {{$thread->id}}-{{$thread->title}}
+    {{$i->id}}
 </div>
-@endforeach
+@endforeach -->

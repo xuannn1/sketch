@@ -8,11 +8,12 @@ use Auth;
 use DB;
 use App\Models\Scopes\FilterThreadScope;
 use App\Models\Thread;
+use App\Models\Chapter;
 use App\Sosadfun\Traits\ThreadTraits;
 use App\Http\Resources\ThreadResource;
 use App\Http\Resources\ThreadsResource;
 use App\Http\Resources\ThreadProfileResource;
-
+use App\Http\Resources\ChaptersResource;
 
 class ThreadController extends Controller
 {
@@ -43,7 +44,7 @@ class ThreadController extends Controller
         ->canSee($group)
         ->withTag($request->tag)
         ->with('author')
-        ->paginate(config('constants.index_per_page'));
+        ->paginate(config('constants.threads_per_page'));
         return response()->success(new ThreadsResource($threads));
         //return view('test',compact('threads'));
     }
@@ -80,7 +81,14 @@ class ThreadController extends Controller
         $thread = Thread::withoutGlobalScope(FilterThreadScope::class)->find($id);
         if($thread){
             $thread->load('author', 'tags');
-            return response()->success(new ThreadProfileResource($thread));
+            $chapters = Chapter::where('thread_id',$id)
+            ->with('mainpost','volumn')
+            ->orderBy('order_by','asc')
+            ->paginate(config('constants.chapters_per_page'));
+            return response()->success([
+                'thread' => new ThreadProfileResource($thread),
+                'chapters' => new ChaptersResource($chapters),
+            ]);
         }else{
             return response()->error(config('error.404'), 404);
         }

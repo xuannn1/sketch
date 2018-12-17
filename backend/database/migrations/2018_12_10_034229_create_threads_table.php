@@ -23,6 +23,7 @@ class CreateThreadsTable extends Migration
             $table->string('brief')->nullable();//讨论帖简介小灰字
             $table->text('body')->nullable();//讨论帖正文
             $table->unsignedInteger('last_post_id')->default(0);//最后回帖是谁
+            $table->string('last_post_preview')->nullable();//最后回帖的一句话正文
             $table->boolean('is_anonymous')->default(false);//是否匿名
             $table->string('majia', 10)->nullable();//作者马甲
             $table->string('creation_ip', 45)->nullable();//创建时IP地址
