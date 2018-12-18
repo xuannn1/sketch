@@ -92,7 +92,7 @@ class StoreThread extends FormRequest
         $last_thread = Thread::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        return count($last_thread) && strcmp($last_thread->title.$last_thread->brief.$last_thread->mainpost->body, $thread_data['title'].$thread_data['brief'].$post_data['body']) === 0;
+        return  !empty($last_thread) && strcmp($last_thread->title.$last_thread->brief.$last_thread->mainpost->body, $thread_data['title'].$thread_data['brief'].$post_data['body']) === 0;
     }
 
     public function updateThread(Thread $thread)
