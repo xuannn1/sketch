@@ -101,9 +101,10 @@ class threadsController extends Controller
         return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans','channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
     }
 
-    public function createThreadForm(Channel $channel)
+    public function createThreadForm($channel)
     {
-        $labels = $channel->labels();
+        $channel = Channel::find($channel);
+        $labels = $channel->labels;
         if ($channel->id<=2){
             return view('books.create');
         }

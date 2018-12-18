@@ -11,7 +11,6 @@
 
             <form method="POST" action="{{ route('thread.store', $channel->id) }}">
                 {{ csrf_field() }}
-                <?php $labels = $channel->labels()->get(); ?>
                 <h4>请选择主题对应类型：</h4>
                 @foreach ($labels as $index => $label)
                 <label class="radio-inline"><input type="radio" name="label" value="{{ $label->id }}">{{ $label->labelname }}</label>
