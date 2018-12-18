@@ -111,8 +111,9 @@ class threadsController extends Controller
         return view('threads.create', compact('labels', 'channel'));
     }
 
-    public function store(StoreThread $form, Channel $channel)
+    public function store(StoreThread $form, $channel)
     {
+        $channel = Channel::find($channel);
         $thread = $form->generateThread($channel->id);
         $thread->user->reward("regular_thread");
         if($thread->label_id == 50){
