@@ -1,7 +1,7 @@
 ## Laravel-sosad
 
 ##### Laravel-sosad is a forum based on the open source Laravel framework and React (javascript library). #####
-##### Laravel-sosad 工程，是使用开源Laravel框架作为后段，React（javascript library）作为前端建立的论坛系统。 #####
+##### Laravel-sosad 工程，是使用开源Laravel框架作为后段，React（javascript library）作为前端建立的文库-论坛系统。 #####
 
 ##  About Laravel framework
 ## 关于Laravel框架

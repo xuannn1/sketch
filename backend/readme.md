@@ -1,4 +1,6 @@
 # Laravel-sosad 后端运行指南
+##注意事项
+前后端分离之后，所有laravel相关的指令，比如`php artisan migrate`，或者composer相关指令，比如`composer update`，都应进入backend文件夹之后操作，否则会报错。
 ## 安装
 第一次使用时，运行
 ```
@@ -11,6 +13,7 @@ $composer update
 接下来，运行数据库migration，并通过预先写好的seeder，给数据库填充用于测试的假信息
 ```
 $php artisan migrate
+$php artisan db:seed
 ```
 
 为了让oauth能够运行，还需要加载初始key
@@ -40,14 +43,14 @@ $php artisan serve
 ## 注册新用户
 打开postman，选择POST方式发送信息（记得不要变成GET！）
 网址设置为`http://127.0.0.1:8000/api/register`
-在下拉parameter内容中填写：
+在下拉parameter内容表单中填写内容，冒号左边是变量名称，冒号右边是对应内容。可以在postman界面中保存相关指令，便于后续重试：
 name: tester
 email: tester@example.com
 password: password
 password_confirmation: password
 这里字串'password'是默认的密码，也可以设置成其他字串。
 然后点击发送，就会收到成功格式的json返回信息，其中`code:200`表示成功，所返回的`token`就是之后用户用于登陆的验证信息。
-如果信息不符合要求，会出现对应的validation错误提示
+如果信息不符合要求，会出现对应的validation错误提示。
 
 ## 普通登陆
 普通登陆也可以获得token用于进一步访问，方法是：
