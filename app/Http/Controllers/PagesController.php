@@ -69,16 +69,17 @@ class PagesController extends Controller
     }
     public function findrecommendedbooks_long($take)//寻找合适的长评推荐
     {
-        $recommendation = DB::table('recommend_books')
-        ->join('threads', 'threads.id', '=', 'recommend_books.thread_id')
+        return DB::table('recommend_books')
+        //->join('threads', 'threads.id', '=', 'recommend_books.thread_id')
         ->where('recommend_books.valid','=',1)
         ->where('recommend_books.past','=', 0)
         ->where('recommend_books.long','=',1)
-        ->where('threads.deleted_at','=',null)
-        ->where('threads.public','=',1)
+        //->where('threads.deleted_at','=',null)
+        //->where('threads.public','=',1)
         ->inRandomOrder()
-        ->take($take);
-        return $this->return_recommend_book_fields($recommendation)->get();
+        ->take($take)
+        ->get();
+        // return $this->return_recommend_book_fields($recommendation)->get();
     }
 
     public function findquotes()
@@ -137,6 +138,7 @@ class PagesController extends Controller
         $quotes = $home_info['quotes'];
         $recom_sr = $home_info['recom_sr'];
         $recom_lg = $home_info['recom_lg'];
+        //dd($recom_lg);
         $threads = $home_info['threads'];
         return view('pages/home',compact('channels','quotes','recom_sr','recom_lg','threads'));
     }
