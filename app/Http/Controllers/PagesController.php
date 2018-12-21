@@ -58,7 +58,7 @@ class PagesController extends Controller
         $recommendation2 = DB::table('recommend_books')//这部分找新的，前三个
         ->join('threads', 'threads.id', '=', 'recommend_books.thread_id')
         ->where('recommend_books.valid','=',1)
-        ->where('recommend_books.past','=',1)
+        ->where('recommend_books.past','=',0)
         ->where('recommend_books.long','=',0)
         ->where('threads.deleted_at','=',null)
         ->where('threads.public','=',1)
@@ -72,7 +72,7 @@ class PagesController extends Controller
         $recommendation = DB::table('recommend_books')
         ->join('threads', 'threads.id', '=', 'recommend_books.thread_id')
         ->where('recommend_books.valid','=',1)
-        ->where('recommend_books.past','=', 1)
+        ->where('recommend_books.past','=', 0)
         ->where('recommend_books.long','=',1)
         ->where('threads.deleted_at','=',null)
         ->where('threads.public','=',1)
