@@ -82,7 +82,7 @@ class DefaultSettingsSeeder extends Seeder
                 'channel_explanation' => '投诉仲裁板块从此进入',
                 'order_by' => '9',
                 'channel_rule' => '投诉仲裁区的版规是……',
-                'channel_state' => '2',
+                'channel_state' => '3',
             ]);
 
             DB::table('channels')->insert([

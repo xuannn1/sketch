@@ -4,37 +4,40 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Auth;
 use App\Models\Thread;
-use App\Models\Post;
-use App\Http\Requests\StoreThread;
-use App\Http\Resources\ThreadResources\ThreadsResource;
-use App\Http\Resources\ThreadResources\ThreadProfileResource;
+use App\Models\Chapter;
+use App\Http\Resources\BookResources\BookProfileResource;
+use App\Http\Resources\BookResources\ChaptersResource;
 
-class ThreadController extends Controller
+class BookController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth:api')->except(['index', 'show']);
-        $this->middleware('filter_thread')->only('show');
-    }
     /**
     * Display a listing of the resource.
     *
     * @return \Illuminate\Http\Response
     */
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('filter_thread')->only('show');
+    }
+
     public function index(Request $request)
     {
         $group = Auth::guard('api')->check()? Auth::guard('api')->user()->user_group:2;//未登陆用户只能看小于2的
-        $threads = Thread::threadInfo()
+        $books = Thread::bookInfo()
         ->inChannel($request->channel)
         ->inLabel($request->label)
-        ->isNotBook()
+        ->isBook()
+        ->withBookLength($request->book_length)
+        ->withBookStatus($request->book_status)
+        ->withSexualOrientation($request->sexual_orientation)
+        ->isBianyuan($request->isBianyuan)
         ->isPublic()
         ->canSee($group)
-        ->with('author')
-        ->orderBy('last_responded_at', 'desc')
+        ->withTag($request->tag)
+        ->with('author','tags')
+        ->orderBy($request->orderBy)
         ->paginate(config('constants.threads_per_page'));
         return response()->success(new ThreadsResource($threads));
         //return view('test',compact('threads'));
@@ -45,6 +48,10 @@ class ThreadController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
+    public function create()
+    {
+        //
+    }
 
     /**
     * Store a newly created resource in storage.
@@ -52,35 +59,33 @@ class ThreadController extends Controller
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-    public function store(StoreThread $form)//
+    public function store(Request $request)
     {
-        $thread = $form->generateThread();
-        return response()->success($thread);
+        //
     }
 
     /**
     * Display the specified resource.
     *
-    * @param  int  $thread
+    * @param  int  $id
     * @return \Illuminate\Http\Response
     */
     public function show($thread)
     {
         $thread = Thread::find($thread);
         if($thread){
-            $thread->load('author');
-            $posts = Post::where('thread_id',$thread)
-            ->with('author', 'mainchapter')
-            ->orderBy('created_at','asc')
-            ->paginate(config('constants.posts_per_page'));
+            $thread->load('author', 'tags');
+            $chapters = Chapter::where('thread_id',$thread)
+            ->with('mainpost','volumn')
+            ->orderBy('order_by','asc')
+            ->paginate(config('constants.chapters_per_page'));
             return response()->success([
-                'thread' => new ThreadProfileResource($thread),
-                'posts' => new PostsResource($posts),
+                'book' => new BookProfileResource($thread),
+                'chapters' => new ChaptersResource($chapters),
             ]);
         }else{
             return response()->error(config('error.404'), 404);
         }
-
     }
 
     /**
@@ -89,6 +94,10 @@ class ThreadController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
+    public function edit($id)
+    {
+        //
+    }
 
     /**
     * Update the specified resource in storage.

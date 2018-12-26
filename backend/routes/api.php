@@ -19,6 +19,8 @@ Route::middleware('auth:api')->group( function(){
 Route::post('register', 'API\PassportController@register');
 Route::post('login', 'API\PassportController@login');
 
-Route::resource('thread', 'API\ThreadController');
-Route::resource('post', 'API\PostController');
-Route::resource('user', 'API\UserController');
+Route::apiResource('thread', 'API\ThreadController');
+Route::apiResource('book', 'API\BookController');
+Route::apiResource('chapter', 'API\ChapterController');
+Route::apiResource('/thread/{thread}/post', 'API\PostController');
+Route::apiResource('user', 'API\UserController');

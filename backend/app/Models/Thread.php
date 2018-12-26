@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Scopes\FilterThreadScope;
-use App\Helpers\Helper;
+use App\Helpers\ConstantObjects;
 
 class Thread extends Model
 {
@@ -17,14 +16,11 @@ class Thread extends Model
     ];
     protected $dates = ['deleted_at'];
 
+    protected $threadinfo_columns = array('id', 'user_id', 'thread_group', 'channel_id', 'label_id',  'title', 'brief', 'last_post_id', 'last_post_preview', 'is_anonymous', 'majia', 'created_at', 'last_edited_at', 'xianyus', 'shengfans', 'views', 'replies', 'collections', 'downloads', 'jifen', 'weighted_jifen', 'is_locked', 'is_public', 'is_bianyuan', 'no_reply', 'is_top', 'is_popular', 'is_highlighted', 'last_responded_at', 'deleted_at'); // 使诸如文案这样的文本信息，在一些时候不被检索，减少服务器负担
+
+    protected $bookinfo_columns = array('id', 'user_id', 'thread_group', 'channel_id', 'label_id',  'title', 'brief', 'last_post_id', 'last_post_preview', 'is_anonymous', 'majia', 'created_at', 'last_edited_at', 'xianyus', 'shengfans', 'views', 'replies', 'collections', 'downloads', 'jifen', 'weighted_jifen', 'is_locked', 'is_public', 'is_bianyuan', 'no_reply', 'is_top', 'is_popular', 'is_highlighted', 'last_responded_at', 'book_status',  'book_length', 'sexual_orientation', 'last_added_chapter_at', 'last_chapter_id','deleted_at','total_char'); // 使诸如文案这样的文本信息，在一些时候不被检索，减少服务器负担
+
     const UPDATED_AT = null;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope(new FilterThreadScope);
-    }
 
     public function user()
     {
@@ -33,11 +29,6 @@ class Thread extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name');
-    }
-
-    public function last_post()
-    {
-        return $this->belongsTo(Post::class, 'last_post_id')->select('id','brief')->withDefault();
     }
 
     public function posts()
@@ -52,17 +43,12 @@ class Thread extends Model
 
     public function simpleChannel()
     {
-        return Helper::allChannels()->keyBy('id')->get($this->channel_id)->only(['id','channel_name']);
+        return ConstantObjects::allChannels()->keyBy('id')->get($this->channel_id)->only(['id','channel_name']);
     }
 
     public function simpleLabel()
     {
-        return Helper::allLabels()->keyBy('id')->get($this->label_id)->only('id','label_name');
-    }
-
-    public function simpleTag()
-    {
-        return Helper::allTags()->keyBy('id')->get($this->tag_id)->only('id','tag_name','tag_explanation');
+        return ConstantObjects::allLabels()->keyBy('id')->get($this->label_id)->only('id','label_name');
     }
 
     public function scopeInLabel($query, $withLabel)
@@ -87,15 +73,13 @@ class Thread extends Model
         return $query;
     }
 
-    public function scopeIsBook($query, $isBook)
+    public function scopeIsBook($query)
     {
-        if ($isBook==='true'){
-            return $query->where('channel_id', '<=', 2);
-        }
-        if ($isBook==='false'){
-            return $query->where('channel_id', '>', 2);
-        }
-        return $query;
+        return $query->where('channel_id', '<=', 2);
+    }
+    public function scopeIsNotBook($query)
+    {
+        return $query->where('channel_id', '>', 2);
     }
 
     public function scopeWithTag($query, $withTag)
@@ -157,5 +141,13 @@ class Thread extends Model
     public function scopeCanSee($query, $group)
     {
         return $query->where('thread_group', '<' , $group);
+    }
+    public function scopeThreadInfo($query)
+    {
+        return $query->select($this->threadinfo_columns);
+    }
+    public function scopeBookInfo($query)
+    {
+        return $query->select($this->bookinfo_columns);
     }
 }

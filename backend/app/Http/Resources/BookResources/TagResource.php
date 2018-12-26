@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\BookResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,7 +21,6 @@ class TagResource extends JsonResource
                 'tag_name' => $this->tag_name,
                 'tag_explanation' => $this->tag_explanation,
             ]
-
         ];
     }
 

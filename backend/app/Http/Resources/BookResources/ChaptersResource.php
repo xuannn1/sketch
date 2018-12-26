@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\BookResources;
 use App\Models\Volumn;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -37,7 +37,7 @@ class ChaptersResource extends ResourceCollection
         );
         $included = $volumns->unique();
         return [
-            'chapters' => ChapterBriefResource::collection($this->collection),
+            'chapters' => ChapterInfoResource::collection($this->collection),
             'volumns' => $included->map( function ($include) {
                 return new VolumnResource($include);
             }),
@@ -54,17 +54,6 @@ class ChaptersResource extends ResourceCollection
         $included = $volumns->unique();
         return [
             'included' => 'data'
-            // 'included' => $this->withIncluded($included),
         ];
     }
-    // private function withIncluded(Collection $included)
-    // {
-    //     return $included->map(
-    //         function ($include) {
-    //             if ($include instanceof Volumn) {
-    //                 return new VolumnResource($include);
-    //             }
-    //         }
-    //     );
-    // }
 }

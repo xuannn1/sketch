@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\PostResources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -31,7 +31,7 @@ class PostsResource extends ResourceCollection
      public function toArray($request)
      {
          return [
-             'data' => PostResource::collection($this->collection),
+             'posts' => PostResource::collection($this->collection),
              'pagination' => $this->pagination,
          ];
      }

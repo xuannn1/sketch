@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\ThreadResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Auth;
-use App\Helpers\Helper;
 
-class ThreadResource extends JsonResource
+class ThreadInfoResource extends JsonResource
 {
     /**
     * Transform the resource into an array.
@@ -43,12 +41,6 @@ class ThreadResource extends JsonResource
                 'is_popular' => $this->is_popular,
                 'is_highlighted' => $this->is_highlighted,
                 'last_responded_at' => $this->last_responded_at? $this->last_responded_at->toDateTimeString():null,
-                'book_status' =>  config('constants.book_info.book_status_info')[$this->book_status],
-                'book_length' => config('constants.book_info.book_length_info')[$this->book_length],
-                'sexual_orientation' => config('constants.book_info.sexual_orientation_info')[$this->sexual_orientation],
-                'last_added_chapter_at' =>$this->last_added_chapter_at? $this->last_added_chapter_at->toDateTimeString():null,
-                'last_chapter_id' => $this->last_chapter_id,
-                'total_char' => $this->total_char,
             ],
             'relationships' => new ThreadRelationshipResource($this),
         ];

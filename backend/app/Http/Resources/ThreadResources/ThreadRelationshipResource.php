@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\ThreadResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\AuthorIdentifierResource;
 use Auth;
 class ThreadRelationshipResource extends JsonResource
 {
@@ -31,7 +32,6 @@ class ThreadRelationshipResource extends JsonResource
                 'id'                => $this->label_id,
                 'attributes'        => $this->simpleLabel(),
             ],
-            'tags'          => (new ThreadTagsRelationshipResource($this->tags))->additional(['thread' => $this]),
         ];
     }
 }

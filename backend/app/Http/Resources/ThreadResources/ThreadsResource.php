@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\ThreadResources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -32,7 +32,7 @@ class ThreadsResource extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => ThreadResource::collection($this->collection),
+            'threads' => ThreadInfoResource::collection($this->collection),
             'pagination' => $this->pagination,
         ];
     }

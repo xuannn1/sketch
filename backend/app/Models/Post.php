@@ -39,6 +39,11 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id')->select('id','name');
     }
 
+    public function mainchapter()
+    {
+        return $this->hasOne(Chapter::class, 'post_id');
+    }
+
     public function votes()
     {
         return $this->hasMany(Vote::class, 'item_id')->where('item_type', config('constants.vote_info.item_types.post'));
