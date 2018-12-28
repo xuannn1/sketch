@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Quote extends Model
+class Status extends Model
 {
     protected $guarded = [];
+
     const UPDATED_AT = null;
 
     public function user()
@@ -17,8 +18,12 @@ class Quote extends Model
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name');
     }
-    public function reviewer()
+    /**
+    * Get all of the owning attachable models.
+    */
+    public function attachable()
     {
-        return $this->belongsTo(User::class, 'reviewer_id')->select('id','name');
+        return $this->morphTo();
     }
+
 }

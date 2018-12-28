@@ -17,8 +17,8 @@ class Vote extends Model
     /**
     * Get all of the owning votable models.
     */
-   public function votable()
-   {
-       return $this->morphTo();
-   }
+    public function votable()
+    {
+        return $this->morphTo();
+    }
 }

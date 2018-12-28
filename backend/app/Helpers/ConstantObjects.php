@@ -27,6 +27,12 @@ class ConstantObjects
             return self::allChannels()->where('is_book', false)->where('is_public', true)->pluck('id')->toArray();
         });
     }
+    public static function public_channels()
+    {
+        return Cache::remember('public_channels', 10, function (){
+            return self::allChannels()->where('is_public', true)->pluck('id')->toArray();
+        });
+    }
 
     public static function allTags()//获得站上所有的tags
     {
@@ -56,4 +62,5 @@ class ConstantObjects
             return DB::table('role_user')->where('is_valid', true)->select(['user_id','role', 'options'])->get();
         });
     }
+
 }

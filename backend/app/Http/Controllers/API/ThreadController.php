@@ -31,7 +31,11 @@ class ThreadController extends Controller
         ->inChannel($request->channel)
         ->isPublic()
         ->with('author')
-        ->orderBy('last_responded_at', 'desc')
+        ->withBook($request->withBook)
+        ->withBianyuan($request->withBianyuan)
+        ->withTag($request->tag)
+        ->excludeTag($request->excludeTag)
+        ->ordered($request->ordered)
         ->paginate(config('constants.threads_per_page'));
         return response()->success(new ThreadsResource($threads));
         //return view('test',compact('threads'));

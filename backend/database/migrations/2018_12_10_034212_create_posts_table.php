@@ -27,11 +27,9 @@ class CreatePostsTable extends Migration
             $table->unsignedInteger('reply_to_post_id')->default(0)->index();//如果是回帖，给出它回复对象的id
             $table->integer('reply_position')->default(0);//回复对象句子在原来评论中的位置
             $table->boolean('is_maintext')->default(false);//是否是正文章节
-            $table->boolean('is_post_comment')->default(false);//是否是回复某章节
+            $table->boolean('is_comment')->default(false);//是否是回复某章节
             $table->boolean('use_markdown')->default(false);//是否使用md语法
             $table->boolean('use_indentation')->default(true);//是否使用段首缩进格式
-            $table->boolean('is_top')->default(false);//作者加置顶
-            $table->boolean('is_highlighted')->default(false);//作者添加精华
             $table->unsignedInteger('up_votes')->default(0);//赞
             $table->unsignedInteger('down_votes')->default(0);//踩
             $table->unsignedInteger('fold_votes')->default(0);//折叠
@@ -40,8 +38,6 @@ class CreatePostsTable extends Migration
             $table->unsignedInteger('shengfans')->default(0);//得到的咸鱼
             $table->unsignedInteger('replies')->default(0);//得到的回复数
             $table->boolean('is_folded')->default(false);//是否属于折叠状态
-            $table->boolean('is_popular')->default(false);//是否属于热门回帖状态
-            $table->boolean('is_longpost')->default(false);//是否属于长评范围
             $table->boolean('allow_as_longpost')->default(true);//作者是否允许展示为长评
             $table->boolean('is_bianyuan')->default(false);//是否属于边缘内容（以至于需要对非注册用户隐藏内容）
             $table->dateTime('last_responded_at')->nullable();//最后被回应时间

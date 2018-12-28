@@ -24,3 +24,5 @@ Route::apiResource('book', 'API\BookController');
 Route::apiResource('chapter', 'API\ChapterController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
 Route::apiResource('user', 'API\UserController');
+
+Route::get('/', 'API\PagesController@home')->name('home');

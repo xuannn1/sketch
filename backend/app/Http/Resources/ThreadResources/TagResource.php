@@ -20,6 +20,7 @@ class TagResource extends JsonResource
             'attributes' => [
                 'tag_name' => $this->tag_name,
                 'tag_explanation' => $this->tag_explanation,
+                'tag_type' => $this->tag_type,
             ]
         ];
     }

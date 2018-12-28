@@ -24,7 +24,7 @@ class BookController extends Controller
 
     public function index(Request $request)
     {
-        $books = Thread::bookInfo()
+        $books = Thread::threadInfo()
         ->inChannel($request->channel)
         ->isPublic()
         ->withTag($request->tag)

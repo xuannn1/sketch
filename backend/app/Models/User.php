@@ -87,6 +87,19 @@ class User extends Authenticatable
     }
 
     /**
+    * Checks if the user can visit specific channel
+    */
+    public function canSeeChannel($channel) : bool
+    {
+        return $this->hasAccess(['can_see_anything'])||$this->hasLocalAccess('can_see_channel', $channel);
+    }
+
+    public function canManageChannel($channel) : bool
+    {
+        return $this->hasAccess(['can_manage_anything'])||$this->hasLocalAccess('can_manage_channel', $channel);
+    }
+
+    /**
     * Checks if the user belongs to role.
     */
     public function inRole(string $roleSlug)

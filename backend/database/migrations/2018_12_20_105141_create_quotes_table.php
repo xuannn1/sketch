@@ -20,9 +20,8 @@ class CreateQuotesTable extends Migration
             $table->boolean('is_anonymous')->default(false);//是否匿名
             $table->string('majia',10)->nullable();//马甲名称
             $table->boolean('not_sad')->default(false);//是否并非丧题头
-            $table->boolean('is_valid')->default(false);//是否已经在用
-            $table->boolean('is_reviewed')->default(false);//是否已经通过审核
-            $table->unsignedInteger('reviewer_id');//审核人是谁
+            $table->boolean('is_approved')->default(false);//是否已经在用
+            $table->unsignedInteger('reviewer_id')->default(0);//审核人是谁
             $table->integer('xianyus')->default(0);//所获得咸鱼数目
             $table->dateTime('created_at')->nullable();//创建时间
         });

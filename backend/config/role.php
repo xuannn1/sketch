@@ -14,18 +14,15 @@ return [
             'can_see_homework' => true,
         ],
         'admin' => [
-            'can_see_homework' => true,
-            'can_see_ip_addresses' => true,
+            'can_manage_anything' => true,
             'can_see_anything' => true,
         ],
         'channel_admin' => [
-            'can_see_ip_addresses_in_channel' => true,
+            'can_manage_channel' => true,
             'can_see_channel' => true,
         ],
         'super_admin' => [
-            'can_see_homework' => true,
-            'can_see_ip_addresses' => true,
-            'can_see_anything' => true,
+            'can_manage_admin' => true,
         ],
         'no_post_user' => [
             'can_not_post' => true,
