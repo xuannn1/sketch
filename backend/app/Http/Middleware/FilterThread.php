@@ -21,9 +21,7 @@ class FilterThread
         $thread = Thread::find($request->route('thread'));
         if($thread){
             $channel= ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
-            //$thread_group = $thread->thread_group;
-            $user_group = Auth::guard('api')->check()? Auth::guard('api')->user()->group :2;
-            if ((($thread->is_public)&&($user_group>$channel->channel_state))||(Auth::guard('api')->check()&&((Auth::guard('api')->user()->is_admin)||(Auth::guard('api')->id()===$thread->user_id)))){
+            if((($thread->is_public)&&($channel->is_public))||Auth::guard('api')->check()&&(Auth::guard('api')->user()->hasAccess(['can_see_anything'])||Auth::guard('api')->user()->hasLocalAccess('can_see_channel', $channel->id)||Auth::guard('api')->id()===$thread->user_id)){
                 return $next($request);
             }
             return response()->error(config('error.403'),403);

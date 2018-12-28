@@ -36,20 +36,15 @@ class StoreThread extends FormRequest
             'brief' => 'required|string|max:50',
             'body' => 'required|string|min:10|max:20000',
             'channel' => 'required|numeric',
-            'label' => 'required|numeric',
             'majia' => 'string|max:10',
         ];
     }
 
     public function generateThread()
     {
-        //检查频道、大类信息是否符合规则
         $channel = ConstantObjects::allChannels()->keyBy('id')->get($this->channel);
-        $label = ConstantObjects::allLabels()->keyBy('id')->get($this->label);
-        //$channel->channel_state===1 意味着这是一篇文章，不应该采取普通thread的方式存储
-        if(empty($channel)||empty($label)||$label->channel_id!=$channel->id||($channel->channel_state===1)){
-            abort(481);
-        }
+        //检查tag是否符合规则
+        //这部分还没做
         $thread = $this->only('title','brief','body');
         //处理标题
         $thread['title'] = StringProcess::convert_to_public($thread['title']);
@@ -61,13 +56,11 @@ class StoreThread extends FormRequest
         $thread['brief'] = StringProcess::convert_to_public($thread['brief']);
         $thread['body'] = StringProcess::trimSpaces($thread['body']);
         //增加其他的变量
-        $thread['thread_group'] = $channel->channel_state;//边缘类的state怎么处理？？
         $thread['creation_ip'] = request()->getClientIp();
         $thread['channel_id']=$channel->id;
-        $thread['label_id']=$label->id;
         //将boolean值赋予提交的设置
-        //$channel->channel_state如果为3，意味着这属于投诉仲裁板块。投诉仲裁板块不能匿名开楼，不能进行修改自己的楼层
-        if (($this->is_anonymous)&&($channel->channel_state!=3)){
+
+        if (($this->is_anonymous)&&($channel->allow_anonymous)){
             $thread['is_anonymous']=1;
             $thread['majia']=$this->majia;
             auth('api')->user()->update(['majia'=>$this->recent_majia]);
@@ -84,10 +77,7 @@ class StoreThread extends FormRequest
         if (!$this->isDuplicateThread($thread)){
             $thread = DB::transaction(function () use($thread) {
                 $thread = Thread::create($thread);
-                // $thread->user->reward("regular_thread");
-                // if($thread->label_id == 50){
-                //     $thread->registerhomework();
-                // }
+                //如果是homework，注册相关信息
                 //这里还需要记录奖励历史信息
                 return $thread;
             });

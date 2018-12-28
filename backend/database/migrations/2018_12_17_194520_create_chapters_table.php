@@ -14,9 +14,8 @@ class CreateChaptersTable extends Migration
     public function up()
     {
         Schema::create('chapters', function (Blueprint $table) {
-            $table->unsignedInteger('post_id')->index();
+            $table->unsignedInteger('post_id')->primary();
             $table->unsignedInteger('volumn_id')->default(0);//分卷号
-            $table->unsignedInteger('thread_id')->index();//书籍编号
             $table->integer('order_by')->default(0);//排序号码
             $table->string('title')->nullable();//标题
             $table->string('brief')->nullable();//简介

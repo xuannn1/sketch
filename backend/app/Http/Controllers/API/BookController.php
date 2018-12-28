@@ -24,17 +24,9 @@ class BookController extends Controller
 
     public function index(Request $request)
     {
-        $group = Auth::guard('api')->check()? Auth::guard('api')->user()->user_group:2;//未登陆用户只能看小于2的
         $books = Thread::bookInfo()
         ->inChannel($request->channel)
-        ->inLabel($request->label)
-        ->isBook()
-        ->withBookLength($request->book_length)
-        ->withBookStatus($request->book_status)
-        ->withSexualOrientation($request->sexual_orientation)
-        ->isBianyuan($request->isBianyuan)
         ->isPublic()
-        ->canSee($group)
         ->withTag($request->tag)
         ->with('author','tags')
         ->orderBy($request->orderBy)

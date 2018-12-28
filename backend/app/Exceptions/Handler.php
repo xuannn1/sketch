@@ -4,7 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Auth\Access\AuthorizationException;
+//use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
@@ -47,7 +48,7 @@ class Handler extends ExceptionHandler
     */
     public function render($request, Exception $exception)
     {
-        if($exception instanceof AuthorizationException ){
+        if($exception instanceof AuthenticationException ){
             return response()->error(config('error.401'), 401);
         }
         if ($exception instanceof HttpException) {

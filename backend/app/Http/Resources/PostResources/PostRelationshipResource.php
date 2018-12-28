@@ -3,7 +3,7 @@
 namespace App\Http\Resources\PostResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\BookResources\ChapterProfileResource;
+use App\Http\Resources\AuthorIdentifierResource;
 
 class PostRelationshipResource extends JsonResource
 {
@@ -20,14 +20,8 @@ class PostRelationshipResource extends JsonResource
         }else{
             $author = [];
         }
-        if ($this->is_maintext){
-            $chapter = new ChapterProfileResource($this->mainchapter);
-        }else{
-            $chapter = [];
-        }
         return [
             'author'        =>  $author,
-            'chapter'       =>  $chapter,
         ];
     }
 }

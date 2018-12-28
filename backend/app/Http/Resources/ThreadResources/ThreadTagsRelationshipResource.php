@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\BookResources;
+namespace App\Http\Resources\ThreadResources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class BookTagsRelationshipResource extends ResourceCollection
+class ThreadTagsRelationshipResource extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.

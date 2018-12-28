@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTagThreadTable extends Migration
+class CreateTitleUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateTagThreadTable extends Migration
      */
     public function up()
     {
-        Schema::create('tag_thread', function (Blueprint $table) {
-            $table->unsignedInteger('thread_id')->index();
-            $table->unsignedInteger('tag_id')->index();
-            $table->primary(['thread_id', 'tag_id']);
+        Schema::create('title_user', function (Blueprint $table) {
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('title_id');
+            $table->primary(['user_id', 'title_id']);
         });
     }
 
@@ -27,6 +27,6 @@ class CreateTagThreadTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tag_thread');
+        Schema::dropIfExists('title_user');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Resources\BookResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\AuthorIdentifierResource;
+use App\Http\Resources\ThreadResources\ThreadTagsRelationshipResource;
 use Auth;
 class BookRelationshipResource extends JsonResource
 {
@@ -27,12 +28,7 @@ class BookRelationshipResource extends JsonResource
                 'id'                => $this->channel_id,
                 'attributes'        => $this->simpleChannel(),
             ],
-            'label'        => [
-                'type'              => 'label',
-                'id'                => $this->label_id,
-                'attributes'        => $this->simpleLabel(),
-            ],
-            'tags'          => (new BookTagsRelationshipResource($this->tags))->additional(['thread' => $this]),
+            'tags'          => (new ThreadTagsRelationshipResource($this->tags))->additional(['thread' => $this]),
         ];
     }
 }

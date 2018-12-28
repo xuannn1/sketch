@@ -29,7 +29,6 @@ class PostResource extends JsonResource
                 'created_at' => $this->created_at ? $this->created_at->toDateTimeString():null,
                 'last_edited_at' => $this->last_edited_at ? $this->last_edited_at->toDateTimeString():null,
                 'reply_to_post_id' => $this->reply_to_post_id,
-                'reply_to_post_preview' => $this->reply_to_post_preview,
                 'is_maintext' => $this->is_maintext,
                 'use_markdown' => $this->markdown,
                 'use_indentation' => $this->use_indentation,

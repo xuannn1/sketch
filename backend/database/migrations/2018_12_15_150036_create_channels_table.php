@@ -19,7 +19,10 @@ class CreateChannelsTable extends Migration
             $table->string('channel_explanation')->nullable();//板块简介
             $table->integer('order_by')->default(0);//板块排序方式
             $table->text('channel_rule')->nullable();//板块版规
-            $table->integer('channel_state')->default(0);//板块权限编码：0:水区，1:书籍，2:投诉，10作业， 更大的数字是仅管理可见的版面
+            $table->boolean('is_book')->default(false);//是否被视作书籍来管理
+            $table->boolean('allow_anonymous')->default(true);//是否允许匿名建楼/回帖
+            $table->boolean('allow_edit')->default(true);//是否允许普通用户修改
+            $table->boolean('is_public')->default(true);//是否公众可见
         });
     }
 

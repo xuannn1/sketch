@@ -15,11 +15,11 @@ class PassportController extends Controller
 {
 
     /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
+    * Get a validator for an incoming registration request.
+    *
+    * @param  array  $data
+    * @return \Illuminate\Contracts\Validation\Validator
+    */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -31,11 +31,11 @@ class PassportController extends Controller
     }
 
     /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
+    * Create a new user instance after a valid registration.
+    *
+    * @param  array  $data
+    * @return \App\Models\User
+    */
 
     protected function create(array $data)
     {
@@ -61,8 +61,17 @@ class PassportController extends Controller
     public function login(){
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
             $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')->accessToken;
-            return response()->success($success);
+            if ($user->hasAccess(['can_not_login'])){
+                $userTokens = $user->tokens;
+                foreach($userTokens as $token) {
+                    $token->revoke();
+                }
+                Auth::logout();
+                abort(499);
+            }else{
+                $success['token'] =  $user->createToken('MyApp')->accessToken;
+                return response()->success($success);
+            }
         }
         else{
             return response()->error(config('error.401'), 401);

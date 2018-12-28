@@ -1,32 +1,10 @@
 <?php
 
 namespace App\Helpers;
-// use Auth;
-// use GrahamCampbell\Markdown\Facades\Markdown;
-// use Genert\BBCode\BBCode;
-// use App\Models\Channel;
-// use App\Models\Label;
-// use App\Models\Tag;
-// use Cache;
-// use DB;
 
 class StringProcess
 {
-    // public static function trimtext($text=null, int $len)//截取一个特定长度的字串
-    // {
-    //     $bbCode = new BBCode();
-    //     $bbCode = self::addCustomParserBBCode($bbCode);
-    //
-    //     $text = self::trimSpaces($text);//去除字串中多余的空行，html-tag，每一段开头的空格
-    //     $text = $bbCode->stripBBCodeTags((string) $text);
-    //     $text = preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text);
-    //     $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
-    //     if(iconv_strlen($text) > iconv_strlen($substr)){
-    //         $substr.='…';
-    //     }
-    //     return $substr;
-    // }
-    //
+    
     public static function trimSpaces($text=null)//去掉输入的一段文字里，多余的html-tag，多余的换行，和每段开头多余的空格
     {
         //去除内容中的html-tag（前端需要对html-tag类似物进行提醒）

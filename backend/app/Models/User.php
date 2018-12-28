@@ -8,40 +8,89 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use App\Helpers\ConstantObjects;
+
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, SoftDeletes;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    * The attributes that are mass assignable.
+    *
+    * @var array
+    */
     protected $fillable = [
         'name', 'email', 'password',
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
+    * The attributes that should be hidden for arrays.
+    *
+    * @var array
+    */
     protected $hidden = [
         'password', 'remember_token',
     ];
 
+
     public function threads()
     {
-      return $this->hasMany(Thread::class);
+        return $this->hasMany(Thread::class);
     }
 
     public function posts()
     {
-      return $this->hasMany(Post::class);
+        return $this->hasMany(Post::class);
     }
 
     public function votes()
     {
-      return $this->hasMany(Vote::class);
+        return $this->hasMany(Vote::class);
+    }
+
+    public function roles()
+    {
+        return ConstantObjects::role_users()->where('user_id', $this->id);
+    }
+
+    /**
+    * 查看对应用户的roles里面是否含有某种对应的global permission
+    * 举例：$user->hasAccess(['can_see_homework', 'can_see_ip_addresses']) returns true
+    */
+    public function hasAccess(array $permissions) : bool
+    {
+        foreach ($this->roles() as $role) {
+            $role_permissions = config('role.roles')[$role->role]?? [];
+            foreach($permissions as $permission){
+                if ($role_permissions[$permission]?? false){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /**
+    * 查看对应用户的roles里面是否含有特别针对某个channel或者homework的局部permission
+    * 举例：$user->hasLocalAccess('can_see_ip_addresses_in_channel', 1) returns false
+    */
+    public function hasLocalAccess($permission, $option) : bool
+    {
+        foreach ($this->roles() as $role) {
+            $role_permissions = config('role.roles')[$role->role]?? [];
+            if ($role_permissions[$permission]?? false){
+                if (json_decode($role->options)->{$option}?? false){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+    * Checks if the user belongs to role.
+    */
+    public function inRole(string $roleSlug)
+    {
+        return $this->roles()->where('role', $roleSlug)->count() == 1;
     }
 }

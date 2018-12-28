@@ -29,6 +29,21 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function replies()
+    {
+        return $this->hasMany(Post::class, 'reply_to_post_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Post::class, 'reply_to_post_id');
+    }
+
+    public function votes()
+    {
+        return $this->morphMany('App\Models\Vote', 'votable');
+    }
+
     public function chapter()
     {
         return $this->hasOne(Chapter::class, 'post_id');
@@ -42,15 +57,6 @@ class Post extends Model
     public function mainchapter()
     {
         return $this->hasOne(Chapter::class, 'post_id');
-    }
-
-    public function votes()
-    {
-        return $this->hasMany(Vote::class, 'item_id')->where('item_type', config('constants.vote_info.item_types.post'));
-    }
-    public function likevotes()
-    {
-        return $this->hasMany(Vote::class,'item_id')->where('item_type', config('constants.vote_info.item_types.post'))->where('attitude_type',1);
     }
 
     public function scopeExclude($query, $value = array())

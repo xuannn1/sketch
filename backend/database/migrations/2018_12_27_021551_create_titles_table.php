@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLabelsTable extends Migration
+class CreateTitlesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateLabelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('labels', function (Blueprint $table) {
+        Schema::create('titles', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('channel_id')->default(0);//属于哪个板块
-            $table->string('label_name')->nullable();//大类名称
-            $table->string('label_explanation')->nullable();//大类简介
+            $table->string('name',20);//头衔名称
+            $table->text('description');//头衔解释
+            $table->unsignedInteger('entitled');//多少人获得了这个头衔
         });
     }
 
@@ -28,6 +28,6 @@ class CreateLabelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('labels');
+        Schema::dropIfExists('titles');
     }
 }

@@ -15,17 +15,7 @@ class AddUserFieldsToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->softDeletes();//软删除必备
-            $table->boolean('is_activated')->default(false);//是否已激活
-            $table->boolean('is_edtor')->default(false);//是否是编辑
-            $table->boolean('is_admin')->default(false);//是否是管理员
-            $table->integer('user_group')->default(10);//用户权限组。一般是10，临时作业权限15，长期作业区权限20，管理员/元老30
             $table->integer('user_level')->default(0);//
-            $table->string('last_login_ip', 45)->nullable();//最后一次使用用户名登陆的IP地址（防盗号登陆用）
-            $table->dateTime('last_login_at')->nullable();//最后一次使用用户名登陆的时间（防盗号登陆用）
-            $table->integer('invitation_token_id')->default(0);//创建时使用的邀请码id
-            $table->dateTime('no_post_until')->nullable();//在xx之前不准发言
-            $table->dateTime('no_login_until')->nullable();//在xx之前不准登陆
-            $table->dateTime('no_homework_until')->nullable();//在xx之前不准做作业
             $table->string('brief')->nullable();//用户一句话简介
             $table->integer('sangdians')->default(0);//丧点数目
             $table->integer('shengfans')->default(0);//剩饭数目

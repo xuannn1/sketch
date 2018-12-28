@@ -14,12 +14,13 @@ class CreateVotesTable extends Migration
     public function up()
     {
         Schema::create('votes', function (Blueprint $table) {
-            $table->increments('id');
             $table->unsignedInteger('user_id')->index();//投票人
-            $table->integer('item_type');//post-1;thread-2;
-            $table->unsignedInteger('item_id')->index();//投票对象id
-            $table->integer('attitude_type');//态度代码：1-upvote，2-downvote，3-funny，4-fold
+            $table->string('votable_type', 10);//;
+            $table->unsignedInteger('votable_id')->index();//投票对象id
+            $table->string('attitude_type', 10);//;
             $table->dateTime('created_at')->nullable();//创建时间
+            $table->primary(['user_id', 'votable_type', 'votable_id', 'attitude_type']);
+            $table->index(['votable_type', 'votable_id', 'attitude_type']);
         });
     }
 

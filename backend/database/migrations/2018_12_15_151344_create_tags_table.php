@@ -15,12 +15,14 @@ class CreateTagsTable extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('tag_name')->nullable();
-            $table->integer('tag_group')->default(0);//普通tag：0/边缘tag：5/同人原著tag:10/同人cptag:20/同人大类tag：25/编辑推荐类tag：30/
-            $table->integer('tag_info')->default(0);
-            $table->string('tag_explanation')->nullable();
-            $table->unsignedInteger('belongs_to_tag_id')->default(0);//用于同人CP寻找同人原著，同人原著寻找同人作品其他分类
-            $table->integer('tagged_books')->default(0);
+            $table->string('tag_name', 10)->nullable();//标签简称
+            $table->string('tag_explanation')->nullable();//标签详解
+            $table->string('tag_type', 10)->nullable();//标签类别，原来的taginfo内容
+            $table->boolean('is_bianyuan')->default(false);//是否边缘限制专有
+            $table->boolean('is_primary')->default(false);//是否属于主要的tag（分两种情况，具有channellimit，和不具有channellimit-长短篇，科幻奇幻，）
+            $table->unsignedInteger('channel_id')->default(0);//是否某个channel专属
+            $table->unsignedInteger('parent_id')->default(0);//用于同人CP寻找同人原著，同人原著寻找同人作品其他分类
+            $table->unsignedInteger('tagged_books')->default(0);
             $table->timestamps();
         });
     }

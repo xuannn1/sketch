@@ -15,17 +15,16 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');//post_id
-            //$table->timestamps();
             $table->unsignedInteger('user_id')->index();//作者id
             $table->unsignedInteger('thread_id')->index();//讨论帖id
             $table->text('body')->nullable();//回帖文本本身
+            $table->string('preview')->nullable();//节选
             $table->boolean('is_anonymous')->default(false);//是否匿名回帖
             $table->string('majia', 10)->nullable();//作者马甲
             $table->string('creation_ip', 45)->nullable();//创建时IP地址
             $table->dateTime('created_at')->nullable();//创建时间
             $table->dateTime('last_edited_at')->nullable();//最后编辑时间
-            $table->unsignedInteger('reply_to_post_id')->default(0)->index();//如果是回帖，给出它的id
-            $table->string('reply_to_post_preview')->nullable();//如果是回帖，给出它的一句话引用
+            $table->unsignedInteger('reply_to_post_id')->default(0)->index();//如果是回帖，给出它回复对象的id
             $table->integer('reply_position')->default(0);//回复对象句子在原来评论中的位置
             $table->boolean('is_maintext')->default(false);//是否是正文章节
             $table->boolean('is_post_comment')->default(false);//是否是回复某章节
@@ -33,13 +32,13 @@ class CreatePostsTable extends Migration
             $table->boolean('use_indentation')->default(true);//是否使用段首缩进格式
             $table->boolean('is_top')->default(false);//作者加置顶
             $table->boolean('is_highlighted')->default(false);//作者添加精华
-            $table->integer('up_votes')->default(0);//赞
-            $table->integer('down_votes')->default(0);//踩
-            $table->integer('fold_votes')->default(0);//折叠
-            $table->integer('funny_votes')->default(0);//搞笑
-            $table->integer('xianyus')->default(0);//得到的咸鱼
-            $table->integer('shengfans')->default(0);//得到的咸鱼
-            $table->integer('replies')->default(0);//得到的回复数
+            $table->unsignedInteger('up_votes')->default(0);//赞
+            $table->unsignedInteger('down_votes')->default(0);//踩
+            $table->unsignedInteger('fold_votes')->default(0);//折叠
+            $table->unsignedInteger('funny_votes')->default(0);//搞笑
+            $table->unsignedInteger('xianyus')->default(0);//得到的咸鱼
+            $table->unsignedInteger('shengfans')->default(0);//得到的咸鱼
+            $table->unsignedInteger('replies')->default(0);//得到的回复数
             $table->boolean('is_folded')->default(false);//是否属于折叠状态
             $table->boolean('is_popular')->default(false);//是否属于热门回帖状态
             $table->boolean('is_longpost')->default(false);//是否属于长评范围

@@ -15,8 +15,8 @@ class CreateVolumnsTable extends Migration
     {
         Schema::create('volumns', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title')->nullable();
-            $table->string('brief')->nullable();
+            $table->string('title')->nullable();//卷标题
+            $table->string('brief')->nullable();//卷简介
         });
     }
 

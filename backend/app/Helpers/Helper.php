@@ -5,7 +5,6 @@ use Auth;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Genert\BBCode\BBCode;
 use App\Models\Channel;
-use App\Models\Label;
 use App\Models\Tag;
 use Cache;
 use DB;
@@ -27,79 +26,6 @@ class Helper
         return $substr;
     }
 
-    public static function allChannels()//获得站上所有的channel
-    {
-        return Cache::remember('allChannels', 10, function (){
-            return Channel::orderBy('order_by','asc')->get();
-        });
-    }
-
-    public static function allLabels()//获得站上所有的label
-    {
-        return Cache::remember('allLabels', 10, function (){
-            return Label::all();
-        });
-    }
-    public static function alltags()//获得站上所有的label
-    {
-        return Cache::remember('allTags', 10, function (){
-            return Tag::all();
-        });
-    }
-
-    public static function system_variable()//获得当前系统数据
-    {
-        return Cache::remember('system_variable', 10, function () {
-            return DB::table('system_variables')->first();
-        });
-    }
-
-    public static function labels_yuanchuang(){
-        return Helper::allLabels()->where('channel_id',1);
-    }
-
-    public static function labels_tongren(){
-        return Helper::allLabels()->where('channel_id',2);
-    }
-
-    public static function tags_general(){
-        return Helper::allTags()
-        ->whereIn('tag_group',[0,5,25])
-        ->sortByDesc('books')
-        ->sortBy('tag_info');
-    }
-
-    public static function tags_feibianyuan(){
-        return Helper::allTags()
-        ->where('tag_group',0)
-        ->sortByDesc('books')
-        ->sortBy('tag_info');
-    }
-
-    public static function tags_bianyuan(){
-        return Helper::allTags()
-        ->where('tag_group',5)
-        ->sortByDesc('books')
-        ->sortBy('tag_info');
-    }
-
-    public static function tags_tongren(){
-        return Helper::allTags()
-        ->where('tag_group',25)
-        ->sortByDesc('books');
-    }
-
-    public static function tags_tongren_yuanzhu(){
-        return Helper::allTags()
-        ->where('tag_group',10)
-        ->sortByDesc('books');
-    }
-
-    public static function tags_tongren_cp(){
-        return Helper::allTags()
-        ->where('tag_group',20)
-        ->sortByDesc('books');
-    }
 
     public static function trimSpaces($text=null)//去掉输入的一段文字里，多余的html-tag，和每段开头多余的空格，和多余的换行
     {

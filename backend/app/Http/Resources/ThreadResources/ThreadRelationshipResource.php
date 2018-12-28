@@ -27,11 +27,7 @@ class ThreadRelationshipResource extends JsonResource
                 'id'                => $this->channel_id,
                 'attributes'        => $this->simpleChannel(),
             ],
-            'label'        => [
-                'type'              => 'label',
-                'id'                => $this->label_id,
-                'attributes'        => $this->simpleLabel(),
-            ],
+            'tags'          => (new ThreadTagsRelationshipResource($this->tags))->additional(['thread' => $this]),
         ];
     }
 }
