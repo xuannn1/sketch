@@ -24,5 +24,7 @@ Route::apiResource('book', 'API\BookController');
 Route::apiResource('chapter', 'API\ChapterController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
 Route::apiResource('user', 'API\UserController');
+Route::apiResource('status', 'API\StatusController');
 
 Route::get('/', 'API\PagesController@home')->name('home');
+Route::get('config/allTags', 'API\PagesController@allTags');

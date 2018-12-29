@@ -117,7 +117,7 @@ class Thread extends Model
     {
         return $query->select($this->threadinfo_columns);
     }
-    
+
     public function scopeThreadBrief($query)
     {
         return $query->select($this->threadbrief_columns);

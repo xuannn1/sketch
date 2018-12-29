@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Helpers\PageObjects;
+use App\Helpers\ConstantObjects;
 use App\Http\Resources\QuoteResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\ThreadResources\ThreadBriefResource;
@@ -20,6 +21,12 @@ class PagesController extends Controller
             'recent_responded_books' => ThreadBriefResource::collection(PageObjects::recent_responded_books()),
             'recent_responded_threads' => ThreadBriefResource::collection(PageObjects::recent_responded_threads()),
             'recent_statuses' => StatusResource::collection(PageObjects::recent_statuses())
+        ]);
+    }
+    public function allTags()
+    {
+        return response()->success([
+            'tags' => ConstantObjects::allTags()->toArray()
         ]);
     }
 }

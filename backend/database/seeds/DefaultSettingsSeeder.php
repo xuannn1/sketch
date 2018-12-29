@@ -577,6 +577,95 @@ class DefaultSettingsSeeder extends Seeder
                         'tag_type' => '特殊元素',
                     ]);
                 }
+                {
+                    DB::table('tags')->insert([
+                        'tag_name' => '短篇',
+                        'tag_type' => '篇幅',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '中篇',
+                        'tag_type' => '篇幅',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '长篇',
+                        'tag_type' => '篇幅',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '大纲',
+                        'tag_type' => '篇幅',
+                    ]);
+                }
+                {
+                    DB::table('tags')->insert([
+                        'tag_name' => '连载',
+                        'tag_type' => '进度',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '完结',
+                        'tag_type' => '进度',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '暂停',
+                        'tag_type' => '进度',
+                    ]);
+                }
+                {
+                    DB::table('tags')->insert([
+                        'tag_name' => 'BL',
+                        'tag_type' => '性向',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => 'GL',
+                        'tag_type' => '性向',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => 'BG',
+                        'tag_type' => '性向',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => 'GB',
+                        'tag_type' => '性向',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '混合性向',
+                        'tag_type' => '性向',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '无CP',
+                        'tag_type' => '性向',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '其他性向',
+                        'tag_type' => '性向',
+                    ]);
+                }
+                {
+                    DB::table('tags')->insert([
+                        'tag_name' => '长推',
+                        'tag_type' => '编推',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '短推',
+                        'tag_type' => '编推',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '汇总',
+                        'tag_type' => '编推',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '高亮',
+                        'tag_type' => '管理',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '置顶',
+                        'tag_type' => '管理',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '高亮',
+                        'tag_type' => '管理',
+                    ]);
+
+                }
             }
         }
         // InvitationToken::create([

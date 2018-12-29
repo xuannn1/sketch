@@ -21,7 +21,7 @@ class StoreThread extends FormRequest
     public function authorize()
     {
         $channel = ConstantObjects::allChannels()->keyBy('id')->get($this->channel);
-        return (auth('api')->check())&&(!empty($channel))&&(auth('api')->user()->user_group > $channel->channel_state);
+        return (auth('api')->check())&&(!empty($channel))&&(auth('api')->user()->canSeeChannel($channel));
     }
 
     /**
