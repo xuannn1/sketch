@@ -272,3 +272,10 @@ foreach($threads as $thread){
         }
     }
 }
+
+$quotes = App\Models\Quote::where('approved', true)->where('notsad', false)->orderby('xianyu', 'desc')->limit(30)->get();
+$outfile = "";
+foreach ($quotes as $quote){
+    $user = App\Models\User::find($quote->user_id);
+    $outfile .= "题头：". $quote->quote."\n"."作者：".($quote->anonymous ? ($quote->majia ?? '匿名咸鱼') : $user->name)."\n咸鱼数：".$quote->xianyu."\n\n";
+}
