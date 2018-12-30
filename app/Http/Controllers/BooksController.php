@@ -150,19 +150,19 @@ class BooksController extends Controller
             }
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             if(!$logged){$query = $query->where('bianyuan','=',0);}
-            if(count($bookinfo[0])==1){
+            if (!empty($bookinfo[0])&&(count($bookinfo[0])==1)){
                 $query->where('threads.channel_id','=', $bookinfo[0][0]);
             }
-            if(count($bookinfo[1])<count($book_info['book_lenth_info'])){
+            if((!empty($bookinfo[1]))&&(count($bookinfo[1])<count($book_info['book_lenth_info']))){
                 $query->whereIn('books.book_length',$bookinfo[1]);
             }
-            if(count($bookinfo[2])<count($book_info['book_status_info'])){
+            if((!empty($bookinfo[2]))&&(count($bookinfo[2])<count($book_info['book_status_info']))){
                 $query->whereIn('books.book_status',$bookinfo[2]);
             }
-            if(count($bookinfo[3])<count($book_info['sexual_orientation_info'])){
+            if((!empty($bookinfo[3]))&&(count($bookinfo[3])<count($book_info['sexual_orientation_info']))){
                 $query->whereIn('books.sexual_orientation',$bookinfo[3]);
             }
-            if(count($bookinfo[4])<count($book_info['rating_info'])){
+            if((!empty($bookinfo[4]))&&(count($bookinfo[4])<count($book_info['rating_info']))){
                 $query->where('threads.bianyuan','=',$bookinfo[4][0]-1);
             }
             if((!empty($bookinfo[5]))&&($bookinfo[5][0]>0)){

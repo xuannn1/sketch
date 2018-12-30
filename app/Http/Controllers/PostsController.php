@@ -14,6 +14,7 @@ use Auth;
 use App\Models\Chapter;
 use App\Models\Activity;
 use App\Models\Collection;
+use App\Helpers\Helper;
 
 class PostsController extends Controller
 {
@@ -65,12 +66,14 @@ class PostsController extends Controller
     }
     public function show(Post $post)
     {
-        $thread = $post->thread->load('label','channel');
+        $thread = $post->thread;
+        $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
+        $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
         $book = $thread->book;
         $post->load('owner','reply_to_post.owner');
         $postcomments = $post->allcomments()->with('owner')->paginate(config('constants.items_per_page'));
         $defaultchapter=$post->chapter_id;
-        return view('posts.show',compact('post','thread','postcomments','defaultchapter','book'))->with('show_as_book',false)->with('chapter_replied',true);
+        return view('posts.show',compact('post','thread','postcomments','defaultchapter','book', 'channel','label'))->with('show_as_book',false)->with('chapter_replied',true);
     }
 
     public function destroy($id){
