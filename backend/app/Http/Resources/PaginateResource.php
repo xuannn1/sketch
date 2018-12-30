@@ -1,20 +1,17 @@
 <?php
 
-namespace App\Http\Resources\ThreadResources;
+namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class ThreadsResource extends ResourceCollection
+class PaginateResource extends JsonResource
 {
     /**
-    * Transform the resource collection into an array.
+    * Transform the resource into an array.
     *
     * @param  \Illuminate\Http\Request  $request
     * @return array
     */
-
-    private $pagination;
-
     public function __construct($resource)
     {
         $this->pagination = [
@@ -24,16 +21,9 @@ class ThreadsResource extends ResourceCollection
             'current_page' => $resource->currentPage(),
             'total_pages' => $resource->lastPage()
         ];
-
-        $resource = $resource->getCollection();
-
-        parent::__construct($resource);
     }
     public function toArray($request)
     {
-        return [
-            'threads' => ThreadInfoResource::collection($this->collection),
-            'pagination' => $this->pagination,
-        ];
+        return $this->pagination;
     }
 }

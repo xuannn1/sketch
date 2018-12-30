@@ -17,10 +17,11 @@ Route::middleware('auth:api')->group( function(){
     //Route::resource('thread', 'API\ThreadController');
 });
 Route::post('register', 'API\PassportController@register');
-Route::post('login', 'API\PassportController@login');
+Route::post('login', 'API\PassportController@login')->name('login');
 
 Route::apiResource('thread', 'API\ThreadController');
-Route::apiResource('book', 'API\BookController');
+Route::get('book/{thread}','API\ThreadController@showbook');
+
 Route::apiResource('chapter', 'API\ChapterController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
 Route::apiResource('user', 'API\UserController');

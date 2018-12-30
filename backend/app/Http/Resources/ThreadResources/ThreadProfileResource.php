@@ -3,7 +3,7 @@
 namespace App\Http\Resources\ThreadResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Auth;
+use App\Http\Resources\AuthorIdentifierResource;
 
 class ThreadProfileResource extends JsonResource
 {
@@ -15,10 +15,15 @@ class ThreadProfileResource extends JsonResource
      */
     public function toArray($request)
     {
-        if((!$this->is_bianyuan)||(Auth::guard('api')->check())){
+        if((!$this->is_bianyuan)||(auth('api')->check())){
             $body = $this->body;
         }else{
             $body = '';
+        }
+        if ((!$this->is_anonymous)||((auth('api')->check())&&(auth('api')->id()===$this->user_id))){
+            $author = new AuthorIdentifierResource($this->author);
+        }else{
+            $author = [];
         }
         return [
             'type' => 'thread',
@@ -48,7 +53,13 @@ class ThreadProfileResource extends JsonResource
                 'no_reply' => $this->no_reply,
                 'last_responded_at' =>$this->last_responded_at ? $this->last_responded_at->toDateTimeString():null,
             ],
-            'relationships' => new ThreadRelationshipResource($this),
+            'author' => $author,
+            'channel'        => [
+                'type'             => 'channel',
+                'id'                => $this->channel_id,
+                'attributes'        => $this->simpleChannel(),
+            ],
+            'tags' => TagResource::collection($this->tags)
         ];
     }
 }

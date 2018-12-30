@@ -26,6 +26,10 @@ class Thread extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
+    }
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name');

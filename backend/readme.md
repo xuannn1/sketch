@@ -82,3 +82,24 @@ http://127.0.0.1:8000/api
 ## 获得全部tag信息
 http://127.0.0.1:8000/api/config/allTags
 （不需要使用token登陆信息）
+
+## 获得讨论帖/书籍index信息
+http://127.0.0.1:8000/api/thread
+视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）
+可选的筛选变量及效果：
+InChannel=1_2_3(返回在channel1，2，3中的讨论帖)
+withBook=book_only//none_book_only(是否仅返回书籍/讨论帖信息)
+withTag=1_22_4(仅返回含有1，22，4这几个tag的书籍/讨论帖)
+excludeTag=1_22_4(仅返回不含有1，22，4这几个tag的书籍/讨论帖)
+withBianyuan=bianyuan_only//none_bianyuan_only（是否仅返回边缘/非边缘书籍/讨论帖）
+ordered=last_added_chapter_at（按最新更新时间排序）//jifen（按总积分排序）//weighted_jifen（按平衡积分排序）//created_at（按创建时间排序）//id（按id排序）//collections（按收藏总数排序）//total_char（按总字数排序）
+
+## 获得讨论帖首页信息（首楼，及首页的回帖）
+http://127.0.0.1:8000/api/thread/1
+按讨论帖格式，返回id=1（id可以更换成其他数字）的讨论帖首页信息：thread,channel,tags,posts,pagination
+视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息）
+
+## 获得书籍首页信息（首楼，章节列表）
+http://127.0.0.1:8000/api/book/1
+按书籍格式，返回id=1（id可以更换成其他数字）的书籍首页信息。thread,channel,tags,chapters（章节）,volumns（分卷）,pagination
+视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息）

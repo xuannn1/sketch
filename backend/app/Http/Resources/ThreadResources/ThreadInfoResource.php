@@ -3,6 +3,7 @@
 namespace App\Http\Resources\ThreadResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\AuthorIdentifierResource;
 
 class ThreadInfoResource extends JsonResource
 {
@@ -14,6 +15,11 @@ class ThreadInfoResource extends JsonResource
     */
     public function toArray($request)
     {
+        if (!$this->is_anonymous){
+            $author = new AuthorIdentifierResource($this->author);
+        }else{
+            $author = [];
+        }
         return [
             'type' => 'thread',
             'id' => $this->id,
@@ -39,7 +45,13 @@ class ThreadInfoResource extends JsonResource
                 'no_reply' => $this->no_reply,
                 'last_responded_at' => $this->last_responded_at? $this->last_responded_at->toDateTimeString():null,
             ],
-            'relationships' => new ThreadRelationshipResource($this),
+            'author' => $author,
+            'channel'        => [
+                'type'             => 'channel',
+                'id'                => $this->channel_id,
+                'attributes'        => $this->simpleChannel(),
+            ],
+            'tags' => TagResource::collection($this->tags)
         ];
     }
 

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Resources\PostResources;
+namespace App\Http\Resources\ThreadResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\AuthorIdentifierResource;
 
 class PostResource extends JsonResource
 {
@@ -14,10 +15,15 @@ class PostResource extends JsonResource
      */
     public function toArray($request)
     {
-        if((!$this->is_bianyuan)||(Auth::guard('api')->check())){
+        if((!$this->is_bianyuan)||(auth('api')->check())){
             $body = $this->body;
         }else{
             $body = '';
+        }
+        if((!$this->is_anonymous)||((auth('api')->check())&&(auth('api')->id()===$this->user_id))){
+            $author = new AuthorIdentifierResource($this->author);
+        }else{
+            $author = [];
         }
         return [
             'type' => 'post',
@@ -41,7 +47,7 @@ class PostResource extends JsonResource
                 'is_bianyuan' => $this->is_bianyuan,
                 'last_responded_at' => $this->last_responded_at?  $this->last_responded_at->toDateTimeString():null,
             ],
-            'relationships' => new PostRelationshipResource($this),
+            'author' => $author,
         ];
     }
 }

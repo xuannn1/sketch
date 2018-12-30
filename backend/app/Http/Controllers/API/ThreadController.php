@@ -4,21 +4,24 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Auth;
 use App\Models\Thread;
 use App\Models\Post;
+use App\Models\Chapter;
 use App\Http\Requests\StoreThread;
-use App\Http\Resources\ThreadResources\ThreadsResource;
+use App\Http\Resources\ThreadResources\ThreadInfoResource;
 use App\Http\Resources\ThreadResources\ThreadProfileResource;
-use App\Http\Resources\PostResources\PostsResource;
+use App\Http\Resources\ThreadResources\PostResource;
+use App\Http\Resources\ThreadResources\ChapterInfoResource;
+use App\Http\Resources\ThreadResources\VolumnResource;
+use App\Http\Resources\PaginateResource;
 
 class ThreadController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show']);
-        $this->middleware('filter_thread')->only('show');
+        $this->middleware('auth:api')->except(['index', 'show', 'showbook']);
+        $this->middleware('filter_thread')->only(['show','showbook']);
     }
     /**
     * Display a listing of the resource.
@@ -30,14 +33,17 @@ class ThreadController extends Controller
         $threads = Thread::threadInfo()
         ->inChannel($request->channel)
         ->isPublic()
-        ->with('author')
+        ->with('author', 'tags')
         ->withBook($request->withBook)
         ->withBianyuan($request->withBianyuan)
         ->withTag($request->tag)
         ->excludeTag($request->excludeTag)
         ->ordered($request->ordered)
         ->paginate(config('constants.threads_per_page'));
-        return response()->success(new ThreadsResource($threads));
+        return response()->success([
+            'threads' => ThreadInfoResource::collection($threads),
+            'paginate' => new PaginateResource($threads),
+        ]);
         //return view('test',compact('threads'));
     }
 
@@ -75,8 +81,30 @@ class ThreadController extends Controller
         ->paginate(config('constants.posts_per_page'));
         return response()->success([
             'thread' => new ThreadProfileResource($thread),
-            'posts' => new PostsResource($posts),
+            'posts' => PostResource::collection($posts),
+            'paginate' => new PaginateResource($posts),
         ]);
+    }
+
+    public function showbook($thread)
+    {
+        $thread = Thread::find($thread);
+        if($thread){
+            $thread->load('author', 'tags');
+            $posts = Post::where('thread_id',$thread->id)
+            ->where('is_maintext', true)
+            ->with('chapter.volumn')
+            ->get();
+            $posts->sortBy('chapter.order_by');
+            $volumns = $posts->pluck('chapter.volumn')->unique();
+            return response()->success([
+                'thread' => new ThreadProfileResource($thread),
+                'chapters' => ChapterInfoResource::collection($posts),
+                'volumns' => VolumnResource::collection($volumns),
+            ]);
+        }else{
+            return response()->error(config('error.404'), 404);
+        }
     }
 
     /**
