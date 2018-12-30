@@ -138,8 +138,14 @@ class Thread extends Model
             case 'created_at'://创建时间
             return $query->orderBy('created_at', 'desc');
             break;
-            case 'id'://创建时间
+            case 'id'://创建顺序
             return $query->orderBy('id', 'desc');
+            break;
+            case 'collections'://收藏数
+            return $query->orderBy('collections', 'desc');
+            break;
+            case 'total_char'://总字数
+            return $query->orderBy('total_char', 'desc');
             break;
             default://默认按最后回复排序
             return $query->orderBy('last_responded_at', 'desc');
