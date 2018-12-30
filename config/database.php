@@ -52,6 +52,9 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => 'InnoDB',
+            'options'   => [
+                PDO::ATTR_TIMEOUT => 5,
+            ],
         ],
 
         'pgsql' => [
