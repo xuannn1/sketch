@@ -74,3 +74,11 @@ password: password
 
 ## 错误处理 error
 全部error 列表目前存放在 config/error.php中
+
+## 首页信息呈现
+http://127.0.0.1:8000/api
+（不需要使用token登陆信息）
+
+## 获得全部tag信息
+http://127.0.0.1:8000/api/config/allTags
+（不需要使用token登陆信息）

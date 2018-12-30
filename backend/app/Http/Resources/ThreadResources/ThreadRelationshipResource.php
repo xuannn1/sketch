@@ -15,7 +15,7 @@ class ThreadRelationshipResource extends JsonResource
     */
     public function toArray($request)
     {
-        if ((!$this->is_anonymous)||(Auth::guard('api')->check()&&((Auth::guard('api')->user()->is_admin)||(Auth::guard('api')->id()===$this->user_id)))){
+        if (!$this->is_anonymous){
             $author = new AuthorIdentifierResource($this->author);
         }else{
             $author = [];

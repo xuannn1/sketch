@@ -31,7 +31,6 @@ class ChapterInfoResource extends JsonResource
                 'xianyus' => $this->mainpost->xianyus,
                 'shengfans' => $this->mainpost->shengfans,
                 'replies' => $this->mainpost->replies,
-                'is_popular' => $this->mainpost->is_popular,
                 'is_bianyuan' => $this->mainpost->is_bianyuan,
                 'last_responded_at' => $this->mainpost->last_responded_at?  $this->mainpost->last_responded_at->toDateTimeString():null,
             ],
