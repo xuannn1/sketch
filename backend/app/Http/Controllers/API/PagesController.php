@@ -9,6 +9,7 @@ use App\Helpers\ConstantObjects;
 use App\Http\Resources\QuoteResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\ThreadResources\ThreadBriefResource;
+use App\Http\Resources\ThreadResources\TagProfileResource;
 use Cache;
 
 class PagesController extends Controller
@@ -25,8 +26,9 @@ class PagesController extends Controller
     }
     public function allTags()
     {
+        $tags = ConstantObjects::allTags();
         return response()->success([
-            'tags' => ConstantObjects::allTags()->toArray()
+            'tags' => TagProfileResource::collection(ConstantObjects::allTags()),
         ]);
     }
 }

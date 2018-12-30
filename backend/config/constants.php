@@ -7,10 +7,10 @@ return [
     'threads_per_page' => 5,//一页显示多少书/讨论帖
     'chapters_per_page' => 10, //一页显示多少章节
     'posts_per_page' => 5,//一页显示多少回帖
-    'quotes_on_homepage' => 10,//首页一次申请调度多少个题头
-    'books_on_homepage' => 5,//首页显示多少本最新图书
-    'threads_on_homepage' => 5,//首页显示多少本最新讨论帖
-    'statuses_on_homepage' => 5,//首页显示多少个最新原创状态
+    'quotes_on_homepage' => 2,//首页一次申请调度多少个题头
+    'books_on_homepage' => 2,//首页显示多少本最新图书
+    'threads_on_homepage' => 2,//首页显示多少本最新讨论帖
+    'statuses_on_homepage' => 2,//首页显示多少个最新原创状态
 
     // 'vote_info' => [
     //     'attitude_types' => [
