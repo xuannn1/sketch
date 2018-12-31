@@ -30,7 +30,7 @@ class ThreadInfoResource extends JsonResource
                 'last_post_preview' => $this->last_post_preview,
                 'is_anonymous' => $this->is_anonymous,
                 'majia' => $this->majia ?? '匿名咸鱼',
-                'created_at' => $this->created_at ? $this->created_at->toDateTimeString():null,
+                'created_at' => (string)$this->created_at,
                 'xianyus' => $this->xianyus,
                 'shengfans' => $this->shengfans,
                 'views' => $this->views,
@@ -43,7 +43,7 @@ class ThreadInfoResource extends JsonResource
                 'is_public' => $this->is_public,
                 'is_bianyuan' => $this->is_bianyuan,
                 'no_reply' => $this->no_reply,
-                'last_responded_at' => $this->last_responded_at? $this->last_responded_at->toDateTimeString():null,
+                'last_responded_at' => (string)$this->last_responded_at,
             ],
             'author' => $author,
             'channel'        => [

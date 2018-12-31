@@ -71,19 +71,28 @@ class ThreadController extends Controller
     * @param  int  $thread
     * @return \Illuminate\Http\Response
     */
-    public function show($thread)
+    public function show(Thread $thread, Request $request)
     {
-        $thread = Thread::find($thread);
         $thread->load('author');
         $posts = Post::where('thread_id',$thread->id)
         ->with('author')
+        ->userOnly($request->userOnly)
         ->orderBy('created_at','asc')
         ->paginate(config('constants.posts_per_page'));
+        //return view('test', compact('posts'));
+        //上面这一行代码，是为了通过debugler测试query实际效率。
+
+        //不是第一页的时候，文案的信息就不再返回了，减少带宽损耗
+        if(request()->page>1){
+            $thread->body = '';
+        }
+        
         return response()->success([
             'thread' => new ThreadProfileResource($thread),
             'posts' => PostResource::collection($posts),
             'paginate' => new PaginateResource($posts),
         ]);
+
     }
 
     public function showbook($thread)
@@ -97,10 +106,22 @@ class ThreadController extends Controller
             ->get();
             $posts->sortBy('chapter.order_by');
             $volumns = $posts->pluck('chapter.volumn')->unique();
+            $most_upvoted = Post::where('thread_id',$thread->id)
+            ->where('is_maintext', false)
+            ->with('author')
+            ->orderBy('up_votes', 'desc')
+            ->first();
+            $newest_comment = Post::where('thread_id',$thread->id)
+            ->where('is_maintext', false)
+            ->with('author')
+            ->orderBy('created_at', 'desc')
+            ->first();
             return response()->success([
                 'thread' => new ThreadProfileResource($thread),
                 'chapters' => ChapterInfoResource::collection($posts),
                 'volumns' => VolumnResource::collection($volumns),
+                'most_upvoted' => new PostResource($most_upvoted),
+                'newest_comment' => new PostResource($newest_comment),
             ]);
         }else{
             return response()->error(config('error.404'), 404);

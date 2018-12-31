@@ -16,9 +16,7 @@ class CreateThreadsTable extends Migration
         Schema::create('threads', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->index();//作者id
-            //$table->integer('thread_group');//讨论帖的对应权限：0-水区 1:普通文章 2:仲裁 3:边缘类 10:作业 >10 系统专用
             $table->unsignedInteger('channel_id')->default(0);//是哪个频道下面的
-            //$table->unsignedInteger('label_id')->default(0);//是哪个大类下面的
             $table->string('title')->nullable();//讨论帖总标题
             $table->string('brief')->nullable();//讨论帖简介小灰字
             $table->text('body')->nullable();//讨论帖正文

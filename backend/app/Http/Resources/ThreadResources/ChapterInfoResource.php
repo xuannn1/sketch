@@ -23,11 +23,13 @@ class ChapterInfoResource extends JsonResource
                 'title' => $chapter->title,
                 'brief' => $chapter->brief,
                 'volumn_id' => $chapter->volumn_id,
+                'views' => $chapter->views,
+                'characters' => $chapter->characters,
 
                 'is_anonymous' => $this->is_anonymous,
                 'majia' => $this->majia ?? '匿名咸鱼',
-                'created_at' => $this->created_at ? $this->created_at->toDateTimeString():null,
-                'last_edited_at' => $this->last_edited_at ? $this->last_edited_at->toDateTimeString():null,
+                'created_at' => (string)$this->created_at,
+                'last_edited_at' => (string)$this->last_edited_at,
                 'reply_to_post_id' => $this->reply_to_post_id,
                 'is_maintext' => $this->is_maintext,
                 'use_markdown' => $this->markdown,
@@ -39,7 +41,7 @@ class ChapterInfoResource extends JsonResource
                 'replies' => $this->replies,
                 'is_folded' => $this->is_folded,
                 'is_bianyuan' => $this->is_bianyuan,
-                'last_responded_at' => $this->last_responded_at?  $this->last_responded_at->toDateTimeString():null,
+                'last_responded_at' => (string)$this->last_responded_at,
             ],
         ];
     }

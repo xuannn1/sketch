@@ -11,6 +11,7 @@ return [
     'books_on_homepage' => 2,//首页显示多少本最新图书
     'threads_on_homepage' => 2,//首页显示多少本最新讨论帖
     'statuses_on_homepage' => 2,//首页显示多少个最新原创状态
+    'preview_len' => 15,//在预览处显示多少个字符
 
     // 'vote_info' => [
     //     'attitude_types' => [

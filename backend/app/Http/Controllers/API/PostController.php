@@ -4,9 +4,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
-use App\Http\Resources\PostResource;
-use App\Http\Resources\PostsResource;
+use App\Models\Thread;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StorePost;
 
 class PostController extends Controller
 {
@@ -24,12 +24,7 @@ class PostController extends Controller
 
     public function index($thread, Request $request)
     {
-        $posts = Post::where('thread_id', $thread)
-        ->inChapter($request->chapter)
-        ->withComments($request->withComments)
-        ->with('author')
-        ->paginate(config('constants.posts_per_page'));
-        return response()->success(new PostsResource($posts));
+
     }
 
     /**
@@ -48,9 +43,10 @@ class PostController extends Controller
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-    public function store(Request $request)
+    public function store(Thread $thread, StorePost $form)
     {
-        //
+        $post = $form->generatePost();
+        return response()->success($post);
     }
 
     /**
@@ -61,7 +57,7 @@ class PostController extends Controller
     */
     public function show(Post $post)
     {
-        return new PostResource($post);
+        //return new PostResource($post);
     }
 
     /**

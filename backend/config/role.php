@@ -9,9 +9,11 @@ return [
         ],
         'editor' => [
             'can_see_homework' => true,
+            'can_review_quotes' => true,
         ],
         'senior_editor' => [
             'can_see_homework' => true,
+            'can_review_quotes' => true,
         ],
         'admin' => [
             'can_manage_anything' => true,

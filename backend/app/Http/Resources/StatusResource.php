@@ -19,7 +19,7 @@ class StatusResource extends JsonResource
             'id' => $this->id,
             'attributes' => [
                 'body' => $this->body,
-                'created_at' => $this->created_at ? $this->created_at->toDateTimeString() : '',
+                'created_at' => (string)$this->created_at,
             ],
             'author' => new AuthorIdentifierResource($this->author),
         ];

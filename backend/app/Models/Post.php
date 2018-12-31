@@ -63,4 +63,11 @@ class Post extends Model
     {
         return $query->select( array_diff( $this->columns,(array) $value));
     }
+    public function scopeUserOnly($query, $userOnly)
+    {
+        if($userOnly){
+            return $query->where('user_id', $userOnly)->where('is_anonymous', false);
+        }
+        return $query;
+    }
 }

@@ -1,5 +1,5 @@
-<!-- @foreach($posts as $i)
+@foreach($posts as $i)
 <div class="">
     {{$i->id}}
 </div>
-@endforeach -->
+@endforeach

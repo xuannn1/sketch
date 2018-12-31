@@ -1,10 +1,24 @@
 <?php
 
 namespace App\Helpers;
-
+use Genert\BBCode\BBCode;
 class StringProcess
 {
-    
+    public static function trimtext($text=null, int $len)//截取一个特定长度的字串
+    {
+        $bbCode = new BBCode();
+        $bbCode = self::addCustomParserBBCode($bbCode);
+
+        $text = self::trimSpaces($text);//去除字串中多余的空行，html-tag，每一段开头的空格
+        $text = $bbCode->stripBBCodeTags((string) $text);
+        $text = preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text);
+        $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
+        if(iconv_strlen($text) > iconv_strlen($substr)){
+            $substr.='…';
+        }
+        return $substr;
+    }
+
     public static function trimSpaces($text=null)//去掉输入的一段文字里，多余的html-tag，多余的换行，和每段开头多余的空格
     {
         //去除内容中的html-tag（前端需要对html-tag类似物进行提醒）
@@ -23,6 +37,21 @@ class StringProcess
         }
         return $text;
     }
+
+    // public static function select_from_postion($text=null, int $position)//从很多段回答中，截取一段句子
+    // {
+    //     $bbCode = new BBCode();
+    //     $bbCode = self::addCustomParserBBCode($bbCode);
+    //
+    //     $text = self::trimSpaces($text);//去除字串中多余的空行，html-tag，每一段开头的空格
+    //     $text = $bbCode->stripBBCodeTags((string) $text);
+    //     $text = preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text);
+    //     $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
+    //     if(iconv_strlen($text) > iconv_strlen($substr)){
+    //         $substr.='…';
+    //     }
+    //     return $substr;
+    // }
     //
     // public static function htmltotext($post= null)
     // {
@@ -34,81 +63,81 @@ class StringProcess
     //     return $post;
     // }
     //
-    // public static function addCustomParserBBCode($bbCode){
-    //     $bbCode->addParser(
-    //         'blockquote',
-    //         '/\[blockquote\](.*?)\[\/blockquote\]/s',
-    //         '<blockquote>$1</blockquote>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'unordered list',
-    //         '/\[ul\](.*?)\[\/ul\]/s',
-    //         '<ul>$1</ul>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'line breaker',
-    //         '/\[br\]/s',
-    //         '<br>',
-    //         ''
-    //     );
-    //     $bbCode->addParser(
-    //         'ordered list',
-    //         '/\[ol\](.*?)\[\/ol\]/s',
-    //         '<ol>$1</ol>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'list',
-    //         '/\[li\](.*?)\[\/li\]/s',
-    //         '<li>$1</li>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'size',
-    //         '/\[size\=(.*?)\](.*?)\[\/size\]/s',
-    //         '<span style="font-size:$1px">$2</span>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'color',
-    //         '/\[color\=(.*?)\](.*?)\[\/color\]/s',
-    //         '<span style="color:$1">$2</span>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'highlight',
-    //         '/\[highlight\=(.*?)\](.*?)\[\/highlight\]/s',
-    //         '<span style="background-color:$1">$2</span>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'table',
-    //         '/\[table\](.*?)\[\/table\]/s',
-    //         '<table>$1</table>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'table tr',
-    //         '/\[tr\](.*?)\[\/tr\]/s',
-    //         '<tr>$1</tr>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'table td',
-    //         '/\[td\](.*?)\[\/td\]/s',
-    //         '<td>$1</td>',
-    //         '$1'
-    //     );
-    //     $bbCode->addParser(
-    //         'table th',
-    //         '/\[th\](.*?)\[\/th\]/s',
-    //         '<th>$1</th>',
-    //         '$1'
-    //     );
-    //     return $bbCode;
-    // }
+    public static function addCustomParserBBCode($bbCode){
+        $bbCode->addParser(
+            'blockquote',
+            '/\[blockquote\](.*?)\[\/blockquote\]/s',
+            '<blockquote>$1</blockquote>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'unordered list',
+            '/\[ul\](.*?)\[\/ul\]/s',
+            '<ul>$1</ul>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'line breaker',
+            '/\[br\]/s',
+            '<br>',
+            ''
+        );
+        $bbCode->addParser(
+            'ordered list',
+            '/\[ol\](.*?)\[\/ol\]/s',
+            '<ol>$1</ol>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'list',
+            '/\[li\](.*?)\[\/li\]/s',
+            '<li>$1</li>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'size',
+            '/\[size\=(.*?)\](.*?)\[\/size\]/s',
+            '<span style="font-size:$1px">$2</span>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'color',
+            '/\[color\=(.*?)\](.*?)\[\/color\]/s',
+            '<span style="color:$1">$2</span>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'highlight',
+            '/\[highlight\=(.*?)\](.*?)\[\/highlight\]/s',
+            '<span style="background-color:$1">$2</span>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table',
+            '/\[table\](.*?)\[\/table\]/s',
+            '<table>$1</table>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table tr',
+            '/\[tr\](.*?)\[\/tr\]/s',
+            '<tr>$1</tr>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table td',
+            '/\[td\](.*?)\[\/td\]/s',
+            '<td>$1</td>',
+            '$1'
+        );
+        $bbCode->addParser(
+            'table th',
+            '/\[th\](.*?)\[\/th\]/s',
+            '<th>$1</th>',
+            '$1'
+        );
+        return $bbCode;
+    }
     //
     // public static function sosadMarkdown($post= null)
     // {

@@ -26,8 +26,8 @@ class TagProfileResource extends JsonResource
                 'channel_id' => $this->channel_id,
                 'parent_id' => $this->parent_id,
                 'tagged_books' => $this->tagged_books,
-                'created_at' => $this->created_at,
-                'updated_at' => $this->updated_at,
+                'created_at' => (string)$this->created_at,
+                'updated_at' => (string)$this->updated_at,
             ]
         ];
     }
