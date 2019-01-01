@@ -58,6 +58,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
         //return new PostResource($post);
+        //应该要显示这个post，还有它的全部回帖，还有它的
     }
 
     /**
