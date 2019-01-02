@@ -26,7 +26,7 @@ class CreatePostsTable extends Migration
             $table->dateTime('last_edited_at')->nullable();//最后编辑时间
             $table->unsignedInteger('reply_to_post_id')->default(0)->index();//如果是回帖，给出它回复对象的id
             $table->string('reply_to_post_preview')->nullable();//如果是回帖，给出它回复对象的preview
-            $table->integer('reply_position')->default(0);//回复对象句子在原来评论中的位置
+            $table->unsignedInteger('reply_position')->default(0);//回复对象句子在原来评论中的位置
             $table->boolean('is_maintext')->default(false);//是否是正文章节
             $table->boolean('is_comment')->default(false);//是否是回复某章节
             $table->boolean('use_markdown')->default(false);//是否使用md语法
