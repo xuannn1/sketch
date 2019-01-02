@@ -1,5 +1,3 @@
-import { number } from 'prop-types';
-
 export namespace DataType {
     export interface Quote {
         id:number;

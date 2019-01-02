@@ -30,14 +30,14 @@ class CreateThreadsTable extends Migration
             $table->boolean('use_markdown')->default(false);//是否使用md语法
             $table->boolean('use_indentation')->default(true);//是否使用段首缩进格式
 
-            $table->integer('xianyus')->default(0);//得到的咸鱼
-            $table->integer('shengfans')->default(0);//得到的咸鱼
+            $table->unsignedInteger('xianyus')->default(0);//得到的咸鱼
+            $table->unsignedInteger('shengfans')->default(0);//得到的咸鱼
             $table->unsignedInteger('views')->default(0);//点击数
-            $table->integer('replies')->default(0);//得到的回复数
-            $table->integer('collections')->default(0);//被收藏次数
-            $table->integer('downloads')->default(0);//被下载次数
-            $table->integer('jifen')->default(0);//总积分
-            $table->integer('weighted_jifen')->default(0);//被字数模块平衡后的积分
+            $table->unsignedInteger('replies')->default(0);//得到的回复数
+            $table->unsignedInteger('collections')->default(0);//被收藏次数
+            $table->unsignedInteger('downloads')->default(0);//被下载次数
+            $table->unsignedInteger('jifen')->default(0);//总积分
+            $table->unsignedInteger('weighted_jifen')->default(0);//被字数模块平衡后的积分
 
             $table->boolean('is_locked')->default(false);//是否锁帖
             $table->boolean('is_public')->default(true);//是否公开
