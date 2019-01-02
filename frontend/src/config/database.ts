@@ -3,7 +3,7 @@ export type IPAddress = string;
 export type Address = string;
 export type UInt = number;
 export type Increments = number;
-export type Timestamp = Date;
+export type Timestamp = string;
 
 export interface Users_Default {
     id:Increments;
