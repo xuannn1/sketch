@@ -4,20 +4,24 @@ return [
         'student' => [
             'can_see_homework' => true,
         ],
-        'loyal_student' => [
+        'homework-reviewer' => [
             'can_see_homework' => true,
         ],
         'editor' => [
             'can_see_homework' => true,
             'can_review_quotes' => true,
+            'can_recommend' => true,
         ],
         'senior_editor' => [
             'can_see_homework' => true,
             'can_review_quotes' => true,
+            'can_recommend' => true,
+            'can_review_recommendation' => true,
         ],
         'admin' => [
-            'can_manage_anything' => true,
             'can_see_anything' => true,
+            'can_review_anything' => true,
+            'can_manage_anything' => true,
         ],
         'channel_admin' => [
             'can_manage_channel' => true,

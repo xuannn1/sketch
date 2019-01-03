@@ -53,6 +53,11 @@ class User extends Authenticatable
         return ConstantObjects::role_users()->where('user_id', $this->id);
     }
 
+    public function recommendations()
+    {
+        return $this->belongsToMany(Recommendation::class, 'user_recommendation', 'user_id', 'recommendation_id');
+    }
+
     /**
     * 查看对应用户的roles里面是否含有某种对应的global permission
     * 举例：$user->hasAccess(['can_see_homework', 'can_see_ip_addresses']) returns true
@@ -106,4 +111,5 @@ class User extends Authenticatable
     {
         return $this->roles()->where('role', $roleSlug)->count() == 1;
     }
+
 }
