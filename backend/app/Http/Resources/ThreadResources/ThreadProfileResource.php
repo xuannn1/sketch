@@ -59,7 +59,8 @@ class ThreadProfileResource extends JsonResource
                 'id'                => $this->channel_id,
                 'attributes'        => $this->simpleChannel(),
             ],
-            'tags' => TagResource::collection($this->tags)
+            'tags' => TagResource::collection($this->tags),
+            'recommendations' => RecommendationResource::collection($this->recommendations)
         ];
     }
 }

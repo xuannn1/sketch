@@ -73,7 +73,8 @@ class ThreadController extends Controller
     */
     public function show(Thread $thread, Request $request)
     {
-        $thread->load('author');
+        $thread->load('author','tags','recommendations.authors');
+        //dd($thread);
         $posts = Post::where('thread_id',$thread->id)
         ->with('author')
         ->userOnly($request->userOnly)
@@ -99,7 +100,7 @@ class ThreadController extends Controller
     {
         $thread = Thread::find($thread);
         if($thread){
-            $thread->load('author', 'tags');
+            $thread->load('author', 'tags', 'recommendations.users');
             $posts = Post::where('thread_id',$thread->id)
             ->where('is_maintext', true)
             ->with('chapter.volumn')

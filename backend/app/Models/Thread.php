@@ -50,6 +50,11 @@ class Thread extends Model
         return $this->morphMany('App\Models\Vote', 'votable');
     }
 
+    public function recommendations()
+    {
+        return $this->hasMany(Recommendation::class)->where('is_public', true);
+    }
+
     public function simpleChannel()
     {
         return ConstantObjects::allChannels()->keyBy('id')->get($this->channel_id)->only(['id','channel_name']);
