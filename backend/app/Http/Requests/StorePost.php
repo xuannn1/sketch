@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Carbon\Carbon;
+use App\Http\Requests\FormRequest;
 use App\Models\Post;
+use Carbon\Carbon;
 use App\Helpers\StringProcess;
 use App\Helpers\ConstantObjects;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
 use DB;
 
 class StorePost extends FormRequest
@@ -91,19 +89,5 @@ class StorePost extends FormRequest
         ->orderBy('created_at', 'desc')
         ->first();
         return (!empty($last_post)) && (strcmp($last_post->body, $post['body']) === 0);
-    }
-
-    /**
-    * Handle a failed validation attempt.
-    *
-    * @param  \Illuminate\Contracts\Validation\Validator  $validator
-    * @return void
-    *
-    * @throws \Illuminate\Validation\ValidationException
-    */
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->error($validator->errors(), 422));
     }
 }

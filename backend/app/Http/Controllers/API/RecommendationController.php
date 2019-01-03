@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Recommendation;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreRecommendation;
+use App\Http\Requests\UpdateRecommendation;
+use App\Http\Controllers\Controller;
 
 class RecommendationController extends Controller
 {
@@ -14,7 +17,7 @@ class RecommendationController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('filter_editor')->except(['index', 'show']);
+        $this->middleware('auth:api')->except(['index','show']);
     }
     public function index()
     {
@@ -37,9 +40,11 @@ class RecommendationController extends Controller
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-    public function store(Request $request)
+    public function store(StoreRecommendation $form)
     {
-        //
+        if(auth('api')->user()->canRecommend())
+        $recommendation = $form->generateRecommendation();
+        return response()->success($recommendation);
     }
 
     /**
@@ -71,9 +76,12 @@ class RecommendationController extends Controller
     * @param  \App\Recommendation  $recommendation
     * @return \Illuminate\Http\Response
     */
-    public function update(Request $request, Recommendation $recommendation)
+    public function update(Recommendation $recommendation, UpdateRecommendation $form)
     {
-        //
+        //identity validation
+        //是自己的recommendation，或者说是资深编辑/管理员
+        $recommendation = $form->updateRecommendation($recommendation);
+        return response()->success($recommendation);
     }
 
     /**

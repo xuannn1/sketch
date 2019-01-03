@@ -58,7 +58,7 @@ class Thread extends Model
     public function scopeInChannel($query, $withChannel)
     {
         if($withChannel){
-            $channels=explode('_',$withChannel);
+            $channels=json_decode($withChannel);
             if(!empty($channels)){
                 return $query->whereIn('channel_id', $channels);
             }
@@ -91,7 +91,7 @@ class Thread extends Model
     public function scopeWithTag($query, $withTag)
     {
         if ($withTag){
-            $tags=explode('_',$withTag);
+            $tags=json_decode($withTag);
             return $query->whereHas('tags', function ($query) use ($tags){
                 $query->whereIn('id', $tags);
             });
@@ -103,7 +103,7 @@ class Thread extends Model
     public function scopeExcludeTag($query, $excludeTag)
     {
         if ($excludeTag){
-            $tags=explode('_',$excludeTag);
+            $tags=json_decode($excludeTag);
             return $query->whereDoesntHave('tags', function ($query) use ($tags){
                 $query->whereIn('id', $tags);
             });

@@ -86,7 +86,7 @@ class ThreadController extends Controller
         if(request()->page>1){
             $thread->body = '';
         }
-        
+
         return response()->success([
             'thread' => new ThreadProfileResource($thread),
             'posts' => PostResource::collection($posts),

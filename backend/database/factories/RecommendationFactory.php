@@ -11,6 +11,6 @@ $factory->define(App\Models\Recommendation::class, function (Faker $faker) use (
         },
         'brief' => $faker->sentence,
         'body' => $faker->paragraph,
-        'recommendation_type' => $types[array_rand($types)],
+        'type' => $types[array_rand($types)],
     ];
 });

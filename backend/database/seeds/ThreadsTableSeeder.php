@@ -6,6 +6,7 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Models\Chapter;
 use App\Models\Volumn;
+use App\Models\Recommendation;
 
 class ThreadsTableSeeder extends Seeder
 {
@@ -35,6 +36,12 @@ class ThreadsTableSeeder extends Seeder
                         $post->save();
                     });
                     $posts = factory(Post::class)->times(2)->create(['thread_id' => $thread->id]);
+                    $recommendation = factory(Recommendation::class)->create([
+                        'is_public' => true,
+                        'thread_id' => $thread->id,
+                    ]);
+                    $users = \App\Models\User::inRandomOrder()->take(2)->pluck('id')->toArray();
+                    $recommendation->users()->sync($users);
                 }
             });
 

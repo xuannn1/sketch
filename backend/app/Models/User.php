@@ -99,6 +99,11 @@ class User extends Authenticatable
         return $this->hasAccess(['can_see_anything'])||$this->hasLocalAccess('can_see_channel', $channel);
     }
 
+    public function canRecommend() : bool
+    {
+        return $this->hasAccess(['can_recommend','can_manage_anything']);
+    }
+
     public function canManageChannel($channel) : bool
     {
         return $this->hasAccess(['can_manage_anything'])||$this->hasLocalAccess('can_manage_channel', $channel);

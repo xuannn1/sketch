@@ -7,6 +7,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use PDOException;
 
 class Handler extends ExceptionHandler
 {
@@ -54,6 +55,21 @@ class Handler extends ExceptionHandler
         if ($exception instanceof HttpException) {
             $statusCode = $exception->getStatusCode();
             return response()->error(config('error.'.$statusCode), $statusCode);
+        }
+        if ($exception instanceof PDOException) {
+            $dbCode = trim($exception->getCode());
+            switch ($dbCode)
+            {
+                case 23000://db duplicate rows
+                return response()->error(config('error.409'), 409);
+                break;
+                default:
+                $errorMessage = 'database invalid';
+            }
+            return response()->error($errorMessage, 595);
+        }
+        if ($exception instanceof Exception) {
+            return response()->error($exception, 599);
         }
         return parent::render($request, $exception);
     }

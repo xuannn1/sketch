@@ -151,17 +151,19 @@ http://127.0.0.1:8000/api/config/allTags
 方法：GET  
 授权：不需要使用token登陆  
 
-###### 4.3.3 获得讨论帖/书籍index信息
+###### 4.3.3 获得讨论帖/书籍index信息——这部分需要重新制作
 http://127.0.0.1:8000/api/thread  
 方法：GET  
 授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）  
-可选的筛选变量及效果：  
-channel=1_2_3(只返回出现在channel1，2，3中的讨论帖)  
-withBook=book_only//none_book_only(是否仅返回书籍/讨论帖信息)  
-withTag=1_22_4(仅返回含有1，22，4这几个tag的书籍/讨论帖)  
-excludeTag=1_22_4(仅返回不含有1，22，4这几个tag的书籍/讨论帖)  
-withBianyuan=bianyuan_only//none_bianyuan_only（是否仅返回边缘/非边缘书籍/讨论帖）  
-ordered=last_added_chapter_at（按最新更新时间排序）//jifen（按总积分排序）//weighted_jifen（按平衡积分排序）//created_at（按创建时间排序）//id（按id排序）//collections（按收藏总数排序）//total_char（按总字数排序）  
+可选的筛选变量及效果：
+
+channel(array)=[1,2,3] （只返回出现在channel1，2，3中的讨论帖)  
+withBook(string)='book_only'/'none_book_only' （是否仅返回书籍/讨论帖信息)  
+tag(array)=[1,22,4]（仅返回含有1，22，4这几个tag的书籍/讨论帖)  
+excludeTag(array)=[1,22,4]（仅返回不含有1，22，4这几个tag的书籍/讨论帖)  
+withBianyuan(string)='bianyuan_only'/'none_bianyuan_only'（是否仅返回边缘/非边缘书籍/讨论帖）  
+ordered(string)='last_added_chapter_at'/'jifen'/'weighted_jifen'/'created_at'/'id'/'collections'/'total_char'（按最新更新时间排序/按总积分排序/按平衡积分排序/按创建时间排序/按id排序/按收藏总数排序/按总字数排序）  
+
 
 ###### 4.3.4 获得讨论帖首页信息（首楼，及首页的回帖）
 http://127.0.0.1:8000/api/thread/1  
@@ -183,9 +185,21 @@ http://127.0.0.1:8000/api/thread
 方法：POST  
 授权：必须登陆  
 必填项：  
-channel  
-title  
-brief  
-body  
+channel(numeric) 数字，必须为自己有权限编辑的channel  
+title(string)
+brief(string)
+body(string)
 
 ###### 4.4.2 建立post
+
+
+###### 4.4.3 建立recommendation (书籍推荐)
+http://127.0.0.1:8000/api/recommendation
+方法：POST  
+授权：必须登陆,必须具有editor或senior_editor或admin身份  
+必填项：  
+thread_id:必须具有能够检索到的一个被推荐thread  
+brief(string):必须具有一句话推荐简介  
+type(string):必须是下面array中的一项['short','long','topic']  
+选填项:  
+body(string):长推的话，在这里写入长推推荐语  

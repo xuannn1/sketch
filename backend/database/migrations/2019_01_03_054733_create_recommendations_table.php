@@ -18,12 +18,12 @@ class CreateRecommendationsTable extends Migration
             $table->unsignedInteger('thread_id');//被推荐的书籍或讨论帖
             $table->string('brief')->nullable();//简介
             $table->text('body')->nullable();//推荐正文
-            $table->string('recommendation_type')->nullable();//推荐类型：long，short，topic：长推，短推，专题。。。
+            $table->string('type',10)->nullable();//推荐类型：long，short，topic：长推，短推，专题。。。
             $table->boolean('is_public')->default(false);//是否公开
             $table->boolean('is_past')->default(false);//是否属于往期推荐
             $table->unsignedInteger('views')->default(0);//因为它而点击进入thread的数量
             $table->dateTime('created_at')->nullable();//创建时间
-            $table->index(['thread_id', 'recommendation_type']);
+            $table->unique(['thread_id', 'type']);
         });
     }
 
