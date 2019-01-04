@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Carbon\Carbon;
 use App\Models\Post;
+use App\Models\Thread as Thread;
 use App\Helpers\StringProcess;
 use App\Helpers\ConstantObjects;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -21,6 +22,7 @@ class StorePost extends FormRequest
     public function authorize()
     {
         $thread = request()->route('thread');
+
         return (($thread->is_public)&&(!$thread->no_reply))||(auth('api')->id()===$thread->user_id)||(auth('api')->user()->canManageChannel($thread->channel_id));
     }
 
@@ -38,6 +40,19 @@ class StorePost extends FormRequest
         ];
     }
 
+    public function updatePost($post){
+
+        $data = $this->only('body');
+        $data['body'] = StringProcess::trimSpaces($data['body']);
+        $data['preview']=StringProcess::trimtext($data['body'], 50);
+        $data['is_anonymous']=$this->anonymous ? 1:0;
+        $data['use_markdown']=$this->markdown ? true:false;
+        $data['use_indentation']=$this->indentation ? true:false;
+        $data['allow_as_longpost']=$this->as_longcomment ? true:false;
+        $data['last_edited_at']=Carbon::now();
+        $post->update($data);
+        return $post;
+    }
     public function generatePost()
     {
         $thread = request()->route('thread');
