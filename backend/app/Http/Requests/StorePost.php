@@ -50,6 +50,7 @@ class StorePost extends FormRequest
         $data['use_indentation']=$this->indentation ? true:false;
         $data['allow_as_longpost']=$this->as_longcomment ? true:false;
         $data['last_edited_at']=Carbon::now();
+        
         $post->update($data);
         return $post;
     }

@@ -90,9 +90,9 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(StorePost $form,  Post $post)
+    public function update(StorePost $form,  $id)
     {
-
+        $post = Post::findorFail($id);
         $thread=$post->thread;
         $channel=$thread->channel;
         if ((Auth::user()->canManageChannel($channel)==true)||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($channel->allow_edit==true))){
