@@ -1,16 +1,24 @@
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
-/.idea
-/.vagrant
-Homestead.json
-Homestead.yaml
-npm-debug.log
+# common
+.DS_Store
+.vscode
+.idea
+node_modules
 yarn-error.log
-.env
-.env-x
-.env-y
-/public/css
-/public/js
+
+
+# backend
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/vendor
+backend/nbproject
+backend/.vagrant
+backend/Homestead.json
+backend/Homestead.yaml
+backend/npm-debug.log
+backend/.env
+backend/.phpunit.result.cache
+
+
+# frontend
+frontend/dist
