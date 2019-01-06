@@ -21,12 +21,12 @@ class QuoteResource extends JsonResource
         }
         return [
             'type' => 'quote',
-            'id' => $this->id,
+            'id' => (int)$this->id,
             'attributes' => [
-                'body' => $this->body,
-                'xianyus' => $this->xianyus,
-                'is_anonymous' => $this->is_anonymous,
-                'majia' => $this->majia,
+                'body' => (string)$this->body,
+                'xianyus' => (int)$this->xianyus,
+                'is_anonymous' => (bool)$this->is_anonymous,
+                'majia' => (string)$this->majia,
             ],
             'author' => $author,
         ];

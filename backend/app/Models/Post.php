@@ -17,7 +17,7 @@ class Post extends Model
         'creation_ip',
     ];
 
-    protected $columns = array('id', 'user_id', 'thread_id', 'body', 'is_anonymous', 'majia', 'creation_ip', 'created_at', 'last_edited_at', 'reply_to_post_id', 'reply_to_post_preview', 'reply_position', 'is_maintext', 'is_comment', 'use_markdown', 'use_indentation', 'up_votes', 'down_votes', 'fold_votes', 'funny_votes', 'xianyus', 'shengfans', 'replies', 'is_folded', 'is_longpost', 'allow_as_longpost', 'is_bianyuan', 'last_responded_at', 'deleted_at')  ; // 从这里排除可以不检出的column
+    protected $columns = array('id', 'user_id', 'thread_id', 'body', 'is_anonymous', 'majia', 'creation_ip', 'created_at', 'last_edited_at', 'reply_to_post_id', 'reply_to_post_preview', 'reply_position', 'is_component', 'is_post_comment', 'use_markdown', 'use_indentation', 'up_votes', 'down_votes', 'fold_votes', 'funny_votes', 'xianyus', 'shengfans', 'replies', 'is_folded', 'is_longpost', 'allow_as_longpost', 'is_bianyuan', 'last_responded_at', 'deleted_at')  ; // 从这里排除可以不检出的column
 
     public function thread()
     {

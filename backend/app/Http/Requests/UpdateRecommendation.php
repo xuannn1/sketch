@@ -39,7 +39,7 @@ class UpdateRecommendation extends FormRequest
         if(auth('api')->user()->hasAccess(['can_review_recommendation','can_manage_anything'])){
             $data['is_public']=$this->is_public ? true:false;
             $data['is_past']=$this->is_past ? true:false;
-            $recommendation->users()->sync(json_decode(request()->users));
+            $recommendation->authors()->sync(json_decode(request()->authors));
         }
         $recommendation->update($data);
         return $recommendation;

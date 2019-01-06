@@ -27,8 +27,9 @@ class CreatePostsTable extends Migration
             $table->unsignedInteger('reply_to_post_id')->default(0)->index();//如果是回帖，给出它回复对象的id
             $table->string('reply_to_post_preview')->nullable();//如果是回帖，给出它回复对象的preview
             $table->unsignedInteger('reply_position')->default(0);//回复对象句子在原来评论中的位置
-            $table->boolean('is_maintext')->default(false);//是否是正文章节
-            $table->boolean('is_comment')->default(false);//是否是回复某章节
+            $table->string('type',20)->nullable();//'chapter','collection','question','answer','request'
+            $table->boolean('is_component')->default(false);//是否是正文章节
+            $table->boolean('is_post_comment')->default(false);//是否是二级评论
             $table->boolean('use_markdown')->default(false);//是否使用md语法
             $table->boolean('use_indentation')->default(true);//是否使用段首缩进格式
             $table->unsignedInteger('up_votes')->default(0);//赞

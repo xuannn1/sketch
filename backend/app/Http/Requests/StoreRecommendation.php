@@ -28,7 +28,7 @@ class StoreRecommendation extends FormRequest
     public function rules()
     {
         return [
-            'thread_id' => [
+            'thread' => [
                 'required',
                 'numeric',
                 Rule::unique('recommendations')->where(function ($query) {
@@ -47,10 +47,10 @@ class StoreRecommendation extends FormRequest
 
     public function generateRecommendation()
     {
-        $thread = Thread::find(request()->thread_id);
+        $thread = Thread::find(request()->thread);
         if (($thread)&&($thread->is_public)){
-            $recommendation = Recommendation::create(request()->only('thread_id', 'brief', 'body', 'type'));
-            $recommendation->users()->sync(json_decode(request()->users)??auth('api')->id());
+            $recommendation = Recommendation::create(request()->only('thread', 'brief', 'body', 'type'));
+            $recommendation->authors()->sync(json_decode(request()->authors()??auth('api')->id());
             return $recommendation;
         }else{
             abort(404);

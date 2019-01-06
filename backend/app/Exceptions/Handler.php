@@ -49,8 +49,11 @@ class Handler extends ExceptionHandler
     */
     public function render($request, Exception $exception)
     {
-        if(($exception instanceof AuthenticationException )||($exception instanceof AuthorizationException)){
+        if($exception instanceof AuthenticationException){
             return response()->error(config('error.401'), 401);
+        }
+        if($exception instanceof AuthorizationException){
+            return response()->error(config('error.403'), 403);
         }
         if ($exception instanceof HttpException) {
             $statusCode = $exception->getStatusCode();
@@ -68,9 +71,10 @@ class Handler extends ExceptionHandler
             }
             return response()->error($errorMessage, 595);
         }
-        if ($exception instanceof Exception) {
-            return response()->error($exception, 599);
-        }
+        //下面这部分代码，会将所有其他的错误掩盖不反馈
+        // if ($exception instanceof Exception) {
+        //     return response()->error($exception, 599);
+        // }
         return parent::render($request, $exception);
     }
 }

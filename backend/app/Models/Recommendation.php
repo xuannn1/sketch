@@ -11,7 +11,7 @@ class Recommendation extends Model
 
     public function thread()
     {
-        return $this->belongsTo(Thread::class, 'thread_id')->select(['id', 'user_id', 'channel_id',  'title',  'is_anonymous', 'majia', 'is_public', 'is_bianyuan', 'last_responded_at', 'last_added_chapter_at', 'deleted_at']);
+        return $this->belongsTo(Thread::class, 'thread_id')->select(['id', 'user_id', 'channel_id',  'title',  'is_anonymous', 'majia', 'is_public', 'is_bianyuan', 'last_responded_at', 'last_added_component_at', 'deleted_at']);
     }
     public function authors()
     {

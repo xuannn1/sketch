@@ -78,8 +78,6 @@ class RecommendationController extends Controller
     */
     public function update(Recommendation $recommendation, UpdateRecommendation $form)
     {
-        //identity validation
-        //是自己的recommendation，或者说是资深编辑/管理员
         $recommendation = $form->updateRecommendation($recommendation);
         return response()->success($recommendation);
     }

@@ -17,11 +17,11 @@ class RecommendationResource extends JsonResource
     {
         return [
             'type' => 'recommendation',
-            'id' => $this->id,
+            'id' => (int)$this->id,
             'attributes' => [
-                'brief' => $this->brief,
-                'body' => $this->body,
-                'type' => $this->type,
+                'brief' => (string)$this->brief,
+                'body' => (string)$this->body,
+                'type' => (string)$this->type,
                 'created_at' => (string) $this->created_at,
             ],
             'authors' => AuthorIdentifierResource::collection($this->authors),

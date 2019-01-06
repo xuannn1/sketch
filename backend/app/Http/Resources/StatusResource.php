@@ -16,9 +16,9 @@ class StatusResource extends JsonResource
     {
         return [
             'type' => 'Status',
-            'id' => $this->id,
+            'id' => (int)$this->id,
             'attributes' => [
-                'body' => $this->body,
+                'body' => (string)$this->body,
                 'created_at' => (string)$this->created_at,
             ],
             'author' => new AuthorIdentifierResource($this->author),

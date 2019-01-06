@@ -8,6 +8,7 @@ use DB;
 
 class ConstantObjects
 {
+    protected static $channel_types = array('book', 'thread', 'collection_list', 'column', 'request', 'homework'); // channel的分类类别
 
     public static function allChannels()//获得站上所有的channel
     {
@@ -15,18 +16,16 @@ class ConstantObjects
             return Channel::orderBy('order_by','asc')->get();
         });
     }
-    public static function book_channels()
+    public static function publicChannelTypes($type='')
     {
-        return Cache::remember('book_channels', 10, function (){
-            return self::allChannels()->where('is_book', true)->where('is_public', true)->pluck('id')->toArray();
-        });
+        if (in_array($type, self::$channel_types)){
+            return Cache::remember('channel-'.$type, 10, function () use($type){
+                return self::allChannels()->where('type', $type)->where('is_public', true)->pluck('id')->toArray();
+            });
+        }
+        return [];
     }
-    public static function none_book_channels()
-    {
-        return Cache::remember('none_book_channels', 10, function (){
-            return self::allChannels()->where('is_book', false)->where('is_public', true)->pluck('id')->toArray();
-        });
-    }
+
     public static function public_channels()
     {
         return Cache::remember('public_channels', 10, function (){

@@ -16,9 +16,9 @@ class AuthorIdentifierResource extends JsonResource
     {
         return [
             'type' => 'user',
-            'id' => $this->id,
+            'id' => (int)$this->id,
             'attributes' => [
-                'name' => $this->name,
+                'name' => (string)$this->name,
             ]
         ];
     }

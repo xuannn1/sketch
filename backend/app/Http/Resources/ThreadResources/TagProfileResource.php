@@ -16,16 +16,16 @@ class TagProfileResource extends JsonResource
     {
         return [
             'type' => 'tag',
-            'id' => $this->id,
+            'id' => (int)$this->id,
             'attributes' => [
-                'tag_name' => $this->tag_name,
-                'tag_explanation' => $this->tag_explanation,
-                'tag_type' => $this->tag_type,
-                'is_bianyuan' => $this->is_bianyuan,
-                'is_primary' => $this->is_primary,
-                'channel_id' => $this->channel_id,
-                'parent_id' => $this->parent_id,
-                'tagged_books' => $this->tagged_books,
+                'tag_name' => (string)$this->tag_name,
+                'tag_explanation' => (string)$this->tag_explanation,
+                'tag_type' => (string)$this->tag_type,
+                'is_bianyuan' => (bool)$this->is_bianyuan,
+                'is_primary' => (bool)$this->is_primary,
+                'channel_id' => (int)$this->channel_id,
+                'parent_id' => (int)$this->parent_id,
+                'tagged_books' => (int)$this->tagged_books,
                 'created_at' => (string)$this->created_at,
                 'updated_at' => (string)$this->updated_at,
             ]
