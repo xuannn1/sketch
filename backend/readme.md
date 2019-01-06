@@ -189,3 +189,9 @@ brief
 body  
 
 ###### 4.4.2 建立post
+###### 4.4.3 更新post
+http://127.0.0.1:8000/api/thread/{thread}/post/{post}  
+方法：POST  
+授权：必须登陆  
+必填项：
+body  

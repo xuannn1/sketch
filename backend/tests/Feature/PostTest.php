@@ -25,21 +25,22 @@ class PostTest extends TestCase
 
 
     /** @test */
-      public function a_authorised_user_can_update_post()
+      public function an_authorised_user_can_update_post()
       {
 
-        $user = User::find(31);    //$this->be($user);tester
+        $user = User::find(31);
+        $this->be($user);
 
-        $response = $this->post('api/login',['email' => 'tester@example.com',
-       'password' => 'password']);
-        $accessToken = $response->content();
-        $strarr = json_decode($accessToken, true);
-        $accessToken = $strarr['data']['token'];
+       //  $response = $this->post('api/login',['email' => 'tester@example.com',
+       // 'password' => 'password']);
+       //  $accessToken = $response->content();
+       //  $strarr = json_decode($accessToken, true);
+       //  $accessToken = $strarr['data']['token'];
 
 
         $thread = Thread::find(1);
         $post =  Post::find(1);
-        $body = "诗的作者是Dylan Thomas（狄兰·托马斯）诗名是Do not go gentle into that good night, 不要温和地走进那个良夜";
+        $body = "首先是饥荒，接着是劳苦和疾病，争执和创伤，还有破天荒可怕的死亡；他颠倒着季侯的次序，轮流地降下了，狂雪和猛火，把那些无遮无盖的人们";
 
         $request = $this->actingAs($user,'api')
         ->put('api/thread/'.$thread->id.'/post/'.$post->id,
