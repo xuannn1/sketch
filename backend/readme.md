@@ -202,6 +202,9 @@ body(string)
 
 ###### 4.4.2 建立post
 
+###### 4.4.2.1 修改post
+http://127.0.0.1:8000/api/thread/1/post/1
+method: PATCH
 
 ###### 4.4.3 建立recommendation (书籍推荐)
 http://127.0.0.1:8000/api/recommendation
@@ -219,7 +222,7 @@ users(array of integers):e.g.[1,2,3] 这个推荐语的作者。书籍推荐语�
 
 ###### 4.4.3.2 审阅/修改 recommendation (书籍推荐的审阅)
 http://127.0.0.1:8000/api/recommendation
-方法：PATCH 
+方法：PATCH
 授权：必须登陆,必须是自己或senior_editor或admin身份  
 选填项:     
 brief(string):必须具有一句话推荐简介    

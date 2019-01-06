@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\FormRequest;
 use App\Models\Post;
-use Carbon\Carbon;
+use App\Models\Thread;
 use App\Helpers\StringProcess;
 use App\Helpers\ConstantObjects;
 use DB;
@@ -19,6 +19,7 @@ class StorePost extends FormRequest
     public function authorize()
     {
         $thread = request()->route('thread');
+
         return (($thread->is_public)&&(!$thread->no_reply))||(auth('api')->id()===$thread->user_id)||(auth('api')->user()->canManageChannel($thread->channel_id));
     }
 
@@ -30,11 +31,12 @@ class StorePost extends FormRequest
     public function rules()
     {
         return [
-            'body' => 'required|string|max:190',
+            'body' => 'required|string|max:20000',
             'majia' => 'string|max:10',
             'reply_to_post_id' => 'numeric',
         ];
     }
+
 
     public function generatePost()
     {

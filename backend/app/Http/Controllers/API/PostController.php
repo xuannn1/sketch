@@ -7,6 +7,8 @@ use App\Models\Post;
 use App\Models\Thread;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePost;
+use App\Http\Requests\UpdatePost;
+use App\Http\Resources\ThreadResources\PostResource;
 
 class PostController extends Controller
 {
@@ -20,6 +22,7 @@ class PostController extends Controller
     {
         $this->middleware('auth:api')->except(['index', 'show']);
         $this->middleware('filter_thread');
+
     }
 
     public function index($thread, Request $request)
@@ -45,6 +48,7 @@ class PostController extends Controller
     */
     public function store(Thread $thread, StorePost $form)
     {
+
         $post = $form->generatePost();
         return response()->success($post);
     }
@@ -55,10 +59,16 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function show(Post $post)
+    public function show(Thread $thread,Post $post)
     {
         //return new PostResource($post);
         //应该要显示这个post，还有它的全部回帖，还有它的
+
+        //return view('test', compact('posts'));
+        //上面这一行代码，是为了通过debugler测试query实际效率。
+        return response()->success([
+            'post' =>  new PostResource($post),
+        ]);
     }
 
     /**
@@ -79,9 +89,11 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(Request $request, $id)
+    public function update(UpdatePost $form, Thread $thread, Post $post)
     {
-        //
+        $form->updatePost($post);
+        return response()->success(new PostResource($post));
+
     }
 
     /**
