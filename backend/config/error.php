@@ -12,4 +12,6 @@ return [
     '482' => 'related item not applicable', //选择回复/附件的对象并不存在或不可用(比如在讨论帖A中回复讨论帖B的回帖)
     '488' => 'forbidden word',//内容中违禁词超过了运作能力（比如标题因违禁词存在变成空白字串）
     '499' => 'is blocked',//用户因不当行为被站内封禁
+    '595' => 'database error',//数据库问题
+    '599' => 'unknown errors',//其他所有未知的问题
 ];

@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 use Carbon\Carbon;
 use App\Models\Thread;
 use App\Helpers\StringProcess;
 use App\Helpers\ConstantObjects;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
 use DB;
 
 class StoreThread extends FormRequest
@@ -28,7 +26,7 @@ class StoreThread extends FormRequest
     /**
     * Get the validation rules that apply to the request.
     *
-    * @return array
+    * @return arr
     */
     public function rules()
     {
@@ -94,20 +92,5 @@ class StoreThread extends FormRequest
         ->orderBy('created_at', 'desc')
         ->first();
         return (!empty($last_thread)) && (strcmp($last_thread->title.$last_thread->brief.$last_thread->body, $thread['title'].$thread['brief'].$thread['body']) === 0);
-    }
-
-
-    /**
-    * Handle a failed validation attempt.
-    *
-    * @param  \Illuminate\Contracts\Validation\Validator  $validator
-    * @return void
-    *
-    * @throws \Illuminate\Validation\ValidationException
-    */
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->error($validator->errors(), 422));
     }
 }

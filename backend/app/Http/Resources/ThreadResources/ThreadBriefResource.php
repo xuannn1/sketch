@@ -22,18 +22,14 @@ class ThreadBriefResource extends JsonResource
         }
         return [
             'type' => 'thread',
-            'id' => $this->id,
+            'id' => (int)$this->id,
             'attributes' => [
-                'title' => $this->title,
-                'is_anonymous' => $this->is_anonymous,
-                'majia' => $this->majia,
+                'title' => (string)$this->title,
+                'is_anonymous' => (bool)$this->is_anonymous,
+                'majia' => (string)$this->majia,
             ],
             'author' => $author,
-            'channel'        => [
-                'type'             => 'channel',
-                'id'                => $this->channel_id,
-                'attributes'        => $this->simpleChannel(),
-            ],
+            'channel'        => new ChannelBriefResource($this->simpleChannel()),
             'tags' => TagResource::collection($this->tags)
         ];
     }

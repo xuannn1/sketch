@@ -19,7 +19,7 @@ class DefaultSettingsSeeder extends Seeder
                 'channel_explanation' => '原创小说板块从此进入',
                 'order_by' => '1',
                 'channel_rule' => '原创区版规是……',
-                'is_book' => true,
+                'type' => 'book',
             ]);
 
             DB::table('channels')->insert([
@@ -28,7 +28,7 @@ class DefaultSettingsSeeder extends Seeder
                 'channel_explanation' => '同人衍生板块从此进入',
                 'order_by' => '2',
                 'channel_rule' => '同人区版规是……',
-                'is_book' => true,
+                'type' => 'book',
             ]);
 
             DB::table('channels')->insert([
@@ -38,6 +38,8 @@ class DefaultSettingsSeeder extends Seeder
                 'order_by' => '3',
                 'channel_rule' => '作业区的版规是……',
                 'is_public' => false,
+                'type' => 'homework',
+                'on_homepage' => false,
             ]);
 
             DB::table('channels')->insert([
@@ -46,6 +48,7 @@ class DefaultSettingsSeeder extends Seeder
                 'channel_explanation' => '读写交流板块从此进入',
                 'order_by' => '4',
                 'channel_rule' => '读写交流区的版规是……',
+                'type' => 'thread',
             ]);
 
             DB::table('channels')->insert([
@@ -54,6 +57,7 @@ class DefaultSettingsSeeder extends Seeder
                 'channel_explanation' => '闲谈、吐槽、求助、八卦、安利',
                 'order_by' => '5',
                 'channel_rule' => '日常闲聊区的版规是……',
+                'type' => 'thread',
             ]);
 
             DB::table('channels')->insert([
@@ -62,6 +66,7 @@ class DefaultSettingsSeeder extends Seeder
                 'channel_explanation' => '随笔板块从此进入',
                 'order_by' => '6',
                 'channel_rule' => '随笔区的版规是……',
+                'type' => 'thread',
             ]);
 
             DB::table('channels')->insert([
@@ -70,6 +75,7 @@ class DefaultSettingsSeeder extends Seeder
                 'channel_explanation' => '站务管理板块从此进入',
                 'order_by' => '7',
                 'channel_rule' => '站务管理区的版规是……',
+                'type' => 'thread',
             ]);
 
             DB::table('channels')->insert([
@@ -79,6 +85,7 @@ class DefaultSettingsSeeder extends Seeder
                 'order_by' => '8',
                 'channel_rule' => '违规举报区的版规是……',
                 'allow_edit' => false,
+                'type' => 'request',
             ]);
 
             DB::table('channels')->insert([
@@ -89,6 +96,7 @@ class DefaultSettingsSeeder extends Seeder
                 'channel_rule' => '投诉仲裁区的版规是……',
                 'allow_edit' => false,
                 'allow_anonymous' => false,
+                'type' => 'request',
             ]);
 
             DB::table('channels')->insert([
@@ -98,6 +106,8 @@ class DefaultSettingsSeeder extends Seeder
                 'order_by' => '10',
                 'channel_rule' => '后台管理区的版规是……',
                 'is_public' => false,
+                'type' => 'thread',
+                'on_homepage' => false,
             ]);
 
             DB::table('channels')->insert([
@@ -107,6 +117,8 @@ class DefaultSettingsSeeder extends Seeder
                 'order_by' => '11',
                 'channel_rule' => '档案区的版规是……',
                 'is_public' => false,
+                'type' => 'thread',
+                'on_homepage' => false,
             ]);
 
             DB::table('channels')->insert([
@@ -116,6 +128,8 @@ class DefaultSettingsSeeder extends Seeder
                 'order_by' => '12',
                 'channel_rule' => '后花园的版规是……',
                 'is_public' => false,
+                'type' => 'thread',
+                'on_homepage' => false,
             ]);
         }
         {//大类标签

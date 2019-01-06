@@ -23,10 +23,10 @@ class PageObjects
         return Cache::remember('recent_added_chapter_books', 1, function () {
             return Thread::threadBrief()
             ->isPublic()
-            ->withBook('book_only')
+            ->withType('book')
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
-            ->ordered('last_added_chapter_at')
+            ->ordered('last_added_component_at')
             ->take(config('constants.books_on_homepage'))
             ->get();
         });
@@ -36,7 +36,7 @@ class PageObjects
         return Cache::remember('recent_responded_books', 1, function () {
             return Thread::threadBrief()
             ->isPublic()
-            ->withBook('book_only')
+            ->withType('book')
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
             ->ordered('last_responded_at')
@@ -49,7 +49,7 @@ class PageObjects
         return Cache::remember('recent_responded_threads', 1, function () {
             return Thread::threadBrief()
             ->isPublic()
-            ->withBook('none_book_only')
+            ->withType('thread')
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
             ->ordered('last_responded_at')

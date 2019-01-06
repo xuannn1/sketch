@@ -45,8 +45,8 @@ class CreateThreadsTable extends Migration
             $table->boolean('no_reply')->default(false);//是否禁止回复
             $table->dateTime('last_responded_at')->nullable();//最后被回应时间
             $table->softDeletes();//软删除必备
-            $table->dateTime('last_added_chapter_at')->nullable();//最后新增章节时间
-            $table->unsignedInteger('last_chapter_id')->default(0);//最新章节
+            $table->dateTime('last_added_component_at')->nullable();//最后新增物品时间
+            $table->unsignedInteger('last_component_id')->default(0);//最新物品
             $table->unsignedInteger('total_char')->default(0);//书籍总字数
         });
     }

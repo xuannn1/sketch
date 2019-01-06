@@ -26,6 +26,7 @@ Route::apiResource('chapter', 'API\ChapterController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
 Route::apiResource('user', 'API\UserController');
 Route::apiResource('status', 'API\StatusController');
+Route::apiResource('recommendation', 'API\RecommendationController');
 
 Route::get('/', 'API\PagesController@home')->name('home');
 Route::get('config/allTags', 'API\PagesController@allTags');

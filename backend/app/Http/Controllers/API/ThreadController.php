@@ -34,7 +34,7 @@ class ThreadController extends Controller
         ->inChannel($request->channel)
         ->isPublic()
         ->with('author', 'tags')
-        ->withBook($request->withBook)
+        ->withType($request->withType)
         ->withBianyuan($request->withBianyuan)
         ->withTag($request->tag)
         ->excludeTag($request->excludeTag)
@@ -62,7 +62,7 @@ class ThreadController extends Controller
     public function store(StoreThread $form)//
     {
         $thread = $form->generateThread();
-        return response()->success($thread);
+        return response()->success(new ThreadProfileResource($thread));
     }
 
     /**
@@ -73,7 +73,8 @@ class ThreadController extends Controller
     */
     public function show(Thread $thread, Request $request)
     {
-        $thread->load('author');
+        $thread->load('author','tags','recommendations.authors');
+        //dd($thread);
         $posts = Post::where('thread_id',$thread->id)
         ->with('author')
         ->userOnly($request->userOnly)
@@ -86,7 +87,7 @@ class ThreadController extends Controller
         if(request()->page>1){
             $thread->body = '';
         }
-        
+
         return response()->success([
             'thread' => new ThreadProfileResource($thread),
             'posts' => PostResource::collection($posts),
@@ -95,37 +96,32 @@ class ThreadController extends Controller
 
     }
 
-    public function showbook($thread)
+    public function showbook(Thread $thread)
     {
-        $thread = Thread::find($thread);
-        if($thread){
-            $thread->load('author', 'tags');
-            $posts = Post::where('thread_id',$thread->id)
-            ->where('is_maintext', true)
-            ->with('chapter.volumn')
-            ->get();
-            $posts->sortBy('chapter.order_by');
-            $volumns = $posts->pluck('chapter.volumn')->unique();
-            $most_upvoted = Post::where('thread_id',$thread->id)
-            ->where('is_maintext', false)
-            ->with('author')
-            ->orderBy('up_votes', 'desc')
-            ->first();
-            $newest_comment = Post::where('thread_id',$thread->id)
-            ->where('is_maintext', false)
-            ->with('author')
-            ->orderBy('created_at', 'desc')
-            ->first();
-            return response()->success([
-                'thread' => new ThreadProfileResource($thread),
-                'chapters' => ChapterInfoResource::collection($posts),
-                'volumns' => VolumnResource::collection($volumns),
-                'most_upvoted' => new PostResource($most_upvoted),
-                'newest_comment' => new PostResource($newest_comment),
-            ]);
-        }else{
-            return response()->error(config('error.404'), 404);
-        }
+        $thread->load('author', 'tags', 'recommendations.authors');
+        $posts = Post::where('thread_id',$thread->id)
+        ->where('is_component', true)
+        ->with('chapter.volumn')
+        ->get();
+        $posts->sortBy('chapter.order_by');
+        $volumns = $posts->pluck('chapter.volumn')->unique();
+        $most_upvoted = Post::where('thread_id',$thread->id)
+        ->where('is_component', false)
+        ->with('author')
+        ->orderBy('up_votes', 'desc')
+        ->first();
+        $newest_comment = Post::where('thread_id',$thread->id)
+        ->where('is_component', false)
+        ->with('author')
+        ->orderBy('created_at', 'desc')
+        ->first();
+        return response()->success([
+            'thread' => new ThreadProfileResource($thread),
+            'chapters' => ChapterInfoResource::collection($posts),
+            'volumns' => VolumnResource::collection($volumns),
+            'most_upvoted' => new PostResource($most_upvoted),
+            'newest_comment' => new PostResource($newest_comment),
+        ]);
     }
 
     /**

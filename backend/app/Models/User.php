@@ -53,6 +53,16 @@ class User extends Authenticatable
         return ConstantObjects::role_users()->where('user_id', $this->id);
     }
 
+    public function recommendations()
+    {
+        return $this->belongsToMany(Recommendation::class, 'user_recommendation', 'user_id', 'recommendation_id');
+    }
+
+    public function public_recommendations()
+    {
+        return $this->belongsToMany(Recommendation::class, 'user_recommendation', 'user_id', 'recommendation_id')->where('is_public', true);
+    }
+
     /**
     * 查看对应用户的roles里面是否含有某种对应的global permission
     * 举例：$user->hasAccess(['can_see_homework', 'can_see_ip_addresses']) returns true
@@ -94,6 +104,11 @@ class User extends Authenticatable
         return $this->hasAccess(['can_see_anything'])||$this->hasLocalAccess('can_see_channel', $channel);
     }
 
+    public function canRecommend() : bool
+    {
+        return $this->hasAccess(['can_recommend','can_manage_anything']);
+    }
+
     public function canManageChannel($channel) : bool
     {
         return $this->hasAccess(['can_manage_anything'])||$this->hasLocalAccess('can_manage_channel', $channel);
@@ -106,4 +121,5 @@ class User extends Authenticatable
     {
         return $this->roles()->where('role', $roleSlug)->count() == 1;
     }
+
 }

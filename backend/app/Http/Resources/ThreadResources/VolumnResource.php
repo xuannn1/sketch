@@ -16,10 +16,10 @@ class VolumnResource extends JsonResource
     {
         return [
             'type' => 'volumn',
-            'id' => $this->id,
+            'id' => (int)$this->id,
             'attributes' => [
-                'title' => $this->title,
-                'brief' => $this->brief,
+                'title' => (string)$this->title,
+                'brief' => (string)$this->brief,
             ]
         ];
     }

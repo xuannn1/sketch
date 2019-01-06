@@ -4,7 +4,7 @@ namespace App\Http\Resources\ThreadResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TagResource extends JsonResource
+class ChannelBriefResource extends JsonResource
 {
     /**
     * Transform the resource into an array.
@@ -15,14 +15,11 @@ class TagResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => 'tag',
+            'type' => 'channel',
             'id' => (int)$this->id,
             'attributes' => [
-                'tag_name' => (string)$this->tag_name,
-                'tag_explanation' => (string)$this->tag_explanation,
-                'tag_type' => (string)$this->tag_type,
+                'channel_name' => (string)$this->channel_name,
             ]
         ];
     }
-
 }

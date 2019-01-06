@@ -15,11 +15,11 @@ class PaginateResource extends JsonResource
     public function __construct($resource)
     {
         $this->pagination = [
-            'total' => $resource->total(),
-            'count' => $resource->count(),
-            'per_page' => $resource->perPage(),
-            'current_page' => $resource->currentPage(),
-            'total_pages' => $resource->lastPage()
+            'total' => (int)$resource->total(),
+            'count' => (int)$resource->count(),
+            'per_page' => (int)$resource->perPage(),
+            'current_page' => (int)$resource->currentPage(),
+            'total_pages' => (int)$resource->lastPage()
         ];
     }
     public function toArray($request)

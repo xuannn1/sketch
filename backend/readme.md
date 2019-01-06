@@ -21,9 +21,10 @@ $ php artisan migrate --seed
 ```
 #### 2.4 配置passport
 ###### 2.4.1 配置APP_KEY
-如果是第一次使用laravel， `.env` 文件中不含APP_KEY这个变量，那么还需要让程序加载初始key。一些情况下，也可以使用以前曾经使用过的key，来确保数据库之间能够对应。只需运行这个指令即可：
+如果是第一次使用laravel， `.env` 文件中不含APP_KEY这个变量，那么还需要让程序加载初始key。一些情况下，也可以使用以前曾经使用过的key，来确保数据库之间能够对应。只需运行下面这两个指令即可：
 ```
-$php artisan passport:keys
+$ php artisan key:generate
+$ php artisan passport:keys
 ```  
 如果之前已经配置了key，程序会提示你，是否想要重置key，按自己需求选择即可。
 
@@ -44,7 +45,7 @@ $ valet park
 以后就可以通过`backend.test`这个网址对本工程进行访问。比如，访问`backend.test/api/register`，进行新用户的注册。
 
 ###### 2.5.2 使用laravel自带的serve指令，模拟服务器服务
-不愿使用valet的用户，可以运行指令
+不愿使用valet的用户，可以运行指令  
 ```
 $ php artisan serve
 ```
@@ -78,10 +79,11 @@ $ valet park
 channel是对thread进行统一管理的一种方式。  
 站内一共预设有**12个channel**，分别是“原创小说”，“同人小说”，“作业专区”，“日常闲聊”……  
 每个channel除了本身的固有属性（名称，定义，版规等字串）之外有自己的**管理逻辑**。比如，  
-* is_book 属性管理着一个channel里的讨论帖是否能够以“书籍”的方式被管理  
+* type 属性管理着一个channel里的讨论帖的实际状态，可以取的值有：'book'/'thread'/'collection_list'/'column'/'request'/'homework'  
 * allow_anonymous 属性决定普通用户是否能够在本channel中匿名发布内容
 * allow_edit 属性决定普通用户是否能在本channel中修改thread和post
-* is_public 属性决定首页板块和普通查询中是否出现属于这个channel的thread（如果不属于public，意味着只有注册参加作业的同学、编辑和管理，才能够进入该channel查看特殊内容）  
+* is_public 属性决定这个channel里的thread是否对外公开可见（如果不属于public，意味着只有注册参加作业的同学、编辑和管理，才能够进入该channel查看特殊内容）
+* on_homepage 属性决定这个channel里的thread是否在首页显示（否则的话，这整个channel不在论坛板块首页显示，而是安排另外的入口）  
 <br>
 
 **tag(标签)**  
@@ -99,6 +101,7 @@ tag具有不同的类型（tag_type）,有的时候，也存在一些现象，�
 
 ## 4. API文档
 建议下载并使用postman程序，对api进行测试。
+注意：Postman更改method，比如之前是GET后来是POST，有时需要【保存】才能生效。建议经常duplicate指令并将其命名保存下来，便于以后测试。
 #### 4.1 authentification 权限管理
 本后端采取passport对用户授权与否进行管理。其授权的基础，是采取接受token，并核对token是否属于和数据库匹配的有效token，从而验证是否能够允许用户对应的操作。
 ###### 4.1.1 注册新用户（register）
@@ -132,9 +135,16 @@ password: password
     'Authorization' => 'Bearer '.$accessToken,
 ]
 ```
-这样的格式，来表示自己是api终端，需要以xx用户的身份通过验证。  
+这样的格式，来表示自己是api终端，需要以xx用户的身份通过验证。
 其中$accessToken应该是在之前的login步骤中获得的。  
 在postman中下拽header并填写这部分内容就行了。  
+实际在postman的Headers（菜单上第三格，不是默认的，需要鼠标点开来）上面显示的效果如下：
+| Key       | Value       | 备注  |
+| -------------|-------------|-------------|
+| Accept  | application/json |照着写就行|
+| Authorization | Bearer eyJ0eXAiOiJK...|这个token字串会很长，注意Bearer和token之间有一个英文空格|
+
+
 
 #### 4.2 错误处理 error handling
 全部error 列表目前存放在 config/error.php中
@@ -151,17 +161,19 @@ http://127.0.0.1:8000/api/config/allTags
 方法：GET  
 授权：不需要使用token登陆  
 
-###### 4.3.3 获得讨论帖/书籍index信息
+###### 4.3.3 获得讨论帖/书籍index信息——这部分需要重新制作
 http://127.0.0.1:8000/api/thread  
 方法：GET  
 授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）  
-可选的筛选变量及效果：  
-channel=1_2_3(只返回出现在channel1，2，3中的讨论帖)  
-withBook=book_only//none_book_only(是否仅返回书籍/讨论帖信息)  
-withTag=1_22_4(仅返回含有1，22，4这几个tag的书籍/讨论帖)  
-excludeTag=1_22_4(仅返回不含有1，22，4这几个tag的书籍/讨论帖)  
-withBianyuan=bianyuan_only//none_bianyuan_only（是否仅返回边缘/非边缘书籍/讨论帖）  
-ordered=last_added_chapter_at（按最新更新时间排序）//jifen（按总积分排序）//weighted_jifen（按平衡积分排序）//created_at（按创建时间排序）//id（按id排序）//collections（按收藏总数排序）//total_char（按总字数排序）  
+可选的筛选变量及效果：
+
+channel(array)=[1,2,3] （只返回出现在channel1，2，3中的讨论帖)  
+withType(string)='thread'/'book'/'collection_list'/'column'/'request'/'homework' （是否仅返回书籍/讨论帖/收藏单/信息)  
+tag(array)=[1,22,4]（仅返回含有1，22，4这几个tag的书籍/讨论帖)  
+excludeTag(array)=[1,22,4]（仅返回不含有1，22，4这几个tag的书籍/讨论帖)  
+withBianyuan(string)='bianyuan_only'/'none_bianyuan_only'（是否仅返回边缘/非边缘内容）  
+ordered(string)='last_added_component_at'/'jifen'/'weighted_jifen'/'created_at'/'id'/'collections'/'total_char'（按最新更新时间排序/按总积分排序/按平衡积分排序/按创建时间排序/按id排序/按收藏总数排序/按总字数排序）  
+
 
 ###### 4.3.4 获得讨论帖首页信息（首楼，及首页的回帖）
 http://127.0.0.1:8000/api/thread/1  
@@ -183,9 +195,34 @@ http://127.0.0.1:8000/api/thread
 方法：POST  
 授权：必须登陆  
 必填项：  
-channel  
-title  
-brief  
-body  
+channel(numeric) 数字，必须为自己有权限编辑的channel。这一项不填写的话，因为不能判断是给哪个channel新建thread，默认显示为“未授权”而被拒绝。  
+title(string)
+brief(string)
+body(string)
 
 ###### 4.4.2 建立post
+
+
+###### 4.4.3 建立recommendation (书籍推荐)
+http://127.0.0.1:8000/api/recommendation
+方法：POST  
+授权：必须登陆,必须具有editor或senior_editor或admin身份  
+必填项：  
+thread(number):必须具有能够检索到的一个被推荐thread  
+brief(string):必须具有一句话推荐简介  
+type(string):'short'/'long'/'topic' 必须是下面array中的一项  
+**注意事项**
+（一个thread&&type组合，它只能有一个推荐。也就是说，一个书籍最多只有一个短推——可以再有长推）  
+选填项:  
+body(string):长推的话，在这里写入长推推荐语  
+users(array of integers):e.g.[1,2,3] 这个推荐语的作者。书籍推荐语允许合作完成。
+
+###### 4.4.3.2 审阅/修改 recommendation (书籍推荐的审阅)
+http://127.0.0.1:8000/api/recommendation
+方法：PATCH 
+授权：必须登陆,必须是自己或senior_editor或admin身份  
+选填项:     
+brief(string):必须具有一句话推荐简介    
+body(string):长推的话，在这里写入长推推荐语  
+is_public(bool):是否公开（不公开的话，其他人不能在书籍下看见）这个信息必须是senior_editor/admin才能改变，也就是说，书籍推荐在editor建立之后，需senior_editor审阅再转公开  
+is_past(bool):是否属于往期推荐（影响首页显示情况）这个信息必须是senior_editor/admin才能改变，也就是说，书籍推荐需senior_editor审阅之后转公开  
