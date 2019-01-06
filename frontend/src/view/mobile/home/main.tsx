@@ -30,7 +30,7 @@ export class HomeMain extends React.Component<Props, State> {
     }
 
     public async componentDidMount () {
-        const res = await this.props.core.db.request('/home');
+        const res = await this.props.core.db.post('/home');
         if (!res) { return; }
         if (checkType(res.data, this.state.data)) {
             this.setState({data: res.data});

@@ -28,7 +28,7 @@ export class Books extends React.Component<Props, State> {
     }
 
     public async componentDidMount () {
-        const res = await this.props.core.db.request('/books');
+        const res = await this.props.core.db.post('/books');
         if (!res || !res.data) { return; }
         this.setState({data: res.data});
     }

@@ -1,10 +1,11 @@
 import { History } from '.';
-import { ResponseList } from '../config/response-data';
+import { APIPost, APIGet } from '../config/api';
 
 export class DB {
     private host:string;
     private port:number;
     private protocol:string;
+    private APIPREFIX = 'api';
 
     constructor (history:History) {
         this.protocol = 'http';
@@ -13,10 +14,11 @@ export class DB {
         this.port = 3001; // for test
     }
 
-    public async request<U extends keyof ResponseList> (_path:U, data?:{}) : Promise<ResponseList[U]|null> {
+    public async post<Path extends keyof APIPost> (_path:Path, data:APIPost[Path]['req']) : Promise<APIPost[Path]['res']|null> {
         try {
-            const url = `${this.protocol}://${this.host}:${this.port}${_path}`;
-            console.log('request: ', url);
+            const url = `${this.protocol}://${this.APIPREFIX}/${this.host}:${this.port}${_path}`;
+
+            console.log('post: ', url);
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -28,13 +30,32 @@ export class DB {
             const result = response.json();
             return result
         } catch (e) {
-            console.error('Fetch Error: ' + e);
+            console.error('Post Error: ' + e);
+            return null;
+        }
+    }
+
+    public async get<Path extends keyof APIGet> (_path:Path, query:APIGet[Path]['req']) : Promise<APIGet[Path]['res']|null> {
+        try {
+
+            const url = `${this.protocol}://${this.APIPREFIX}/${this.host}:${this.port}${_path}`;
+            console.log('get: ' + url);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+
+                },
+            });
+            const result = response.json();
+            return result;
+        } catch (e) {
+            console.error('GET error: ' + e);
             return null;
         }
     }
 
     public async resetPassword (email:string) {
-        return await this.request('/resetPwd', {email});
+        return await this.post('/resetPwd', {email});
     }
 
     public getLogo () { //fixme:
@@ -44,4 +65,14 @@ export class DB {
     public search (type:string, value:string, tongrenCP:string) {
         return ''; // fixme:
     }
+}
+
+function parseURL (url:string, query:{}) {
+    let res = url;
+    const pathMathches = url.match(/:\w+/g);
+    for (const match in pathMathches) {
+        const key = match.substr(1);
+        res = res.replace(match, query[key]);
+    }
+    return res;
 }

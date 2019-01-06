@@ -126,7 +126,7 @@ export namespace Database {
     }
     
     export interface Channels {
-        id:Increments;
+        id?:Increments;
         channel_name:string;
         channel_explanation?:string;
         order_by?:number;
@@ -153,7 +153,7 @@ export namespace Database {
         post_id?:Increments;
         volumn_id?:Increments;
         order_ny?:number;
-        title?:string;
+        title:string;
         brief?:string;
         annotation?:string;
         annotation_infront?:boolean;
@@ -165,8 +165,8 @@ export namespace Database {
     
     export interface Volumns {
         id?:Increments;
-        title?:string;
-        brief?:string;
+        title:string;
+        brief:string;
     }
     
     export interface Quotes {

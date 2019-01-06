@@ -1,10 +1,25 @@
 import { Database } from './database';
 
-export namespace Respond {
+export type Timestamp = string;
+export type Token = string;
+export type UInt = number;
+export type Increments = number;
+
+export namespace Response {
     export interface Quote {
         type:'quote';
         id:number;
-        attributes:Database.Quotes;
+        attributes:{
+            body:string;
+            user_id?:Increments;
+            is_anonymous?:boolean;
+            majia?:string;
+            not_sad?:boolean;
+            is_approved?:boolean;
+            reviewer_id?:Increments;
+            xianyus?:number;
+            created_at?:Timestamp;
+        };
         author:User;
     }
 
@@ -27,6 +42,7 @@ export namespace Respond {
         author:User;
         channel:Channel;
         tags:Tag[];
+        recommendations?:Recommendation[];
     }
 
     export interface Status {
@@ -56,80 +72,156 @@ export namespace Respond {
         attributes:Database.Posts;
         author:User;
     }
-}
-export interface API {
-    '/':{
-        get:{
-            res:{
-                quotes:Respond.Quote[],
-                recent_added_chapter_books:Respond.Thread[],
-                recent_responded_books:Respond.Thread[],
-                recent_responded_threads:Respond.Thread[],
-                recent_statuses:Respond.Status[],
-            }
-        }
-    };
-    'register':{
-        post:{
-            req:{
-                name:string;
-                email:string;
-                password:string;
-            },
-        }
-    };
-    'login':{
-        post:{
-            req:{
-                email:string;
-                password:string;
-            },
-            res:string;
-        }
-    };
-    'config/allTags':{
-        get:{
-            res:{
-                tags:Respond.Tag[],
-            }
-        }
-    };
-    '/thread':{
-        get:{
-            req:{
-                channel:number[],
-                withBook:'book_only'|'none_book_only',
-                withTag:number[],
-                excludeTag:number[],
-                withBianyuan:'bianyuan_only'|'none_bianyuan_only',
-                ordered:'last_added_chapter_at'|'jifen'|'weighted_jifen'|'created_at'|'id'|'collections'|'total_char',
-            },
-            res:{
-                threads:Respond.Thread[],
-                paginate:Respond.ThreadPaginate,
-            }
-        },
-        post:{
-            req:{
-                channel:number;
-                title:string;
-                brief:string;
-                body:string;
-            }
-        }
-    };
-    '/thread/:id':{
-        get:{
-            res:{
-                thread:Respond.Thread,
-                posts:Respond.Post[],
-                paginate:Respond.ThreadPaginate,
-            }
-        }
-    };
-    '/book/:id':{
-        get:{
 
+    export interface Recommendation {
+        type:'recommendation';
+        id:number;
+        attributes:{
+            brief:string;
+            body:string;
+            type:'long'|'shot';
+            created_at:Database.Timestamp;
         }
+        authors:User[];
     }
+
+    export interface Chapter {
+        type:'chapter';
+        id:number;
+        attributes:Database.Chapters & Database.Posts;
+    }
+
+    export interface Volumn {
+        type:'volumn';
+        id:number;
+        attributes:Database.Volumns;
+    }
+}
+
+export namespace Request {
+    export namespace Thread {
+        export type withBook = 'book_only'|'none_book_only';
+        export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only';
+        export type ordered = 'last_added_chapter_at'|'jifen'|'weighted_jifen'|'created_at'|'id'|'collections'|'total_char';
+    }
+}
+
+
+interface APIResponse<T> {
+    code:number;
+    data:T|string;
+}
+
+interface APISchema<T extends {req?:{}, res:{}}> {
+    req?:T['req'];
+    res:APIResponse<T['res']>;
+}
+
+export interface APIGet {
+    '/':APISchema<{
+        res:{
+            quotes:Response.Quote[],
+            recent_added_chapter_books:Response.Thread[],
+            recent_responded_books:Response.Thread[],
+            recent_responded_threads:Response.Thread[],
+            recent_statuses:Response.Status[],
+        }
+    }>;
+    '/config/allTags':APISchema<{
+        res:{
+            tags:Response.Tag[];
+        }
+    }>;
+    '/thread':APISchema<{
+        req:{
+            channel:number[],
+            withBook:Request.Thread.withBook,
+            withTag:number[],
+            excludeTag:number[],
+            withBianyuan:Request.Thread.withBianyuan,
+            ordered:Request.Thread.ordered,
+        };
+        res:{
+            threads:Response.Thread[],
+            paginate:Response.ThreadPaginate,
+        };
+    }>;
+    '/thread/:id':APISchema<{
+        req:{
+            id:number;
+        };
+        res:{
+            thread:Response.Thread,
+            posts:Response.Post[],
+            paginate:Response.ThreadPaginate, 
+        }
+    }>;
+    'book/:id':APISchema<{
+        req:{
+            id:number;
+        };
+        res:{
+            thread:Response.Thread;
+            chapters:Response.Chapter[];
+            volumns:Response.Volumn[];
+            most_upvoted:Response.Post;
+            newest_comment:Response.Post;
+        }
+    }>
+}
+
+export interface APIPost {
+    '/register':APISchema<{
+        req:{
+            name:string;
+            password:string;
+            email:string;
+        };
+        res:{
+            token:string;
+            name:string;
+        };
+    }>;
+    '/login':APISchema<{
+        req:{
+            email:string;
+            password:string;
+        };
+        res:{
+            token:string;
+        };
+    }>;
+    '/thread':APISchema<{
+        req:{
+            channel:number;
+            title:string;
+            brief:string;
+            body:string; 
+        };
+        res:{
+            thread:Response.Thread;
+        }
+    }>;
+    '/recommendation':APISchema<{
+        req:{
+            thread:number;
+            brief:string;
+            type:'short'|'long'|'topic';
+            body?:string;
+            users:number[];
+        };
+        res:string;
+    }>;
+}
+
+export interface APIPatch {
+    '/patch':APISchema<{
+        req:{
+            brief?:string;
+            body?:string;
+            is_public?:boolean;
+            is_past?:boolean;
+        };
+        res:string; //fixme:
+    }>;
 }
