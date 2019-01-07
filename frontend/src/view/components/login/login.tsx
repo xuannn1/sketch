@@ -6,7 +6,7 @@ import { ROUTE } from '../../../config/route';
 import { validEmail } from '../../../utils/validates';
 
 interface Props {
-    core:Core;
+    login:(email:string, pwd:string) => Promise<boolean>;
 }
 interface State {
     email:string;
@@ -66,7 +66,7 @@ export class Login extends React.Component<Props, State> {
                     } else if (!validEmail(this.state.email)) {
                         this.setState({errMsg: '邮箱格式不符'});
                     } else {
-                        const success = await this.props.core.user.login(this.state.email, this.state.password);
+                        const success = await this.props.login(this.state.email, this.state.password);
                         if (!success) {
                             this.setState({errMsg: '用户名或密码错误。'})
                         }

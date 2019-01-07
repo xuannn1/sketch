@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Card, ShortThread } from '../common';
 import { Styles } from '../../../utils/types';
-import { Core } from '../../../core/index';
 import { ResData } from '../../../config/api';
+import { EventBus } from '../../../utils/events';
 
 interface Props {
-    core:Core;
+    windowResizeEvent:EventBus<void>;
     recommendations:ResData.Recommendation[];
 }
 
@@ -17,7 +17,7 @@ export class Recommendation extends React.Component<Props, State> {
     public CARD_MIN_WIDTH = 200; //px
 
     public componentDidMount () {
-        this.props.core.windowResizeEvent.sub(() => this.forceUpdate());
+        this.props.windowResizeEvent.sub(() => this.forceUpdate());
     }
 
     public render () {

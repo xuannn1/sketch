@@ -13,7 +13,7 @@ export class Core {
     public user:User;
     public history:History;
     public unlistenHistory:UnregisterCallback;
-    public windowResizeEvent:EventBus<undefined>;
+    public windowResizeEvent:EventBus<void>;
 
     constructor () {
         this.history = createHistory();

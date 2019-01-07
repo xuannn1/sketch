@@ -4,7 +4,7 @@ import { Card, NotificationError } from '../common';
 import { validEmail, validPwd } from '../../../utils/validates';
 
 interface Props {
-    core:Core;
+    register:(name:string, email:string, pwd:string) => Promise<boolean>;
 }
 interface State {
     username:string;
@@ -116,11 +116,7 @@ export class Register extends React.Component<Props, State> {
                     } else if (this.state.pwd !== this.state.pwd2) {
                         this.setState({errMsg: '密码和确认密码不相匹配'});
                     } else {
-                        const success = this.props.core.user.register({
-                            email: this.state.email,
-                            password: this.state.pwd,
-                            name: this.state.username,
-                        });
+                        const success = await this.props.register(this.state.username, this.state.email, this.state.pwd);
                         if (!success) {
                             // todo:
                             this.setState({errMsg: '注册失败'})

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Core } from '../../../core/index';
-import { Page } from '../common';
-import { BookProfile } from './book-profile';
-import { BookChapters } from './book-chapters';
+import { Page } from '../../components/common';
+import { BookProfile } from '../../components/book/book-profile';
+import { BookChapters } from '../../components/book/book-chapters';
 import { APIGet, ResData } from '../../../config/api';
 
 interface Props {

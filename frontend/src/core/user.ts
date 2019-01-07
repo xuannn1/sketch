@@ -15,7 +15,7 @@ export class User {
     public async login (email:string, pwd:string) {
         //todo:
         const res = await this.db.post(`/login`, {email, password: pwd});
-        if (!res) { return; }
+        if (!res) { return false; }
 
         if (res.code) {
             this.loginFlag = true;
@@ -32,7 +32,7 @@ export class User {
         name:string,
     }) {
         const res = await this.db.post(`/register`, spec);
-        if (!res) { return; }
+        if (!res) { return false; }
 
         if (res.code) {
             this.loginFlag = true;

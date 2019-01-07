@@ -28,13 +28,17 @@ export class LoginRoute extends React.Component<Props, State> {
         switch (window.location.pathname) {
             case ROUTE.login:
                 this.location = 'login';
-                return <Login core={this.props.core}></Login>;
+                return <Login login={this.props.core.user.login}></Login>;
             case ROUTE.register:
                 this.location = 'register';
-                return <Register core={this.props.core}></Register>;
+                return <Register register={async (name, email, pwd) => await this.props.core.user.register({
+                    email,
+                    name,
+                    password: pwd,
+                })}></Register>;
             case ROUTE.reset_pwd:
                 this.location = 'reset password';
-                return <PasswordReset core={this.props.core}></PasswordReset>;
+                return <PasswordReset resetPassword={(email) => this.props.core.db.resetPassword(email) as any}></PasswordReset>;
             default:
                 return <div>wrong pathname {window.location.pathname}</div>;
         }

@@ -4,7 +4,7 @@ import { Card, NotificationError } from '../common';
 import { validEmail } from '../../../utils/validates';
 
 interface Props {
-    core:Core;
+    resetPassword:(email:string) => Promise<boolean>;
 }
 interface State {
     email:string;
@@ -43,7 +43,7 @@ export class PasswordReset extends React.Component<Props, State> {
                     this.setState({ errorMsg: '邮箱格式不正确' });
                     return;
                 }
-                this.props.core.db.resetPassword(this.state.email);
+                this.props.resetPassword(this.state.email);
             }}>发送重置邮件</a>
 
             </div>

@@ -62,7 +62,7 @@ export class DB {
     }
 
     public async resetPassword (email:string) {
-        // return await this.post('/resetPwd', {email});
+        // return await this.post('/', {email});
     }
 
     public getLogo () { //fixme:

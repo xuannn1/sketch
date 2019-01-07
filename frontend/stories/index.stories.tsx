@@ -5,6 +5,7 @@ import { withViewport } from '@storybook/addon-viewport';
 import { withConsole } from '@storybook/addon-console';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { Core } from '../src/core';
+import { Chapter } from '../src/view/components/book/chapter';
 import '../src/theme.scss';
 
 // import { action } from '@storybook/addon-actions';
@@ -17,9 +18,23 @@ storiesOf('Home', module)
     .addDecorator(withViewport())
     .addDecorator(withKnobs)
     .add('Carousel', () => 
-        <Carousel core={core} slides={[
-            <span>one</span>,
-            <span>two</span>,
-            <span>three</span>,
-        ]} indicator={boolean(true)} />)
+        <Carousel
+            windowResizeEvent={core.windowResizeEvent}
+            slides={[
+                <span>one</span>,
+                <span>two</span>,
+                <span>three</span>,
+            ]}
+            indicator={boolean(true)} />
+    )
+    .add('Chapter', () =>
+        <Chapter chapter={{
+            type: 'chapter',
+            id: 0,
+            attributes: {
+                title: '',
+                body: '',
+            }
+        }} />
+    )
 ;

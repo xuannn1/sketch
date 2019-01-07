@@ -38,7 +38,9 @@ export class HomeMain extends React.Component<Props, State> {
 
     public render () {
         return (<Page>
-            <Carousel core={this.props.core} slides={this.state.data.quotes.map((quote, i) => 
+            <Carousel  
+                windowResizeEvent={this.props.core.windowResizeEvent}
+                slides={this.state.data.quotes.map((quote, i) => 
                 <span key={i}>{quote.attributes.body}</span>
             )}
                 indicator={true} />
