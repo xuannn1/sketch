@@ -20,6 +20,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
         \App\Http\Middleware\Firewall::class,//global firewall middleware to prevent certain ip address list from logging onto the system
+        \App\Http\Middleware\EnableCrossRequestMiddleware::class,
     ];
 
     /**
