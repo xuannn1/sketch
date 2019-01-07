@@ -118,8 +118,8 @@ export class Register extends React.Component<Props, State> {
                     } else {
                         const success = this.props.core.user.register({
                             email: this.state.email,
-                            pwd: this.state.pwd,
-                            username: this.state.username,
+                            password: this.state.pwd,
+                            name: this.state.username,
                         });
                         if (!success) {
                             // todo:

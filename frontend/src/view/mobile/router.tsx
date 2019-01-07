@@ -10,8 +10,8 @@ import { Notification } from './notification';
 import { Navbar } from './navbar';
 import { LoginRoute } from './login';
 import { HomeMain } from './home/main';
-import { Books } from './home/books';
 import { Threads } from './home/threads';
+import { Books } from './home/books';
 
 interface Props {
     core:Core;

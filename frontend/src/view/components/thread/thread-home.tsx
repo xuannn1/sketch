@@ -1,26 +1,15 @@
 import * as React from 'react';
 import { Card, ShortThread } from '../common';
-import { DataType } from '../../../config/data-types';
+import { ResData } from '../../../config/api';
 
 enum ActiveTab {
     latest,
     best,
 }
 
-export function allocHomeThreadData () : HomeThreadData {
-    return {
-        latest: [],
-        best: [],
-    };
-}
-
-export interface HomeThreadData {
-    latest:DataType.Home.Thread[];
-    best:DataType.Home.Thread[];
-}
-
 interface Props {
-    data:HomeThreadData;
+    latest:ResData.Thread[];
+    best?:ResData.Thread[];
 }
 
 interface State {
@@ -40,14 +29,16 @@ export class HomeThread extends React.Component<Props, State> {
                         onClick={() => this.setState({activeTab: ActiveTab.latest})}>
                         <a><span>最新帖</span></a>
                     </li>
-                    <li className={this.state.activeTab === ActiveTab.best ? 'is-active' : ''}
-                        onClick={() => this.setState({activeTab: ActiveTab.best})}>
-                        <a><span>精华帖</span></a>
-                    </li>
+                    { this.props.best &&
+                        <li className={this.state.activeTab === ActiveTab.best ? 'is-active' : ''}
+                            onClick={() => this.setState({activeTab: ActiveTab.best})}>
+                            <a><span>精华帖</span></a>
+                        </li> 
+                    }
                 </ul>
             </div>
 
-            { this.props.data[ActiveTab[this.state.activeTab]].map((thread, i) => 
+            { this.props[ActiveTab[this.state.activeTab]].map((thread, i) => 
                 <ShortThread
                     key={i} 
                     link={'#'}

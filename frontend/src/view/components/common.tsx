@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { DataType } from '../../config/data-types';
 import { parseDate } from '../../utils/date';
-import { ROUTE } from '../../config/route';
 import { Link } from 'react-router-dom';
+import { ResData } from '../../config/api';
 
 export const COLOR_GREY = '#555';
 
@@ -69,7 +68,7 @@ export function NotificationError (props:{
 }
 
 export function ShortThread (props:{
-    thread:DataType.Home.Thread,
+    thread:ResData.Thread,
     link:string,
     showDetail?:boolean,
     style?:React.CSSProperties,
@@ -82,23 +81,23 @@ export function ShortThread (props:{
                 lineHeight: 2,
                 color: COLOR_GREY,
                 textDecoration: 'none',
-            }}>{props.thread.title}</a></div>
+            }}>{props.thread.attributes.title}</a></div>
 
             <div style={{
                 color: COLOR_GREY,
                 opacity: 0.7,
                 fontSize: '85%',
-            }}>{props.thread.content}</div>
+            }}>{props.thread.attributes.body}</div>
         </div> 
 
-        { props.showDetail && props.thread.create_date && props.thread.update_date && 
+        { props.showDetail && props.thread.attributes.created_at && props.thread.attributes.last_edited_at && 
             <div style={{
                 color: COLOR_GREY,
                 opacity: 0.7,
                 fontSize: '85%',
             }}>
-                <span style={{marginRight: '5px'}}>{props.thread.username}</span>
-                <span>{parseDate(props.thread.create_date)} / {parseDate(props.thread.update_date)}</span>
+                <span style={{marginRight: '5px'}}>{props.thread.author.attributes.name}</span>
+                <span>{parseDate(props.thread.attributes.created_at)} / {parseDate(props.thread.attributes.last_edited_at)}</span>
             </div>
         }
     </div>

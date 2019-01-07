@@ -16,7 +16,7 @@ export namespace Database {
         created_at?:Timestamp;
     }
     
-    export interface Users extends Users_Default {
+    export interface User extends Users_Default {
         user_level?:number;
         last_login_ip?:IPAddress;
         last_login_at?:string;
@@ -50,7 +50,7 @@ export namespace Database {
         daily_comment_characters?:number;
     }
     
-    export interface Posts {
+    export interface Post {
         id?:Increments;
         user_id?:Increments;
         thread_id?:Increments;
@@ -81,7 +81,7 @@ export namespace Database {
         last_responded_at?:Timestamp;
     }
     
-    export interface Threads {
+    export interface Thread {
         id?:Increments;
         user_id?:Increments;
         channel_id?:Increments;
@@ -90,8 +90,8 @@ export namespace Database {
         body?:string;
         last_post_id?:Increments;
         last_post_preview?:string;
-        is_anonymous:boolean;
-        majia:string|null;
+        is_anonymous?:boolean;
+        majia?:string|null;
         creation_ip?:IPAddress;
         created_at?:Timestamp;
         last_editor_id?:Increments;
@@ -116,7 +116,7 @@ export namespace Database {
         total_char?:UInt;
     }
     
-    export interface Votes {
+    export interface Vote {
         user_id?:Increments;
         votable_type?:string;
         votable_id?:Increments;
@@ -125,7 +125,7 @@ export namespace Database {
         created_at?:Timestamp;
     }
     
-    export interface Channels {
+    export interface Channel {
         id?:Increments;
         channel_name:string;
         channel_explanation?:string;
@@ -137,7 +137,7 @@ export namespace Database {
         is_public?:boolean;
     }
     
-    export interface Tags {
+    export interface Tag {
         id?:Increments;
         tag_name:string;
         tag_explanation:string|null;
@@ -149,7 +149,7 @@ export namespace Database {
         tagged_books:UInt;
     }
     
-    export interface Chapters {
+    export interface Chapter {
         post_id?:Increments;
         volumn_id?:Increments;
         order_ny?:number;
@@ -163,13 +163,13 @@ export namespace Database {
         next_chapter_id?:Increments;
     }
     
-    export interface Volumns {
+    export interface Volume {
         id?:Increments;
         title:string;
         brief:string;
     }
     
-    export interface Quotes {
+    export interface Quote {
         id?:Increments;
         body?:string;
         user_id?:Increments;
@@ -182,7 +182,7 @@ export namespace Database {
         created_at?:Timestamp;
     }
     
-    export interface Titles {
+    export interface Title {
         id?:Increments;
         name?:string;
         description?:string;
@@ -199,7 +199,7 @@ export namespace Database {
         is_public?:boolean;
     }
     
-    export interface Statuses {
+    export interface Status {
         id?:Increments;
         user_id?:Increments;
         body:string;

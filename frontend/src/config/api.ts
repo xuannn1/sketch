@@ -5,7 +5,7 @@ export type Token = string;
 export type UInt = number;
 export type Increments = number;
 
-export namespace Response {
+export namespace ResData {
     export interface Quote {
         type:'quote';
         id:number;
@@ -26,36 +26,57 @@ export namespace Response {
     export interface User {
         type:'user';
         id:number;
-        attributes:Database.Users;
+        attributes:Database.User;
+    }
+
+    export function allocUser () : User {
+        return {
+            type: 'user',
+            id: 0,
+            attributes: {
+                name: '',
+            },
+        };
     }
 
     export interface Channel {
         type:'channel';
         id:number;
-        attributes:Database.Channels;
+        attributes:Database.Channel;
     } 
 
     export interface Thread {
         type:'thread';
         id:number;
-        attributes:Database.Threads;
+        attributes:Database.Thread;
         author:User;
-        channel:Channel;
-        tags:Tag[];
+        channel?:Channel;
+        tags?:Tag[];
         recommendations?:Recommendation[];
+    }
+
+    export function allocThread () : Thread {
+        return {
+            type: 'thread',
+            id: 0,
+            attributes: {
+                title: '',
+            },
+            author: allocUser(),
+        };
     }
 
     export interface Status {
         type:'status';
         id:number;
-        attributes:Database.Statuses;
+        attributes:Database.Status;
         author:User;
     }
 
     export interface Tag {
         type:'tag';
         id:number;
-        attributes:Database.Tags;
+        attributes:Database.Tag;
     }
 
     export interface ThreadPaginate {
@@ -69,8 +90,19 @@ export namespace Response {
     export interface Post {
         type:'post';
         id:number;
-        attributes:Database.Posts;
+        attributes:Database.Post;
         author:User;
+    }
+
+    export function allocPost () : Post {
+        return {
+            type: 'post',
+            id: 0,
+            attributes: {
+                body: '',
+            },
+            author: allocUser(),
+        };
     }
 
     export interface Recommendation {
@@ -88,13 +120,13 @@ export namespace Response {
     export interface Chapter {
         type:'chapter';
         id:number;
-        attributes:Database.Chapters & Database.Posts;
+        attributes:Database.Chapter & Database.Post;
     }
 
     export interface Volumn {
         type:'volumn';
         id:number;
-        attributes:Database.Volumns;
+        attributes:Database.Volume;
     }
 }
 
@@ -109,27 +141,29 @@ export namespace Request {
 
 interface APIResponse<T> {
     code:number;
-    data:T|string;
+    data:T;
 }
 
-interface APISchema<T extends {req?:{}, res:{}}> {
+interface APISchema<T extends {req:{}|undefined, res:{}}> {
     req?:T['req'];
     res:APIResponse<T['res']>;
 }
 
 export interface APIGet {
     '/':APISchema<{
+        req:undefined;
         res:{
-            quotes:Response.Quote[],
-            recent_added_chapter_books:Response.Thread[],
-            recent_responded_books:Response.Thread[],
-            recent_responded_threads:Response.Thread[],
-            recent_statuses:Response.Status[],
+            quotes:ResData.Quote[],
+            recent_added_chapter_books:ResData.Thread[],
+            recent_responded_books:ResData.Thread[],
+            recent_responded_threads:ResData.Thread[],
+            recent_statuses:ResData.Status[],
         }
     }>;
     '/config/allTags':APISchema<{
+        req:undefined;
         res:{
-            tags:Response.Tag[];
+            tags:ResData.Tag[];
         }
     }>;
     '/thread':APISchema<{
@@ -142,8 +176,8 @@ export interface APIGet {
             ordered:Request.Thread.ordered,
         };
         res:{
-            threads:Response.Thread[],
-            paginate:Response.ThreadPaginate,
+            threads:ResData.Thread[],
+            paginate:ResData.ThreadPaginate,
         };
     }>;
     '/thread/:id':APISchema<{
@@ -151,25 +185,24 @@ export interface APIGet {
             id:number;
         };
         res:{
-            thread:Response.Thread,
-            posts:Response.Post[],
-            paginate:Response.ThreadPaginate, 
+            thread:ResData.Thread,
+            posts:ResData.Post[],
+            paginate:ResData.ThreadPaginate, 
         }
     }>;
-    'book/:id':APISchema<{
+    '/book/:id':APISchema<{
         req:{
             id:number;
         };
         res:{
-            thread:Response.Thread;
-            chapters:Response.Chapter[];
-            volumns:Response.Volumn[];
-            most_upvoted:Response.Post;
-            newest_comment:Response.Post;
+            thread:ResData.Thread;
+            chapters:ResData.Chapter[];
+            volumns:ResData.Volumn[];
+            most_upvoted:ResData.Post;
+            newest_comment:ResData.Post;
         }
     }>
 }
-
 export interface APIPost {
     '/register':APISchema<{
         req:{
@@ -199,7 +232,7 @@ export interface APIPost {
             body:string; 
         };
         res:{
-            thread:Response.Thread;
+            thread:ResData.Thread;
         }
     }>;
     '/recommendation':APISchema<{

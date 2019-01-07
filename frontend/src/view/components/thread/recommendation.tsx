@@ -1,24 +1,12 @@
 import * as React from 'react';
 import { Card, ShortThread } from '../common';
-import { DataType } from '../../../config/data-types';
 import { Styles } from '../../../utils/types';
 import { Core } from '../../../core/index';
-
-export function allocRecommendationData () : RecommendationData {
-    return {
-        cards: [],
-        long: DataType.Home.allocRecommendation(),
-    }
-}
-
-export interface RecommendationData {
-    cards:DataType.Home.Recommendation[];
-    long:DataType.Home.Recommendation;
-}
+import { ResData } from '../../../config/api';
 
 interface Props {
     core:Core;
-    data:RecommendationData;
+    recommendations:ResData.Recommendation[];
 }
 
 interface State {
@@ -34,7 +22,18 @@ export class Recommendation extends React.Component<Props, State> {
 
     public render () {
         const cardWrapperWidth = this.cardWrapperEl && this.cardWrapperEl.offsetWidth || 1;
-        const { cards, long } = this.props.data;
+        const shots:ResData.Recommendation[] = [];
+        let longs:ResData.Recommendation[] = [];
+
+        for (let i = 0; i < this.props.recommendations.length; i ++) {
+            const recom = this.props.recommendations[i];
+            if (recom.attributes.type === 'long') {
+                longs.push(recom);
+            }
+            if (recom.attributes.type === 'shot') {
+                shots.push(recom);
+            }
+        }
 
         const s:Styles = {
             main: {
@@ -50,8 +49,8 @@ export class Recommendation extends React.Component<Props, State> {
                 overflowX: 'auto',
             },
             cardsContainer: {
-                width: `${cards.length
-                    && cards.length / Math.ceil(cardWrapperWidth / this.CARD_MIN_WIDTH) * 100
+                width: `${shots.length
+                    && shots.length / Math.ceil(cardWrapperWidth / this.CARD_MIN_WIDTH) * 100
                     || 100}%`,
                 backgroundColor: 'white',
                 display: 'flex',
@@ -72,28 +71,40 @@ export class Recommendation extends React.Component<Props, State> {
             <div>
                 <div style={s.cardsWrapper} ref={(el) => this.cardWrapperEl = el}>
                     <div style={s.cardsContainer}>
-                        { cards.map((card, i) => 
+                        { shots.map((recom, i) => 
                             <ShortThread
                                 style={s.card}
                                 key={i}
                                 link={'#'}
                                 thread={{
-                                    id: card.id,
-                                    title: card.title,
-                                    content: card.content,
+                                    id: recom.id,
+                                    type: 'thread',
+                                    attributes: {
+                                        title: recom.attributes.brief,
+                                        body: recom.attributes.body,
+                                        created_at: recom.attributes.created_at,
+                                    },
+                                    author: recom.authors[0],
                                 }} />
                         )}
                     </div> 
                 </div>
 
-                <ShortThread
+                {longs.length > 0 &&
+                    <ShortThread
                     style={s.long}
                     link={'#'}
                     thread={{
-                        id: long.id,
-                        title: long.title,
-                        content: long.content,
-                    }} />
+                        id: longs[0].id,
+                        type: 'thread',
+                        attributes: {
+                            title: longs[0].attributes.brief,
+                            body: longs[0].attributes.body,
+                            created_at: longs[0].attributes.created_at,
+                        },
+                        author: longs[0].authors[0],
+                    }} /> 
+                }
             </div>
         </Card>;
     }

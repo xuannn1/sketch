@@ -14,7 +14,7 @@ export class User {
 
     public async login (email:string, pwd:string) {
         //todo:
-        const res = await this.db.post(`/login`, {email, pwd});
+        const res = await this.db.post(`/login`, {email, password: pwd});
         if (!res) { return; }
 
         if (res.code) {
@@ -28,8 +28,8 @@ export class User {
 
     public async register (spec:{
         email:string,
-        pwd:string,
-        username:string,
+        password:string,
+        name:string,
     }) {
         const res = await this.db.post(`/register`, spec);
         if (!res) { return; }
