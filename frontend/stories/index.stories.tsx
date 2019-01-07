@@ -17,7 +17,7 @@ storiesOf('Home', module)
     .addDecorator(withViewport())
     .addDecorator(withKnobs)
     .add('Carousel', () => 
-        <Carousel slides={[
+        <Carousel core={core} slides={[
             <span>one</span>,
             <span>two</span>,
             <span>three</span>,

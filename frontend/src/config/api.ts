@@ -248,7 +248,7 @@ export interface APIPost {
 }
 
 export interface APIPatch {
-    '/patch':APISchema<{
+    '/recommendation':APISchema<{
         req:{
             brief?:string;
             body?:string;
