@@ -35,18 +35,6 @@ class LogLastUserActivity
                 Auth::user()->increment('daily_clicks', (int)Cache::pull('-usr-clicks-'.Auth::id()));
                 Auth::user()->reward('online_reward');
             }
-        }else{
-            //统计游客在线数量（仅统计在默认登陆时间间隔内在线的人，避免过度操作数据库）
-            if(!Cache::has('-guest-on-' . request()->ip())){//假如距离上次cache的时间已经超过了默认时间
-                $record = LoggingStatus::updateOrCreate([
-                    'ip' => request()->ip(),
-                ],[
-                    'logged_on' => time(),
-                    'user_id' => 0,
-                ]);
-                $expiresAt = Carbon::now()->addMinutes(config('constants.online_count_interval'));
-                Cache::put('-guest-on-' . request()->ip(), true, $expiresAt);
-            }
         }
         return $next($request);
     }
