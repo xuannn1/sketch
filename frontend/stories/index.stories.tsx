@@ -33,18 +33,28 @@ storiesOf('Home', module)
     .add('Home Thread', () =>
         <HomeThread
             latest={(new Array(5)).fill({
-                type: 'thread',
-                id: 0,
-                attributes: {
-                    title: 'sample title'
+                "type": "thread",
+                "id": 8,
+                "attributes": {
+                    "title": "Consequatur porro veniam nihil molestias quos qui.",
+                    "is_anonymous": false,
+                    "majia": ""
                 },
-                author: {
-                    type: 'user',
-                    id: 0,
-                    attributes: {
-                        name: 'test user',
+                "author": {
+                    "type": "user",
+                    "id": 5,
+                    "attributes": {
+                        "name": "Abelardo Ortiz PhD"
                     }
-                }
+                },
+                "channel": {
+                    "type": "channel",
+                    "id": 4,
+                    "attributes": {
+                        "channel_name": "读写交流"
+                    }
+                },
+                "tags": []
             })}
         />
     )
