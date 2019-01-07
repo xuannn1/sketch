@@ -6,7 +6,9 @@ import { withConsole } from '@storybook/addon-console';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { Core } from '../src/core';
 import { Chapter } from '../src/view/components/book/chapter';
+import { HomeThread } from '../src/view/components/thread/thread-home';
 import '../src/theme.scss';
+import { pageDecorator } from './decorator';
 
 // import { action } from '@storybook/addon-actions';
 
@@ -17,6 +19,7 @@ addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 storiesOf('Home', module)
     .addDecorator(withViewport())
     .addDecorator(withKnobs)
+    .addDecorator(pageDecorator)
     .add('Carousel', () => 
         <Carousel
             windowResizeEvent={core.windowResizeEvent}
@@ -27,6 +30,29 @@ storiesOf('Home', module)
             ]}
             indicator={boolean(true)} />
     )
+    .add('Home Thread', () =>
+        <HomeThread
+            latest={(new Array(5)).fill({
+                type: 'thread',
+                id: 0,
+                attributes: {
+                    title: 'sample title'
+                },
+                author: {
+                    type: 'user',
+                    id: 0,
+                    attributes: {
+                        name: 'test user',
+                    }
+                }
+            })}
+        />
+    )
+;
+
+storiesOf('Book', module)
+    .addDecorator(withViewport())
+    .addDecorator(withKnobs)
     .add('Chapter', () =>
         <Chapter chapter={{
             type: 'chapter',
@@ -35,6 +61,6 @@ storiesOf('Home', module)
                 title: '',
                 body: '',
             }
-        }} />
+        }} /> 
     )
 ;
