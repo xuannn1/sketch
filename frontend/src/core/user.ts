@@ -16,14 +16,9 @@ export class User {
         //todo:
         const res = await this.db.post(`/login`, {email, password: pwd});
         if (!res) { return false; }
-
-        if (res.code) {
-            this.loginFlag = true;
-            this.history.push('/');
-            return true;
-        } else {
-            return false;
-        }
+        this.loginFlag = true;
+        this.history.push('/');
+        return true;
     }
 
     public async register (spec:{
@@ -33,14 +28,9 @@ export class User {
     }) {
         const res = await this.db.post(`/register`, spec);
         if (!res) { return false; }
-
-        if (res.code) {
-            this.loginFlag = true;
-            this.history.push('/');
-            return true;
-        } else {
-            return false;
-        }
+        this.loginFlag = true;
+        this.history.push('/');
+        return true;
     }
 
     public isAdmin () : boolean {

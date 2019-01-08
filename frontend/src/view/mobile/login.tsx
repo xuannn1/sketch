@@ -28,7 +28,7 @@ export class LoginRoute extends React.Component<Props, State> {
         switch (window.location.pathname) {
             case ROUTE.login:
                 this.location = 'login';
-                return <Login login={this.props.core.user.login}></Login>;
+                return <Login login={async (email, pwd) => await this.props.core.user.login(email, pwd)}></Login>;
             case ROUTE.register:
                 this.location = 'register';
                 return <Register register={async (name, email, pwd) => await this.props.core.user.register({

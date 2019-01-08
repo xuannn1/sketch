@@ -30,15 +30,19 @@ export class DB {
                 headers: {
                     'content-type': 'application/json',
                 },
-                mode: 'cors',
-                credentials: 'same-origin',
                 cache: 'no-cache',
+                mode: 'cors',
                 body: JSON.stringify(data || {}),
             });
-            const result = response.json();
-            return result
+            const result = (await response.json()) as APIPost[Path]['res'];
+            if (result.code === 200) {
+                return result;
+            } else {
+                console.log('Response Error:', result);
+                return null;
+            }
         } catch (e) {
-            console.error('Post Error: ' + e);
+            console.error('Post Error: ', e);
             return null;
         }
     }
@@ -49,14 +53,17 @@ export class DB {
             console.log('get: ' + url);
             const response = await fetch(url, {
                 method: 'GET',
-                mode: 'cors',
-                credentials: 'same-origin',
                 cache: 'no-cache',
             });
-            const result = response.json();
-            return result;
+            const result = (await response.json()) as APIGet[Path]['res'];
+            if (result.code === 200) {
+                return result;
+            } else {
+                console.log('Response Error:', result);
+                return null;
+            }
         } catch (e) {
-            console.error('GET error: ' + e);
+            console.error('GET error: ', e);
             return null;
         }
     }

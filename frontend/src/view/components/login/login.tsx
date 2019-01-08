@@ -16,8 +16,8 @@ interface State {
 
 export class Login extends React.Component<Props, State> {
     public state = {
-        email: 'test@email.com',
-        password: '123456',
+        email: '',
+        password: '',
         errMsg: '',
     };
 
