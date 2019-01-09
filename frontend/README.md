@@ -46,12 +46,17 @@ npm run build
   - `yarn.lock` yarn包锁定文件
   - `package.json` node包管理文件
   - `index.html` 
+  - `.storybook` storybook配置目录
+  - `assets` 媒体文件夹(储存图片等非代码文件)
+  - `bin` 脚本文件夹
+  - `stories` storybook主要源码目录
 
 - `frontend/src`
   - `config` 设置类, 如网站url, 如path, 等
   - `core` 所有控制组件
     - `index.ts` 负责初始化其他所有控制组件实例并提供一个统一的入口
     - `db.ts` 数据库操作相关
+  - `test` 测试代码目录
   - `utils` 其他常用function/class
   - `view` 页面渲染
     - `components` 小块的页面组件, 手机端和电脑端可共用的
@@ -106,4 +111,6 @@ console.log(data); // {data:'this is an example msg', code: 1}
 - 非页面交互方面的逻辑功能, 建议在`core`目录下建议相应的类来处理, 比如`core`下`user`类负责管理所有用户数据.
 - 页面分为两部分, 上面的部分由路由控制切换页面, 具体的页面内容需要包裹在`<Page>`标签下(参考`/src/view/mobile/home/default.tsx`). 下面的是一级导航菜单, 对应的按钮分别跳转到对应的mobile主目录.
 - 每一个可以考虑同时插入在手机端和pc端的组件, 需要包裹在`<Card>`标签下, 并放在`src/view/components`目录内(参考`src/view/components`里的各文件).
+- `src/view/components`目录内的components仅负责纯粹的UI渲染和操作, 不做其他逻辑, 这里的props请尽量放纯粹的数据或回调函数, 不要放`core`对象.
 - 使用率较高的简单组件, 可以自行创建并放在`src/view/components/common.tsx`文件内.
+- UI方面的调试建议使用storybook
