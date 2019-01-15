@@ -42,6 +42,7 @@ class StoreThread extends FormRequest
     public function generateThread()
     {
         $channel = ConstantObjects::allChannels()->keyBy('id')->get($this->channel);
+
         //检查tag是否符合规则
         //这部分还没做
         $thread = $this->only('title','brief','body');
@@ -78,6 +79,7 @@ class StoreThread extends FormRequest
                 $thread = Thread::create($thread);
                 //如果是homework，注册相关信息
                 //这里还需要记录奖励历史信息
+                $thread->tags()->sync($tags_data);
                 return $thread;
             });
         }else{
@@ -93,4 +95,6 @@ class StoreThread extends FormRequest
         ->first();
         return (!empty($last_thread)) && (strcmp($last_thread->title.$last_thread->brief.$last_thread->body, $thread['title'].$thread['brief'].$thread['body']) === 0);
     }
+
+
 }

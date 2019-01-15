@@ -8,6 +8,7 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Models\Chapter;
 use App\Http\Requests\StoreThread;
+use App\Http\Requests\UpdateThread;
 use App\Http\Resources\ThreadResources\ThreadInfoResource;
 use App\Http\Resources\ThreadResources\ThreadProfileResource;
 use App\Http\Resources\ThreadResources\PostResource;
@@ -138,10 +139,15 @@ class ThreadController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(Request $request, $id)
+    public function update(UpdateThread $form, Thread $thread)
     {
-        //
+
+        $thread = $form->updateThread($thread);
+        return response()->success(new ThreadProfileResource($thread));
+
     }
+
+
 
     /**
     * Remove the specified resource from storage.
