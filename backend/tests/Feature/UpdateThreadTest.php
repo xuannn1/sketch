@@ -25,9 +25,10 @@ class UpdateThreadTest extends TestCase
     // manage: 41,45
     //thread的channel_id 只能是1或者2,取其他数值没有意义
      $thread = factory(Thread::class)->create([
-          'channel_id' => '1',
-      ]);
+           'channel_id' => '1',
+       ]);
 
+    //更新thread的人必须是创建者，如果用其他人会更新失败
     $user = User::find($thread->user_id);
     $this->be($user);
 
@@ -41,7 +42,7 @@ class UpdateThreadTest extends TestCase
 
 
 
-    //测试数据2  1,原创 77长篇 80 完结  性向85
+    //测试数据2  1,原创 77长篇 80 完结  性向85 84
     $request = $this->actingAs($user,'api')
       ->put('api/thread/'.$thread->id,
       ['is_bianyuan' => false,
@@ -49,7 +50,7 @@ class UpdateThreadTest extends TestCase
       'brief' => 'test12345',
       'body' => 'test12345abcdefg',
       'majia' => 'test13234',
-      'tags' => '75,80,85'
+      'tags' => '75,80,84'
     ]);
 
     $response = $request->send();

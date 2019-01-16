@@ -53,6 +53,10 @@ class ThreadProfileResource extends JsonResource
                 'no_reply' => (bool)$this->no_reply,
                 'last_responded_at' => (string)$this->last_responded_at,
             ],
+            'author' => $author,
+            'channel' => new ChannelBriefResource($this->simpleChannel()),
+            'tags' => TagResource::collection($this->tags),
+            'recommendations' => RecommendationResource::collection($this->recommendations)
         ];
     }
 }

@@ -209,8 +209,7 @@ title
 brief
 body
 majia
-tags
-
+tags    （格式是用逗号分开的一串数字： 75,80,84）
 
 ###### 4.4.2 建立post
 
