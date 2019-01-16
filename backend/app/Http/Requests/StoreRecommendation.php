@@ -50,7 +50,7 @@ class StoreRecommendation extends FormRequest
         $thread = Thread::find(request()->thread);
         if (($thread)&&($thread->is_public)){
             $recommendation = Recommendation::create(request()->only('thread', 'brief', 'body', 'type'));
-            $recommendation->authors()->sync(json_decode(request()->authors()??auth('api')->id());
+            $recommendation->authors()->sync(json_decode(request()->authors()??auth('api')->id()));
             return $recommendation;
         }else{
             abort(404);
