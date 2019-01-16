@@ -205,7 +205,10 @@ http://127.0.0.1:8000/api/thread/{thread}
 授权：必须登陆,且用户必须是创建thread的用户
 必填项：
 is_bianyuan
-channel
+title
+brief
+body
+majia
 tags
 
 

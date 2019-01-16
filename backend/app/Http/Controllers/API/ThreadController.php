@@ -143,10 +143,10 @@ class ThreadController extends Controller
     {
 
         $thread = $form->updateThread($thread);
+        
         return response()->success(new ThreadProfileResource($thread));
 
     }
-
 
 
     /**

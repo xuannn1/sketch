@@ -79,7 +79,6 @@ class StoreThread extends FormRequest
                 $thread = Thread::create($thread);
                 //如果是homework，注册相关信息
                 //这里还需要记录奖励历史信息
-                $thread->tags()->sync($tags_data);
                 return $thread;
             });
         }else{
