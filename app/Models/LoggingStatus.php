@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class LoggingStatus extends Model
 {
     protected $guarded = [];
-    protected $primaryKey = 'ip'; 
+    protected $primaryKey = 'user_id'; 
 
     public $timestamps = false;
     public $incrementing = false;

@@ -156,15 +156,17 @@ class PagesController extends Controller
         //     ->count();
         //     return $guests_online;
         // });
-        $users_online = Cache::remember('-users-online-count', config('constants.online_count_interval'), function () {
+        $users_online = Cache::remember('users-online-count', config('constants.online_count_interval'), function () {
             $users_online = DB::table('logging_statuses')
-            ->where('logged_on', '>', time()-60*30)
-            ->where('user_id', '>', 0)
+            ->where('logged_on', '>', time()-60*config('constants.online_count_interval'))
             ->count();
             return $users_online;
         });
         $data = config('constants');
-        $webstat = WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
+        $webstat =  Cache::remember('webstat-yesterday', config('constants.online_count_interval'), function () {
+            $webstat = WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
+            return $webstat;
+        });
         return view('pages/help',compact('data','webstat','users_online'));
     }
 
