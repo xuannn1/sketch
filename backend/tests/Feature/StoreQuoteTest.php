@@ -11,7 +11,7 @@ class StoreQuoteTest extends TestCase
     /** @test */
     public function an_authorised_user_can_create_quote()
     {
-        $user = User::find(35);
+        $user = User::find(1);
 
         $body = "testtest";
         $request = $this->actingAs($user, 'api')
@@ -32,8 +32,6 @@ class StoreQuoteTest extends TestCase
     /** @test */
     public function a_guest_can_not_create_quote()
     {
-        $user = User::find(35);
-
         $body = "test7";
         $request = $this->post('api/quote', ['body' => $body]);
 
