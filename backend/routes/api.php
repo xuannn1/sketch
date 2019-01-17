@@ -30,3 +30,5 @@ Route::apiResource('recommendation', 'API\RecommendationController');
 
 Route::get('/', 'API\PagesController@home')->name('home');
 Route::get('config/allTags', 'API\PagesController@allTags');
+
+Route::post('quote', 'API\QuoteController@store');
