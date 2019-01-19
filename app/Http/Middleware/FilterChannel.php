@@ -19,15 +19,19 @@ class FilterChannel
     public function handle($request, Closure $next)
     {
         $channel = Helper::allChannels()->keyBy('id')->get($request->route('channel'));
-        if ($channel->channel_state>=10){
-            if (Auth::check()){
-                if ($request->user()->group > $channel->channel_state){
-                    return $next($request);
+        if($channel){
+            if ($channel->channel_state>=10){
+                if (Auth::check()){
+                    if ($request->user()->group > $channel->channel_state){
+                        return $next($request);
+                    }
+                    return redirect()->route('error', ['error_code' => '403']);
                 }
-                return redirect()->route('error', ['error_code' => '403']);
+                return redirect('login');
             }
-            return redirect('login');
+            return $next($request);
+        }else{
+            return redirect('home');
         }
-        return $next($request);
     }
 }

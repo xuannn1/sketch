@@ -9,7 +9,7 @@ return [
    'update_min' => 1000, //章节更新必须达到这个水平才能进入排名榜
    'longcomment_lenth' => 200, //“长评”必须达到该字数
    'default_user_group' => 10,
-   'online_count_interval' => 10, //统计在线时间时，间隔多少分钟的时间算一次。
+   'online_count_interval' => 1, //统计在线时间时，间隔多少分钟的时间算一次。
    'default_majia' => '匿名咸鱼',
 
    'collection_type_info' => [

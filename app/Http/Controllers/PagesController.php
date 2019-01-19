@@ -133,7 +133,7 @@ class PagesController extends Controller
     {
         $users_online = Cache::remember('users-online-count', config('constants.online_count_interval'), function () {
             $users_online = DB::table('logging_statuses')
-            ->where('logged_on', '>', time()-60*10)
+            ->where('logged_on', '>', time()-60*30)
             ->count();
             return $users_online;
         });
