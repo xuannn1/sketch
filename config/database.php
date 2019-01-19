@@ -117,6 +117,7 @@ return [
             'port' => env('REDIS_PORT', 6379),
             'database' => 0,
             'read_write_timeout' => 60,
+            'persistent' => true,
         ],
 
     ],
