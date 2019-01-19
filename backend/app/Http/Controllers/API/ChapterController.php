@@ -5,6 +5,12 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Models\Post;
+use App\Models\Thread;
+
+use App\Http\Requests\StorePost;
+use App\Http\Requests\StoreChapter;
+
 class ChapterController extends Controller
 {
     /**
@@ -12,6 +18,14 @@ class ChapterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('filter_thread');
+
+    }
+    
     public function index()
     {
         //
@@ -33,9 +47,10 @@ class ChapterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Thread $thread, StoreChapter $chapterform)
     {
-        //
+        $chapter = $chapterform->generateChapter();
+        return response()->success($chapter);
     }
 
     /**
