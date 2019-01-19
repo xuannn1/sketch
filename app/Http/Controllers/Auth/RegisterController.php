@@ -62,16 +62,16 @@ class RegisterController extends Controller
             'have_read_policy' => 'required',
             'invitation_token' => 'required|string|exists:invitation_tokens,token|max:255',
        ]);
-       $validator->after(function ($validator) {
-          $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
-          if (!$invitation_token){
-             $validator->errors()->add('invitation_token', '邀请码不存在');
-          }else{
-             if (($invitation_token->invitation_times < 1)||($invitation_token->invite_until <  Carbon::now())){
-                $validator->errors()->add('invitation_token', '邀请码已失效');
-             }
-          }
-       });
+       // $validator->after(function ($validator) {
+       //    $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
+       //    if (!$invitation_token){
+       //       $validator->errors()->add('invitation_token', '邀请码不存在');
+       //    }else{
+       //       if (($invitation_token->invitation_times < 1)||($invitation_token->invite_until <  Carbon::now())){
+       //          $validator->errors()->add('invitation_token', '邀请码已失效');
+       //       }
+       //    }
+       // });
        return $validator;
      }
 
@@ -84,21 +84,17 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        if (!Cache::has('-registration-limit-' . request()->ip())){
+        if (!Cache::has('registration-limit-' . request()->ip())){
             $user = DB::transaction(function()use($data){
                 $user = User::create([
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'password' => bcrypt($data['password']),
                     'invitation_token' => $data['invitation_token'],
+                    'activated' => true,
                 ]);
-                $user->activated = 1;
-                $user->save();
-                $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
-                $invitation_token->decrement('invitation_times');
-                $invitation_token->increment('invited');
                 $expiresAt = Carbon::now()->addMinutes(10);
-                Cache::put('-registration-limit-' . request()->ip(), true, $expiresAt);
+                Cache::put('registration-limit-' . request()->ip(), true, $expiresAt);
                 return $user;
             });
         }else{

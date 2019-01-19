@@ -149,16 +149,9 @@ class PagesController extends Controller
 
     public function help()
     {
-        // $guests_online = Cache::remember('-guests-online-count', config('constants.online_count_interval'), function () {
-        //     $guests_online = DB::table('logging_statuses')
-        //     ->where('logged_on','>', time()-60*30)//统计过去三十分钟内有多少不同的人来过
-        //     ->where('user_id', '=', 0)
-        //     ->count();
-        //     return $guests_online;
-        // });
         $users_online = Cache::remember('users-online-count', config('constants.online_count_interval'), function () {
             $users_online = DB::table('logging_statuses')
-            ->where('logged_on', '>', time()-60*config('constants.online_count_interval'))
+            ->where('logged_on', '>', time()-60*30)
             ->count();
             return $users_online;
         });

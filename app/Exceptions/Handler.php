@@ -48,6 +48,10 @@ class Handler extends ExceptionHandler
         if($exception instanceof PDOException ){
             return abort(595);
         }
+
+        if ($exception instanceof Exception) {
+            return response()->error($exception, 599);
+        }
         return parent::render($request, $exception);
     }
 
