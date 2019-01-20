@@ -54,7 +54,7 @@ class ThreadProfileResource extends JsonResource
                 'last_responded_at' => (string)$this->last_responded_at,
             ],
             'author' => $author,
-            'channel'        => new ChannelBriefResource($this->simpleChannel()),
+            'channel' => new ChannelBriefResource($this->simpleChannel()),
             'tags' => TagResource::collection($this->tags),
             'recommendations' => RecommendationResource::collection($this->recommendations)
         ];
