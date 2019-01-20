@@ -96,6 +96,13 @@ class ChapterTest extends TestCase
     	$response = $request->send();
     	$this -> assertEquals(200, $response->getStatusCode());
 
+    	$data['body'] = "一个不合格的下一章，上一章已经有下一章啦";
+    	$data['previous_chapter_id'] = 1;
+
+    	$request = $this->actingAs($user,'api')->post('api/thread/'.$thread->id.'/chapter',$data);
+    	$response = $request->send();
+    	$this -> assertEquals(595, $response->getStatusCode());
+
     }
 
     /** @test */
