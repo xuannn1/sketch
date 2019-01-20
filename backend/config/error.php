@@ -1,10 +1,10 @@
 <?php
 return [
     '200' => 'success',
-    '400' => 'not found',
+    '400' => 'not found',//相关指令服务器无法识别resolve
     '401' => 'unauthorised',//未登陆，或未能获得相关频道的发布授权，或不具有修改资格
     '403' => 'permission denied',
-    '404' => 'not found',
+    '404' => 'not found',//post/thread/chapter等内容未找到
     '405' => 'method not allowed',
     '409' => 'data conflict', //数据内容重复
     '422' => 'validation failed',//不符合规则的内容，
