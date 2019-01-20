@@ -199,6 +199,17 @@ channel(numeric) 数字，必须为自己有权限编辑的channel。这一项�
 title(string)
 brief(string)
 body(string)
+###### 4.4.1.1 修改thread
+http://127.0.0.1:8000/api/thread/{thread}
+方法：PUT|PATCH
+授权：必须登陆,且用户必须是创建thread的用户
+必填项：
+is_bianyuan
+title
+brief
+body
+majia
+tags    （格式是用逗号分开的一串数字： 75,80,84）
 
 ###### 4.4.2 建立post
 
