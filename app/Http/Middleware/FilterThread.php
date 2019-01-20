@@ -35,6 +35,8 @@ class FilterThread
                 }else{
                     return $next($request);
                 }
+            }else{
+                return redirect()->route('error', ['error_code' => '403']);
             }
         }else{
             return redirect('home');

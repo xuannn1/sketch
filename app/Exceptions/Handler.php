@@ -51,17 +51,6 @@ class Handler extends ExceptionHandler
         if($exception instanceof PDOException ){
             return abort(595);
         }
-        if ($exception instanceof ValidationException) {
-            return parent::render($request, $exception);
-        }
-        if ($exception instanceof HttpException) {
-            return parent::render($request, $exception);
-        }
-
-        if ($exception instanceof Exception) {
-            return abort(599);
-        }
-
         return parent::render($request, $exception);
     }
 
