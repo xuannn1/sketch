@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 use PDOException;
 
 class Handler extends ExceptionHandler
@@ -49,9 +50,14 @@ class Handler extends ExceptionHandler
         if($exception instanceof PDOException ){
             return abort(595);
         }
-        if ($exception instanceof Exception) {
-            return response()->error($exception, 599);
+        if ($exception instanceof ValidationException) {
+            return parent::render($request, $exception);
         }
+
+        if ($exception instanceof Exception) {
+            return abort(599);
+        }
+
         return parent::render($request, $exception);
     }
 

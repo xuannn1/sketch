@@ -30,81 +30,77 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
+    * Where to redirect users after registration.
+    *
+    * @var string
+    */
     protected $redirectTo = '/';
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    * Create a new controller instance.
+    *
+    * @return void
+    */
     public function __construct()
     {
         $this->middleware('guest');
     }
 
     /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
+    * Get a validator for an incoming registration request.
+    *
+    * @param  array  $data
+    * @return \Illuminate\Contracts\Validation\Validator
+    */
 
     protected function validator(array $data)
     {
-       $validator = Validator::make($data, [
+        $validator = Validator::make($data, [
             'name' => 'required|string|alpha_dash|max:12|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'have_read_policy' => 'required',
             'invitation_token' => 'required|string|exists:invitation_tokens,token|max:255',
-       ]);
-       return $validator;
-     }
+        ]);
+        return $validator;
+    }
 
     /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
+    * Create a new user instance after a valid registration.
+    *
+    * @param  array  $data
+    * @return \App\Models\User
+    */
 
     protected function create(array $data)
     {
-        if (!Cache::has('registration-limit-' . request()->ip())){
-            $user = DB::transaction(function()use($data){
-                $user = User::create([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'password' => bcrypt($data['password']),
-                    'invitation_token' => $data['invitation_token'],
-                    'activated' => true,
-                ]);
-                $expiresAt = Carbon::now()->addMinutes(10);
-                Cache::put('registration-limit-' . request()->ip(), true, $expiresAt);
-                return $user;
-            });
-        }else{
-            $user = null;
-        }
-        return $user;
+        return DB::transaction(function()use($data){
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+                'invitation_token' => $data['invitation_token'],
+                'activated' => true,
+            ]);
+            return $user;
+        });
     }
 
     public function register(Request $request)
     {
         $this->validator($request->all())->validate();
-        $user = $this->create($request->all());
+
+        if (!Cache::has('registration-limit-' . request()->ip())){
+            $user = $this->create($request->all());
+            $expiresAt = Carbon::now()->addMinutes(10);
+            Cache::put('registration-limit-' . request()->ip(), true, $expiresAt);
+            session()->flash('success', '账户已建立并激活，直接登录就可以玩耍了，快来试试吧！');
+        }else{
+            session()->flash('danger', '您的IP十分钟内已经成功注册，请尝试直接登陆您已注册的账户。');
+        }
         // event(new Registered($user));
         // $this->sendEmailConfirmationTo($user);
         // session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
-        if ($user){
-            session()->flash('success', '账户已建立并激活，直接登录就可以玩耍了，快来试试吧！');
-        }else {
-            session()->flash('danger', '您的IP十分钟内已经成功注册，请尝试直接登陆您已注册的账户。');
-        }
         return redirect('/');
     }
 
