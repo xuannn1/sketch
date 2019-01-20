@@ -1,6 +1,7 @@
 import { History } from '.';
 import { APIPost, APIGet } from '../config/api';
 import { parsePath, URLQuery } from '../utils/url';
+import { loadStorage } from '../utils/storage';
 
 export class DB {
     private host:string;
@@ -25,15 +26,13 @@ export class DB {
             const url = this._parseURL(_path, data);
 
             console.log('post: ', url);
-            const response = await fetch(url, {
+            const response = await fetch(url, this.genRequestInit({
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json',
                 },
-                cache: 'no-cache',
-                mode: 'cors',
                 body: JSON.stringify(data || {}),
-            });
+            }));
             const result = (await response.json()) as APIPost[Path]['res'];
             if (result.code === 200) {
                 return result;
@@ -51,10 +50,7 @@ export class DB {
         try {
             const url = this._parseURL(_path, query);
             console.log('get: ' + url);
-            const response = await fetch(url, {
-                method: 'GET',
-                cache: 'no-cache',
-            });
+            const response = await fetch(url, this.genRequestInit());
             const result = (await response.json()) as APIGet[Path]['res'];
             if (result.code === 200) {
                 return result;
@@ -78,5 +74,37 @@ export class DB {
 
     public search (type:string, value:string, tongrenCP:string) {
         return ''; // fixme:
+    }
+
+    public getAuth () {
+        const token = loadStorage('token');
+        if (token) {
+            return `Bearer ${loadStorage('token')}`;
+        }
+        return undefined;
+    }
+
+    public genRequestInit (init:RequestInit = {}) {
+        const reqInit = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+        } as RequestInit;
+        const token = loadStorage('token');
+        if (token) {
+            reqInit.headers!['Authorization'] = `Bearer ${token}`;
+        }
+
+        for (const key in init) {
+            if (key === 'headers') {
+                Object.assign(reqInit.headers, init[key]);
+            } else {
+                reqInit[key] = init[key];
+            }
+        }
+        
+        return reqInit;
     }
 }

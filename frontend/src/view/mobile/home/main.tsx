@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { ROUTE } from '../../../config/route';
 import { Carousel } from '../../components/carousel';
 import { checkType } from '../../../utils/types';
-import { APIGet } from '../../../config/api';
+import { APIGet, ResData } from '../../../config/api';
 
 interface Props {
     core:Core;
@@ -41,8 +41,8 @@ export class HomeMain extends React.Component<Props, State> {
             <Carousel  
                 windowResizeEvent={this.props.core.windowResizeEvent}
                 slides={this.state.data.quotes.map((quote, i) => 
-                <span key={i}>{quote.attributes.body}</span>
-            )}
+                    <span key={i}>{quote.attributes.body}</span>
+                )}
                 indicator={true} />
 
             { !this.props.core.user.isLoggedIn() &&

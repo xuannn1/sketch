@@ -23,6 +23,17 @@ export namespace ResData {
         author:User;
     }
 
+    export function allocQuote () {
+        return {
+            type: 'quote',
+            id: 0,
+            attributes: {
+                body: '',
+            },
+            author: allocUser(),
+        }
+    }
+
     export interface User {
         type:'user';
         id:number;
