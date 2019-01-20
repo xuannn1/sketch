@@ -11,17 +11,16 @@ class StoreQuoteTest extends TestCase
     /** @test */
     public function an_authorised_user_can_create_quote()
     {
-        $user = User::find(35);
+        $user = $this->actingAs(factory('App\Models\User')->create(), 'api');
 
-        $body = "testtest";
-        $request = $this->actingAs($user, 'api')
-        ->post('api/quote', ['body' => $body]);
+        $body = "testtesttest";
+        $request = $this->post('api/quote', ['body' => $body]);
 
         $response = $request->send();
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $body = "testtest";
+        $body = "testtesttest";
         $request = $this->post('api/quote', ['body' => $body]);
 
         $response = $request->send();
@@ -32,9 +31,7 @@ class StoreQuoteTest extends TestCase
     /** @test */
     public function a_guest_can_not_create_quote()
     {
-        $user = User::find(35);
-
-        $body = "test7";
+        $body = "test8";
         $request = $this->post('api/quote', ['body' => $body]);
 
         $response = $request->send();
