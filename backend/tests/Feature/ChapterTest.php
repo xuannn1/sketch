@@ -52,6 +52,53 @@ class ChapterTest extends TestCase
     }
 
     /** @test */
+    // 测试重复提交
+    public function createDuplicateChapter()
+    {
+    	$user = User::find(1);
+        $this->be($user);
+
+        $thread = Thread::find(1);
+        $data['body'] = "这是一个测试章节，天地蹦出一石猴";
+
+        $request = $this->actingAs($user,'api')
+        ->post('api/thread/'.$thread->id.'/chapter',$data);
+
+        $response = $request->send();
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $request = $this->actingAs($user,'api')
+        ->post('api/thread/'.$thread->id.'/chapter',$data);
+        $response = $request->send();
+        $this->assertEquals(409, $response->getStatusCode());
+    }
+
+    /** @test */
+    // 测试invalidate chapter connection
+    // 情况一： 所选的前一个chapter不存在
+    public function invalidChapterConn()
+    {
+    	$user = User::find(1);
+    	$this->be($user);
+
+    	$thread = Thread::find(1);
+    	$data['body'] = "反正不会被存进数据库随他吧";
+    	$data['previous_chapter_id'] = 100000;
+
+    	$request = $this->actingAs($user,'api')->post('api/thread/'.$thread->id.'/chapter',$data);
+    	$response = $request->send();
+    	$this -> assertEquals(595, $response->getStatusCode());
+
+    	$data['body'] = "一个合格的下一章";
+    	$data['previous_chapter_id'] = 1;
+
+    	$request = $this->actingAs($user,'api')->post('api/thread/'.$thread->id.'/chapter',$data);
+    	$response = $request->send();
+    	$this -> assertEquals(200, $response->getStatusCode());
+
+    }
+
+    /** @test */
     // 测试一系列的章节，相互关联
     public function createChapters()
     {
@@ -68,7 +115,6 @@ class ChapterTest extends TestCase
     	$data[7] = "第七回 比武招亲";
 
     	$previous_chapter_id = 0;
-    	echo $previous_chapter_id;
     	for ($x=1; $x <= 7; $x++){
     		$current_data['body'] = $data[$x];
     		if (!$previous_chapter_id == 0){

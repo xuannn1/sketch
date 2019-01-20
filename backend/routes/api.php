@@ -32,3 +32,4 @@ Route::get('/', 'API\PagesController@home')->name('home');
 Route::get('config/allTags', 'API\PagesController@allTags');
 
 Route::post('quote', 'API\QuoteController@store');
+Route::apiResource('/thread/{thread}/chapter', 'API\ChapterController');
