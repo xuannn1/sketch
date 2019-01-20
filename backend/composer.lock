@@ -429,6 +429,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/fideloper/TrustedProxy/zipball/177c79a2d1f9970f89ee2fb4c12b429af38b6dfb",
                 "reference": "177c79a2d1f9970f89ee2fb4c12b429af38b6dfb",
+<<<<<<< HEAD
                 "shasum": "",
                 "mirrors": [
                     {
@@ -436,6 +437,9 @@
                         "preferred": true
                     }
                 ]
+=======
+                "shasum": ""
+>>>>>>> 586b1b02ea078cbf78e02f9fcded3b045d3d5e08
             },
             "require": {
                 "illuminate/contracts": "~5.0",
@@ -903,6 +907,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/10cd20294b5668f90ba91996236834e71f7ff670",
                 "reference": "10cd20294b5668f90ba91996236834e71f7ff670",
+<<<<<<< HEAD
                 "shasum": "",
                 "mirrors": [
                     {
@@ -910,6 +915,9 @@
                         "preferred": true
                     }
                 ]
+=======
+                "shasum": ""
+>>>>>>> 586b1b02ea078cbf78e02f9fcded3b045d3d5e08
             },
             "require": {
                 "doctrine/inflector": "^1.1",
@@ -1820,6 +1828,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/594bcae1fc0bccd3993d2f0d61a018e26ac2865a",
                 "reference": "594bcae1fc0bccd3993d2f0d61a018e26ac2865a",
+<<<<<<< HEAD
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1827,6 +1836,9 @@
                         "preferred": true
                     }
                 ]
+=======
+                "shasum": ""
+>>>>>>> 586b1b02ea078cbf78e02f9fcded3b045d3d5e08
             },
             "require": {
                 "ext-tokenizer": "*",
