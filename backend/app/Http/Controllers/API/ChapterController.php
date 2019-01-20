@@ -5,10 +5,10 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Models\Post;
 use App\Models\Thread;
 
 use App\Http\Requests\StorePost;
+use App\Http\Requests\UpdateChapter;
 use App\Http\Requests\StoreChapter;
 
 class ChapterController extends Controller
@@ -82,9 +82,11 @@ class ChapterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Thread $thread, UpdateChapter $chapterform, $id)
     {
-        //
+        // put function
+        $chapter = $chapterform -> updateChapter($id);
+        return response()->success($chapter);
     }
 
     /**

@@ -134,4 +134,59 @@ class ChapterTest extends TestCase
     		$previous_chapter_id = Post::where('body','=',$data[$x])->orderBy('created_at', 'desc') ->first() ->id;
     	}
     }
+
+    /** @test */
+    // 测试章节内容更新
+    public function updateChapter()
+    {
+    	// create a chapter first
+    	$user = User::find(1);
+        $this->be($user);
+
+        $thread = Thread::find(1);
+        $data['body'] = "这是一个测试章节，太太说她怀胎十月然后……";
+
+        $request = $this->actingAs($user,'api')
+        ->post('api/thread/'.$thread->id.'/chapter',$data);
+
+        $response = $request->send();
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        # update
+        $post_id = Post::where('body','=',$data['body'])->first()->id;
+        $data['body'] = "……然后生出来啦！！";
+        $request = $this->actingAs($user,'api')
+        ->put('api/thread/'.$thread->id.'/chapter/'.$post_id,$data);
+
+        $response = $request->send();
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /** @test */
+    // 测试更新post存在但是chapter不存在的情况
+    public function updateinvalidChapter()
+    {
+    	$user = User::find(1);
+        $this->be($user);
+
+        $thread = Thread::find(1);
+        $data['body'] = "这是一个测试章节，ummmm反正它不会被存进数据库里不然就出问题了！！！";
+
+        # post doesn't exist
+        $request = $this->actingAs($user,'api')
+        ->put('api/thread/'.$thread->id.'/chapter/1000000',$data);
+
+        $response = $request->send();
+
+        $this->assertEquals(404, $response->getStatusCode());
+
+        # post exist but is not a chapter
+        $request = $this->actingAs($user,'api')
+        ->put('api/thread/'.$thread->id.'/chapter/19',$data);
+
+        $response = $request->send();
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
 }
