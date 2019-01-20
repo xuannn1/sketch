@@ -1,23 +1,31 @@
 import { DB } from "./db";
 import { History } from '.';
+import { loadStorage, saveStorage } from "../utils/storage";
 
 export class User {
     private db:DB;
     private history:History;
     
-    private loginFlag = false;
+    private isLogin = false;
+    private name = '';
 
     constructor (db:DB, history:History) {
         this.db = db;
         this.history = history;
+
+        const token = loadStorage('token');
+        if (token) {
+            this.isLogin = true;
+        }
     }
 
     public async login (email:string, pwd:string) {
         //todo:
         const res = await this.db.post(`/login`, {email, password: pwd});
         if (!res) { return false; }
-        this.loginFlag = true;
+        this.isLogin = true;
         this.history.push('/');
+        saveStorage('token', res.data.token);
         return true;
     }
 
@@ -28,8 +36,9 @@ export class User {
     }) {
         const res = await this.db.post(`/register`, spec);
         if (!res) { return false; }
-        this.loginFlag = true;
+        this.isLogin = true;
         this.history.push('/');
+        saveStorage('token', res.data.token);
         return true;
     }
 
@@ -39,6 +48,12 @@ export class User {
     }
 
     public isLoggedIn () : boolean {
-        return this.loginFlag;
+        return this.isLogin;
+    }
+
+    public logout () {
+        saveStorage('token', '');
+        this.isLogin = false;
+        this.history.push('/');
     }
 }

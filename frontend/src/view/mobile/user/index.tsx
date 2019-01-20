@@ -12,7 +12,9 @@ interface State {
 export class User extends React.Component<Props, State> {
     public render () {
         return (<div>
-            user
+            <button onClick={() => {
+                this.props.core.user.logout();
+            }}>log out</button>
         </div>);
     }
 }

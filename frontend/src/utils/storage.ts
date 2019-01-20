@@ -1,11 +1,11 @@
 export interface Storage {
-
+    token:string;
 }
 
 
 export function allocStorage () : Storage {
     return {
-
+        token: '',
     };
 }
 

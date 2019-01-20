@@ -37,6 +37,12 @@ export class Carousel extends React.Component<Props, State> {
         this.props.windowResizeEvent.sub(() => this.forceUpdate());
     }
 
+    public shouldComponentUpdate (nextProps) {
+        this.slideCount = nextProps.slides.length;
+        this.current = this.startIndex % this.slideCount;
+        return true;
+    }
+
     public getSlideOffset (index?:number) {
         const i = index === undefined ? this.current : index;
         const width = this.container.offsetWidth;
