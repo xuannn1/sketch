@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use PDOException;
 
 class Handler extends ExceptionHandler
@@ -51,6 +52,9 @@ class Handler extends ExceptionHandler
             return abort(595);
         }
         if ($exception instanceof ValidationException) {
+            return parent::render($request, $exception);
+        }
+        if ($exception instanceof HttpException) {
             return parent::render($request, $exception);
         }
 
