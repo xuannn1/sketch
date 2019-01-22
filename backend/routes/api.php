@@ -22,8 +22,8 @@ Route::post('login', 'API\PassportController@login')->name('login');
 Route::apiResource('thread', 'API\ThreadController');
 Route::get('book/{thread}','API\ThreadController@showbook');
 
-Route::apiResource('chapter', 'API\ChapterController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
+Route::apiResource('/thread/{thread}/chapter', 'API\ChapterController');
 Route::apiResource('user', 'API\UserController');
 Route::apiResource('status', 'API\StatusController');
 Route::apiResource('recommendation', 'API\RecommendationController');
@@ -33,3 +33,4 @@ Route::get('config/allTags', 'API\PagesController@allTags');
 
 Route::post('quote', 'API\QuoteController@store');
 Route::post('/message/store/{user}', 'API\MessageController@store');
+
