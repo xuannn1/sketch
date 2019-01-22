@@ -240,3 +240,20 @@ brief(string):必须具有一句话推荐简介
 body(string):长推的话，在这里写入长推推荐语  
 is_public(bool):是否公开（不公开的话，其他人不能在书籍下看见）这个信息必须是senior_editor/admin才能改变，也就是说，书籍推荐在editor建立之后，需senior_editor审阅再转公开  
 is_past(bool):是否属于往期推荐（影响首页显示情况）这个信息必须是senior_editor/admin才能改变，也就是说，书籍推荐需senior_editor审阅之后转公开  
+
+
+###### 4.4.4.1 新建chapter
+http://127.0.0.1:8000/api/thread/{thread_id}/chapter
+方法：POST
+授权：必须登陆，需时自己创建的thread
+必填项：
+body（string)
+重要选填：
+previous_post_id(number): 上一章的post_id
+
+###### 4.4.4.2 更新chapter
+http://127.0.0.1:8000/api/thread/{thread_id}/chapter/{chapter_id}
+方法：PUT
+授权：必须登陆，需时自己创建的thread
+必填项：
+body（string)
