@@ -29,7 +29,7 @@ class StoreChapter extends FormRequest
     {
         $thread = request()->route('thread');
 
-        return (($thread->is_public)&&(!$thread->no_reply))||(auth('api')->id()===$thread->user_id)||(auth('api')->user()->canManageChannel($thread->channel_id));
+        return auth('api')->id()===$thread->user_id;
     }
 
 
@@ -58,12 +58,11 @@ class StoreChapter extends FormRequest
         }else{
             $previous_chapter = NULL;
         }
-
-        // create post first
-        $postid = $this->generatePost()->id;
-        $chapter['post_id'] = $postid;
-        $chapter['characters'] = mb_strlen($this->body);
         
+        // generate post first
+        $postinfo = $this->generatePostInfo();
+
+        $chapter['characters'] = mb_strlen($this->body);
         //  add additional information 
         if ($previous_chapter){
             $chapter['order_by'] = $previous_chapter->order_by + 1;
@@ -72,7 +71,10 @@ class StoreChapter extends FormRequest
         }
         
         // save 把所有东西放进transaction里
-        $chapter_obj = DB::transaction(function () use($chapter,$previous_chapter,$postid) {
+        $chapter_obj = DB::transaction(function () use($postinfo, $chapter,$previous_chapter) {
+                 // create post first
+                $postid = Post::create($postinfo)->id;
+                $chapter['post_id'] = $postid;
                 if ($previous_chapter){ 
                     $previous_update_data['next_chapter_id'] = $postid;
                     $previous_chapter->update($previous_update_data);
@@ -84,9 +86,8 @@ class StoreChapter extends FormRequest
         return $chapter_obj;
     }
 
-    private function generatePost()
+    private function generatePostInfo()
     {
-        // basicly copy from storepost
         $thread = request()->route('thread');
         $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
         $post['body'] = $this->body;
@@ -103,13 +104,9 @@ class StoreChapter extends FormRequest
         $post['is_bianyuan']=$this->is_bianyuan ? true:false;
         $post['last_responded_at']=Carbon::now();
         $post['user_id'] = auth('api')->id();
-        if (!$this->isDuplicatePost($post)){
-            $post = DB::transaction(function () use($post) {
-                $post = Post::create($post);
-                return $post;
-            });
-        }else{ abort(409); }
+        if ($this -> isDuplicatePost($post)){ abort(409); }
         return $post;
+
     }
 
     private function isDuplicatePost($post)

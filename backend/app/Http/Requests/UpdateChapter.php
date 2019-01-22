@@ -20,7 +20,7 @@ class UpdateChapter extends UpdatePost
       $thread = request()->route('thread');
       $channel = $thread->channel; //todo
       // $post = request()->route('post');
-      return (($thread->is_public)&&(!$thread->no_reply))||(auth('api')->id()===$thread->user_id)||(auth('api')->user()->canManageChannel($thread->channel_id));
+      return (auth('api')->id()===$thread->user_id);
     }
 
     public function updateChapter($postid){
