@@ -143,9 +143,23 @@ export namespace ResData {
 
 export namespace Request {
     export namespace Thread {
-        export type withBook = 'book_only'|'none_book_only';
-        export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only';
-        export type ordered = 'last_added_chapter_at'|'jifen'|'weighted_jifen'|'created_at'|'id'|'collections'|'total_char';
+        // （是否仅返回边缘/非边缘内容）
+        export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only'; 
+
+        export type ordered = 'last_added_component_at'| //按最新更新时间排序
+                              'jifen'|                   //按总积分排序
+                              'weighted_jifen'|          //按平衡积分排序
+                              'created_at'|              //按创建时间排序
+                              'id'|                      //按id排序
+                              'collections'|             //按收藏总数排序
+                              'total_char';              //按总字数排序
+
+        export type withType = 'thread'|                 //仅返回讨论帖
+                               'book'|                   //仅返回书籍
+                               'collection_list'|        //仅返回收藏单
+                               'column'|
+                               'request'|
+                               'homework';
     }
 }
 
@@ -180,8 +194,7 @@ export interface APIGet {
     '/thread':APISchema<{
         req:{
             channel:number[],
-            withBook:Request.Thread.withBook,
-            withTag:number[],
+            tag:number[],
             excludeTag:number[],
             withBianyuan:Request.Thread.withBianyuan,
             ordered:Request.Thread.ordered,
