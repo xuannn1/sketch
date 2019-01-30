@@ -24,6 +24,22 @@ class PagesController extends Controller
             'recent_statuses' => StatusResource::collection(PageObjects::recent_statuses())
         ]);
     }
+
+    public function homethread()
+    {
+        return response()->success([
+            'recent_responded_threads' => ThreadBriefResource::collection(PageObjects::recent_responded_threads()),
+        ]);
+    }
+
+    public function homebook()
+    {
+        return response()->success([
+            'recent_added_chapter_books' => ThreadBriefResource::collection(PageObjects::recent_added_chapter_books()),
+            'recent_responded_books' => ThreadBriefResource::collection(PageObjects::recent_responded_books()),
+        ]);
+    }
+
     public function allTags()
     {
         $tags = ConstantObjects::allTags();

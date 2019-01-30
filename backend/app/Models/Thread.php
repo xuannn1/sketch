@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Helpers\ConstantObjects;
+use DB;
 
 class Thread extends Model
 {
@@ -22,14 +23,24 @@ class Thread extends Model
 
     const UPDATED_AT = null;
 
+    //以下是relationship关系
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
     public function channel()
     {
         return $this->belongsTo(Channel::class);
     }
+
+    public function simpleChannel()
+    {
+        return
+        ConstantObjects::allChannels()->keyBy('id')->get($this->channel_id);
+    }
+
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name');
@@ -55,11 +66,13 @@ class Thread extends Model
         return $this->hasMany(Recommendation::class)->where('is_public', true);
     }
 
-    public function simpleChannel()
+    public function last_chapter()
     {
-        return
-        ConstantObjects::allChannels()->keyBy('id')->get($this->channel_id);
+        return $this->belongsTo(Post::class, 'last_component_id')->where('type', '=', 'chapter');
     }
+
+
+    //以下是scopes
 
     public function scopeInChannel($query, $withChannel)
     {
@@ -159,62 +172,79 @@ class Thread extends Model
         }
     }
 
-    public function tags_validate($tags,$is_bianyuan)
+    public function tags_validate($tags)//检查由用户提交的tags组合，是否符合基本要求
     {
-        $valid_tags = [];
-        $limit_count_tags = [];
-        $only_one_tags = [];
+        $valid_tags = [];//通过检查的tag
+        $limit_count_tags = [];//tag数量限制
+        $only_one_tags = [];//只能选一个的tag
         foreach($tags as $key => $value){
             $tag = ConstantObjects::allTags()->keyBy('id')->get($value);
             if($tag){//首先应该判断这个tag是否存在，否则会报错Trying to get property 'tag_type' of non-object
-                if (array_key_exists($tag->tag_type,config('tag.types'))){
-                    //一个正常录入的tag，它的type应该在config中能够找到。
-                    if((!$is_bianyuan) && $tag->is_bianyuan){
-                        abort(422);
+                if (array_key_exists($tag->tag_type,config('tag.types'))){//一个正常录入的tag，它的type应该在config中能够找到。
+                    $error = '';
+                    //检查是否为非边缘文章提交了边缘标签
+                    if((!$this->is_bianyuan) && $tag->is_bianyuan){
+                        $error = 'bianyuan violation';
                     }
-                    //3.2 如不属于某channel却选择了专属于某channel的tag,如非同人选择了同人channel的tag
+                    //如不属于某channel却选择了专属于某channel的tag,如为非同人thread选择了同人channel的tag
                     if(($tag->channel_id>0)&&( $tag->channel_id != $this->channel_id)){
-                        abort(422);
+                        $error = 'channel violation';
                     }
 
-                    //1）检查是否满足某些类tag只能选一个的限制情况，
-                    //篇幅,性向,进度,同人原著,同人CP,结局
-                    if (array_key_exists($tag->tag_type,config('tag.limits.only_one'))){
-                        if(array_key_exists($tag->tag_type,$only_one_tags)){
-                            abort(422);
+                    //检查是否满足某些类tag只能选一个的限制情况，
+                    if (array_key_exists($tag->tag_type, config('tag.limits.only_one'))){
+                        if(array_key_exists($tag->tag_type, $only_one_tags)){
+                            $error = 'only one tag violation';
                         }else{
                             $only_one_tags[$tag->tag_type] = $tag->id;
                         }
                     }
 
-
-                    // 2）检查数目限制的那些是否满足要求， sum_limit < sum_limit_count
-                    //故事气氛,整体时代,强弱关系,,,,<3
+                    //检查数目限制的那些是否满足要求， sum_limit < sum_limit_count
                     if (array_key_exists($tag->tag_type,config('tag.limits.sum_limit'))){
                         if(!empty($limit_count_tags)&&(count($limit_count_tags)>config('tag.sum_limit_count'))){
-                            abort(422);
+                            $error = 'too many tags in total';
                         }else{
                             array_push($limit_count_tags,$tag->id);
                         }
                     }
 
-                    //4）满足上述条件的tag里，去除所有普通用户不应添加的tag，其他的自动添加进入队列
-                    if(!$tag->user_not_manageable()){
-                        array_push($valid_tags,$tag->id);
+                    //如果这个tag没有犯上面的任何错误，而且不属于只有编辑才能添加的tag，那么通过检验
+                    if((!$tag->user_not_manageable())&&($error==='')){
+                        array_push($valid_tags, $tag->id);
+                    }else{
+                        echo($error.', invalid tag id='.$tag->id."\n");//这个信息应该前端保证它不要出现
                     }
-
                 }
             }
         }//循环结束
+        return $valid_tags;
+    }
 
-        //5,与原threads 管理员加的标签合并
+    public function remove_custom_tags()//去掉所有用户自己提交的tag,返回成功去掉的
+    {
+        $detach_tags = [];
         foreach($this->tags as $tag){
-            if(array_key_exists($tag->tag_type,config('tag.limits.user_not_manageable'))){
-                array_push($valid_tags,$tag->id);
+            if(!array_key_exists($tag->tag_type, config('tag.limits.user_not_manageable'))){
+                array_push($detach_tags,$tag->id);
             }
         }
+        if(!empty($detach_tags)){
+            $this->tags()->detach($detach_tags);
+            return count($detach_tags);
+        }else{
+            return 0;
+        }
+    }
 
-        return $valid_tags;
+    public function count_char()//计算本thread内所有chapter的characters总和
+    {
+        return  DB::table('posts')
+        ->join('chapters', 'chapters.post_id', '=', 'posts.id')
+        ->where('posts.deleted_at', '=', null)
+        ->where('posts.type', '=', 'chapter')
+        ->where('posts.thread_id', '=', $this->id)
+        ->sum('chapters.characters');
     }
 
 }

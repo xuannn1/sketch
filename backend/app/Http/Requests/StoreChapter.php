@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 
 // common
 use Carbon\Carbon;
 use App\Helpers\ConstantObjects;
-use App\Helpers\StringProcess;
 
 // model
 use App\Models\Thread;
@@ -15,7 +14,6 @@ use App\Models\Post;
 use App\Models\Chapter;
 
 // form request
-use App\Http\Requests\StorePost;
 use DB;
 
 class StoreChapter extends FormRequest
@@ -28,112 +26,85 @@ class StoreChapter extends FormRequest
     public function authorize()
     {
         $thread = request()->route('thread');
-
-        return auth('api')->id()===$thread->user_id;
+        $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
+        return auth('api')->id()===$thread->user_id && $channel->type==='book';
     }
 
-
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    * Get the validation rules that apply to the request.
+    *
+    * @return array
+    */
     public function rules()
     {
         return [
-            // for post record
+            'title' => 'required|string|max:30',
+            'brief' => 'string|max:50',
             'body' => 'required|string|max:20000',
-            'majia' => 'string|max:10'
+            'majia' => 'string|max:10',
+            'annotation' => 'string|max:20000',
+
         ];
     }
 
     public function generateChapter()
     {
-        // check previous first
-        // connect with previous and next
-        $previous_chapter_id = $this->previous_chapter_id;
-        
-        if ($previous_chapter_id){
-            $previous_chapter = $this->getPrevious($previous_chapter_id);
-        }else{
-            $previous_chapter = NULL;
-        }
-        
-        // generate post first
-        $postinfo = $this->generatePostInfo();
+        $thread = request()->route('thread');
 
-        $chapter['characters'] = mb_strlen($this->body);
-        //  add additional information 
-        if ($previous_chapter){
-            $chapter['order_by'] = $previous_chapter->order_by + 1;
-            $chapter['previous_chapter_id'] = $previous_chapter_id;
-            $chapter['volumn_id'] = $previous_chapter->volumn_id; //默认跟前面的同一volumn      
+        //generate chapter info
+        $previous_chapter = $thread->last_chapter;
+        $chapter_data = $this->only('title', 'brief', 'annotation');
+        if($previous_chapter){
+            $chapter_data['order_by'] = $previous_chapter->order_by + 1;
+            $chapter_data['previous_chapter_id'] = $previous_chapter->id;
+            $chapter_data['volumn_id'] = $previous_chapter->volumn_id; //默认跟前面的同一volumn
         }
-        
+        $chapter_data['characters'] = mb_strlen($this->body);
+        $chapter_data['annotation_infront'] = $this->annotation_infront ? true:false;
+
+        // generate post first
+        $post_data = $this->generatePostInfo();
+
         // save 把所有东西放进transaction里
-        $chapter_obj = DB::transaction(function () use($postinfo, $chapter,$previous_chapter) {
-                 // create post first
-                $postid = Post::create($postinfo)->id;
-                $chapter['post_id'] = $postid;
-                if ($previous_chapter){ 
-                    $previous_update_data['next_chapter_id'] = $postid;
-                    $previous_chapter->update($previous_update_data);
-                    $this->updatePost($previous_chapter->post_id);
-                }
-                $chapter_obj = Chapter::create($chapter);
-                return $chapter_obj;
-            });
-        return $chapter_obj;
+        $chapter = DB::transaction(function () use($post_data, $chapter_data, $previous_chapter, $thread) {
+            // create post first
+            $post = Post::create($post_data);
+            $chapter_data['post_id'] = $post->id;
+            if ($previous_chapter){
+                $previous_chapter->update(['next_chapter_id'=>$post->id]);
+            }
+            $chapter = Chapter::create($chapter_data);
+            $thread->last_component_id = $post->id;
+            $thread->last_added_component_at = Carbon::now();
+            $thread->total_char = $thread->count_char();
+            $thread->save();
+            return $chapter;
+        });
+        return $chapter;
     }
 
     private function generatePostInfo()
     {
         $thread = request()->route('thread');
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
-        $post['body'] = $this->body;
-        $post['thread_id'] = $thread->id;
-        // chapter有brief用brief，没有用previes
-        $post['preview'] = StringProcess::trimtext($post['body'], config('constants.preview_len'));//这里存放节选的正文
-        $post['creation_ip'] = request()->getClientIp();
-        
-        $post['is_anonymous']=0; // 去掉马甲
-        $post['type'] = 'chapter'; // add type
-    
-        $post['use_markdown']=$this->use_markdown ? true:false;
-        $post['use_indentation']=$this->use_indentation ? true:false;
-        $post['is_bianyuan']=$this->is_bianyuan ? true:false;
-        $post['last_responded_at']=Carbon::now();
-        $post['user_id'] = auth('api')->id();
-        if ($this -> isDuplicatePost($post)){ abort(409); }
-        return $post;
-
+        $post_data = $this->only('body');
+        $post_data['preview'] = $this->title.$this->brief;
+        $post_data['thread_id'] = $thread->id;
+        $post_data['creation_ip'] = request()->getClientIp();
+        $post_data['type'] = 'chapter'; // add type
+        $post_data['use_markdown']=$this->use_markdown ? true:false;
+        $post_data['use_indentation']=$this->use_indentation ? true:false;
+        $post_data['is_bianyuan']=($thread->is_bianyuan||this->is_bianyuan) ? true:false;
+        $post_data['is_anonymous']=$thread->is_anonymous;
+        $post_data['user_id'] = auth('api')->id();
+        if ($this->isDuplicatePost($post_data)){ abort(409); }
+        return $post_data;
     }
 
-    private function isDuplicatePost($post)
+    private function isDuplicatePost($post_data)
     {
         $last_post = Post::where('user_id', auth('api')->id())
         ->orderBy('created_at', 'desc')
         ->first();
-        return (!empty($last_post)) && (strcmp($last_post->body, $post['body']) === 0);
-    }
-
-
-    private function getPrevious($previous_chapter_id)
-    {
-        // check whether previous chapter exist 
-        $chapter = Chapter::where('post_id','=',$previous_chapter_id)->first();
-        $check_previous = ($chapter && ($chapter->next_chapter_id == 0));
-        if (!$check_previous == 1){ abort(595); } 
-        return $chapter;
-    }
-
-    private function updatePost($postid)
-    {
-        // get corresponding post and update
-        $post = Post::where('id','=', $postid)->first();
-        if (!$post) {abort(404); }
-        $data['last_edited_at']=Carbon::now();
-        $post->update($data);
-        return;
+        return (!empty($last_post)) && (strcmp($last_post->body, $post_data['body']) === 0);
     }
 }

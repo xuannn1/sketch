@@ -675,7 +675,7 @@ class DefaultSettingsSeeder extends Seeder
                         'tag_type' => '管理',
                     ]);
                     DB::table('tags')->insert([
-                        'tag_name' => '高亮',
+                        'tag_name' => '精华',
                         'tag_type' => '管理',
                     ]);
 

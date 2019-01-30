@@ -6,14 +6,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Thread;
 use App\Models\Post;
-use App\Models\Chapter;
 use App\Http\Requests\StoreThread;
 use App\Http\Requests\UpdateThread;
 use App\Http\Resources\ThreadResources\ThreadInfoResource;
 use App\Http\Resources\ThreadResources\ThreadProfileResource;
 use App\Http\Resources\ThreadResources\PostResource;
-use App\Http\Resources\ThreadResources\ChapterInfoResource;
-use App\Http\Resources\ThreadResources\VolumnResource;
 use App\Http\Resources\PaginateResource;
 
 class ThreadController extends Controller
@@ -21,8 +18,8 @@ class ThreadController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show', 'showbook']);
-        $this->middleware('filter_thread')->only(['show','showbook']);
+        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('filter_thread')->only('show');
     }
     /**
     * Display a listing of the resource.
@@ -97,34 +94,6 @@ class ThreadController extends Controller
 
     }
 
-    public function showbook(Thread $thread)
-    {
-        $thread->load('author', 'tags', 'recommendations.authors');
-        $posts = Post::where('thread_id',$thread->id)
-        ->where('is_component', true)
-        ->with('chapter.volumn')
-        ->get();
-        $posts->sortBy('chapter.order_by');
-        $volumns = $posts->pluck('chapter.volumn')->unique();
-        $most_upvoted = Post::where('thread_id',$thread->id)
-        ->where('is_component', false)
-        ->with('author')
-        ->orderBy('up_votes', 'desc')
-        ->first();
-        $newest_comment = Post::where('thread_id',$thread->id)
-        ->where('is_component', false)
-        ->with('author')
-        ->orderBy('created_at', 'desc')
-        ->first();
-        return response()->success([
-            'thread' => new ThreadProfileResource($thread),
-            'chapters' => ChapterInfoResource::collection($posts),
-            'volumns' => VolumnResource::collection($volumns),
-            'most_upvoted' => new PostResource($most_upvoted),
-            'newest_comment' => new PostResource($newest_comment),
-        ]);
-    }
-
     /**
     * Show the form for editing the specified resource.
     *
@@ -157,5 +126,10 @@ class ThreadController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function synctags(Request $request, Thread $thread)
+    {
+        json_decode($request->tags);
     }
 }

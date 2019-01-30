@@ -23,9 +23,9 @@ class UpdatePost extends FormRequest
     public function authorize()
     {
       $thread = request()->route('thread');
-      $channel = $thread->channel; //todo
+      $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
       $post = request()->route('post');
-      return ((auth('api')->user()->canManageChannel($thread->channel_id))||((auth('api')->id() === $post->user_id)&&(!$thread->locked)&&($channel->allow_edit)));
+      return ((auth('api')->id() === $post->user_id)&&(!$thread->locked)&&($channel->allow_edit));
 
     }
 
@@ -37,22 +37,27 @@ class UpdatePost extends FormRequest
     public function rules()
     {
       return [
-          'body' => 'required|string|max:20000'
+          'body' => 'string|max:20000',
+          'preview' => 'string|max:50',
       ];
     }
 
 
-    public function updatePost($post){
+    public function updatePost($post)
+    {
+        $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
+        $post_data = $this->only('body','preview');
+        $post_data['use_markdown']=$this->use_markdown ? true:false;
+        $post_data['use_indentation']=$this->use_indentation ? true:false;
+        $post_data['allow_as_longpost']=$this->allow_as_longpost ? true:false;
+        if (($this->is_anonymous)&&($channel->allow_anonymous)){
+            $post_data['is_anonymous']=true;
+        }else{
+            $post_data['is_anonymous']=false;
+        }
+        $post_data['last_edited_at']=Carbon::now();
 
-        $data = $this->only('body');
-        $data['body'] = StringProcess::trimSpaces($data['body']);
-        $data['preview']=StringProcess::trimtext($data['body'], 50);
-        $data['use_markdown']=$this->markdown ? true:false;
-        $data['use_indentation']=$this->indentation ? true:false;
-        $data['allow_as_longpost']=$this->as_longcomment ? true:false;
-        $data['last_edited_at']=Carbon::now();
-
-        $post->update($data);
+        $post->update($post_data);
         return $post;
     }
 

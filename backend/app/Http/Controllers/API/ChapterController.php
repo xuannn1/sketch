@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Thread;
 
-// use App\Http\Requests\StorePost;
 use App\Http\Requests\UpdateChapter;
 use App\Http\Requests\StoreChapter;
 
@@ -25,7 +24,7 @@ class ChapterController extends Controller
         $this->middleware('filter_thread');
 
     }
-    
+
     public function index()
     {
         //
@@ -84,7 +83,6 @@ class ChapterController extends Controller
      */
     public function update(Thread $thread, UpdateChapter $chapterform, $id)
     {
-        // put function
         $chapter = $chapterform -> updateChapter($id);
         return response()->success($chapter);
     }

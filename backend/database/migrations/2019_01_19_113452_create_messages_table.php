@@ -20,7 +20,7 @@ class CreateMessagesTable extends Migration
             $table->unsignedInteger('message_body_id')->default(0);//消息内容id
             $table->boolean('seen')->default(false);//是否已读
             $table->softDeletes();//软删除
-            $table->timestamps();
+            $table->dateTime('created_at')->nullable();//创建时间
         });
     }
 
