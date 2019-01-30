@@ -37,16 +37,6 @@ class ChapterTest extends TestCase
         ]);
         return $thread;
     }
-    /** @test */
-    public function login(){
-        $response = $this->post('api/login',['email' => 'tester@example.com',
-        'password' => 'password']);
-        $accessToken = $response->content();
-        $strarr = json_decode($accessToken, true);
-        $stoke = $strarr['data']['token'];
-        $response->assertStatus(200);
-
-    }
 
     /** @test */
     // 测试新建一个单独的chapter，没有上下章节
