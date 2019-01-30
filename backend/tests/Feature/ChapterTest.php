@@ -28,14 +28,6 @@ class ChapterTest extends TestCase
      */
     use DatabaseTransactions;
 
-    public function isDuplicateThread($thread)
-    {
-        $last_thread = Thread::where('user_id', auth('api')->id())
-        ->orderBy('created_at', 'desc')
-        ->first();
-        return (!empty($last_thread)) && (strcmp($last_thread->title.$last_thread->brief.$last_thread->body, $thread['title'].$thread['brief'].$thread['body']) === 0);
-    }
-
     private function createThread($user){
 
         $thread = factory('App\Models\Thread')->create([
@@ -45,20 +37,10 @@ class ChapterTest extends TestCase
         ]);
         return $thread;
     }
-    /** @test */
-    public function login(){
-        $response = $this->post('api/login',['email' => 'tester@example.com',
-        'password' => 'password']);
-        $accessToken = $response->content();
-        $strarr = json_decode($accessToken, true);
-        $stoke = $strarr['data']['token'];
-        $response->assertStatus(200);
-
-    }
 
     /** @test */
     // 测试新建一个单独的chapter，没有上下章节
-    public function createChapter()
+    public function create_chapter()
     {
         $user = factory('App\Models\User')->create();
         $this->actingAs($user, 'api');
@@ -76,7 +58,7 @@ class ChapterTest extends TestCase
 
     /** @test */
     // 测试重复提交
-    public function createDuplicateChapter()
+    public function can_not_create_duplicate_chapter()
     {
     	$user = factory('App\Models\User')->create();
         $this->actingAs($user, 'api');
@@ -100,7 +82,7 @@ class ChapterTest extends TestCase
     /** @test */
     // 测试invalidate chapter connection
     // 情况一： 所选的前一个chapter不存在
-    public function invalidChapterConn()
+    public function can_not_point_to_invalid_previous_chapter()
     {
     	$user = factory('App\Models\User')->create();
         $this->actingAs($user, 'api');
@@ -132,7 +114,7 @@ class ChapterTest extends TestCase
 
     /** @test */
     // 测试一系列的章节，相互关联
-    public function createChapters()
+    public function create_chapters()
     {
     	$user = factory('App\Models\User')->create();
         $this->actingAs($user, 'api');
@@ -163,7 +145,7 @@ class ChapterTest extends TestCase
 
     /** @test */
     // 测试章节内容更新
-    public function updateChapter()
+    public function update_chapter_content()
     {
     	// create a chapter first
     	$user = factory('App\Models\User')->create();
@@ -192,7 +174,7 @@ class ChapterTest extends TestCase
 
     /** @test */
     // 测试更新post存在但是chapter不存在的情况
-    public function updateinvalidChapter()
+    public function can_not_update_invalid_chapter()
     {
     	$user = factory('App\Models\User')->create();
         $this->actingAs($user, 'api');
