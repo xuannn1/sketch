@@ -5,9 +5,6 @@ namespace Tests\Feature;
 //test
 use Tests\TestCase;
 
-//models
-Use App\Models\User;
-
 class RegistrationTest extends TestCase
 {
 

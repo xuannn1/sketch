@@ -32,7 +32,7 @@ class StoreThread extends FormRequest
         return [
             'title' => 'required|string|max:30',
             'brief' => 'required|string|max:50',
-            'body' => 'required|string|min:10|max:20000',
+            'body' => 'required|string|max:20000',
             'channel' => 'required|numeric',
             'majia' => 'string|max:10',
         ];

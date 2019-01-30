@@ -31,7 +31,7 @@ $ php artisan passport:keys
 ###### 2.4.2 创建passport client
 在这个工程中，我们使用laravel自带的passport这个package，给api进行基本的授权。为了在本地顺利测试相关情况，我们需要对passport进行基本配置，比如说，以Personal access client的名义，给自己的前端部分授权。
 ```
-$ php artisan passport:client  --personal
+$ php artisan passport:install
 ```
 
 这一步按照程序提示，输入任意字符串即可。
@@ -323,3 +323,11 @@ brief(string)章节概要（如果用户不输入，前端自动节选body的一
 body(string)章节内容
 annotation(string):作者有话说/章节注释
 annotation_infront(anything):如果出现，将作者有话说放在最前面
+
+
+## 5. 如何测试
+在backend目录下，运行
+```
+vendor/bin/phpunit
+```
+进行测试。

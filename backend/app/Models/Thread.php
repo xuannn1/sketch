@@ -71,6 +71,11 @@ class Thread extends Model
         return $this->belongsTo(Post::class, 'last_component_id')->where('type', '=', 'chapter');
     }
 
+    public function last_component()
+    {
+        return $this->belongsTo(Post::class, 'last_component_id');
+    }
+
 
     //以下是scopes
 

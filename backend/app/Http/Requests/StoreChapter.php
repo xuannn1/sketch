@@ -54,10 +54,10 @@ class StoreChapter extends FormRequest
         //generate chapter info
         $previous_chapter = $thread->last_chapter;
         $chapter_data = $this->only('title', 'brief', 'annotation');
-        if($previous_chapter){
-            $chapter_data['order_by'] = $previous_chapter->order_by + 1;
+        if(($previous_chapter)&&($previous_chapter->chapter)){
+            $chapter_data['order_by'] = $previous_chapter->chapter->order_by + 1;
             $chapter_data['previous_chapter_id'] = $previous_chapter->id;
-            $chapter_data['volumn_id'] = $previous_chapter->volumn_id; //默认跟前面的同一volumn
+            $chapter_data['volumn_id'] = $previous_chapter->chapter->volumn_id; //默认跟前面的同一volumn
         }
         $chapter_data['characters'] = mb_strlen($this->body);
         $chapter_data['annotation_infront'] = $this->annotation_infront ? true:false;
@@ -66,21 +66,21 @@ class StoreChapter extends FormRequest
         $post_data = $this->generatePostInfo();
 
         // save 把所有东西放进transaction里
-        $chapter = DB::transaction(function () use($post_data, $chapter_data, $previous_chapter, $thread) {
+        $post = DB::transaction(function() use($post_data, $chapter_data, $previous_chapter, $thread){
             // create post first
             $post = Post::create($post_data);
             $chapter_data['post_id'] = $post->id;
-            if ($previous_chapter){
-                $previous_chapter->update(['next_chapter_id'=>$post->id]);
+            if (($previous_chapter)&&($previous_chapter->chapter)){
+                $previous_chapter->chapter->update(['next_chapter_id'=>$post->id]);
             }
             $chapter = Chapter::create($chapter_data);
             $thread->last_component_id = $post->id;
             $thread->last_added_component_at = Carbon::now();
             $thread->total_char = $thread->count_char();
             $thread->save();
-            return $chapter;
+            return $post;
         });
-        return $chapter;
+        return $post;
     }
 
     private function generatePostInfo()
@@ -93,7 +93,7 @@ class StoreChapter extends FormRequest
         $post_data['type'] = 'chapter'; // add type
         $post_data['use_markdown']=$this->use_markdown ? true:false;
         $post_data['use_indentation']=$this->use_indentation ? true:false;
-        $post_data['is_bianyuan']=($thread->is_bianyuan||this->is_bianyuan) ? true:false;
+        $post_data['is_bianyuan']=($thread->is_bianyuan||$this->is_bianyuan) ? true:false;
         $post_data['is_anonymous']=$thread->is_anonymous;
         $post_data['user_id'] = auth('api')->id();
         if ($this->isDuplicatePost($post_data)){ abort(409); }

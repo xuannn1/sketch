@@ -5,14 +5,22 @@ namespace Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     use WithFaker;
-    //以下代码，如果不想在test前后重置database的话，可以屏蔽掉。如果想要每次重值database，就把它释放出来
+
+    /**
+    * 如果想要让test不影响数据库、不存储在你现在的数据库里面，使用下面这一行代码。
+    */
+    use DatabaseTransactions;
+
+    /**
+    * 如果想让test整个运行前后重置database的话，可以使用下面的代码
+    */
     // use RefreshDatabase;
-    //
     // public function setUp()
     // {
     //     parent::setUp();
@@ -20,5 +28,6 @@ abstract class TestCase extends BaseTestCase
     //     $this->artisan('db:seed');
     //     $this->artisan('passport:install');
     // }
-    //以下代码，如果不想在test前后重置database的话，可以屏蔽掉。如果想要每次重值database，就把它释放出来
+
+    
 }

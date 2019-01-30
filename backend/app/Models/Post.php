@@ -29,7 +29,7 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function replies()
+    public function comments()
     {
         return $this->hasMany(Post::class, 'reply_to_post_id');
     }

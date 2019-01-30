@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\Chapter;
 
+use DB;
+
 class UpdateChapter extends UpdatePost
 {
     /**
@@ -45,7 +47,7 @@ class UpdateChapter extends UpdatePost
         $post_data['preview'] = $this->title.$this->brief;
         $post_data['use_markdown']=$this->use_markdown ? true:false;
         $post_data['use_indentation']=$this->use_indentation ? true:false;
-        $post_data['is_bianyuan']=($thread->is_bianyuan||this->is_bianyuan) ? true:false;
+        $post_data['is_bianyuan']=($thread->is_bianyuan||$this->is_bianyuan) ? true:false;
         $post_data['last_edited_at'] = Carbon::now();
 
         //generate chapter data
@@ -54,14 +56,14 @@ class UpdateChapter extends UpdatePost
         $chapter_data['annotation_infront'] = $this->annotation_infront ? true:false;
 
         //use transaction to update models
-        $chapter = DB::transaction(function () use($post, $chapter, $post_data, $chapter_data, $thread) {
+        $post = DB::transaction(function () use($post, $chapter, $post_data, $chapter_data, $thread) {
             $post->update($post_data);
             $chapter->update($chapter_data);
             $thread->total_char = $thread->count_char();
             $thread->save();
-            return $chapter;
+            return $post;
         });
 
-        return $chapter;
+        return $post;
     }
 }

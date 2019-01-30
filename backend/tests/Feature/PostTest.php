@@ -3,9 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\Thread;
-Use App\Models\User;
-Use App\Models\Post;
 
 class PostTest extends TestCase
 {
