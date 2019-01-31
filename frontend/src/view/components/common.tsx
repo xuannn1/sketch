@@ -8,8 +8,9 @@ export const COLOR_GREY = '#555';
 export function Page (props:{
     children?:React.ReactNode,
     nav?:JSX.Element,
+    className?:string,
 }) {
-    return <div>
+    return <div className={props.className}>
         {props.nav}
         <div style={{
             margin: '5px 10px',
