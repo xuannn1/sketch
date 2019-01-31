@@ -29,7 +29,7 @@ class ThreadBriefResource extends JsonResource
                 'majia' => (string)$this->majia,
             ],
             'author' => $author,
-            'channel'        => new ChannelBriefResource($this->simpleChannel()),
+            'channel'        => new ChannelBriefResource($this->channel()),
             'tags' => TagResource::collection($this->tags)
         ];
     }

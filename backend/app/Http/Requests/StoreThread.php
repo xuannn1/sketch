@@ -17,8 +17,7 @@ class StoreThread extends FormRequest
     */
     public function authorize()
     {
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get(request()->channel);
-
+        $channel = (object)config('channel')[request()->channel];
         return (auth('api')->check())&&(!empty($channel))&&(($channel->is_public)||(auth('api')->user()->canSeeChannel($channel->id)));
     }
 
@@ -35,32 +34,28 @@ class StoreThread extends FormRequest
             'body' => 'required|string|max:20000',
             'channel' => 'required|numeric',
             'majia' => 'string|max:10',
+            'is_anonymous' => 'boolean',
+            'no_reply' => 'boolean',
+            'use_indentation' => 'boolean',
+            'is_bianyuan' => 'boolean',
+            'is_public' => 'boolean',
         ];
     }
 
     public function generateThread()
     {
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get($this->channel);
+        $channel = (object)config('channel')[$this->channel];
         //检查tag是否符合规则
 
         //这部分还没做
-        $thread_data = $this->only('title','brief','body');
+        $thread_data = $this->only('title', 'brief', 'body', 'is_anonymous', 'majia', 'no_reply', 'use_markdown', 'use_indentation', 'is_bianyuan', 'is_public');
         //增加其他的变量
         $thread_data['creation_ip'] = request()->getClientIp();
         $thread_data['channel_id']=$channel->id;
         //将boolean值赋予提交的设置
-
-        if (($this->is_anonymous)&&($channel->allow_anonymous)){
-            $thread_data['is_anonymous']=1;
-            $thread_data['majia']=$this->majia;
-        }else{
-            $thread_data['is_anonymous']=0;
+        if (!$channel->allow_anonymous){
+            $thread_data['is_anonymous']=false;
         }
-        $thread_data['no_reply']=$this->no_reply ? true:false;
-        $thread_data['use_markdown']=$this->use_markdown ? true:false;
-        $thread_data['use_indentation']=$this->use_indentation ? true:false;
-        $thread_data['is_bianyuan']=$this->is_bianyuan ? true:false;
-        $thread_data['is_public']=$this->is_not_public ? false:true;
         $thread_data['last_responded_at']=Carbon::now();
         $thread_data['user_id'] = auth('api')->id();
 

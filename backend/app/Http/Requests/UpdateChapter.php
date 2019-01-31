@@ -28,9 +28,13 @@ class UpdateChapter extends UpdatePost
     {
         return [
             'title' => 'string|max:30',
-            'brief' => 'string|max:50',
+            'preview' => 'string|max:50',
             'body' => 'string|max:20000',
-            'majia' => 'string|max:10'
+            'warning' => 'string|max:50',
+            'annotation' => 'string|max:20000',
+            'use_markdown' => 'boolean',
+            'use_indentation' => 'boolean',
+            'is_bianyuan' => 'boolean',
         ];
     }
 
@@ -43,17 +47,13 @@ class UpdateChapter extends UpdatePost
         if ((!$post)||(!$chapter)){ abort(404);}
 
         //generate post data
-        $post_data = $this->only('body');
-        $post_data['preview'] = $this->title.$this->brief;
-        $post_data['use_markdown']=$this->use_markdown ? true:false;
-        $post_data['use_indentation']=$this->use_indentation ? true:false;
-        $post_data['is_bianyuan']=($thread->is_bianyuan||$this->is_bianyuan) ? true:false;
+        $post_data = $this->only('body', 'title', 'preview', 'use_markdown', 'use_indentation', 'is_bianyuan');
+        if($thread->is_bianyuan){$post_data['is_bianyuan']=true;}
         $post_data['last_edited_at'] = Carbon::now();
 
         //generate chapter data
-        $chapter_data = $this->only('title', 'brief', 'annotation');
+        $chapter_data = $this->only('warning', 'annotation');
         $chapter_data['characters'] = mb_strlen($this->body);
-        $chapter_data['annotation_infront'] = $this->annotation_infront ? true:false;
 
         //use transaction to update models
         $post = DB::transaction(function () use($post, $chapter, $post_data, $chapter_data, $thread) {

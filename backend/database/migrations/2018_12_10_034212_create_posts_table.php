@@ -19,6 +19,7 @@ class CreatePostsTable extends Migration
             $table->unsignedInteger('thread_id');//讨论帖id
             $table->string('type',20)->nullable();//'chapter','collection','question','answer','request','post', 'post_comment'
             $table->text('body')->nullable();//回帖文本本身
+            $table->string('title')->nullable();//标题
             $table->string('preview')->nullable();//节选
             $table->boolean('is_anonymous')->default(false);//是否匿名回帖
             $table->string('majia', 10)->nullable();//作者马甲

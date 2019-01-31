@@ -53,6 +53,7 @@ export namespace Database {
         user_id?:Increments;
         thread_id?:Increments;
         body:string;
+        title?:string;
         preview?:string;
         is_anonymous?:boolean;
         majia?:string;
@@ -127,7 +128,6 @@ export namespace Database {
         channel_name:string;
         channel_explanation?:string;
         order_by?:number;
-        channel_rule?:string;
         is_book?:boolean;
         allow_anonymous?:boolean;
         allow_edit?:boolean;
@@ -151,9 +151,9 @@ export namespace Database {
         volumn_id?:Increments;
         order_ny?:number;
         title:string;
-        brief?:string;
+        preview?:string;
+        warning?:string;
         annotation?:string;
-        annotation_infront?:boolean;
         views?:UInt;
         characters?:UInt;
         previous_chapter_id?:Increments;

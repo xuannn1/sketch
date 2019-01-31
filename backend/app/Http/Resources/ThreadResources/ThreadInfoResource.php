@@ -46,7 +46,7 @@ class ThreadInfoResource extends JsonResource
                 'last_responded_at' => (string)$this->last_responded_at,
             ],
             'author' => $author,
-            'channel'        => new ChannelBriefResource($this->simpleChannel()),
+            'channel'        => new ChannelBriefResource($this->channel()),
             'tags' => TagResource::collection($this->tags)
         ];
     }

@@ -223,11 +223,11 @@ title(string)：讨论帖标题
 brief(string)：讨论贴简介  
 body(string)：首楼内容  
 选填项：  
-no_reply（anything）：是否不允许其他人在本楼回复，如果本项存在，则不允许回复。  
-use_markdown(anything):是否使用markdown，如果本项存在，则保存为使用markdown。  
-use_indentation(anything):是否使用段首缩进，如果本项存在，则保存为使用段首缩进。  
-is_bianyuan（anything）：是否属于边缘内容，如果本项存在，则具体内容不被游客看到。（前端应控制，如果是thread选择bianyuan，简介以“午夜场”开头，并且提示用户本站关于午夜场的规则要求）  
-is_not_public（anything）：是否属于私密内容，如果本项存在，则本楼整体隐藏。（前端应控制只有创立books才提交这个值）  
+no_reply（bool）：是否不允许其他人在本楼回复，如果本项存在，则不允许回复。  
+use_markdown(bool):是否使用markdown，如果本项存在，则保存为使用markdown。  
+use_indentation(bool):是否使用段首缩进，如果本项存在，则保存为使用段首缩进。  
+is_bianyuan（bool）：是否属于边缘内容，如果本项存在，则具体内容不被游客看到。（前端应控制，如果是thread选择bianyuan，简介以“午夜场”开头，并且提示用户本站关于午夜场的规则要求）  
+is_public（bool）：是否属于公开内容，如果本项为true/1，则本楼整体公开。如果本项为false/0，则本楼整体隐藏。（前端应控制只有创立books才提交这个值）  
 
 ###### 4.5.1.1 修改thread
 http://127.0.0.1:8000/api/thread/{thread}
@@ -237,11 +237,11 @@ http://127.0.0.1:8000/api/thread/{thread}
 title(string)：讨论帖标题  
 brief(string)：讨论贴简介  
 body(string)：首楼内容   
-no_reply（anything）：是否不允许其他人在本楼回复，如果本项存在，则不允许回复。  
-use_markdown(anything):是否使用markdown，如果本项存在，则回帖保存为使用markdown。  
-use_indentation(anything):是否使用段首缩进，如果本项存在，则回帖保存为使用段首缩进。  
-is_bianyuan（anything）：是否属于边缘内容，如果本项存在，则回帖不被游客看到。（前端应控制，如果是thread选择bianyuan，简介以“午夜场”开头，并且提示用户本站关于午夜场的规则要求）  
-is_not_public（anything）：是否属于私密内容，如果本项存在，则本楼整体隐藏。（前端应控制只有创立books才提交这个值）
+no_reply（bool）：是否不允许其他人在本楼回复，如果本项存在，则不允许回复。  
+use_markdown(bool):是否使用markdown，如果本项存在，则回帖保存为使用markdown。  
+use_indentation(bool):是否使用段首缩进，如果本项存在，则回帖保存为使用段首缩进。  
+is_bianyuan（bool）：是否属于边缘内容，如果本项存在，则回帖不被游客看到。（前端应控制，如果是thread选择bianyuan，简介以“午夜场”开头，并且提示用户本站关于午夜场的规则要求）  
+is_public（bool）：是否属于公开内容，如果本项为true/1，则本楼整体公开。如果本项为false/0，则本楼整体隐藏。（前端应控制只有创立books才提交这个值）  
 
 ###### 4.5.1.2 给thread批量修改sync对应的tag
 http://127.0.0.1:8000/api/thread/{thread}/synctags
@@ -257,12 +257,13 @@ method: POST
 body(string):回帖正文  
 preview(string):回帖摘要，由前端剪裁好提供，不得超过50字
 选填项：  
-is_anonymous(anything):是否匿名，如果本项存在，且本channel属于可以匿名，则回帖存储为匿名。   
+title(string):仅对回帖够长（比如超过200字）的时候，提供填写title的选择  
+is_anonymous(bool):是否匿名，如果本项存在，且本channel属于可以匿名，则回帖存储为匿名。   
 majia(string):马甲 仅当存在“is_anonymous”的时候才保存马甲内容。  
 reply_to_post_id(number):回复对象的post_id。前端务必检查好，这个post需要同时属于这个thread  
-use_markdown(anything):是否使用markdown，如果本项存在，则回帖保存为使用markdown。  
-use_indentation(anything):是否使用段首缩进，如果本项存在，则回帖保存为使用段首缩进。  
-is_bianyuan（anything）：是否属于边缘内容，如果是，则回帖不被游客看到。
+use_markdown(bool):是否使用markdown，如果本项存在，则回帖保存为使用markdown。  
+use_indentation(bool):是否使用段首缩进，如果本项存在，则回帖保存为使用段首缩进。  
+is_bianyuan（bool）：是否属于边缘内容，如果是，则回帖不被游客看到。
 
 ###### 4.5.2.1 修改post
 http://127.0.0.1:8000/api/thread/1/post/1
@@ -271,9 +272,10 @@ method: PATCH
 选填项：  
 body(string):回帖正文  
 preview(string):回帖摘要，由前端剪裁好提供，不得超过50字
-is_anonymous(anything):是否匿名，如果本项存在，且本channel属于可以匿名，则回帖存储为匿名。  
-use_markdown(anything):是否使用markdown，如果本项存在，则回帖保存为使用markdown。  
-use_indentation(anything):是否使用段首缩进，如果本项存在，则回帖保存为使用段首缩进。  
+title(string):仅对回帖够长（比如超过200字）的时候，提供填写title的选择
+is_anonymous(bool):是否匿名，如果本项存在，且本channel属于可以匿名，则回帖存储为匿名。  
+use_markdown(bool):是否使用markdown，如果本项存在，则回帖保存为使用markdown。  
+use_indentation(bool):是否使用段首缩进，如果本项存在，则回帖保存为使用段首缩进。  
 
 ###### 4.5.3 建立recommendation (书籍推荐)
 http://127.0.0.1:8000/api/recommendation
@@ -305,24 +307,25 @@ http://127.0.0.1:8000/api/thread/{thread_id}/chapter
 方法：POST  
 授权：必须登陆，需是自己创建的thread  
 必填项：  
-title(string)章节标题
-brief(string)章节概要（如果用户不输入，前端自动节选body的一部分片段作为概要）
-body(string)章节内容
+title(string)章节标题  
+preview(string)章节概要/预览（如果用户不输入，前端自动节选title+body的一部分片段作为概要）  
+body(string)章节内容  
 选填项：
-annotation(string):作者有话说/章节注释
-annotation_infront(anything):如果出现，将作者有话说放在最前面
+warning(string):文前预警（应有字数限制）  
+annotation(string):作者有话说/章节注释  
+
 
 
 ###### 4.5.4.2 更新chapter
 http://127.0.0.1:8000/api/thread/{thread_id}/chapter/{chapter_id}
-方法：PUT
-授权：必须登陆，需是自己创建的thread
-选填项
-title(string)章节标题
-brief(string)章节概要（如果用户不输入，前端自动节选body的一部分片段作为概要）
-body(string)章节内容
-annotation(string):作者有话说/章节注释
-annotation_infront(anything):如果出现，将作者有话说放在最前面
+方法：PUT  
+授权：必须登陆，需是自己创建的thread  
+选填项  
+title(string)章节标题  
+preview(string)章节概要/预览（如果用户不输入，前端自动节选title+body的一部分片段作为概要）  
+body(string)章节内容  
+warning(string):文前预警（应有字数限制）  
+annotation(string):作者有话说/章节注释  
 
 
 ## 5. 如何测试

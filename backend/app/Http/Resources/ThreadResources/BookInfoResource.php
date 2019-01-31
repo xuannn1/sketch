@@ -21,7 +21,7 @@ class BookInfoResource extends JsonResource
             $author = [];
         }
         return [
-            'type' => 'thread',
+            'type' => 'book',
             'id' => (int)$this->id,
             'attributes' => [
                 'title' => (string)$this->title,
@@ -46,7 +46,7 @@ class BookInfoResource extends JsonResource
                 'last_responded_at' => (string)$this->last_responded_at,
             ],
             'author' => $author,
-            'channel'        => new ChannelBriefResource($this->simpleChannel()),
+            'channel'        => new ChannelBriefResource($this->channel()),
             'tags' => TagResource::collection($this->tags),
             'last_chapter' => new ChapterInfoResource($this->last_chapter),
         ];

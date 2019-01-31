@@ -34,9 +34,14 @@ class StorePost extends FormRequest
     {
         return [
             'body' => 'required|string|max:20000',
+            'title' => 'string|max:50',
             'preview' => 'string|max:50',
             'majia' => 'string|max:10',
             'reply_to_post_id' => 'numeric',
+            'is_anonymous' => 'boolean',
+            'use_markdown' => 'boolean',
+            'use_indentation' => 'boolean',
+            'allow_as_longpost' => 'boolean',
         ];
     }
 
@@ -44,16 +49,11 @@ class StorePost extends FormRequest
     public function generatePost()
     {
         $thread = request()->route('thread');
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
-        $post_data = $this->only('body', 'preview');
+        $channel = $thread->channel();
+        $post_data = $this->only('body', 'title', 'preview', 'majia', 'is_anonymous', 'use_markdown', 'use_indentation', 'allow_as_longpost');
         $post_data['thread_id'] = $thread->id;
         $post_data['creation_ip'] = request()->getClientIp();
-        if (($this->is_anonymous)&&($channel->allow_anonymous)){
-            $post_data['is_anonymous']=true;
-            $post_data['majia']=$this->majia;
-        }else{
-            $post_data['is_anonymous']=false;
-        }
+        if (!$channel->allow_anonymous){$post_data['is_anonymous']=false;}//如果channel不允许匿名，自动实名
         if($this->reply_to_post_id){
             $reply_to_post = Post::find($this->reply_to_post_id);
             if((!$reply_to_post)||($reply_to_post->thread_id!=$thread->id)){
@@ -66,11 +66,7 @@ class StorePost extends FormRequest
             //$post['reply_position'] = $this->reply_position ?? 0;
             //$post['reply_to_post_preview'] =
         }
-
-        $post_data['use_markdown']=$this->use_markdown ? true:false;
-        $post_data['use_indentation']=$this->use_indentation ? true:false;
-        $post_data['is_bianyuan']=($this->is_bianyuan||$thread->is_bianyuan) ? true:false;
-        //这一项还需要改进，是否给任意的回帖人将帖子变成边缘类型的权限，有待考虑
+        if($thread->is_bianyuan){$post_data['is_bianyuan']=false;}
         //$post['allow_as_longpost']=$this->allow_as_longpost ? true:false;
         $post_data['last_responded_at']=Carbon::now();
         $post_data['user_id'] = auth('api')->id();

@@ -32,13 +32,7 @@ class Thread extends Model
 
     public function channel()
     {
-        return $this->belongsTo(Channel::class);
-    }
-
-    public function simpleChannel()
-    {
-        return
-        ConstantObjects::allChannels()->keyBy('id')->get($this->channel_id);
+        return (object)config('channel')[$this->channel_id];
     }
 
     public function author()

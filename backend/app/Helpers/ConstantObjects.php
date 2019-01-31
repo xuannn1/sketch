@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Helpers;
-use App\Models\Channel;
 use App\Models\Tag;
 use Cache;
 use DB;
@@ -12,25 +11,20 @@ class ConstantObjects
 
     public static function allChannels()//获得站上所有的channel
     {
-        return Cache::remember('allChannels', 10, function (){
-            return Channel::orderBy('order_by','asc')->get();
-        });
+        return collect(config('channel'));//将channels转化成collection
     }
+
     public static function publicChannelTypes($type='')
     {
         if (in_array($type, self::$channel_types)){
-            return Cache::remember('channel-'.$type, 10, function () use($type){
-                return self::allChannels()->where('type', $type)->where('is_public', true)->pluck('id')->toArray();
-            });
+            return self::allChannels()->where('type', $type)->where('is_public', true)->pluck('id')->toArray();
         }
         return [];
     }
 
     public static function public_channels()
     {
-        return Cache::remember('public_channels', 10, function (){
-            return self::allChannels()->where('is_public', true)->pluck('id')->toArray();
-        });
+        return self::allChannels()->where('is_public', true)->pluck('id')->toArray();
     }
 
     public static function allTags()//获得站上所有的tags

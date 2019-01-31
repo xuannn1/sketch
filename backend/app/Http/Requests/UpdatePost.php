@@ -23,7 +23,7 @@ class UpdatePost extends FormRequest
     public function authorize()
     {
       $thread = request()->route('thread');
-      $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
+      $channel = $thread->channel();
       $post = request()->route('post');
       return ((auth('api')->id() === $post->user_id)&&(!$thread->locked)&&($channel->allow_edit));
 
@@ -37,24 +37,22 @@ class UpdatePost extends FormRequest
     public function rules()
     {
       return [
-          'body' => 'string|max:20000',
+          'body' => '|string|max:20000',
+          'title' => 'string|max:50',
           'preview' => 'string|max:50',
+          'is_anonymous' => 'boolean',
+          'use_markdown' => 'boolean',
+          'use_indentation' => 'boolean',
+          'allow_as_longpost' => 'boolean',
       ];
     }
 
 
     public function updatePost($post)
     {
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
-        $post_data = $this->only('body','preview');
-        $post_data['use_markdown']=$this->use_markdown ? true:false;
-        $post_data['use_indentation']=$this->use_indentation ? true:false;
-        $post_data['allow_as_longpost']=$this->allow_as_longpost ? true:false;
-        if (($this->is_anonymous)&&($channel->allow_anonymous)){
-            $post_data['is_anonymous']=true;
-        }else{
-            $post_data['is_anonymous']=false;
-        }
+        $channel = $thread->channel();
+        $post_data = $this->only('body', 'title', 'preview', 'is_anonymous', 'use_markdown', 'use_indentation', 'allow_as_longpost');
+        if (!$channel->allow_anonymous){$post_data['is_anonymous']=false;}
         $post_data['last_edited_at']=Carbon::now();
 
         $post->update($post_data);

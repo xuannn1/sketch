@@ -26,7 +26,7 @@ class StoreChapter extends FormRequest
     public function authorize()
     {
         $thread = request()->route('thread');
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
+        $channel = $thread->channel();
         return auth('api')->id()===$thread->user_id && $channel->type==='book';
     }
 
@@ -39,11 +39,13 @@ class StoreChapter extends FormRequest
     {
         return [
             'title' => 'required|string|max:30',
-            'brief' => 'string|max:50',
+            'preview' => 'string|max:50',
             'body' => 'required|string|max:20000',
-            'majia' => 'string|max:10',
+            'warning' => 'string|max:50',
             'annotation' => 'string|max:20000',
-
+            'use_markdown' => 'boolean',
+            'use_indentation' => 'boolean',
+            'is_bianyuan' => 'boolean',
         ];
     }
 
@@ -53,14 +55,13 @@ class StoreChapter extends FormRequest
 
         //generate chapter info
         $previous_chapter = $thread->last_chapter;
-        $chapter_data = $this->only('title', 'brief', 'annotation');
+        $chapter_data = $this->only('warning', 'annotation');
         if(($previous_chapter)&&($previous_chapter->chapter)){
             $chapter_data['order_by'] = $previous_chapter->chapter->order_by + 1;
             $chapter_data['previous_chapter_id'] = $previous_chapter->id;
             $chapter_data['volumn_id'] = $previous_chapter->chapter->volumn_id; //默认跟前面的同一volumn
         }
         $chapter_data['characters'] = mb_strlen($this->body);
-        $chapter_data['annotation_infront'] = $this->annotation_infront ? true:false;
 
         // generate post first
         $post_data = $this->generatePostInfo();
@@ -86,15 +87,12 @@ class StoreChapter extends FormRequest
     private function generatePostInfo()
     {
         $thread = request()->route('thread');
-        $post_data = $this->only('body');
-        $post_data['preview'] = $this->title.$this->brief;
+        $post_data = $this->only('title','preview','body','use_markdown','use_indentation','is_bianyuan');
         $post_data['thread_id'] = $thread->id;
         $post_data['creation_ip'] = request()->getClientIp();
         $post_data['type'] = 'chapter'; // add type
-        $post_data['use_markdown']=$this->use_markdown ? true:false;
-        $post_data['use_indentation']=$this->use_indentation ? true:false;
-        $post_data['is_bianyuan']=($thread->is_bianyuan||$this->is_bianyuan) ? true:false;
         $post_data['is_anonymous']=$thread->is_anonymous;
+        if($thread->is_bianyuan){$post_data['is_bianyuan']=true;}
         $post_data['user_id'] = auth('api')->id();
         if ($this->isDuplicatePost($post_data)){ abort(409); }
         return $post_data;

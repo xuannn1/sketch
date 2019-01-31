@@ -29,6 +29,8 @@ class PostResource extends JsonResource
             'type' => 'post',
             'id' => (int)$this->id,
             'attributes' => [
+                'title' => (string)$this->title
+                'preview' => (string)$this->preview,
                 'body' => (string)$body,
                 'is_anonymous' => (bool)$this->is_anonymous,
                 'majia' => (string)$this->majia ?? '匿名咸鱼',

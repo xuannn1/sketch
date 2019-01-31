@@ -17,7 +17,7 @@ class UpdateThread extends FormRequest
     public function authorize()
     {
         $thread = request()->route('thread');
-        $channel = $thread->channel;
+        $channel = $thread->channel();
         return ((auth('api')->user()->canManageChannel($thread->channel_id))||((auth('api')->id() === $thread->user_id)&&(!$thread->locked)&&($channel->allow_edit)));
     }
 
@@ -29,28 +29,26 @@ class UpdateThread extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:30',
-            'brief' => 'required|string|max:50',
-            'body' => 'required|string|max:20000',
-            'majia' => 'string|max:10',
+            'title' => 'string|max:30',
+            'brief' => 'string|max:50',
+            'body' => 'string|max:20000',
+            'is_anonymous' => 'boolean',
+            'no_reply' => 'boolean',
+            'use_indentation' => 'boolean',
+            'is_bianyuan' => 'boolean',
+            'is_public' => 'boolean',
         ];
+
     }
 
     public function updateThread($thread)
     {
         //create thread data
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
-        $thread_data = $this->only('title','brief','body');
-        if (($this->is_anonymous)&&($channel->allow_anonymous)){
-            $thread_data['is_anonymous']=1;
-        }else{
-            $thread_data['is_anonymous']=0;
+        $channel = $thread->channel();
+        $thread_data = $this->only('title', 'brief', 'body', 'is_anonymous', 'no_reply', 'use_markdown', 'use_indentation', 'is_bianyuan', 'is_public');
+        if (!$channel->allow_anonymous){
+            $thread_data['is_anonymous']=false;
         }
-        $thread_data['no_reply']=$this->no_reply ? true:false;
-        $thread_data['use_markdown']=$this->use_markdown ? true:false;
-        $thread_data['use_indentation']=$this->use_indentation ? true:false;
-        $thread_data['is_bianyuan']=$this->is_bianyuan ? true:false;
-        $thread_data['is_public']=$this->is_not_public ? false:true;
         $thread_data['last_edited_at']=Carbon::now();
 
         //还需要搞
