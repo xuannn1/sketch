@@ -38,18 +38,6 @@
                 </div>
 
                 <div class="panel-body">
-                    <h4>苍流</h4>
-                    <ul>
-                        <li>混乱邪恶选手，颜控</li>
-                        <li>全性向全题材杂食，是个喜欢吃糖的小可爱，刀片恕难咽下</li>
-                        <li>同人方面不吃三次元</li>
-                        <li>沉迷于剧情与逻辑的完备之美</li>
-                        <li>欢迎太太们找我自荐</li>
-                        <li>联系方式：废文<a href="{{ route('user.show', 92260) }}">@苍流</a> </li>
-                    </ul>
-                </div>
-
-                <div class="panel-body">
                     <h4>Duvet</h4>
                     <ul>
                         <li>素食爱好者，小众风格，翻译风爱好者。</li>
@@ -114,14 +102,6 @@
                         <li>口味大众但不挑食,特长是做白日梦。</li>
                         <li>联系方式：废文<a href="{{ route('user.show', 48493) }}">@光生光</a> </li>
                         <li>欢迎自荐！</li>
-                    </ul>
-                </div>
-
-                <div class="panel-body">
-                    <h4>勾引</h4>
-                    <ul>
-                        <li>偏爱西幻科幻等异国风情的题材</li>
-                        <li>暂不开放自荐哦！</li>
                     </ul>
                 </div>
 

@@ -46,7 +46,7 @@
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">排序<span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         @foreach(config('constants.book_info.orderby_info') as $key=>$orderby)
-                        <li><input type="radio" name="orderby" value={{$key}}>{{ $orderby }}</li>
+                        <li><input type="radio" name="orderby" value={{$key}} checked/>{{ $orderby }}</li>
                         @endforeach
                     </ul>
                 </span>
@@ -94,7 +94,7 @@
             <div class="">
                 <span class="lead">排序：</span>
                 @foreach(config('constants.book_info.orderby_info') as $key=>$orderby)
-                <input type="radio" name="orderby" value={{$key}} />&nbsp;{{$orderby}}&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="orderby" value={{$key}} checked disabled/>&nbsp;{{$orderby}}&nbsp;&nbsp;&nbsp;
                 @endforeach
             </div>
 

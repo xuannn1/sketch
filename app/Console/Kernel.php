@@ -25,7 +25,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('webstat:count')
-                  ->daily();
+                ->daily();
+        $schedule->command('data:recalculation')
+                ->hourly();
                   //->everyFiveMinutes();
         $schedule->command('cache:clear')
                ->daily()

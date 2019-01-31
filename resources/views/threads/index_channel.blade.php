@@ -16,7 +16,7 @@
                     <li role="presentation" class="{{ request('label') ? '': 'active' }}"><a href="{{ route('channel.show', $channel) }}">全部<span class="badge"></span></a></li>
                     @foreach($labels as $label)
                     <li role="presentation" id="label-{{ $label->id }}" class="{{ request('label')===$label->id ? 'active':'' }}">
-                        <a href="{{ route('channel.show',['channel'=>$channel->id,'label'=>$label->id]) }}" >
+                        <a href="{{ route('channel.show', array_merge(['channel'=>$channel->id,'label'=>$label->id], request()->only('showbianyuan','orderby'))) }}" >
                             {{ $label->labelname }}<span class="badge">{{ $label->threads_count }}</span>
                         </a>
                     </li>
@@ -25,7 +25,7 @@
                     @foreach($sexual_orientation_info as $key=>$value)
                     @if(!$key==0)
                     <li role="presentation" id="sexual_orientation-{{ $key }}" class="{{ request('sexual_orientation')=== $key ? 'active':'' }}">
-                        <a href="{{ route('channel.show',['channel'=>$channel->id, 'sexual_orientation' => $key ]) }}" >
+                        <a href="{{ route('channel.show',array_merge(['channel'=>$channel->id, 'sexual_orientation' => $key ],request()->only('showbianyuan','orderby'))) }}" >
                             {{ $value }}<span class="badge">{{ array_key_exists($key, $s_count)? $s_count[$key]:'0' }}</span>
                         </a>
                     </li>
@@ -39,8 +39,24 @@
                 @include('threads._simple_threads')
             </div>
             <!-- 单独的帖子列表 -->
+
             <div class="panel-body">
                 {{ $threads->appends(request()->query())->links() }}
+                @if($channel->id<=2)
+                <div class="dropdown pull-right">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        排序方式
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        @foreach(config('constants.book_info.orderby_info') as $key=>$orderby)
+                        <li><a class="dropdown-item" href="{{ route('channel.show', array_merge(['channel' => $channel->id, 'orderby' => $key], request()->only('showbianyuan', 'label', 'sexual_orientation'))) }}">{{ $orderby }}</a></li>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+                @if(Auth::check()&&($channel->id<=2))
+                <a class="btn btn-primary sosad-button pull-right" href="{{ route('channel.show', array_merge(['channel' => $channel->id, 'showbianyuan' => request()->showbianyuan?'':'1'], request()->only('label', 'sexual_orientation', 'orderby'))) }}" role="button">{{request()->showbianyuan?'取消':''}}显示边限</a>
+                @endif
                 @include('threads._threads')
                 {{ $threads->appends(request()->query())->links() }}
             </div>

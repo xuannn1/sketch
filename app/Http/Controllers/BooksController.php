@@ -123,7 +123,7 @@ class BooksController extends Controller
             $query = $this->return_book_fields($query);
             $books = $this->bookOrderBy($query, $request->orderby)
             ->paginate(config('constants.index_per_page'))
-            ->appends($request->query());
+            ->appends($request->only('page'));
             return $books;
         });
         return view('books.index', compact('books'))->with('show_as_collections', false);
@@ -131,6 +131,7 @@ class BooksController extends Controller
 
     public function selector($bookquery_original, Request $request)
     {
+        $book_info = config('constants.book_info');
         $bookquery=explode('-',$bookquery_original);
         $bookinfo=[];
         foreach($bookquery as $info){
@@ -138,7 +139,7 @@ class BooksController extends Controller
         }
         $logged = Auth::check()? true:false;
         $page = is_numeric($request->page) ? $request->page:1;
-        $books = Cache::remember('booksQuery'.($logged? '-Logged':'-notLogged').'-selector:'.$bookquery_original.'-P'.$page, 10, function () use($bookinfo, $page, $logged) {
+        $books = Cache::remember('booksQuery'.($logged? '-Logged':'-notLogged').'-selector:'.$bookquery_original.'-P'.$page, 10, function () use($bookinfo, $page, $logged, $book_info, $request) {
             if((!empty($bookinfo[5]))&&($bookinfo[5][0]>0)){//用户是否提交了标签(tag)筛选要求？
                 $query = $this->join_complex_book_tables();//包含标签筛选
             }else{
@@ -164,13 +165,13 @@ class BooksController extends Controller
             if((!empty($bookinfo[5]))&&($bookinfo[5][0]>0)){//标签筛选
                 $query->whereIn('tagging_threads.tag_id',$bookinfo[5]);
             }
-            if((!empty($bookinfo[6]))&&($bookinfo[6]>0)){//排序方式筛选
-                $query = $this->bookOrderBy($query, $bookinfo[6]);
+            if(!empty($bookinfo[6])){//排序方式筛选
+                $query = $this->bookOrderBy($query, $bookinfo[6][0]);
             }
             $books = $this->return_book_fields($query)
             ->distinct()
             ->paginate(config('constants.index_per_page'))
-            ->appends($request->query());
+            ->appends($request->only('page'));
             return $books;
         });
         return view('books.index', compact('books'))->with('show_as_collections', false);
@@ -187,7 +188,7 @@ class BooksController extends Controller
             $query = $this->return_book_fields($query);
             $books = $this->bookOrderBy($query, $request->orderby)
             ->paginate(config('constants.index_per_page'))
-            ->appends($request->query());
+            ->appends($request->only('page'));
             return $books;
         });
         return view('books.index', compact('books'))->with('show_as_collections', false);

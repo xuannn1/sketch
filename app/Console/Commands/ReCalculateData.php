@@ -54,7 +54,7 @@ class ReCalculateData extends Command
         ');
         //统计总积分：咸鱼+剩饭+点击+回复+下载+收藏
         DB::table('threads')
-        ->update(['jifen'=>DB::raw('xianyu * 2000 + shengfan *100 + viewed*2 + responded * 200 + downloaded * 1000 + collection * 1000')]);
+        ->update(['jifen'=>DB::raw('xianyu * 2000 + shengfan *100 + viewed*2 + responded * 100 + downloaded * 2000 + collection * 2000')]);
         //对非边缘文进行额外奖励，因为边缘文积分太高了
         DB::table('threads')
         ->where('bianyuan','=',0)

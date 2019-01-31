@@ -41,7 +41,7 @@ trait ThreadTraits{
         $query->select('books.thread_id','books.book_status', 'books.book_length', 'books.lastaddedchapter_at', 'books.total_char', 'books.last_chapter_id', 'books.sexual_orientation',
         'threads.id','threads.user_id','threads.book_id', 'threads.title', 'threads.brief', 'threads.locked', 'threads.public', 'threads.bianyuan', 'threads.anonymous', 'threads.majia', 'threads.noreply', 'threads.viewed', 'threads.responded', 'threads.lastresponded_at', 'threads.channel_id', 'threads.label_id', 'threads.deleted_at', 'threads.created_at', 'threads.edited_at', 'threads.homework_id', 'threads.post_id', 'threads.last_post_id', 'threads.show_homework_profile', 'threads.downloaded',
         'users.name', 'labels.labelname', 'channels.channelname', 'posts.trim_body as last_post_body',
-         'tongrens.tongren_yuanzhu',  'tongrens.tongren_cp', 'tongrens.tongren_yuanzhu_tag_id', 'tongrens.tongren_cp_tag_id', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id', 'tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname', 'tongren_cp_tags.tagname as tongren_cp_tagname', 'top');
+        'tongrens.tongren_yuanzhu',  'tongrens.tongren_cp', 'tongrens.tongren_yuanzhu_tag_id', 'tongrens.tongren_cp_tag_id', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id', 'tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname', 'tongren_cp_tags.tagname as tongren_cp_tagname', 'top');
         return $query;
     }
 
@@ -55,5 +55,25 @@ trait ThreadTraits{
         'threads.id','threads.user_id','threads.book_id', 'threads.title', 'threads.brief', 'threads.locked', 'threads.public', 'threads.bianyuan', 'threads.anonymous', 'threads.majia', 'threads.noreply', 'threads.viewed', 'threads.responded', 'threads.lastresponded_at', 'threads.channel_id', 'threads.label_id', 'threads.deleted_at', 'threads.created_at', 'threads.edited_at', 'threads.homework_id', 'threads.post_id', 'threads.last_post_id', 'threads.show_homework_profile', 'threads.downloaded',
         'users.name', 'labels.labelname', 'channels.channelname', 'posts.trim_body as last_post_body', 'top');
         return $query;
+    }
+
+    public function threadOrderBy($query, $orderby){//1:按最新章节, 2:按最新回贴时间, 3:积分排序, 4.字数均衡积分
+        switch ($orderby) {
+            case 1://最新最新章节排序
+            $query->orderBy('books.lastaddedchapter_at', 'desc');
+            return $query;
+            break;
+            case 3://总积分
+            $query->orderBy('threads.jifen', 'desc');
+            return $query;
+            break;
+            case 4://字数平衡积分
+            $query->orderBy('books.weighted_jifen', 'desc');
+            return $query;
+            break;
+            default://默认书籍按照最新章节排序
+            $query->orderBy('threads.lastresponded_at', 'desc');
+            return $query;
+        }
     }
 }

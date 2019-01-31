@@ -21,10 +21,12 @@ class ChannelsController extends Controller
     {
         $channel = Helper::allChannels()->keyBy('id')->get($channel);
         $logged = Auth::check()? true:false;
-        $threadqueryid = '-tQCh'.$channel->id
-        .($logged?'Lgd':'nLg')
-        .($request->label? 'L'.$request->label:'')
-        .($request->sexual_orientation? 'So'.$request->sexual_orientation:'')
+        $threadqueryid = '-threadQueryChannel'.$channel->id
+        .($logged?'-logged':'-notLogged')
+        .($request->label? '-Label'.$request->label:'')
+        .($request->sexual_orientation? '-SexualOrientation'.$request->sexual_orientation:'')
+        .($request->showbianyuan? '-ShowBianyuan':'')
+        .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
         $threads = Cache::remember($threadqueryid, 2, function () use($request, $channel, $logged) {
             if($channel->id==1){
@@ -39,7 +41,7 @@ class ChannelsController extends Controller
             if($channel->id<=2){
                 if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
             }
-            if(!$logged){$query = $query->where('threads.bianyuan','=',0);}
+            if((!$logged)||((!$request->showbianyuan)&&($channel->id<=2))){$query = $query->where('threads.bianyuan','=',0);}
             if($channel->id==1){
                 $query = $this->return_no_tongren_thread_fields($query);
             }elseif($channel->id==2){
@@ -47,7 +49,7 @@ class ChannelsController extends Controller
             }else{
                 $query = $this->return_no_book_thread_fields($query);
             }
-            $threads = $query->orderBy('threads.lastresponded_at', 'desc')
+            $threads = $this->threadOrderBy($query, $request->orderby)
             ->paginate(config('constants.index_per_page'));
             return $threads;
         });

@@ -51,22 +51,22 @@ trait BookTraits{
     }
 
     public function bookOrderBy($query, $orderby){//1:按最新章节, 2:按最新回贴时间, 3:积分排序, 4.字数均衡积分
-            switch ($orderby) {
-                case 2://最新回复
-                $query->orderBy('threads.lastresponded_at', 'desc');
-                return $query;
-                break;
-                case 3://总积分
-                $query->orderBy('threads.jifen', 'desc');
-                return $query;
-                break;
-                case 4://字数平衡积分
-                $query->orderBy('books.weighted_jifen', 'desc');
-                return $query;
-                break;
-                default://默认书籍按照最新章节排序
-                $query->orderBy('books.lastaddedchapter_at', 'desc');
-                return $query;
-            }
+        switch ($orderby) {
+            case 2://最新回复
+            $query->orderBy('threads.lastresponded_at', 'desc');
+            return $query;
+            break;
+            case 3://总积分
+            $query->orderBy('threads.jifen', 'desc');
+            return $query;
+            break;
+            case 4://字数平衡积分
+            $query->orderBy('books.weighted_jifen', 'desc');
+            return $query;
+            break;
+            default://默认书籍按照最新章节排序
+            $query->orderBy('books.lastaddedchapter_at', 'desc');
+            return $query;
         }
     }
+}
