@@ -27,17 +27,17 @@ class StoreMessage extends FormRequest
     public function rules()
     {
         return [
-            'body' => 'required|string|max:20000|min:10',
+            'body' => 'required|string|max:20000',
         ];
     }
 
     public function generateMessage()
     {
-        $message['poster_id'] = auth('api')->id();
-        $message['receiver_id'] = Request()->route('user')->id;
-        $message = DB::transaction(function() use($message) {
-            $message['message_body_id'] = DB::table('message_bodies')->insertGetId(['body' => request('body')]);
-            $message = Message::create($message);
+        $message_data['poster_id'] = auth('api')->id();
+        $message_data['receiver_id'] = Request()->route('user')->id;
+        $message = DB::transaction(function() use($message_data) {
+            $message_data['message_body_id'] = DB::table('message_bodies')->insertGetId(['body' => request('body')]);
+            $message = Message::create($message_data);
             return $message;
         });
         return $message;

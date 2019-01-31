@@ -34,14 +34,14 @@ class StoreStatus extends FormRequest
     public function generateStatus()
     {
 
-        $status = $this->only('body');
-        $status['user_id'] = auth('api')->id();
+        $status_data = $this->only('body');
+        $status_data['user_id'] = auth('api')->id();
         if ($this->has('reply_to_status_id')&&(!empty(Status::find($this->reply_to_status_id)))){
-            $status['reply_to_status_id'] = $this->reply_to_status_id;
+            $status_data['reply_to_status_id'] = $this->reply_to_status_id;
         }
-        if (!$this->isDuplicateStatus($status)){
-            $status = DB::transaction(function () use($status) {
-                $status = Status::create($status);
+        if (!$this->isDuplicateStatus($status_data)){
+            $status = DB::transaction(function () use($status_data) {
+                $status = Status::create($status_data);
                 return $status;
             });
         }else{
@@ -50,11 +50,11 @@ class StoreStatus extends FormRequest
         return $status;
     }
 
-    public function isDuplicateStatus($status)
+    public function isDuplicateStatus($status_data)
     {
         $last_status = Status::where('user_id', auth('api')->id())
         ->orderBy('created_at', 'desc')
         ->first();
-        return (!empty($last_status)) && (strcmp($last_status->body, $status['body']) === 0);
+        return (!empty($last_status)) && (strcmp($last_status->body, $status_data['body']) === 0);
     }
 }

@@ -16,7 +16,8 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');//post_id
             $table->unsignedInteger('user_id')->index();//作者id
-            $table->unsignedInteger('thread_id')->index();//讨论帖id
+            $table->unsignedInteger('thread_id');//讨论帖id
+            $table->string('type',20)->nullable();//'chapter','collection','question','answer','request','post', 'post_comment'
             $table->text('body')->nullable();//回帖文本本身
             $table->string('preview')->nullable();//节选
             $table->boolean('is_anonymous')->default(false);//是否匿名回帖
@@ -27,9 +28,7 @@ class CreatePostsTable extends Migration
             $table->unsignedInteger('reply_to_post_id')->default(0)->index();//如果是回帖，给出它回复对象的id
             $table->string('reply_to_post_preview')->nullable();//如果是回帖，给出它回复对象的preview
             $table->unsignedInteger('reply_position')->default(0);//回复对象句子在原来评论中的位置
-            $table->string('type',20)->nullable();//'chapter','collection','question','answer','request'
-            $table->boolean('is_component')->default(false);//是否是正文章节
-            $table->boolean('is_post_comment')->default(false);//是否是二级评论
+
             $table->boolean('use_markdown')->default(false);//是否使用md语法
             $table->boolean('use_indentation')->default(true);//是否使用段首缩进格式
             $table->unsignedInteger('up_votes')->default(0);//赞
@@ -44,6 +43,7 @@ class CreatePostsTable extends Migration
             $table->boolean('is_bianyuan')->default(false);//是否属于边缘内容（以至于需要对非注册用户隐藏内容）
             $table->dateTime('last_responded_at')->nullable();//最后被回应时间
             $table->softDeletes();//软删除必备
+            $table->index(['thread_id','type']);
         });
     }
 

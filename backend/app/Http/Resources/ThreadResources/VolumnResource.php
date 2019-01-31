@@ -20,6 +20,7 @@ class VolumnResource extends JsonResource
             'attributes' => [
                 'title' => (string)$this->title,
                 'brief' => (string)$this->brief,
+                'body' => (string)$this->body,
             ]
         ];
     }

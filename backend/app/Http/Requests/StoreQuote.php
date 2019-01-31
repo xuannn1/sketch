@@ -33,16 +33,16 @@ class StoreQuote extends FormRequest
 
     public function generateQuote()
     {
-        $quote = $this->only('body');
-        $quote['user_id'] = auth('api')->id();
+        $quote_data = $this->only('body');
+        $quote_data['user_id'] = auth('api')->id();
         if ($this->is_anonymous){
-            $quote['is_anonymous'] = 1;
-            $quote['majia'] = $this->majia;
+            $quote_data['is_anonymous'] = 1;
+            $quote_data['majia'] = $this->majia;
         } else{
-            $quote['is_anonymous'] = 0;
+            $quote_data['is_anonymous'] = 0;
         }
-        $quote = DB::transaction(function() use($quote) {
-            $quote = Quote::create($quote);
+        $quote = DB::transaction(function() use($quote_data) {
+            $quote = Quote::create($quote_data);
             return $quote;
         });
         return $quote;

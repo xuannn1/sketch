@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\Thread;
+use App\Models\Post;
+use App\Models\Chapter;
 
-// use App\Http\Requests\StorePost;
 use App\Http\Requests\UpdateChapter;
 use App\Http\Requests\StoreChapter;
+use App\Http\Resources\ThreadResources\ChapterResource;
+
 
 class ChapterController extends Controller
 {
@@ -25,7 +28,7 @@ class ChapterController extends Controller
         $this->middleware('filter_thread');
 
     }
-    
+
     public function index()
     {
         //
@@ -49,8 +52,8 @@ class ChapterController extends Controller
      */
     public function store(Thread $thread, StoreChapter $chapterform)
     {
-        $chapter = $chapterform->generateChapter();
-        return response()->success($chapter);
+        $post = $chapterform -> generateChapter();
+        return response()->success(new ChapterResource($post));
     }
 
     /**
@@ -59,9 +62,14 @@ class ChapterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Thread $thread, $id)
     {
-        //
+        $post = Post::find($id);
+        if(($post)&&($post->type==='chapter')&&($post->chapter)){
+            return response()->success(new ChapterResource($post));
+        }else{
+            abort(404);
+        }
     }
 
     /**
@@ -84,9 +92,8 @@ class ChapterController extends Controller
      */
     public function update(Thread $thread, UpdateChapter $chapterform, $id)
     {
-        // put function
-        $chapter = $chapterform -> updateChapter($id);
-        return response()->success($chapter);
+        $post = $chapterform -> updateChapter($id);
+        return response()->success(new ChapterResource($post));
     }
 
     /**

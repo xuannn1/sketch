@@ -4,225 +4,137 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-use Carbon\Carbon;
-use App\Helpers\StringProcess;
-use App\Helpers\ConstantObjects;
-
-Use App\Models\User;
-Use App\Models\Chapter;
-Use App\Models\Post;
-use App\Models\Thread;
-
-use DB;
-
 class ChapterTest extends TestCase
 {
+
     /**
      * A basic test example.
      *
      * @return void
      */
-    use DatabaseTransactions;
 
-    public function isDuplicateThread($thread)
-    {
-        $last_thread = Thread::where('user_id', auth('api')->id())
-        ->orderBy('created_at', 'desc')
-        ->first();
-        return (!empty($last_thread)) && (strcmp($last_thread->title.$last_thread->brief.$last_thread->body, $thread['title'].$thread['brief'].$thread['body']) === 0);
-    }
+    private function createThread($user){
 
-    private function createThread(){
-
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get(1);
-        //检查tag是否符合规则
-        //这部分还没做
-        $thread['title'] = '每次都要新建一个thread';
-        $thread['brief'] = '然而用完了就得删';
-        $thread['body'] = '不知道为什么觉得这个举动特别渣';
-        //处理标题
-        $thread['title'] = StringProcess::convert_to_public($thread['title']);
-        //假如经过去敏感词，标题竟然为空，返回违禁信息
-        if (empty($thread['title'])){
-            abort(488);
-        }
-        //处理简介、正文，正文自动去除段首空格
-        $thread['brief'] = StringProcess::convert_to_public($thread['brief']);
-        $thread['body'] = StringProcess::trimSpaces($thread['body']);
-        //增加其他的变量
-        $thread['channel_id']=$channel->id;
-        //将boolean值赋予提交的设置
-        $thread['is_anonymous']=0;
-    
-        $thread['no_reply']=false;
-        $thread['use_markdown']=false;
-        $thread['use_indentation']=false;
-        $thread['is_bianyuan']=false;
-        $thread['last_responded_at']=Carbon::now();
-        $thread['user_id'] = 1;
-
-        if (!$this->isDuplicateThread($thread)){
-            $thread = DB::transaction(function () use($thread) {
-                $thread = Thread::create($thread);
-                //如果是homework，注册相关信息
-                //这里还需要记录奖励历史信息
-                return $thread;
-            });
-        }
+        $thread = factory('App\Models\Thread')->create([
+            'channel_id' => 1,
+            'user_id' => $user->id,
+        ]);
         return $thread;
-    }
-    /** @test */
-    public function login(){
-        $response = $this->post('api/login',['email' => 'tester@example.com',
-        'password' => 'password']);
-        $accessToken = $response->content();
-        $strarr = json_decode($accessToken, true);
-        $stoke = $strarr['data']['token'];
-        $response->assertStatus(200);
-
     }
 
     /** @test */
     // 测试新建一个单独的chapter，没有上下章节
-    public function createChapter()
+    public function thread_owner_can_add_new_chapter()
     {
-        $user = User::find(1);
-        $this->be($user);
-        // create thread first 
-        $thread = $this->createThread();
-        $data['body'] = "这是一个测试章节，天地蹦出一石猴";
+        $user = factory('App\Models\User')->create();
+        $this->actingAs($user, 'api');
 
-        $request = $this->actingAs($user,'api')
-        ->post('api/thread/'.$thread->id.'/chapter',$data);
+        // create thread first
+        $thread = $this->createThread($user);
 
-        $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode());
+        $data = [
+            'title' => 'chapter1',
+            'brief' => 'brief1',
+            'body' => '这是一个测试章节，天地蹦出一石猴.',
+        ];
+
+        $response = $this->post('api/thread/'.$thread->id.'/chapter', $data)
+        ->assertStatus(200);
     }
 
     /** @test */
     // 测试重复提交
-    public function createDuplicateChapter()
+    public function thread_owner_can_not_create_duplicate_chapter()
     {
-    	$user = User::find(1);
-        $this->be($user);
+    	$user = factory('App\Models\User')->create();
+        $this->actingAs($user, 'api');
 
-        $thread = $this->createThread();
-        $data['body'] = "这是一个测试章节，天地蹦出一石猴";
+        // create thread first
+        $thread = $this->createThread($user);
 
-        $request = $this->actingAs($user,'api')
-        ->post('api/thread/'.$thread->id.'/chapter',$data);
+        $data = [
+            'title' => 'chapter1',
+            'brief' => 'brief1',
+            'body' => '这是一个测试章节，天地蹦出一石猴.',
+        ];
 
-        $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode());
+        $response = $this->post('api/thread/'.$thread->id.'/chapter',$data)
+        ->assertStatus(200);
 
-        $request = $this->actingAs($user,'api')
-        ->post('api/thread/'.$thread->id.'/chapter',$data);
-        $response = $request->send();
-        $this->assertEquals(409, $response->getStatusCode());
-    }
-
-    /** @test */
-    // 测试invalidate chapter connection
-    // 情况一： 所选的前一个chapter不存在
-    public function invalidChapterConn()
-    {
-    	$user = User::find(1);
-    	$this->be($user);
-
-    	$thread = $this->createThread();
-    	$data['body'] = "反正不会被存进数据库随他吧";
-    	$data['previous_chapter_id'] = 100000;
-
-    	$request = $this->actingAs($user,'api')->post('api/thread/'.$thread->id.'/chapter',$data);
-    	$response = $request->send();
-    	$this -> assertEquals(595, $response->getStatusCode());
-
-    	$data['body'] = "一个合格的下一章";
-    	$data['previous_chapter_id'] = 1;
-
-    	$request = $this->actingAs($user,'api')->post('api/thread/'.$thread->id.'/chapter',$data);
-    	$response = $request->send();
-    	$this -> assertEquals(200, $response->getStatusCode());
-
-    	$data['body'] = "一个不合格的下一章，上一章已经有下一章啦";
-    	$data['previous_chapter_id'] = 1;
-
-    	$request = $this->actingAs($user,'api')->post('api/thread/'.$thread->id.'/chapter',$data);
-    	$response = $request->send();
-    	$this -> assertEquals(595, $response->getStatusCode());
-
+        $response = $this->post('api/thread/'.$thread->id.'/chapter',$data)
+        ->assertStatus(409);
     }
 
     /** @test */
     // 测试一系列的章节，相互关联
-    public function createChapters()
+    public function thread_owner_can_create_a_series_of_chapters()
     {
-    	$user = User::find(1);
-    	$this->be($user);
+        $user = factory('App\Models\User')->create();
+        $this->actingAs($user, 'api');
 
-    	$thread = $this->createThread();
-    	$data[1] = "第一回 风雪惊变";
-    	$data[2] = "第二回 江南七怪";
-    	$data[3] = "第三回 大漠风沙";
-    	$data[4] = "第四回 黑风双煞";
-    	$data[5] = "第五回 弯弓射雕";
-    	$data[6] = "第六回 崖顶疑阵";
-    	$data[7] = "第七回 比武招亲";
+        // create thread first
+        $thread = $this->createThread($user);
 
-    	$previous_chapter_id = 0;
-    	for ($x=1; $x <= 7; $x++){
-    		$current_data['body'] = $data[$x];
-    		if (!$previous_chapter_id == 0){
-    			$current_data['previous_chapter_id'] = $previous_chapter_id;
-    		}
-    		$request = $this->actingAs($user,'api')->post('api/thread/'.$thread->id.'/chapter',$current_data);
-    		$response = $request->send();
-    		$this -> assertEquals(200, $response->getStatusCode());
-    		// just for test purpose
-    		$previous_chapter_id = Post::where('body','=',$data[$x])->orderBy('created_at', 'desc') ->first() ->id;
-    	}
+        $data = [
+            'title' => 'chapter1',
+            'brief' => 'brief1',
+            'body' => '这是一个测试章节，天地蹦出一石猴.1',
+        ];
+
+        $response = $this->post('api/thread/'.$thread->id.'/chapter',$data)
+        ->assertStatus(200);
+
+        $data = [
+            'title' => 'chapter2',
+            'brief' => 'brief2',
+            'body' => '这是一个测试章节，天地蹦出一石猴.2',
+        ];
+
+        $response = $this->post('api/thread/'.$thread->id.'/chapter',$data)
+        ->assertStatus(200);
+        //这里需要增加测试，是否把这两个章节关联上了
     }
 
     /** @test */
     // 测试章节内容更新
-    public function updateChapter()
+    public function thread_owner_can_update_own_chapter()
     {
-    	// create a chapter first
-    	$user = User::find(1);
-        $this->be($user);
+        $user = factory('App\Models\User')->create();
+        $this->actingAs($user, 'api');
 
-        $thread = $this->createThread();
-        $data['body'] = "这是一个测试章节，太太说她怀胎十月然后……";
+        // create thread first
+        $thread = $this->createThread($user);
 
-        $request = $this->actingAs($user,'api')
-        ->post('api/thread/'.$thread->id.'/chapter',$data);
+        $data = [
+            'title' => 'chapter1',
+            'brief' => 'brief1',
+            'body' => '这是一个测试章节，天地蹦出一石猴.',
+        ];
 
-        $response = $request->send();
+        $response = $this->post('api/thread/'.$thread->id.'/chapter', $data)
+        ->assertStatus(200);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $content = $response->decodeResponseJson();
 
-        # update
-        $post_id = Post::where('body','=',$data['body'])->first()->id;
-        $data['body'] = "……然后生出来啦！！";
-        $request = $this->actingAs($user,'api')
-        ->put('api/thread/'.$thread->id.'/chapter/'.$post_id,$data);
+        $data = [
+            'title' => 'modifiedchapt',
+            'brief' => 'modifiedchapt',
+            'body' => 'modifiedchapt',
+        ];
 
-        $response = $request->send();
-        $this->assertEquals(200, $response->getStatusCode());
+        $response = $this->put('api/thread/'.$thread->id.'/chapter/'.$content['data']['id'], $data)
+        ->assertStatus(200);
     }
 
-    /** @test */
-    // 测试更新post存在但是chapter不存在的情况
-    public function updateinvalidChapter()
-    {
-    	$user = User::find(1);
-        $this->be($user);
 
-        $thread = $this->createThread();
+    // 测试更新post存在但是chapter不存在的情况
+    public function can_not_update_invalid_chapter()
+    {
+    	$user = factory('App\Models\User')->create();
+        $this->actingAs($user, 'api');
+
+        // create thread first
+        $thread = $this->createThread($user);
         $data['body'] = "这是一个测试章节，ummmm反正它不会被存进数据库里不然就出问题了！！！";
 
         # post doesn't exist

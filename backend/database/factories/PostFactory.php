@@ -22,5 +22,6 @@ $factory->define(App\Models\Post::class, function (Faker $faker) {
         'thread_id' => function(){
             return \App\Models\Thread::inRandomOrder()->first()->id;
         },
+        'type' => 'post',
     ];
 });

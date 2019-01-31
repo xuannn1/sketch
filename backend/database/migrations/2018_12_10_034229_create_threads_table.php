@@ -47,7 +47,7 @@ class CreateThreadsTable extends Migration
             $table->softDeletes();//软删除必备
             $table->dateTime('last_added_component_at')->nullable();//最后新增物品时间
             $table->unsignedInteger('last_component_id')->default(0);//最新物品
-            $table->unsignedInteger('total_char')->default(0);//书籍总字数
+            $table->unsignedInteger('total_char')->default(0);//components总字数
         });
     }
 

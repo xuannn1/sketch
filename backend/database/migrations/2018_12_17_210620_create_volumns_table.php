@@ -17,6 +17,7 @@ class CreateVolumnsTable extends Migration
             $table->increments('id');
             $table->string('title')->nullable();//卷标题
             $table->string('brief')->nullable();//卷简介
+            $table->text('body')->nullable();//卷正文
         });
     }
 

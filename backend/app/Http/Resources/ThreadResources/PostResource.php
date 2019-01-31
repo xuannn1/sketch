@@ -38,8 +38,6 @@ class PostResource extends JsonResource
                 'reply_to_post_preview' => (string)$this->reply_to_post_preview,
                 'use_markdown' => (bool)$this->markdown,
                 'use_indentation' => (bool)$this->use_indentation,
-                'is_component' => (bool)$this->is_component,
-                'is_post_comment' => (bool)$this->is_post_comment,
                 'up_votes' => (int)$this->up_votes,
                 'xianyus' => (int)$this->xianyus,
                 'shengfans' => (int)$this->shengfans,

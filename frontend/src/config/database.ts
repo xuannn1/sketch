@@ -5,7 +5,7 @@ export namespace Database {
     export type UInt = number;
     export type Increments = number;
     export type Timestamp = string;
-    
+
     export interface Users_Default {
         id?:Increments;
         name:string;
@@ -15,7 +15,7 @@ export namespace Database {
         remember_token?:Token;
         created_at?:Timestamp;
     }
-    
+
     export interface User extends Users_Default {
         user_level?:number;
         last_login_ip?:IPAddress;
@@ -37,8 +37,6 @@ export namespace Database {
         unread_reminders?:number;
         unread_updates?:number;
         reviewed_public_notices?:number;
-        recent_majia?:string;
-        recent_indentation?:boolean;
         message_limit?:number;
         no_stranger_messages?:boolean;
         no_upvote_reminders?:boolean;
@@ -49,7 +47,7 @@ export namespace Database {
         daily_book_characters?:number;
         daily_comment_characters?:number;
     }
-    
+
     export interface Post {
         id?:Increments;
         user_id?:Increments;
@@ -64,8 +62,7 @@ export namespace Database {
         reply_to_post_id?:UInt;
         reply_to_post_preview?:string;
         reply_position?:number;
-        is_maintext?:boolean;
-        is_comment?:boolean;
+        type?:string;
         use_markdown?:boolean;
         use_indentation?:boolean;
         up_votes?:UInt;
@@ -80,7 +77,7 @@ export namespace Database {
         is_bianyuan?:boolean;
         last_responded_at?:Timestamp;
     }
-    
+
     export interface Thread {
         id?:Increments;
         user_id?:Increments;
@@ -111,11 +108,11 @@ export namespace Database {
         is_bianyuan?:boolean;
         no_reply?:boolean;
         last_responded_at?:Timestamp;
-        last_added_chapter_at?:Timestamp;
-        last_chapter_id?:Increments;
+        last_added_component_at?:Timestamp;
+        last_component_id?:Increments;
         total_char?:UInt;
     }
-    
+
     export interface Vote {
         user_id?:Increments;
         votable_type?:string;
@@ -124,7 +121,7 @@ export namespace Database {
         attitude_value?:number;
         created_at?:Timestamp;
     }
-    
+
     export interface Channel {
         id?:Increments;
         channel_name:string;
@@ -136,7 +133,7 @@ export namespace Database {
         allow_edit?:boolean;
         is_public?:boolean;
     }
-    
+
     export interface Tag {
         id?:Increments;
         tag_name:string;
@@ -148,7 +145,7 @@ export namespace Database {
         parent_id:UInt;
         tagged_books:UInt;
     }
-    
+
     export interface Chapter {
         post_id?:Increments;
         volumn_id?:Increments;
@@ -162,13 +159,14 @@ export namespace Database {
         previous_chapter_id?:Increments;
         next_chapter_id?:Increments;
     }
-    
+
     export interface Volume {
         id?:Increments;
         title:string;
         brief:string;
+        body:string;
     }
-    
+
     export interface Quote {
         id?:Increments;
         body?:string;
@@ -181,14 +179,14 @@ export namespace Database {
         xianyus?:number;
         created_at?:Timestamp;
     }
-    
+
     export interface Title {
         id?:Increments;
         name?:string;
         description?:string;
         entitled?:UInt;
     }
-    
+
     export interface User_Role {
         user_id?:Increments;
         role?:string;
@@ -198,7 +196,7 @@ export namespace Database {
         is_valid?:boolean;
         is_public?:boolean;
     }
-    
+
     export interface Status {
         id?:Increments;
         user_id?:Increments;
