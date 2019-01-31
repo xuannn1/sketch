@@ -27,6 +27,7 @@ class ChapterResource extends JsonResource
                     'type' => 'chapter',
                     'id' => (int)$this->id,
                     'attributes' => [
+                        'thread_id' => (int)$this->thread_id,
                         'title' => (string)$this->title,
                         'preview' => (string)$this->preview,
                         'body' => (string)$body,

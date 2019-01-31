@@ -50,6 +50,7 @@ export namespace Database {
 
     export interface Post {
         id?:Increments;
+        type?:string;
         user_id?:Increments;
         thread_id?:Increments;
         body:string;
@@ -63,7 +64,6 @@ export namespace Database {
         reply_to_post_id?:UInt;
         reply_to_post_preview?:string;
         reply_position?:number;
-        type?:string;
         use_markdown?:boolean;
         use_indentation?:boolean;
         up_votes?:UInt;
@@ -147,17 +147,32 @@ export namespace Database {
     }
 
     export interface Chapter {
-        post_id?:Increments;
-        volumn_id?:Increments;
-        order_ny?:number;
+        id?:Increments;
+        thread_id?:Increments;
         title:string;
         preview?:string;
+        body?:string;
+        volumn_id?:Increments;
+        order_by?:number;
         warning?:string;
         annotation?:string;
         views?:UInt;
         characters?:UInt;
         previous_chapter_id?:Increments;
         next_chapter_id?:Increments;
+        created_at?:Timestamp;
+        last_edited_at?:Timestamp;
+        use_markdown?:boolean;
+        use_indentation?:boolean;
+        up_votes?:UInt;
+        down_votes?:UInt;
+        fold_votes?:UInt;
+        funny_votes?:UInt;
+        xianyus?:UInt;
+        shengfans?:UInt;
+        replies?:UInt;
+        is_bianyuan?:boolean;
+        last_responded_at?:Timestamp;
     }
 
     export interface Volume {

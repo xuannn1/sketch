@@ -21,8 +21,9 @@ class ChapterInfoResource extends JsonResource
                 'type' => 'chapter',
                 'id' => (int)$this->id,
                 'attributes' => [
-                    'title' => (string)$chapter->title,
-                    'brief' => (string)$chapter->brief,
+                    'thread_id' => (int)$this->thread_id,
+                    'title' => (string)$this->title,
+                    'preview' => (string)$this->preview,
                     'volumn_id' => (int)$chapter->volumn_id,
                     'views' => (int)$chapter->views,
                     'characters' => (int)$chapter->characters,
