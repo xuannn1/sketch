@@ -37,7 +37,7 @@ class UsersController extends Controller
             ->where('threads.anonymous','=',0);
         }
         $books = $this->return_book_fields($query)
-        ->orderby('books.lastaddedchapter_at', 'desc')
+        ->orderBy('books.lastaddedchapter_at', 'desc')
         ->simplePaginate($paginate);
         return $books;
     }
@@ -57,7 +57,7 @@ class UsersController extends Controller
         }
 
         $threads = $this->return_no_book_thread_fields($query)
-        ->orderby('threads.lastresponded_at', 'desc')
+        ->orderBy('threads.lastresponded_at', 'desc')
         ->simplePaginate($paginate);
         return $threads;
     }
@@ -108,7 +108,7 @@ class UsersController extends Controller
             ['channels.channel_state','<',$group]
         ])
         ->select('posts.*', 'upvoter.name as upvoter_name', 'poster.name', 'threads.title as thread_title','vote_posts.user_id as upvoter_id','vote_posts.upvoted_at as upvoted_at')
-        ->orderby('vote_posts.upvoted_at', 'desc')
+        ->orderBy('vote_posts.upvoted_at', 'desc')
         ->simplePaginate($paginate);
     }
 
@@ -123,7 +123,7 @@ class UsersController extends Controller
             ['xianyus.user_id','=',$id]
         ]);
         $xianyus = $this->return_thread_fields($query)
-        ->orderby('xianyus.created_at', 'desc')
+        ->orderBy('xianyus.created_at', 'desc')
         ->simplePaginate($paginate);
         return $xianyus;
     }

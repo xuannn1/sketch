@@ -38,7 +38,7 @@ class PagesController extends Controller
         ->join('users', 'threads.user_id', '=', 'users.id')
         ->where([['threads.deleted_at', '=', null],['threads.channel_id','=',$channel_id],['threads.public','=',1],['threads.bianyuan','=',0]])
         ->select('threads.*','users.name')
-        ->orderby('threads.lastresponded_at', 'desc')
+        ->orderBy('threads.lastresponded_at', 'desc')
         ->take($take)
         ->get();
     }
@@ -103,7 +103,9 @@ class PagesController extends Controller
     public function home()
     {
         $group = Auth::check()? Auth::user()->group : 10;
-        $channels = Helper::allchannels();
+        $channels = Helper::allchannels()->filter(function ($channel) use ($group) {
+            return $channel->channel_state<=10 and $channel->channel_state<$group;
+        });
         $quotes = Cache::remember('homequotes',2, function () {
             return $this->findquotes();
         });
@@ -184,7 +186,7 @@ class PagesController extends Controller
             $query = $this->join_no_book_thread_tables()
             ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1],['threads.title','like','%'.$request->search.'%']]);
             $simplethreads = $this->return_no_book_thread_fields($query)
-            ->orderby('threads.lastresponded_at', 'desc')
+            ->orderBy('threads.lastresponded_at', 'desc')
             ->simplePaginate(config('constants.index_per_page'));
             $show = ['channel' => false,'label' => false,];
             return view('pages.search_threads',compact('simplethreads','show'))->with('show_as_collections',0)->with('show_channel',1);
@@ -203,7 +205,7 @@ class PagesController extends Controller
                 $query->where('tongrens.tongren_cp','like','%'.$request->tongren_cp.'%');
             }
             $books = $this->return_book_fields($query)
-            ->orderby('threads.lastresponded_at', 'desc')
+            ->orderBy('threads.lastresponded_at', 'desc')
             ->simplePaginate(config('constants.index_per_page'));
             return view('pages.search_books', compact('books'))->with('show_as_collections', false);
         }

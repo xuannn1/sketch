@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddorderByToChannelsTable extends Migration
+class AddWeightedJifenToBooksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddorderByToChannelsTable extends Migration
      */
     public function up()
     {
-        Schema::table('channels', function (Blueprint $table) {
-            $table->integer('orderBy')->default(0);
+        Schema::table('books', function (Blueprint $table) {
+            $table->integer('weighted_jifen')->default(0);//这个讨论帖/书籍，按照字数平衡下来的积分多少
         });
     }
 
@@ -25,8 +25,8 @@ class AddorderByToChannelsTable extends Migration
      */
     public function down()
     {
-        Schema::table('channels', function (Blueprint $table) {
-            $table->dropcolumn('orderBy');
+        Schema::table('books', function (Blueprint $table) {
+            $table->dropcolumn('weighted_jifen');
         });
     }
 }

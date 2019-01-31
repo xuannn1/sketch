@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\ResetPasswordNotification;
 use DB;
 use Illuminate\Support\Facades\Cache;
+use App\Helpers\Helper;
 
 class User extends Authenticatable
 {
@@ -293,10 +294,8 @@ class User extends Authenticatable
     }
     public function unread_public_notices()
     {
-        $system_variable = Cache::remember('system_variable', 30, function () {
-            return DB::table('system_variables')->first();
-        });
-        $unread_public_notices = $system_variable->latest_public_notice_id-$this->public_notices;
+        $system_variable = Helper::system_variable();
+        $unread_public_notices = $system_variable->latest_public_notice_id - $this->public_notices;
         return $unread_public_notices;
     }
 

@@ -19,7 +19,7 @@ class Homework extends Model
         ->join('users','users.id','=','register_homeworks.user_id')
         ->where('register_homeworks.homework_id','=',$homework_id)
         ->select('users.id','users.name','register_homeworks.majia')
-        ->orderby('register_homeworks.created_at', 'asc')
+        ->orderBy('register_homeworks.created_at', 'asc')
         ->get();
         return $registered;
     }
@@ -29,7 +29,7 @@ class Homework extends Model
     }
     public function registerhomeworks()
     {
-        return $this->hasMany(RegisterHomework::class, 'homework_id')->orderby('thread_id', 'asc');
+        return $this->hasMany(RegisterHomework::class, 'homework_id')->orderBy('thread_id', 'asc');
     }
     public function thread()
     {

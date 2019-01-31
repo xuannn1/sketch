@@ -20,20 +20,20 @@
 
                 <div id="yuanchuang" style="display:{{ old('channel_id')=='1'?'block':'none'}}">
                     <h4>  1.1 请选择主题对应类型：</h4>
-                    @foreach ($all_book_tags['labels_yuanchuang'] as $label)
+                    @foreach (Helper::labels_yuanchuang() as $label)
                     <label class="radio-inline"><input type="radio" name="label_id" value="{{ $label->id }}" {{ old('label_id')==$label->id ? 'checked':''}}>{{ $label->labelname }}</label>
                     @endforeach
                 </div>
 
                 <div id="tongren" style="display:{{ old('channel_id')=='2'?'block':'none'}}">
                     <h4>&nbsp;&nbsp;1.1 请选择主题对应类型：</h4>
-                    @foreach ($all_book_tags['labels_tongren'] as $label)
+                    @foreach (Helper::labels_tongren() as $label)
                     <label class="radio-inline"><input type="radio" name="label_id" value="{{ $label->id }}" onClick="show_only_this_label_tongren('{{$label->id}}');" {{ old('label_id')==$label->id ? 'checked':''}}>{{ $label->labelname }}</label>
                     @endforeach
                     <br>
                     <div id="tongren_yuanzhu">
                         <h4>&nbsp;&nbsp;1.2 从下列同人原著作品中，选择对应的同人原著作品简称</h4>
-                        @foreach ($all_book_tags['tags_tongren_yuanzhu'] as $tag)
+                        @foreach (Helper::tags_tongren_yuanzhu() as $tag)
                         <label class="radio-inline hidden label_{{$tag->label_id}} tongren_yuanzhu_tag"><input type="radio" name="tongren_yuanzhu_tag_id" value="{{ $tag->id }}" onClick="show_only_this_cp_tags('{{$tag->id}}')" {{ old('tongren_yuanzhu_tag_id')==(string)$tag->id ?'checked':''}}>{{ $tag->tagname }}（{{$tag->tag_explanation}}）</label>
                         @endforeach
                         <label class="radio-inline"><input type="radio" name="tongren_yuanzhu_tag_id" value="0" onClick="document.getElementById('fill_yuanzhu').style.display = 'block';show_only_this_cp_tags('0');" {{ old('tongren_yuanzhu_tag_id')=='0' ?'checked':''}}>其他原著</label>
@@ -45,7 +45,7 @@
 
                         <div id="tongren_cp">
                             <h5>&nbsp;&nbsp;1.3 从下列对应同人CP中，选择对应的CP简称</h5>
-                            @foreach ($all_book_tags['tags_tongren_cp'] as $tag)
+                            @foreach (Helper::tags_tongren_cp() as $tag)
                             <label class="radio-inline hidden tongren_yuanzhu_{{$tag->tag_belongs_to}} tongren_cp_tag"><input type="radio" name="tongren_CP_tag_id" value="{{ $tag->id }}" {{ old('tongren_CP_tag_id')==(string)$tag->id ?'checked':''}}>{{ $tag->tagname }}（{{$tag->tag_explanation}}）</label>
                             @endforeach
                             <label class="radio-inline"><input type="radio" name="tongren_CP_tag_id" value="0" onClick="document.getElementById('fill_CP').style.display = 'block'" {{ old('tongren_CP_tag_id')=='0' ?'checked':''}}>其他CP</label>
@@ -128,7 +128,7 @@
                                 <h4>8. 请从以下标签中选择不多于三个标签：</h4>
                                 <?php $tag_info = 0; ?>
                                 <div id="feibianyuantags">
-                                    @foreach ($all_book_tags['tags_feibianyuan'] as $tag)
+                                    @foreach (Helper::tags_feibianyuan() as $tag)
                                     @if(($tag_info<$tag->tag_info)&&($tag_info>0))
                                     <br>
                                     @endif
@@ -138,14 +138,14 @@
                                 </div>
                                 <div id="bianyuantags" style="display: {{ old('bianyuan')=='1'? 'block':'none'}}">
                                     <hr>
-                                    @foreach ($all_book_tags['tags_bianyuan'] as $tag)
+                                    @foreach (Helper::tags_bianyuan() as $tag)
                                     <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}&nbsp;&nbsp;
                                     @endforeach
                                 </div>
 
                                 <div id="tongrentags" style="display: {{ old('channel_id')=='2'? 'block':'none'}}">
                                     <hr>
-                                    @foreach ($all_book_tags['tags_tongren'] as $tag)
+                                    @foreach (Helper::tags_tongren() as $tag)
                                     <input type="checkbox" class="tags" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tagname }}&nbsp;&nbsp;
                                     @endforeach
                                 </div>

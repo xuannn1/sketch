@@ -50,9 +50,9 @@ class threadsController extends Controller
             if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
             if(!$logged){$query = $query->where('threads.bianyuan','=',0);}
             $threads = $this->return_no_book_thread_fields($query)
-            ->orderby('threads.lastresponded_at', 'desc')
+            ->orderBy('threads.lastresponded_at', 'desc')
             ->paginate(config('constants.index_per_page'))
-            ->appends($request->query());
+            ->appends($request->only('page'));
             return $threads;
         });
         return view('threads.index', compact('threads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
@@ -103,8 +103,8 @@ class threadsController extends Controller
 
     public function createThreadForm($channel)
     {
-        $channel = Channel::find($channel);
-        $labels = $channel->labels;
+        $channel = Helper::allChannels()->keyBy('id')->get($channel);
+        $labels = $channel->labels();
         if ($channel->id<=2){
             return view('books.create');
         }

@@ -23,13 +23,13 @@ class MessagesController extends Controller
             ->join('users', 'public_notices.user_id', '=', 'users.id')
             ->where('public_notices.id','>',Auth::user()->public_notices)
             ->select('public_notices.*', 'users.name')
-            ->orderby('public_notices.created_at', 'desc')
+            ->orderBy('public_notices.created_at', 'desc')
             ->simplePaginate($paginate);
         }else{
             return $public_notices = DB::table('public_notices')
             ->join('users', 'public_notices.user_id', '=', 'users.id')
             ->select('public_notices.*', 'users.name')
-            ->orderby('public_notices.created_at', 'desc')
+            ->orderBy('public_notices.created_at', 'desc')
             ->simplePaginate($paginate);
         }
     }
@@ -44,7 +44,7 @@ class MessagesController extends Controller
             ->join('threads','posts.thread_id','=','threads.id')
             ->where([['activities.type','=',1],['activities.seen','=',0],['posts.deleted_at', '=', null],['activities.user_id','=',Auth::id()]])
             ->select('posts.*', 'users.name','threads.title as thread_title','activities.seen')
-            ->orderby('posts.created_at', 'desc')
+            ->orderBy('posts.created_at', 'desc')
             ->simplePaginate($paginate);
         }else{
             return $posts = DB::table('activities')
@@ -53,7 +53,7 @@ class MessagesController extends Controller
             ->join('threads','posts.thread_id','=','threads.id')
             ->where([['activities.type','=',1],['posts.deleted_at', '=', null],['activities.user_id','=',Auth::id()]])
             ->select('posts.*', 'users.name','threads.title as thread_title','activities.seen')
-            ->orderby('posts.created_at', 'desc')
+            ->orderBy('posts.created_at', 'desc')
             ->simplePaginate($paginate);
         }
     }
@@ -66,7 +66,7 @@ class MessagesController extends Controller
             ->join('posts','post_comments.post_id','=','posts.id')
             ->where([['activities.type','=',3],['activities.seen','=',0],['post_comments.deleted_at', '=', null],['activities.user_id','=',Auth::id()]])
             ->select('post_comments.*', 'users.name','posts.body as post_body','activities.seen')
-            ->orderby('post_comments.created_at', 'desc')
+            ->orderBy('post_comments.created_at', 'desc')
             ->simplePaginate($paginate);
         }else{
             return $postcomments = DB::table('activities')
@@ -75,7 +75,7 @@ class MessagesController extends Controller
             ->join('posts','post_comments.post_id','=','posts.id')
             ->where([['activities.type','=',3],['post_comments.deleted_at', '=', null],['activities.user_id','=',Auth::id()]])
             ->select('post_comments.*', 'users.name','posts.body as post_body','activities.seen')
-            ->orderby('post_comments.created_at', 'desc')
+            ->orderBy('post_comments.created_at', 'desc')
             ->simplePaginate($paginate);
         }
     }
@@ -88,7 +88,7 @@ class MessagesController extends Controller
             ->join('posts as originals','replies.reply_to_post_id','=','originals.id')
             ->where([['activities.type','=',2],['activities.seen','=',0],['replies.deleted_at', '=', null],['originals.user_id','=',Auth::id()]])
             ->select('replies.*', 'users.name','originals.body as original_body','activities.seen')
-            ->orderby('replies.created_at', 'desc')
+            ->orderBy('replies.created_at', 'desc')
             ->simplePaginate($paginate);
         }else{
             return $posts = DB::table('activities')
@@ -97,7 +97,7 @@ class MessagesController extends Controller
             ->join('posts as originals','replies.reply_to_post_id','=','originals.id')
             ->where([['activities.type','=',2],['replies.deleted_at', '=', null],['originals.user_id','=',Auth::id()]])
             ->select('replies.*', 'users.name','originals.body as original_body','activities.seen')
-            ->orderby('replies.created_at', 'desc')
+            ->orderBy('replies.created_at', 'desc')
             ->simplePaginate($paginate);
         }
 
@@ -122,7 +122,7 @@ class MessagesController extends Controller
                 ['vote_posts.upvoted','=',1],
             ])
             ->select('posts.*', 'upvoter.name as upvoter_name', 'poster.name', 'threads.title as thread_title', 'activities.seen','vote_posts.user_id as upvoter_id','vote_posts.upvoted_at as upvoted_at')
-            ->orderby('vote_posts.upvoted_at', 'desc')
+            ->orderBy('vote_posts.upvoted_at', 'desc')
             ->simplePaginate($paginate);
         }else{
             return $posts = DB::table('vote_posts')
@@ -136,7 +136,7 @@ class MessagesController extends Controller
                 ['vote_posts.upvoted','=',1],
             ])
             ->select('posts.*', 'upvoter.name as upvoter_name', 'poster.name', 'threads.title as thread_title','vote_posts.user_id as upvoter_id', 'vote_posts.upvoted_at as upvoted_at')
-            ->orderby('vote_posts.upvoted_at', 'desc')
+            ->orderBy('vote_posts.upvoted_at', 'desc')
             ->simplePaginate($paginate);
         }
     }
@@ -281,9 +281,7 @@ class MessagesController extends Controller
     }
     public function clear()//make all reminders as seen
     {
-        $system_variable = Cache::remember('system_variable', 30, function () {
-            return DB::table('system_variables')->first();
-        });
+        $system_variable = Helper::system_variable();
         DB::table('activities')->where('user_id','=', Auth::id())->update(['seen'=>1]);
         DB::table('messages')->where('receiver_id','=', Auth::id())->update(['seen'=>1]);
         Auth::user()->post_reminders = 0;

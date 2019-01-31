@@ -11,6 +11,8 @@
 
             <form method="POST" action="{{ route('thread.store', $channel->id) }}">
                 {{ csrf_field() }}
+                <?php $labels = $channel->labels()->get(); ?>
+                <h6>（<span style="color:#d66666">开帖前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a>，不要违反版规哦</span>。想要在帖子中讨论边缘限制内容，请移步<a href="http://sosad.fun/threads/1863">《<u>午夜场申请专楼</u> 》</a>。需要帮助可以前往版务区<a href="http://sosad.fun/threads/88">《<u>文章帖子删除、转移、编辑等专楼</u> 》</a>求助。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">《<u>关于本站</u>》</a>，<a href="{{ route('help') }}">《<u>使用帮助</u>》</a>，或前往答疑楼<a href="http://sosad.fun/threads/49">《<u>废文网使用答疑</u>》提问</a>。感谢开楼讨论！）</h6>
                 <h4>请选择主题对应类型：</h4>
                 @foreach ($labels as $index => $label)
                 <label class="radio-inline"><input type="radio" name="label" value="{{ $label->id }}">{{ $label->labelname }}</label>
