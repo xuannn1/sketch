@@ -1,5 +1,5 @@
 import { History } from '.';
-import { APIPost, APIGet } from '../config/api';
+import { APIPost, APIGet, APIPut, APIPatch } from '../config/api';
 import { parsePath, URLQuery } from '../utils/url';
 import { loadStorage } from '../utils/storage';
 
@@ -62,6 +62,42 @@ export class DB {
             console.error('GET error: ', e);
             return null;
         }
+    }
+
+    public async put<Path extends keyof APIPut> (_path:Path, query:APIPut[Path]['req']) : Promise<APIPut[Path]['res']|null> {
+        try {
+            const url = this._parseURL(_path, query);
+            console.log('put: ' + url);
+            const response = await fetch(url, this.genRequestInit());
+            const result = (await response.json()) as APIPut[Path]['res'];
+            if (result.code === 200) {
+                return result;
+            } else {
+                console.log('Response Error:', result);
+                return null;
+            }
+        } catch (e) {
+            console.error('PUT error: ', e);
+            return null;
+        } 
+    }
+
+    public async patch<Path extends keyof APIPatch> (_path:Path, query:APIPatch[Path]['req']) : Promise<APIPatch[Path]['res']|null> {
+        try {
+            const url = this._parseURL(_path, query);
+            console.log('Patch: ' + url);
+            const response = await fetch(url, this.genRequestInit());
+            const result = (await response.json()) as APIPatch[Path]['res'];
+            if (result.code === 200) {
+                return result;
+            } else {
+                console.log('Response Error:', result);
+                return null;
+            }
+        } catch (e) {
+            console.error('Patch error: ', e);
+            return null;
+        } 
     }
 
     public async resetPassword (email:string) {
