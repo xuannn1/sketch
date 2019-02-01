@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Auth;
 use App\Models\Message;
 use App\Models\User;
+use App\Helpers\Helper;
 
 class MessagesController extends Controller
 {
