@@ -173,9 +173,9 @@ class PagesController extends Controller
 
     public function search(Request $request){
         $user = Auth::user();
-        $cool_time = Auth::user()->user_level>=3 ? 1:5;
+        $cool_time = 1;
         if((!Auth::user()->admin)&&($user->lastsearched_at>Carbon::now()->subMinutes($cool_time)->toDateTimeString())){
-            return redirect()->back()->with('warning',(string)$cool_time.'分钟内只能进行一次搜索');
+            return redirect()->back()->with('warning',(string)$cool_time.'1分种内只能进行一次搜索');
         }else{
             $user->lastsearched_at=Carbon::now();
             $user->save();
@@ -187,12 +187,14 @@ class PagesController extends Controller
             ->where([['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1],['threads.title','like','%'.$request->search.'%']]);
             $simplethreads = $this->return_no_book_thread_fields($query)
             ->orderBy('threads.lastresponded_at', 'desc')
-            ->simplePaginate(config('constants.index_per_page'));
+            ->simplePaginate(config('constants.index_per_page'))
+            ->appends($request->only('page','search','search_options'));
             $show = ['channel' => false,'label' => false,];
             return view('pages.search_threads',compact('simplethreads','show'))->with('show_as_collections',0)->with('show_channel',1);
         }
         if(($request->search)&&($request->search_options=='users')){
-            $users = User::where('name','like', '%'.$request->search.'%')->simplePaginate(config('constants.index_per_page'));
+            $users = User::where('name','like', '%'.$request->search.'%')->simplePaginate(config('constants.index_per_page'))
+            ->appends($request->only('page','search','search_options'));
             return view('pages.search_users',compact('users'));
         }
         if($request->search_options=='tongren_yuanzhu'){
@@ -206,7 +208,8 @@ class PagesController extends Controller
             }
             $books = $this->return_book_fields($query)
             ->orderBy('threads.lastresponded_at', 'desc')
-            ->simplePaginate(config('constants.index_per_page'));
+            ->simplePaginate(config('constants.index_per_page'))
+            ->appends($request->only('page','search','tongren_cp','search_options'));
             return view('pages.search_books', compact('books'))->with('show_as_collections', false);
         }
         return redirect()->back()->with('warning','请输入搜索内容');
