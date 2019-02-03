@@ -16,8 +16,8 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');//post_id
             $table->unsignedInteger('user_id')->index();//作者id
-            $table->unsignedInteger('thread_id');//讨论帖id
-            $table->string('type',20)->nullable();//'chapter','collection','question','answer','request','post', 'post_comment'
+            $table->unsignedInteger('thread_id')->index();//讨论帖id
+            $table->string('type',20)->nullable()->index();//'chapter', 'question', 'answer', 'request', 'post', 'comment', 'review'
             $table->text('body')->nullable();//回帖文本本身
             $table->string('title')->nullable();//标题
             $table->string('preview')->nullable();//节选

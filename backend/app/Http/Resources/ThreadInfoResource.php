@@ -1,26 +1,20 @@
 <?php
 
-namespace App\Http\Resources\ThreadResources;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\AuthorIdentifierResource;
 
-class ThreadProfileResource extends JsonResource
+class ThreadInfoResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
+    * Transform the resource into an array.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return array
+    */
     public function toArray($request)
     {
-        if((!$this->is_bianyuan)||(auth('api')->check())){
-            $body = $this->body;
-        }else{
-            $body = '';
-        }
-        if ((!$this->is_anonymous)||((auth('api')->check())&&(auth('api')->id()===$this->user_id))){
+        if (!$this->is_anonymous){
             $author = new AuthorIdentifierResource($this->author);
         }else{
             $author = [];
@@ -31,14 +25,9 @@ class ThreadProfileResource extends JsonResource
             'attributes' => [
                 'title' => (string)$this->title,
                 'brief' => (string)$this->brief,
-                'body' => (string)$body,
                 'is_anonymous' => (bool)$this->is_anonymous,
                 'majia' => (string)$this->majia ?? '匿名咸鱼',
                 'created_at' => (string)$this->created_at,
-                'last_editor_id' => (int)$this->last_editor_id,
-                'last_edited_at' => (string)$this->last_edited_at,
-                'use_markdown' => (bool)$this->use_markdown,
-                'use_indentation' => (bool)$this->use_indentation,
                 'xianyus' => (int)$this->xianyus,
                 'shengfans' => (int)$this->shengfans,
                 'views' => (int)$this->views,
@@ -54,9 +43,11 @@ class ThreadProfileResource extends JsonResource
                 'last_responded_at' => (string)$this->last_responded_at,
             ],
             'author' => $author,
-            'channel' => new ChannelBriefResource($this->channel()),
-            'tags' => TagResource::collection($this->tags),
-            'recommendations' => RecommendationResource::collection($this->recommendations)
+            'channel'        => new ChannelBriefResource($this->channel()),
+            'tags' => TagInfoResource::collection($this->tags),
+            'last_component' => new PostBriefResource($this->last_component),
+            'last_post' => new PostBriefResource($this->last_post),
         ];
     }
+
 }

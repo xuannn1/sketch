@@ -50,10 +50,10 @@ export namespace Database {
 
     export interface Post {
         id?:Increments;
-        type?:string;
+        post_type?:string;
         user_id?:Increments;
         thread_id?:Increments;
-        body:string;
+        body?:string;
         title?:string;
         preview?:string;
         is_anonymous?:boolean;
@@ -87,7 +87,6 @@ export namespace Database {
         brief?:string;
         body?:string;
         last_post_id?:Increments;
-        last_post_preview?:string;
         is_anonymous?:boolean;
         majia?:string|null;
         creation_ip?:IPAddress;
@@ -128,10 +127,11 @@ export namespace Database {
         channel_name:string;
         channel_explanation?:string;
         order_by?:number;
-        is_book?:boolean;
+        channel_type:string;
         allow_anonymous?:boolean;
         allow_edit?:boolean;
         is_public?:boolean;
+        on_homepage?:boolean;
     }
 
     export interface Tag {
@@ -148,10 +148,6 @@ export namespace Database {
 
     export interface Chapter {
         id?:Increments;
-        thread_id?:Increments;
-        title:string;
-        preview?:string;
-        body?:string;
         volumn_id?:Increments;
         order_by?:number;
         warning?:string;
@@ -160,19 +156,6 @@ export namespace Database {
         characters?:UInt;
         previous_chapter_id?:Increments;
         next_chapter_id?:Increments;
-        created_at?:Timestamp;
-        last_edited_at?:Timestamp;
-        use_markdown?:boolean;
-        use_indentation?:boolean;
-        up_votes?:UInt;
-        down_votes?:UInt;
-        fold_votes?:UInt;
-        funny_votes?:UInt;
-        xianyus?:UInt;
-        shengfans?:UInt;
-        replies?:UInt;
-        is_bianyuan?:boolean;
-        last_responded_at?:Timestamp;
     }
 
     export interface Volume {
@@ -220,5 +203,19 @@ export namespace Database {
         attachable_id?:Increments;
         reply_to_status_id?:Increments;
         created_at:Timestamp;
+    }
+
+    export interface Collection {
+        id?:Increments;
+        user_id?:Increments;
+        thread_id?:Increments;
+        keep_updated?:boolean;
+        is_updated?:boolean;
+    }
+
+    export interface Review {
+        id?:Increments;
+        recommend?:boolean;
+        rating?:UInt;
     }
 }

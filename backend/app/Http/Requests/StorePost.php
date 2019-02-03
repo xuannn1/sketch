@@ -33,7 +33,7 @@ class StorePost extends FormRequest
     public function rules()
     {
         return [
-            'body' => 'required|string|max:20000',
+            'body' => 'string|max:20000',
             'title' => 'string|max:50',
             'preview' => 'string|max:50',
             'majia' => 'string|max:10',
@@ -91,5 +91,19 @@ class StorePost extends FormRequest
         ->orderBy('created_at', 'desc')
         ->first();
         return (!empty($last_post)) && (strcmp($last_post->body, $post_data['body']) === 0);
+    }
+
+    public function updatePost($id)
+    {
+        $post = Post::find($id);
+        $channel = $thread->channel();
+        if(!($channel->allow_edit||auth('api')->user()->inRole('admin'))||($post->user_id!=auth('api')->id())){abort(403);}
+
+        $post_data = $this->only('body', 'title', 'preview', 'is_anonymous', 'use_markdown', 'use_indentation', 'allow_as_longpost');
+        if (!$channel->allow_anonymous){$post_data['is_anonymous']=false;}
+        $post_data['last_edited_at']=Carbon::now();
+
+        $post->update($post_data);
+        return $post;
     }
 }

@@ -6,13 +6,14 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Sosadfun\Traits\ColumnTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Helpers\ConstantObjects;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, SoftDeletes;
+    use HasApiTokens, Notifiable, SoftDeletes, ColumnTrait;
 
     /**
     * The attributes that are mass assignable.
@@ -62,6 +63,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Recommendation::class, 'user_recommendation', 'user_id', 'recommendation_id')->where('is_public', true);
     }
+
+    public function collected_items()
+    {
+        return $this->belongsToMany('App\Models\Thread', 'collections', 'user_id', 'thread_id');
+    }
+
 
     /**
     * 查看对应用户的roles里面是否含有某种对应的global permission

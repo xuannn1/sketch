@@ -161,6 +161,11 @@ http://127.0.0.1:8000/api/config/allTags
 方法：GET  
 授权：不需要使用token登陆  
 
+###### 4.3.2.2 获得全部channel信息
+http://127.0.0.1:8000/api/config/allChannels  
+方法：GET  
+授权：不需要使用token登陆  
+
 ###### 4.3.3 文库首页(有待进一步补充信息)  
 http://127.0.0.1:8000/api/homebook  
 方法：GET  
@@ -179,21 +184,21 @@ http://127.0.0.1:8000/api/thread
 授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）  
 可选的筛选变量及效果：
 
-channel(array)=[1,2,3] （只返回出现在channel1，2，3中的讨论帖)  
-withType(string)='thread'/'book'/'collection_list'/'column'/'request'/'homework' （是否仅返回书籍/讨论帖/收藏单/信息)  
-tag(array)=[1,22,4]（仅返回含有1，22，4这几个tag的书籍/讨论帖)  
-excludeTag(array)=[1,22,4]（仅返回不含有1，22，4这几个tag的书籍/讨论帖)  
+channels(array)=[1,2,3] （只返回出现在channel1，2，3中的讨论帖)  
+withType(string)='thread'/'book'/'list'/'request'/'homework' （是否仅返回书籍/讨论帖/收藏单/信息)  
+tags(array)=[1,22,4]（仅返回含有1，22，4这几个tag的书籍/讨论帖)  
+excludeTags(array)=[1,22,4]（仅返回不含有1，22，4这几个tag的书籍/讨论帖)  
 withBianyuan(string)='bianyuan_only'/'none_bianyuan_only'（是否仅返回边缘/非边缘内容）  
 ordered(string)='last_added_component_at'/'jifen'/'weighted_jifen'/'created_at'/'id'/'collections'/'total_char'（按最新更新时间排序/按总积分排序/按平衡积分排序/按创建时间排序/按id排序/按收藏总数排序/按总字数排序）  
 
-###### 4.4.1.1 获得书籍index信息——专供文库检索  
+###### (已作废)4.4.1.1 获得书籍index信息——专供文库检索  
 http://127.0.0.1:8000/api/book  
 方法：GET  
 授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）  
 可选的筛选变量及效果：  
-channel(array)=[1,2,3] （只返回出现在特定channel中的书籍，比如只显示同人小说书籍/只显示原创小说书籍，不选则默认显示全部书籍)    
-tag(array)=[1,22,4]（仅返回含有1，22，4这几个tag的书籍)  
-excludeTag(array)=[1,22,4]（仅返回不含有1，22，4这几个tag的书籍/讨论帖)  
+channels(array)=[1,2,3] （只返回出现在特定channel中的书籍，比如只显示同人小说书籍/只显示原创小说书籍，不选则默认显示全部书籍)    
+tags(array)=[1,22,4]（仅返回含有1，22，4这几个tag的书籍)  
+excludeTags(array)=[1,22,4]（仅返回不含有1，22，4这几个tag的书籍/讨论帖)  
 withBianyuan(string)='bianyuan_only'/'none_bianyuan_only'（是否仅返回边缘/非边缘内容）  
 ordered(string)='last_added_component_at'/'jifen'/'weighted_jifen'/'created_at'/'id'/'collections'/'total_char'（按最新更新时间排序/按总积分排序/按平衡积分排序/按创建时间排序/按id排序/按收藏总数排序/按总字数排序）,默认按最后更新章节排序  
 
@@ -218,7 +223,7 @@ http://127.0.0.1:8000/api/thread
 方法：POST  
 授权：必须登陆  
 必填项：  
-channel(numeric) 数字，必须为自己有权限编辑的channel。这一项不填写的话，因为不能判断是给哪个channel新建thread，默认显示为“未授权”而被拒绝。  
+channel_id(numeric) 数字，必须为自己有权限编辑的channel。这一项不填写的话，因为不能判断是给哪个channel新建thread，默认显示为“未授权”而被拒绝。  
 title(string)：讨论帖标题  
 brief(string)：讨论贴简介  
 body(string)：首楼内容  
@@ -245,9 +250,11 @@ is_public（bool）：是否属于公开内容，如果本项为true/1，则本�
 
 ###### 4.5.1.2 给thread批量修改sync对应的tag
 http://127.0.0.1:8000/api/thread/{thread}/synctags
-方法：POST
-授权：必须登陆,且用户必须是创建thread的用户
-必填项：tags(array)用户希望增减的所有tag列表
+方法：POST  
+授权：必须登陆,且用户必须是创建thread的用户  
+必填项：tags(array)用户希望增减的所有tag列表  
+成功的话会返回200，和添加了的tags  
+不成功的话会返回422，并且返回输入的tag，和剔除不合格之后剩下的tag，供检查差异。  
 
 ###### 4.5.2 建立post
 http://127.0.0.1:8000/api/thread/1/post
@@ -282,7 +289,7 @@ http://127.0.0.1:8000/api/recommendation
 方法：POST  
 授权：必须登陆,必须具有editor或senior_editor或admin身份  
 必填项：  
-thread(number):必须具有能够检索到的一个被推荐thread  
+thread_id(number):必须具有能够检索到的一个被推荐thread  
 brief(string):必须具有一句话推荐简介  
 type(string):'short'/'long'/'topic' 必须是下面array中的一项  
 **注意事项**
@@ -302,7 +309,14 @@ is_public(bool):是否公开（不公开的话，其他人不能在书籍下看�
 is_past(bool):是否属于往期推荐（影响首页显示情况）这个信息必须是senior_editor/admin才能改变，也就是说，书籍推荐需senior_editor审阅之后转公开  
 
 
-###### 4.5.4.1 新建chapter  
+##### 4.5.4 chapter相关
+###### 4.5.4.1 浏览chapter
+http://127.0.0.1:8000/api/thread/{thread_id}/chapter/{chapter_id}  
+方法：GET  
+授权：登陆或不登陆均可，不登陆又是边缘的情况无法看见相关内容  
+
+
+###### 4.5.4.2 新建chapter  
 http://127.0.0.1:8000/api/thread/{thread_id}/chapter  
 方法：POST  
 授权：必须登陆，需是自己创建的thread  
@@ -325,12 +339,120 @@ title(string)章节标题
 preview(string)章节概要/预览（如果用户不输入，前端自动节选title+body的一部分片段作为概要）  
 body(string)章节内容  
 warning(string):文前预警（应有字数限制）  
-annotation(string):作者有话说/章节注释  
+annotation(string):作者有话说/章节注释
+
+
+
+##### 4.5.5 collection相关
+###### 4.5.5.1 新建collection
+http://127.0.0.1:8000/api/thread/{thread)/collect
+方法：POST  
+授权：必须登陆，必须具有观看当前thread的权限
+
+###### 4.5.5.2 展示当前用户(或指定用户)的所有collection
+http://127.0.0.1:8000/api/collection
+方法：GET  
+授权：必须登陆  
+可选变量：  
+user_id(integer) 指定显示某人的收藏（必须管理员输入才起效）
+withType(string)='thread'/'book'/'list'/'request'/'homework' （是否仅返回书籍/讨论帖/收藏单/信息)  
+ordered(string)='last_added_component_at'/'jifen'/'weighted_jifen'/'created_at'/'id'/'collections'/'total_char'（按最新更新时间排序/按总积分排序/按平衡积分排序/按创建时间排序/按id排序/按收藏总数排序/按总字数排序）  
+
+###### 4.5.5.3 修改collection是否跟踪显示更新提醒
+http://127.0.0.1:8000/api/collection/{collection}
+方法：PATCH
+授权：必须登陆，必须是自己的collection
+必选变量：  
+keep_updated(boolean)是否继续更新提醒  
+
+###### 4.5.5.4 删除现有collection
+http://127.0.0.1:8000/api/collection/{collection}
+方法：DELETE
+授权：必须登陆，必须是自己的collection
+
+##### 4.5.6 review相关
+###### 4.5.6.1 新建review
+http://127.0.0.1:8000/api/thread/{thread)/review
+方法：POST  
+授权：必须登陆，是thread的主人，thread属于‘list’  
+必填项：  
+reviewee_id: 被review的书籍它的thread_id
+选填项：
+title(string):评论标题  
+preview(string):评论人不愿填充的话，前端应该自行填充节选的评论  
+body(string):评论正文  
+use_markdown(bool):是否使用md语法
+use_indentation(bool)：是否段首缩进
+recommend(bool)：是否推荐（推荐的话，书本首页、网站首页会显示这个评论，作者会得到通知）
+rating(int) 可填写1~10的评分，也可以空置，空置为0
+
+
+###### 4.5.6.2 修改review是否跟踪显示更新提醒
+http://127.0.0.1:8000/api/thread/{thread}/review/{review}
+方法：PATCH
+授权：必须登陆，必须是自己的review，必须是自己的list
+选填项  
+title(string):评论标题  
+preview(string):评论人不愿填充的话，前端应该自行填充节选的评论  
+body(string):评论正文  
+use_markdown(bool):是否使用md语法
+use_indentation(bool)：是否段首缩进
+recommend(bool)：是否推荐（推荐的话，书本首页、网站首页会显示这个评论，作者会得到通知）
+rating(int) 可填写1~10的评分，也可以空置，空置为0
 
 
 ## 5. 如何测试
-在backend目录下，运行
+#### 5.1 写一个新的专项测试文件
+在backend/tests/Feature目录下，放置对应的测试文件。
+一些常用的test技巧如下：
+```
+$response = $this->post('api/thread/', $data);//可以直接使用post指令检查
+
+//dd($response->decodeResponseJson());//同样可以使用helper，直接输出response的具体内容，查看错误原因
+
+$response->assertStatus(200)//直接检查status是否符合需求
+
+//可以连续使用->来直接进行多次连续的assert检查。
+->assertJsonStructure([//检查数据结构，这适合检查类似于token的，只需要检查有没有，不需要检查是多少的代码。
+    'code',
+    'data' => [
+        //...
+    ],
+])
+->assertJson([//检查具体的数据的值是否和预期相符合，比如具体的内容是否经过了修改，存储为新的值，数据类型是否符合预期
+    'code' => 200,
+    'data' => [
+        'type' => 'thread',
+        'attributes' => [
+            ...
+        ],
+    ],
+]);
+
+```
+
+
+#### 普通测试
+在backend目录下，运行  
 ```
 vendor/bin/phpunit
 ```
-进行测试。
+进行测试。  
+如果想要测试具体的某一个内容，可以运行如下代码：  
+```
+vendor/bin/phpunit --filter 'ChapterTest'
+```
+换成自己想要单独测试的内容即可。
+
+#### 提交代码前进行最后检查（注意，这会重置数据库，最好先确保其他地方没有明显的问题）
+每次新提交完成的pull request之前，后端应该确保自己的工作和现有backend能够协调、在一个fresh database的基础上能够通过检测，方法如下：  
+```
+git pull
+php artisan migrate:reset
+php artisan migrate --seed
+php artisan passport install
+vendor/bin/phpunit
+```
+如果这一步发生了报错，那么需要进一步寻找到底是哪里出了问题。  
+
+另外，请确保api documentation里，包含这个api会接受的所有变量和它们的可能的类型（包括必填项、可填项），确保相关api存储行为所改变的所有变量都在test中获得值的检查（比如说，不要出现想要修改xx变量，结果test里没有确保这个值经过修改，因此虽然返回成功代码200，实际上数据库里并没有存储对应值改变……不要出现这样的情况）  

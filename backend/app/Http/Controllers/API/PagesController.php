@@ -8,8 +8,9 @@ use App\Helpers\PageObjects;
 use App\Helpers\ConstantObjects;
 use App\Http\Resources\QuoteResource;
 use App\Http\Resources\StatusResource;
-use App\Http\Resources\ThreadResources\ThreadBriefResource;
-use App\Http\Resources\ThreadResources\TagProfileResource;
+use App\Http\Resources\ThreadBriefResource;
+use App\Http\Resources\TagProfileResource;
+use App\Http\Resources\ChannelResource;
 use Cache;
 
 class PagesController extends Controller
@@ -42,9 +43,15 @@ class PagesController extends Controller
 
     public function allTags()
     {
-        $tags = ConstantObjects::allTags();
         return response()->success([
             'tags' => TagProfileResource::collection(ConstantObjects::allTags()),
+        ]);
+    }
+
+    public function allChannels()
+    {
+        return response()->success([
+            'channels' => ChannelResource::collection(ConstantObjects::allChannels()),
         ]);
     }
 }

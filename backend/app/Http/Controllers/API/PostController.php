@@ -8,7 +8,7 @@ use App\Models\Thread;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePost;
 use App\Http\Requests\UpdatePost;
-use App\Http\Resources\ThreadResources\PostResource;
+use App\Http\Resources\PostResource;
 
 class PostController extends Controller
 {
@@ -23,21 +23,6 @@ class PostController extends Controller
         $this->middleware('auth:api')->except(['index', 'show']);
         $this->middleware('filter_thread');
 
-    }
-
-    public function index($thread, Request $request)
-    {
-
-    }
-
-    /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -61,9 +46,11 @@ class PostController extends Controller
     */
     public function show(Thread $thread,Post $post)
     {
+        //需要增加关于 最新评论，最高评论部分
         return response()->success([
             'post' =>  new PostResource($post),
         ]);
+        //考虑一下，应该怎么返回对post的评论？如果它又是一个component，怎么处理
     }
 
     /**
@@ -84,9 +71,9 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(UpdatePost $form, Thread $thread, Post $post)
+    public function update(Thread $thread, StorePost $form, $id)
     {
-        $form->updatePost($post);
+        $form->updatePost($id);
         return response()->success(new PostResource($post));
 
     }

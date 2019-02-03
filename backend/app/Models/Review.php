@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Sosadfun\Traits\ColumnTrait;
 
-class Chapter extends Model
+class Review extends Model
 {
-    use ColumnTrait;
-
-    public $timestamps = false;
     protected $guarded = [];
-
+    public $timestamps = false;
     protected $primaryKey = 'post_id';
+    use ColumnTrait;
 
     public function mainpost()
     {
@@ -24,8 +22,9 @@ class Chapter extends Model
         return $this->belongsTo(Post::class, 'post_id')->select($this->postbrief_columns);
     }
 
-    public function volumn()
+    public function reviewee()//被评论的文章
     {
-        return $this->belongsTo(Volumn::class, 'volumn_id');
+        return $this->belongsTo(Thread::class, 'thread_id')->select($this->threadbrief_columns);
     }
+
 }

@@ -17,8 +17,12 @@ class StoreThread extends FormRequest
     */
     public function authorize()
     {
-        $channel = (object)config('channel')[request()->channel];
-        return (auth('api')->check())&&(!empty($channel))&&(($channel->is_public)||(auth('api')->user()->canSeeChannel($channel->id)));
+        return true;
+    }
+
+    public function channel()
+    {
+        return collect(config('channel'))->keyby('id')->get($this->channel_id);
     }
 
     /**
@@ -29,10 +33,10 @@ class StoreThread extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:30',
-            'brief' => 'required|string|max:50',
-            'body' => 'required|string|max:20000',
-            'channel' => 'required|numeric',
+            'title' => 'string|max:30',
+            'brief' => 'string|max:50',
+            'body' => 'string|max:20000',
+            'channel_id' => 'numeric',
             'majia' => 'string|max:10',
             'is_anonymous' => 'boolean',
             'no_reply' => 'boolean',
@@ -44,8 +48,7 @@ class StoreThread extends FormRequest
 
     public function generateThread()
     {
-        $channel = (object)config('channel')[$this->channel];
-        //检查tag是否符合规则
+        $channel = $this->channel();
 
         //这部分还没做
         $thread_data = $this->only('title', 'brief', 'body', 'is_anonymous', 'majia', 'no_reply', 'use_markdown', 'use_indentation', 'is_bianyuan', 'is_public');
@@ -80,5 +83,22 @@ class StoreThread extends FormRequest
         return (!empty($last_thread)) && (strcmp($last_thread->title.$last_thread->brief, $thread_data['title'].$thread_data['brief']) === 0);
     }
 
+    public function updateThread($thread)
+    {
+        //check authorization
+        $channel = $thread->channel();
+        if(!($channel->allow_edit||auth('api')->user()->inRole('admin'))||($thread->user_id!=auth('api')->id())){abort(403);}
+        //generate $thread_data
+        $thread_data = $this->only('title', 'brief', 'body', 'is_anonymous', 'no_reply', 'use_markdown', 'use_indentation', 'is_bianyuan', 'is_public');
+        if (!$channel->allow_anonymous){
+            $thread_data['is_anonymous']=false;
+        }
+        $thread_data['last_edited_at']=Carbon::now();
 
+        $thread = DB::transaction(function () use($thread, $thread_data) {
+            $thread->update($thread_data);
+            return $thread;
+        });
+        return $thread;
+    }
 }

@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Helpers\ConstantObjects;
+use App\Sosadfun\Traits\ColumnTrait;
+
 use DB;
 
 class Thread extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, ColumnTrait;
 
     protected $guarded = [];
     protected $hidden = [
@@ -17,9 +19,7 @@ class Thread extends Model
     ];
     protected $dates = ['deleted_at'];
 
-    protected $threadinfo_columns = array('id', 'user_id', 'channel_id',  'title', 'brief', 'last_post_id', 'is_anonymous', 'majia', 'created_at', 'last_edited_at', 'xianyus', 'shengfans', 'views', 'replies', 'collections', 'downloads', 'jifen', 'weighted_jifen', 'is_locked', 'is_public', 'is_bianyuan', 'no_reply', 'last_responded_at', 'last_added_component_at', 'last_component_id', 'deleted_at', 'total_char'); // 使诸如文案这样的文本信息，在一些时候不被检索，减少服务器负担
 
-    protected $threadbrief_columns = array('id', 'user_id', 'channel_id',  'title',  'is_anonymous', 'majia', 'is_public', 'is_bianyuan', 'last_responded_at', 'last_added_component_at', 'deleted_at'); // 极简版的信息
 
     const UPDATED_AT = null;
 
@@ -32,7 +32,7 @@ class Thread extends Model
 
     public function channel()
     {
-        return (object)config('channel')[$this->channel_id];
+        return collect(config('channel'))->keyby('id')->get($this->channel_id);
     }
 
     public function author()
@@ -60,23 +60,29 @@ class Thread extends Model
         return $this->hasMany(Recommendation::class)->where('is_public', true);
     }
 
-    public function last_chapter()
-    {
-        return $this->belongsTo(Post::class, 'last_component_id')->where('type', '=', 'chapter');
-    }
 
     public function last_component()
     {
         return $this->belongsTo(Post::class, 'last_component_id');
     }
 
+    public function last_post()
+    {
+        return $this->belongsTo(Post::class, 'last_post_id');
+    }
+
+    public function collectors()
+    {
+        return $this->belongsToMany('App\Models\User', 'collections', 'thread_id', 'user_id')->select(['id','name']);
+    }
+
 
     //以下是scopes
 
-    public function scopeInChannel($query, $withChannel)
+    public function scopeInChannel($query, $withChannels)
     {
-        if($withChannel){
-            $channels=json_decode($withChannel);
+        if($withChannels){
+            $channels=json_decode($withChannels);
             if(!empty($channels)){
                 return $query->whereIn('channel_id', $channels);
             }
@@ -103,10 +109,10 @@ class Thread extends Model
         return $query;
     }
 
-    public function scopeWithTag($query, $withTag)
+    public function scopeWithTag($query, $withTags)
     {
-        if ($withTag){
-            $tags=json_decode($withTag);
+        if ($withTags){
+            $tags=json_decode($withTags);
             return $query->whereHas('tags', function ($query) use ($tags){
                 $query->whereIn('id', $tags);
             });
@@ -115,10 +121,10 @@ class Thread extends Model
         }
     }
 
-    public function scopeExcludeTag($query, $excludeTag)
+    public function scopeExcludeTag($query, $excludeTags)
     {
-        if ($excludeTag){
-            $tags=json_decode($excludeTag);
+        if ($excludeTags){
+            $tags=json_decode($excludeTags);
             return $query->whereDoesntHave('tags', function ($query) use ($tags){
                 $query->whereIn('id', $tags);
             });
@@ -127,14 +133,14 @@ class Thread extends Model
         }
     }
 
-    public function scopeIsPublic($query)//在index的时候，只看公共channel内的公开thread
+    public function scopeIsPublic($query)//在thread index的时候，只看公共channel内的公开thread
     {
         return $query->where('is_public', true)->whereIn('channel_id', ConstantObjects::public_channels());
     }
 
     public function scopeThreadInfo($query)
     {
-        return $query->select($this->threadinfo_columns);
+        return $query->select(array_diff( $this->thread_columns, ['body']));
     }
 
     public function scopeThreadBrief($query)
@@ -244,6 +250,16 @@ class Thread extends Model
         ->where('posts.type', '=', 'chapter')
         ->where('posts.thread_id', '=', $this->id)
         ->sum('chapters.characters');
+    }
+
+    public function favorite()//这个thread里面，普通的post中，最多赞的评论
+    {
+        return Post::postBrief()
+        ->where('thread_id', $this->id)
+        ->where('type', '=', 'post')
+        ->with('author')
+        ->orderBy('up_votes', 'desc')
+        ->first();
     }
 
 }

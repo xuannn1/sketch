@@ -7,17 +7,26 @@ use DB;
 
 class ConstantObjects
 {
-    protected static $channel_types = array('book', 'thread', 'collection_list', 'column', 'request', 'homework'); // channel的分类类别
+    protected static $channel_types = array('book', 'thread', 'request', 'homework', 'list'); // channel的分类类别
 
     public static function allChannels()//获得站上所有的channel
     {
         return collect(config('channel'));//将channels转化成collection
+
     }
 
     public static function publicChannelTypes($type='')
     {
         if (in_array($type, self::$channel_types)){
             return self::allChannels()->where('type', $type)->where('is_public', true)->pluck('id')->toArray();
+        }
+        return [];
+    }
+
+    public static function channelTypes($type='')
+    {
+        if (in_array($type, self::$channel_types)){
+            return self::allChannels()->where('type', $type)->pluck('id')->toArray();
         }
         return [];
     }

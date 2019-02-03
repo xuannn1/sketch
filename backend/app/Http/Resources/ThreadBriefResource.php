@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Resources\ThreadResources;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\AuthorIdentifierResource;
 
 class ThreadBriefResource extends JsonResource
 {
@@ -30,7 +29,7 @@ class ThreadBriefResource extends JsonResource
             ],
             'author' => $author,
             'channel'        => new ChannelBriefResource($this->channel()),
-            'tags' => TagResource::collection($this->tags)
+            'tags' => TagInfoResource::collection($this->tags)
         ];
     }
 }
