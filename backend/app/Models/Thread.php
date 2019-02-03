@@ -151,7 +151,7 @@ class Thread extends Model
     public function scopeOrdered($query, $ordered)
     {
         switch ($ordered) {
-            case 'last_added_component_at'://最新更新
+            case 'latest_add_component'://最新更新
             return $query->orderBy('last_added_component_at', 'desc');
             break;
             case 'jifen'://总积分
@@ -160,11 +160,11 @@ class Thread extends Model
             case 'weighted_jifen'://字数平衡积分
             return $query->orderBy('weighted_jifen', 'desc');
             break;
-            case 'created_at'://创建时间
+            case 'latest_created'://创建时间
             return $query->orderBy('created_at', 'desc');
             break;
             case 'id'://创建顺序
-            return $query->orderBy('id', 'desc');
+            return $query->orderBy('id', 'asc');
             break;
             case 'collections'://收藏数
             return $query->orderBy('collections', 'desc');

@@ -76,9 +76,38 @@ class Post extends Model
         }
         return $query;
     }
+
+    public function scopeWithReplyTo($query, $withReplyTo)
+    {
+        if($withReplyTo){
+            return $query->where('reply_to_post_id', $withReplyTo);
+        }
+        return $query;
+    }
+
     public function scopePostBrief($query)
     {
         return $query->select($this->postbrief_columns);
+    }
+
+    public function scopeOrdered($query, $ordered)
+    {
+        switch ($ordered) {
+            case 'latest_created'://最新
+            return $query->orderBy('created_at', 'desc');
+            break;
+            case 'most_replied'://按回应数量倒序
+            return $query->orderBy('replies', 'desc');
+            break;
+            case 'most_upvoted'://按赞数倒序
+            return $query->orderBy('upvotes', 'desc');
+            break;
+            case 'latest_responded'://按最新被回应时间倒序
+            return $query->orderBy('last_responded_at', 'desc');
+            break;
+            default://默认按时间顺序排列
+            return $query->orderBy('created_at', 'asc');
+        }
     }
 
     public function favorite_reply()//这个post里面，回复它的postcomment中，最多赞的
@@ -98,4 +127,5 @@ class Post extends Model
         ->orderBy('created_at', 'desc')
         ->first();
     }
+
 }

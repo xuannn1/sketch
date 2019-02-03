@@ -27,7 +27,7 @@ class StoreChapter extends FormRequest
     {
         $thread = request()->route('thread');
         $channel = $thread->channel();
-        return auth('api')->id()===$thread->user_id && $channel->type==='book';
+        return auth('api')->id()===$thread->user_id && $channel->type==='book' && !$thread->is_locked;
     }
 
     /**
@@ -112,7 +112,8 @@ class StoreChapter extends FormRequest
         //validate if model exists
         $post = Post::find($id);
         $chapter = $post->chapter;
-        if ((!$post)||(!$chapter)){ abort(404);}
+        if((!$post)||(!$chapter)){ abort(404);}
+        if(($post->type!='chapter')||($post->user_id!=auth('api')->id())){abort(403);}
 
         //generate post data
         $post_data = $this->only('body', 'title', 'preview', 'use_markdown', 'use_indentation', 'is_bianyuan');

@@ -29,11 +29,13 @@ class BookController extends Controller
     {
         $thread->load('author', 'tags', 'recommendations.authors');
         $chapters = Post::postBrief()
-        ->where('thread_id',$thread->id)
-        ->where('type', '=', 'chapter')
         ->with('chapter.volumn')
+        ->join('chapters', 'chapters.post_id','=','posts.id')
+        ->where('posts.thread_id',$thread->id)
+        ->where('posts.type', '=', 'chapter')
+        ->orderBy('chapter.order_by', 'asc')
         ->get();
-        //以后注意不要显示所有的chapter吧
+        //以后注意不要显示所有的chapter，显示排名靠前的几个
         $chapters->sortBy('chapter.order_by');
         $volumns = $chapters->pluck('chapter.volumn')->unique();
         return response()->success([

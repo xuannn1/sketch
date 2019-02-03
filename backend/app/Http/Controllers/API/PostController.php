@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePost;
 use App\Http\Requests\UpdatePost;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\PostProfileResource;
 
 class PostController extends Controller
 {
@@ -23,6 +24,39 @@ class PostController extends Controller
         $this->middleware('auth:api')->except(['index', 'show']);
         $this->middleware('filter_thread');
 
+    }
+
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function index(Thread $thread, Request $request)
+    {
+        $posts = Post::where('thread_id',$thread->id)
+        ->with('author')
+        ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
+        ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
+        ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
+        ->ordered($request->ordered)//排序方式
+        ->paginate(config('constants.posts_per_page'));
+
+        $channel = $thread->channel();
+        if($channel->type==='book'){
+            $posts->load('chapter');
+        }
+        if($channel->type==='review'){
+            $posts->load('review.reviewee');
+            $posts->review->reviewee->load('tags','author');
+        }
+
+        return response()->success([
+            'posts' => PostResource::collection($posts),
+            'paginate' => new PaginateResource($posts),
+        ]);
+
+        //return view('test', compact('posts'));
+        //上面这一行代码，是为了通过debugler测试query实际效率。
     }
 
     /**
@@ -46,23 +80,11 @@ class PostController extends Controller
     */
     public function show(Thread $thread,Post $post)
     {
-        //需要增加关于 最新评论，最高评论部分
         return response()->success([
-            'post' =>  new PostResource($post),
+            'post' =>  new PostProfileResource($post),
         ]);
-        //考虑一下，应该怎么返回对post的评论？如果它又是一个component，怎么处理
     }
 
-    /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
     * Update the specified resource in storage.
@@ -84,7 +106,7 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function destroy($id)
+    public function destroy(Thread $thread, $id)
     {
         //
     }

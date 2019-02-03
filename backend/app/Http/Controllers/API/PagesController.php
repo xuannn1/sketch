@@ -9,7 +9,7 @@ use App\Helpers\ConstantObjects;
 use App\Http\Resources\QuoteResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\ThreadBriefResource;
-use App\Http\Resources\TagProfileResource;
+use App\Http\Resources\TagResource;
 use App\Http\Resources\ChannelResource;
 use Cache;
 
@@ -44,7 +44,7 @@ class PagesController extends Controller
     public function allTags()
     {
         return response()->success([
-            'tags' => TagProfileResource::collection(ConstantObjects::allTags()),
+            'tags' => TagResource::collection(ConstantObjects::allTags()),
         ]);
     }
 

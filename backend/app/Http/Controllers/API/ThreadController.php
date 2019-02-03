@@ -77,41 +77,12 @@ class ThreadController extends Controller
     * @param  int  $thread
     * @return \Illuminate\Http\Response
     */
-    public function show(Thread $thread, Request $request)
+    public function show(Thread $thread)
     {
-        $posts = Post::where('thread_id',$thread->id)
-        ->with('author')
-        ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
-        ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
-        ->orderBy('created_at','asc')
-        ->paginate(config('constants.posts_per_page'));
-
-        $channel = $thread->channel();
-        if($channel->type==='book'){
-            $posts->load('chapter');
-        }
-        if($channel->type==='review'){
-            $posts->load('review.reviewee');
-            $posts->review->reviewee->load('tags','author');
-        }
-
-        if(!$request->page){
-            //假如没有约定页码，显示thread内容
-            $thread->load('author','tags','recommendations.authors');
-            $thread_profile = new ThreadProfileResource($thread);
-        }else{
-            //不是page1的时候，不显示thread内容
-            $thread_profile = [];
-        }
-
+        $thread->load('author','tags','recommendations.authors');
         return response()->success([
-            'thread' => $thread_profile,
-            'posts' => PostResource::collection($posts),
-            'paginate' => new PaginateResource($posts),
+            'thread' => new ThreadProfileResource($thread),
         ]);
-
-        //return view('test', compact('posts'));
-        //上面这一行代码，是为了通过debugler测试query实际效率。
     }
 
     /**

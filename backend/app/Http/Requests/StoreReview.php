@@ -20,7 +20,7 @@ class StoreReview extends FormRequest
     {
         $thread = request()->route('thread');
         $channel = $thread->channel();
-        return auth('api')->id()===$thread->user_id&&$channel->type=='list';
+        return auth('api')->id()===$thread->user_id&&$channel->type=='list'&&!$thread->is_locked;
     }
 
     /**
@@ -86,7 +86,8 @@ class StoreReview extends FormRequest
     {
         $post = Post::find($id);
         $review = $post->review;
-        if((!$post)||(!$review)||($post->type!='review')||($post->user_id!=auth('api')->id())){abort(403);}
+        if((!$post)||(!$review)){ abort(404);}
+        if(($post->type!='review')||($post->user_id!=auth('api')->id())){abort(403);}
 
         $post_data = $this->only('title', 'body', 'preview', 'use_markdown', 'use_indentation');
         $post_data['last_edited_at'] = Carbon::now();
