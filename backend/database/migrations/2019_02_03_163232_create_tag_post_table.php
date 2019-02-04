@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserRecommendationTable extends Migration
+class CreateTagPostTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateUserRecommendationTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_recommendation', function (Blueprint $table) {
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('recommendation_id')->index();
-            $table->primary(['user_id', 'recommendation_id']);
+        Schema::create('tag_post', function (Blueprint $table) {
+            $table->unsignedInteger('tag_id')->index();
+            $table->unsignedInteger('post_id')->index();
+            $table->primary(['post_id', 'tag_id']);
         });
     }
 
@@ -27,6 +27,6 @@ class CreateUserRecommendationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_recommendation');
+        Schema::dropIfExists('tag_post');
     }
 }

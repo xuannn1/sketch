@@ -17,10 +17,10 @@ class PostInfoResource extends JsonResource
     {
         $component = [];
         if($this->type==='chapter'){
-            $component = new ChapterInfoResource($this->chapter);
+            $component = new ChapterInfoResource($this->whenLoaded('chapter'));
         }
         if($this->type==='review'){
-            $component = new ReviewResource($this->review);
+            $component = new ReviewResource($this->whenLoaded('review'));
         }
         return [
             'type' => 'post',
@@ -36,11 +36,13 @@ class PostInfoResource extends JsonResource
                 'xianyus' => (int)$this->xianyus,
                 'shengfans' => (int)$this->shengfans,
                 'replies' => (int)$this->replies,
+                'views' => (int)$this->views,
                 'is_folded' => (bool)$this->is_folded,
                 'is_bianyuan' => (bool)$this->is_bianyuan,
                 'last_responded_at' => (string)$this->last_responded_at,
             ],
             'component' => $component,
+            'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
         ];
     }
 }

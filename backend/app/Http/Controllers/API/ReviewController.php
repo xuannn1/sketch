@@ -13,6 +13,7 @@ use App\Models\Post;
 use App\Models\Thread;
 
 use App\Http\Resources\PostResource;
+use App\Http\Resources\PaginateResource;
 
 class ReviewController extends Controller
 {
@@ -23,8 +24,26 @@ class ReviewController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('auth:api');
-        $this->middleware('filter_thread');
+        $this->middleware('auth:api')->except('index');
+        $this->middleware('filter_thread')->except('index');
+    }
+
+    public function index(Request $request)
+    {
+        $reviews = Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
+        ->reviewThread($request->thread_id)
+        ->reviewRecommend($request->withRecommend ?? 'recommend_only')
+        ->reviewEditor($request->withEditor)
+        ->reviewMaxRating($request->withMaxRating)
+        ->reviewMinRating($request->withMinRating)
+        ->reviewOrdered($request->ordered)
+        ->select('posts.*')
+        ->paginate(config('constants.posts_per_page'));
+        $reviews->load('review.reviewee', 'tags');
+        return response()->success([
+            'reviews' => PostResource::collection($reviews),
+            'paginate' => new PaginateResource($reviews),
+        ]);
     }
 
     /**
@@ -36,6 +55,7 @@ class ReviewController extends Controller
     public function store(Thread $thread, StoreReview $form)
     {
         $post = $form->generateReview();
+        $post->load('review.reviewee');
         return response()->success(new PostResource($post));
     }
 
@@ -49,6 +69,7 @@ class ReviewController extends Controller
     public function update(Thread $thread, StoreReview $form, $id)
     {
         $post = $form->updatereview($id);
+        $post->load('review.reviewee');
         return response()->success(new PostResource($post));
     }
 }

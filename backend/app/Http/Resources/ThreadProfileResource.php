@@ -20,7 +20,7 @@ class ThreadProfileResource extends JsonResource
             $body = '';
         }
         if ((!$this->is_anonymous)||((auth('api')->check())&&(auth('api')->id()===$this->user_id))){
-            $author = new AuthorIdentifierResource($this->author);
+            $author = new AuthorIdentifierResource($this->whenLoaded('author'));
         }else{
             $author = [];
         }
@@ -54,8 +54,9 @@ class ThreadProfileResource extends JsonResource
             ],
             'author' => $author,
             'channel' => new ChannelBriefResource($this->channel()),
-            'tags' => TagInfoResource::collection($this->tags),
-            'recommendations' => RecommendationResource::collection($this->recommendations)
+            'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
+            'last_component' => new PostBriefResource($this->whenLoaded('last_component')),
+            'last_post' => new PostBriefResource($this->whenLoaded('last_post')),
         ];
     }
 }

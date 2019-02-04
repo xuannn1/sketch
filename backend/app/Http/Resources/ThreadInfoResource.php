@@ -15,7 +15,7 @@ class ThreadInfoResource extends JsonResource
     public function toArray($request)
     {
         if (!$this->is_anonymous){
-            $author = new AuthorIdentifierResource($this->author);
+            $author = new AuthorIdentifierResource($this->whenLoaded('author'));
         }else{
             $author = [];
         }
@@ -26,7 +26,7 @@ class ThreadInfoResource extends JsonResource
                 'title' => (string)$this->title,
                 'brief' => (string)$this->brief,
                 'is_anonymous' => (bool)$this->is_anonymous,
-                'majia' => (string)$this->majia ?? '匿名咸鱼',
+                'majia' => (string)$this->majia,
                 'created_at' => (string)$this->created_at,
                 'xianyus' => (int)$this->xianyus,
                 'shengfans' => (int)$this->shengfans,
@@ -44,9 +44,9 @@ class ThreadInfoResource extends JsonResource
             ],
             'author' => $author,
             'channel'        => new ChannelBriefResource($this->channel()),
-            'tags' => TagInfoResource::collection($this->tags),
-            'last_component' => new PostBriefResource($this->last_component),
-            'last_post' => new PostBriefResource($this->last_post),
+            'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
+            'last_component' => new PostBriefResource($this->whenLoaded('last_component')),
+            'last_post' => new PostBriefResource($this->whenLoaded('last_post')),
         ];
     }
 

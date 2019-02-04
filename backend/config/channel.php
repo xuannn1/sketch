@@ -10,7 +10,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => true,
-        'on_homepage' => true,
     ],
     (object)[
         'id' => 2,
@@ -21,7 +20,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => true,
-        'on_homepage' => true,
     ],
     (object)[
         'id' => 3,
@@ -33,7 +31,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => true,
-        'on_homepage' => false,
     ],
     (object)[
         'id' => 4,
@@ -44,7 +41,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => true,
-        'on_homepage' => true,
     ],
     (object)[
         'id' => 5,
@@ -55,7 +51,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => true,
-        'on_homepage' => true,
     ],
     (object)[
         'id' => 6,
@@ -66,7 +61,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => true,
-        'on_homepage' => true,
     ],
     (object)[
         'id' => 7,
@@ -77,7 +71,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => true,
-        'on_homepage' => true,
     ],
     (object)[
         'id' => 8,
@@ -88,7 +81,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => false,
         'is_public' => true,
-        'on_homepage' => true,
     ],
     (object)[
         'id' => 9,
@@ -99,7 +91,6 @@ return [
         'allow_anonymous' => false,
         'allow_edit' => false,
         'is_public' => true,
-        'on_homepage' => true,
     ],
     (object)[
         'id' => 10,
@@ -110,7 +101,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => false,
-        'on_homepage' => false,
     ],
     (object)[
         'id' => 11,
@@ -121,7 +111,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => false,
-        'on_homepage' => false,
     ],
     (object)[
         'id' => 12,
@@ -132,7 +121,6 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => false,
-        'on_homepage' => false,
     ],
     (object)[
         'id' => 13,
@@ -143,6 +131,5 @@ return [
         'allow_anonymous' => true,
         'allow_edit' => true,
         'is_public' => true,
-        'on_homepage' => false,
     ],
 ];

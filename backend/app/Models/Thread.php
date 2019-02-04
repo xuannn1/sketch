@@ -55,12 +55,6 @@ class Thread extends Model
         return $this->morphMany('App\Models\Vote', 'votable');
     }
 
-    public function recommendations()
-    {
-        return $this->hasMany(Recommendation::class)->where('is_public', true);
-    }
-
-
     public function last_component()
     {
         return $this->belongsTo(Post::class, 'last_component_id');
@@ -252,13 +246,23 @@ class Thread extends Model
         ->sum('chapters.characters');
     }
 
-    public function favorite()//这个thread里面，普通的post中，最多赞的评论
+    public function most_upvoted()//这个thread里面，普通的post中，最多赞的评论
     {
-        return Post::postBrief()
+        return Post::postInfo()
         ->where('thread_id', $this->id)
         ->where('type', '=', 'post')
-        ->with('author')
         ->orderBy('up_votes', 'desc')
+        ->first();
+    }
+
+    public function top_review()//对这个thread的review里最热门的一个
+    {
+        return Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
+        ->where('reviews.thread_id', $this->id)
+        ->where('reviews.recommend', true)
+        ->where('reviews.author_disapprove', false)
+        ->orderby('reviews.redirects', 'desc')
+        ->select('posts.*')
         ->first();
     }
 

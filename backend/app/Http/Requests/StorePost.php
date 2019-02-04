@@ -96,6 +96,8 @@ class StorePost extends FormRequest
     public function updatePost($id)
     {
         $post = Post::find($id);
+        $thread = request()->route('thread');
+        if($thread->id!=$post->thread_id){abort(403);}
         $channel = $thread->channel();
         if(!($channel->allow_edit||auth('api')->user()->inRole('admin'))||($post->user_id!=auth('api')->id())){abort(403);}
 

@@ -7,12 +7,11 @@ use App\Sosadfun\Traits\ColumnTrait;
 
 class Chapter extends Model
 {
-    use ColumnTrait;
-
-    public $timestamps = false;
-    protected $guarded = [];
+    //use ColumnTrait;
 
     protected $primaryKey = 'post_id';
+    protected $guarded = [];
+    public $timestamps = false;
 
     public function mainpost()
     {

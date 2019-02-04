@@ -2,7 +2,7 @@
 
 return [
     'homework_channel' => 3,//作业区是三区
-
+    'components_per_page' => 2, //书籍首页显示多少个component
     'books_per_page' => 2,//一页显示多少书
     'threads_per_page' => 2,//一页显示多少书/讨论帖
     'chapters_per_page' => 2, //一页显示多少章节

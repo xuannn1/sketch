@@ -34,13 +34,15 @@ Route::get('config/allChannels', 'API\PagesController@allChannels');
 //讨论串/讨论楼/讨论帖
 Route::apiResource('thread', 'API\ThreadController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
+Route::get('/thread/{thread}/recommendation', 'API\ThreadController@recommendation');//展示这个书籍名下recommendation的index
 Route::post('/thread/{thread}/synctags', 'API\ThreadController@synctags')->name('synctags');//用户给自己的thread修改对应的tag信息
 
 //书评清单部分
 Route::resource('/thread/{thread}/review', 'API\ReviewController')->only(['store', 'update']);//书评增改
-
+Route::get('review', 'API\ReviewController@index');//展示所有评论
 //书籍
 Route::get('/book/{thread}', 'API\BookController@show');//显示书籍主页
+Route::get('/book/{thread}/chapterindex', 'API\BookController@chapterindex');//显示书籍所有chapter的列表
 //章节
 Route::resource('/thread/{thread}/chapter', 'API\ChapterController')->only(['store', 'update']);
 //编推（待改）

@@ -24,14 +24,15 @@ class ThreadCollectionResource extends JsonResource
             'id' => (int)$this->id,
             'attributes' => [
                 'title' => (string)$this->title,
+                'brief' => (string)$this->brief,
                 'is_anonymous' => (bool)$this->is_anonymous,
                 'majia' => (string)$this->majia,
             ],
             'author' => $author,
             'channel'        => new ChannelBriefResource($this->channel()),
-            'tags' => TagInfoResource::collection($this->tags),
-            'last_component' => new PostBriefResource($this->last_component),
-            'last_post' => new PostBriefResource($this->last_post),
+            'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
+            'last_component' => new PostBriefResource($this->whenLoaded('last_component')),
+            'last_post' => new PostBriefResource($this->whenLoaded('last_post')),
             'collection' => [
                 'type' => 'collection',
                 'id' => (int)$this->collection_id,

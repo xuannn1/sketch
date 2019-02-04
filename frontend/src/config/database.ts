@@ -73,6 +73,7 @@ export namespace Database {
         xianyus?:UInt;
         shengfans?:UInt;
         replies?:UInt;
+        views?:UInt;
         is_folded?:boolean;
         allow_as_longpost?:boolean;
         is_bianyuan?:boolean;
@@ -131,7 +132,6 @@ export namespace Database {
         allow_anonymous?:boolean;
         allow_edit?:boolean;
         is_public?:boolean;
-        on_homepage?:boolean;
     }
 
     export interface Tag {
@@ -152,7 +152,6 @@ export namespace Database {
         order_by?:number;
         warning?:string;
         annotation?:string;
-        views?:UInt;
         characters?:UInt;
         previous_chapter_id?:Increments;
         next_chapter_id?:Increments;
@@ -215,7 +214,11 @@ export namespace Database {
 
     export interface Review {
         id?:Increments;
+        thread_id?:Uint;
         recommend?:boolean;
+        author_disapprove?:boolean;
         rating?:UInt;
+        redirects?:Uint;
+        editor_recommend?:boolean;
     }
 }

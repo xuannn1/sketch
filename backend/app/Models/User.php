@@ -54,16 +54,6 @@ class User extends Authenticatable
         return ConstantObjects::role_users()->where('user_id', $this->id);
     }
 
-    public function recommendations()
-    {
-        return $this->belongsToMany(Recommendation::class, 'user_recommendation', 'user_id', 'recommendation_id');
-    }
-
-    public function public_recommendations()
-    {
-        return $this->belongsToMany(Recommendation::class, 'user_recommendation', 'user_id', 'recommendation_id')->where('is_public', true);
-    }
-
     public function collected_items()
     {
         return $this->belongsToMany('App\Models\Thread', 'collections', 'user_id', 'thread_id');

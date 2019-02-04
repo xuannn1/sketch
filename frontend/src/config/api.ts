@@ -54,7 +54,7 @@ export namespace ResData {
         type:'channel';
         id:number;
         attributes:Database.Channel;
-    } 
+    }
 
     export interface Thread {
         type:'thread';
@@ -160,19 +160,19 @@ export namespace ResData {
 export namespace Request {
     export namespace Thread {
         // （是否仅返回边缘/非边缘内容）
-        export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only'; 
+        export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only';
 
-        export type ordered = 'last_added_component_at'| //按最新更新时间排序
+        export type ordered = 'latist_added_component'| //按最新更新时间排序
                               'jifen'|                   //按总积分排序
                               'weighted_jifen'|          //按平衡积分排序
-                              'created_at'|              //按创建时间排序
+                              'latest_created'|              //按创建时间排序
                               'id'|                      //按id排序
                               'collections'|             //按收藏总数排序
                               'total_char';              //按总字数排序
 
         export type withType = 'thread'|                 //仅返回讨论帖
                                'book'|                   //仅返回书籍
-                               'collection_list'|        //仅返回收藏单
+                               'list'|        //仅返回收藏单
                                'column'|
                                'request'|
                                'homework';
@@ -232,7 +232,7 @@ export interface APIGet {
         res:{
             thread:ResData.Thread,
             posts:ResData.Post[],
-            paginate:ResData.ThreadPaginate, 
+            paginate:ResData.ThreadPaginate,
         }
     }>;
     '/homebook':APISchema<{
@@ -290,7 +290,7 @@ export interface APIPost {
         req:{
             title:string;
             brief:string;
-            body:string; 
+            body:string;
             no_reply?:boolean;
             use_markdown?:boolean;
             use_indentation?:boolean;
@@ -316,7 +316,7 @@ export interface APIPost {
             is_anonymous?:boolean;
             majia?:string;
             reply_to_post_id?:number;
-            use_markdown?:boolean; 
+            use_markdown?:boolean;
             use_indentation?:boolean;
             is_bianyuan?:boolean;
         };

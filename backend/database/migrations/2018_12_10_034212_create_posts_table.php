@@ -39,6 +39,7 @@ class CreatePostsTable extends Migration
             $table->unsignedInteger('xianyus')->default(0);//得到的咸鱼
             $table->unsignedInteger('shengfans')->default(0);//得到的咸鱼
             $table->unsignedInteger('replies')->default(0);//得到的回复数
+            $table->unsignedInteger('views')->default(0);//得到的单独点击数
             $table->boolean('is_folded')->default(false);//是否属于折叠状态
             $table->boolean('allow_as_longpost')->default(true);//作者是否允许展示为长评
             $table->boolean('is_bianyuan')->default(false);//是否属于边缘内容（以至于需要对非注册用户隐藏内容）

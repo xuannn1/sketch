@@ -58,6 +58,11 @@ class Post extends Model
         return $this->hasOne(Review::class, 'post_id');
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany('App\Models\Tag', 'tag_post', 'post_id', 'tag_id');
+    }
+
     public function scopeExclude($query, $value = array())
     {
         return $query->select( array_diff( $this->post_columns,(array) $value));
@@ -77,6 +82,17 @@ class Post extends Model
         return $query;
     }
 
+    public function scopeWithComponent($query, $withComponent)
+    {
+        if($withComponent==='component_only'){
+            return $query->whereIn('type', array_diff( $this->post_types, ['post','comment']));
+        }
+        if($withComponent==='none_component_only'){
+            return $query->whereIn('type',['post','comment']);
+        }
+        return $query;
+    }
+
     public function scopeWithReplyTo($query, $withReplyTo)
     {
         if($withReplyTo){
@@ -88,6 +104,11 @@ class Post extends Model
     public function scopePostBrief($query)
     {
         return $query->select($this->postbrief_columns);
+    }
+
+    public function scopePostInfo($query)
+    {
+        return $query->select($this->postinfo_columns);
     }
 
     public function scopeOrdered($query, $ordered)
@@ -105,10 +126,83 @@ class Post extends Model
             case 'latest_responded'://按最新被回应时间倒序
             return $query->orderBy('last_responded_at', 'desc');
             break;
-            default://默认按时间顺序排列
+            default://默认按时间顺序排列，最早的在前面
             return $query->orderBy('created_at', 'asc');
         }
     }
+    public function scopeReviewThread($query, $thread_id)
+    {
+        if($thread_id){
+            $query = $query->where('reviews.thread_id', $thread_id);
+        }else{
+            return $query;
+        }
+    }
+
+    public function scopeReviewRecommend($query, $withRecommend)
+    {
+        if($withRecommend==='recommend_only'){
+            return $query->where('reviews.recommend', true);
+        }
+        if($withRecommend==='none_recommend_only'){
+            return $query->where('reviews.recommend', false);
+        }
+        return $query;
+    }
+
+    public function scopeReviewEditor($query, $withEditor)
+    {
+        if($withEditor==='editor_only'){
+            return $query->where('reviews.editor_recommend', true);
+        }
+        if($withEditor==='none_editor_only'){
+            return $query->where('reviews.editor_recommend', false);
+        }
+        return $query;
+    }
+
+    public function scopeReviewMaxRating($query, $withMaxRating)
+    {
+        if($withMaxRating){
+            return $query->where('reviews.rating', '<=', $withMaxRating);
+        }else{
+            return $query;
+        }
+    }
+
+    public function scopeReviewMinRating($query, $withMinRating)
+    {
+        if($withMinRating){
+            return $query->where('reviews.rating', '>=', $withMinRating);
+        }else{
+            return $query;
+        }
+    }
+
+    public function scopeReviewOrdered($query, $ordered)
+    {
+        switch ($ordered) {
+            case 'latest_created'://最新
+            return $query->orderBy('posts.created_at', 'desc');
+            break;
+            case 'most_replied'://按回应数量倒序
+            return $query->orderBy('posts.replies', 'desc');
+            break;
+            case 'most_upvoted'://按赞数倒序
+            return $query->orderBy('posts.upvotes', 'desc');
+            break;
+            case 'latest_responded'://按最新被回应时间倒序
+            return $query->orderBy('posts.last_responded_at', 'desc');
+            break;
+            case 'oldest_created'://按最新被回应时间倒序
+            return $query->orderBy('posts.created_at', 'asc');
+            break;
+            default:
+            return $query->orderBy('reviews.redirects', 'desc');
+            break;
+        }
+    }
+
 
     public function favorite_reply()//这个post里面，回复它的postcomment中，最多赞的
     {

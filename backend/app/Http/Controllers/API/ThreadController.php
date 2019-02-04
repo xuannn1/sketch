@@ -77,12 +77,33 @@ class ThreadController extends Controller
     * @param  int  $thread
     * @return \Illuminate\Http\Response
     */
-    public function show(Thread $thread)
+    public function show(Thread $thread, Request $request)
     {
-        $thread->load('author','tags','recommendations.authors');
+        if($request->page>1){
+            $threadprofile = new ThreadSingleResource($thread);
+        }else{
+            $threadprofile = new ThreadProfileResource($thread);
+        }
+        $posts = Post::where('thread_id',$thread->id)
+        ->with('author', 'tags')
+        ->ordered('defualt')//排序方式
+        ->paginate(config('constants.posts_per_page'));
+
+        $channel = $thread->channel();
+        if($channel->type==='book'){
+            $posts->load('chapter');
+        }
+        if($channel->type==='review'){
+            $posts->load('review.reviewee');
+            $posts->review->reviewee->load('tags','author');
+        }
+
         return response()->success([
-            'thread' => new ThreadProfileResource($thread),
+            'thread' => $threadprofile,
+            'posts' => PostResource::collection($posts),
+            'paginate' => new PaginateResource($posts),
         ]);
+
     }
 
     /**

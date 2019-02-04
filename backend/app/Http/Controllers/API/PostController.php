@@ -9,7 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePost;
 use App\Http\Requests\UpdatePost;
 use App\Http\Resources\PostResource;
-use App\Http\Resources\PostProfileResource;
+use App\Http\Resources\ThreadProfileResource;
+use App\Http\Resources\ThreadBriefResource;
 
 class PostController extends Controller
 {
@@ -34,8 +35,9 @@ class PostController extends Controller
     public function index(Thread $thread, Request $request)
     {
         $posts = Post::where('thread_id',$thread->id)
-        ->with('author')
+        ->with('author','tags')
         ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
+        ->withComponent($request->withComponent)//可以选择是只看component，还是不看component
         ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
         ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
         ->ordered($request->ordered)//排序方式
@@ -51,6 +53,7 @@ class PostController extends Controller
         }
 
         return response()->success([
+            'thread' => new ThreadBriefResource($thread),
             'posts' => PostResource::collection($posts),
             'paginate' => new PaginateResource($posts),
         ]);
@@ -80,8 +83,9 @@ class PostController extends Controller
     */
     public function show(Thread $thread,Post $post)
     {
+        if($thread->id!=$post->thread_id){abort(403);}
         return response()->success([
-            'post' =>  new PostProfileResource($post),
+            'post' =>  new PostResource($post),
         ]);
     }
 

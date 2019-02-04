@@ -34,7 +34,7 @@ class ChapterController extends Controller
      */
     public function store(Thread $thread, StoreChapter $form)
     {
-        $post = $form -> generateChapter();
+        $post = $form->generateChapter();
         return response()->success(new PostResource($post));
     }
 
@@ -48,7 +48,7 @@ class ChapterController extends Controller
      */
     public function update(Thread $thread, StoreChapter $form, $id)
     {
-        $post = $form -> updateChapter($id);
+        $post = $form->updateChapter($id);
         return response()->success(new PostResource($post));
     }
 

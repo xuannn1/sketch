@@ -25,7 +25,6 @@ class ChannelResource extends JsonResource
                 'allow_anonymous' => (bool)$this->allow_anonymous,
                 'allow_edit' => (bool)$this->allow_edit,
                 'is_public' => (bool)$this->is_public,
-                'on_homepage' => (bool)$this->on_homepage,
             ]
         ];
     }

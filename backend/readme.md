@@ -117,7 +117,7 @@ review：书评。在post的基础上，增加记录rating（评分），recomme
 上面表示的，就是挂靠了chapter这个component的post，它在前端眼中会表现出来的样子。
 
 #### 3.1.4 对书籍/讨论帖系统的授权管理：channels，tags
-##### 3.1.4.1 channel（频道/板块） 
+##### 3.1.4.1 channel（频道/板块）
 channel是对thread进行统一管理的一种方式。  
 站内一共预设有**12个channel**，分别是“原创小说”，“同人小说”，“作业专区”，“日常闲聊”……  
 每个channel除了本身的固有属性（名称，定义，版规等字串）之外有自己的**管理逻辑**。比如，  
@@ -125,8 +125,6 @@ channel是对thread进行统一管理的一种方式。
 * allow_anonymous 属性决定普通用户是否能够在本channel中匿名发布内容
 * allow_edit 属性决定普通用户是否能在本channel中修改thread和post
 * is_public 属性决定这个channel里的thread是否对外公开可见（如果不属于public，意味着只有注册参加作业的同学、编辑和管理，才能够进入该channel查看特殊内容）
-* on_homepage 属性决定这个channel里的thread是否在首页显示（否则的话，这整个channel不在论坛板块首页显示，而是安排另外的入口）  
-
 
 ##### 3.1.4.2 tag(标签)
 标签是对thread进行标记的另一种方式    
@@ -238,47 +236,79 @@ withType(string)='thread'/'book'/'list'/'request'/'homework' ：筛选thread 的
 
 tags(array)=[1,22,4]：仅返回含有1，22，4这几个tag的书籍/讨论帖，只要符合其中之一就返回，不一定全部匹配。  
 
-excludeTags(array)=[1,22,4]：仅返回肯定不含有1，22，4这几个tag的书籍/讨论帖 
+excludeTags(array)=[1,22,4]：仅返回肯定不含有1，22，4这几个tag的书籍/讨论帖
 
-withBianyuan(string)='bianyuan_only'/'none_bianyuan_only'：是否仅返回边缘/非边缘内容  
+withBianyuan(string)='bianyuan_only'/'none_bianyuan_only' / 'all'：是否仅返回边缘/非边缘内容  
 
 ordered(string)='latest_add_component'/'jifen'/'weighted_jifen'/'latest_created'/'id'/'collections'/'total_char'：按最新更新时间排序/按总积分排序/按平衡积分排序/按创建时间排序/按id排序/按收藏总数排序/按总字数排序:默认按最新回复排序  
 
 
-#### 4.4.2 thread首页信息呈现
+#### 4.4.2 thread/post信息呈现
 
-##### 4.4.2.1 展示含有component的首页信息（首楼，component目录，和最新、最热回帖）
+##### 4.4.2.1 展示单纯的首页信息和最早的posts（以后可以根据前端的需求，增加其他内容）
 http://127.0.0.1:8000/api/thread/1  
 方法：GET  
 授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）  
 按讨论帖格式，返回id=1（id可以更换成其他数字）的讨论帖首页信息   
 视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息）   
+单纯按照时间顺序排列post, 从早到晚
 
-
-##### 4.4.2.2 获得书籍首页信息（首楼，章节列表）
-http://127.0.0.1:8000/api/book/1  
-方法：GET  
-授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）  
-按书籍格式，返回id=1（id可以更换成其他数字）的书籍首页信息    。thread,channel,tags,chapters（章节）,volumns（分卷）,pagination  
-视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息） 
-
-##### 4.4.2.3 获得thread内post信息（提供一定的筛选）
+##### 4.4.2.2 获得thread内post信息（提供高级筛选功能）
 http://127.0.0.1:8000/api/thread/{thread}/post  
 方法：GET  
 授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）  
-视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息） 
+视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息）
 可选项：
-withType(string):'post','comment','chapter','review'
+withType(string):'post','comment','chapter','review'是否仅筛选出某种格式的post
+withComponent(string):'component_only'/'none_component_only'是否仅筛选出属于component/不属于component的post
 userOnly(int):仅返回xx用户的非匿名贴
 withReplyTo(int):仅返回针对某个post的所有回帖
 ordered(string):'latest_created'/'most_replied'/'most_upvoted'/'latest_responded'//默认按照时间顺序排列，越早越先出现
 
-##### 4.4.2.4 获得thread内单独post的component的信息
-http://127.0.0.1:8000/api/thread/{thread}/post/{post} 
+##### 4.4.2.3 获得thread内单独post的component的信息
+http://127.0.0.1:8000/api/thread/{thread}/post/{post}
 方法：GET  
 授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）  
-视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息） 
-解释：返回单章(chapter)或单个书评(review)内情。同时返回最新回帖，最热回帖。
+视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息）
+解释：返回单章(chapter)或单个书评(review)内情。
+
+### 4.4.3 book信息呈现
+
+##### 4.4.3.1 获得书籍首页信息（首楼，部分章节列表）
+http://127.0.0.1:8000/api/book/1  
+方法：GET  
+授权：可选登陆与否，视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容）    
+按书籍格式，返回id=1（id可以更换成其他数字）的书籍首页信息    。  
+thread, 文案及书籍数据信息  
+author, 作者信息  
+channel, 频道信息
+tags, 文章标签信息
+last_component, 最新章节
+last_post，最新回复
+chapters，部分章节列表（不全）, 
+volumns，这部分章节的分卷信息）, 
+pagination, 章节pagination（请使用另外的route：chapteriindex，直接获得全部章节目录信息，不要进一步使用这里的pagination，比较浪费）
+most_upvoted, 最高赞的评论
+top_review，最热书评
+视登陆与否返回不同结果（只有登陆后返回内容才包含边缘内容，只有符合要求的用户才能获得相关信息）
+
+
+##### 4.4.3.2 获得书籍章节列表
+http://127.0.0.1:8000/api/book/1/chapterindex  
+方法：GET  
+获得本书的全部章节列表
+
+#### 4.4.4 全站书评列表
+http://127.0.0.1:8000/api/review   
+方法：GET    
+可选变量：  
+thread_id(int):针对哪本书的评论  
+withRecommend(string): 'recommend_only' (默认)/ 'none_recommend_only'/ 'all';  
+withEditor(string): 'none_editor_only' / 'editor_only' / 'all'   
+withMinRating(int): 最少几分以上（可以选择打过分的）  
+withMaxRating(int): 最多几分（可选择没打分的）  
+ordered(string): 'latest_created'/ 'most_upvoted' / 'most_redirected' (默认按最多导航排序) / 'oldest_created' / ''  
+
 
 ### 4.5 增改删resource信息
 #### 4.5.1 thread
@@ -351,7 +381,7 @@ preview(string):回帖摘要，由前端剪裁好提供，不得超过50字
 title(string):仅对回帖够长（比如超过200字）的时候，提供填写title的选择
 is_anonymous(bool):是否匿名，如果本项存在，且本channel属于可以匿名，则回帖存储为匿名。  
 use_markdown(bool):是否使用markdown，如果本项存在，则回帖保存为使用markdown。  
-use_indentation(bool):是否使用段首缩进，如果本项存在，则回帖保存为使用段首缩进。 
+use_indentation(bool):是否使用段首缩进，如果本项存在，则回帖保存为使用段首缩进。
 
 ##### 4.5.2.3 删除某个post destroy post（待做）
 
@@ -400,7 +430,7 @@ annotation(string):作者有话说/章节注释
 
 ##### 4.5.4.2 更新chapter
 http://127.0.0.1:8000/api/thread/{thread_id}/chapter/{chapter_id}
-方法：PUT  
+方法：PUT/PATCH  
 授权：必须登陆，需是自己创建的thread，需要这个thread属于book，thread没有被锁   
 选填项  
 title(string)章节标题  

@@ -14,8 +14,8 @@ class ReviewResource extends JsonResource
      */
     public function toArray($request)
     {
-        if($this->reviewee){
-            $reviewee = new ThreadBriefResource($this->reviewee);
+        if($this->thread_id>0){
+            $reviewee = new ThreadBriefResource($this->whenLoaded('reviewee'));
         }else{
             $reviewee = [];
         }
@@ -26,6 +26,9 @@ class ReviewResource extends JsonResource
                 'thread_id' => (int) $this->thread_id,
                 'recommend' => (bool) $this->recommend,
                 'rating' => (int) $this->rating,
+                'author_disapprove' => (bool) $this->author_disapprove,
+                'editor_recommend' => (bool) $this->editor_recommend,
+                'redirects' => (int) $this->redirects,
             ],
             'reviewee' => $reviewee,
         ];

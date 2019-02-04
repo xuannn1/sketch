@@ -22,16 +22,16 @@ class PostResource extends JsonResource
         }
         if((!$this->is_anonymous)&&(($this->type==='post')||($this->type==='comment'))||((auth('api')->check())&&(auth('api')->id()===$this->user_id))){
             //如果标记了是匿名且是评论（不是评论的，只显示类型，不需要显示作者信息，根据类型可以判断作者身份，比如chapter必然是作者发布的），或者虽然不属于上述，但是是当前用户本人发布的，那么显示用户信息
-            $author = new AuthorIdentifierResource($this->author);
+            $author = new AuthorIdentifierResource($this->whenLoaded('author'));
         }else{
             $author = [];
         }
         $component = [];
         if($this->type==='chapter'){
-            $component = new ChapterResource($this->chapter);
+            $component = new ChapterResource($this->whenLoaded('chapter'));
         }
         if($this->type==='review'){
-            $component = new ReviewResource($this->review);
+            $component = new ReviewResource($this->whenLoaded('review'));
         }
         return [
             'type' => 'post',
@@ -54,12 +54,14 @@ class PostResource extends JsonResource
                 'xianyus' => (int)$this->xianyus,
                 'shengfans' => (int)$this->shengfans,
                 'replies' => (int)$this->replies,
+                'views' => (int)$this->views,
                 'is_folded' => (bool)$this->is_folded,
                 'is_bianyuan' => (bool)$this->is_bianyuan,
                 'last_responded_at' => (string)$this->last_responded_at,
             ],
             'author' => $author,
             'component' => $component,
+            'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
         ];
     }
 }
