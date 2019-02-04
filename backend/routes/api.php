@@ -29,6 +29,7 @@ Route::get('/homethread', 'API\PagesController@homethread')->name('homethread');
 
 //固定信息
 Route::get('config/allTags', 'API\PagesController@allTags');
+Route::get('config/noTongrenTags', 'API\PagesController@noTongrenTags');
 Route::get('config/allChannels', 'API\PagesController@allChannels');
 
 //讨论串/讨论楼/讨论帖

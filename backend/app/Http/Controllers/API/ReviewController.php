@@ -34,12 +34,13 @@ class ReviewController extends Controller
         ->reviewThread($request->thread_id)
         ->reviewRecommend($request->withRecommend ?? 'recommend_only')
         ->reviewEditor($request->withEditor)
+        ->reviewLong($request->withLong)
         ->reviewMaxRating($request->withMaxRating)
         ->reviewMinRating($request->withMinRating)
         ->reviewOrdered($request->ordered)
         ->select('posts.*')
         ->paginate(config('constants.posts_per_page'));
-        $reviews->load('review.reviewee', 'tags');
+        $reviews->load('review.reviewee','author','tags');
         return response()->success([
             'reviews' => PostResource::collection($reviews),
             'paginate' => new PaginateResource($reviews),

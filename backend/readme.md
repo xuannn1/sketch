@@ -208,10 +208,11 @@ http://127.0.0.1:8000/api/homethread
 授权：不需要使用token登陆
 
 #### 4.3.4 获得固定变量
-##### 4.3.4.1 全部tag信息
-http://127.0.0.1:8000/api/config/allTags  
+##### 4.3.4.1 全部非同人tag信息
+http://127.0.0.1:8000/api/config/noTongrenTags  
 方法：GET  
 授权：不需要使用token登陆  
+(因为大部分tag是同人tag，避免加载全部tag)
 
 ##### 4.3.4.2 获得全部channel信息
 http://127.0.0.1:8000/api/config/allChannels  
@@ -240,7 +241,7 @@ excludeTags(array)=[1,22,4]：仅返回肯定不含有1，22，4这几个tag的�
 
 withBianyuan(string)='bianyuan_only'/'none_bianyuan_only' / 'all'：是否仅返回边缘/非边缘内容  
 
-ordered(string)='latest_add_component'/'jifen'/'weighted_jifen'/'latest_created'/'id'/'collections'/'total_char'：按最新更新时间排序/按总积分排序/按平衡积分排序/按创建时间排序/按id排序/按收藏总数排序/按总字数排序:默认按最新回复排序  
+ordered(string)='latest_add_component' / 'jifen' / 'weighted_jifen' / 'latest_created' / 'id' /  'collections' / 'total_char' / 'random'：按最新更新时间排序/按总积分排序/按平衡积分排序/按创建时间排序/按id排序/按收藏总数排序/按总字数排序/随机排序:默认按最新回复排序  
 
 
 #### 4.4.2 thread/post信息呈现
@@ -263,7 +264,7 @@ withType(string):'post','comment','chapter','review'是否仅筛选出某种格�
 withComponent(string):'component_only'/'none_component_only'是否仅筛选出属于component/不属于component的post
 userOnly(int):仅返回xx用户的非匿名贴
 withReplyTo(int):仅返回针对某个post的所有回帖
-ordered(string):'latest_created'/'most_replied'/'most_upvoted'/'latest_responded'//默认按照时间顺序排列，越早越先出现
+ordered(string):'latest_created'/'most_replied'/'most_upvoted'/'latest_responded'/'random'//默认按照时间顺序排列，越早越先出现
 
 ##### 4.4.2.3 获得thread内单独post的component的信息
 http://127.0.0.1:8000/api/thread/{thread}/post/{post}
@@ -285,8 +286,8 @@ channel, 频道信息
 tags, 文章标签信息
 last_component, 最新章节
 last_post，最新回复
-chapters，部分章节列表（不全）, 
-volumns，这部分章节的分卷信息）, 
+chapters，部分章节列表（不全）,
+volumns，这部分章节的分卷信息）,
 pagination, 章节pagination（请使用另外的route：chapteriindex，直接获得全部章节目录信息，不要进一步使用这里的pagination，比较浪费）
 most_upvoted, 最高赞的评论
 top_review，最热书评
@@ -305,9 +306,10 @@ http://127.0.0.1:8000/api/review
 thread_id(int):针对哪本书的评论  
 withRecommend(string): 'recommend_only' (默认)/ 'none_recommend_only'/ 'all';  
 withEditor(string): 'none_editor_only' / 'editor_only' / 'all'   
+withLong(string): 'long_only' / 'short_only'  是只输出长评，还是只输出短评（不选则两种兼有）
 withMinRating(int): 最少几分以上（可以选择打过分的）  
 withMaxRating(int): 最多几分（可选择没打分的）  
-ordered(string): 'latest_created'/ 'most_upvoted' / 'most_redirected' (默认按最多导航排序) / 'oldest_created' / ''  
+ordered(string): 'latest_created'/ 'most_upvoted' / 'most_redirected' (默认按最多导航排序) / 'oldest_created' / 'random',    
 
 
 ### 4.5 增改删resource信息

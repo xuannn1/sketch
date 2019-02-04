@@ -20,8 +20,7 @@ class PostResource extends JsonResource
         }else{
             $body = '';
         }
-        if((!$this->is_anonymous)&&(($this->type==='post')||($this->type==='comment'))||((auth('api')->check())&&(auth('api')->id()===$this->user_id))){
-            //如果标记了是匿名且是评论（不是评论的，只显示类型，不需要显示作者信息，根据类型可以判断作者身份，比如chapter必然是作者发布的），或者虽然不属于上述，但是是当前用户本人发布的，那么显示用户信息
+        if((!$this->is_anonymous)||((auth('api')->check())&&(auth('api')->id()===$this->user_id))){
             $author = new AuthorIdentifierResource($this->whenLoaded('author'));
         }else{
             $author = [];

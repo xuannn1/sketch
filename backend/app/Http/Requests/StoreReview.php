@@ -70,6 +70,8 @@ class StoreReview extends FormRequest
         //generate collection data
         $review_data = $this->only('recommend','rating');
         $review_data['thread_id']=$reviewee->id;
+        $review_data['long']=(bool)mb_strlen($this->body)>config('constants.long_review');
+
 
         //use transaction to update collection && post (if necessary)
 
@@ -93,6 +95,7 @@ class StoreReview extends FormRequest
         $post_data['last_edited_at'] = Carbon::now();
         //generate collection data
         $review_data = $this->only('recommend','rating');
+        $review_data['long']=(bool)mb_strlen($this->body)>config('constants.long_review');
 
         //use transaction to update collection && post (if necessary)
 

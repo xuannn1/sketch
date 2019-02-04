@@ -4,6 +4,7 @@ namespace App\Helpers;
 use App\Models\Quote;
 use App\Models\Thread;
 use App\Models\Status;
+use App\Models\Post;
 use Cache;
 
 class PageObjects
@@ -67,4 +68,38 @@ class PageObjects
             ->get();
         });
     }
+    public static function recent_short_recommendations()//在首页显示书籍推荐，还需要结合产品的要求来实现。
+    //以前是最新+随机长评，以后有了recommendation检索功能，可以不需要那么随机了，需要的人自己进去随机就好。可以提供随机排序方式
+    {
+        return Cache::remember('recent_short_recommendations', 1, function () {
+            $short_reviews = Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
+            ->reviewRecommend('recommend_only')
+            ->reviewEditor('editor_only')
+            ->reviewLong('short_only')
+            ->reviewOrdered('latest_created')
+            ->select('posts.*')
+            ->take(6)
+            ->get();
+            $short_reviews->load('review.reviewee');
+            return $short_reviews;
+        });
+    }
+
+    public static function recent_long_recommendations()
+    {
+        return Cache::remember('recent_long_recommendations', 1, function () {
+            $long_reviews = Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
+            ->reviewRecommend('recommend_only')
+            ->reviewEditor('editor_only')
+            ->reviewLong('long_only')
+            ->reviewOrdered('latest_created')
+            ->select('posts.*')
+            ->take(2)
+            ->get();
+            $long_reviews->load('review.reviewee');
+            return $long_reviews;
+        });
+    }
+
+
 }

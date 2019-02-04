@@ -43,6 +43,13 @@ class ConstantObjects
         });
     }
 
+    public static function noTongrenTags()//获得站上非同人的所有的tags
+    {
+        return Cache::remember('noTongrenTags', 10, function (){
+            return Tag::whereNotIn('tag_type', ['同人原著', '同人CP'])->get();
+        });
+    }
+
     public static function system_variable()//获得当前系统数据
     {
         return Cache::remember('system_variable', 10, function () {

@@ -217,6 +217,7 @@ export namespace Database {
         thread_id?:Uint;
         recommend?:boolean;
         author_disapprove?:boolean;
+        long?:boolean;
         rating?:UInt;
         redirects?:Uint;
         editor_recommend?:boolean;

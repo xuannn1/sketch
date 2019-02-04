@@ -163,6 +163,9 @@ class Thread extends Model
             case 'collections'://收藏数
             return $query->orderBy('collections', 'desc');
             break;
+            case 'random'://收藏数
+            return $query->inRandomOrder();
+            break;
             case 'total_char'://总字数
             return $query->orderBy('total_char', 'desc');
             break;

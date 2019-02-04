@@ -123,6 +123,9 @@ class Post extends Model
             case 'most_upvoted'://按赞数倒序
             return $query->orderBy('upvotes', 'desc');
             break;
+            case 'random'://随机排序
+            return $query->inRandomOrder();
+            break;
             case 'latest_responded'://按最新被回应时间倒序
             return $query->orderBy('last_responded_at', 'desc');
             break;
@@ -179,6 +182,17 @@ class Post extends Model
         }
     }
 
+    public function scopeReviewLong($query, $withLong)
+    {
+        if($withLong==='long_only'){
+            return $query->where('reviews.long', true);
+        }
+        if($withLong==='short_only'){
+            return $query->where('reviews.long', false);
+        }
+        return $query;
+    }
+
     public function scopeReviewOrdered($query, $ordered)
     {
         switch ($ordered) {
@@ -193,6 +207,9 @@ class Post extends Model
             break;
             case 'latest_responded'://按最新被回应时间倒序
             return $query->orderBy('posts.last_responded_at', 'desc');
+            break;
+            case 'random'://随机排序
+            return $query->inRandomOrder();
             break;
             case 'oldest_created'://按最新被回应时间倒序
             return $query->orderBy('posts.created_at', 'asc');
