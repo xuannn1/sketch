@@ -150,16 +150,16 @@ class BooksController extends Controller
             if(!empty($bookinfo[0])&&count($bookinfo[0])==1){//原创性筛选
                 $query->where('threads.channel_id','=', $bookinfo[0][0]);
             }
-            if(count($bookinfo[1])<count($book_info['book_lenth_info'])){//书籍长度筛选
+            if((!empty($bookinfo[1]))&&count($bookinfo[1])<count($book_info['book_lenth_info'])){//书籍长度筛选
                 $query->whereIn('books.book_length',$bookinfo[1]);
             }
-            if(count($bookinfo[2])<count($book_info['book_status_info'])){//书籍进度筛选
+            if((!empty($bookinfo[2]))&&count($bookinfo[2])<count($book_info['book_status_info'])){//书籍进度筛选
                 $query->whereIn('books.book_status',$bookinfo[2]);
             }
-            if(count($bookinfo[3])<count($book_info['sexual_orientation_info'])){//书籍性向筛选
+            if((!empty($bookinfo[3]))&&count($bookinfo[3])<count($book_info['sexual_orientation_info'])){//书籍性向筛选
                 $query->whereIn('books.sexual_orientation',$bookinfo[3]);
             }
-            if(count($bookinfo[4])<count($book_info['rating_info'])){//书籍限制性筛选
+            if((!empty($bookinfo[4]))&&count($bookinfo[4])<count($book_info['rating_info'])){//书籍限制性筛选
                 $query->where('threads.bianyuan','=',$bookinfo[4][0]-1);
             }
             if((!empty($bookinfo[5]))&&($bookinfo[5][0]>0)){//标签筛选
