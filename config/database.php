@@ -54,7 +54,7 @@ return [
             'engine' => 'InnoDB',
             'options'   => [
                 PDO::ATTR_TIMEOUT => 5,
-                PDO::ATTR_PERSISTENT =>true,
+                //PDO::ATTR_PERSISTENT =>true,
             ],
         ],
 
