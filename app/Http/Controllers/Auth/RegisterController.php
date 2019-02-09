@@ -75,9 +75,10 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return DB::transaction(function()use($data){
-            $user = User::create([
+            $user = User::firstOrCreate([
+                'email' => $data['email']
+                ],[
                 'name' => $data['name'],
-                'email' => $data['email'],
                 'password' => bcrypt($data['password']),
                 'invitation_token' => $data['invitation_token'],
                 'activated' => true,
