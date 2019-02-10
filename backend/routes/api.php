@@ -41,6 +41,11 @@ Route::post('/thread/{thread}/synctags', 'API\ThreadController@synctags')->name(
 //书评清单部分
 Route::resource('/thread/{thread}/review', 'API\ReviewController')->only(['store', 'update']);//书评增改
 Route::get('review', 'API\ReviewController@index');//展示所有评论
+
+//问题箱部分
+Route::patch('/thread/{thread}/post/{post}/turnToAnswer', 'API\QAController@turnToAnswer');//把box楼里的某个回复转变成问答
+Route::get('answer', 'API\QAController@index');//展示所有回答的问答
+
 //书籍
 Route::get('/book/{thread}', 'API\BookController@show');//显示书籍主页
 Route::get('/book/{thread}/chapterindex', 'API\BookController@chapterindex');//显示书籍所有chapter的列表
@@ -52,6 +57,8 @@ Route::apiResource('recommendation', 'API\RecommendationController');
 //用户
 Route::apiResource('user', 'API\UserController');
 Route::get('user/{user}/thread', 'API\UserController@showthread');//展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
+Route::get('user/{user}/title', 'API\TitleController@index');//展示某用户的全部title，当本人或管理查询时，允许出现私密title
+Route::patch('user/{user}/title/{title}', 'API\TitleController@update');//用户可以控制某个title是否公开
 
 //收藏部分
 Route::post('/thread/{thread}/collect', 'API\CollectionController@store');//收藏某个thread
@@ -68,3 +75,5 @@ Route::post('quote', 'API\QuoteController@store');
 
 //私信部分
 Route::post('/message/store/{user}', 'API\MessageController@store');//有点问题
+
+//阅读历史保存

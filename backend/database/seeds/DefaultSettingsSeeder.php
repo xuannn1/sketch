@@ -605,6 +605,16 @@ class DefaultSettingsSeeder extends Seeder
                 }
             }
         }
+        {
+            DB::table('titles')->insert([
+                'name' => '大咸者',
+                'description' => '用户等级大于7',
+            ]);
+            DB::table('titles')->insert([
+                'name' => '初来乍到',
+                'description' => '新注册咸鱼',
+            ]);
+        }
         // InvitationToken::create([
         //     'user_id' => 1,
         //     'token' => 'SOSAD_invite',

@@ -54,6 +54,16 @@ class User extends Authenticatable
         return ConstantObjects::role_users()->where('user_id', $this->id);
     }
 
+    public function titles()
+    {
+        return $this->belongsToMany('App\Models\Title', 'title_user', 'user_id', 'title_id')->withPivot('is_public');
+    }
+
+    public function public_titles()
+    {
+        return $this->belongsToMany('App\Models\Title', 'title_user', 'user_id', 'title_id')->wherePivot('is_public', true)->withPivot('is_public');
+    }
+
     public function collected_items()
     {
         return $this->belongsToMany('App\Models\Thread', 'collections', 'user_id', 'thread_id');

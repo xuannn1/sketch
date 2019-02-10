@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Thread;
 use App\Models\Post;
+use App\Models\Review;
 use App\Http\Requests\StoreThread;
 use App\Http\Requests\UpdateThread;
 use App\Http\Resources\ThreadInfoResource;
@@ -67,6 +68,10 @@ class ThreadController extends Controller
             $list_count = Thread::where('user_id', auth('api')->id())->withType('list')->count();
             if($list_count > $user->user_level){abort(403);}
         }
+        if($channel->type==='box'){
+            $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
+            if($box_count >=1){abort(403);}//暂时每个人只能建立一个问题箱
+        }
         $thread = $form->generateThread();
         return response()->success(new ThreadProfileResource($thread));
     }
@@ -80,8 +85,9 @@ class ThreadController extends Controller
     public function show(Thread $thread, Request $request)
     {
         if($request->page>1){
-            $threadprofile = new ThreadSingleResource($thread);
+            $threadprofile = new ThreadBriefResource($thread);
         }else{
+            $thread->load('tags', 'author', 'last_post', 'last_component');
             $threadprofile = new ThreadProfileResource($thread);
         }
         $posts = Post::where('thread_id',$thread->id)

@@ -100,11 +100,10 @@ class StorePost extends FormRequest
         if($thread->id!=$post->thread_id){abort(403);}
         $channel = $thread->channel();
         if(!($channel->allow_edit||auth('api')->user()->inRole('admin'))||($post->user_id!=auth('api')->id())){abort(403);}
-
+        if($post->type==='question'){abort(403);}//问题箱里已经回答了的问题，不能进行修改
         $post_data = $this->only('body', 'title', 'preview', 'is_anonymous', 'use_markdown', 'use_indentation', 'allow_as_longpost');
         if (!$channel->allow_anonymous){$post_data['is_anonymous']=false;}
         $post_data['last_edited_at']=Carbon::now();
-
         $post->update($post_data);
         return $post;
     }

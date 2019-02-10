@@ -32,6 +32,9 @@ class PostResource extends JsonResource
         if($this->type==='review'){
             $component = new ReviewResource($this->whenLoaded('review'));
         }
+        if($this->type==='answer'){
+            $component = new PostResource($this->whenLoaded('parent'));
+        }
         return [
             'type' => 'post',
             'id' => (int)$this->id,

@@ -22,6 +22,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\Firewall::class,//global firewall middleware to prevent certain ip address list from logging onto the system
         \App\Http\Middleware\EnableCrossRequestMiddleware::class,
         \App\Http\Middleware\ConvertStringBooleans::class,
+        //\App\Http\Middleware\RecordReviewRedirect::class,
     ];
 
     /**

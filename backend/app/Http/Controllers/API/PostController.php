@@ -72,7 +72,7 @@ class PostController extends Controller
     {
 
         $post = $form->generatePost();
-        return response()->success($post);
+        return response()->success(new PostResource($post));
     }
 
     /**
@@ -84,9 +84,7 @@ class PostController extends Controller
     public function show(Thread $thread,Post $post)
     {
         if($thread->id!=$post->thread_id){abort(403);}
-        return response()->success([
-            'post' =>  new PostResource($post),
-        ]);
+        return response()->success(new PostResource($post));
     }
 
 

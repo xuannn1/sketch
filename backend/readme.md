@@ -499,6 +499,48 @@ use_indentation(bool)：是否段首缩进
 recommend(bool)：是否推荐（推荐的话，书本首页、网站首页会显示这个评论，作者会得到通知）
 rating(int) 可填写1~10的评分，也可以空置，空置为0
 
+#### 4.5.7 history用户断点反馈信息/书签/阅读历史（制作中）
+
+##### 4.5.7.1 用户看自己的阅读历史  
+http://127.0.0.1:8000/api/history  
+方法：GET  
+授权：必须登陆，要么看自己的review，要么是管理员，可以看指定用户的history  
+选填项：  
+user_id(int)(只有管理填了有用)  
+withInDays(int):检索最后多少天内的历史  
+withBeforeDays(int):多少天前的历史  
+thread_id(int):和某本书有关的历史  
+withMinMinutes(int):只看阅读时间在多少分钟以上的记录  
+withMaxMinutes(int):只看阅读时间在多少分钟以下的记录  
+
+返回paginated历史，和总计时间  
+
+##### 4.5.7.2 前端定时（每天，或每积累一定程度，返回相关数据）  
+http://127.0.0.1:8000/api/history  
+方法：POST  
+授权：必须登陆  
+选填项：  
+readingRecords(json)：浏览历史记录  
+reviewRedirects(json)：书评重定向记录  
+格式示范如下：  
+```
+readingRecords(json) => [
+    [
+        thread_id => thread_id, //读过的书的id
+        last_read_component => post_id, //最后读到哪一章
+        reading_minutes => time,//读了多少分钟
+    ],[
+    ...//下一本书
+    ]
+],
+reviewRedirects(json) => [
+    [
+        review_id => post_id, // 这个文评的post_id
+    ],[
+    ...
+    ]
+]
+```
 
 ## 5. 如何测试
 #### 5.1 写一个新的专项测试文件

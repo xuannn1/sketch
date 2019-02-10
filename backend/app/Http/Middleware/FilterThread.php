@@ -3,8 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Helpers\ConstantObjects;
-use App\Models\Thread;
 
 class FilterThread
 {
