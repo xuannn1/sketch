@@ -30,7 +30,7 @@ return [
         'type' => 'homework',
         'allow_anonymous' => true,
         'allow_edit' => true,
-        'is_public' => true,
+        'is_public' => false,
     ],
     (object)[
         'id' => 4,

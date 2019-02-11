@@ -53,8 +53,6 @@ class PostResource extends JsonResource
                 'use_markdown' => (bool)$this->markdown,
                 'use_indentation' => (bool)$this->use_indentation,
                 'up_votes' => (int)$this->up_votes,
-                'xianyus' => (int)$this->xianyus,
-                'shengfans' => (int)$this->shengfans,
                 'replies' => (int)$this->replies,
                 'views' => (int)$this->views,
                 'is_folded' => (bool)$this->is_folded,

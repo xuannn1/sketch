@@ -22,6 +22,9 @@ class PostInfoResource extends JsonResource
         if($this->type==='review'){
             $component = new ReviewResource($this->whenLoaded('review'));
         }
+        if($this->type==='answer'){
+            $component = new PostInfoResource($this->whenLoaded('parent_brief'));
+        }
         return [
             'type' => 'post',
             'id' => (int)$this->id,
@@ -33,8 +36,6 @@ class PostInfoResource extends JsonResource
                 'created_at' => (string)$this->created_at,
                 'last_edited_at' => (string)$this->last_edited_at,
                 'up_votes' => (int)$this->up_votes,
-                'xianyus' => (int)$this->xianyus,
-                'shengfans' => (int)$this->shengfans,
                 'replies' => (int)$this->replies,
                 'views' => (int)$this->views,
                 'is_folded' => (bool)$this->is_folded,

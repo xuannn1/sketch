@@ -37,6 +37,7 @@ Route::apiResource('thread', 'API\ThreadController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
 Route::get('/thread/{thread}/recommendation', 'API\ThreadController@recommendation');//展示这个书籍名下recommendation的index
 Route::post('/thread/{thread}/synctags', 'API\ThreadController@synctags')->name('synctags');//用户给自己的thread修改对应的tag信息
+Route::patch('/thread/{thread}/post/{post}/turnToPost', 'API\PostController@turnToPost');//把任意的component转化成post
 
 //书评清单部分
 Route::resource('/thread/{thread}/review', 'API\ReviewController')->only(['store', 'update']);//书评增改

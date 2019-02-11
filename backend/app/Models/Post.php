@@ -39,6 +39,11 @@ class Post extends Model
         return $this->belongsTo(Post::class, 'reply_to_post_id');
     }
 
+    public function parent_brief()
+    {
+        return $this->belongsTo(Post::class, 'reply_to_post_id')->select($this->postbrief_columns);
+    }
+
     public function votes()
     {
         return $this->morphMany('App\Models\Vote', 'votable');

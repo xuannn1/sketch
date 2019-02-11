@@ -67,15 +67,9 @@ export namespace Database {
         use_markdown?:boolean;
         use_indentation?:boolean;
         up_votes?:UInt;
-        down_votes?:UInt;
-        fold_votes?:UInt;
-        funny_votes?:UInt;
-        xianyus?:UInt;
-        shengfans?:UInt;
         replies?:UInt;
         views?:UInt;
         is_folded?:boolean;
-        allow_as_longpost?:boolean;
         is_bianyuan?:boolean;
         last_responded_at?:Timestamp;
     }

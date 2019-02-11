@@ -108,8 +108,49 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function destroy(Thread $thread, $id)
+    public function destroy(Thread $thread, Post $post)
     {
-        //
+        if($post->user_id===auth('api')->id()){
+            if($post->type==='post'||$post->type==='comment'){
+                $post->delete();
+            }else{
+                
+            }
+        }
+    }
+
+    public function turnToPost(Thread $thread, Post $post)
+    {
+        $channel = $thread->channel();
+        if($post->thread_id===$thread->id&&auth('api')->id()===$thread->user_id){
+            if($post->type==='chapter'){
+                $chapter = $post->chapter;
+                if($chapter){
+                    $chapter->delete();
+                    $post->update([
+                        'type' => 'post',
+                        'last_edited_at' => Carbon::now(),
+                    ]);
+                }
+            }
+            if($post->type==='review'){
+                $review = $post->review;
+                if($review){
+                    $review->delete();
+                    $post->update([
+                        'type' => 'post',
+                        'last_edited_at' => Carbon::now(),
+                    ]);
+                }
+            }
+            if($post->type==='question'||$post->type==='answer'){
+                $post->update([
+                    'type' => 'post',
+                    'last_edited_at' => Carbon::now(),
+                ]);
+            }
+            return response()->success(new PostResource($post));
+        }
+        return response()->error(config('error.403'), 403);
     }
 }

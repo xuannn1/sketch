@@ -76,7 +76,7 @@ class Thread extends Model
     public function scopeInChannel($query, $withChannels)
     {
         if($withChannels){
-            $channels=json_decode($withChannels);
+            $channels=(array)json_decode($withChannels);
             if(!empty($channels)){
                 return $query->whereIn('channel_id', $channels);
             }
@@ -106,7 +106,7 @@ class Thread extends Model
     public function scopeWithTag($query, $withTags)
     {
         if ($withTags){
-            $tags=json_decode($withTags);
+            $tags=(array)json_decode($withTags);
             return $query->whereHas('tags', function ($query) use ($tags){
                 $query->whereIn('id', $tags);
             });
@@ -118,7 +118,7 @@ class Thread extends Model
     public function scopeExcludeTag($query, $excludeTags)
     {
         if ($excludeTags){
-            $tags=json_decode($excludeTags);
+            $tags=(array)json_decode($excludeTags);
             return $query->whereDoesntHave('tags', function ($query) use ($tags){
                 $query->whereIn('id', $tags);
             });
@@ -163,7 +163,7 @@ class Thread extends Model
             case 'collections'://收藏数
             return $query->orderBy('collections', 'desc');
             break;
-            case 'random'://收藏数
+            case 'random'://随机排序
             return $query->inRandomOrder();
             break;
             case 'total_char'://总字数
