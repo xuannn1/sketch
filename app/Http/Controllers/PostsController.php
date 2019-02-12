@@ -70,7 +70,7 @@ class PostsController extends Controller
         $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
         $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
         $book = $thread->book;
-        $post->load('owner','reply_to_post.owner');
+        $post->load('owner','reply_to_post');
         $postcomments = $post->allcomments()->with('owner')->paginate(config('constants.items_per_page'));
         $defaultchapter=$post->chapter_id;
         return view('posts.show',compact('post','thread','postcomments','defaultchapter','book', 'channel','label'))->with('show_as_book',false)->with('chapter_replied',true);

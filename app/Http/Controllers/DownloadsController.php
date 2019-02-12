@@ -76,7 +76,7 @@ class DownloadsController extends Controller
     {
         $txt = "";
         if($post->reply_to_post_id!=0){
-            $txt .= "回复".($post->reply_to_post->anonymous ? ($post->reply_to_post->majia ?? '匿名咸鱼') : $post->reply_to_post->owner->name).Helper::trimtext($post->reply_to_post->title . $post->reply_to_post->body, 20)."\n";
+            $txt .= "回复".Helper::trimtext($post->reply_to_post->title . $post->reply_to_post->body, 20)."\n";
         }elseif(($post->chapter_id!=0)&&(!$post->maintext)&&($post->chapter->mainpost->id>0)){
             $txt .= "评论".Helper::trimtext( $post->chapter->title . $post->chapter->mainpost->title . $post->chapter->mainpost->body , 20)."\n";
         }
@@ -107,7 +107,7 @@ class DownloadsController extends Controller
             ['thread_id', '=', $thread->id],
             ['id', '<>', $thread->post_id]
         ])
-        ->with(['owner','reply_to_post.owner','chapter','comments.owner'])
+        ->with(['owner','reply_to_post','chapter','comments.owner'])
         ->oldest()
         ->get();
         $thread->load(['channel','creator', 'tags', 'label', 'mainpost.comments.owner']);

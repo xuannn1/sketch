@@ -80,7 +80,7 @@ class ChaptersController extends Controller
                 ['chapter_id','=', $chapter->id],
                 ['maintext', '=', false],
                 ])
-            ->with(['owner', 'comments.owner', 'reply_to_post.owner'])
+            ->with(['owner', 'comments.owner', 'reply_to_post'])
             ->latest()
             ->paginate(config('constants.items_per_page'));
             if(!Auth::check()||(Auth::id()!=$thread->user_id)){

@@ -26,13 +26,6 @@
                 <h6 class="display-4">请 <a href="{{ route('login') }}">登录</a> 后参与讨论</h6>
                 @endif
             </div>
-            @if ($thread->mainpost->comments->count()>0)
-            <!-- 对本主题的点评 -->
-            <div class="panel-footer">
-                <?php $post = $thread->mainpost; $postcomments= $post->comments;?>
-                @include('posts._post_comments')
-            </div>
-            @endif
         </div>
         @endif
         <!-- 展示该主题下每一个帖子 -->

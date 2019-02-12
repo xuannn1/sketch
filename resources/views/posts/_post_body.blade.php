@@ -1,7 +1,7 @@
 <!-- 回复他人帖子的相关信息 -->
 @if($post->reply_to_post_id!=0)
 <div class="post-reply grayout">
-    回复&nbsp;<a href="{{ route('thread.showpost', $post->reply_to_post_id) }}">{{ $post->reply_to_post->anonymous ? ($post->reply_to_post->majia ?? '匿名咸鱼') : $post->reply_to_post->owner->name }}&nbsp;{{ Helper::trimtext($post->reply_to_post->title . $post->reply_to_post->body, 20) }}</a>
+    回复&nbsp;<a href="{{ route('thread.showpost', $post->reply_to_post_id) }}">{{ Helper::trimtext($post->reply_to_post->title . $post->reply_to_post->body, 20) }}</a>
 </div>
 @elseif(($post->chapter_id!=0)&&(!$post->maintext)&&($chapter_replied)&&($post->chapter->post_id>0))
 <div class="post-reply grayout">

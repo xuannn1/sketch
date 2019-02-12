@@ -62,33 +62,21 @@ class BooksController extends Controller
     {
         $thread = $book->thread;
         if($thread->id>0){
-            $book->load('chapters.mainpost_info','tongren');
-            $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
-            $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
-            $thread->load(['creator', 'tags', 'mainpost.comments.owner']);
             if(!Auth::check()||(Auth::id()!=$thread->user_id)){
                 $thread->increment('viewed');
             }
-            $posts = Post::allPosts($thread->id,$thread->post_id)->noMaintext()->userOnly(request('useronly'))->latest()
-            ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
+            $book->load('chapters.mainpost_info','tongren');
+            $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
+            $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
+            $thread->load(['creator', 'tags', 'mainpost']);
+            $posts = Post::allPosts($thread->id,$thread->post_id)
+            ->noMaintext()
+            ->userOnly(request('useronly'))
+            ->latest()
+            ->with('owner','reply_to_post','comments.owner')
+            ->paginate(config('constants.items_per_page'));
 
-            $xianyus = [];
-            $shengfans = [];
-            if((!request()->page)||(request()->page == 1)){
-                //dd('front page');
-                $xianyus = Cache::remember('-t'.$thread->id.'-xianyus', 10, function () use($thread) {
-                    $xianyus = $thread->xianyus;
-                    $xianyus->load('creator');
-                    return $xianyus;
-                });
-
-                $shengfans = Cache::remember('-t'.$thread->id.'-shengfans', 10, function () use($thread) {
-                    $shengfans = $thread->mainpost->shengfans;
-                    $shengfans->load('creator');
-                    return $shengfans;
-                });
-            }
-            return view('books.show', compact('book','thread', 'posts', 'xianyus', 'shengfans','channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
+            return view('books.show', compact('book','thread', 'posts', 'channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }

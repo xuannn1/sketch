@@ -64,7 +64,9 @@ class VotePostsController extends Controller
                         if($candidate){
                             $candidate->decrement('upvoted');
                         }
-                        $activity->delete();
+                        if($activity){
+                            $activity->delete();
+                        }
                     }else{//没有赞过的，赞
                         $record->update([
                             'upvoted' => true,

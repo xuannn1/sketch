@@ -60,45 +60,27 @@ class threadsController extends Controller
 
     public function show(Thread $thread, Request $request)
     {
-        if (request('recommendation')){
-            $recommendation = RecommendBook::find(request('recommendation'));
-            if($recommendation){
-                $recommendation->increment('clicks');
-            }
-        }
+        // if (request('recommendation')){
+        //     $recommendation = RecommendBook::find(request('recommendation'));
+        //     if($recommendation){
+        //         $recommendation->increment('clicks');
+        //     }
+        // }
         $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
         $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
-        ->with('owner','reply_to_post.owner','comments.owner')->paginate(config('constants.items_per_page'));
-        $posts->load('chapter');
-
+        ->with('owner','reply_to_post','comments.owner', 'chapter')->paginate(config('constants.items_per_page'));
+        //$thread->load(['creator', 'tags', 'mainpost']);
         if(!Auth::check()||(Auth::id()!=$thread->user_id)){
             $thread->increment('viewed');
         }
         $book = [];
-        $xianyus = [];
-        $shengfans = [];
+
         if ($thread->book_id>0){
             $book = $thread->book;
         }
-        if((!request()->page)||(request()->page == 1)){
-            //dd('front page');
-            $thread->load('mainpost','creator');
-            $xianyus = Cache::remember('-t'.$thread->id.'-xianyus', 10, function () use($thread) {
-                $xianyus = $thread->xianyus;
-                $xianyus->load('creator');
-                return $xianyus;
-            });
 
-            $shengfans = Cache::remember('-t'.$thread->id.'-shengfans', 10, function () use($thread) {
-                $shengfans = $thread->mainpost->shengfans;
-                $shengfans->load('creator');
-                return $shengfans;
-            });
-        }
-
-        //dd($thread->homework->registered_students());
-        return view('threads.show', compact('thread', 'posts','book','xianyus','shengfans','channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
+        return view('threads.show', compact('thread', 'posts','book', 'channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
     }
 
     public function createThreadForm($channel)
@@ -143,12 +125,12 @@ class threadsController extends Controller
     }
     public function showpost(Post $post, Request $request)
     {
-        if (request('recommendation')){
-            $recommendation = RecommendBook::find(request('recommendation'));
-            if($recommendation){
-                $recommendation->increment('clicks');
-            }
-        }
+        // if (request('recommendation')){
+        //     $recommendation = RecommendBook::find(request('recommendation'));
+        //     if($recommendation){
+        //         $recommendation->increment('clicks');
+        //     }
+        // }
         $thread = $post->thread;
         $totalposts = Post::allPosts($thread->id,$thread->post_id)
         ->where('created_at', '<', $post->created_at)
