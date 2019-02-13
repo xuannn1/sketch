@@ -69,7 +69,8 @@ class ReviewController extends Controller
     */
     public function update(Thread $thread, StoreReview $form, $id)
     {
-        $post = $form->updatereview($id);
+        $post = Post::find($id);
+        $post = $form->updatereview($post);
         $post->load('review.reviewee');
         return response()->success(new PostResource($post));
     }

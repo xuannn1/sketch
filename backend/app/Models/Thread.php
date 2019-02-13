@@ -67,7 +67,7 @@ class Thread extends Model
 
     public function collectors()
     {
-        return $this->belongsToMany('App\Models\User', 'collection_count', 'thread_id', 'user_id')->select(['id','name']);
+        return $this->belongsToMany('App\Models\User', 'collections', 'thread_id', 'user_id')->select(['id','name']);
     }
 
 

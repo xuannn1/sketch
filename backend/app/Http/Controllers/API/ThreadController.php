@@ -66,7 +66,7 @@ class ThreadController extends Controller
         //针对创建清单进行一个数值的限制
         if($channel->type==='list'){
             $list_count = Thread::where('user_id', auth('api')->id())->withType('list')->count();
-            if($list_count > $user->user_level){abort(403);}
+            if($list_count > auth('api')->user()->user_level){abort(403);}
         }
         if($channel->type==='box'){
             $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();

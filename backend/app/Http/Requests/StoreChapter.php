@@ -58,6 +58,7 @@ class StoreChapter extends StorePost
         // generate post first
         $post_data = $this->generatePostData();
         $post_data['type'] = 'chapter';
+        if($thread->is_anonymous){$post_data['is_anonymous']=true;}
 
         // save 把所有东西放进transaction里
         $post = DB::transaction(function() use($post_data, $chapter_data, $previous_chapter, $thread){
@@ -93,18 +94,16 @@ class StoreChapter extends StorePost
 
     public function updateChapter($post)
     {
-        $thread = $this->thread();
-        //validate can edit
+        $chapter = $post->chapter;
+        if((!$post)||(!$chapter)){ abort(404);}
+
         $this->canUpdatePost($post);
 
-        //generate post data
         $post_data = $this->generateUpdatePostData();
-        $chapter = $post->chapter;
 
-        //generate chapter data
         $chapter_data = $this->only('warning', 'annotation');
 
-        //use transaction to update models
+        $thread = $this->thread();
         $post = DB::transaction(function () use($post, $chapter, $post_data, $chapter_data, $thread) {
             $post->update($post_data);
             $chapter->update($chapter_data);
