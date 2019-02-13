@@ -25,9 +25,7 @@ class TagResource extends JsonResource
                 'is_primary' => (bool)$this->is_primary,
                 'channel_id' => (int)$this->channel_id,
                 'parent_id' => (int)$this->parent_id,
-                'tagged_books' => (int)$this->tagged_books,
-                'created_at' => (string)$this->created_at,
-                'updated_at' => (string)$this->updated_at,
+                'book_count' => (int)$this->book_count,
             ]
         ];
     }

@@ -22,7 +22,7 @@ class PostBriefResource extends JsonResource
                 'post_type' => (string) $this->type,
                 'thread_id' => (int)$this->thread_id,
                 'title' => (string)$this->title,
-                'preview' => (string)$this->preview,
+                'brief' => (string)$this->brief,
                 'created_at' => (string)$this->created_at,
                 'is_bianyuan' => (bool)$this->is_bianyuan,
             ],

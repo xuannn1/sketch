@@ -22,7 +22,7 @@ class CreateQuotesTable extends Migration
             $table->boolean('not_sad')->default(false);//是否并非丧题头
             $table->boolean('is_approved')->default(false);//是否已经在用
             $table->unsignedInteger('reviewer_id')->default(0);//审核人是谁
-            $table->unsignedInteger('xianyus')->default(0);//所获得咸鱼数目
+            $table->unsignedInteger('xianyu')->default(0);//所获得咸鱼数目
             $table->dateTime('created_at')->nullable();//创建时间
         });
     }

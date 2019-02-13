@@ -48,7 +48,8 @@ class ChapterController extends Controller
      */
     public function update(Thread $thread, StoreChapter $form, $id)
     {
-        $post = $form->updateChapter($id);
+        $post = Post::find($id);
+        $post = $form->updateChapter($post);
         return response()->success(new PostResource($post));
     }
 

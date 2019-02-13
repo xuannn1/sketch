@@ -28,15 +28,6 @@ class BookController extends Controller
 
     public function show(Thread $thread)
     {
-        // if((auth('api')->check()&&auth('api')->id()!=$thread->user_id)){
-        //     $thread->increment('views');
-        // }
-        // if(request()->reviewRedirect>0){
-        //     $review = Review::find(request()->reviewRedirect);
-        //     if(($review)&&($review->thread_id===$thread->id)){
-        //         $review->increment('redirects');
-        //     }
-        // }
         $thread->load('author', 'tags', 'last_component', 'last_post');
         $chapters = Post::postBrief()
         ->with('chapter')

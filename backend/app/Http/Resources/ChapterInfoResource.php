@@ -21,7 +21,7 @@ class ChapterInfoResource extends JsonResource
             'id' => (int)$this->id,
             'attributes' => [
                 'volumn_id' => (int)$this->volumn_id,
-                'characters' => (int)$this->characters,
+                'order_by' => (int)$this->order_by,
             ],
         ];
     }

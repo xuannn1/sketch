@@ -28,7 +28,7 @@ class PageObjects
             ->withType('book')
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
-            ->ordered('last_added_component_at')
+            ->ordered('add_component_at')
             ->take(config('constants.books_on_homepage'))
             ->get();
         });
@@ -41,7 +41,7 @@ class PageObjects
             ->withType('book')
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
-            ->ordered('last_responded_at')
+            ->ordered('responded_at')
             ->take(config('constants.books_on_homepage'))
             ->get();
         });
@@ -69,7 +69,7 @@ class PageObjects
             ->withType('book')
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
-            ->ordered('collections')
+            ->ordered('collection_count')
             ->take(config('constants.books_on_homepage'))
             ->get();
         });
@@ -83,7 +83,7 @@ class PageObjects
             ->withType('thread')
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
-            ->ordered('last_responded_at')
+            ->ordered('responded_at')
             ->take(config('constants.threads_on_homepage'))
             ->get();
         });
@@ -99,7 +99,7 @@ class PageObjects
             ->withTag($tag->id)
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
-            ->ordered('last_responded_at')
+            ->ordered('responded_at')
             ->take(config('constants.threads_on_homepage'))
             ->get();
         });
@@ -108,7 +108,7 @@ class PageObjects
     {
         return Cache::remember('recent_statuses', 1, function () {
             return Status::where('attachable_id', 0)
-            ->where('reply_to_status_id', 0)
+            ->where('reply_id', 0)
             ->orderBy('created_at', 'desc')
             ->take(config('constants.statuses_on_homepage'))
             ->get();
@@ -214,7 +214,7 @@ class PageObjects
             ->inChannel($channel_id)
             ->withBianyuan('none_bianyuan_only')
             ->with('author', 'tags')
-            ->ordered('last_responded_at')
+            ->ordered('responded_at')
             ->take(config('constants.threads_per_channel'))
             ->get();
         });

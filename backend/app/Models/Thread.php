@@ -67,7 +67,7 @@ class Thread extends Model
 
     public function collectors()
     {
-        return $this->belongsToMany('App\Models\User', 'collections', 'thread_id', 'user_id')->select(['id','name']);
+        return $this->belongsToMany('App\Models\User', 'collection_count', 'thread_id', 'user_id')->select(['id','name']);
     }
 
 
@@ -146,7 +146,7 @@ class Thread extends Model
     {
         switch ($ordered) {
             case 'latest_add_component'://最新更新
-            return $query->orderBy('last_added_component_at', 'desc');
+            return $query->orderBy('add_component_at', 'desc');
             break;
             case 'jifen'://总积分
             return $query->orderBy('jifen', 'desc');
@@ -160,8 +160,8 @@ class Thread extends Model
             case 'id'://创建顺序
             return $query->orderBy('id', 'asc');
             break;
-            case 'collections'://收藏数
-            return $query->orderBy('collections', 'desc');
+            case 'collection_count'://收藏数
+            return $query->orderBy('collection_count', 'desc');
             break;
             case 'random'://随机排序
             return $query->inRandomOrder();
@@ -170,7 +170,7 @@ class Thread extends Model
             return $query->orderBy('total_char', 'desc');
             break;
             default://默认按最后回复排序
-            return $query->orderBy('last_responded_at', 'desc');
+            return $query->orderBy('responded_at', 'desc');
         }
     }
 
@@ -242,11 +242,10 @@ class Thread extends Model
     public function count_char()//计算本thread内所有chapter的characters总和
     {
         return  DB::table('posts')
-        ->join('chapters', 'chapters.post_id', '=', 'posts.id')
-        ->where('posts.deleted_at', '=', null)
-        ->where('posts.type', '=', 'chapter')
-        ->where('posts.thread_id', '=', $this->id)
-        ->sum('chapters.characters');
+        ->where('deleted_at', '=', null)
+        ->whereNotIn('type',['post','comment'])
+        ->where('thread_id', '=', $this->id)
+        ->sum('char_count');
     }
 
     public function most_upvoted()//这个thread里面，普通的post中，最多赞的评论
@@ -254,7 +253,7 @@ class Thread extends Model
         return Post::postInfo()
         ->where('thread_id', $this->id)
         ->where('type', '=', 'post')
-        ->orderBy('up_votes', 'desc')
+        ->orderBy('upvote_count', 'desc')
         ->first();
     }
 

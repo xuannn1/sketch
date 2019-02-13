@@ -167,7 +167,7 @@ export namespace Request {
                               'weighted_jifen'|          //按平衡积分排序
                               'latest_created'|              //按创建时间排序
                               'id'|                      //按id排序
-                              'collections'|             //按收藏总数排序
+                              'collection_count'|             //按收藏总数排序
                               'total_char';              //按总字数排序
 
         export type withType = 'thread'|                 //仅返回讨论帖
@@ -312,17 +312,17 @@ export interface APIPost {
         req:{
             id:number;
             body:string;
-            preview:string;
+            brief:string;
             is_anonymous?:boolean;
             majia?:string;
-            reply_to_post_id?:number;
+            reply_id?:number;
             use_markdown?:boolean;
             use_indentation?:boolean;
             is_bianyuan?:boolean;
         };
         res:{
             body:string;
-            preview:string;
+            brief:string;
             thread_id:number;
             is_anonymous:boolean;
             use_markdown:boolean;
@@ -383,7 +383,7 @@ export interface APIPatch {
             tid:number;
             pid:number;
             body?:string;
-            preview?:string;
+            brief?:string;
             is_anonymous?:boolean;
             use_markdown?:boolean;
             use_indentation?:boolean;

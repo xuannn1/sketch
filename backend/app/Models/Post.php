@@ -29,19 +29,19 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function replies()
     {
-        return $this->hasMany(Post::class, 'reply_to_post_id');
+        return $this->hasMany(Post::class, 'reply_id');
     }
 
     public function parent()
     {
-        return $this->belongsTo(Post::class, 'reply_to_post_id');
+        return $this->belongsTo(Post::class, 'reply_id');
     }
 
     public function parent_brief()
     {
-        return $this->belongsTo(Post::class, 'reply_to_post_id')->select($this->postbrief_columns);
+        return $this->belongsTo(Post::class, 'reply_id')->select($this->postbrief_columns);
     }
 
     public function votes()
@@ -101,7 +101,7 @@ class Post extends Model
     public function scopeWithReplyTo($query, $withReplyTo)
     {
         if($withReplyTo){
-            return $query->where('reply_to_post_id', $withReplyTo);
+            return $query->where('reply_id', $withReplyTo);
         }
         return $query;
     }
@@ -123,7 +123,7 @@ class Post extends Model
             return $query->orderBy('created_at', 'desc');
             break;
             case 'most_replied'://按回应数量倒序
-            return $query->orderBy('replies', 'desc');
+            return $query->orderBy('reply_count', 'desc');
             break;
             case 'most_upvoted'://按赞数倒序
             return $query->orderBy('upvotes', 'desc');
@@ -132,7 +132,7 @@ class Post extends Model
             return $query->inRandomOrder();
             break;
             case 'latest_responded'://按最新被回应时间倒序
-            return $query->orderBy('last_responded_at', 'desc');
+            return $query->orderBy('responded_at', 'desc');
             break;
             default://默认按时间顺序排列，最早的在前面
             return $query->orderBy('created_at', 'asc');
@@ -205,13 +205,13 @@ class Post extends Model
             return $query->orderBy('posts.created_at', 'desc');
             break;
             case 'most_replied'://按回应数量倒序
-            return $query->orderBy('posts.replies', 'desc');
+            return $query->orderBy('posts.reply_count', 'desc');
             break;
             case 'most_upvoted'://按赞数倒序
             return $query->orderBy('posts.upvotes', 'desc');
             break;
             case 'latest_responded'://按最新被回应时间倒序
-            return $query->orderBy('posts.last_responded_at', 'desc');
+            return $query->orderBy('posts.responded_at', 'desc');
             break;
             case 'random'://随机排序
             return $query->inRandomOrder();
@@ -229,16 +229,16 @@ class Post extends Model
     public function favorite_reply()//这个post里面，回复它的postcomment中，最多赞的
     {
         return Post::postBrief()
-        ->where('reply_to_post_id', $this->id)
+        ->where('reply_id', $this->id)
         ->with('author')
-        ->orderBy('up_votes', 'desc')
+        ->orderBy('upvote_count', 'desc')
         ->first();
     }
 
     public function newest_reply()//这个post里面，回复它的里面，最新的
     {
         return Post::postBrief()
-        ->where('reply_to_post_id', $this->id)
+        ->where('reply_id', $this->id)
         ->with('author')
         ->orderBy('created_at', 'desc')
         ->first();

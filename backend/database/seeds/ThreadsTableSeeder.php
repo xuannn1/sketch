@@ -36,13 +36,13 @@ class ThreadsTableSeeder extends Seeder
                         ]);
                         $post->type = 'chapter';
                         $post->save();
-                        $thread->last_added_component_at = Carbon::now();
+                        $thread->add_component_at = Carbon::now();
                         $thread->last_component_id = $post->id;
                         $thread->save();
                     });
                     $posts = factory(Post::class)->times(2)->create(['thread_id' => $thread->id]);
                     $posts->each(function ($post) use ($thread){
-                        $thread->last_responded_at = Carbon::now();
+                        $thread->responded_at = Carbon::now();
                         $thread->last_post_id = $post->id;
                         $thread->save();
                     });
@@ -56,14 +56,14 @@ class ThreadsTableSeeder extends Seeder
                         ]);
                         $post->type = 'review';
                         $post->save();
-                        $thread->last_added_component_at = Carbon::now();
+                        $thread->add_component_at = Carbon::now();
                         $thread->last_component_id = $post->id;
                         $thread->save();
                     });
                 }
                 $posts = factory(Post::class)->times(4)->create(['thread_id' => $thread->id]);
                 $posts->each(function ($post) use ($thread){
-                    $thread->last_responded_at = Carbon::now();
+                    $thread->responded_at = Carbon::now();
                     $thread->last_post_id = $post->id;
                     $thread->save();
                 });

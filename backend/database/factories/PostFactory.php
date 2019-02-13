@@ -16,7 +16,7 @@ use Faker\Generator as Faker;
 $factory->define(App\Models\Post::class, function (Faker $faker) {
     return [
         'title' => $faker->sentence,
-        'preview' => $faker->sentence,
+        'brief' => $faker->sentence,
         'body' => $faker->paragraph,
         'user_id' => function(){
             return \App\Models\User::inRandomOrder()->first()->id;

@@ -21,12 +21,11 @@ class ChapterResource extends JsonResource
                 'id' => (int)$this->post_id,
                 'attributes' => [
                     'volumn_id' => (int)$this->volumn_id,
-                    'order_by' => (int)$this->order_by,
-                    'characters' => (int)$this->characters,
+                    'order_by' => (int)$this->order_by, 
                     'warning' => (string)$this->warning,
                     'annotation' => (string)$this->annotation,
-                    'previous_chapter_id' => (int)$this->previous_chapter_id,
-                    'next_chapter_id' => (int)$this->next_chapter_id,
+                    'previous_id' => (int)$this->previous_chapter_id,
+                    'next_id' => (int)$this->next_chapter_id,
                 ],
             ];
     }

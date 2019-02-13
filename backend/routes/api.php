@@ -52,8 +52,6 @@ Route::get('/book/{thread}', 'API\BookController@show');//显示书籍主页
 Route::get('/book/{thread}/chapterindex', 'API\BookController@chapterindex');//显示书籍所有chapter的列表
 //章节
 Route::resource('/thread/{thread}/chapter', 'API\ChapterController')->only(['store', 'update']);
-//编推（待改）
-Route::apiResource('recommendation', 'API\RecommendationController');
 
 //用户
 Route::apiResource('user', 'API\UserController');

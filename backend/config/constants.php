@@ -14,7 +14,7 @@ return [
     'short_recommendations_on_homepage' => 6,//首页显示多少个短推
     'long_recommendations_on_homepage' => 1,//首页显示多少个长推
     'QAs_on_homepage' => 2,//首页显示多少个问答
-    'preview_len' => 15,//在预览处显示多少个字符
+    'brief_len' => 15,//在预览处显示多少个字符
     'long_review' => 30,//达到这个字数的，可以算长推文
     'threads_per_channel' => 2,//论坛首页，每个channel展示多少个帖子
 

@@ -14,38 +14,47 @@ export namespace Database {
         password?:string;
         remember_token?:Token;
         created_at?:Timestamp;
+        deleted_at?:Timestamp;
+        title_id?:Increments;
     }
 
-    export interface User extends Users_Default {
+    export interface User_Info {
+        user_id?:Increments;
         user_level?:number;
         last_login_ip?:IPAddress;
         last_login_at?:string;
         invitation_token_id?:number;
         brief?:string;
-        sangdians?:number;
-        shengfans?:number;
-        xianyus?:number;
-        jifens?:number;
-        experience_points?:number;
-        up_votes?:number;
-        down_votes?:number;
-        funny_votes?:number;
-        fold_votes?:number;
-        continued_qiandaos?:number;
-        max_qiandaos?:number;
+        sangdian?:number;
+        shengfan?:number;
+        xianyu?:number;
+        jifen?:number;
+        exp?:number;
+        upvote_count?:number;
+        downvote_count?:number;
+        funnyvote_count?:number;
+        foldvote_count?:number;
+        continued_qiandao?:number;
+        max_qiandao?:number;
         last_qiandao_at?:string;
-        unread_reminders?:number;
-        unread_updates?:number;
-        reviewed_public_notices?:number;
-        message_limit?:number;
-        no_stranger_messages?:boolean;
-        no_upvote_reminders?:boolean;
-        total_book_characters?:number;
-        total_comment_characters?:number;
-        daily_clicks?:number;
-        daily_posts?:number
-        daily_book_characters?:number;
-        daily_comment_characters?:number;
+        // unread_reminders?:number;
+        // unread_updates?:number;
+        // reviewed_public_notices?:number;
+        // message_limit?:number;
+        // no_stranger_messages?:boolean;
+        // no_upvote_reminders?:boolean;
+        // total_book_characters?:number;
+        // total_comment_characters?:number;
+        // daily_clicks?:number;
+        // daily_posts?:number;
+        // daily_book_characters?:number;
+        // daily_comment_characters?:number;
+    }
+    export interface User_Profile {
+        user_id?:Increments;
+        description?:string;
+        use_markdown?:boolean;
+        use_indentation?:boolean;
     }
 
     export interface Post {
@@ -53,25 +62,27 @@ export namespace Database {
         post_type?:string;
         user_id?:Increments;
         thread_id?:Increments;
-        body?:string;
         title?:string;
-        preview?:string;
+        brief?:string;
+        body?:string;
         is_anonymous?:boolean;
         majia?:string;
         creation_ip?:IPAddress;
         created_at?:Timestamp;
-        last_edited_at?:Timestamp;
-        reply_to_post_id?:UInt;
-        reply_to_post_preview?:string;
+        edited_at?:Timestamp;
+        reply_id?:UInt;
+        reply_brief?:string;
         reply_position?:number;
-        use_markdown?:boolean;
-        use_indentation?:boolean;
-        up_votes?:UInt;
-        replies?:UInt;
-        views?:UInt;
         is_folded?:boolean;
         is_bianyuan?:boolean;
-        last_responded_at?:Timestamp;
+        use_markdown?:boolean;
+        use_indentation?:boolean;
+        upvote_count?:UInt;
+        reply_count?:UInt;
+        view_count?:UInt;
+        char_count?:UInt;
+        responded_at?:Timestamp;
+        deleted_at?:Timestamp;
     }
 
     export interface Thread {
@@ -81,31 +92,29 @@ export namespace Database {
         title:string;
         brief?:string;
         body?:string;
-        last_post_id?:Increments;
         is_anonymous?:boolean;
         majia?:string|null;
         creation_ip?:IPAddress;
         created_at?:Timestamp;
-        last_editor_id?:Increments;
-        last_edited_at?:Timestamp;
-        use_markdown?:boolean;
-        use_indentation?:boolean;
-        xianyus?:number;
-        shengfans?:number;
-        views?:number;
-        replies?:number;
-        collections?:number;
-        downloads?:number;
-        jifen?:number;
-        weighted_jifen?:number;
+        edited_at?:Timestamp;
         is_locked?:boolean;
         is_public?:boolean;
         is_bianyuan?:boolean;
         no_reply?:boolean;
-        last_responded_at?:Timestamp;
-        last_added_component_at?:Timestamp;
-        last_component_id?:Increments;
+        use_markdown?:boolean;
+        use_indentation?:boolean;
+        view_count?:number;
+        reply_count?:number;
+        collection_count?:number;
+        download_count?:number;
+        jifen?:number;
+        weighted_jifen?:number;
         total_char?:UInt;
+        responded_at?:Timestamp;
+        last_post_id?:Increments;
+        added_component_at?:Timestamp;
+        last_component_id?:Increments;
+        deleted_at?:Timestamp;
     }
 
     export interface Vote {
@@ -137,7 +146,7 @@ export namespace Database {
         is_primary:boolean;
         channel_id:UInt;
         parent_id:UInt;
-        tagged_books:UInt;
+        book_count:UInt;
     }
 
     export interface Chapter {
@@ -146,9 +155,8 @@ export namespace Database {
         order_by?:number;
         warning?:string;
         annotation?:string;
-        characters?:UInt;
-        previous_chapter_id?:Increments;
-        next_chapter_id?:Increments;
+        previous_id?:Increments;
+        next_id?:Increments;
     }
 
     export interface Volume {
@@ -191,10 +199,15 @@ export namespace Database {
     export interface Status {
         id?:Increments;
         user_id?:Increments;
+        brief?:string;
         body:string;
         attachable_type?:string;
         attachable_id?:Increments;
-        reply_to_status_id?:Increments;
+        reply_id?:Increments;
+        no_reply?:boolean;
+        reply_count?:Uint;
+        forward_count?:Uint;
+        upvote_count?:Uint;
         created_at:Timestamp;
     }
 
@@ -210,10 +223,11 @@ export namespace Database {
         id?:Increments;
         thread_id?:Uint;
         recommend?:boolean;
-        author_disapprove?:boolean;
         long?:boolean;
-        rating?:UInt;
-        redirects?:Uint;
+        author_disapprove?:boolean;
         editor_recommend?:boolean;
+        rating?:UInt;
+        redirect_count?:Uint;
+
     }
 }

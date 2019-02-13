@@ -33,7 +33,7 @@ class StoreReview extends FormRequest
         return [
             'reviewee_id' => 'numeric',
             'title' => 'string|max:30',
-            'preview' => 'string|max:50',
+            'brief' => 'string|max:50',
             'body' => 'string|max:20000',
             'use_markdown' => 'boolean',
             'use_indentation' => 'boolean',
@@ -61,7 +61,7 @@ class StoreReview extends FormRequest
         ->count();
         if($reviewed>0){abort(409);}
 
-        $post_data = $this->only('title', 'body', 'preview', 'use_markdown', 'use_indentation');
+        $post_data = $this->only('title', 'body', 'brief', 'use_markdown', 'use_indentation');
         $post_data['type']='review';
         $post_data['thread_id'] = $thread->id;
         $post_data['creation_ip'] = request()->getClientIp();
@@ -91,8 +91,8 @@ class StoreReview extends FormRequest
         if((!$post)||(!$review)){ abort(404);}
         if(($post->type!='review')||($post->user_id!=auth('api')->id())){abort(403);}
 
-        $post_data = $this->only('title', 'body', 'preview', 'use_markdown', 'use_indentation');
-        $post_data['last_edited_at'] = Carbon::now();
+        $post_data = $this->only('title', 'body', 'brief', 'use_markdown', 'use_indentation');
+        $post_data['edited_at'] = Carbon::now();
         //generate collection data
         $review_data = $this->only('recommend','rating');
         $review_data['long']=(bool)mb_strlen($this->body)>config('constants.long_review');

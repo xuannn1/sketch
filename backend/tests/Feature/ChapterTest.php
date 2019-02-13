@@ -34,7 +34,7 @@ class ChapterTest extends TestCase
 
         $data = [
             'title' => 'chapter1',
-            'preview' => 'preview1',
+            'brief' => 'brief1',
             'body' => '这是一个测试章节，天地蹦出一石猴.',
         ];
 
@@ -54,7 +54,7 @@ class ChapterTest extends TestCase
 
         $data = [
             'title' => 'chapter1',
-            'preview' => 'preview1',
+            'brief' => 'brief1',
             'body' => '这是一个测试章节，天地蹦出一石猴.',
         ];
 
@@ -77,7 +77,7 @@ class ChapterTest extends TestCase
 
         $data = [
             'title' => 'chapter1',
-            'preview' => 'preview1',
+            'brief' => 'brief1',
             'body' => '这是一个测试章节，天地蹦出一石猴.1',
         ];
 
@@ -86,7 +86,7 @@ class ChapterTest extends TestCase
 
         $data = [
             'title' => 'chapter2',
-            'preview' => 'preview2',
+            'brief' => 'brief2',
             'body' => '这是一个测试章节，天地蹦出一石猴.2',
         ];
 
@@ -107,7 +107,7 @@ class ChapterTest extends TestCase
 
         $data = [
             'title' => 'chapter1',
-            'preview' => 'preview1',
+            'brief' => 'brief1',
             'body' => '这是一个测试章节，天地蹦出一石猴.',
         ];
 
@@ -118,7 +118,7 @@ class ChapterTest extends TestCase
 
         $data = [
             'title' => 'modifiedchapt',
-            'preview' => 'modifiedchapt',
+            'brief' => 'modifiedchapt',
             'body' => 'modifiedchapt',
         ];
 

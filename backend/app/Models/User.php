@@ -66,7 +66,7 @@ class User extends Authenticatable
 
     public function collected_items()
     {
-        return $this->belongsToMany('App\Models\Thread', 'collections', 'user_id', 'thread_id');
+        return $this->belongsToMany('App\Models\Thread', 'collection_count', 'user_id', 'thread_id');
     }
 
 

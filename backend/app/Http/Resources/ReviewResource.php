@@ -25,10 +25,11 @@ class ReviewResource extends JsonResource
             'attributes' => [
                 'thread_id' => (int) $this->thread_id,
                 'recommend' => (bool) $this->recommend,
-                'rating' => (int) $this->rating,
+                'long' => (bool) $this->long,
                 'author_disapprove' => (bool) $this->author_disapprove,
                 'editor_recommend' => (bool) $this->editor_recommend,
-                'redirects' => (int) $this->redirects,
+                'rating' => (int) $this->rating,
+                'redirect_count' => (int) $this->redirects,
             ],
             'reviewee' => $reviewee,
         ];

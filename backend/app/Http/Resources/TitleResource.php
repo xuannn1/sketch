@@ -24,7 +24,7 @@ class TitleResource extends JsonResource
             'attributes' => [
                 'name' => (string)$this->name,
                 'description' => (string)$this->description,
-                'entitled' => (int)$this->entitled,
+                'user_count' => (int)$this->user_count,
                 'is_public' => $is_public,
             ]
         ];

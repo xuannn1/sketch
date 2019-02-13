@@ -45,7 +45,7 @@ class QAController extends Controller
             $parent->type = 'question';
             $parent->save();
             $post->type = 'answer';
-            $post->last_edited_at = Carbon::now();
+            $post->edited_at = Carbon::now();
             $post->save();
             return response()->success(new PostResource($post));
         }

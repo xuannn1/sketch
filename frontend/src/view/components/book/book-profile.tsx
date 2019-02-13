@@ -22,7 +22,7 @@ export class BookProfile extends React.Component<Props, State> {
 
             <div className="brief">
                 <a className="username" href={`${window.location.origin}/users/${author.id}`}>{author.attributes.name}</a>
-                <span className="publish-date">发表于{parseDate(attributes.created_at || '')} 修改于{parseDate(attributes.last_edited_at || '')}</span>
+                <span className="publish-date">发表于{parseDate(attributes.created_at || '')} 修改于{parseDate(attributes.edited_at || '')}</span>
             </div>
 
             { tags &&
@@ -38,7 +38,7 @@ export class BookProfile extends React.Component<Props, State> {
             <div className="counters">
                 <span><i className="fas fa-pencil-alt"></i>{attributes.total_char}</span> /
                 <span><i className="fas fa-eye"></i>{attributes.views}</span> / 
-                <span><i className="fas fa-comment-alt"></i>{attributes.replies}</span> /
+                <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span> /
                 <span><i className="fas fa-download"></i>{attributes.downloads}</span>
             </div>
 

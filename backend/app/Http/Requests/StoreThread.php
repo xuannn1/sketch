@@ -59,7 +59,7 @@ class StoreThread extends FormRequest
         if (!$channel->allow_anonymous){
             $thread_data['is_anonymous']=false;
         }
-        $thread_data['last_responded_at']=Carbon::now();
+        $thread_data['responded_at']=Carbon::now();
         $thread_data['user_id'] = auth('api')->id();
 
         if (!$this->isDuplicateThread($thread_data)){
@@ -93,7 +93,7 @@ class StoreThread extends FormRequest
         if (!$channel->allow_anonymous){
             $thread_data['is_anonymous']=false;
         }
-        $thread_data['last_edited_at']=Carbon::now();
+        $thread_data['edited_at']=Carbon::now();
 
         $thread = DB::transaction(function () use($thread, $thread_data) {
             $thread->update($thread_data);

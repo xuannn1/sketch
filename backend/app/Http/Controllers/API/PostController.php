@@ -95,9 +95,9 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(Thread $thread, StorePost $form, $id)
+    public function update(Thread $thread, StorePost $form, Post $post)
     {
-        $form->updatePost($id);
+        $form->updatePost($post);
         return response()->success(new PostResource($post));
 
     }
@@ -114,7 +114,7 @@ class PostController extends Controller
             if($post->type==='post'||$post->type==='comment'){
                 $post->delete();
             }else{
-                
+
             }
         }
     }
@@ -129,7 +129,7 @@ class PostController extends Controller
                     $chapter->delete();
                     $post->update([
                         'type' => 'post',
-                        'last_edited_at' => Carbon::now(),
+                        'edited_at' => Carbon::now(),
                     ]);
                 }
             }
@@ -139,14 +139,14 @@ class PostController extends Controller
                     $review->delete();
                     $post->update([
                         'type' => 'post',
-                        'last_edited_at' => Carbon::now(),
+                        'edited_at' => Carbon::now(),
                     ]);
                 }
             }
             if($post->type==='question'||$post->type==='answer'){
                 $post->update([
                     'type' => 'post',
-                    'last_edited_at' => Carbon::now(),
+                    'edited_at' => Carbon::now(),
                 ]);
             }
             return response()->success(new PostResource($post));

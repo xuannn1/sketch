@@ -33,7 +33,7 @@ class ReviewTest extends TestCase
         $data = [
             'reviewee_id' => $reviewee->id,
             'title' => '评《xxx》:根本不好看',
-            'preview' => 'sdalkenfaifoub',
+            'brief' => 'sdalkenfaifoub',
             'body'=> '是人性的堕落还是丧失？',
             'use_markdown' => true,
             'use_indentation' => false,
@@ -49,7 +49,7 @@ class ReviewTest extends TestCase
                 'attributes' => [
                     'title' => $data['title'],
                     'body' => $data['body'],
-                    'preview' => $data['preview'],
+                    'brief' => $data['brief'],
                     //'use_markdown' => $data['use_markdown'],
                     'use_indentation' => $data['use_indentation'],
                 ],
@@ -76,7 +76,7 @@ class ReviewTest extends TestCase
         $data = [
             'reviewee_id' => $reviewee->id,
             'title' => '评《xxx》:好看极了',
-            'preview' => '改改sdalkenfaifoub',
+            'brief' => '改改sdalkenfaifoub',
             'body'=> '改改是人性的堕落还是丧失？',
             'use_markdown' => true,
             'use_indentation' => false,
@@ -93,7 +93,7 @@ class ReviewTest extends TestCase
                 'attributes' => [
                     'title' => $data['title'],
                     'body' => $data['body'],
-                    'preview' => $data['preview'],
+                    'brief' => $data['brief'],
                     //'use_markdown' => $data['use_markdown'],
                     'use_indentation' => $data['use_indentation'],
                 ],
