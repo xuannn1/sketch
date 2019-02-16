@@ -11,7 +11,7 @@ class Post extends Model
     use SoftDeletes;
     use Traits\PostFilterable;
     use Traits\RegularTraits;
-
+    const UPDATED_AT = null;
     protected $dates = ['deleted_at'];
 
     protected $guarded = [];
@@ -54,6 +54,10 @@ class Post extends Model
     public function chapter()
     {
         return $this->belongsTo(Chapter::class, 'chapter_id')->withDefault();
+    }
+    public function replies()
+    {
+        return $this->hasMany(Post::class,'reply_id');
     }
 
 
