@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\ThreadResources;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TagResource extends JsonResource
+class TagInfoResource extends JsonResource
 {
     /**
     * Transform the resource into an array.

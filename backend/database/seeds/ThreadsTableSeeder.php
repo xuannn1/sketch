@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Chapter;
 use App\Models\Volumn;
 use App\Models\Recommendation;
+use App\Models\Review;
 use Carbon\Carbon;
 
 class ThreadsTableSeeder extends Seeder
@@ -18,16 +19,16 @@ class ThreadsTableSeeder extends Seeder
     */
     public function run()
     {
-        $channels = DB::table('channels')->select('id','type')->get();
+        $channels = collect(config('channel'));
         foreach($channels as $channel){
-            $threads = factory(Thread::class)->times(2)->create([
+            $threads = factory(Thread::class)->times(4)->create([
                 'channel_id' => $channel->id,
             ]);
             $threads->each(function ($thread) use ($channel){
-                $posts = factory(Post::class)->times(2)->create(['thread_id' => $thread->id]);
                 if($channel->type ==='book'){
                     //如果这是一本图书，给他添加示范章节
                     $volumn = factory(Volumn::class)->create();
+                    $posts = factory(Post::class)->times(4)->create(['thread_id' => $thread->id]);
                     $posts->each(function ($post) use ($volumn, $thread){
                         $chapter = factory(Chapter::class)->create([
                             'post_id' => $post->id,
@@ -35,20 +36,38 @@ class ThreadsTableSeeder extends Seeder
                         ]);
                         $post->type = 'chapter';
                         $post->save();
-                        $thread->last_added_component_at = Carbon::now();
+                        $thread->add_component_at = Carbon::now();
                         $thread->last_component_id = $post->id;
                         $thread->save();
                     });
                     $posts = factory(Post::class)->times(2)->create(['thread_id' => $thread->id]);
-                    $recommendation = factory(Recommendation::class)->create([
-                        'is_public' => true,
-                        'thread_id' => $thread->id,
-                    ]);
-                    $users = \App\Models\User::inRandomOrder()->take(2)->pluck('id')->toArray();
-                    $recommendation->authors()->sync($users);
+                    $posts->each(function ($post) use ($thread){
+                        $thread->responded_at = Carbon::now();
+                        $thread->last_post_id = $post->id;
+                        $thread->save();
+                    });
                 }
+                if($channel->type ==='list'){
+                    //如果这是文评楼，增加几个文评
+                    $posts = factory(Post::class)->times(4)->create(['thread_id' => $thread->id]);
+                    $posts->each(function ($post) use ($thread){
+                        $review = factory(Review::class)->create([
+                            'post_id' => $post->id,
+                        ]);
+                        $post->type = 'review';
+                        $post->save();
+                        $thread->add_component_at = Carbon::now();
+                        $thread->last_component_id = $post->id;
+                        $thread->save();
+                    });
+                }
+                $posts = factory(Post::class)->times(4)->create(['thread_id' => $thread->id]);
+                $posts->each(function ($post) use ($thread){
+                    $thread->responded_at = Carbon::now();
+                    $thread->last_post_id = $post->id;
+                    $thread->save();
+                });
             });
-
         }
     }
 }

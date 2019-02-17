@@ -8,7 +8,9 @@ use App\Models\Thread;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePost;
 use App\Http\Requests\UpdatePost;
-use App\Http\Resources\ThreadResources\PostResource;
+use App\Http\Resources\PostResource;
+use App\Http\Resources\ThreadProfileResource;
+use App\Http\Resources\ThreadBriefResource;
 
 class PostController extends Controller
 {
@@ -25,19 +27,39 @@ class PostController extends Controller
 
     }
 
-    public function index($thread, Request $request)
-    {
-
-    }
-
     /**
-    * Show the form for creating a new resource.
+    * Display a listing of the resource.
     *
     * @return \Illuminate\Http\Response
     */
-    public function create()
+    public function index(Thread $thread, Request $request)
     {
-        //
+        $posts = Post::where('thread_id',$thread->id)
+        ->with('author','tags')
+        ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
+        ->withComponent($request->withComponent)//可以选择是只看component，还是不看component
+        ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
+        ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
+        ->ordered($request->ordered)//排序方式
+        ->paginate(config('constants.posts_per_page'));
+
+        $channel = $thread->channel();
+        if($channel->type==='book'){
+            $posts->load('chapter');
+        }
+        if($channel->type==='review'){
+            $posts->load('review.reviewee');
+            $posts->review->reviewee->load('tags','author');
+        }
+
+        return response()->success([
+            'thread' => new ThreadBriefResource($thread),
+            'posts' => PostResource::collection($posts),
+            'paginate' => new PaginateResource($posts),
+        ]);
+
+        //return view('test', compact('posts'));
+        //上面这一行代码，是为了通过debugler测试query实际效率。
     }
 
     /**
@@ -50,7 +72,7 @@ class PostController extends Controller
     {
 
         $post = $form->generatePost();
-        return response()->success($post);
+        return response()->success(new PostResource($post));
     }
 
     /**
@@ -61,21 +83,10 @@ class PostController extends Controller
     */
     public function show(Thread $thread,Post $post)
     {
-        return response()->success([
-            'post' =>  new PostResource($post),
-        ]);
+        if($thread->id!=$post->thread_id){abort(403);}
+        return response()->success(new PostResource($post));
     }
 
-    /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
     * Update the specified resource in storage.
@@ -84,7 +95,7 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(UpdatePost $form, Thread $thread, Post $post)
+    public function update(Thread $thread, StorePost $form, Post $post)
     {
         $form->updatePost($post);
         return response()->success(new PostResource($post));
@@ -97,8 +108,49 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function destroy($id)
+    public function destroy(Thread $thread, Post $post)
     {
-        //
+        if($post->user_id===auth('api')->id()){
+            if($post->type==='post'||$post->type==='comment'){
+                $post->delete();
+            }else{
+
+            }
+        }
+    }
+
+    public function turnToPost(Thread $thread, Post $post)
+    {
+        $channel = $thread->channel();
+        if($post->thread_id===$thread->id&&auth('api')->id()===$thread->user_id){
+            if($post->type==='chapter'){
+                $chapter = $post->chapter;
+                if($chapter){
+                    $chapter->delete();
+                    $post->update([
+                        'type' => 'post',
+                        'edited_at' => Carbon::now(),
+                    ]);
+                }
+            }
+            if($post->type==='review'){
+                $review = $post->review;
+                if($review){
+                    $review->delete();
+                    $post->update([
+                        'type' => 'post',
+                        'edited_at' => Carbon::now(),
+                    ]);
+                }
+            }
+            if($post->type==='question'||$post->type==='answer'){
+                $post->update([
+                    'type' => 'post',
+                    'edited_at' => Carbon::now(),
+                ]);
+            }
+            return response()->success(new PostResource($post));
+        }
+        return response()->error(config('error.403'), 403);
     }
 }

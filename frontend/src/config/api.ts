@@ -54,7 +54,7 @@ export namespace ResData {
         type:'channel';
         id:number;
         attributes:Database.Channel;
-    } 
+    }
 
     export interface Thread {
         type:'thread';
@@ -98,6 +98,16 @@ export namespace ResData {
         total_pages:number;
     }
 
+    export function allocThreadPaginate () : ThreadPaginate {
+        return {
+            total: 1,
+            count: 1,
+            per_page: 1,
+            current_page: 1,
+            total_pages: 1,
+        };
+    }
+
     export interface Post {
         type:'post';
         id:number;
@@ -139,24 +149,30 @@ export namespace ResData {
         id:number;
         attributes:Database.Volume;
     }
+
+    export interface Date {
+        date:Timestamp;
+        timezone_type:number;
+        timezone:string;
+    }
 }
 
 export namespace Request {
     export namespace Thread {
         // （是否仅返回边缘/非边缘内容）
-        export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only'; 
+        export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only';
 
-        export type ordered = 'last_added_component_at'| //按最新更新时间排序
+        export type ordered = 'latist_added_component'| //按最新更新时间排序
                               'jifen'|                   //按总积分排序
                               'weighted_jifen'|          //按平衡积分排序
-                              'created_at'|              //按创建时间排序
+                              'latest_created'|              //按创建时间排序
                               'id'|                      //按id排序
-                              'collections'|             //按收藏总数排序
+                              'collection_count'|             //按收藏总数排序
                               'total_char';              //按总字数排序
 
         export type withType = 'thread'|                 //仅返回讨论帖
                                'book'|                   //仅返回书籍
-                               'collection_list'|        //仅返回收藏单
+                               'list'|        //仅返回收藏单
                                'column'|
                                'request'|
                                'homework';
@@ -193,16 +209,21 @@ export interface APIGet {
     }>;
     '/thread':APISchema<{
         req:{
-            channel:number[],
-            tag:number[],
-            excludeTag:number[],
-            withBianyuan:Request.Thread.withBianyuan,
-            ordered:Request.Thread.ordered,
+            channel?:number[],
+            tag?:number[],
+            excludeTag?:number[],
+            withBianyuan?:Request.Thread.withBianyuan,
+            ordered?:Request.Thread.ordered,
+            withType?:Request.Thread.withType,
         };
         res:{
             threads:ResData.Thread[],
             paginate:ResData.ThreadPaginate,
         };
+    }>;
+    '/homethread':APISchema<{
+        req:undefined;
+        res:{};
     }>;
     '/thread/:id':APISchema<{
         req:{
@@ -211,8 +232,25 @@ export interface APIGet {
         res:{
             thread:ResData.Thread,
             posts:ResData.Post[],
-            paginate:ResData.ThreadPaginate, 
+            paginate:ResData.ThreadPaginate,
         }
+    }>;
+    '/homebook':APISchema<{
+        req:undefined;
+        res:{};
+    }>;
+    '/book':APISchema<{
+        req:{
+            channel:number[];
+            tag:number[];
+            excludeTag:number[];
+            withBianyuan:Request.Thread.withBianyuan;
+            ordered:Request.Thread.ordered;
+        };
+        res:{
+            threads:ResData.Thread; //fixme:
+            paginate:ResData.ThreadPaginate;
+        };
     }>;
     '/book/:id':APISchema<{
         req:{
@@ -225,7 +263,7 @@ export interface APIGet {
             most_upvoted:ResData.Post;
             newest_comment:ResData.Post;
         }
-    }>
+    }>;
 }
 export interface APIPost {
     '/register':APISchema<{
@@ -250,19 +288,66 @@ export interface APIPost {
     }>;
     '/thread':APISchema<{
         req:{
-            channel:number;
             title:string;
             brief:string;
-            body:string; 
+            body:string;
+            no_reply?:boolean;
+            use_markdown?:boolean;
+            use_indentation?:boolean;
+            is_bianyuan?:boolean;
+            is_not_public?:boolean;
         };
         res:{
             thread:ResData.Thread;
         }
     }>;
+    '/thread/:id/synctags':APISchema<{
+        req:{
+            id:number;
+            tags:number[];
+        };
+        res:{};
+    }>;
+    '/thread/:id/post':APISchema<{
+        req:{
+            id:number;
+            body:string;
+            brief:string;
+            is_anonymous?:boolean;
+            majia?:string;
+            reply_id?:number;
+            use_markdown?:boolean;
+            use_indentation?:boolean;
+            is_bianyuan?:boolean;
+        };
+        res:{
+            body:string;
+            brief:string;
+            thread_id:number;
+            is_anonymous:boolean;
+            use_markdown:boolean;
+            use_indentation:boolean;
+            is_bianyuan:boolean;
+            last_responed_at:ResData.Date;
+            user_id:number;
+            type:'post';
+            created_at:Timestamp;
+            id:number;
+        };
+    }>;
+    '/thread/:id/chapter':APISchema<{
+        req:{
+            id:number;
+            title:string;
+            brief:string;
+            body:string;
+            annotation?:string;
+            annotation_infront?:boolean;
+        };
+        res:ResData.Chapter[];
+    }>;
     '/recommendation':APISchema<{
         req:{
-            thread:number;
-            brief:string;
             type:'short'|'long'|'topic';
             body?:string;
             users:number[];
@@ -274,11 +359,50 @@ export interface APIPost {
 export interface APIPatch {
     '/recommendation':APISchema<{
         req:{
-            brief?:string;
-            body?:string;
             is_public?:boolean;
             is_past?:boolean;
         };
         res:string; //fixme:
+    }>;
+    '/thread/:id':APISchema<{
+        req:{
+            id:number;
+            title?:string;
+            brief?:string;
+            body?:string;
+            no_reply?:boolean;
+            use_markdown?:boolean;
+            use_indentation?:boolean;
+            is_bianyuan?:boolean;
+            is_not_public?:boolean;
+        };
+        res:{}; //fixme:
+    }>;
+    '/thread/:tid/post/:pid':APISchema<{
+        req:{
+            tid:number;
+            pid:number;
+            body?:string;
+            brief?:string;
+            is_anonymous?:boolean;
+            use_markdown?:boolean;
+            use_indentation?:boolean;
+        };
+        res:{}; //fixme:
+    }>;
+}
+
+export interface APIPut {
+    '/thread/:tid/chapter/:cid':APISchema<{
+        req:{
+            tid:number;
+            cid:number;
+            title?:string;
+            brief?:string;
+            body?:string;
+            annotation?:string;
+            annotation_infront?:boolean;
+        };
+        res:{}; //fixme:
     }>;
 }

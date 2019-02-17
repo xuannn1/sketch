@@ -16,6 +16,7 @@ class CreateTitleUserTable extends Migration
         Schema::create('title_user', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('title_id');
+            $table->boolean('is_public')->default(true);//对外公示
             $table->primary(['user_id', 'title_id']);
         });
     }

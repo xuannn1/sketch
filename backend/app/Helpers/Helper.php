@@ -4,7 +4,6 @@ namespace App\Helpers;
 use Auth;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Genert\BBCode\BBCode;
-use App\Models\Channel;
 use App\Models\Tag;
 use Cache;
 use DB;

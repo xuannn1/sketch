@@ -7,11 +7,9 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Thread;
 use App\Models\Post;
-use App\Models\Chapter;
 
-use App\Http\Requests\UpdateChapter;
 use App\Http\Requests\StoreChapter;
-use App\Http\Resources\ThreadResources\ChapterResource;
+use App\Http\Resources\PostResource;
 
 
 class ChapterController extends Controller
@@ -24,24 +22,8 @@ class ChapterController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:api');
         $this->middleware('filter_thread');
-
-    }
-
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -50,38 +32,12 @@ class ChapterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Thread $thread, StoreChapter $chapterform)
+    public function store(Thread $thread, StoreChapter $form)
     {
-        $post = $chapterform -> generateChapter();
-        return response()->success(new ChapterResource($post));
+        $post = $form->generateChapter();
+        return response()->success(new PostResource($post));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Thread $thread, $id)
-    {
-        $post = Post::find($id);
-        if(($post)&&($post->type==='chapter')&&($post->chapter)){
-            return response()->success(new ChapterResource($post));
-        }else{
-            abort(404);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -90,20 +46,11 @@ class ChapterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Thread $thread, UpdateChapter $chapterform, $id)
+    public function update(Thread $thread, StoreChapter $form, $id)
     {
-        $post = $chapterform -> updateChapter($id);
-        return response()->success(new ChapterResource($post));
+        $post = Post::find($id);
+        $post = $form->updateChapter($post);
+        return response()->success(new PostResource($post));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

@@ -22,7 +22,7 @@ class CreateTagsTable extends Migration
             $table->boolean('is_primary')->default(false);//是否属于主要的tag（分两种情况，具有channellimit，和不具有channellimit-长短篇，科幻奇幻，）
             $table->unsignedInteger('channel_id')->default(0);//是否某个channel专属
             $table->unsignedInteger('parent_id')->default(0);//用于同人CP寻找同人原著，同人原著寻找同人作品其他分类
-            $table->unsignedInteger('tagged_books')->default(0);
+            $table->unsignedInteger('book_count')->default(0);
             $table->timestamps();
         });
     }

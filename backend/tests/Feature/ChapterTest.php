@@ -123,6 +123,7 @@ class ChapterTest extends TestCase
         ];
 
         $response = $this->put('api/thread/'.$thread->id.'/chapter/'.$content['data']['id'], $data)
+
         ->assertStatus(200);
     }
 

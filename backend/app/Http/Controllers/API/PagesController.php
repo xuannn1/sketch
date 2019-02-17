@@ -8,8 +8,11 @@ use App\Helpers\PageObjects;
 use App\Helpers\ConstantObjects;
 use App\Http\Resources\QuoteResource;
 use App\Http\Resources\StatusResource;
-use App\Http\Resources\ThreadResources\ThreadBriefResource;
-use App\Http\Resources\ThreadResources\TagProfileResource;
+use App\Http\Resources\ThreadBriefResource;
+use App\Http\Resources\TagResource;
+use App\Http\Resources\ChannelResource;
+use App\Http\Resources\PostResource;
+use App\Http\Resources\PostInfoResource;
 use Cache;
 
 class PagesController extends Controller
@@ -18,33 +21,66 @@ class PagesController extends Controller
     {
         return response()->success([
             'quotes' => QuoteResource::collection(PageObjects::recent_quotes()),
+            'recent_short_recommendations' => PostResource::collection(PageObjects::recent_short_recommendations()),
             'recent_added_chapter_books' => ThreadBriefResource::collection(PageObjects::recent_added_chapter_books()),
             'recent_responded_books' => ThreadBriefResource::collection(PageObjects::recent_responded_books()),
             'recent_responded_threads' => ThreadBriefResource::collection(PageObjects::recent_responded_threads()),
-            'recent_statuses' => StatusResource::collection(PageObjects::recent_statuses())
+            'digested_threads' => ThreadBriefResource::collection(PageObjects::digested_threads()),
+            'recent_statuses' => StatusResource::collection(PageObjects::recent_statuses()),
+            'recent_QAs' => PostResource::collection(PageObjects::recent_QAs()),
+
         ]);
     }
 
     public function homethread()
     {
-        return response()->success([
-            'recent_responded_threads' => ThreadBriefResource::collection(PageObjects::recent_responded_threads()),
-        ]);
+
+        $channels = ConstantObjects::allChannels();
+        $channel_threads = [];
+        foreach($channels as $channel){
+            if($channel->is_public){
+                $channel_threads[$channel->id] = [
+                    'channel' => new ChannelResource($channel),
+                    'threads' => ThreadBriefResource::collection(PageObjects::channel_threads($channel->id)),
+                ];
+            }
+        }
+        return response()->success($channel_threads);
     }
 
     public function homebook()
     {
         return response()->success([
+            'recent_long_recommendations' => PostResource::collection(PageObjects::recent_long_recommendations()),
+            'recent_short_recommendations' => PostResource::collection(PageObjects::recent_short_recommendations()),
+            'random_short_recommendations' => PostResource::collection(PageObjects::random_short_recommendations()),
+            'recent_custom_short_recommendations' => PostResource::collection(PageObjects::recent_custom_short_recommendations()),
+            'recent_custom_long_recommendations' => PostResource::collection(PageObjects::recent_custom_long_recommendations()),
             'recent_added_chapter_books' => ThreadBriefResource::collection(PageObjects::recent_added_chapter_books()),
             'recent_responded_books' => ThreadBriefResource::collection(PageObjects::recent_responded_books()),
+            'highest_jifen_books' => ThreadBriefResource::collection(PageObjects::highest_jifen_books()),
+            'most_collected_books' => ThreadBriefResource::collection(PageObjects::most_collected_books()),
         ]);
     }
 
     public function allTags()
     {
-        $tags = ConstantObjects::allTags();
         return response()->success([
-            'tags' => TagProfileResource::collection(ConstantObjects::allTags()),
+            'tags' => TagResource::collection(ConstantObjects::allTags()),
+        ]);
+    }
+
+    public function noTongrenTags()
+    {
+        return response()->success([
+            'tags' => TagResource::collection(ConstantObjects::noTongrenTags()),
+        ]);
+    }
+
+    public function allChannels()
+    {
+        return response()->success([
+            'channels' => ChannelResource::collection(ConstantObjects::allChannels()),
         ]);
     }
 }

@@ -2,7 +2,7 @@
 
 return [
     'homework_channel' => 3,//作业区是三区
-
+    'components_per_page' => 2, //书籍首页显示多少个component
     'books_per_page' => 2,//一页显示多少书
     'threads_per_page' => 2,//一页显示多少书/讨论帖
     'chapters_per_page' => 2, //一页显示多少章节
@@ -11,7 +11,12 @@ return [
     'books_on_homepage' => 2,//首页显示多少本最新图书
     'threads_on_homepage' => 2,//首页显示多少本最新讨论帖
     'statuses_on_homepage' => 2,//首页显示多少个最新原创状态
-    'preview_len' => 15,//在预览处显示多少个字符
+    'short_recommendations_on_homepage' => 6,//首页显示多少个短推
+    'long_recommendations_on_homepage' => 1,//首页显示多少个长推
+    'QAs_on_homepage' => 2,//首页显示多少个问答
+    'brief_len' => 15,//在预览处显示多少个字符
+    'long_review' => 30,//达到这个字数的，可以算长推文
+    'threads_per_channel' => 2,//论坛首页，每个channel展示多少个帖子
 
     // 'vote_info' => [
     //     'attitude_types' => [

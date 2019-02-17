@@ -29,5 +29,5 @@ abstract class TestCase extends BaseTestCase
     //     $this->artisan('passport:install');
     // }
 
-    
+
 }

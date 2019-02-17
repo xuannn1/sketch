@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\FormRequest;
-
+use App\Http\Requests\StorePost;
+//use App\Helpers\StringProcess;
 // common
 use Carbon\Carbon;
 use App\Helpers\ConstantObjects;
@@ -16,7 +16,7 @@ use App\Models\Chapter;
 // form request
 use DB;
 
-class StoreChapter extends FormRequest
+class StoreChapter extends StorePost
 {
     /**
     * Determine if the user is authorized to make this request.
@@ -26,8 +26,8 @@ class StoreChapter extends FormRequest
     public function authorize()
     {
         $thread = request()->route('thread');
-        $channel = ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
-        return auth('api')->id()===$thread->user_id && $channel->type==='book';
+        $channel = $thread->channel();
+        return auth('api')->id()===$thread->user_id && $channel->type==='book' && !$thread->is_locked;
     }
 
     /**
@@ -41,29 +41,24 @@ class StoreChapter extends FormRequest
             'title' => 'required|string|max:30',
             'brief' => 'string|max:50',
             'body' => 'required|string|max:20000',
-            'majia' => 'string|max:10',
+            'warning' => 'string|max:50',
             'annotation' => 'string|max:20000',
-
+            'use_markdown' => 'boolean',
+            'use_indentation' => 'boolean',
+            'is_bianyuan' => 'boolean',
         ];
     }
 
     public function generateChapter()
     {
         $thread = request()->route('thread');
-
-        //generate chapter info
         $previous_chapter = $thread->last_chapter;
-        $chapter_data = $this->only('title', 'brief', 'annotation');
-        if(($previous_chapter)&&($previous_chapter->chapter)){
-            $chapter_data['order_by'] = $previous_chapter->chapter->order_by + 1;
-            $chapter_data['previous_chapter_id'] = $previous_chapter->id;
-            $chapter_data['volumn_id'] = $previous_chapter->chapter->volumn_id; //默认跟前面的同一volumn
-        }
-        $chapter_data['characters'] = mb_strlen($this->body);
-        $chapter_data['annotation_infront'] = $this->annotation_infront ? true:false;
+        $chapter_data = $this->generateChapterData($previous_chapter);
 
         // generate post first
-        $post_data = $this->generatePostInfo();
+        $post_data = $this->generatePostData();
+        $post_data['type'] = 'chapter';
+        if($thread->is_anonymous){$post_data['is_anonymous']=true;}
 
         // save 把所有东西放进transaction里
         $post = DB::transaction(function() use($post_data, $chapter_data, $previous_chapter, $thread){
@@ -71,11 +66,11 @@ class StoreChapter extends FormRequest
             $post = Post::create($post_data);
             $chapter_data['post_id'] = $post->id;
             if (($previous_chapter)&&($previous_chapter->chapter)){
-                $previous_chapter->chapter->update(['next_chapter_id'=>$post->id]);
+                $previous_chapter->chapter->update(['next_id'=>$post->id]);
             }
             $chapter = Chapter::create($chapter_data);
             $thread->last_component_id = $post->id;
-            $thread->last_added_component_at = Carbon::now();
+            $thread->add_component_at = Carbon::now();
             $thread->total_char = $thread->count_char();
             $thread->save();
             return $post;
@@ -83,28 +78,40 @@ class StoreChapter extends FormRequest
         return $post;
     }
 
-    private function generatePostInfo()
+    public function generateChapterData($previous_chapter)
     {
-        $thread = request()->route('thread');
-        $post_data = $this->only('body');
-        $post_data['preview'] = $this->title.$this->brief;
-        $post_data['thread_id'] = $thread->id;
-        $post_data['creation_ip'] = request()->getClientIp();
-        $post_data['type'] = 'chapter'; // add type
-        $post_data['use_markdown']=$this->use_markdown ? true:false;
-        $post_data['use_indentation']=$this->use_indentation ? true:false;
-        $post_data['is_bianyuan']=($thread->is_bianyuan||$this->is_bianyuan) ? true:false;
-        $post_data['is_anonymous']=$thread->is_anonymous;
-        $post_data['user_id'] = auth('api')->id();
-        if ($this->isDuplicatePost($post_data)){ abort(409); }
-        return $post_data;
+        $chapter_data = $this->only('warning', 'annotation');
+        if($previous_chapter){
+            $chapter_data['previous_id'] = $previous_chapter->id;
+            //考虑到也有可能前一个并不是chapter，比如是poll，留出兼容空间。
+            if(($previous_chapter->type==='chapter')&&($previous_chapter->chapter)){
+                $chapter_data['order_by'] = $previous_chapter->chapter->order_by + 1;
+                $chapter_data['volumn_id'] = $previous_chapter->chapter->volumn_id; //默认跟前面的同一volumn
+            }
+        }
+        return $chapter_data;
     }
 
-    private function isDuplicatePost($post_data)
+    public function updateChapter($post)
     {
-        $last_post = Post::where('user_id', auth('api')->id())
-        ->orderBy('created_at', 'desc')
-        ->first();
-        return (!empty($last_post)) && (strcmp($last_post->body, $post_data['body']) === 0);
+        $chapter = $post->chapter;
+        if((!$post)||(!$chapter)){ abort(404);}
+
+        $this->canUpdatePost($post);
+
+        $post_data = $this->generateUpdatePostData();
+
+        $chapter_data = $this->only('warning', 'annotation');
+
+        $thread = $this->thread();
+        $post = DB::transaction(function () use($post, $chapter, $post_data, $chapter_data, $thread) {
+            $post->update($post_data);
+            $chapter->update($chapter_data);
+            $thread->total_char = $thread->count_char();
+            $thread->save();
+            return $post;
+        });
+
+        return $post;
     }
 }

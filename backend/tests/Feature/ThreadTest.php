@@ -15,7 +15,7 @@ class ThreadTest extends TestCase
 
         //为channel=1 原创channel插入thread
         $data = [
-            'channel' => 1,
+            'channel_id' => 1,
             'title' => 'test_thread1',
             'brief' => 'brief1',
             'body' => 'body'.$this->faker->paragraph,
@@ -61,7 +61,7 @@ class ThreadTest extends TestCase
         $this->actingAs($user, 'api');
 
         $data = [
-            'channel' => 1,
+            'channel_id' => 1,
             'title' => 'test_thread3',
             'brief' => 'brief3',
             'body' => 'body'.$this->faker->paragraph,

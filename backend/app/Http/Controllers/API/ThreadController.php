@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Thread;
 use App\Models\Post;
+use App\Models\Review;
 use App\Http\Requests\StoreThread;
 use App\Http\Requests\UpdateThread;
-use App\Http\Resources\ThreadResources\ThreadInfoResource;
-use App\Http\Resources\ThreadResources\ThreadProfileResource;
-use App\Http\Resources\ThreadResources\PostResource;
+use App\Http\Resources\ThreadInfoResource;
+use App\Http\Resources\ThreadProfileResource;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\PaginateResource;
 
 class ThreadController extends Controller
@@ -29,13 +30,13 @@ class ThreadController extends Controller
     public function index(Request $request)
     {
         $threads = Thread::threadInfo()
-        ->inChannel($request->channel)
-        ->isPublic()
-        ->with('author', 'tags')
+        ->inChannel($request->channels)
+        ->isPublic()//复杂的筛选
+        ->with('author', 'tags', 'last_component', 'last_post')
         ->withType($request->withType)
         ->withBianyuan($request->withBianyuan)
-        ->withTag($request->tag)
-        ->excludeTag($request->excludeTag)
+        ->withTag($request->tags)
+        ->excludeTag($request->excludeTags)
         ->ordered($request->ordered)
         ->paginate(config('constants.threads_per_page'));
         return response()->success([
@@ -59,6 +60,18 @@ class ThreadController extends Controller
     */
     public function store(StoreThread $form)//
     {
+        $channel = $form->channel();
+        if(empty($channel)||((!$channel->is_public)&&(!auth('api')->user()->canSeeChannel($channel->id)))){abort(403);}
+
+        //针对创建清单进行一个数值的限制
+        if($channel->type==='list'){
+            $list_count = Thread::where('user_id', auth('api')->id())->withType('list')->count();
+            if($list_count > auth('api')->user()->user_level){abort(403);}
+        }
+        if($channel->type==='box'){
+            $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
+            if($box_count >=1){abort(403);}//暂时每个人只能建立一个问题箱
+        }
         $thread = $form->generateThread();
         return response()->success(new ThreadProfileResource($thread));
     }
@@ -71,35 +84,33 @@ class ThreadController extends Controller
     */
     public function show(Thread $thread, Request $request)
     {
-        $thread->load('author','tags','recommendations.authors');
-        //dd($thread);
+        if($request->page>1){
+            $threadprofile = new ThreadBriefResource($thread);
+        }else{
+            $thread->load('tags', 'author', 'last_post', 'last_component');
+            $threadprofile = new ThreadProfileResource($thread);
+        }
         $posts = Post::where('thread_id',$thread->id)
-        ->with('author')
-        ->userOnly($request->userOnly)
-        ->orderBy('created_at','asc')
+        ->with('author', 'tags')
+        ->ordered('defualt')//排序方式
         ->paginate(config('constants.posts_per_page'));
-        //return view('test', compact('posts'));
-        //上面这一行代码，是为了通过debugler测试query实际效率。
 
-        //不是第一页的时候，文案的信息就不再返回了，减少带宽损耗
-        if(request()->page>1){
-            $thread->body = '';
+        $channel = $thread->channel();
+        if($channel->type==='book'){
+            $posts->load('chapter');
+        }
+        if($channel->type==='review'){
+            $posts->load('review.reviewee');
+            $posts->review->reviewee->load('tags','author');
         }
 
         return response()->success([
-            'thread' => new ThreadProfileResource($thread),
+            'thread' => $threadprofile,
             'posts' => PostResource::collection($posts),
             'paginate' => new PaginateResource($posts),
         ]);
 
     }
-
-    /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
 
     /**
     * Update the specified resource in storage.
@@ -108,9 +119,8 @@ class ThreadController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(UpdateThread $form, Thread $thread)
+    public function update(StoreThread $form, Thread $thread)
     {
-
         $thread = $form->updateThread($thread);
         return response()->success(new ThreadProfileResource($thread));
 
@@ -130,6 +140,17 @@ class ThreadController extends Controller
 
     public function synctags(Request $request, Thread $thread)
     {
-        json_decode($request->tags);
+        $original_tags = json_decode($request->tags);
+        $validated_tags = $thread->tags_validate($original_tags);
+        if($original_tags===$validated_tags){
+            $thread->remove_custom_tags();
+            $thread->tags()->syncWithoutDetaching($validated_tags);
+            return response()->success(['tags' => $validated_tags]);
+        }else{
+            return response()->error([
+                'original_tags' => $original_tags,
+                'validated_tags' => $validated_tags,
+            ], 422);
+        }
     }
 }

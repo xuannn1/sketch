@@ -15,7 +15,7 @@ class QuoteResource extends JsonResource
     public function toArray($request)
     {
         if (!$this->is_anonymous){
-            $author = new AuthorIdentifierResource($this->author);
+            $author = new AuthorIdentifierResource($this->whenLoaded('author'));
         }else{
             $author = [];
         }
@@ -24,7 +24,7 @@ class QuoteResource extends JsonResource
             'id' => (int)$this->id,
             'attributes' => [
                 'body' => (string)$this->body,
-                'xianyus' => (int)$this->xianyus,
+                'xianyu' => (int)$this->xianyu,
                 'is_anonymous' => (bool)$this->is_anonymous,
                 'majia' => (string)$this->majia,
             ],

@@ -36,8 +36,8 @@ class StoreStatus extends FormRequest
 
         $status_data = $this->only('body');
         $status_data['user_id'] = auth('api')->id();
-        if ($this->has('reply_to_status_id')&&(!empty(Status::find($this->reply_to_status_id)))){
-            $status_data['reply_to_status_id'] = $this->reply_to_status_id;
+        if ($this->has('reply_id')&&(!empty(Status::find($this->reply_id)))){
+            $status_data['reply_id'] = $this->reply_id;
         }
         if (!$this->isDuplicateStatus($status_data)){
             $status = DB::transaction(function () use($status_data) {

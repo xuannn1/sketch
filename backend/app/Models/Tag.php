@@ -12,6 +12,12 @@ class Tag extends Model
     {
         return $this->belongsToMany(Thread::class);
     }
+
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class);
+    }
+
     public function parent()
     {
         return $this->hasOne(Tag::class, 'parent_id');

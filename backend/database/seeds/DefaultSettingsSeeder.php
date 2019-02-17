@@ -12,126 +12,6 @@ class DefaultSettingsSeeder extends Seeder
     */
     public function run()
     {
-        {
-            DB::table('channels')->insert([
-                'id' => 1,
-                'channel_name' => '原创小说',//Channel No.1
-                'channel_explanation' => '原创小说板块从此进入',
-                'order_by' => '1',
-                'channel_rule' => '原创区版规是……',
-                'type' => 'book',
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 2,
-                'channel_name' => '同人衍生',//Channel No.2
-                'channel_explanation' => '同人衍生板块从此进入',
-                'order_by' => '2',
-                'channel_rule' => '同人区版规是……',
-                'type' => 'book',
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 3,
-                'channel_name' => '作业专区',//Channel No.2
-                'channel_explanation' => '站内作业板块从此进入',
-                'order_by' => '3',
-                'channel_rule' => '作业区的版规是……',
-                'is_public' => false,
-                'type' => 'homework',
-                'on_homepage' => false,
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 4,
-                'channel_name' => '读写交流',//Channel No.2
-                'channel_explanation' => '读写交流板块从此进入',
-                'order_by' => '4',
-                'channel_rule' => '读写交流区的版规是……',
-                'type' => 'thread',
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 5,
-                'channel_name' => '日常闲聊',//Channel No.2
-                'channel_explanation' => '闲谈、吐槽、求助、八卦、安利',
-                'order_by' => '5',
-                'channel_rule' => '日常闲聊区的版规是……',
-                'type' => 'thread',
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 6,
-                'channel_name' => '随笔',//Channel No.2
-                'channel_explanation' => '随笔板块从此进入',
-                'order_by' => '6',
-                'channel_rule' => '随笔区的版规是……',
-                'type' => 'thread',
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 7,
-                'channel_name' => '站务管理',//Channel No.2
-                'channel_explanation' => '站务管理板块从此进入',
-                'order_by' => '7',
-                'channel_rule' => '站务管理区的版规是……',
-                'type' => 'thread',
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 8,
-                'channel_name' => '违规举报',//Channel No.2
-                'channel_explanation' => '违规举报板块从此进入',
-                'order_by' => '8',
-                'channel_rule' => '违规举报区的版规是……',
-                'allow_edit' => false,
-                'type' => 'request',
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 9,
-                'channel_name' => '投诉仲裁',//Channel No.2
-                'channel_explanation' => '投诉仲裁板块从此进入',
-                'order_by' => '9',
-                'channel_rule' => '投诉仲裁区的版规是……',
-                'allow_edit' => false,
-                'allow_anonymous' => false,
-                'type' => 'request',
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 10,
-                'channel_name' => '后台管理',//Channel No.2
-                'channel_explanation' => '后台管理板块从此进入',
-                'order_by' => '10',
-                'channel_rule' => '后台管理区的版规是……',
-                'is_public' => false,
-                'type' => 'thread',
-                'on_homepage' => false,
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 11,
-                'channel_name' => '档案',//Channel No.2
-                'channel_explanation' => '档案板块从此进入',
-                'order_by' => '11',
-                'channel_rule' => '档案区的版规是……',
-                'is_public' => false,
-                'type' => 'thread',
-                'on_homepage' => false,
-            ]);
-
-            DB::table('channels')->insert([
-                'id' => 12,
-                'channel_name' => '后花园',//Channel No.2
-                'channel_explanation' => '后花园从此进入',
-                'order_by' => '12',
-                'channel_rule' => '后花园的版规是……',
-                'is_public' => false,
-                'type' => 'thread',
-                'on_homepage' => false,
-            ]);
-        }
         {//大类标签
             {//（同人大类 Channel No.2）影视、动漫、游戏、小说、真人、其他
                 DB::table('tags')->insert([
@@ -541,11 +421,6 @@ class DefaultSettingsSeeder extends Seeder
                 }
                 {//（边缘）-5 文章含肉超过20%，或题材包含人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转
                     DB::table('tags')->insert([
-                        'tag_name' => '高H',
-                        'is_bianyuan' => true,
-                        'tag_type' => '床戏性质'
-                    ]);
-                    DB::table('tags')->insert([
                         'tag_name' => '人兽',
                         'is_bianyuan' => true,
                         'tag_type' => '性癖',
@@ -655,15 +530,33 @@ class DefaultSettingsSeeder extends Seeder
                 }
                 {
                     DB::table('tags')->insert([
-                        'tag_name' => '长推',
+                        'tag_name' => '高H',
+                        'is_bianyuan' => true,
+                        'tag_type' => '床戏性质'
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '荤素均衡',
+                        'is_bianyuan' => false,
+                        'tag_type' => '床戏性质'
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '肉渣',
+                        'is_bianyuan' => false,
+                        'tag_type' => '床戏性质'
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '清水',
+                        'is_bianyuan' => false,
+                        'tag_type' => '床戏性质'
+                    ]);
+                }
+                {
+                    DB::table('tags')->insert([
+                        'tag_name' => '专题推荐',
                         'tag_type' => '编推',
                     ]);
                     DB::table('tags')->insert([
-                        'tag_name' => '短推',
-                        'tag_type' => '编推',
-                    ]);
-                    DB::table('tags')->insert([
-                        'tag_name' => '汇总',
+                        'tag_name' => '当前编推',
                         'tag_type' => '编推',
                     ]);
                     DB::table('tags')->insert([
@@ -680,7 +573,47 @@ class DefaultSettingsSeeder extends Seeder
                     ]);
 
                 }
+                {
+                    DB::table('tags')->insert([
+                        'tag_name' => '想读',
+                        'tag_type' => '阅读进度',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '正在读',
+                        'tag_type' => '阅读进度',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '养肥',
+                        'tag_type' => '阅读进度',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '弃文',
+                        'tag_type' => '阅读进度',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '已读',
+                        'tag_type' => '阅读进度',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '多次阅读',
+                        'tag_type' => '阅读反馈',
+                    ]);
+                    DB::table('tags')->insert([
+                        'tag_name' => '推荐',
+                        'tag_type' => '阅读反馈',
+                    ]);
+                }
             }
+        }
+        {
+            DB::table('titles')->insert([
+                'name' => '大咸者',
+                'description' => '用户等级大于7',
+            ]);
+            DB::table('titles')->insert([
+                'name' => '初来乍到',
+                'description' => '新注册咸鱼',
+            ]);
         }
         // InvitationToken::create([
         //     'user_id' => 1,

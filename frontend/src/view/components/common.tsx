@@ -91,14 +91,14 @@ export function ShortThread (props:{
             }}>{props.thread.attributes.body}</div>
         </div> 
 
-        { props.showDetail && props.thread.attributes.created_at && props.thread.attributes.last_edited_at && 
+        { props.showDetail && props.thread.attributes.created_at && props.thread.attributes.edited_at && 
             <div style={{
                 color: COLOR_GREY,
                 opacity: 0.7,
                 fontSize: '85%',
             }}>
                 <span style={{marginRight: '5px'}}>{props.thread.author.attributes.name}</span>
-                <span>{parseDate(props.thread.attributes.created_at)} / {parseDate(props.thread.attributes.last_edited_at)}</span>
+                <span>{parseDate(props.thread.attributes.created_at)} / {parseDate(props.thread.attributes.edited_at)}</span>
             </div>
         }
     </div>

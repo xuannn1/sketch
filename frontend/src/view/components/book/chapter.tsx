@@ -17,7 +17,7 @@ export class Chapter extends React.Component<Props, State> {
             {/* brief */}
             {/* username */}
             {/* created_at updated_at */}
-            {/* chars views replies */}
+            {/* chars views reply_count */}
             {/* body */}
             {/* thread mode */}
             {/* prev love reply next */}

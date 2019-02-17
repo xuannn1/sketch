@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Thread;
 use App\Models\Post;
-use App\Http\Resources\ThreadResources\BookInfoResource;
-use App\Http\Resources\ThreadResources\ThreadProfileResource;
-use App\Http\Resources\ThreadResources\ChapterInfoResource;
-use App\Http\Resources\ThreadResources\VolumnResource;
+use App\Http\Resources\ThreadProfileResource;
+use App\Http\Resources\PostInfoResource;
+use App\Http\Resources\VolumnResource;
+use App\Http\Resources\VolumnBriefResource;
 use App\Http\Resources\PaginateResource;
-use App\Http\Resources\ThreadResources\PostResource;
+use App\Http\Resources\PostBriefResource;
 
 class BookController extends Controller
 {
@@ -23,96 +23,55 @@ class BookController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show']);
-        $this->middleware('filter_thread')->only('show');
+        $this->middleware('filter_thread');
     }
 
-
-    public function index(Request $request)
+    public function show(Thread $thread)
     {
-        $threads = Thread::threadInfo()
-        ->inChannel($request->channel)
-        ->isPublic()
-        ->with('author', 'tags', 'last_chapter.chapter')
-        ->withType('book')
-        ->withBianyuan($request->withBianyuan ?? 'none_bianyuan_only')
-        ->withTag($request->tag)
-        ->excludeTag($request->excludeTag)
-        ->ordered($request->ordered ?? 'last_added_component_at')
-        ->paginate(config('constants.threads_per_page'));
-        return response()->success([
-            'threads' => BookInfoResource::collection($threads),
-            'paginate' => new PaginateResource($threads),
-        ]);
-        //return view('test',compact('threads'));
-    }
-
-    /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-    public function show(Thread $book)
-    {
-        $thread = $book;
-        $thread->load('author', 'tags', 'recommendations.authors');
-        $posts = Post::where('thread_id',$thread->id)
-        ->where('type', '<>', 'post')
-        ->with('chapter.volumn')
-        ->get();
-        $posts->sortBy('chapter.order_by');
-        $volumns = $posts->pluck('chapter.volumn')->unique();
-        $most_upvoted = Post::where('thread_id',$thread->id)
-        ->where('type', '=', 'post')
-        ->with('author')
-        ->orderBy('up_votes', 'desc')
-        ->first();
-        $newest_comment = Post::where('thread_id',$thread->id)
-        ->where('type', '=', 'post')
-        ->with('author')
-        ->orderBy('created_at', 'desc')
-        ->first();
+        $thread->load('author', 'tags', 'last_component', 'last_post');
+        $chapters = Post::postBrief()
+        ->with('chapter')
+        ->join('chapters', 'chapters.post_id','=','posts.id')
+        ->where('posts.thread_id',$thread->id)
+        ->where('posts.type', '=', 'chapter')
+        ->orderBy('chapters.order_by', 'asc')
+        ->paginate(config('constants.components_per_page'));
+        $most_upvoted = $thread->most_upvoted();
+        if($most_upvoted){
+            $most_upvoted = new PostBriefResource($most_upvoted);
+        }
+        $top_review = $thread->top_review();
+        if($top_review){
+            $top_review->load('review');
+            $top_review = new PostResource($top_review);
+        }
+        $volumns = $chapters->pluck('chapter.volumn')->unique();
         return response()->success([
             'thread' => new ThreadProfileResource($thread),
-            'chapters' => ChapterInfoResource::collection($posts),
-            'volumns' => VolumnResource::collection($volumns),
-            'most_upvoted' => new PostResource($most_upvoted),
-            'newest_comment' => new PostResource($newest_comment),
+            'chapters' => PostInfoResource::collection($chapters),
+            'paginate' => new PaginateResource($chapters),
+            'volumns' => VolumnBriefResource::collection($volumns),
+            'most_upvoted' => $most_upvoted,
+            'top_review' => $top_review
         ]);
     }
 
-    /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-    public function update(Request $request, $id)
+    public function chapterindex(Thread $thread)
     {
-        //
-    }
+        $thread->load('author', 'tags');
+        $chapters = Post::postBrief()
+        ->with('chapter')
+        ->join('chapters', 'chapters.post_id','=','posts.id')
+        ->where('posts.thread_id',$thread->id)
+        ->where('posts.type', '=', 'chapter')
+        ->orderBy('chapters.order_by', 'asc')
+        ->get();
 
-    /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-    public function destroy($id)
-    {
-        //
+        $volumns = $chapters->pluck('chapter.volumn')->unique();
+        return response()->success([
+            'thread' => new ThreadProfileResource($thread),
+            'chapters' => PostInfoResource::collection($chapters),
+            'volumns' => VolumnResource::collection($volumns),
+        ]);
     }
 }

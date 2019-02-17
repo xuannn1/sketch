@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Resources\ThreadResources;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\AuthorIdentifierResource;
 
 class ThreadBriefResource extends JsonResource
 {
@@ -16,7 +15,7 @@ class ThreadBriefResource extends JsonResource
     public function toArray($request)
     {
         if (!$this->is_anonymous){
-            $author = new AuthorIdentifierResource($this->author);
+            $author = new AuthorIdentifierResource($this->whenLoaded('author'));
         }else{
             $author = [];
         }
@@ -25,12 +24,13 @@ class ThreadBriefResource extends JsonResource
             'id' => (int)$this->id,
             'attributes' => [
                 'title' => (string)$this->title,
+                'brief' => (string)$this->brief,
                 'is_anonymous' => (bool)$this->is_anonymous,
                 'majia' => (string)$this->majia,
             ],
             'author' => $author,
-            'channel'        => new ChannelBriefResource($this->simpleChannel()),
-            'tags' => TagResource::collection($this->tags)
+            'channel'        => new ChannelBriefResource($this->channel()),
+            'tags' => TagInfoResource::collection($this->whenLoaded('tags'))
         ];
     }
 }

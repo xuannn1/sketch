@@ -3,8 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Helpers\ConstantObjects;
-use App\Models\Thread;
 
 class FilterThread
 {
@@ -18,9 +16,9 @@ class FilterThread
     public function handle($request, Closure $next)
     {
         $thread = $request->route('thread');
+        $channel = $thread->channel();
         if($thread){
-            $channel= ConstantObjects::allChannels()->keyBy('id')->get($thread->channel_id);
-            if((($thread->is_public)&&($channel->is_public))||auth('api')->check()&&(auth('api')->user()->canSeeChannel($channel)||auth('api')->id()===$thread->user_id)){
+            if((($thread->is_public)&&($channel->is_public))||auth('api')->check()&&(auth('api')->user()->canSeeChannel($thread->channel_id)||auth('api')->id()===$thread->user_id)){
                 return $next($request);
             }
             return response()->error(config('error.403'),403);

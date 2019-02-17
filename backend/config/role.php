@@ -10,13 +10,11 @@ return [
         'editor' => [
             'can_see_homework' => true,
             'can_review_quotes' => true,
-            'can_recommend' => true,
         ],
         'senior_editor' => [
             'can_see_homework' => true,
             'can_review_quotes' => true,
             'can_recommend' => true,
-            'can_review_recommendation' => true,
         ],
         'admin' => [
             'can_see_anything' => true,
