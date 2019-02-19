@@ -7,7 +7,7 @@
     "require": {
         "php": ">=7.0.0",
         "components/font-awesome": "^5.0",
-        "fideloper/proxy": "^4.1",
+        "fideloper/proxy": "^4.0",
         "genert/bbcode": "^1.1",
         "graham-campbell/markdown": "^10.0.0",
         "laravel/framework": "5.6.*",
