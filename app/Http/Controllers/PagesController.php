@@ -175,7 +175,7 @@ class PagesController extends Controller
         $user = Auth::user();
         $cool_time = 1;
         if((!Auth::user()->admin)&&($user->lastsearched_at>Carbon::now()->subMinutes($cool_time)->toDateTimeString())){
-            return redirect()->back()->with('warning',(string)$cool_time.'1分种内只能进行一次搜索');
+            return redirect('/')->with('warning','1分种内只能进行一次搜索');
         }else{
             $user->lastsearched_at=Carbon::now();
             $user->save();
@@ -212,7 +212,7 @@ class PagesController extends Controller
             ->appends($request->only('page','search','tongren_cp','search_options'));
             return view('pages.search_books', compact('books'))->with('show_as_collections', false);
         }
-        return redirect()->back()->with('warning','请输入搜索内容');
+        return redirect('/')->with('warning','请输入搜索内容');
     }
 
     public function contacts()
