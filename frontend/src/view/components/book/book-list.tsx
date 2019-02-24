@@ -1,16 +1,13 @@
 import * as React from 'react';
 import { Card } from '../common';
+import { ResData } from '../../../config/api';
+import { ROUTE } from '../../../config/route';
+import { Link } from 'react-router-dom';
 
 interface Props {
-    title:string;
-    brief:string;
+    thread:ResData.Thread;
     latestChapter:string;
-    tags:string[];
-    author:string;
-    views:number;
-    replies:number;
-    total_char:number;
-    isNew?:boolean;
+    chapterId:string;
 }
 
 interface State {
@@ -18,19 +15,24 @@ interface State {
 
 export class BookList extends React.Component<Props, State> {
     public render () {
+        const { attributes, id, author, channel, tags, recommendations } = this.props.thread;
         return <Card className="thread-list">
-            <div className="title">{ this.props.title }</div>
-            <div className="biref">{ this.props.brief }</div>
-            <div className="latest-chapter">最新章节: { this.props.latestChapter }</div>
-            <div className="tags">
-                { this.props.tags.map((tag, i) => <div className="tag" key={i}>{tag}</div>)}
-            </div>
+            <a className="title" href={`${window.location.origin}${ROUTE.books}/${id}`}>{ attributes.title }</a>
+            <div className="biref">{ attributes.brief }</div>
+            <a className="latest-chapter" href={'' /* fixme: */}>最新章节: { this.props.latestChapter }</a>
+            { tags &&
+                <div className="tags">
+                    { tags.map((tag, i) => 
+                        <a className="tag" key={i} href={`${window.location.origin}${ROUTE.books}/?tag=${tag.id}`}>{tag.attributes.tag_name}</a>
+                    )}
+                </div> 
+            }
             <div className="meta">
-                <span className="author">{this.props.author}</span>
+                <a className="author" href={`${window.location.origin}${ROUTE.users}/${author.id}`}>{author.attributes.name}</a>
                 <div className="counters">
-                    <span><i className="fas fa-pencil-alt"></i>{this.props.total_char}</span> /
-                    <span><i className="fas fa-eye"></i>{this.props.views}</span> / 
-                    <span><i className="fas fa-comment-alt"></i>{this.props.replies}</span> /
+                    <span><i className="fas fa-pencil-alt"></i>{attributes.total_char}</span> /
+                    <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 
+                    <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span> /
                 </div>
             </div>
         </Card>;

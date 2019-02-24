@@ -21,7 +21,8 @@ export class Book extends React.Component<Props, State> {
             chapters: [],
             volumns: [],
             most_upvoted: ResData.allocPost(),
-            newest_comment: ResData.allocPost(),
+            top_review: null,
+            paginate: ResData.allocThreadPaginate(),
         }
     };
 
