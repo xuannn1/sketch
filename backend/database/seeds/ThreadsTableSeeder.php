@@ -27,7 +27,9 @@ class ThreadsTableSeeder extends Seeder
             $threads->each(function ($thread) use ($channel){
                 if($channel->type ==='book'){
                     //如果这是一本图书，给他添加示范章节
-                    $volumn = factory(Volumn::class)->create();
+                    $volumn = factory(Volumn::class)->create([
+                        'thread_id' => $thread->id,
+                    ]);
                     $posts = factory(Post::class)->times(4)->create(['thread_id' => $thread->id]);
                     $posts->each(function ($post) use ($volumn, $thread){
                         $chapter = factory(Chapter::class)->create([

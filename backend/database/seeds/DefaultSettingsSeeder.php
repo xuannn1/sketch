@@ -13,6 +13,12 @@ class DefaultSettingsSeeder extends Seeder
     public function run()
     {
         {//大类标签
+            DB::table('tags')->insert([
+                'tag_name' => '其他原创',
+                'channel_id' => '1',
+                'tag_type' => '大类',
+                'is_primary' => true,
+            ]);
             {//（同人大类 Channel No.2）影视、动漫、游戏、小说、真人、其他
                 DB::table('tags')->insert([
                     'tag_name' => '影视',
@@ -85,11 +91,11 @@ class DefaultSettingsSeeder extends Seeder
             }
             {//（板块：读写交流 Channel No.4） 分享、探讨、评文、自荐、推文
                 DB::table('tags')->insert([
-                    'tag_name' => '写作探讨',
+                    'tag_name' => '技法探讨',
                     'channel_id' => '4',
                     'tag_type' => '大类',
                     'is_primary' => true,
-                    'tag_explanation' => '除了卡文，也许还可以做点别的',
+                    'tag_explanation' => '写作探讨',
                 ]);
                 DB::table('tags')->insert([
                     'tag_name' => '评文推文',
@@ -117,6 +123,13 @@ class DefaultSettingsSeeder extends Seeder
                     'tag_type' => '大类',
                     'is_primary' => true,
                     'tag_explanation' => '来自作业区的问候',
+                ]);
+                DB::table('tags')->insert([
+                    'tag_name' => '写手调查',
+                    'channel_id' => '4',
+                    'tag_type' => '大类',
+                    'is_primary' => true,
+                    'tag_explanation' => '全面测试写手素质',
                 ]);
             }
             {//（板块：日常闲聊 Channel No.5） 闲谈、吐槽、求助、八卦、安利
@@ -161,6 +174,12 @@ class DefaultSettingsSeeder extends Seeder
                     'tag_type' => '大类',
                     'is_primary' => true,
                 ]);
+                DB::table('tags')->insert([
+                    'tag_name' => '主题讨论',
+                    'channel_id' => '5',
+                    'tag_type' => '大类',
+                    'is_primary' => true,
+                ]);
             }
             {
                 DB::table('tags')->insert([
@@ -169,7 +188,6 @@ class DefaultSettingsSeeder extends Seeder
                     'tag_type' => '大类',
                     'is_primary' => true,
                 ]);
-
                 DB::table('tags')->insert([
                     'tag_name' => '散文',
                     'channel_id' => '6',
@@ -189,7 +207,7 @@ class DefaultSettingsSeeder extends Seeder
                     'is_primary' => true,
                 ]);
                 DB::table('tags')->insert([
-                    'tag_name' => '戏剧',
+                    'tag_name' => '剧本',
                     'channel_id' => '6',
                     'tag_type' => '大类',
                     'is_primary' => true,
@@ -213,7 +231,7 @@ class DefaultSettingsSeeder extends Seeder
                     'is_primary' => true,
                 ]);
                 DB::table('tags')->insert([
-                    'tag_name' => '其他随笔',
+                    'tag_name' => '杂文',
                     'channel_id' => '6',
                     'tag_type' => '大类',
                     'is_primary' => true,
@@ -228,7 +246,7 @@ class DefaultSettingsSeeder extends Seeder
                     'is_primary' => true,
                 ]);
                 DB::table('tags')->insert([
-                    'tag_name' => '账号',
+                    'tag_name' => '账号问题',
                     'channel_id' => '7',
                     'tag_type' => '大类',
                     'is_primary' => true,
@@ -272,7 +290,7 @@ class DefaultSettingsSeeder extends Seeder
                     'is_primary' => true,
                 ]);
                 DB::table('tags')->insert([
-                    'tag_name' => '历史记录',
+                    'tag_name' => '违规记录',
                     'channel_id' => '8',
                     'tag_type' => '大类',
                     'is_primary' => true,
@@ -292,7 +310,7 @@ class DefaultSettingsSeeder extends Seeder
                     'is_primary' => true,
                 ]);
                 DB::table('tags')->insert([
-                    'tag_name' => '历史记录',
+                    'tag_name' => '仲裁记录',
                     'channel_id' => '9',
                     'tag_type' => '大类',
                     'is_primary' => true,
@@ -613,6 +631,22 @@ class DefaultSettingsSeeder extends Seeder
             DB::table('titles')->insert([
                 'name' => '初来乍到',
                 'description' => '新注册咸鱼',
+            ]);
+            DB::table('titles')->insert([
+                'name' => '编辑',
+                'description' => '废文网编辑组成员',
+            ]);
+            DB::table('titles')->insert([
+                'name' => '管理员',
+                'description' => '废文网管理员',
+            ]);
+            DB::table('titles')->insert([
+                'name' => '元老',
+                'description' => '废文网退役管理员',
+            ]);
+            DB::table('titles')->insert([
+                'name' => '资深咸鱼',
+                'description' => '在废文深水遨游、咸之又咸的鱼。',
             ]);
         }
         // InvitationToken::create([

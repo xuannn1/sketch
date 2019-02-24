@@ -1,10 +1,10 @@
 <?php
 return [
     'roles' => [
-        'student' => [
+        'senior-user' => [
             'can_see_homework' => true,
         ],
-        'homework-reviewer' => [
+        'homeworker' => [
             'can_see_homework' => true,
         ],
         'editor' => [
@@ -21,20 +21,14 @@ return [
             'can_review_anything' => true,
             'can_manage_anything' => true,
         ],
-        'channel_admin' => [
-            'can_manage_channel' => true,
-            'can_see_channel' => true,
-        ],
-        'super_admin' => [
-            'can_manage_admin' => true,
-        ],
-        'no_post_user' => [
+        
+        'no_post' => [
             'can_not_post' => true,
         ],
-        'no_login_user' => [
+        'no_login' => [
             'can_not_login' => true,
         ],
-        'no_homework_user' => [
+        'no_homework' => [
             'can_not_register_homework' => true,
         ],
     ],

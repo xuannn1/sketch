@@ -199,6 +199,7 @@ class PageObjects
     {
         return Cache::remember('recent_QAs', 1, function () {
             $recent_QAs =  Post::withType('answer')
+            ->ordered('latest_created')
             ->take(config('constants.QAs_on_homepage'))
             ->get();
             $recent_QAs->load('parent', 'author');

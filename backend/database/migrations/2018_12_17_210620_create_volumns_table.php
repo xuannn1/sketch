@@ -15,6 +15,7 @@ class CreateVolumnsTable extends Migration
     {
         Schema::create('volumns', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('thread_id')->default(0);//属于哪本图书
             $table->string('title')->nullable();//卷标题
             $table->string('brief')->nullable();//卷简介
             $table->text('body')->nullable();//卷正文

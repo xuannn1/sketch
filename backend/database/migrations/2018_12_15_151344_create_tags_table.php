@@ -15,7 +15,7 @@ class CreateTagsTable extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('tag_name', 10)->nullable();//标签简称
+            $table->string('tag_name', 10)->unique();//标签简称
             $table->string('tag_explanation')->nullable();//标签详解
             $table->string('tag_type', 10)->nullable();//标签类别，原来的taginfo内容
             $table->boolean('is_bianyuan')->default(false);//是否边缘限制专有

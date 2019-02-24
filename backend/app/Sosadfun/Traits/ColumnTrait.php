@@ -9,8 +9,8 @@ trait ColumnTrait{
 
     protected $post_columns = array('id', 'type', 'user_id', 'thread_id', 'title', 'brief','body', 'is_anonymous', 'majia', 'creation_ip', 'created_at', 'edited_at', 'reply_id', 'reply_brief', 'reply_position', 'use_markdown', 'use_indentation', 'upvote_count', 'reply_count', 'view_count', 'is_folded', 'is_longpost', 'is_bianyuan', 'responded_at', 'deleted_at')  ; // 从这里排除可以不检出的column
 
-    protected $postinfo_columns = array ('id', 'type', 'thread_id', 'title', 'brief', 'created_at', 'edited_at', 'upvote_count', 'reply_count', 'view_count', 'is_folded', 'is_bianyuan', 'responded_at');
+    protected $postinfo_columns = array ('id', 'type', 'user_id', 'thread_id', 'title', 'brief', 'created_at', 'edited_at', 'upvote_count', 'reply_count', 'view_count', 'is_folded', 'is_bianyuan', 'responded_at');
 
-    protected $postbrief_columns = array ('id', 'type', 'thread_id', 'title', 'brief', 'created_at', 'is_bianyuan');
+    protected $postbrief_columns = array ('id', 'type', 'user_id', 'thread_id', 'title', 'brief', 'created_at', 'is_bianyuan');
 
 }

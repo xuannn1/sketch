@@ -15,7 +15,7 @@ use App\Http\Resources\PostResource;
 use App\Http\Resources\PostInfoResource;
 use Cache;
 
-class PagesController extends Controller
+class PageController extends Controller
 {
     public function home()
     {

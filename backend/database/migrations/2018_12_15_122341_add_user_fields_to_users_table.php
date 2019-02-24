@@ -16,6 +16,8 @@ class AddUserFieldsToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->softDeletes();//软删除必备
             $table->unsignedInteger('title_id')->default(0);//头衔id
+            $table->unsignedInteger('unread_reminders')->default(0);//未读消息提醒
+            $table->unsignedInteger('unread_updates')->default(0);//未读更新提示
         });
     }
 
