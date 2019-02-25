@@ -64,6 +64,7 @@ export namespace ResData {
         channel?:Channel;
         tags?:Tag[];
         recommendations?:Recommendation[];
+        last_component?:Post;
     }
 
     export function allocThread () : Thread {
@@ -227,6 +228,7 @@ export interface APIGet {
             withBianyuan?:Request.Thread.withBianyuan,
             ordered?:Request.Thread.ordered,
             withType?:Request.Thread.withType,
+            page?:number;
         };
         res:{
             threads:ResData.Thread[],
@@ -240,6 +242,7 @@ export interface APIGet {
     '/thread/:id':APISchema<{
         req:{
             id:number;
+            page?:number;
         };
         res:{
             thread:ResData.Thread,
@@ -254,6 +257,7 @@ export interface APIGet {
     '/book/:id':APISchema<{
         req:{
             id:number;
+            page?:number;
         };
         res:{
             thread:ResData.Thread;
