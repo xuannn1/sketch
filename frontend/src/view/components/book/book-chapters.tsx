@@ -4,7 +4,7 @@ import './book-chapters.scss';
 import { ResData } from '../../../config/api';
 
 interface Props {
-    chapters:ResData.Chapter[];
+    chapters:ResData.Post[];
 }
 interface State {
 }

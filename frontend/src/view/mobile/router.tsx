@@ -41,11 +41,11 @@ export class MobileRoute extends React.Component<Props, State> {
             }}>
                 <Switch>
                     <Route exact path={ROUTE.home}
-                        render={(props) => <Home {...props} core={core} page={<HomeMain core={core} />} />} />
+                        render={(props) => <Home {...props} core={core} page={<HomeMain core={core} {...props} />} />} />
                     <Route path={ROUTE.books}
-                        render={(props) => <Home {...props} core={core} page={<Books core={core} />} />} />
+                        render={(props) => <Home {...props} core={core} page={<Books core={core} {...props} />} />} />
                     <Route path={ROUTE.threads}
-                        render={(props) => <Home {...props} core={core} page={<Threads core={core} />} />} />
+                        render={(props) => <Home {...props} core={core} page={<Threads core={core} {...props} />} />} />
                     <Route path={ROUTE.collections}
                         render={(props) => <Collection {...props} core={core} />} />
                     <Route path={ROUTE.users}

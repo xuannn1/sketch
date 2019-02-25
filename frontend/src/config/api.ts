@@ -37,7 +37,7 @@ export namespace ResData {
     export interface User {
         type:'user';
         id:number;
-        attributes:Database.User;
+        attributes:Database.User_Default;
     }
 
     export function allocUser () : User {
@@ -112,6 +112,7 @@ export namespace ResData {
         type:'post';
         id:number;
         attributes:Database.Post;
+        component:Chapter;
         author:User;
     }
 
@@ -122,6 +123,7 @@ export namespace ResData {
             attributes: {
                 body: '',
             },
+            component: allocChapter(),
             author: allocUser(),
         };
     }
@@ -141,7 +143,17 @@ export namespace ResData {
     export interface Chapter {
         type:'chapter';
         id:number;
-        attributes:Database.Chapter & Database.Post;
+        attributes:Database.Chapter;
+    }
+
+    export function allocChapter () : Chapter {
+        return {
+            type: 'chapter',
+            id: 0,
+            attributes: {
+
+            },
+        };
     }
 
     export interface Volumn {
@@ -210,7 +222,7 @@ export interface APIGet {
     '/thread':APISchema<{
         req:{
             channel?:number[],
-            tag?:number[],
+            tags?:number[],
             excludeTag?:number[],
             withBianyuan?:Request.Thread.withBianyuan,
             ordered?:Request.Thread.ordered,
@@ -239,29 +251,17 @@ export interface APIGet {
         req:undefined;
         res:{};
     }>;
-    '/book':APISchema<{
-        req:{
-            channel:number[];
-            tag:number[];
-            excludeTag:number[];
-            withBianyuan:Request.Thread.withBianyuan;
-            ordered:Request.Thread.ordered;
-        };
-        res:{
-            threads:ResData.Thread; //fixme:
-            paginate:ResData.ThreadPaginate;
-        };
-    }>;
     '/book/:id':APISchema<{
         req:{
             id:number;
         };
         res:{
             thread:ResData.Thread;
-            chapters:ResData.Chapter[];
+            chapters:ResData.Post[];
             volumns:ResData.Volumn[];
+            paginate:ResData.ThreadPaginate,
             most_upvoted:ResData.Post;
-            newest_comment:ResData.Post;
+            top_review:ResData.Post|null;
         }
     }>;
 }

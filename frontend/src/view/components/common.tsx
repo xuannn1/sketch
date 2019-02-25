@@ -2,14 +2,16 @@ import * as React from 'react';
 import { parseDate } from '../../utils/date';
 import { Link } from 'react-router-dom';
 import { ResData } from '../../config/api';
+import { addQuery } from '../../utils/url';
 
 export const COLOR_GREY = '#555';
 
 export function Page (props:{
     children?:React.ReactNode,
     nav?:JSX.Element,
+    className?:string,
 }) {
-    return <div>
+    return <div className={props.className}>
         {props.nav}
         <div style={{
             margin: '5px 10px',
@@ -101,4 +103,46 @@ export function ShortThread (props:{
             </div>
         }
     </div>
+}
+
+export function Pagination (props:{
+    style?:React.CSSProperties,
+    className?:string,
+    currentPage:number,
+    lastPage:number,
+}) {
+    const firstShowPages = 3;
+    const middleShowPages = 10;
+    const lastShowPages = 3;
+
+    const pages = new Array(props.lastPage);
+    pages.fill(0);
+
+    return <div className={props.className}
+        style={Object.assign({}, props.style || {})}>
+        <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+            <a className="pagination-previous">上一页</a>
+            <a className="pagination-next">下一页</a>
+            <ul className="pagination-list">
+            { pages.map((_, idx) => {
+                const page = idx + 1;
+                if (page < firstShowPages ||
+                    page > props.lastPage - lastShowPages ||
+                    page < props.currentPage + middleShowPages / 2 ||
+                    page > props.currentPage - middleShowPages / 2 ) {
+                    return <li key={page}>
+                        <a className={`pagination-link ${page === props.currentPage && 'is-current'}`} href={addQuery(window.location.href, 'page', page)}>{page}</a>
+                    </li>;
+                }
+                if ((page === firstShowPages + 1 && props.currentPage - middleShowPages / 2 > firstShowPages + 1) ||
+                    (page === props.lastPage - 1 - lastShowPages && props.currentPage + middleShowPages / 2 < props.lastPage - 1 - lastShowPages)) {
+                    return <li key={page}>
+                        <span className="pagination-ellipsis">&hellip;</span>
+                    </li>;
+                }
+                return null;
+            })}
+            </ul>
+        </nav>
+    </div>;
 }

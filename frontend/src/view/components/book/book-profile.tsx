@@ -37,9 +37,9 @@ export class BookProfile extends React.Component<Props, State> {
 
             <div className="counters">
                 <span><i className="fas fa-pencil-alt"></i>{attributes.total_char}</span> /
-                <span><i className="fas fa-eye"></i>{attributes.views}</span> / 
+                <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 
                 <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span> /
-                <span><i className="fas fa-download"></i>{attributes.downloads}</span>
+                <span><i className="fas fa-download"></i>{attributes.download_count}</span>
             </div>
 
             <div className="change-mode">
