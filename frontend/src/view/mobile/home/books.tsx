@@ -27,25 +27,20 @@ export class Books extends React.Component<Props, State> {
 
         const res = await this.props.core.db.get('/thread', {
             withType: 'book',
-            // tags: parseArrayQuery(window.location.href, 'tag'),
+            tags: parseArrayQuery(window.location.href, 'tag'),
+            page: page && +page || undefined,
         });
         if (!res || !res.data) { return; }
         this.setState({data: res.data});
     }
 
     public render () {
-        console.log(this.state);
         return (<Page className="books">
             <Pagination currentPage={this.state.data.paginate.current_page} lastPage={this.state.data.paginate.total_pages} />
             <div className="thread-form">
-                {this.state.data.threads.map((thread, idx) => {
-                    return <BookList
-                        thread={thread}
-                        latestChapter={''}
-                        chapterId={''}
-                        key={idx}
-                    />;
-                })}
+                {this.state.data.threads.map((thread, idx) => 
+                    <BookList thread={thread} key={idx} />,
+                )}
             </div>
         </Page>);
     }

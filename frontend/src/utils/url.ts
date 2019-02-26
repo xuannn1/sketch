@@ -29,6 +29,7 @@ export function parsePath (path:string, query:URLQuery) {
             if (i !== 0) { res += '&'; }
             const key = keys[i];
             const value = obj[key];
+            if (value === undefined) { continue; } 
             if (value instanceof Array) {
                 res += `${key}=[${value}]`
             } else {
