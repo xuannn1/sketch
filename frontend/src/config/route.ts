@@ -35,6 +35,8 @@ export const ROUTE = {
     // book
     book_create: '/book/create',
     books: '/books',
+    book: '/book/:id',
+    chapter: '/book/:bookId/chapter/:chapterId',
 
     // posts
     posts: '/posts',

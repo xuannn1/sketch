@@ -29,7 +29,7 @@ export class BookProfile extends React.Component<Props, State> {
                 <div className="intro">
                     <div className="tags">
                         {tags.map((tag, i) => 
-                            <a key={i} href={`${window.location.protocol}//${window.location.hostname}/book-tag/${tag.id}`}>{tag.attributes.tag_name}</a>)}
+                            <a key={i} href={`${window.location.origin}/book-tag/${tag.id}`}>{tag.attributes.tag_name}</a>)}
                     </div>
                 </div> 
             }
@@ -52,7 +52,7 @@ export class BookProfile extends React.Component<Props, State> {
         const mode = window.location.pathname.split('/')[1];
         if (!mode) { return <></>; }
         if (mode === 'threads') {
-            return <a href={`${window.location.origin}/books/${this.props.thread.id}`}><i className="fas fa-book"></i>文库阅读模式</a>;
+            return <a href={`${window.location.origin}/book/${this.props.thread.id}`}><i className="fas fa-book"></i>文库阅读模式</a>;
         } else {
             return <a href={`${window.location.origin}/threads/${this.props.thread.id}`}><i className="fas fa-comment"></i>论坛讨论模式</a>;
         }
