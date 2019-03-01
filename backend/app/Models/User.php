@@ -58,7 +58,7 @@ class User extends Authenticatable
 
     public function mainTitle()
     {
-        return $this->belongsTo(Title::class);
+        return $this->belongsTo(Title::class, 'title_id');
     }
 
     public function titles()
@@ -148,6 +148,6 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->isAdmin();
+        return $this->inRole('admin');
     }
 }

@@ -37,7 +37,7 @@ class Thread extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id','name');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name', 'title_id');
     }
 
     public function posts()

@@ -16,7 +16,7 @@ class Vote extends Model
     }
     public function author()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id','name');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }
     /**
     * Get all of the owning votable models.

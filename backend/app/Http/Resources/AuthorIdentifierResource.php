@@ -19,7 +19,8 @@ class AuthorIdentifierResource extends JsonResource
             'id' => (int)$this->id,
             'attributes' => [
                 'name' => (string)$this->name,
-            ]
+            ],
+            'title' => new TitleBriefResource($this->whenLoaded('mainTitle')),
         ];
     }
 }

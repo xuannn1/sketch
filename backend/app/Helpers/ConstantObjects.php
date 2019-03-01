@@ -67,7 +67,7 @@ class ConstantObjects
 
     public static function role_users()//目前系统所保存的所有现在在使用中的特殊的用户身份列表，如是否admin，editor，no-logging，no-posting, channel_admin, tag_admin
     {
-        return Cache::remember('role_users', 10, function () {
+        return Cache::remember('role_users', config('constants.cache_time'), function () {
             return DB::table('role_user')->where('is_valid', true)->select(['user_id','role', 'options'])->get();
         });
     }

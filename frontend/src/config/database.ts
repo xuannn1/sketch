@@ -39,13 +39,14 @@ export namespace Database {
         last_qiandao_at?:string;
         // unread_reminders?:number;
         // unread_updates?:number;
-        // reviewed_public_notices?:number;
-        // message_limit?:number;
-        // no_stranger_messages?:boolean;
-        // no_upvote_reminders?:boolean;
-        // total_book_characters?:number;
-        // total_comment_characters?:number;
-        // daily_clicks?:number;
+        reviewed_public_notices?:number;
+        message_limit?:number;
+        no_stranger_message?:boolean;
+        no_upvote_reminder?:boolean;
+        total_book_characters?:number;
+        total_comment_characters?:number;
+        total_clicks?:number;
+        daily_clicks?:number;
         // daily_posts?:number;
         // daily_book_characters?:number;
         // daily_comment_characters?:number;
@@ -183,7 +184,7 @@ export namespace Database {
         id?:Increments;
         name?:string;
         description?:string;
-        entitled?:UInt;
+        user_count?:UInt;
     }
 
     export interface User_Role {

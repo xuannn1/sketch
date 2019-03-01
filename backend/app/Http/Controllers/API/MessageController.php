@@ -17,10 +17,12 @@ class MessageController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function store(User $user, StoreMessage $form)
+    public function store(StoreMessage $form)
     {
         $message = $form->generateMessage();
-        return response()->success($message);
+        return response()->success([
+            'message' => new MessageResource($message),
+        ]);
     }
 
     public function index(User $user, Request $request)
@@ -28,7 +30,7 @@ class MessageController extends Controller
         if (auth('api')->id() === $user->id
         || auth('api')->user()->isAdmin()){//若访问的信箱为登录用户的信箱或登录用户为管理员
             $chatWith = $request->chatWith ?? 0;
-            $query = Message::with('poster', 'receiver', 'body');
+            $query = Message::with('poster.mainTitle', 'receiver.mainTitle', 'body');
 
             switch ($request->withStyle) {
                 case 'sendbox': $query = $query->withPoster($user->id);
@@ -40,10 +42,18 @@ class MessageController extends Controller
             }
             $messages = $query->withOrdered($request->ordered)
             ->paginate(config('constants.messages_per_page'));
+            if((request()->withStyle==='sendbox'
+                || request()->withStyle==='dialogue')
+                && (!auth('api')->user()->isAdmin())){
+                $messages->except('seen');
+            }
             return response()->success([
-                $messages => MessageResource::collection($messages),
+                'style' => $request->withStyle,
+                'messages' => MessageResource::collection($messages),
                 'paginate' => new PaginateResource($messages),
             ]);
+        }else{
+            abort(403);
         }
     }
 }

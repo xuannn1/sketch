@@ -15,11 +15,11 @@ class Message extends Model
 
     public function poster()
     {
-        return $this->belongsTo(User::class, 'poster_id')->select('id', 'name');
+        return $this->belongsTo(User::class, 'poster_id')->select('id', 'name', 'title_id');
     }
     public function receiver()
     {
-        return $this->belongsTo(User::class, 'receiver_id')->select('id', 'name');
+        return $this->belongsTo(User::class, 'receiver_id')->select('id', 'name', 'title_id');
     }
     public function body()
     {

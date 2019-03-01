@@ -14,7 +14,7 @@ class Collection extends Model
 
     public function owner()//谁收藏的
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id','name');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }
 
     public function collectee()//收藏的对象，简略呈现

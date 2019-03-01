@@ -15,10 +15,10 @@ class Quote extends Model
     }
     public function author()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id','name');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }
     public function reviewer()
     {
-        return $this->belongsTo(User::class, 'reviewer_id')->select('id','name');
+        return $this->belongsTo(User::class, 'reviewer_id')->select('id','name', 'title_id');
     }
 }

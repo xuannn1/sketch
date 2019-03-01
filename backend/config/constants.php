@@ -18,6 +18,7 @@ return [
     'brief_len' => 15,//在预览处显示多少个字符
     'long_review' => 30,//达到这个字数的，可以算长推文
     'threads_per_channel' => 2,//论坛首页，每个channel展示多少个帖子
+    'cache_time' => 0,//在测试环境，cache缓存时间设到最短
 
     // 'vote_info' => [
     //     'attitude_types' => [

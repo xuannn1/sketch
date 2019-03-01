@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\FormRequest;
 use App\Models\Message;
 use App\Models\User;
+use App\Models\MessageBody;
 use DB;
 
 class StoreMessage extends FormRequest
@@ -16,7 +17,7 @@ class StoreMessage extends FormRequest
      */
     public function authorize()
     {
-        $user = auth()->user();
+        $user = auth('api')->user();
         $sendTo = User::find(Request('sendTo'));
         return auth('api')->check()
             && $user->info->message_limit > 0 // 用户仍然有信息余量
@@ -42,10 +43,11 @@ class StoreMessage extends FormRequest
         $message_data['poster_id'] = auth('api')->id();
         $message_data['receiver_id'] = Request('sendTo');
         $message = DB::transaction(function() use($message_data) {
-            $message_data['message_body_id'] = DB::table('message_bodies')->insertGetId(['body' => request('body')]);
+            $message_body = MessageBody::create(['body' => request('body')]);
+            $message_data['message_body_id'] = $message_body->id;
             $message = Message::create($message_data);
             if (!auth('api')->user()->isAdmin()){
-                auth('api')->user()->profile->decrement('message_limit');
+                auth('api')->user()->info->decrement('message_limit');
             }
             return $message;
         });
