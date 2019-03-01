@@ -35,8 +35,9 @@ class CreateUserInfosTable extends Migration
             $table->unsignedInteger('max_qiandao')->default(0);//最高连续签到次数
             $table->dateTime('last_qiandao_at')->nullable();//最后一次签到时间
             $table->unsignedInteger('reviewed_public_notices')->default(0);//已读系统消息数目
-            $table->boolean('no_stranger_messages')->default(false);//是否拒绝接受陌生人的私信
-            $table->boolean('no_upvote_reminders')->default(false);//是否不再接受关于被点赞的提醒
+            $table->unsignedInteger('message_limit')->default(0);//可以给陌生人发送的私信限额
+            $table->boolean('no_stranger_message')->default(false);//是否拒绝接受陌生人的私信
+            $table->boolean('no_upvote_reminder')->default(false);//是否不再接受关于被点赞的提醒
             $table->unsignedInteger('total_book_characters')->default(0);//全部发文字数
             $table->unsignedInteger('total_comment_characters')->default(0);//全部评论字数
             $table->unsignedBigInteger('total_clicks')->default(0);//全部点击次数

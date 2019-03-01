@@ -37,7 +37,8 @@ class CollectionController extends Controller
 
     public function index(Request $request)//显示自己的收藏内容, 默认显示图书收藏
     {
-        $user_id = $request->user_id&&auth('api')->user()->inRole('admin')?$request->user_id:auth('api')->id();//除非是管理员，否则不能任意设定看谁的收藏夹
+        $user_id = $request->user_id
+          &&auth('api')->user()->isAdmin()?$request->user_id:auth('api')->id();//除非是管理员，否则不能任意设定看谁的收藏夹
 
         $threads = Thread::with('author','tags', 'last_component', 'last_post')
         ->join('collections', 'threads.id','=','collections.thread_id')

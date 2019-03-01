@@ -18,7 +18,11 @@ class StoreMessage extends FormRequest
     {
         $user = auth()->user();
         $sendTo = User::find(Request('sendTo'));
-        return (auth('api')->check()) && ($user->message_limit > 0) && (!$sendTo->no_stranger_messages) && ($user->id != $sendTo->id);
+        return auth('api')->check()
+            && $user->info->message_limit > 0 // 用户仍然有信息余量
+            && $sendTo //千万别忘了检查这个被发信人确实合法存在
+            && !$sendTo->info->no_stranger_message // 对方允许接收陌生用户信息
+            && $user->id != $sendTo->id ;// 并不是自己给自己发信息
     }
 
     /**
@@ -41,7 +45,7 @@ class StoreMessage extends FormRequest
             $message_data['message_body_id'] = DB::table('message_bodies')->insertGetId(['body' => request('body')]);
             $message = Message::create($message_data);
             if (!auth('api')->user()->isAdmin()){
-                auth('api')->user()->decrement('message_limit');
+                auth('api')->user()->profile->decrement('message_limit');
             }
             return $message;
         });

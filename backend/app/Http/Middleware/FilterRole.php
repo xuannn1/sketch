@@ -15,10 +15,6 @@ class FilterRole
      */
     public function handle($request, Closure $next, $role)
     {
-        // //必须是编辑/资深编辑/管理员，才能负责这些事情
-        // if(auth('api')->check()&&(auth('api')->user()->inRole('editor')||auth('api')->user()->inRole('senior_editor')||auth('api')->user()->inRole('admin'))){
-        //     return $next($request);
-        // }
-        // return response()->error(config('error.401'),401);
+        
     }
 }

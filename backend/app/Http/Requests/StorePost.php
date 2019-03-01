@@ -144,7 +144,7 @@ class StorePost extends FormRequest
     {
         if($this->thread()->id!=$post->thread_id){abort(403);}
         //必须是这个thread和post匹配
-        if(!($this->thread()->channel()->allow_edit||auth('api')->user()->inRole('admin'))){abort(403);}
+        if(!($this->thread()->channel()->allow_edit||auth('api')->user()->isAdmin())){abort(403);}
         //必须channel允许更新
         if($post->user_id!=auth('api')->id()){abort(403);}
         //必须自己的post

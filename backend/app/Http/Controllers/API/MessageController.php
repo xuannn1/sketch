@@ -25,26 +25,23 @@ class MessageController extends Controller
 
     public function index(User $user, Request $request)
     {
-        if (auth('api')->id() === $user->id || auth('api')->user()->isAdmin()){//若访问的信箱为登录用户的信箱或登录用户为管理员
-            $type = $request->withStyle;
-            $chatWith = $request->chatWith;
+        if (auth('api')->id() === $user->id
+        || auth('api')->user()->isAdmin()){//若访问的信箱为登录用户的信箱或登录用户为管理员
+            $chatWith = $request->chatWith ?? 0;
             $query = Message::with('poster', 'receiver', 'body');
 
-            switch ($type) {
-              case 'sendbox': $query = $query->withPoster($user->id);
-              break;
-              case 'dialogue': if($chatWith) {
-                  $query = $query->withDialogue($user->id, $chatWith);
-              }else {
-                  abort(422);
-              }
-              break;
-              default: $query = $query->withReceiver($user->id)->withRead($request->read);
-              break;
+            switch ($request->withStyle) {
+                case 'sendbox': $query = $query->withPoster($user->id);
+                break;
+                case 'dialogue': $query = $query->withDialogue($user->id, $chatWith);
+                break;
+                default: $query = $query->withReceiver($user->id)->withRead($request->read);
+                break;
             }
-            $messages = $query->withOrdered($request->ordered)->paginate(config('constants.messages_per_page'));
+            $messages = $query->withOrdered($request->ordered)
+            ->paginate(config('constants.messages_per_page'));
             return response()->success([
-                $type => MessageResource::collection($messages),
+                $messages => MessageResource::collection($messages),
                 'paginate' => new PaginateResource($messages),
             ]);
         }

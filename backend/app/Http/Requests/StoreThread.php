@@ -87,7 +87,7 @@ class StoreThread extends FormRequest
     {
         //check authorization
         $channel = $thread->channel();
-        if(!($channel->allow_edit||auth('api')->user()->inRole('admin'))||($thread->user_id!=auth('api')->id())){abort(403);}
+        if(!($channel->allow_edit||auth('api')->user()->isAdmin())||($thread->user_id!=auth('api')->id())){abort(403);}
         //generate $thread_data
         $thread_data = $this->only('title', 'brief', 'body', 'is_anonymous', 'no_reply', 'use_markdown', 'use_indentation', 'is_bianyuan', 'is_public');
         if (!$channel->allow_anonymous){

@@ -10,7 +10,7 @@ class MessageTest extends TestCase
     /** @test */
     public function an_authorised_user_can_send_message()//登陆用户可发私信
     {
-        $poster = factory('App\Models\User')->create(['message_limit' => 1]);
+        $poster = factory('App\Models\User');
         $receiver = factory('App\Models\User')->create();
         $this->actingAs($poster, 'api');
 
@@ -61,7 +61,7 @@ class MessageTest extends TestCase
     public function can_not_send_message_to_the_user_who_set_no_stranger_message()//不可发私信给设置了no_stranger_message的用户
     {
         $poster = factory('App\Models\User')->create(['message_limit' => 1]);
-        $receiver = factory('App\Models\User')->create(['no_stranger_messages' => 1]);
+        $receiver = factory('App\Models\User')->create(['no_stranger_message' => 1]);
         $this->actingAs($poster, 'api');
         $body = 'send this message';
 

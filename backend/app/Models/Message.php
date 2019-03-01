@@ -23,7 +23,7 @@ class Message extends Model
     }
     public function body()
     {
-        return $this->hasOne(MessageBody::class, 'id', 'message_body_id')->select('id','body');
+        return $this->hasOne(MessageBody::class, 'id', 'message_body_id');
     }
 
     public function scopeWithReceiver($query, $receiver_id)

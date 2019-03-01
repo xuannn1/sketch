@@ -566,7 +566,7 @@ majia(string):马甲，仅当存在“is_anonymous”的时候才保存马甲内
 ###### 4.5.9.1 创建message
 http://127.0.0.1:8000/api/messages
 方法：POST
-授权：必须登陆，且登陆用户的message_limit>0，接收用户的no_stranger_messages=0
+授权：必须登陆，且登陆用户的message_limit>0，接收用户的no_stranger_message=0
 必填项：
 sendTo(int) 接收用户id
 body(string) 消息内容
