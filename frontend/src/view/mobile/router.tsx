@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 import { Core } from '../../core';
 import { ROUTE } from '../../config/route';
 import { Collection } from './collection';
@@ -12,6 +12,8 @@ import { LoginRoute } from './login';
 import { HomeMain } from './home/main';
 import { Threads } from './home/threads';
 import { Books } from './home/books';
+import { Book } from './home/book';
+import { Chapter } from './home/chapter';
 
 interface Props {
     core:Core;
@@ -41,11 +43,15 @@ export class MobileRoute extends React.Component<Props, State> {
             }}>
                 <Switch>
                     <Route exact path={ROUTE.home}
-                        render={(props) => <Home {...props} core={core} page={<HomeMain core={core} />} />} />
+                        render={(props) => <Home {...props} core={core} page={<HomeMain core={core} {...props} />} />} />
                     <Route path={ROUTE.books}
-                        render={(props) => <Home {...props} core={core} page={<Books core={core} />} />} />
+                        render={(props) => <Home {...props} core={core} page={<Books core={core} {...props} />} />} />
                     <Route path={ROUTE.threads}
-                        render={(props) => <Home {...props} core={core} page={<Threads core={core} />} />} />
+                        render={(props) => <Home {...props} core={core} page={<Threads core={core} {...props} />} />} />
+                    <Route path={ROUTE.chapter}
+                        render={(props) => <Chapter {...props} core={core} />} />
+                    <Route path={ROUTE.book}
+                        render={(props) => <Book {...props} core={core} />} />
                     <Route path={ROUTE.collections}
                         render={(props) => <Collection {...props} core={core} />} />
                     <Route path={ROUTE.users}

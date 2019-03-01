@@ -2,14 +2,16 @@ import * as React from 'react';
 import { parseDate } from '../../utils/date';
 import { Link } from 'react-router-dom';
 import { ResData } from '../../config/api';
+import { addQuery } from '../../utils/url';
 
 export const COLOR_GREY = '#555';
 
 export function Page (props:{
     children?:React.ReactNode,
     nav?:JSX.Element,
+    className?:string,
 }) {
-    return <div>
+    return <div className={props.className}>
         {props.nav}
         <div style={{
             margin: '5px 10px',
@@ -101,4 +103,68 @@ export function ShortThread (props:{
             </div>
         }
     </div>
+}
+
+export class Pagination extends React.Component <{
+    style?:React.CSSProperties,
+    className?:string,
+    currentPage:number,
+    lastPage:number, 
+}, {}> {
+    public FirstShowPages = 3;
+    public MiddleShowPages = 10;
+    public LastShowPages = 3;
+    public prevEl:HTMLAnchorElement|null = null;
+    public nextEl:HTMLAnchorElement|null = null;
+
+    public componentDidUpdate () {
+        if (!this.prevEl || !this.nextEl) { return; }
+        if (this.props.currentPage === 1) {
+            this.prevEl.setAttribute('disabled', '');
+        } else {
+            this.prevEl.removeAttribute('disabled');
+        }
+        if (this.props.currentPage === this.props.lastPage) {
+            this.nextEl.setAttribute('disabled', '');
+        } else {
+            this.nextEl.removeAttribute('disabled');
+        }
+    }
+
+    public render () {
+        const pages = new Array(this.props.lastPage);
+        pages.fill(0);
+    
+        return <div className={this.props.className}
+            style={Object.assign({}, this.props.style || {})}>
+            <nav className="pagination is-centered is-small" role="navigation" aria-label="pagination">
+                <a className="pagination-previous"
+                    ref={(el) => this.prevEl = el}
+                    href={addQuery(window.location.href, 'page', this.props.currentPage - 1)}>❮</a>
+                <a className="pagination-next"
+                    ref={(el) => this.nextEl = el}
+                    href={addQuery(window.location.href, 'page', this.props.currentPage + 1)}>❯</a>
+                <ul className="pagination-list">
+                { pages.map((_, idx) => {
+                    const page = idx + 1;
+                    if (page < this.FirstShowPages ||
+                        page > this.props.lastPage - this.LastShowPages ||
+                        page < this.props.currentPage + this.MiddleShowPages / 2 ||
+                        page > this.props.currentPage - this.MiddleShowPages / 2 ) {
+                        return <li key={page}>
+                            <a className={`pagination-link ${page === this.props.currentPage && 'is-current'}`} href={addQuery(window.location.href, 'page', page)}>{page}</a>
+                        </li>;
+                    }
+                    if ((page === this.FirstShowPages + 1 && this.props.currentPage - this.MiddleShowPages / 2 > this.FirstShowPages + 1) ||
+                        (page === this.props.lastPage - 1 - this.LastShowPages && this.props.currentPage + this.MiddleShowPages / 2 < this.props.lastPage - 1 - this.LastShowPages)) {
+                        return <li key={page}>
+                            <span className="pagination-ellipsis">&hellip;</span>
+                        </li>;
+                    }
+                    return null;
+                })}
+                </ul>
+            </nav>
+        </div>;
+    }
 }

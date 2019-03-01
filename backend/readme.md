@@ -311,6 +311,16 @@ withMinRating(int): 最少几分以上（可以选择打过分的）
 withMaxRating(int): 最多几分（可选择没打分的）  
 ordered(string): 'latest_created'/ 'most_upvoted' / 'most_redirected' (默认按最多导航排序) / 'oldest_created' / 'random',    
 
+#### 4.4.5 查看信箱
+http://127.0.0.1:8000/api/user/1/messages
+方法：GET
+授权：当前登录用户为管理员或当前登录用户访问自己的信箱
+必填项：
+withStyle(string): 'sendbox'/'receivebox'(默认)/'dialogue',如果为'dialogue'则必填chatWith(int)
+选填项：
+ordered(string) :'oldest'/'latest'(默认)
+read(string) :'read_only'/'unread_only'(默认显示全部，只有为receivebox时选填)
+
 
 ### 4.5 增改删resource信息
 #### 4.5.1 thread
@@ -541,6 +551,25 @@ reviewRedirects(json) => [
     ]
 ]
 ```
+#### 4.5.8 quote相关
+###### 4.5.8.1 创建quote
+http://127.0.0.1:8000/api/quote
+方法：POST
+授权：必须登陆
+必填项：
+body(string)题头内容
+选填项：
+is_anonymous(bool)是否匿名
+majia(string):马甲，仅当存在“is_anonymous”的时候才保存马甲内容
+
+#### 4.5.9 message相关
+###### 4.5.9.1 创建message
+http://127.0.0.1:8000/api/messages
+方法：POST
+授权：必须登陆，且登陆用户的message_limit>0，接收用户的no_stranger_messages=0
+必填项：
+sendTo(int) 接收用户id
+body(string) 消息内容
 
 ## 5. 如何测试
 #### 5.1 写一个新的专项测试文件

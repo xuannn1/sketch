@@ -6,7 +6,7 @@ export namespace Database {
     export type Increments = number;
     export type Timestamp = string;
 
-    export interface Users_Default {
+    export interface User_Default {
         id?:Increments;
         name:string;
         email?:string;
@@ -205,9 +205,9 @@ export namespace Database {
         attachable_id?:Increments;
         reply_id?:Increments;
         no_reply?:boolean;
-        reply_count?:Uint;
-        forward_count?:Uint;
-        upvote_count?:Uint;
+        reply_count?:UInt;
+        forward_count?:UInt;
+        upvote_count?:UInt;
         created_at:Timestamp;
     }
 
@@ -221,13 +221,13 @@ export namespace Database {
 
     export interface Review {
         id?:Increments;
-        thread_id?:Uint;
+        thread_id?:UInt;
         recommend?:boolean;
         long?:boolean;
         author_disapprove?:boolean;
         editor_recommend?:boolean;
         rating?:UInt;
-        redirect_count?:Uint;
+        redirect_count?:UInt;
 
     }
 }

@@ -129,4 +129,8 @@ class User extends Authenticatable
         return $this->roles()->where('role', $roleSlug)->count() == 1;
     }
 
+    public function isAdmin()
+    {
+        return $this->inRole('admin') || $this->inRole('channel_admin') || $this->inRole('super_admin');
+    }
 }

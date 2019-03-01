@@ -68,9 +68,7 @@ function commonConfig (devMode) {
             ]
         },
         optimization: {
-            runtimeChunk: {
-                name: entrypoint => `runtime~${entrypoint.name}`
-            },
+            runtimeChunk: 'single',
             splitChunks: {
                 chunks: 'async',
                 minSize: 30000,
@@ -103,6 +101,7 @@ function commonConfig (devMode) {
             new HtmlWebpackPlugin({
                 filename: "index.html",
                 template: "index.html",
+                title: "Caching",
                 minify: {
                     collapseWhitespace: true,
                     removeComments: true,

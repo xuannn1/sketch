@@ -73,6 +73,7 @@ Route::apiResource('status', 'API\StatusController');
 Route::post('quote', 'API\QuoteController@store');
 
 //私信部分
-Route::post('/message/store/{user}', 'API\MessageController@store');//有点问题
+Route::get('/user/{user}/messages', 'API\MessageController@index');//展示某用户的信箱，仅允许本人和管理员查询
+Route::post('messages', 'API\MessageController@store');
 
 //阅读历史保存
