@@ -9,7 +9,7 @@ interface Props {
 interface State {
 }
 
-export class Chapter extends React.Component<Props, State> {
+export class BookChapterContent extends React.Component<Props, State> {
     public render () {
         return <Card>
             {/* top bar: back, share, favourite, download */}

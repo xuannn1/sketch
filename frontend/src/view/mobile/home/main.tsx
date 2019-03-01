@@ -8,6 +8,7 @@ import { ROUTE } from '../../../config/route';
 import { Carousel } from '../../components/carousel';
 import { checkType } from '../../../utils/types';
 import { APIGet, ResData } from '../../../config/api';
+import { RouteComponentProps } from 'react-router';
 
 interface Props {
     core:Core;

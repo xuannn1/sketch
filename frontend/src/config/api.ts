@@ -37,7 +37,7 @@ export namespace ResData {
     export interface User {
         type:'user';
         id:number;
-        attributes:Database.User;
+        attributes:Database.User_Default;
     }
 
     export function allocUser () : User {
@@ -64,6 +64,7 @@ export namespace ResData {
         channel?:Channel;
         tags?:Tag[];
         recommendations?:Recommendation[];
+        last_component?:Post;
     }
 
     export function allocThread () : Thread {
@@ -112,6 +113,7 @@ export namespace ResData {
         type:'post';
         id:number;
         attributes:Database.Post;
+        component:Chapter;
         author:User;
     }
 
@@ -122,6 +124,7 @@ export namespace ResData {
             attributes: {
                 body: '',
             },
+            component: allocChapter(),
             author: allocUser(),
         };
     }
@@ -141,7 +144,17 @@ export namespace ResData {
     export interface Chapter {
         type:'chapter';
         id:number;
-        attributes:Database.Chapter & Database.Post;
+        attributes:Database.Chapter;
+    }
+
+    export function allocChapter () : Chapter {
+        return {
+            type: 'chapter',
+            id: 0,
+            attributes: {
+
+            },
+        };
     }
 
     export interface Volumn {
@@ -210,11 +223,12 @@ export interface APIGet {
     '/thread':APISchema<{
         req:{
             channel?:number[],
-            tag?:number[],
+            tags?:number[],
             excludeTag?:number[],
             withBianyuan?:Request.Thread.withBianyuan,
             ordered?:Request.Thread.ordered,
             withType?:Request.Thread.withType,
+            page?:number;
         };
         res:{
             threads:ResData.Thread[],
@@ -228,6 +242,7 @@ export interface APIGet {
     '/thread/:id':APISchema<{
         req:{
             id:number;
+            page?:number;
         };
         res:{
             thread:ResData.Thread,
@@ -239,29 +254,18 @@ export interface APIGet {
         req:undefined;
         res:{};
     }>;
-    '/book':APISchema<{
-        req:{
-            channel:number[];
-            tag:number[];
-            excludeTag:number[];
-            withBianyuan:Request.Thread.withBianyuan;
-            ordered:Request.Thread.ordered;
-        };
-        res:{
-            threads:ResData.Thread; //fixme:
-            paginate:ResData.ThreadPaginate;
-        };
-    }>;
     '/book/:id':APISchema<{
         req:{
             id:number;
+            page?:number;
         };
         res:{
             thread:ResData.Thread;
-            chapters:ResData.Chapter[];
+            chapters:ResData.Post[];
             volumns:ResData.Volumn[];
+            paginate:ResData.ThreadPaginate,
             most_upvoted:ResData.Post;
-            newest_comment:ResData.Post;
+            top_review:ResData.Post|null;
         }
     }>;
 }
