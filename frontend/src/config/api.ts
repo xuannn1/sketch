@@ -220,6 +220,12 @@ export interface APIGet {
             tags:ResData.Tag[];
         }
     }>;
+    '/config/noTongrenTags':APISchema<{
+        req:undefined;
+        res:{
+            tags:ResData.Tag[];
+        }
+    }>;
     '/thread':APISchema<{
         req:{
             channel?:number[],
