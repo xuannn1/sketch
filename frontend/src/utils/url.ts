@@ -80,9 +80,19 @@ export function removeQuery (url:string, query:string) {
     const parser = new URL(url);
     const sameQuery = parser.searchParams.get(query);
     if (!sameQuery) { return parser.pathname + parser.search; }
-    const replace = `${query}=${sameQuery}`.replace('[', '\\[').replace(']', '\\]');
-    const regex = new RegExp(`[?|&]${replace}`, 'g');
-    return parser.pathname + parser.search.replace(regex, '');
+    let replace = `${query}=${sameQuery}`.replace('[', '\\[').replace(']', '\\]');
+    if (new RegExp('\\?' + replace, 'g').test(parser.search)) {
+        replace = replace + '&?';
+    } else {
+        replace = '&' + replace;
+    }
+    const regex = new RegExp(replace, 'g');
+    const search = parser.search.replace(regex, '');
+    if (search === '?') {
+        return parser.pathname;
+    } else {
+        return parser.pathname + search;
+    }
 }
 
 export function addArrayQuery (url:string, query:string, value:string|number) {

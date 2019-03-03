@@ -228,7 +228,7 @@ export interface APIGet {
     }>;
     '/thread':APISchema<{
         req:{
-            channel?:number[],
+            channels?:number[],
             tags?:number[],
             excludeTag?:number[],
             withBianyuan?:Request.Thread.withBianyuan,

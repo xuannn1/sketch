@@ -1,72 +1,72 @@
 import * as React from 'react';
 import { ResData } from '../../../config/api';
 import { Card } from '../common';
-import { Link as a } from 'react-router-dom';
-import { addArrayQuery, removeArrayQuery } from '../../../utils/url';
 import { indexEq } from '../../../utils/id';
-
-enum TagListType {
-    unSelecteTags,
-    initTags,
-    fullTags,
-}
+import { removeArrayQuery, addArrayQuery, parseArrayQuery } from '../../../utils/url';
+import { Link } from 'react-router-dom';
 
 interface Props {
     tags:ResData.Tag[];
-    selectedTags?:number[];
     getFullList:() => void;
+    searchTags:(tags:number[]) => void;
 }
+
 interface State {
-    tagListType:TagListType;
 }
 
 export class Tags extends React.Component<Props, State> {
     public selectedTags:ResData.Tag[] = [];
-    public state = {
-        tagListType: this.props.selectedTags ? TagListType.initTags : TagListType.unSelecteTags,
-    };
+    public selectedTagIds:number[] = [];
+    public filterTags:ResData.Tag[] = [];
+    public showFullList = false;
 
-    constructor (props) {
-        super(props);
-
-        const { selectedTags, tags } = props;
-        if (selectedTags) {
-            for (let i = 0; i < selectedTags.length; i ++) {
-                const tagId = selectedTags[i];
-                const idx = indexEq(tags, tagId);
-                if (idx >= 0) {
-                    this.selectedTags.push(tags[idx]);
-                }
-            }
+    public clickTag (tag:ResData.Tag) {
+        const idx = this.selectedTagIds.indexOf(tag.id);
+        if (idx < 0) {
+            this.selectedTags.push(tag);
+            this.selectedTagIds.push(tag.id);
+        } else {
+            this.selectedTagIds.splice(idx, 1);
+            this.selectedTags.splice(indexEq(this.selectedTags, tag.id), 1);
         }
     }
 
     public render () {
-        const renderType:{[tagListType:number]:() => JSX.Element} = {
-            [TagListType.unSelecteTags]: this.renderInitTags,
-            [TagListType.fullTags]: this.renderFullTags,
-            [TagListType.initTags]: this.renderSelectedTags,
+        let renderTagList:() => JSX.Element;
+        if (this.showFullList) {
+            renderTagList = this.renderFullTags;
+        } else {
+            const url = new URL(window.location.href);
+            if (this.filterTags.length !== 0) {
+                renderTagList = this.renderFilterTags;
+            } else {
+                renderTagList = this.renderInitTags;
+            }
         }
         
         return <Card className="book-tags">
-            {renderType[this.state.tagListType]()}
+            {renderTagList()}
         </Card>;
     }
 
-    public renderSelectedTags = () => {
-        console.log(this.selectedTags);
-        const tags = this.selectedTags;
+    public renderFilterTags = () => {
         return <div className="short_list">
+            {this.renderChannels()}
             <div className="buttons">
                 <span>筛选标签:</span>
-                {tags.map((tag, idx) => <Tag
-                    id={tag.id}
-                    text={tag.attributes.tag_name}
-                    isSelected={true}
-                    key={idx}
-                />)}
+                {this.filterTags.map((tag) => {
+                    const idx = this.selectedTagIds.indexOf(tag.id);
+                    return <Tag
+                        tag={tag}
+                        isSelected={idx >= 0}
+                        key={tag.id}
+                        onClick={() => {
+                            this.clickTag(tag);
+                            this.props.searchTags(this.selectedTagIds);
+                        }}
+                />;})}
                 <a className="tag" onClick={() => {
-                    this.setState({tagListType: TagListType.fullTags})
+                    this.showFullList = true;
                     this.props.getFullList();
                 }}>更多</a>
             </div>
@@ -76,21 +76,36 @@ export class Tags extends React.Component<Props, State> {
     public renderInitTags = () => {
         const { tags } = this.props;
         return <div className="short_list">
-            <div className="field has-addons" style={{ width: '100%' }}>
-                <p className="control" style={{ flex: 1 }}>
-                    <Tag id={1} text="原创" type="channels" className="button is-fullwidth" />
-                </p>
-                <p className="control" style={{ flex: 1 }}>
-                    <Tag id={2} text="同人" type="channels" className="button is-fullwidth" />
-                </p>
-            </div>
+            {this.renderChannels()}
             <div className="tags">
-                {tags.map((tag) => <Tag id={tag.id} text={tag.attributes.tag_name} key={tag.id} />)}
+                {tags.map((tag) => 
+                    <Tag tag={tag}
+                        onClick={() => {
+                            this.clickTag(tag);
+                            this.props.searchTags(this.selectedTagIds);
+                        }}
+                        key={tag.id} />)}
                 <a className="tag" onClick={() => {
-                    this.setState({tagListType: TagListType.fullTags})
+                    this.showFullList = true;
                     this.props.getFullList();
                 }}>更多</a>
             </div>
+        </div>;
+    }
+
+    public renderChannels = () => {
+        const channels = parseArrayQuery(window.location.href, 'channels');
+        return <div className="field has-addons" style={{ width: '100%' }}>
+            <p className="control" style={{ flex: 1 }}>
+                <Channel id={1}
+                    text="原创"
+                    isSelected={ channels ? (channels.indexOf(1) < 0 ? false : true) : false } />
+            </p>
+            <p className="control" style={{ flex: 1 }}>
+            <Channel id={2}
+                    text="同人"
+                    isSelected={ channels ? (channels.indexOf(2) < 0 ? false : true) : false } />
+            </p>
         </div>;
     }
 
@@ -115,17 +130,12 @@ export class Tags extends React.Component<Props, State> {
                     <div className="tags">
                         <span>{type}</span>
                         {tagTypes[type].map((tag) => {
-                            const idx = this.selectedTags.indexOf(tag);
+                            const idx = this.selectedTagIds.indexOf(tag.id)
                             return <Tag
                                 onClick={() => {
-                                    if (idx < 0) {
-                                        this.selectedTags.push(tag);
-                                    } else {
-                                        this.selectedTags.splice(idx, 1);
-                                    }
+                                    this.clickTag(tag);
                                 }}
-                                id={tag.id}
-                                text={tag.attributes.tag_name}
+                                tag={tag}
                                 isSelected={idx >= 0}
                                 key={tag.id} />; 
                         })}
@@ -137,8 +147,9 @@ export class Tags extends React.Component<Props, State> {
             </div>
             <div className="li">
                 <a className="button is-fullwidth" onClick={() => {
-                    this.setState({tagListType: TagListType.initTags})
-                    // fixme: send tags to server and get these tags
+                    this.showFullList = false;
+                    this.filterTags = this.selectedTags.slice();
+                    this.props.searchTags(this.selectedTagIds);
                 }}>筛选</a>
             </div>
         </div>;
@@ -146,27 +157,39 @@ export class Tags extends React.Component<Props, State> {
 }
 
 class Tag extends React.Component<{
-    id:number;
-    text:string;
-    type?:'channels'|'tags';
+    tag:ResData.Tag;
     className?:string;
-    onClick?:() => void;
+    onClick?:(id:number) => void;
     isSelected?:boolean;
 }, {
-    selected:boolean;
+    isSelected:boolean;
 }> {
     public state = {
-        selected: this.props.isSelected || false,
+        isSelected: this.props.isSelected || false,
     };
 
     public render () {
-        const type = this.props.type || 'tags';
         return <a
-            className={(this.props.className || 'tag') + (this.state.selected && ' is-primary' || '')}
+            className={(this.props.className || 'tag') + (this.state.isSelected && ' is-primary' || '')}
             onClick={() => {
-                this.setState((prevState) => ({ selected: !prevState.selected }));
-                this.props.onClick && this.props.onClick();
+                this.setState((prevState) => ({ isSelected: !prevState.isSelected }));
+                this.props.onClick && this.props.onClick(this.props.tag.id);
             }}
-        >{this.props.text}</a>;
+        >{this.props.tag.attributes.tag_name}</a>;
+    }
+}
+
+class Channel extends React.Component<{
+    id:number;
+    text:string;
+    isSelected?:boolean;
+}, {}> {
+    public render () {
+        return <Link
+            className={'button is-fullwidth' + (this.props.isSelected && ' is-primary' || '')}
+            to={this.props.isSelected ?
+                    removeArrayQuery(window.location.href, 'channels', this.props.id) :
+                    addArrayQuery(window.location.href, 'channels', this.props.id)}
+        >{this.props.text}</Link>
     }
 }
