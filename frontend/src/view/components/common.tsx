@@ -114,22 +114,6 @@ export class Pagination extends React.Component <{
     public FirstShowPages = 3;
     public MiddleShowPages = 10;
     public LastShowPages = 3;
-    public prevEl:HTMLAnchorElement|null = null;
-    public nextEl:HTMLAnchorElement|null = null;
-
-    public componentDidUpdate () {
-        if (!this.prevEl || !this.nextEl) { return; }
-        if (this.props.currentPage === 1) {
-            this.prevEl.setAttribute('disabled', '');
-        } else {
-            this.prevEl.removeAttribute('disabled');
-        }
-        if (this.props.currentPage === this.props.lastPage) {
-            this.nextEl.setAttribute('disabled', '');
-        } else {
-            this.nextEl.removeAttribute('disabled');
-        }
-    }
 
     public render () {
         const pages = new Array(this.props.lastPage);
@@ -138,12 +122,12 @@ export class Pagination extends React.Component <{
         return <div className={this.props.className}
             style={Object.assign({}, this.props.style || {})}>
             <nav className="pagination is-centered is-small" role="navigation" aria-label="pagination">
-                <a className="pagination-previous"
-                    ref={(el) => this.prevEl = el}
-                    href={addQuery(window.location.href, 'page', this.props.currentPage - 1)}>❮</a>
-                <a className="pagination-next"
-                    ref={(el) => this.nextEl = el}
-                    href={addQuery(window.location.href, 'page', this.props.currentPage + 1)}>❯</a>
+                <Anchor className="pagination-previous"
+                    href={addQuery(window.location.href, 'page', this.props.currentPage - 1)}
+                    isDisabled={this.props.currentPage === 1}>&lt;</Anchor>
+                <Anchor className="pagination-next"
+                    href={addQuery(window.location.href, 'page', this.props.currentPage + 1)}
+                    isDisabled={this.props.currentPage === this.props.lastPage}>&gt;</Anchor>
                 <ul className="pagination-list">
                 { pages.map((_, idx) => {
                     const page = idx + 1;
@@ -166,5 +150,29 @@ export class Pagination extends React.Component <{
                 </ul>
             </nav>
         </div>;
+    }
+}
+
+export class Anchor extends React.Component <{
+    className?:string;
+    isDisabled?:boolean;
+    href:string;
+    children?:React.ReactNode;
+    role?:string;
+}, {}> {
+    public el:HTMLAnchorElement|null = null;
+    public componentDidUpdate () {
+        if (!this.el) { return; }
+        if (this.props.isDisabled) {
+            this.el.setAttribute('disabled', '');
+        } else {
+            this.el.removeAttribute('disabled');
+        }
+    }
+    public render () {
+        return <a className={this.props.className}
+            href={this.props.href}
+            role={this.props.role}
+            ref={(el) => this.el = el}>{this.props.children}</a>;
     }
 }

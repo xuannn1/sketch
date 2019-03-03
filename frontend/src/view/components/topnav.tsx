@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Core } from '../../core/index';
+import { Anchor } from './common';
 
 interface Props {
     core:Core;
-    title?:string;
+    right?:React.ReactNode;
+    center:React.ReactNode|string;
 }
 
 interface State {}
@@ -20,8 +22,8 @@ export class Topnav extends React.Component<Props, State> {
             width: '100%',
             minHeight: '2.25rem',
             backgroundColor: 'white',
-        }}>
-            <div style={{
+        }} className="navbar" role="navigation" aria-label="main navigation">
+            <div className="navbar-brand" style={{
                 position: 'absolute',
                 left: 0,
                 zIndex: 10,
@@ -29,17 +31,28 @@ export class Topnav extends React.Component<Props, State> {
                 <a className="navbar-item prev" onClick={this.goBack}>&#10094;</a> 
             </div>
 
-            <div style={{
-                flex: 1,
-            }}>
-                <a className="navbar-item">
-                    { this.props.title }
-                </a>
+            <div className="navbar-start">
+                {this.renderCenterElements()}
             </div>
+            
+            {this.props.right &&
+                <div className="navbar-end" style={{position: 'absolute', right: 0}}>
+                    <div className="navbar-item">{this.props.right}</div>
+                </div>
+            }
         </div>;
     }
 
     public goBack = (ev:React.MouseEvent<HTMLAnchorElement>) => {
         this.props.core.history.goBack();
+    }
+
+    public renderCenterElements () : JSX.Element|JSX.Element[] {
+        const { center } = this.props;
+        if (typeof center === 'string') {
+            return <span className="navbar-item">{center}</span>
+        } else {
+            return <div className="navbar-item">{center}</div>
+        }
     }
 }
