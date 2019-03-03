@@ -38,8 +38,9 @@ export class Book extends React.Component<Props, State> {
     }
 
     public render () {
-        return (<>
-            <Topnav core={this.props.core} 
+        return (
+            <Page nav={
+                <Topnav core={this.props.core} 
                 center={
                     <div className="buttons">
                         <Anchor className="button" isDisabled={true} href={''}>目录模式</Anchor>
@@ -48,11 +49,10 @@ export class Book extends React.Component<Props, State> {
                 }
                 right={<a className="button">+</a> /* fixme: */}
                 />
-
-            <Page>
+            }>
                 <BookProfile thread={this.state.data.thread} />
                 <BookChapters bookId={+this.props.match.params.id} chapters={this.state.data.chapters} />
             </Page>
-        </>);
+        );
     }
 }

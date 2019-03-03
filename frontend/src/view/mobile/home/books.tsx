@@ -36,12 +36,7 @@ export class Books extends React.Component<Props, State> {
 
     public render () {
         return (<Page className="books">
-            <Pagination currentPage={this.state.data.paginate.current_page} lastPage={this.state.data.paginate.total_pages} />
-            <div className="thread-form">
-                {this.state.data.threads.map((thread, idx) => 
-                    <BookList thread={thread} key={idx} />,
-                )}
-            </div>
+            <BookList threads={this.state.data.threads} paginate={this.state.data.paginate} />
         </Page>);
     }
 }
