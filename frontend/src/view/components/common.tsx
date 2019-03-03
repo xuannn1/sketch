@@ -123,10 +123,10 @@ export class Pagination extends React.Component <{
             style={Object.assign({}, this.props.style || {})}>
             <nav className="pagination is-centered is-small" role="navigation" aria-label="pagination">
                 <Anchor className="pagination-previous"
-                    href={addQuery(window.location.href, 'page', this.props.currentPage - 1)}
+                    to={addQuery(window.location.href, 'page', this.props.currentPage - 1)}
                     isDisabled={this.props.currentPage === 1}>&lt;</Anchor>
                 <Anchor className="pagination-next"
-                    href={addQuery(window.location.href, 'page', this.props.currentPage + 1)}
+                    to={addQuery(window.location.href, 'page', this.props.currentPage + 1)}
                     isDisabled={this.props.currentPage === this.props.lastPage}>&gt;</Anchor>
                 <ul className="pagination-list">
                 { pages.map((_, idx) => {
@@ -136,7 +136,9 @@ export class Pagination extends React.Component <{
                         page < this.props.currentPage + this.MiddleShowPages / 2 ||
                         page > this.props.currentPage - this.MiddleShowPages / 2 ) {
                         return <li key={page}>
-                            <a className={`pagination-link ${page === this.props.currentPage && 'is-current'}`} href={addQuery(window.location.href, 'page', page)}>{page}</a>
+                            <Link
+                                className={`pagination-link ${page === this.props.currentPage && 'is-current'}`}
+                                to={addQuery(window.location.href, 'page', page)}>{page}</Link>
                         </li>;
                     }
                     if ((page === this.FirstShowPages + 1 && this.props.currentPage - this.MiddleShowPages / 2 > this.FirstShowPages + 1) ||
@@ -156,7 +158,7 @@ export class Pagination extends React.Component <{
 export class Anchor extends React.Component <{
     className?:string;
     isDisabled?:boolean;
-    href:string;
+    to:string;
     children?:React.ReactNode;
     role?:string;
 }, {}> {
@@ -170,9 +172,10 @@ export class Anchor extends React.Component <{
         }
     }
     public render () {
-        return <a className={this.props.className}
-            href={this.props.href}
+        return <Link
+            className={this.props.className}
+            to={this.props.to}
             role={this.props.role}
-            ref={(el) => this.el = el}>{this.props.children}</a>;
+            innerRef={(el) => this.el = el}>{this.props.children}</Link>;
     }
 }

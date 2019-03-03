@@ -43,8 +43,8 @@ export class Book extends React.Component<Props, State> {
                 <Topnav core={this.props.core} 
                 center={
                     <div className="buttons">
-                        <Anchor className="button" isDisabled={true} href={''}>目录模式</Anchor>
-                        <Anchor className="button" href={'' /* fixme: */}>论坛模式</Anchor>
+                        <Anchor className="button" isDisabled={true} to={''}>目录模式</Anchor>
+                        <Anchor className="button" to={'' /* fixme: */}>论坛模式</Anchor>
                     </div>
                 }
                 right={<a className="button">+</a> /* fixme: */}

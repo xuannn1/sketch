@@ -3,6 +3,7 @@ import { Card } from '../common';
 import './book-profile.scss';
 import { parseDate } from '../../../utils/date';
 import { ResData } from '../../../config/api';
+import { Link } from 'react-router-dom';
 
 interface Props {
     thread:ResData.Thread;
@@ -21,7 +22,7 @@ export class BookProfile extends React.Component<Props, State> {
             <div className="brief">{attributes.brief}</div>
 
             <div className="brief">
-                <a className="username" href={`${window.location.origin}/users/${author.id}`}>{author.attributes.name}</a>
+                <Link className="username" to={`/users/${author.id}`}>{author.attributes.name}</Link>
                 <span className="publish-date">发表于{parseDate(attributes.created_at || '')} 修改于{parseDate(attributes.edited_at || '')}</span>
             </div>
 
@@ -29,7 +30,7 @@ export class BookProfile extends React.Component<Props, State> {
                 <div className="intro">
                     <div className="tags">
                         {tags.map((tag, i) => 
-                            <a key={i} href={`${window.location.origin}/book-tag/${tag.id}`}>{tag.attributes.tag_name}</a>)}
+                            <Link key={i} to={`/book-tag/${tag.id}`}>{tag.attributes.tag_name}</Link>)}
                     </div>
                 </div> 
             }
@@ -52,9 +53,9 @@ export class BookProfile extends React.Component<Props, State> {
         const mode = window.location.pathname.split('/')[1];
         if (!mode) { return <></>; }
         if (mode === 'threads') {
-            return <a href={`${window.location.origin}/book/${this.props.thread.id}`}><i className="fas fa-book"></i>文库阅读模式</a>;
+            return <Link to={`/book/${this.props.thread.id}`}><i className="fas fa-book"></i>文库阅读模式</Link>;
         } else {
-            return <a href={`${window.location.origin}/threads/${this.props.thread.id}`}><i className="fas fa-comment"></i>论坛讨论模式</a>;
+            return <Link to={`/threads/${this.props.thread.id}`}><i className="fas fa-comment"></i>论坛讨论模式</Link>;
         }
     }
 }

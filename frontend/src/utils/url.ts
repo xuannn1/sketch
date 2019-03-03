@@ -69,9 +69,9 @@ export function addQuery (url:string, query:string, value:string|number) {
     if (parser.search) {
         const sameQuery = parser.searchParams.get(query);
         if (sameQuery) {
-            return parser.origin + parser.pathname + parser.search.replace(`${query}=${sameQuery}`, `${query}=${value}`);
+            return parser.pathname + parser.search.replace(`${query}=${sameQuery}`, `${query}=${value}`);
         }
-        return parser.origin + parser.pathname + parser.search + '&' + query + '=' + value;
+        return parser.pathname + parser.search + '&' + query + '=' + value;
     }
-    return parser.origin + parser.pathname + '?' + query + '=' + value;
+    return parser.pathname + '?' + query + '=' + value;
 }
