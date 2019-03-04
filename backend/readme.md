@@ -621,7 +621,7 @@ vendor/bin/phpunit --filter 'ChapterTest'
 git pull
 php artisan migrate:reset
 php artisan migrate --seed
-php artisan passport install
+php artisan passport:install
 vendor/bin/phpunit
 ```
 如果这一步发生了报错，那么需要进一步寻找到底是哪里出了问题。  
