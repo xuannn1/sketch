@@ -19,7 +19,7 @@ export class LoginRoute extends React.Component<Props, State> {
     public render () {
         const content = this.renderContent();
 
-        return <Page nav={<Topnav core={this.props.core} title={this.location} />}>
+        return <Page nav={<Topnav core={this.props.core} center={this.location} />}>
             { content }
         </Page>;
     }

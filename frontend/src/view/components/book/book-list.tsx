@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Card } from '../common';
+import { Pagination, Card } from '../common';
 import { ResData } from '../../../config/api';
 import { ROUTE } from '../../../config/route';
+import { Link } from 'react-router-dom';
 
 interface Props {
-    thread:ResData.Thread;
+    threads:ResData.Thread[];
+    paginate:ResData.ThreadPaginate;
 }
 
 interface State {
@@ -12,12 +14,23 @@ interface State {
 
 export class BookList extends React.Component<Props, State> {
     public render () {
-        const { attributes, id, author, tags, last_component } = this.props.thread;
-        return <Card className="thread-list">
-            <a className="title" href={`${window.location.origin}/book/${id}`}>{ attributes.title }</a>
+        return <Card className="book-index">
+            <Pagination
+                currentPage={this.props.paginate.current_page}
+                lastPage={this.props.paginate.total_pages} />
+            <div className="thread-form">
+                {this.props.threads.map((thread) => this.renderBookItem(thread))}
+            </div>
+        </Card>;
+    }
+
+    public renderBookItem (thread:ResData.Thread) {
+        const { attributes, id, author, tags, last_component } = thread;
+        return <div className="thread-list" key={id}>
+            <Link className="title" to={`/book/${id}`}>{ attributes.title }</Link>
             <div className="biref">{ attributes.brief }</div>
             { last_component &&
-                <a className="latest-chapter" href={`${window.location.origin}/book/${id}/chapter/${last_component.id}`}>最新章节: { last_component.attributes.title }</a>
+                <Link className="latest-chapter" to={`/book/${id}/chapter/${last_component.id}`}>最新章节: { last_component.attributes.title }</Link>
             }
             { tags &&
                 <div className="tags">
@@ -27,13 +40,14 @@ export class BookList extends React.Component<Props, State> {
                 </div> 
             }
             <div className="meta">
-                <a className="author" href={`${window.location.origin}${ROUTE.users}/${author.id}`}>{author.attributes.name}</a>
+                <Link className="author" to={`${ROUTE.users}/${author.id}`}>{author.attributes.name}</Link>
                 <div className="counters">
                     <span><i className="fas fa-pencil-alt"></i>{attributes.total_char}</span> /
                     <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 
                     <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span> /
                 </div>
             </div>
-        </Card>;
+            <hr />
+        </div>;
     }
 }
