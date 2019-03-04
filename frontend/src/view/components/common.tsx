@@ -2,7 +2,7 @@ import * as React from 'react';
 import { parseDate } from '../../utils/date';
 import { Link } from 'react-router-dom';
 import { ResData } from '../../config/api';
-import { addQuery } from '../../utils/url';
+import { URLParser } from '../../utils/url';
 
 export const COLOR_GREY = '#555';
 
@@ -123,10 +123,10 @@ export class Pagination extends React.Component <{
             style={Object.assign({}, this.props.style || {})}>
             <nav className="pagination is-centered is-small" role="navigation" aria-label="pagination">
                 <Anchor className="pagination-previous"
-                    to={addQuery(window.location.href, 'page', this.props.currentPage - 1)}
+                    to={(new URLParser()).setQuery('page', this.props.currentPage - 1).getPathname()}
                     isDisabled={this.props.currentPage === 1}>&lt;</Anchor>
                 <Anchor className="pagination-next"
-                    to={addQuery(window.location.href, 'page', this.props.currentPage + 1)}
+                    to={(new URLParser()).setQuery('page', this.props.currentPage + 1).getPathname()}
                     isDisabled={this.props.currentPage === this.props.lastPage}>&gt;</Anchor>
                 <ul className="pagination-list">
                 { pages.map((_, idx) => {
@@ -138,7 +138,7 @@ export class Pagination extends React.Component <{
                         return <li key={page}>
                             <Link
                                 className={`pagination-link ${page === this.props.currentPage && 'is-current'}`}
-                                to={addQuery(window.location.href, 'page', page)}>{page}</Link>
+                                to={(new URLParser()).setQuery('page', page).getPathname()}>{page}</Link>
                         </li>;
                     }
                     if ((page === this.FirstShowPages + 1 && this.props.currentPage - this.MiddleShowPages / 2 > this.FirstShowPages + 1) ||
