@@ -65,6 +65,7 @@ export namespace ResData {
         tags?:Tag[];
         recommendations?:Recommendation[];
         last_component?:Post;
+        last_post?:Post;
     }
 
     export function allocThread () : Thread {

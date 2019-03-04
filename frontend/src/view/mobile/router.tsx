@@ -14,6 +14,7 @@ import { Threads } from './home/threads';
 import { Books } from './home/books';
 import { Book } from './home/book';
 import { Chapter } from './home/chapter';
+import { Thread } from './home/thread';
 
 interface Props {
     core:Core;
@@ -48,6 +49,8 @@ export class MobileRoute extends React.Component<Props, State> {
                         render={(props) => <Home {...props} core={core} page={<Books core={core} {...props} />} />} />
                     <Route path={ROUTE.threads}
                         render={(props) => <Home {...props} core={core} page={<Threads core={core} {...props} />} />} />
+                    <Route path="/thread"
+                        render={(props) => <Thread {...props} core={core} />} />
                     <Route path={ROUTE.chapter}
                         render={(props) => <Chapter {...props} core={core} />} />
                     <Route path={ROUTE.book}

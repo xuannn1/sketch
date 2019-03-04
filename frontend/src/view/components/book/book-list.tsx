@@ -14,7 +14,7 @@ interface State {
 
 export class BookList extends React.Component<Props, State> {
     public render () {
-        return <Card className="book-index">
+        return <Card className="book-list">
             <Pagination
                 currentPage={this.props.paginate.current_page}
                 lastPage={this.props.paginate.total_pages} />
@@ -26,7 +26,7 @@ export class BookList extends React.Component<Props, State> {
 
     public renderBookItem (thread:ResData.Thread) {
         const { attributes, id, author, tags, last_component } = thread;
-        return <div className="thread-list" key={id}>
+        return <div className="book-item" key={id}>
             <Link className="title" to={`/book/${id}`}>{ attributes.title }</Link>
             <div className="biref">{ attributes.brief }</div>
             { last_component &&
@@ -35,7 +35,7 @@ export class BookList extends React.Component<Props, State> {
             { tags &&
                 <div className="tags">
                     { tags.map((tag, i) => 
-                        <a className="tag" key={i} href={`${window.location.origin}/books/?tag=${tag.id}`}>{tag.attributes.tag_name}</a>
+                        <Link className="tag" key={i} to={`/books/?tags=[${tag.id}]`}>{tag.attributes.tag_name}</Link>
                     )}
                 </div> 
             }
