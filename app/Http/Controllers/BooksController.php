@@ -111,7 +111,7 @@ class BooksController extends Controller
             $query = $this->return_book_fields($query);
             $books = $this->bookOrderBy($query, $request->orderby)
             ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page'));
+            ->appends($request->only('page','label','channel','book_length','book_status','sexual_orientation','rating','orderby'));
             return $books;
         });
         return view('books.index', compact('books'))->with('show_as_collections', false);
