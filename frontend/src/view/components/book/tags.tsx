@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ResData } from '../../../config/api';
 import { Card } from '../common';
 import { indexEq } from '../../../utils/id';
-import { removeArrayQuery, addArrayQuery, parseArrayQuery } from '../../../utils/url';
+import { URLParser } from '../../../utils/url';
 import { Link } from 'react-router-dom';
 
 interface Props {
@@ -36,7 +36,6 @@ export class Tags extends React.Component<Props, State> {
         if (this.showFullList) {
             renderTagList = this.renderFullTags;
         } else {
-            const url = new URL(window.location.href);
             if (this.filterTags.length !== 0) {
                 renderTagList = this.renderFilterTags;
             } else {
@@ -94,7 +93,8 @@ export class Tags extends React.Component<Props, State> {
     }
 
     public renderChannels = () => {
-        const channels = parseArrayQuery(window.location.href, 'channels');
+        const url = new URLParser();
+        const channels = url.getQuery('channels');
         return <div className="field has-addons" style={{ width: '100%' }}>
             <p className="control" style={{ flex: 1 }}>
                 <Channel id={1}
@@ -187,9 +187,15 @@ class Channel extends React.Component<{
     public render () {
         return <Link
             className={'button is-fullwidth' + (this.props.isSelected && ' is-primary' || '')}
-            to={this.props.isSelected ?
-                    removeArrayQuery(window.location.href, 'channels', this.props.id) :
-                    addArrayQuery(window.location.href, 'channels', this.props.id)}
+            to={(() => {
+                const url = new URLParser();
+                if (this.props.isSelected) {
+                    url.removeArrayQuery('channels', [this.props.id]);
+                } else {
+                    url.setArrayQuery('channels', [this.props.id]);
+                }
+                return url.getPathname();
+            })()}
         >{this.props.text}</Link>
     }
 }
