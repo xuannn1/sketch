@@ -3,9 +3,10 @@ import { Core } from '../../../core';
 import { Page } from '../../components/common';
 import { APIGet, ResData } from '../../../config/api';
 import { BookList } from '../../components/book/book-list';
-import { parseArrayQuery as getArrayQuery, addQuery, removeQuery } from '../../../utils/url';
+import { URLParser } from '../../../utils/url';
 import { Tags } from '../../components/book/tags';
 import { RouteComponentProps } from 'react-router';
+import { UnregisterCallback } from 'history';
 
 interface Props extends RouteComponentProps {
     core:Core;
@@ -17,6 +18,7 @@ interface State {
 }
 
 export class Books extends React.Component<Props, State> {
+    public unListen:UnregisterCallback|null = null;
     public state:State = {
         data: {
             threads: [],
@@ -27,7 +29,13 @@ export class Books extends React.Component<Props, State> {
 
     public componentDidMount () {
         this.loadData();
-        this.props.core.history.listen(() => this.loadData());
+        this.unListen = this.props.core.history.listen(() => this.loadData());
+    }
+
+    public componentWillUnmount () {
+        if (this.unListen) {
+            this.unListen();
+        }
     }
 
     public render () {
@@ -35,14 +43,14 @@ export class Books extends React.Component<Props, State> {
             <Tags
                 tags={this.state.tags}
                 searchTags={(tags) => {
+                    const url = new URLParser();
                     if (tags.length === 0) {
                         this.props.core.history.push(
-                            removeQuery(window.location.href, 'tags'),
+                            url.removeQuery('tags').getPathname(),
                             {tags});
                     } else {
-                        const queryValue = '[' + tags.join(',') + ']';
                         this.props.core.history.push(
-                            addQuery(window.location.href, 'tags', queryValue),
+                            url.setQuery('tags', tags).getPathname(),
                             {tags});
                     }
                 }}
@@ -57,14 +65,16 @@ export class Books extends React.Component<Props, State> {
 
     public loadData (tags?:number[]) {
         (async () => {
-            const url = new URL(window.location.href);
-            const page = url.searchParams.get('page');
+            const url = new URLParser();
+            if (url.getAllPath()[0] !== 'books') { return; }
+
+            const page = url.getQuery('page');
 
             const res = await this.props.core.db.get('/thread', {
                 withType: 'book',
-                tags: tags || getArrayQuery(window.location.href, 'tags'),
-                channels: getArrayQuery(window.location.href, 'channels'),
-                page: page && +page || undefined,
+                tags: tags || url.getQuery('tags'),
+                channels: url.getQuery('channels'),
+                page: page,
             });
             if (!res || !res.data) { return; }
             this.setState({data: res.data});
