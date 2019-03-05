@@ -53,7 +53,7 @@ class ReviewTest extends TestCase
                     //'use_markdown' => $data['use_markdown'],
                     'use_indentation' => $data['use_indentation'],
                 ],
-                'component' => [
+                'review' => [
                     'type' => 'review',
                     'attributes' => [
                         'thread_id' => $reviewee->id,
@@ -97,7 +97,7 @@ class ReviewTest extends TestCase
                     //'use_markdown' => $data['use_markdown'],
                     'use_indentation' => $data['use_indentation'],
                 ],
-                'component' => [
+                'review' => [
                     'type' => 'review',
                     'attributes' => [
                         'thread_id' => $reviewee->id,
