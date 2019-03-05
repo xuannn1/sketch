@@ -179,3 +179,31 @@ export class Anchor extends React.Component <{
             innerRef={(el) => this.el = el}>{this.props.children}</Link>;
     }
 }
+
+export class TabCard extends React.Component<{
+    tabs:{name:string, children:React.ReactNode}[],
+}, {
+    onTab:number;
+}> {
+    public state = {
+        onTab: 0,
+    }
+
+    public render () {
+        return <Card className="tab-card">
+            <div className="tabs is-boxed">
+                <ul>
+                    {this.props.tabs.map((tab, i) =>
+                        <li key={i}
+                            onClick={() => this.setState({onTab: i})}
+                            className={this.state.onTab === i ? 'is-active' : ''}>
+                            <a><span>{tab.name}</span></a>
+                        </li>)}
+                </ul>
+            </div>
+            <div className="tab-content">
+                {this.props.tabs[this.state.onTab].children}
+            </div>
+        </Card>;
+    }
+}

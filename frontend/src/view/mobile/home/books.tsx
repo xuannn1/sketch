@@ -13,7 +13,7 @@ interface Props extends RouteComponentProps {
 }
 
 interface State {
-    data:APIGet['/thread']['res']['data'];
+    data:APIGet['/homebook']['res']['data'];
     tags:APIGet['/config/noTongrenTags']['res']['data']['tags'];
 }
 
@@ -68,14 +68,7 @@ export class Books extends React.Component<Props, State> {
             const url = new URLParser();
             if (url.getAllPath()[0] !== 'books') { return; }
 
-            const page = url.getQuery('page');
-
-            const res = await this.props.core.db.get('/thread', {
-                withType: 'book',
-                tags: tags || url.getQuery('tags'),
-                channels: url.getQuery('channels'),
-                page: page,
-            });
+            const res = await this.props.core.db.get('/homebook', undefined);
             if (!res || !res.data) { return; }
             this.setState({data: res.data});
         })();
