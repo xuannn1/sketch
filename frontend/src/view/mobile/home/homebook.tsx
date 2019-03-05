@@ -1,25 +1,19 @@
 import * as React from 'react';
-import { Core } from '../../../core';
 import { Page, TabCard } from '../../components/common';
 import { APIGet, ResData } from '../../../config/api';
 import { URLParser } from '../../../utils/url';
 import { Tags } from '../../components/book/tags';
-import { RouteComponentProps } from 'react-router';
-import { UnregisterCallback } from 'history';
 import { parseDate } from '../../../utils/date';
 import { Link } from 'react-router-dom';
-
-interface Props extends RouteComponentProps {
-    core:Core;
-}
+import { HomeTopNav } from './homenav';
+import { MobileRouteProps } from '../router';
 
 interface State {
     data:APIGet['/homebook']['res']['data'];
     tags:APIGet['/config/noTongrenTags']['res']['data']['tags'];
 }
 
-export class Books extends React.Component<Props, State> {
-    public unListen:UnregisterCallback|null = null;
+export class HomeBook extends React.Component<MobileRouteProps, State> {
     public state:State = {
         data: {
             recent_long_recommendations: [],
@@ -37,17 +31,10 @@ export class Books extends React.Component<Props, State> {
 
     public componentDidMount () {
         this.loadData();
-        this.unListen = this.props.core.history.listen(() => this.loadData());
-    }
-
-    public componentWillUnmount () {
-        if (this.unListen) {
-            this.unListen();
-        }
     }
 
     public render () {
-        return (<Page className="books">
+        return (<Page className="books" nav={<HomeTopNav />}>
             <Tags
                 tags={this.state.tags}
                 searchTags={(tags) => {
@@ -160,9 +147,6 @@ export class Books extends React.Component<Props, State> {
 
     public loadData (tags?:number[]) {
         (async () => {
-            const url = new URLParser();
-            if (url.getAllPath()[0] !== 'homebook') { return; }
-
             const res = await this.props.core.db.get('/homebook', undefined);
             if (!res || !res.data) { return; }
             console.log(res.data);

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ResData } from '../../../config/api';
 import { Card, Pagination } from '../common';
-import { URLParser } from '../../../utils/url';
 import { Link } from 'react-router-dom';
 import { parseDate } from '../../../utils/date';
 

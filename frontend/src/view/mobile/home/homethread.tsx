@@ -6,17 +6,15 @@ import { UnregisterCallback } from 'history';
 import { ChannelList } from '../../components/thread/channel-list';
 import { APIGet, ResData } from '../../../config/api';
 import { ThreadList } from '../../components/thread/thread-list';
-
-interface Props {
-    core:Core;
-}
+import { HomeTopNav } from './homenav';
+import { MobileRouteProps } from '../router';
 
 interface State {
     showChannel:number;
     data:APIGet['/thread']['res']['data'];
 }
 
-export class Threads extends React.Component<Props, State> {
+export class HomeThread extends React.Component<MobileRouteProps, State> {
     public unListen:UnregisterCallback|null = null;
 
     public state = {
@@ -36,7 +34,7 @@ export class Threads extends React.Component<Props, State> {
     }
 
     public render () {
-        return (<Page>
+    return (<Page nav={<HomeTopNav />}>
             {this.state.showChannel === 0 ?
                 <ChannelList /> :
                 this.renderChannelThreads()}

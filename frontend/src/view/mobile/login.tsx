@@ -1,19 +1,16 @@
 import * as React from 'react';
-import { Core } from '../../core';
 import { Page } from '../components/common';
 import { Login } from '../components/login/login';
-import { ROUTE } from '../../config/route';
 import { PasswordReset } from '../components/login/pwd-reset';
 import { Register } from '../components/login/register';
 import { Topnav } from '../components/topnav';
+import { MobileRouteProps } from './router';
 
-interface Props {
-    core:Core;
-}
+
 interface State {
 }
 
-export class LoginRoute extends React.Component<Props, State> {
+export class LoginRoute extends React.Component<MobileRouteProps, State> {
     public location = '';
 
     public render () {
@@ -26,17 +23,17 @@ export class LoginRoute extends React.Component<Props, State> {
 
     public renderContent () {
         switch (window.location.pathname) {
-            case ROUTE.login:
+            case '/login':
                 this.location = 'login';
                 return <Login login={async (email, pwd) => await this.props.core.user.login(email, pwd)}></Login>;
-            case ROUTE.register:
+            case '/register':
                 this.location = 'register';
                 return <Register register={async (name, email, pwd) => await this.props.core.user.register({
                     email,
                     name,
                     password: pwd,
                 })}></Register>;
-            case ROUTE.reset_pwd:
+            case '/reset_password':
                 this.location = 'reset password';
                 return <PasswordReset resetPassword={(email) => this.props.core.db.resetPassword(email) as any}></PasswordReset>;
             default:
