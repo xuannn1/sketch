@@ -6,23 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
+    //
+    //protected $primaryKey = ['user_id','votable_type','votable_id'];  
+    //public $incrementing = false;
+    //protected $keyType = 'string';
     protected $guarded = [];
-
     const UPDATED_AT = null;
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+    public function user(){
+    	return $this->belongsTo(User::class,'user_id');
+    }
+    public function votable(){
+    	return $this->morphTo();
     }
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }
-    /**
-    * Get all of the owning votable models.
-    */
-    public function votable()
-    {
-        return $this->morphTo();
-    }
 }
+

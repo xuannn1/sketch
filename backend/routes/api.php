@@ -77,3 +77,9 @@ Route::get('/user/{user}/message', 'API\MessageController@index');//展示某用
 Route::post('message', 'API\MessageController@store');
 
 //阅读历史保存
+
+//投票
+
+Route::apiResource('vote', 'API\VoteController');
+Route::get('votes','API\VoteController@index');
+
