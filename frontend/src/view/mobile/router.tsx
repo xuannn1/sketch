@@ -10,8 +10,8 @@ import { Notification } from './notification';
 import { Navbar } from './navbar';
 import { LoginRoute } from './login';
 import { HomeMain } from './home/main';
-import { Threads } from './home/threads';
-import { Books } from './home/books';
+import { Threads } from './home/homethread';
+import { Books } from './home/homebook';
 import { Book } from './home/book';
 import { Chapter } from './home/chapter';
 import { Thread } from './home/thread';
@@ -43,11 +43,11 @@ export class MobileRoute extends React.Component<Props, State> {
                 position: 'relative',
             }}>
                 <Switch>
-                    <Route exact path={ROUTE.home}
+                    <Route exact path="/"
                         render={(props) => <Home {...props} core={core} page={<HomeMain core={core} {...props} />} />} />
-                    <Route path={ROUTE.books}
+                    <Route path="/homebook"
                         render={(props) => <Home {...props} core={core} page={<Books core={core} {...props} />} />} />
-                    <Route path={ROUTE.threads}
+                    <Route path="/homethread"
                         render={(props) => <Home {...props} core={core} page={<Threads core={core} {...props} />} />} />
                     <Route path="/thread"
                         render={(props) => <Thread {...props} core={core} />} />

@@ -15,9 +15,9 @@ export class Home extends React.Component<Props, State> {
     public render () {
         return (<div>
             <TopMenu items={[
-                {to:ROUTE.home, label: '首页'},
-                {to:ROUTE.books, label: '文库'},
-                {to:ROUTE.threads, label: '论坛'}, 
+                {to:'/', label: '首页'},
+                {to:'/homebook', label: '文库'},
+                {to:'/homethread', label: '论坛'}, 
             ]} />
             <div>
                 { this.props.page }
