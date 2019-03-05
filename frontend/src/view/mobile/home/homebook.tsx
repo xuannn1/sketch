@@ -37,17 +37,9 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
         return (<Page className="books" nav={<HomeTopNav />}>
             <Tags
                 tags={this.state.tags}
-                searchTags={(tags) => {
-                    const url = new URLParser();
-                    if (tags.length === 0) {
-                        this.props.core.history.push(
-                            url.removeQuery('tags').getPathname(),
-                            {tags});
-                    } else {
-                        this.props.core.history.push(
-                            url.setQuery('tags', tags).getPathname(),
-                            {tags});
-                    }
+                redirectPathname="/books"
+                search={(pathname, tags) => {
+                    this.props.core.history.push(pathname, {tags});
                 }}
                 getFullList={() => {
                     this.loadNoTongrenTags();
@@ -149,7 +141,6 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
         (async () => {
             const res = await this.props.core.db.get('/homebook', undefined);
             if (!res || !res.data) { return; }
-            console.log(res.data);
             this.setState({data: res.data});
         })();
     }

@@ -8,7 +8,8 @@ import { Link } from 'react-router-dom';
 interface Props {
     tags:ResData.Tag[];
     getFullList:() => void;
-    searchTags:(tags:number[]) => void;
+    search:(path:string, tags:number[]) => void;
+    redirectPathname?:string;
 }
 
 interface State {
@@ -61,7 +62,7 @@ export class Tags extends React.Component<Props, State> {
                         key={tag.id}
                         onClick={() => {
                             this.clickTag(tag);
-                            this.props.searchTags(this.selectedTagIds);
+                            this.props.search(this.getTagsPathname(), this.selectedTagIds);
                         }}
                 />;})}
                 <a className="tag" onClick={() => {
@@ -81,7 +82,7 @@ export class Tags extends React.Component<Props, State> {
                     <Tag tag={tag}
                         onClick={() => {
                             this.clickTag(tag);
-                            this.props.searchTags(this.selectedTagIds);
+                            this.props.search(this.getTagsPathname() ,this.selectedTagIds);
                         }}
                         key={tag.id} />)}
                 <a className="tag" onClick={() => {
@@ -149,10 +150,22 @@ export class Tags extends React.Component<Props, State> {
                 <a className="button is-fullwidth" onClick={() => {
                     this.showFullList = false;
                     this.filterTags = this.selectedTags.slice();
-                    this.props.searchTags(this.selectedTagIds);
+                    this.props.search(this.getTagsPathname(), this.selectedTagIds);
                 }}>筛选</a>
             </div>
         </div>;
+    }
+
+    public getTagsPathname () {
+        const url = new URLParser();
+        if (this.props.redirectPathname) {
+            url.pathname = this.props.redirectPathname;
+        }
+        if (this.selectedTagIds.length === 0) {
+            return url.removeQuery('tags').getPathname();
+        } else {
+            return url.setQuery('tags', this.selectedTagIds).getPathname();
+        }
     }
 }
 
