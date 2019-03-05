@@ -114,7 +114,9 @@ export namespace ResData {
         type:'post';
         id:number;
         attributes:Database.Post;
-        component:Chapter;
+        chapter?:Chapter,
+        review?:Review,
+        answer?:Database.Thread,
         author:User;
     }
 
@@ -125,9 +127,24 @@ export namespace ResData {
             attributes: {
                 body: '',
             },
-            component: allocChapter(),
             author: allocUser(),
         };
+    }
+
+    export interface Review {
+        type:'review',
+        id:number;
+        attributes:{},
+        reviewee:Database.Thread,
+    }
+
+    export function allocReview () {
+        return {
+            type: 'review',
+            id: 0,
+            attributes: {},
+            reviewee: allocThread(),
+        }
     }
 
     export interface Recommendation {
@@ -259,7 +276,17 @@ export interface APIGet {
     }>;
     '/homebook':APISchema<{
         req:undefined;
-        res:{};
+        res:{
+            recent_long_recommendations:ResData.Post[], //最新长评推文
+            recent_short_recommendations:ResData.Post[], //最新短评推文
+            random_short_recommendations:ResData.Post[],
+            recent_custom_short_recommendations:ResData.Post[],
+            recent_custom_long_recommendations:ResData.Post[],
+            recent_added_chapter_books:ResData.Thread[], //最新更新书籍
+            recent_responded_books:ResData.Thread[], //最新回复书籍
+            highest_jifen_books:ResData.Thread[], //最高积分书籍
+            most_collected_books:ResData.Thread[], //最多收藏书籍
+        };
     }>;
     '/book/:id':APISchema<{
         req:{
