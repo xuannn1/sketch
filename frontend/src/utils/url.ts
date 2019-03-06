@@ -79,7 +79,7 @@ export class URLParser {
     }
 
     public getAllPath () : string[] {
-        return this.pathname.substr(1).split('/');
+        return this.pathname.substr(1).split('/').map((s) => '/' + s);
     }
 
     public setQuery (query:string, value:any) {
