@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Pagination, Card } from '../common';
 import { ResData } from '../../../config/api';
-import { ROUTE } from '../../../config/route';
 import { Link } from 'react-router-dom';
 
 interface Props {
@@ -40,7 +39,7 @@ export class BookList extends React.Component<Props, State> {
                 </div> 
             }
             <div className="meta">
-                <Link className="author" to={`${ROUTE.users}/${author.id}`}>{author.attributes.name}</Link>
+                <Link className="author" to={`/user/${author.id}`}>{author.attributes.name}</Link>
                 <div className="counters">
                     <span><i className="fas fa-pencil-alt"></i>{attributes.total_char}</span> /
                     <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 

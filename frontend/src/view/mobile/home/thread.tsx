@@ -1,19 +1,16 @@
 import * as React from 'react';
 import { ResData, APIGet } from '../../../config/api';
 import { Page, Pagination } from '../../components/common';
-import { Core } from '../../../core/index';
 import { Topnav } from '../../components/topnav';
 import { URLParser } from '../../../utils/url';
-import { RouteComponentProps } from 'react-router';
+import { MobileRouteProps } from '../router';
 
-interface Props extends RouteComponentProps<{id:string}> {
-    core:Core;
-}
+
 interface State {
     data:APIGet['/thread/:id']['res']['data'];
 }
 
-export class Thread extends React.Component<Props, State> {
+export class Thread extends React.Component<MobileRouteProps, State> {
     public state = {
         data: {
             thread: ResData.allocThread(),
