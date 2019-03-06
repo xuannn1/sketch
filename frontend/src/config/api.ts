@@ -131,20 +131,6 @@ export namespace ResData {
     }
 
     export interface Review {
-        type:'review';
-        id:number;
-        attributes:Database.Review;
-    }
-
-    export function allocReview () {
-        return {
-            type: 'review',
-            id: 0,
-            attributes: {},
-        };
-    }
-
-    export interface Review {
         type:'review',
         id:number;
         attributes:{},
