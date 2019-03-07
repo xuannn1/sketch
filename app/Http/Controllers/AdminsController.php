@@ -390,4 +390,16 @@ class AdminsController extends Controller
         }
         return redirect()->back()->with("warning","什么都没做");
     }
+
+    public function searchusersform(){
+        return view('admin.searchusersform');
+    }
+    public function searchusers(Request $request){
+        $users = User::nameLike($request->name)
+        ->emailLike($request->email)
+        ->select('id','name','email','created_at','last_login')
+        ->paginate(config('constants.items_per_page'))
+        ->appends($request->only('name','email','page'));
+        return view('admin.searchusers', compact('users'));
+    }
 }

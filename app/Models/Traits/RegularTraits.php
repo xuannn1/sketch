@@ -43,5 +43,20 @@ trait RegularTraits
     {
         return $query->orderBy('lastaddedchapter_at', 'desc');
     }
+    public function scopeNameLike($query, $name)
+    {
+        if($name){
+            return $query->where('name','like','%'.$name.'%');
+        }
+        return $query;
+
+    }
+    public function scopeEmailLike($query, $email)
+    {
+        if($email){
+            return $query->where('email','like','%'.$email.'%');
+        }
+        return $query;
+    }
 
 }

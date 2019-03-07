@@ -28,7 +28,7 @@
                 </ul>
                 <h4>用户（user）管理</h4>
                 <ul>
-                    <li><a href="#">用户列表</a></li>
+                    <li><a href="{{route('admin.searchusersform')}}">搜索用户</a></li>
                     <li><a href="{{route('admin.sendpublicnoticeform')}}">发送公共通知</a></li>
                 </ul>
                 <h4>主题（thread）管理</h4>

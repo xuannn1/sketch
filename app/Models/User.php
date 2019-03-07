@@ -15,6 +15,7 @@ class User extends Authenticatable
 {
     use Notifiable;
     use SoftDeletes;
+    use Traits\RegularTraits;
     protected $dates = ['deleted_at'];
 
     /**
