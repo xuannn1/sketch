@@ -34,33 +34,23 @@ class StoreVote extends FormRequest
         ];
     }
 
-    public function getVotedModel($vote_data){
-        //获得被投票的对象       
-        $voted_model=$vote_data['votable_type']::where('id',$vote_data['votable_id'])->first();
-        return $voted_model;
-    }
-
+    
 
     public function validateAttitude($attitude,$voted_model,$user_id){
         //检查投票类型是否符合要求
-        
-
+        //可以同时赞和搞笑,踩和折叠
         if(in_array($attitude, array('upvote','funnyvote'))){
-            $votes=$voted_model->votes()
-                ->where('user_id',$user_id)
-                ->where('attitude', 'like', 'downvote')
-                ->orWhere('attitude', 'like', 'foldvote')
-                ->get();
-            return $votes->isEmpty();
+
+            $votes=$voted_model->votes()->where('user_id',$user_id)->get();
+
+            return $votes->whereIn('attitude',['downvote','foldvote'])->isEmpty();
 
         }elseif(in_array($attitude, array('downvote','foldvote'))){
-            $votes=$voted_model->votes()
-                ->where('user_id',$user_id)
-                ->where('attitude', 'like', 'upvote')
-                ->orWhere('attitude', 'like', 'funnyvote')
-                ->get();
 
-            return $votes->isEmpty();
+            $votes=$voted_model->votes()->where('user_id',$user_id)->get();
+
+            return $votes->whereIn('attitude',['upvote','funnyvote'])->isEmpty();
+
         }else{
             return false;
         }
@@ -68,14 +58,11 @@ class StoreVote extends FormRequest
 
     
 
-    public function generateVote(){
+    public function generateVote($voted_model){
 
-        $vote_data = $this->only('votable_type','votable_id','attitude');
+        $vote_data = $this->only('attitude');
         $user_id=auth('api')->id();    
 
-        $voted_model=$this->getVotedModel($vote_data);
-
-        if(empty($voted_model)){abort(410);} //检查被投票的对象是否存在
         if(!$this->validateAttitude($vote_data['attitude'],$voted_model,$user_id)){
             abort(403); //检查投票类型是否符合规范
         }
@@ -84,6 +71,7 @@ class StoreVote extends FormRequest
             'user_id'=>$user_id,
             'attitude'=>$vote_data['attitude']
         ]);
+
         return $vote;
 
     }

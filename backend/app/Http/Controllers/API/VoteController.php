@@ -10,11 +10,13 @@ use App\Models\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVote;
 use App\Http\Resources\VoteResource;
+use App\Models\Traits\FindModelTrait;
+
 
 
 class VoteController extends Controller
 {
-    
+    use FindModelTrait;
     public function __construct()
     {
         $this->middleware('auth:api')->except(['index', 'show']);
@@ -24,9 +26,14 @@ class VoteController extends Controller
     public function index(Request $request)
     {
         //
-        $votable_type=$request->votable_type;
-        $voted_model=$votable_type::where('id',$request->votable_id)->first();
-        $votes=$voted_model->votes;
+        $voted_model=$this->findModel(
+            $request->votable_type,
+            $request->votable_id,
+            array('Post','Quote','Status')
+        );
+        if(empty($voted_model)){abort(410);}
+
+        $votes=$voted_model->votes->whereNotIn('attitude',['downvote']);
         return response()->success([
             'votes' => VoteResource::collection($votes),
         ]);
@@ -42,9 +49,14 @@ class VoteController extends Controller
     public function store(StoreVote $form)
     {
         //      
-        //$validated = $form->validated();
+        $voted_model=$this->findModel(
+            $form->votable_type,
+            $form->votable_id,
+            array('Post','Quote','Status')
+        );
+        if(empty($voted_model)){abort(410);} //检查被投票的对象是否存在
 
-        $vote = $form->generateVote();
+        $vote = $form->generateVote($voted_model);
 
         return response()->success(new VoteResource($vote));
              

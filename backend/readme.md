@@ -578,16 +578,16 @@ http://127.0.0.1:8000/api/vote
 方法：POST
 授权：必须登陆
 必填项：
-votable_type(string) 被投票对象
+votable_type(string):'Post'|'Quote'|'Status' 被投票对象
 votable_id(int) 被投票对象id
-attitude(string) 投票类型
+attitude(string):'upvote'|'downvote'|'funnyvote'|'foldvote' 投票类型
 
 ###### 4.5.10.1 展示votes
 http://127.0.0.1:8000/api/vote
 方法：GET
 授权：无须登陆
 必填项：
-votable_type(string) 被投票对象
+votable_type(string):'Post'|'Quote'|'Status' 被投票对象
 votable_id(int) 被投票对象id
 
 ## 5. 如何测试
