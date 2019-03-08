@@ -168,10 +168,9 @@ class BooksController extends Controller
     public function booktag(Tag $booktag, Request $request){
         $logged = Auth::check()? true:false;
         $books = Cache::remember('-tag-'.($logged? 'Lgd':'nLg').$booktag->id.($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy').(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($request, $booktag, $logged) {
-            $query = $this->join_book_tables()
-            ->join('tagging_threads','threads.id','=','tagging_threads.thread_id')
-            ->where('tagging_threads.tag_id','=',$booktag->id)
-            ->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
+            $query = $this->join_book_tables();
+            $query = $this->filter_tag($query, $booktag);
+            $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             if(!$logged){$query = $query->where('bianyuan','=',0);}
             $query = $this->return_book_fields($query);
             $books = $this->bookOrderBy($query, $request->orderby)
@@ -180,6 +179,17 @@ class BooksController extends Controller
             return $books;
         });
         return view('books.index', compact('books'))->with('show_as_collections', false);
+    }
+    public function filter_tag($query, $tag)
+    {
+        if($tag->tag_group===10){
+            return $query->where('tongren_yuanzhu_tags.id','=',$tag->id);
+        }
+        if($tag->tag_group===20){
+            return $query->where('tongren_cp_tags.id','=',$tag->id);
+        }
+        return $query->join('tagging_threads','threads.id','=','tagging_threads.thread_id')
+        ->where('tagging_threads.tag_id','=',$tag->id);
     }
 
     public function filter(Request $request){
