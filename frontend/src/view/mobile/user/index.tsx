@@ -1,15 +1,12 @@
 import * as React from 'react';
-import { Core } from '../../../core';
+import { MobileRouteProps } from '../router';
 
-interface Props {
-    core:Core;
-}
 
 interface State {
 
 }
 
-export class User extends React.Component<Props, State> {
+export class User extends React.Component<MobileRouteProps, State> {
     public render () {
         return (<div>
             <button onClick={() => {

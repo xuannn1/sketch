@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { Core } from '../../../core/index';
 import { Card, NotificationError } from '../common';
 import { Link } from 'react-router-dom';
-import { ROUTE } from '../../../config/route';
 import { validEmail } from '../../../utils/validates';
 
 interface Props {
@@ -50,7 +48,7 @@ export class Login extends React.Component<Props, State> {
                     textAlign: 'justify',
                 }}>
                     <label className="checkbox"><input type="checkbox" />记住我</label>
-                    <Link to={ROUTE.reset_pwd} 
+                    <Link to="reset_password"
                         style={{
                         color: 'grey',
                         float: 'right',
@@ -74,7 +72,7 @@ export class Login extends React.Component<Props, State> {
                 }}>登录</a>
             </div>
             <div className="card-footer">
-                <span>还没账号?&#160;&#160;</span><Link to={ROUTE.register}>现在注册</Link>!
+                <span>还没账号?&#160;&#160;</span><Link to="/register">现在注册</Link>!
             </div>
         </Card>;
     }

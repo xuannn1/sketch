@@ -65,6 +65,7 @@ export namespace ResData {
         tags?:Tag[];
         recommendations?:Recommendation[];
         last_component?:Post;
+        last_post?:Post;
     }
 
     export function allocThread () : Thread {
@@ -113,8 +114,10 @@ export namespace ResData {
         type:'post';
         id:number;
         attributes:Database.Post;
-        component:Chapter;
-        author:User;
+        author?:User;
+        review?:Review;
+        answer?:Thread;
+        chapter?:Chapter;
     }
 
     export function allocPost () : Post {
@@ -124,9 +127,23 @@ export namespace ResData {
             attributes: {
                 body: '',
             },
-            component: allocChapter(),
-            author: allocUser(),
         };
+    }
+
+    export interface Review {
+        type:'review',
+        id:number;
+        attributes:{},
+        reviewee:Database.Thread,
+    }
+
+    export function allocReview () {
+        return {
+            type: 'review',
+            id: 0,
+            attributes: {},
+            reviewee: allocThread(),
+        }
     }
 
     export interface Recommendation {
@@ -258,7 +275,17 @@ export interface APIGet {
     }>;
     '/homebook':APISchema<{
         req:undefined;
-        res:{};
+        res:{
+            recent_long_recommendations:ResData.Post[];
+            recent_short_recommendations:ResData.Post[];
+            random_short_recommendations:ResData.Post[];
+            recent_custom_short_recommendations:ResData.Post[];
+            recent_custom_long_recommendations:ResData.Post[];
+            recent_added_chapter_books:ResData.Thread[];
+            recent_responded_books:ResData.Thread[];
+            highest_jifen_books:ResData.Thread[];
+            most_collected_books:ResData.Thread[];
+        };
     }>;
     '/book/:id':APISchema<{
         req:{

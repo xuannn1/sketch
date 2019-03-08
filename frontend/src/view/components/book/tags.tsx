@@ -8,7 +8,8 @@ import { Link } from 'react-router-dom';
 interface Props {
     tags:ResData.Tag[];
     getFullList:() => void;
-    searchTags:(tags:number[]) => void;
+    search:(path:string, tags:number[]) => void;
+    redirectPathname?:string;
 }
 
 interface State {
@@ -18,20 +19,40 @@ export class Tags extends React.Component<Props, State> {
     public selectedTags:ResData.Tag[] = [];
     public selectedTagIds:number[] = [];
     public filterTags:ResData.Tag[] = [];
-    public showFullList = false;
 
-    public clickTag (tag:ResData.Tag) {
+    public showFullList = false;
+    public firstLoad = true;
+
+    public clickTag = (tag:ResData.Tag) => {
         const idx = this.selectedTagIds.indexOf(tag.id);
         if (idx < 0) {
-            this.selectedTags.push(tag);
             this.selectedTagIds.push(tag.id);
-        } else {
+            this.selectedTags.push(tag);
+        }  else {
             this.selectedTagIds.splice(idx, 1);
             this.selectedTags.splice(indexEq(this.selectedTags, tag.id), 1);
         }
     }
 
     public render () {
+        if (this.firstLoad && this.props.tags.length > 0) {
+            const url = new URLParser();
+            const tags = url.getQuery('tags');
+            if (tags) {
+                this.selectedTagIds = tags;
+                this.filterTags.length = 0;
+                this.selectedTags.length = 0;
+                for (let i = 0; i < this.props.tags.length; i ++) {
+                    const tag = this.props.tags[i];
+                    if (this.selectedTagIds.indexOf(tag.id) >= 0) {
+                        this.filterTags.push(tag);
+                        this.selectedTags.push(tag);
+                    }
+                }
+                this.firstLoad = false
+            }
+        }
+
         let renderTagList:() => JSX.Element;
         if (this.showFullList) {
             renderTagList = this.renderFullTags;
@@ -61,7 +82,7 @@ export class Tags extends React.Component<Props, State> {
                         key={tag.id}
                         onClick={() => {
                             this.clickTag(tag);
-                            this.props.searchTags(this.selectedTagIds);
+                            this.props.search(this.getTagsPathname(), this.selectedTagIds);
                         }}
                 />;})}
                 <a className="tag" onClick={() => {
@@ -81,7 +102,7 @@ export class Tags extends React.Component<Props, State> {
                     <Tag tag={tag}
                         onClick={() => {
                             this.clickTag(tag);
-                            this.props.searchTags(this.selectedTagIds);
+                            this.props.search(this.getTagsPathname() ,this.selectedTagIds);
                         }}
                         key={tag.id} />)}
                 <a className="tag" onClick={() => {
@@ -149,10 +170,22 @@ export class Tags extends React.Component<Props, State> {
                 <a className="button is-fullwidth" onClick={() => {
                     this.showFullList = false;
                     this.filterTags = this.selectedTags.slice();
-                    this.props.searchTags(this.selectedTagIds);
+                    this.props.search(this.getTagsPathname(), this.selectedTagIds);
                 }}>筛选</a>
             </div>
         </div>;
+    }
+
+    public getTagsPathname () {
+        const url = new URLParser();
+        if (this.props.redirectPathname) {
+            url.pathname = this.props.redirectPathname;
+        }
+        if (this.selectedTagIds.length === 0) {
+            return url.removeQuery('tags').getPathname();
+        } else {
+            return url.setQuery('tags', this.selectedTagIds).getPathname();
+        }
     }
 }
 

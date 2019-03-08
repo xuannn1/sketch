@@ -1,23 +1,16 @@
 import * as React from 'react';
-import { Core } from '../../../core/index';
 import { Page, Anchor } from '../../components/common';
 import { BookProfile } from '../../components/book/book-profile';
 import { BookChapters } from '../../components/book/book-chapters';
 import { APIGet, ResData } from '../../../config/api';
-import { RouteComponentProps } from 'react-router';
 import { Topnav } from '../../components/topnav';
-
-interface Props extends RouteComponentProps<{
-    id:string;
-}> {
-    core:Core;
-}
+import { MobileRouteProps } from '../router';
 
 interface State {
     data:APIGet['/book/:id']['res']['data'];
 }
 
-export class Book extends React.Component<Props, State> {
+export class Book extends React.Component<MobileRouteProps, State> {
     public state:State = {
         data: {
             thread: ResData.allocThread(),

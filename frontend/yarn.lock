@@ -1322,10 +1322,10 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@^16.4.18":
-  version "16.4.18"
-  resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.4.18.tgz#2e28a2e7f92d3fa7d6a65f2b73275c3e3138a13d"
-  integrity sha1-Liii5/ktP6fWpl8rcydcPjE4oT0=
+"@types/react@^16.8.6":
+  version "16.8.6"
+  resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.8.6.tgz#fa1de3fe56cc9b6afeddc73d093d7f30fd5e31cc"
+  integrity sha1-+h3j/lbMm2r+3cc9CT1/MP1eMcw=
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"

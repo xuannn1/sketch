@@ -1,24 +1,17 @@
 import * as React from 'react';
-import { Core } from '../../../core';
-import { Recommendation } from '../../components/thread/recommendation';
 import { HomeThread } from '../../components/thread/thread-home';
 import { Page, Card } from '../../components/common';
 import { Link } from 'react-router-dom';
-import { ROUTE } from '../../../config/route';
 import { Carousel } from '../../components/carousel';
 import { checkType } from '../../../utils/types';
-import { APIGet, ResData } from '../../../config/api';
-import { RouteComponentProps } from 'react-router';
-
-interface Props {
-    core:Core;
-}
-
+import { APIGet } from '../../../config/api';
+import { HomeTopNav } from './homenav';
+import { MobileRouteProps } from '../router';
 interface State {
     data:APIGet['/']['res']['data'];
 }
 
-export class HomeMain extends React.Component<Props, State> {
+export class HomeMain extends React.Component<MobileRouteProps, State> {
     public state:State = {
         data:{
             quotes: [],
@@ -38,7 +31,7 @@ export class HomeMain extends React.Component<Props, State> {
     }
 
     public render () {
-        return (<Page>
+        return (<Page nav={<HomeTopNav />}>
             <Carousel  
                 windowResizeEvent={this.props.core.windowResizeEvent}
                 slides={this.state.data.quotes.map((quote, i) => 
@@ -52,7 +45,7 @@ export class HomeMain extends React.Component<Props, State> {
                 backgroundColor: 'transparent',
                 textAlign: 'center',
                 boxShadow: 'none',
-                }}><Link to={ROUTE.login} className="button is-dark">Login</Link></Card>
+                }}><Link to={'/login'} className="button is-dark">Login</Link></Card>
             }
 
             {/* <Recommendation recommendations={this.state.data.recommendation} core={this.props.core} /> */}
