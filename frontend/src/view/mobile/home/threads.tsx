@@ -1,19 +1,15 @@
 import * as React from 'react';
-import { Core } from '../../../core/index';
 import { Page } from '../../components/common';
-
-interface Props {
-    core:Core;
-}
+import { HomeTopNav } from './homenav';
+import { MobileRouteProps } from '../router';
 
 interface State {
-
 }
 
-export class Threads extends React.Component<Props, State> {
+export class Threads extends React.Component<MobileRouteProps, State> {
     public render () {
-        return (<Page>
-            threads
-        </Page>);
+        return <Page nav={<HomeTopNav />}>
+        
+        </Page>;
     }
 }

@@ -1,25 +1,20 @@
 import * as React from 'react';
-import { Core } from '../../../core';
+import { HomeTopNav } from './homenav';
 import { Page } from '../../components/common';
+import { MobileRouteProps } from '../router';
 import { APIGet, ResData } from '../../../config/api';
-import { BookList } from '../../components/book/book-list';
 import { URLParser } from '../../../utils/url';
-import { Tags } from '../../components/book/tags';
-import { RouteComponentProps } from 'react-router';
 import { UnregisterCallback } from 'history';
-
-interface Props extends RouteComponentProps {
-    core:Core;
-}
+import { Tags } from '../../components/book/tags';
+import { BookList } from '../../components/book/book-list';
 
 interface State {
     data:APIGet['/thread']['res']['data'];
-    tags:APIGet['/config/noTongrenTags']['res']['data']['tags'];
+    tags:ResData.Tag[]; //fixme:
 }
 
-export class Books extends React.Component<Props, State> {
-    public unListen:UnregisterCallback|null = null;
-    public state:State = {
+export class Books extends React.Component<MobileRouteProps, State> {
+    public state = {
         data: {
             threads: [],
             paginate: ResData.allocThreadPaginate(),
@@ -27,57 +22,32 @@ export class Books extends React.Component<Props, State> {
         tags: [],
     };
 
+    public unListen:UnregisterCallback|null = null;
+
     public componentDidMount () {
         this.loadData();
         this.unListen = this.props.core.history.listen(() => this.loadData());
     }
 
     public componentWillUnmount () {
-        if (this.unListen) {
-            this.unListen();
-        }
-    }
-
-    public render () {
-        return (<Page className="books">
-            <Tags
-                tags={this.state.tags}
-                searchTags={(tags) => {
-                    const url = new URLParser();
-                    if (tags.length === 0) {
-                        this.props.core.history.push(
-                            url.removeQuery('tags').getPathname(),
-                            {tags});
-                    } else {
-                        this.props.core.history.push(
-                            url.setQuery('tags', tags).getPathname(),
-                            {tags});
-                    }
-                }}
-                getFullList={() => {
-                    this.loadNoTongrenTags();
-                }} />
-            <BookList
-                threads={this.state.data.threads}
-                paginate={this.state.data.paginate} />
-        </Page>);
+        this.unListen && this.unListen();
     }
 
     public loadData (tags?:number[]) {
         (async () => {
             const url = new URLParser();
-            if (url.getAllPath()[0] !== 'books') { return; }
-
-            const page = url.getQuery('page');
+            if (url.getAllPath()[0] !== this.props.path) { return; }
 
             const res = await this.props.core.db.get('/thread', {
-                withType: 'book',
+                page: url.getQuery('page'),
                 tags: tags || url.getQuery('tags'),
                 channels: url.getQuery('channels'),
-                page: page,
+                withType: 'book',
             });
             if (!res || !res.data) { return; }
             this.setState({data: res.data});
+
+            this.loadNoTongrenTags();
         })();
     }
 
@@ -87,5 +57,22 @@ export class Books extends React.Component<Props, State> {
             if (!res || !res.data) { return; }
             this.setState({tags: res.data.tags});
         })();
+    }
+
+    public render () {
+        return <Page nav={<HomeTopNav />}>
+            <Tags
+                tags={this.state.tags}
+                search={(pathname, tags) => {
+                    this.props.core.history.push(pathname, {tags});
+                }}
+                getFullList={() => {
+                    this.loadNoTongrenTags();
+            }} />
+            <BookList
+                threads={this.state.data.threads}
+                paginate={this.state.data.paginate}
+            />
+        </Page>;
     }
 }

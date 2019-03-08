@@ -79,7 +79,7 @@ export class URLParser {
     }
 
     public getAllPath () : string[] {
-        return this.pathname.substr(1).split('/');
+        return this.pathname.substr(1).split('/').map((s) => '/' + s);
     }
 
     public setQuery (query:string, value:any) {
@@ -125,8 +125,8 @@ export class URLParser {
         return this;
     }
 
-    public getSearch () {
-        const queries = Object.keys(this.queries);
+    public getSearch (_quries?:{[query:string]:any}) {
+        const queries = Object.keys(_quries || this.queries);
         if (queries.length === 0) { return ''; }
         const res:string[] = [];
         for (let i = 0; i < queries.length; i ++) {
@@ -144,7 +144,7 @@ export class URLParser {
         return '?' + res.join('&');
     }
 
-    public getPathname () {
-        return this.pathname + this.hash + this.getSearch();
+    public getPathname (_quries?:{[query:string]:any}) {
+        return this.pathname + this.hash + this.getSearch(_quries);
     }
 }

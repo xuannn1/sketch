@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Core } from '../../core';
-import { ROUTE } from '../../config/route';
 
 interface Props {
     core:Core;
@@ -16,11 +15,11 @@ interface State {
 export class Navbar extends React.Component<Props, State> {
     public state = {
         spec: [
-            {to:ROUTE.home, label: 'home'},
-            {to:ROUTE.statuses,label: 'status'},
-            {to:ROUTE.collections, label: 'collection'},
-            {to:ROUTE.users,label: 'users'},
-            {to:ROUTE.notifications,label: 'notification'},
+            {to:'/', label: 'home'},
+            {to:'/status',label: 'status'},
+            {to:'/collections', label: 'collection'},
+            {to:'/user', label: 'users'},
+            {to:'/notifications', label: 'notification'},
         ],
     };
 

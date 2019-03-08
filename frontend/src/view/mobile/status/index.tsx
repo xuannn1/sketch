@@ -1,15 +1,10 @@
 import * as React from 'react';
-import { Core } from '../../../core';
-
-interface Props {
-    core:Core;
-}
-
+import { MobileRouteProps } from '../router';
 interface State {
 
 }
 
-export class Status extends React.Component<Props, State> {
+export class Status extends React.Component<MobileRouteProps, State> {
     public render () {
         return (<div>
             status

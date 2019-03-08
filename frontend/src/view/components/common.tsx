@@ -3,6 +3,7 @@ import { parseDate } from '../../utils/date';
 import { Link } from 'react-router-dom';
 import { ResData } from '../../config/api';
 import { URLParser } from '../../utils/url';
+import './styles/common.scss';
 
 export const COLOR_GREY = '#555';
 
@@ -177,5 +178,41 @@ export class Anchor extends React.Component <{
             to={this.props.to}
             role={this.props.role}
             innerRef={(el) => this.el = el}>{this.props.children}</Link>;
+    }
+}
+
+export class TabCard extends React.Component<{
+    tabs:{name:string, children:React.ReactNode}[];
+    className?:string;
+    more?:string;
+}, {
+    onTab:number;
+}> {
+    public state = {
+        onTab: 0,
+    }
+
+    public render () {
+        const className = this.props.className || '';
+        return <Card className={`tab-card ${className}`}>
+            <div className="tabs is-boxed">
+                <ul>
+                    {this.props.tabs.map((tab, i) =>
+                        <li key={i}
+                            onClick={() => this.setState({onTab: i})}
+                            className={this.state.onTab === i ? 'is-active' : ''}>
+                            <a><span>{tab.name}</span></a>
+                        </li>)}
+                </ul>
+            </div>
+            <div className="tab-content">
+                {this.props.tabs[this.state.onTab].children}
+            </div>
+            { this.props.more &&
+                <Link className="more" to={this.props.more}>
+                    更多
+                </Link>
+            }
+        </Card>;
     }
 }
