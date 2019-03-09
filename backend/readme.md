@@ -572,6 +572,24 @@ http://127.0.0.1:8000/api/messages
 sendTo(int) 接收用户id
 body(string) 消息内容
 
+#### 4.5.10 vote相关
+###### 4.5.10.1 创建vote
+http://127.0.0.1:8000/api/vote
+方法：POST
+授权：必须登陆
+必填项：
+votable_type(string):'Post'|'Quote'|'Status' 被投票对象
+votable_id(int) 被投票对象id
+attitude(string):'upvote'|'downvote'|'funnyvote'|'foldvote' 投票类型
+
+###### 4.5.10.1 展示votes
+http://127.0.0.1:8000/api/vote
+方法：GET
+授权：无须登陆
+必填项：
+votable_type(string):'Post'|'Quote'|'Status' 被投票对象
+votable_id(int) 被投票对象id
+
 ## 5. 如何测试
 #### 5.1 写一个新的专项测试文件
 在backend/tests/Feature目录下，放置对应的测试文件。
