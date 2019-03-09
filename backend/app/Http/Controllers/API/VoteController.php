@@ -10,7 +10,7 @@ use App\Models\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVote;
 use App\Http\Resources\VoteResource;
-use App\Models\Traits\FindModelTrait;
+use App\Sosadfun\Traits\FindModelTrait;
 
 
 
@@ -19,75 +19,47 @@ class VoteController extends Controller
     use FindModelTrait;
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:api');
     }
-    
-    
-    public function index(Request $request)
+
+    private function findVotableModel($request)
     {
-        //
-        $voted_model=$this->findModel(
-            $request->votable_type,
-            $request->votable_id,
+        if (!array_key_exists('votable_type', $request)
+        || !array_key_exists('votable_id', $request)){
+            return false;
+        }
+        return $this->findModel(
+            $request['votable_type'],
+            $request['votable_id'],
             array('Post','Quote','Status')
         );
-        if(empty($voted_model)){abort(410);}
+    }
 
-        $votes=$voted_model->votes->whereNotIn('attitude',['downvote']);
+    public function index(Request $request)
+    {
+        // TODO: 目前只给出一个物品被vote的结果，以后应允许管理员查看是谁提交了这些vote，也允许用户查看所有upvote的提供人。
+        $voted_model=$this->findVotableModel($request->all());
+        if(empty($voted_model)){abort(404);}
+
+        $votes=$voted_model->votes;
         return response()->success([
             'votes' => VoteResource::collection($votes),
         ]);
     }
 
-    
-    public function create()
-    {
-        //
-    }
-
-    
     public function store(StoreVote $form)
     {
-        //      
-        $voted_model=$this->findModel(
-            $form->votable_type,
-            $form->votable_id,
-            array('Post','Quote','Status')
-        );
-        if(empty($voted_model)){abort(410);} //检查被投票的对象是否存在
+        //
+        $voted_model=$this->findVotableModel($form->all());
+        if(empty($voted_model)){abort(404);} //检查被投票的对象是否存在
 
         $vote = $form->generateVote($voted_model);
-
         return response()->success(new VoteResource($vote));
-             
-        	
-        
-        	
     }
 
-  
-    public function show(Vote $vote)
-    {
-        //
-        
 
-    }
-
-    
-    public function edit(Vote $vote)
-    {
-        //
-    }
-
-   
-    public function update(Request $request, Vote $vote)
-    {
-        //
-    }
-
-   
     public function destroy(Vote $vote)
     {
-        //
+        // TODO：应该提供删除vote的方法：找到，然后删掉
     }
 }

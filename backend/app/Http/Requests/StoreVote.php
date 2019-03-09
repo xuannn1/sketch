@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 use App\Models\Vote;
 
 
 
 class StoreVote extends FormRequest
 {
+    protected $attitudes = array('upvote','downvote','funnyvote','foldvote');
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -30,55 +31,31 @@ class StoreVote extends FormRequest
             //
             'votable_type' => 'required|string|max:20',
             'votable_id' => 'required|numeric',
-            'attitude' => 'required|string|max:8',
+            'attitude' => 'required|string|max:10',
         ];
     }
 
-    
-
-    public function validateAttitude($attitude,$voted_model,$user_id){
-        //检查投票类型是否符合要求
-        //可以同时赞和搞笑,踩和折叠
-        if(in_array($attitude, array('upvote','funnyvote'))){
-
-            $votes=$voted_model->votes()->where('user_id',$user_id)->get();
-
-            return $votes->whereIn('attitude',['downvote','foldvote'])->isEmpty();
-
-        }elseif(in_array($attitude, array('downvote','foldvote'))){
-
-            $votes=$voted_model->votes()->where('user_id',$user_id)->get();
-
-            return $votes->whereIn('attitude',['upvote','funnyvote'])->isEmpty();
-
-        }else{
-            return false;
-        }
+    public function validateAttitude($voted_model,$attitude,$user_id){
+        $votes = $voted_model->votes()->where('user_id',$user_id)->get();
+        $check_attitude=in_array($attitude, array('upvote','downvote')) ? array('upvote','downvote'):array($attitude);
+        return $votes->whereIn('attitude', $check_attitude)->isEmpty();
     }
-
-    
 
     public function generateVote($voted_model){
 
-        $vote_data = $this->only('attitude');
-        $user_id=auth('api')->id();    
+        if(!in_array($this->attitude, $this->attitudes)){abort(422);}
 
-        if(!$this->validateAttitude($vote_data['attitude'],$voted_model,$user_id)){
-            abort(403); //检查投票类型是否符合规范
+        $vote_data = $this->only('attitude');
+        $vote_data['user_id'] = auth('api')->id();
+
+        if(!$this->validateAttitude($voted_model, $vote_data['attitude'], $vote_data['user_id'])){
+            abort(409); //和已有投票冲突（可能是重复投票，也可能是已经赞还要踩）
         }
-        
-        $vote=$voted_model->votes()->create([
-            'user_id'=>$user_id,
-            'attitude'=>$vote_data['attitude']
-        ]);
+
+        $vote = $voted_model->votes()->create($vote_data);
 
         return $vote;
 
     }
-
-    
-
-
-    
 
 }

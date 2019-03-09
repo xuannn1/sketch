@@ -33,8 +33,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    const UPDATED_AT = null;
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 
+    const UPDATED_AT = null;
 
     public function threads()
     {

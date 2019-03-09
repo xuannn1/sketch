@@ -80,6 +80,4 @@ Route::post('message', 'API\MessageController@store');
 
 //投票
 
-Route::apiResource('vote', 'API\VoteController');
-Route::get('votes','API\VoteController@index');
-
+Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'update']);

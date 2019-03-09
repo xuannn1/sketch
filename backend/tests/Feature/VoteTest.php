@@ -42,7 +42,7 @@ class VoteTest extends TestCase
         ];
 
         $response = $this->post('api/vote', $data);
-        $response->assertStatus(403);//检查无效投票
+        $response->assertStatus(409);//检查无效投票
         $this->assertDatabaseMissing('votes',$data);
 
         $data = [
@@ -53,8 +53,8 @@ class VoteTest extends TestCase
 
         $response = $this->post('api/vote', $data);
         //dd($response);
-        $response->assertStatus(410);
-        $response = $this->get('api/votes?votable_type=Status&votable_id=2');
+        $response->assertStatus(404);
+        $response = $this->get('api/vote?votable_type=Status&votable_id=2');
         $response->assertStatus(200);
         //$response->assertStatus(200);
     }
