@@ -19,13 +19,17 @@ class StoreMessage extends FormRequest
     {
         $user = auth('api')->user();
         $sendTo = $this->getSendTo();
-        return auth('api')->check()
-            && $sendTo //千万别忘了检查这个被发信人确实合法存在
-            && ($user->isAdmin() //管理员群发私信的验证
-            //以下为用户发私信的验证
-            || ($user->info->message_limit > 0 // 用户仍然有信息余量
-            && !$sendTo->info->no_stranger_message // 对方允许接收陌生用户信息
-            && $user->id != $sendTo->id)); // 并不是自己给自己发信息
+        $basic_validation = auth('api')->check() && $sendTo; // 用户登录且被发信人确实合法存在
+
+        if($user->isAdmin()){ // 管理员群发私信验证
+            return $basic_validation;
+        }else{ // 用户发私信验证
+            return $basic_validation
+                && !is_array(Request('sendTo')) // 即用户没有试图群发私信
+                && $user->info->message_limit > 0 // 用户仍然有信息余量
+                && !$sendTo->info->no_stranger_message // 对方允许接收陌生用户信息
+                && $user->id != $sendTo->id; // 并不是自己给自己发信息
+        }
     }
 
     /**
@@ -65,7 +69,10 @@ class StoreMessage extends FormRequest
 
     public function adminSend()
     {
-        $sendTos = $this->getSendTo();
+        $sendTos = $this->getSendTo()->toArray();
+        if($sendTos != Request('sendTo')){
+            return ;
+        }
         foreach ($sendTos as $sendTo) {
             $messages[] = $this->generateMessage($sendTo);
         }

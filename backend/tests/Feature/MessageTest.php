@@ -123,7 +123,86 @@ class MessageTest extends TestCase
         $body = 'send this message';
 
         $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
-        ->assertStatus(200);
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'code',
+            'data' => [
+                'messages' => [[
+                    'type',
+                    'id',
+                    'attributes' => [
+                        'poster_id',
+                        'receiver_id',
+                        'message_body',
+                        'created_at',
+                    ],
+                ]]
+            ],
+        ])
+        ->assertJson([
+            'code' => 200,
+            'data' => [
+                'messages' => [[
+                    'type' => 'message',
+                    'attributes' => [
+                        'poster_id' => $admin->id,
+                        'receiver_id' => $receivers_id[0],
+                        'message_body' => [
+                            'body' => $body,
+                        ],
+                    ],
+                ],[
+                    'type' => 'message',
+                    'attributes' => [
+                        'poster_id' => $admin->id,
+                        'receiver_id' => $receivers_id[1],
+                        'message_body' => [
+                            'body' => $body,
+                        ],
+                    ],
+                ]]
+            ],
+        ]);
+    }
+
+    /** @test */
+    public function admin_can_not_send_mass_messages_to_inexistent_user()//管理员不可以给不存在的用户发私信
+    {
+        $admin = $this->create_sender(1);
+        DB::table('role_user')->insert([
+            'user_id' => $admin->id,
+            'role' => 'admin',
+        ]);
+        $this->actingAs($admin, 'api');
+
+        $receivers_id = [$this->faker->numberBetween(50000,60000), $this->create_receiver(false)->id];
+        $body = 'send this message';
+
+        $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
+        ->assertStatus(403);
+    }
+
+    /** @test */
+    public function user_can_not_send_mass_messages()//普通用户不可以群发私信
+    {
+        $user = $this->create_sender(2);
+        $this->actingAs($user, 'api');
+
+        $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
+        $body = 'send this message';
+
+        $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
+        ->assertStatus(403);
+    }
+
+    /** @test */
+    public function guest_can_not_send_mass_messages()//游客不可以群发私信
+    {
+        $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
+        $body = 'send this message';
+
+        $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
+        ->assertStatus(401);
     }
 
     /** @test */
