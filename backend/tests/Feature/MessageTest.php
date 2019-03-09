@@ -110,6 +110,23 @@ class MessageTest extends TestCase
     }
 
     /** @test */
+    public function admin_can_send_mass_messages()//管理员可以群发私信
+    {
+        $admin = $this->create_sender(1);
+        DB::table('role_user')->insert([
+            'user_id' => $admin->id,
+            'role' => 'admin',
+        ]);
+        $this->actingAs($admin, 'api');
+
+        $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
+        $body = 'send this message';
+
+        $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
+        ->assertStatus(200);
+    }
+
+    /** @test */
     public function an_authorised_user_can_check_messages_received()//登陆用户可查看已收私信
     {
         $poster = $this->create_sender(1);

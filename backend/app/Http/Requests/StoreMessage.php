@@ -18,12 +18,14 @@ class StoreMessage extends FormRequest
     public function authorize()
     {
         $user = auth('api')->user();
-        $sendTo = User::find(Request('sendTo'));
+        $sendTo = $this->getSendTo();
         return auth('api')->check()
-            && $user->info->message_limit > 0 // 用户仍然有信息余量
             && $sendTo //千万别忘了检查这个被发信人确实合法存在
+            && ($user->isAdmin() //管理员群发私信的验证
+            //以下为用户发私信的验证
+            || ($user->info->message_limit > 0 // 用户仍然有信息余量
             && !$sendTo->info->no_stranger_message // 对方允许接收陌生用户信息
-            && $user->id != $sendTo->id ;// 并不是自己给自己发信息
+            && $user->id != $sendTo->id)); // 并不是自己给自己发信息
     }
 
     /**
@@ -38,12 +40,14 @@ class StoreMessage extends FormRequest
         ];
     }
 
-    public function generateMessage()
+    public function generateMessage($sendTo)
     {
         $message_data['poster_id'] = auth('api')->id();
-        $message_data['receiver_id'] = Request('sendTo');
+        $message_data['receiver_id'] = $sendTo;
         $message = DB::transaction(function() use($message_data) {
-            $message_body = MessageBody::create(['body' => request('body')]);
+            if(!$message_body = MessageBody::where('body', Request('body'))->first()){
+                $message_body = MessageBody::create(['body' => Request('body')]);
+            }
             $message_data['message_body_id'] = $message_body->id;
             $message = Message::create($message_data);
             if (!auth('api')->user()->isAdmin()){
@@ -52,5 +56,33 @@ class StoreMessage extends FormRequest
             return $message;
         });
         return $message;
+    }
+
+    public function userSend()
+    {
+        return $this->generateMessage(Request('sendTo'));
+    }
+
+    public function adminSend()
+    {
+        $sendTos = $this->getSendTo();
+        foreach ($sendTos as $sendTo) {
+            $messages[] = $this->generateMessage($sendTo);
+        }
+        return collect($messages);
+    }
+
+    public function getSendTo()
+    {
+        if(auth('api')->user()->isAdmin()){
+            return $sendTo = User::whereIn('id', Request('sendTo'))
+                ->where('id', '<>', auth('api')->id())
+                ->whereNull('deleted_at')
+                ->select('id')
+                ->get()
+                ->pluck('id');
+        }else{
+            return $sendTo = User::find(Request('sendTo'));
+        }
     }
 }

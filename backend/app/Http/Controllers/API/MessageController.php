@@ -19,9 +19,17 @@ class MessageController extends Controller
 
     public function store(StoreMessage $form)
     {
-        $message = $form->generateMessage();
+        $message = $form->userSend();
         return response()->success([
             'message' => new MessageResource($message),
+        ]);
+    }
+
+    public function sendMessages(StoreMessage $form)
+    {
+        $messages = $form->adminSend();
+        return response()->success([
+            'message' => MessageResource::collection($messages),
         ]);
     }
 
