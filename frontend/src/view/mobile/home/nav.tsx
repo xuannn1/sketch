@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TopMenu } from "../../components/common";
 
-export function HomeTopNav () {
+export function HomeNav () {
     return <TopMenu
         items={[
             {to:'/', label: '首页'},

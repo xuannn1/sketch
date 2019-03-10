@@ -8,9 +8,9 @@ import './styles/common.scss';
 export const COLOR_GREY = '#555';
 
 export function Page (props:{
-    children?:React.ReactNode,
-    nav?:JSX.Element,
-    className?:string,
+    children?:React.ReactNode;
+    nav?:JSX.Element;
+    className?:string;
 }) {
     return <div className={props.className}>
         {props.nav}
@@ -23,10 +23,11 @@ export function Page (props:{
 }
 
 export function Card (props:{
-    children?:React.ReactNode,
-    style?:React.CSSProperties,
+    children?:React.ReactNode;
+    style?:React.CSSProperties;
     className?:string;
     ref?:(el:HTMLDivElement|null) => void;
+    title?:string|{text:string, link:string};
 }) {
     return <div className={`card ${props.className || ''}`}
         ref={(el) => props.ref && props.ref(el)}
@@ -35,9 +36,10 @@ export function Card (props:{
             padding: '10px',
             position: 'relative',
         }, props.style || {})}>
-
+        {props.title && (typeof props.title !== 'string' ? 
+            <Link to={props.title.link} className="title">{props.title.text}</Link> : 
+            <span className="title">{props.title}</span>)}
         {props.children}
-
     </div>;
 }
 
@@ -120,7 +122,7 @@ export class Pagination extends React.Component <{
         const pages = new Array(this.props.lastPage);
         pages.fill(0);
     
-        return <div className={this.props.className}
+        return <Card className={this.props.className}
             style={Object.assign({}, this.props.style || {})}>
             <nav className="pagination is-centered is-small" role="navigation" aria-label="pagination">
                 <Anchor className="pagination-previous"
@@ -152,7 +154,7 @@ export class Pagination extends React.Component <{
                 })}
                 </ul>
             </nav>
-        </div>;
+        </Card>;
     }
 }
 
@@ -182,9 +184,8 @@ export class Anchor extends React.Component <{
 }
 
 export class TabCard extends React.Component<{
-    tabs:{name:string, children:React.ReactNode}[];
+    tabs:{name:string, children:React.ReactNode[], more?:string}[];
     className?:string;
-    more?:string;
 }, {
     onTab:number;
 }> {
@@ -194,6 +195,8 @@ export class TabCard extends React.Component<{
 
     public render () {
         const className = this.props.className || '';
+        const tab = this.props.tabs[this.state.onTab];
+
         return <Card className={`tab-card ${className}`}>
             <div className="tabs is-boxed">
                 <ul>
@@ -206,13 +209,27 @@ export class TabCard extends React.Component<{
                 </ul>
             </div>
             <div className="tab-content">
-                {this.props.tabs[this.state.onTab].children}
+                <List children={tab.children} />
             </div>
-            { this.props.more &&
-                <Link className="more" to={this.props.more}>
+            { tab.more &&
+                <Link className="more" to={tab.more}>
                     更多
                 </Link>
             }
         </Card>;
     }
+}
+
+export function List (props:{
+    children:React.ReactNode[],
+    className?:string;
+}) {
+    return <div className={props.className}>
+        {props.children.map((child, idx) => {
+            return <div style={{}} key={idx}>
+                {idx !== 0 && <hr />}
+                {child}
+            </div>;
+        })}
+    </div>;
 }

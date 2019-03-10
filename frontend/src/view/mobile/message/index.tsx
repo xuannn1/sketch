@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common';
-import { StatusNav } from './nav';
+import { MessageNav } from './nav';
 interface State {
 
 }
 
-export class Status extends React.Component<MobileRouteProps, State> {
+export class Message extends React.Component<MobileRouteProps, State> {
     public render () {
-        return (<Page nav={<StatusNav />}>
-            status
+        return (<Page nav={<MessageNav />}>
+            message
         </Page>);
     }
 }

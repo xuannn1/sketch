@@ -16,10 +16,10 @@ export class Navbar extends React.Component<Props, State> {
     public state = {
         spec: [
             {to:'/', label: 'home'},
-            {to:'/status',label: 'status'},
-            {to:'/collections', label: 'collection'},
-            {to:'/user', label: 'users'},
-            {to:'/notifications', label: 'notification'},
+            {to:'/status/all',label: 'status'},
+            {to:'/collection/book', label: 'collection'},
+            {to:'/user', label: 'user'},
+            {to:'/message/all', label: 'message'},
         ],
     };
 
