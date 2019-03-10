@@ -36,7 +36,7 @@ export class Books extends React.Component<MobileRouteProps, State> {
     public loadData (tags?:number[]) {
         (async () => {
             const url = new URLParser();
-            if ('/' + url.getAllPath()[0] !== this.props.path) { return; }
+            if (url.getAllPath()[0] !== this.props.path) { return; }
 
             const res = await this.props.core.db.get('/thread', {
                 page: url.getQuery('page'),

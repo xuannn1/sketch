@@ -131,9 +131,10 @@ export namespace ResData {
     }
 
     export interface Review {
-        type:'review';
+        type:'review',
         id:number;
-        attributes:Database.Review;
+        attributes:{},
+        reviewee:Database.Thread,
     }
 
     export function allocReview () {
@@ -141,7 +142,8 @@ export namespace ResData {
             type: 'review',
             id: 0,
             attributes: {},
-        };
+            reviewee: allocThread(),
+        }
     }
 
     export interface Recommendation {

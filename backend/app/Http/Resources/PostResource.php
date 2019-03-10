@@ -62,7 +62,7 @@ class PostResource extends JsonResource
                 'responded_at' => (string)$this->responded_at,
             ],
             'author' => $author,
-            'component' => $component,
+            $this->type => $component,
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
         ];
     }
