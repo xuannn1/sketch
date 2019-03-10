@@ -17,7 +17,6 @@ import { Books } from './home/books';
 import { Message } from './message';
 import { StatusCollection } from './status/collection';
 import { MessageUnread } from './message/unread';
-import { MessageInbox } from './message/inbox';
 import { CollectionThread } from './collection/thread';
 import { CollectionList } from './collection/list';
 
@@ -46,13 +45,14 @@ export const MobileRoute:RouteComponentType[] = [
     { path: '/homethread', component: HomeThread },
     { path: '/threads', component: Threads },
     { path: '/books', component: Books },
-    { path: '/book', component: Book },
-    { path: '/thread', component: Thread },
-    { path: '/chapter', component: Chapter },
+    { path: '/book/:bid/chapter/:cid', component: Chapter },
+    { path: '/book/:id', component: Book },
+    { path: '/thread/:id', component: Thread },
 
     // user
     { path: '/user', component: User },
     { path: '/login', component: LoginRoute },
+    { path: '/register', component: LoginRoute },
 
     // collection
     { path: '/collection/book', component: CollectionBook },

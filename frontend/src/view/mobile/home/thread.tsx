@@ -4,6 +4,8 @@ import { Page, Pagination } from '../../components/common';
 import { Topnav } from '../../components/topnav';
 import { URLParser } from '../../../utils/url';
 import { MobileRouteProps } from '../router';
+import { ThreadProfile } from '../../components/thread/thread-profile';
+import { Post } from '../../components/post/post';
 
 
 interface State {
@@ -21,7 +23,7 @@ export class Thread extends React.Component<MobileRouteProps, State> {
 
     public async componentDidMount () {
         const url = new URLParser();
-        const id = url.getAllPath()[1];
+        const id = this.props.match.params.id;
 
         const res = await this.props.core.db.get('/thread/:id', {
             id: +id,
@@ -35,9 +37,8 @@ export class Thread extends React.Component<MobileRouteProps, State> {
 
         return <Page nav={<Topnav core={this.props.core}
                 center={thread.attributes.title} /> }>
-            {thread.attributes.title}
-            {thread.attributes.body}
-            {posts.map((post) => <span>{post.attributes.title}</span>)}
+            <ThreadProfile data={thread} />
+            {posts.map((post, idx) => <Post data={post} key={idx} />)}
             <Pagination currentPage={paginate.current_page} lastPage={paginate.total_pages} />
         </Page>;
     }
