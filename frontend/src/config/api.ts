@@ -185,6 +185,36 @@ export namespace ResData {
         timezone_type:number;
         timezone:string;
     }
+
+    export interface Message {
+        type:'message';
+        id:number;
+        attributes:{
+            poster_id:number;
+            receiver_id:number;
+            message_body:string;
+            created_at:Timestamp;
+            seen:boolean;
+        };
+        poster:User;
+        receiver:User;
+    }
+
+    export function allocMessage () : Message {
+        return {
+            type: 'message',
+            id: 0,
+            attributes: {
+                poster_id: 0,
+                receiver_id: 0,
+                message_body: '',
+                created_at: '',
+                seen: false,
+            },
+            poster: allocUser(),
+            receiver: allocUser(),
+        };
+    }
 }
 
 export namespace Request {
@@ -192,7 +222,7 @@ export namespace Request {
         // （是否仅返回边缘/非边缘内容）
         export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only';
 
-        export type ordered = 'latist_added_component'| //按最新更新时间排序
+        export type ordered = 'latest_added_component'| //按最新更新时间排序
                               'jifen'|                   //按总积分排序
                               'weighted_jifen'|          //按平衡积分排序
                               'latest_created'|              //按创建时间排序
@@ -206,6 +236,12 @@ export namespace Request {
                                'column'|
                                'request'|
                                'homework';
+    }
+
+    export namespace Message {
+        export type style = 'sendbox'|'receivebox'|'dialogue';
+        export type ordered = 'oldest'|'latest';
+        export type read = 'read_only'|'unread_only';
     }
 }
 
@@ -300,6 +336,40 @@ export interface APIGet {
             most_upvoted:ResData.Post;
             top_review:ResData.Post|null;
         }
+    }>;
+    '/collection':APISchema<{
+        req:{
+            user_id?:number;
+            withType?:'thread'|'book'|'list'|'request'|'homework';
+            ordered?:Request.Thread.ordered;
+        };
+        res:{
+            threads:ResData.Thread[];
+            paginate:ResData.ThreadPaginate;
+        };
+    }>;
+    '/user/:id/message':APISchema<{
+        req:{
+            id:number;
+            withStyle:Request.Message.style;
+            chatWith?:Increments;
+            ordered?:Request.Message.ordered;
+            read?:Request.Message.read;
+        };
+        res:{
+            messages:ResData.Message[];
+            paginate:ResData.ThreadPaginate;
+            style:Request.Message.style;
+        };
+    }>;
+    '/status':APISchema<{
+        // fixme:
+        req:{
+            
+        };
+        res:{
+
+        };
     }>;
 }
 export interface APIPost {

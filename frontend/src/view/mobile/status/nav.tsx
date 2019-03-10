@@ -5,8 +5,7 @@ export function StatusNav () {
     return <TopMenu
         items={[
             {to:'/status/collection', label: '关注'},
-            {to:'/status', label: '全站'},
-            {to:'/', label: ''}, // fixme: 
+            {to:'/status/all', label: '全站'},
         ]}
     />;
 }

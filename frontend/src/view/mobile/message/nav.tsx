@@ -5,8 +5,7 @@ export function MessageNav () {
     return <TopMenu
         items={[
             {to:'/message/unread', label: '未读'},
-            {to:'/message', label: '全部'},
-            {to:'/message/list', label: '信箱'},
+            {to:'/message/all', label: '全部'},
         ]}
     />;
 }

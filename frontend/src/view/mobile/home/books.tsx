@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { HomeTopNav } from './nav';
 import { Page } from '../../components/common';
 import { MobileRouteProps } from '../router';
 import { APIGet, ResData } from '../../../config/api';
@@ -7,6 +6,7 @@ import { URLParser } from '../../../utils/url';
 import { UnregisterCallback } from 'history';
 import { Tags } from '../../components/book/tags';
 import { BookList } from '../../components/book/book-list';
+import { HomeNav } from './nav';
 
 interface State {
     data:APIGet['/thread']['res']['data'];
@@ -60,7 +60,7 @@ export class Books extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return <Page nav={<HomeTopNav />}>
+        return <Page nav={<HomeNav />}>
             <Tags
                 tags={this.state.tags}
                 search={(pathname, tags) => {

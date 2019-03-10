@@ -5,7 +5,7 @@ import { URLParser } from '../../../utils/url';
 import { Tags } from '../../components/book/tags';
 import { parseDate } from '../../../utils/date';
 import { Link } from 'react-router-dom';
-import { HomeTopNav } from './nav';
+import { HomeNav } from './nav';
 import { MobileRouteProps } from '../router';
 
 interface State {
@@ -34,7 +34,7 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return (<Page className="books" nav={<HomeTopNav />}>
+        return (<Page className="books" nav={<HomeNav />}>
             <Tags
                 tags={this.state.tags}
                 redirectPathname="/books"

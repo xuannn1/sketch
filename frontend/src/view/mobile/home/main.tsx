@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Carousel } from '../../components/carousel';
 import { checkType } from '../../../utils/types';
 import { APIGet } from '../../../config/api';
-import { HomeTopNav } from './nav';
+import { HomeNav } from './nav';
 import { MobileRouteProps } from '../router';
 interface State {
     data:APIGet['/']['res']['data'];
@@ -31,7 +31,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return (<Page nav={<HomeTopNav />}>
+        return (<Page nav={<HomeNav />}>
             <Carousel  
                 windowResizeEvent={this.props.core.windowResizeEvent}
                 slides={this.state.data.quotes.map((quote, i) => 

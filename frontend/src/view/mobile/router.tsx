@@ -18,6 +18,8 @@ import { Message } from './message';
 import { StatusCollection } from './status/collection';
 import { MessageUnread } from './message/unread';
 import { MessageInbox } from './message/inbox';
+import { CollectionThread } from './collection/thread';
+import { CollectionList } from './collection/list';
 
 interface Props {
     core:Core;
@@ -38,6 +40,7 @@ export type RouteComponentType = {
     exact?:boolean;
 }
 export const MobileRoute:RouteComponentType[] = [
+    // home
     { path: '/', component: HomeMain, exact: true },
     { path: '/homebook', component: HomeBook },
     { path: '/homethread', component: HomeThread },
@@ -46,14 +49,23 @@ export const MobileRoute:RouteComponentType[] = [
     { path: '/book', component: Book },
     { path: '/thread', component: Thread },
     { path: '/chapter', component: Chapter },
-    { path: '/login', component: LoginRoute },
-    { path: '/collections', component: CollectionBook },
+
+    // user
     { path: '/user', component: User },
-    { path: '/status', component: Status },
+    { path: '/login', component: LoginRoute },
+
+    // collection
+    { path: '/collection/book', component: CollectionBook },
+    { path: '/collection/thread', component: CollectionThread },
+    { path: '/collection/list', component: CollectionList },
+
+    // status
     { path: '/status/collection', component: StatusCollection },
-    { path: '/message', component: Message },
+    { path: '/status/all', component: Status },
+
+    // message
     { path: '/message/unread', component: MessageUnread },
-    { path: '/message/inbox', component: MessageInbox },
+    { path: '/message/all', component: Message },
 ];
 
 export class MobileRouter extends React.Component<Props, State> {
