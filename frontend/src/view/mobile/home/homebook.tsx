@@ -5,7 +5,7 @@ import { URLParser } from '../../../utils/url';
 import { Tags } from '../../components/book/tags';
 import { parseDate } from '../../../utils/date';
 import { Link } from 'react-router-dom';
-import { HomeTopNav } from './homenav';
+import { HomeTopNav } from './nav';
 import { MobileRouteProps } from '../router';
 
 interface State {

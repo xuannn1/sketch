@@ -6,7 +6,7 @@ import { UnregisterCallback } from 'history';
 import { ChannelList } from '../../components/thread/channel-list';
 import { APIGet, ResData } from '../../../config/api';
 import { ThreadList } from '../../components/thread/thread-list';
-import { HomeTopNav } from './homenav';
+import { HomeTopNav } from './nav';
 import { MobileRouteProps } from '../router';
 
 interface State {

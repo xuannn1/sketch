@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { HomeTopNav } from './homenav';
+import { HomeTopNav } from './nav';
 import { Page } from '../../components/common';
 import { MobileRouteProps } from '../router';
 import { APIGet, ResData } from '../../../config/api';

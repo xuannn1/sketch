@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Carousel } from '../../components/carousel';
 import { checkType } from '../../../utils/types';
 import { APIGet } from '../../../config/api';
-import { HomeTopNav } from './homenav';
+import { HomeTopNav } from './nav';
 import { MobileRouteProps } from '../router';
 interface State {
     data:APIGet['/']['res']['data'];

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Page } from '../../components/common';
-import { HomeTopNav } from './homenav';
+import { HomeTopNav } from './nav';
 import { MobileRouteProps } from '../router';
 
 interface State {

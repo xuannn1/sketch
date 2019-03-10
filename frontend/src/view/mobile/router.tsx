@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 import { Core } from '../../core';
-import { Collection } from './collection';
+import { CollectionBook } from './collection/book';
 import { User } from './user';
 import { Status } from './status';
-import { Notification } from './notification';
 import { Navbar } from './navbar';
 import { LoginRoute } from './login';
 import { HomeMain } from './home/main';
@@ -15,6 +14,10 @@ import { Chapter } from './home/chapter';
 import { Thread } from './home/thread';
 import { Threads } from './home/threads';
 import { Books } from './home/books';
+import { Message } from './message';
+import { StatusCollection } from './status/collection';
+import { MessageUnread } from './message/unread';
+import { MessageInbox } from './message/inbox';
 
 interface Props {
     core:Core;
@@ -44,10 +47,13 @@ export const MobileRoute:RouteComponentType[] = [
     { path: '/thread', component: Thread },
     { path: '/chapter', component: Chapter },
     { path: '/login', component: LoginRoute },
-    { path: '/collections', component: Collection },
+    { path: '/collections', component: CollectionBook },
     { path: '/user', component: User },
     { path: '/status', component: Status },
-    { path: '/notifications', component: Notification },
+    { path: '/status/collection', component: StatusCollection },
+    { path: '/message', component: Message },
+    { path: '/message/unread', component: MessageUnread },
+    { path: '/message/inbox', component: MessageInbox },
 ];
 
 export class MobileRouter extends React.Component<Props, State> {
