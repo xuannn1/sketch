@@ -39,6 +39,13 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
                 )}
                 indicator={true} />
 
+            {this.props.core.user.isLoggedIn() &&
+                <div>
+                <Link to={''} className="button">贡献题头</Link>
+                <Link to={''} className="button is-pulled-right">咸鱼</Link>
+                </div>
+            }
+
             { !this.props.core.user.isLoggedIn() &&
                 <Card style={{
                 border: 'none',
