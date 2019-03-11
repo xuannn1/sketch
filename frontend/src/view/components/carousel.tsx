@@ -5,6 +5,8 @@ import { EventBus } from '../../utils/events';
 
 interface Props {
     slides:JSX.Element[];
+    afterSlides?:JSX.Element[];
+    getIndex?: (index:number) => void;
     indicator?:boolean;
     windowResizeEvent:EventBus<void>;
 }
@@ -121,6 +123,7 @@ export class Carousel extends React.Component<Props, State> {
             return;
         }
         this.current -= 1;
+        if (this.props.getIndex) this.props.getIndex(this.current);
         const prevSlideOffset = this.getSlideOffset();
         this.slideTo(prevSlideOffset);
     }
@@ -132,6 +135,7 @@ export class Carousel extends React.Component<Props, State> {
             return;
         }
         this.current += 1;
+        if (this.props.getIndex) this.props.getIndex(this.current);
         const nextSlideOffset = this.getSlideOffset();
         this.slideTo(nextSlideOffset);
     }
@@ -208,6 +212,13 @@ export class Carousel extends React.Component<Props, State> {
                     }
                 </div>
             }
+            
+            { this.props.afterSlides && 
+                <div className="after-slide">
+                    { this.props.afterSlides }
+                </div>
+            }
+
         </Card>;
     }
 }

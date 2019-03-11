@@ -2,7 +2,7 @@ import * as React from 'react';
 import { HomeThread } from '../../components/thread/thread-home';
 import { Page, Card } from '../../components/common';
 import { Link } from 'react-router-dom';
-import { Carousel } from '../../components/carousel';
+import { Quotes } from './quotes';
 import { checkType } from '../../../utils/types';
 import { APIGet } from '../../../config/api';
 import { HomeTopNav } from './homenav';
@@ -32,19 +32,16 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
 
     public render () {
         return (<Page nav={<HomeTopNav />}>
-            <Carousel  
+            <Quotes
+                quotes={this.state.data.quotes}
+                isLoggedIn={this.props.core.user.isLoggedIn()}
                 windowResizeEvent={this.props.core.windowResizeEvent}
-                slides={this.state.data.quotes.map((quote, i) => 
-                    <span key={i}>{quote.attributes.body}</span>
-                )}
-                indicator={true} />
-
-            {this.props.core.user.isLoggedIn() &&
-                <div>
-                <Link to={''} className="button">贡献题头</Link>
-                <Link to={''} className="button is-pulled-right">咸鱼</Link>
-                </div>
-            }
+                createQuote={async (body, isAnonymous, majia) => await this.props.core.db.post("/quote", {
+                        body,
+                        is_anonymous: isAnonymous,
+                        majia: isAnonymous ? majia : undefined
+                    })}
+            />
 
             { !this.props.core.user.isLoggedIn() &&
                 <Card style={{

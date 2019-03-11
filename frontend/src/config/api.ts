@@ -17,7 +17,7 @@ export namespace ResData {
             not_sad?:boolean;
             is_approved?:boolean;
             reviewer_id?:Increments;
-            xianyus?:number;
+            xianyu?:number;
             created_at?:Timestamp;
         };
         author:User;
@@ -390,6 +390,21 @@ export interface APIPost {
             users:number[];
         };
         res:string;
+    }>;
+    '/quote':APISchema<{
+        req:{
+            body:string;
+            is_anonymous?:boolean;
+            majia?:string;
+        };
+        res:{
+            body:string;
+            user_id?:number;
+            is_anonymous?:boolean;
+            majia?:string;
+            created_at?:ResData.Date;
+            id?:number;
+        };
     }>;
 }
 
