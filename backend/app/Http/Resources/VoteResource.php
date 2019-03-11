@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use DB;
+
 
 class VoteResource extends JsonResource
 {
@@ -27,7 +29,7 @@ class VoteResource extends JsonResource
     }
 
     private function isAdmin($user){
-        return $user->roles()->where('role','admin')->isNotEmpty();
+        return DB::table('role_user')->where('user_id',$user->id)->where('role','admin')->get()->isNotEmpty();
     }
 
     private function isUpvote($attitude){
