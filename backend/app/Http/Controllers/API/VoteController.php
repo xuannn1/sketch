@@ -7,6 +7,7 @@ use App\Models\Vote;
 use App\Models\Post;
 use App\Models\Quote;
 use App\Models\Status;
+use App\Models\UserInfo;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVote;
 use App\Http\Resources\VoteResource;
@@ -61,5 +62,12 @@ class VoteController extends Controller
     public function destroy(Vote $vote)
     {
         // TODO：应该提供删除vote的方法：找到，然后删掉
+        if($vote->user_id!=auth('api')->id()){abort(403);}
+
+        $count = $vote->attitude.'_count';
+        UserInfo::where('user_id',$vote->votable->user_id)->decrement($count);
+        $vote->delete();
+
+        return response()->success('deleted');
     }
 }
