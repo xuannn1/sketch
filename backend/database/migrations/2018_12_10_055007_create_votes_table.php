@@ -14,11 +14,11 @@ class CreateVotesTable extends Migration
     public function up()
     {
         Schema::create('votes', function (Blueprint $table) {
-            $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->morphs('votable');  //post,quote,status
             $table->string('attitude', 10);  //upvote,downvote,funnyvote,foldvote
             $table->dateTime('created_at')->nullable();
+            $table->primary(['user_id','votable_type', 'votable_id','attitude']);
             $table->index(['user_id','votable_type', 'votable_id']);
         });
     }

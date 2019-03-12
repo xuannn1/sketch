@@ -79,6 +79,6 @@ Route::post('message', 'API\MessageController@store');
 //阅读历史保存
 
 //投票
-Route::delete('vote/{vote}', 'API\VoteController@destroy');
+Route::delete('vote', 'API\VoteController@destroy');
 Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'update']);
 

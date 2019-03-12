@@ -151,13 +151,8 @@ class VoteTest extends TestCase
 
         $this->assertDatabaseHas('votes',$data);
 
-        $vote=Vote::where('user_id',$user->id)
-        ->where('votable_type','Quote')
-        ->where('votable_id', $quote->id)
-        ->where('attitude','upvote')
-        ->first();
 
-        $response = $this->delete('api/vote/'.$vote->id, $data);
+        $response = $this->delete('api/vote', $data);
         $response->assertStatus(200);
         $this->assertDatabaseMissing('votes',$data);
 
