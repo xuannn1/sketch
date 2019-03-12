@@ -199,7 +199,7 @@ class PagesController extends Controller
         }
         if($request->search_options=='tongren_yuanzhu'){
             $query = $this->join_book_tables()
-                ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['threads.channel_id','=',2]]);
+            ->where([['threads.deleted_at', '=', null],['threads.public','=',1],['threads.channel_id','=',2]]);
             if ($request->search){
                 $query->where('tongrens.tongren_yuanzhu','like','%'.$request->search.'%');
             }
@@ -218,5 +218,19 @@ class PagesController extends Controller
     public function contacts()
     {
         return view('pages.contacts');
+    }
+
+    public function recommende_records()
+    {
+        $recommend_books = DB::table('threads')
+        ->join('users', 'threads.user_id', '=', 'users.id')
+        ->join('recommend_books', 'threads.id', '=', 'recommend_books.thread_id')
+        ->where('long', '=', 0)
+        ->where('valid','=',1)
+        ->select('threads.user_id', 'threads.bianyuan', 'threads.locked', 'threads.public', 'threads.noreply', 'threads.anonymous', 'threads.majia', 'threads.title', 'recommend_books.id', 'recommend_books.thread_id', 'recommend_books.recommendation', 'users.name', 'recommend_books.created_at')
+        ->orderBy('recommend_books.id','desc')
+        ->paginate(config('constants.items_per_page'));
+
+        return view('pages.recommend_records', compact('recommend_books'))->with('active', 1);
     }
 }

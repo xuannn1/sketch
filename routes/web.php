@@ -37,6 +37,7 @@
     Route::get('error/{error_code}', 'PagesController@error')->name('error');
     Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
     Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
+    Route::get('/recommend_records', 'PagesController@recommende_records')->name('recommend_records');//普通用户查看推荐书籍历史
 }
 
 {//提头部分
