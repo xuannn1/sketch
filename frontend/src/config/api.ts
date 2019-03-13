@@ -74,6 +74,7 @@ export namespace ResData {
             id: 0,
             attributes: {
                 title: '',
+                channel_id: 0,
             },
             author: allocUser(),
         };
@@ -185,27 +186,91 @@ export namespace ResData {
         timezone_type:number;
         timezone:string;
     }
+
+    export interface Message {
+        type:'message';
+        id:number;
+        attributes:{
+            poster_id:number;
+            receiver_id:number;
+            message_body:string;
+            created_at:Timestamp;
+            seen:boolean;
+        };
+        poster:User;
+        receiver:User;
+    }
+
+    export function allocMessage () : Message {
+        return {
+            type: 'message',
+            id: 0,
+            attributes: {
+                poster_id: 0,
+                receiver_id: 0,
+                message_body: '',
+                created_at: '',
+                seen: false,
+            },
+            poster: allocUser(),
+            receiver: allocUser(),
+        };
+    }
 }
 
-export namespace Request {
+export namespace ReqData {
     export namespace Thread {
+        export enum ordered {
+            latest_added_component = 'latest_added_component', //按最新更新时间排序
+            jifen = 'jifen',  //按总积分排序
+            weighted_jifen = 'weighted_jifen', //按平衡积分排序
+            latest_created = 'latest_created', //按创建时间排序
+            id = 'id',  //按id排序
+            collection_count = 'collection_count', //按收藏总数排序
+            total_char = 'total_char', //按总字数排序
+        }
         // （是否仅返回边缘/非边缘内容）
-        export type withBianyuan = 'bianyuan_only'|'none_bianyuan_only';
+        export enum withBianyuan {
+            bianyuan_only = 'bianyuan_only',
+            none_bianyuan_only = 'none_bianyuan_only',
+        }
 
-        export type ordered = 'latist_added_component'| //按最新更新时间排序
-                              'jifen'|                   //按总积分排序
-                              'weighted_jifen'|          //按平衡积分排序
-                              'latest_created'|              //按创建时间排序
-                              'id'|                      //按id排序
-                              'collection_count'|             //按收藏总数排序
-                              'total_char';              //按总字数排序
+        export enum withType {
+            thread = 'thread',
+            book = 'book',
+            list = 'list', //收藏单
+            column = 'column',
+            request = 'request',
+            homework = 'homework',
+        }
+    }
 
-        export type withType = 'thread'|                 //仅返回讨论帖
-                               'book'|                   //仅返回书籍
-                               'list'|        //仅返回收藏单
-                               'column'|
-                               'request'|
-                               'homework';
+    export namespace Message {
+        export enum style {
+            sendbox,
+            receiveBox,
+            dialogue,
+        }
+
+        export enum ordered {
+            oldest,
+            latest
+        }
+
+        export enum read {
+            read_only,
+            unread_only,
+        }
+    }
+
+    export namespace Collection {
+        export enum Type {
+            thread = 'thread', 
+            book = 'book',
+            list = 'list',
+            request = 'request',
+            homework = 'homework',
+        }
     }
 }
 
@@ -248,9 +313,9 @@ export interface APIGet {
             channels?:number[],
             tags?:number[],
             excludeTag?:number[],
-            withBianyuan?:Request.Thread.withBianyuan,
-            ordered?:Request.Thread.ordered,
-            withType?:Request.Thread.withType,
+            withBianyuan?:ReqData.Thread.withBianyuan,
+            ordered?:ReqData.Thread.ordered,
+            withType?:ReqData.Thread.withType,
             page?:number;
         };
         res:{
@@ -260,7 +325,12 @@ export interface APIGet {
     }>;
     '/homethread':APISchema<{
         req:undefined;
-        res:{};
+        res:{
+            [idx:string]:{
+                channel:ResData.Channel;
+                threads:ResData.Thread[];
+            }
+        };
     }>;
     '/thread/:id':APISchema<{
         req:{
@@ -300,6 +370,40 @@ export interface APIGet {
             most_upvoted:ResData.Post;
             top_review:ResData.Post|null;
         }
+    }>;
+    '/collection':APISchema<{
+        req:{
+            user_id?:number;
+            withType?:ReqData.Collection.Type;
+            ordered?:ReqData.Thread.ordered;
+        };
+        res:{
+            threads:ResData.Thread[];
+            paginate:ResData.ThreadPaginate;
+        };
+    }>;
+    '/user/:id/message':APISchema<{
+        req:{
+            id:number;
+            withStyle:ReqData.Message.style;
+            chatWith?:Increments;
+            ordered?:ReqData.Message.ordered;
+            read?:ReqData.Message.read;
+        };
+        res:{
+            messages:ResData.Message[];
+            paginate:ResData.ThreadPaginate;
+            style:ReqData.Message.style;
+        };
+    }>;
+    '/status':APISchema<{
+        // fixme:
+        req:{
+            
+        };
+        res:{
+
+        };
     }>;
 }
 export interface APIPost {

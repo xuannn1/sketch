@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Page, TabCard } from '../../components/common';
-import { APIGet, ResData } from '../../../config/api';
-import { URLParser } from '../../../utils/url';
+import { APIGet, ResData, ReqData } from '../../../config/api';
 import { Tags } from '../../components/book/tags';
-import { parseDate } from '../../../utils/date';
-import { Link } from 'react-router-dom';
-import { HomeTopNav } from './homenav';
+import { HomeNav } from './nav';
 import { MobileRouteProps } from '../router';
+import { RecomPreview } from '../../components/post/recom-preview';
+import { PostPreview } from '../../components/post/post-preview';
+import { BookPreview } from '../../components/book/book-preview';
 
 interface State {
     data:APIGet['/homebook']['res']['data'];
@@ -34,7 +34,7 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return (<Page className="books" nav={<HomeTopNav />}>
+        return (<Page className="books" nav={<HomeNav />}>
             <Tags
                 tags={this.state.tags}
                 redirectPathname="/books"
@@ -44,97 +44,61 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
                 getFullList={() => {
                     this.loadNoTongrenTags();
                 }} />
-            {this.renderRecoms()}
-            {this.renderCustomRecoms()}
-            {this.renderBookList()}
+
+            <TabCard
+                tabs={[
+                    {
+                        name: '长推',
+                        children: this.state.data.recent_long_recommendations.map(this.renderPostPreview),
+                    },
+                    {
+                        name: '最新',
+                        children: this.state.data.recent_short_recommendations.map(this.renderPostPreview),
+                    },
+                    {
+                        name: '往期',
+                        children: this.state.data.random_short_recommendations.map(this.renderPostPreview)
+                    },
+                ]}
+            />
+
+            <TabCard
+                tabs={[
+                    {
+                        name: '最新更新',
+                        children: this.state.data.recent_added_chapter_books.map(this.renderBookPreview),
+                        more: `/books?ordered=${ReqData.Thread.ordered.latest_added_component}`,
+                    },
+                    {
+                        name: '最高积分',
+                        children: this.state.data.highest_jifen_books.map(this.renderBookPreview),
+                        more: `/books?ordered=${ReqData.Thread.ordered.jifen}`,
+                    },
+                    {
+                        name: '最多收藏',
+                        children: this.state.data.most_collected_books.map(this.renderBookPreview),
+                        more: `/books?ordered=${ReqData.Thread.ordered.collection_count}`,
+                    },
+                    {
+                        name: '最新回复',
+                        children: this.state.data.recent_responded_books.map(this.renderBookPreview),
+                        more: `/books`,
+                    } 
+                ]}
+            />
         </Page>);
     }
 
-    public renderRecoms () {
-        return <TabCard className="recommendations"
-            tabs={[
-                {
-                    name: '长推',
-                    children: <>{this.state.data.recent_long_recommendations.map(this.renderRecomBlock)}</>,
-                },
-                {
-                    name: '最新',
-                    children: <>{this.state.data.recent_short_recommendations.map(this.renderRecomBlock)}</>,
-                },
-                {
-                    name: '往期',
-                    children: <>{this.state.data.random_short_recommendations.map(this.renderRecomBlock)}</>,
-                },
-            ]} 
-            more={'/homebook' /** fixme: */}
-        />;
+    public renderRecomPreivew = (data:ResData.Post) => {
+        return <RecomPreview data={data} />;
     }
 
-    public renderRecomBlock = (recommendation:ResData.Post, key:number) => {
-        return <div className="recommendation" key={key}>
-            {key > 0 && <hr />}
-            <div className="title">{recommendation.attributes.title}</div>
-            <div className="brief">{recommendation.attributes.brief}</div>
-            <div className="info">
-                {recommendation.author &&
-                    <span className="author">{recommendation.author.attributes.name}</span>
-                }
-                <span className="date">{parseDate(recommendation.attributes.created_at)}</span>
-            </div>
-        </div>;
+    public renderPostPreview = (data:ResData.Post) => {
+        return <PostPreview data={data} />;
     }
 
-    public renderCustomRecoms () {
-        return <TabCard
-            className="random-recoms"
-            tabs={[
-                {
-                    name: '用户短推',
-                    children: <>{this.state.data.recent_custom_short_recommendations.map(this.renderRecomBlock)}</>,
-                },
-                {
-                    name: '用户长推',
-                    children: <>{this.state.data.recent_custom_long_recommendations.map(this.renderRecomBlock)}</>,
-                }
-            ]}
-            more={'/homebook' /* fixme: */}
-        />;
-    }
-
-    public renderBookList () {
-        return <TabCard
-            className="books"
-            tabs={[
-                {
-                    name: '最新更新',
-                    children: <>{this.state.data.recent_added_chapter_books.map(this.renderBookBlock)}</>,
-                },
-                {
-                    name: '最高积分',
-                    children: <>{this.state.data.highest_jifen_books.map(this.renderBookBlock)}</>,
-                },
-                {
-                    name: '最多收藏',
-                    children: <>{this.state.data.most_collected_books.map(this.renderBookBlock)}</>,
-                },
-                {
-                    name: '最新回复',
-                    children: <>{this.state.data.recent_responded_books.map(this.renderBookBlock)}</>,
-                }
-            ]}
-            more={'/books'}
-        />;
-    }
-    public renderBookBlock = (book:ResData.Thread, key:number) => {
-        return <Link className="book" key={key} to={`/book/${book.id}`}>
-            {key !== 0 && <hr />}
-            <div className="title">{book.attributes.title}</div>
-            <div className="brief">{book.attributes.brief}</div>
-            <div className="info">
-                <span className="author">{book.author.attributes.name}</span>
-                <span className="date">{parseDate(book.author.attributes.created_at)}</span>
-            </div>
-        </Link>;
+    public renderBookPreview = (data:ResData.Thread) => {
+        return <BookPreview data={data} />;
     }
 
     public loadData (tags?:number[]) {

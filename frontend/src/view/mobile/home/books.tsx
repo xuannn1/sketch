@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { HomeTopNav } from './homenav';
-import { Page } from '../../components/common';
+import { Page, Pagination, List } from '../../components/common';
 import { MobileRouteProps } from '../router';
-import { APIGet, ResData } from '../../../config/api';
+import { APIGet, ResData, ReqData } from '../../../config/api';
 import { URLParser } from '../../../utils/url';
 import { UnregisterCallback } from 'history';
 import { Tags } from '../../components/book/tags';
-import { BookList } from '../../components/book/book-list';
+import { HomeNav } from './nav';
+import { ThreadPreview } from '../../components/thread/thread-preview';
 
 interface State {
     data:APIGet['/thread']['res']['data'];
@@ -42,7 +42,8 @@ export class Books extends React.Component<MobileRouteProps, State> {
                 page: url.getQuery('page'),
                 tags: tags || url.getQuery('tags'),
                 channels: url.getQuery('channels'),
-                withType: 'book',
+                withType: ReqData.Thread.withType.book,
+                ordered: url.getQuery('ordered'),
             });
             if (!res || !res.data) { return; }
             this.setState({data: res.data});
@@ -60,7 +61,7 @@ export class Books extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return <Page nav={<HomeTopNav />}>
+        return <Page nav={<HomeNav />}>
             <Tags
                 tags={this.state.tags}
                 search={(pathname, tags) => {
@@ -69,9 +70,13 @@ export class Books extends React.Component<MobileRouteProps, State> {
                 getFullList={() => {
                     this.loadNoTongrenTags();
             }} />
-            <BookList
-                threads={this.state.data.threads}
-                paginate={this.state.data.paginate}
+            <Pagination
+                currentPage={this.state.data.paginate.current_page}
+                lastPage={this.state.data.paginate.total_pages}
+            />
+            <List
+                children={this.state.data.threads.map((thread) =>
+                    <ThreadPreview data={thread} />)}
             />
         </Page>;
     }

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 import { Core } from '../../core';
-import { Collection } from './collection';
+import { CollectionBook } from './collection/book';
 import { User } from './user';
 import { Status } from './status';
-import { Notification } from './notification';
 import { Navbar } from './navbar';
 import { LoginRoute } from './login';
 import { HomeMain } from './home/main';
@@ -15,6 +14,11 @@ import { Chapter } from './home/chapter';
 import { Thread } from './home/thread';
 import { Threads } from './home/threads';
 import { Books } from './home/books';
+import { Message } from './message';
+import { StatusCollection } from './status/collection';
+import { MessageUnread } from './message/unread';
+import { CollectionThread } from './collection/thread';
+import { CollectionList } from './collection/list';
 import { CreateQuote } from './createquote';
 
 interface Props {
@@ -36,19 +40,33 @@ export type RouteComponentType = {
     exact?:boolean;
 }
 export const MobileRoute:RouteComponentType[] = [
+    // home
     { path: '/', component: HomeMain, exact: true },
     { path: '/homebook', component: HomeBook },
     { path: '/homethread', component: HomeThread },
     { path: '/threads', component: Threads },
     { path: '/books', component: Books },
-    { path: '/book', component: Book },
-    { path: '/thread', component: Thread },
-    { path: '/chapter', component: Chapter },
-    { path: '/login', component: LoginRoute },
-    { path: '/collections', component: Collection },
+    { path: '/book/:bid/chapter/:cid', component: Chapter },
+    { path: '/book/:id', component: Book },
+    { path: '/thread/:id', component: Thread },
+
+    // user
     { path: '/user', component: User },
-    { path: '/status', component: Status },
-    { path: '/notifications', component: Notification },
+    { path: '/login', component: LoginRoute },
+    { path: '/register', component: LoginRoute },
+
+    // collection
+    { path: '/collection/book', component: CollectionBook },
+    { path: '/collection/thread', component: CollectionThread },
+    { path: '/collection/list', component: CollectionList },
+
+    // status
+    { path: '/status/collection', component: StatusCollection },
+    { path: '/status/all', component: Status },
+
+    // message
+    { path: '/message/unread', component: MessageUnread },
+    { path: '/message/all', component: Message },
     { path: '/createquote', component: CreateQuote },
 ];
 

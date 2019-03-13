@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { HomeThread } from '../../components/thread/thread-home';
-import { Page, Card } from '../../components/common';
+import { Page, Card, TabCard } from '../../components/common';
 import { Link } from 'react-router-dom';
 import { Quotes } from '../../components/quotes';
 import { checkType } from '../../../utils/types';
 import { APIGet } from '../../../config/api';
-import { HomeTopNav } from './homenav';
+import { HomeNav } from './nav';
 import { MobileRouteProps } from '../router';
+import { BookPreview } from '../../components/book/book-preview';
+import { ThreadPreview } from '../../components/thread/thread-preview';
+import { StatusPreview } from '../../components/status/status-preview';
 interface State {
     data:APIGet['/']['res']['data'];
 }
@@ -31,7 +33,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return (<Page nav={<HomeTopNav />}>
+        return (<Page nav={<HomeNav />}>
             <Quotes
                 quotes={this.state.data.quotes}
                 core={this.props.core}
@@ -47,7 +49,46 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
             }
 
             {/* <Recommendation recommendations={this.state.data.recommendation} core={this.props.core} /> */}
-            <HomeThread latest={this.state.data.recent_responded_threads} />
+
+            <TabCard
+                tabs={[
+                    {
+                        name: '最新更新',
+                        children: this.state.data.recent_added_chapter_books.map((book) => <BookPreview data={book} mini />),
+                        more: '/books?ordered=latest_added_component',
+                    },
+                    {
+                        name: '最新回复',
+                        children: this.state.data.recent_responded_books.map((book) => <BookPreview data={book} mini />),
+                        more: '/books'
+                    }
+                ]}
+            />
+
+            <TabCard
+                tabs={[
+                    {
+                        name: '最新讨论',
+                        children: this.state.data.recent_responded_threads.map((thread) => <ThreadPreview data={thread} mini />),
+                        more: '/threads?ordered=latest_added_component',
+                    },
+                    // {
+                    //     name: '精华讨论',
+                    //     children: [],  //fixme:
+                    //     more: `/threads?tags=[${this.props.core.tag.getId('精华')}]`,
+                    // },
+                ]}
+            />
+
+            <TabCard
+                tabs={[
+                    {
+                        name: '最新动态',
+                        children: this.state.data.recent_statuses.map((status) => <StatusPreview status={status} />),
+                        more: '/status/all',
+                    }
+                ]}
+            />
         </Page>);
     }
 }
