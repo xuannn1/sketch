@@ -2,7 +2,7 @@ import * as React from 'react';
 import { HomeThread } from '../../components/thread/thread-home';
 import { Page, Card } from '../../components/common';
 import { Link } from 'react-router-dom';
-import { Quotes } from './quotes';
+import { Quotes } from '../../components/quotes';
 import { checkType } from '../../../utils/types';
 import { APIGet } from '../../../config/api';
 import { HomeTopNav } from './homenav';
@@ -34,13 +34,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
         return (<Page nav={<HomeTopNav />}>
             <Quotes
                 quotes={this.state.data.quotes}
-                isLoggedIn={this.props.core.user.isLoggedIn()}
-                windowResizeEvent={this.props.core.windowResizeEvent}
-                createQuote={async (body, isAnonymous, majia) => await this.props.core.db.post("/quote", {
-                        body,
-                        is_anonymous: isAnonymous,
-                        majia: isAnonymous ? majia : undefined
-                    })}
+                core={this.props.core}
             />
 
             { !this.props.core.user.isLoggedIn() &&

@@ -15,6 +15,7 @@ import { Chapter } from './home/chapter';
 import { Thread } from './home/thread';
 import { Threads } from './home/threads';
 import { Books } from './home/books';
+import { CreateQuote } from './createquote';
 
 interface Props {
     core:Core;
@@ -48,6 +49,7 @@ export const MobileRoute:RouteComponentType[] = [
     { path: '/user', component: User },
     { path: '/status', component: Status },
     { path: '/notifications', component: Notification },
+    { path: '/createquote', component: CreateQuote },
 ];
 
 export class MobileRouter extends React.Component<Props, State> {
