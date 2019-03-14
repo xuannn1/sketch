@@ -121,12 +121,12 @@ export class Carousel extends React.Component<Props, State> {
     public prev () {
         if (this.current === 0) {
             const currentSlideOffset = this.getSlideOffset();
-            if (this.props.getIndex) this.props.getIndex(this.current);
+            if (this.props.getIndex) { this.props.getIndex(this.current); }
             this.slideTo(currentSlideOffset);
             return;
         }
         this.current -= 1;
-        if (this.props.getIndex) this.props.getIndex(this.current);
+        if (this.props.getIndex) { this.props.getIndex(this.current); }
         const prevSlideOffset = this.getSlideOffset(this.current);
         this.slideTo(prevSlideOffset);
     }
@@ -134,12 +134,12 @@ export class Carousel extends React.Component<Props, State> {
     public next () {
         if (this.current === this.slideCount - 1) {
             const currentSlideOffset = this.getSlideOffset();
-            if (this.props.getIndex) this.props.getIndex(this.current);
+            if (this.props.getIndex) { this.props.getIndex(this.current); }
             this.slideTo(currentSlideOffset);
             return;
         }
         this.current += 1;
-        if (this.props.getIndex) this.props.getIndex(this.current);
+        if (this.props.getIndex) { this.props.getIndex(this.current); }
         const nextSlideOffset = this.getSlideOffset();
         this.slideTo(nextSlideOffset);
     }

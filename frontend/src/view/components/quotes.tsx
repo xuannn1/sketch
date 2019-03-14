@@ -26,9 +26,9 @@ export class Quotes extends React.Component<Props, State> {
             <Carousel
                 windowResizeEvent={this.props.core.windowResizeEvent}
                 slides={this.props.quotes.map((quote, i) => 
-                    <div>
-                        <div key={"body"+i}>{quote.attributes.body}</div>
-                        <div key={"author"+i}>——{quote.attributes.is_anonymous ? quote.attributes.majia : quote.author.attributes.name}</div>
+                    <div key={i}>
+                        <div>{quote.attributes.body}</div>
+                        <div>——{quote.attributes.is_anonymous ? quote.attributes.majia : quote.author.attributes.name}</div>
                     </div>
                     
                 )}
