@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Card } from '../common';
+import { ResData } from '../../../config/api';
 
 interface Props {
+    data:ResData.Post;
 }
 interface State {
 }

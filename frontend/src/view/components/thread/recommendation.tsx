@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import { Card, ShortThread } from '../common';
 import { Styles } from '../../../utils/types';
@@ -109,3 +110,4 @@ export class Recommendation extends React.Component<Props, State> {
         </Card>;
     }
 }
+*/

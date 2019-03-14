@@ -78,3 +78,7 @@ Route::post('message', 'API\MessageController@store');
 Route::post('sendmessages', 'API\MessageController@sendMessages');//管理员群发私信
 
 //阅读历史保存
+
+//投票
+
+Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'update']);

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Card } from '../common';
-import './book-chapters.scss';
-import { ResData } from '../../../config/api';
 import { Link } from 'react-router-dom';
+import { Card } from '../common';
+import { ResData } from '../../../config/api';
+import './chapter-list.scss';
 
 interface Props {
     bookId:number;
@@ -11,7 +11,7 @@ interface Props {
 interface State {
 }
 
-export class BookChapters extends React.Component<Props, State> {
+export class ChapterList extends React.Component<Props, State> {
     public render () {
         return <Card className="book-chapters">
             {this.props.chapters.map((chapter, i) =>

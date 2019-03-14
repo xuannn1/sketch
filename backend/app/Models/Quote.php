@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quote extends Model
 {
+    use Traits\VoteTrait;
     protected $guarded = [];
     const UPDATED_AT = null;
 

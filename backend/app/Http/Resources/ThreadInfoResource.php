@@ -23,6 +23,7 @@ class ThreadInfoResource extends JsonResource
             'type' => 'thread',
             'id' => (int)$this->id,
             'attributes' => [
+                'channel_id' => (int)$this->channel_id,
                 'title' => (string)$this->title,
                 'brief' => (string)$this->brief,
                 'is_anonymous' => (bool)$this->is_anonymous,

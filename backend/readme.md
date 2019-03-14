@@ -54,6 +54,27 @@ $ valet park
 
 以下默认使用`http://127.0.0.1:8000/`作为访问路径。
 
+### 2.6 在初次使用之后，需要重新pull代码，更新数据库
+有的时候（比如说有一段时间没工作了重新开始，或者刚完成了一部分工作，想要进行下一个任务）我们需要重新加载来自远程主branch（backend-reconstruct）的更新，并且将数据库对应的变化同步更新。
+依次运行以下指令即可(请确保自己在backend文件夹内！否则会遇到artisan command不存在这一类的报错)：  
+```
+$ git pull
+$ composer update
+$ php artisan migrate:reset
+$ php artisan passport:install
+$ php artisan db:seed
+$ vendor/bin/phpunit
+```
+以上步骤的意义依次为：  
+1. 从github下载最新更新
+2. 用composer加载最新的安装包（重要！有的时候旧包会有一些bug）
+3. 将现有数据库所有migration清空
+4. 重新安装passport clients（因为数据库清空了，因此需要重新建立sample clients）
+5. 将现有数据库用mock数据填充
+6. 运行phpunit的测试组件，确定一切正常。正常的话应该会看到绿色的测试通过公示。
+
+一切ok的话，说明这边没有大问题了
+
 ## 3. 数据库结构解释
 
 
@@ -101,12 +122,12 @@ review：书评。在post的基础上，增加记录rating（评分），recomme
         'type' => 'post'
         'attributes' => [
             'user_id' => user_id
-            'post_type' => 'chapter',//'chapter'/'review'/...
+            'post_type' => 'chapter',// 'chapter'/'review'/...
             ...
         ]
-        'component' => [
+        'chapter' => [
             'id' => post_id,
-            'type' => 'chapter',//'chapter'/'review'/...
+            'type' => 'chapter',// 'chapter'/'review'/...
             'attributes' => [
                 'volumn_id' => volumn_id,
                 ...
@@ -579,6 +600,24 @@ http://127.0.0.1:8000/api/messages
 必填项：  
 sendTo(array) 所有接收用户id  
 body(string) 消息内容
+
+#### 4.5.10 vote相关
+###### 4.5.10.1 创建vote
+http://127.0.0.1:8000/api/vote
+方法：POST
+授权：必须登陆
+必填项：
+votable_type(string):'Post'|'Quote'|'Status' 被投票对象
+votable_id(int) 被投票对象id
+attitude(string):'upvote'|'downvote'|'funnyvote'|'foldvote' 投票类型
+
+###### 4.5.10.1 展示votes
+http://127.0.0.1:8000/api/vote
+方法：GET
+授权：无须登陆
+必填项：
+votable_type(string):'Post'|'Quote'|'Status' 被投票对象
+votable_id(int) 被投票对象id
 
 ## 5. 如何测试
 #### 5.1 写一个新的专项测试文件
