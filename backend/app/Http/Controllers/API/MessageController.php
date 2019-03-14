@@ -20,9 +20,13 @@ class MessageController extends Controller
     public function store(StoreMessage $form)
     {
         $message = $form->userSend();
-        return response()->success([
-            'message' => new MessageResource($message),
-        ]);
+        if($message){
+            return response()->success([
+                'message' => new MessageResource($message),
+            ]);
+        }else{
+            return response()->error(config('error.403'), 403);
+        }
     }
 
     public function sendMessages(StoreMessage $form)

@@ -18,18 +18,10 @@ class StoreMessage extends FormRequest
     public function authorize()
     {
         $user = auth('api')->user();
-        $sendTo = $this->getSendTo();
-        $basic_validation = auth('api')->check() && $sendTo; // 用户登录且被发信人确实合法存在
-
-        if($user->isAdmin()){ // 管理员群发私信验证
-            return $basic_validation;
-        }else{ // 用户发私信验证
-            return $basic_validation
-                && !is_array(Request('sendTo')) // 即用户没有试图群发私信
-                && $user->info->message_limit > 0 // 用户仍然有信息余量
-                && !$sendTo->info->no_stranger_message // 对方允许接收陌生用户信息
-                && $user->id != $sendTo->id; // 并不是自己给自己发信息
-        }
+        return auth('api')->check()
+            && ($user->isAdmin() //管理员群发私信的验证
+            || ($user->info->message_limit > 0 // 普通用户仍然有信息余量
+            && !is_array(Request('sendTo')))); // 用户没有试图群发私信
     }
 
     /**
@@ -64,12 +56,26 @@ class StoreMessage extends FormRequest
 
     public function userSend()
     {
-        return $this->generateMessage(Request('sendTo'));
+        $sendTo = User::find(Request('sendTo'));
+
+        if($sendTo
+        && auth('api')->id() != $sendTo->id // 不能给自己发私信
+        && !$sendTo->info->no_stranger_message){ // 对方允许接收陌生用户信息
+            return $this->generateMessage(Request('sendTo'));
+        }else{
+            return ;
+        }
     }
 
     public function adminSend()
     {
-        $sendTos = $this->getSendTo()->toArray();
+        $sendTos = User::whereIn('id', Request('sendTo'))
+            ->where('id', '<>', auth('api')->id())
+            ->whereNull('deleted_at')
+            ->select('id')
+            ->get()
+            ->pluck('id')
+            ->toArray();
         if($sendTos != Request('sendTo')){
             return ;
         }
@@ -77,19 +83,5 @@ class StoreMessage extends FormRequest
             $messages[] = $this->generateMessage($sendTo);
         }
         return collect($messages);
-    }
-
-    public function getSendTo()
-    {
-        if(auth('api')->user()->isAdmin()){
-            return $sendTo = User::whereIn('id', Request('sendTo'))
-                ->where('id', '<>', auth('api')->id())
-                ->whereNull('deleted_at')
-                ->select('id')
-                ->get()
-                ->pluck('id');
-        }else{
-            return $sendTo = User::find(Request('sendTo'));
-        }
     }
 }
