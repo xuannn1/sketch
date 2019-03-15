@@ -24,6 +24,7 @@ class MessageController extends Controller
             return response()->success([
                 'message' => new MessageResource($message),
             ]);
+        }
         return response()->error(config('error.403'), 403);
     }
 
@@ -34,6 +35,7 @@ class MessageController extends Controller
             return response()->success([
                 'messages' => MessageResource::collection($messages),
             ]);
+        }
         return response()->error(config('error.403'), 403);
     }
 
