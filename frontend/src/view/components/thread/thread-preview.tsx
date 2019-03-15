@@ -14,10 +14,14 @@ interface State {
 export class ThreadPreview extends React.Component<Props, State> {
     public render () {
         const { attributes, id, author, tags, last_post } = this.props.data;
+        const mini = this.props.mini || false; // true表示精简版， false表示非精简版
+
+        console.log(attributes);
+
         return <div className="thread-item" key={id}>
 
         <div className="first-line">
-            {tags && <span className="tags">
+            { !mini && tags && <span className="tags">
                 {tags.map((tag, i) =>
                     <Link className="tag"
                         key={i}
@@ -32,7 +36,7 @@ export class ThreadPreview extends React.Component<Props, State> {
             {attributes.brief}
         </div>
 
-        {last_post && <div className="third-line">
+        {!mini && last_post && <div className="third-line">
             <span>{last_post.attributes.title}</span>
         </div>}
 
@@ -43,10 +47,15 @@ export class ThreadPreview extends React.Component<Props, State> {
                     {parseDate(attributes.created_at)}/{parseDate(attributes.edited_at)}
                 </span>
             }
-            <span className="counters">
-                <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 
-                <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span>  
-            </span>
+
+            {
+                !mini && <span className="counters">
+                    <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 
+                    <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span>  
+                    </span>
+            }
+
+            
         </div>
     </div>;
     }
