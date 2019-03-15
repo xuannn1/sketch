@@ -43,11 +43,6 @@
                         <button type="button" onclick="removespace('mainannotation')" class="sosad-button-control addon-button">清理段首空格</button>
                         <button href="#" type="button" onclick="wordscount('mainannotation');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
                     </div>
-                    @if(!$book->thread->anonymous)
-                    <div class="checkbox">
-                        <label><input type="checkbox" name="sendstatus" checked>更新动态？</label>
-                    </div>
-                    @endif
                     @if(!$book->thread->bianyuan)
                     <div class="checkbox">
                         <label><input type="checkbox" name="bianyuan" >是否限制阅读章节？（非边缘限制文，但本章节含有性描写等敏感内容字段的，请自觉勾选此项，本章将只对注册用户开放，避免搜索引擎抓取）</label>

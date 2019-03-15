@@ -41,7 +41,7 @@ class BooksController extends Controller
         if ((Auth::id() == $book->thread->user_id)&&(!$book->thread->locked)){
             $thread = $book->thread->load('mainpost');
             $book->load('tongren');
-            $tags = $thread->tags;
+            $tags = $thread->tags->pluck('id')->toArray();
             return view('books.edit',compact('book', 'thread','tags'));
         }else{
             return redirect()->route('error', ['error_code' => '405']);
