@@ -43,7 +43,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="h5 text-center">
-                    <span>每周推荐</span><a href="{{route('recommend_records')}}" class="pull-right">往期推荐</a>
+                    <a href="{{route('recommend_records')}}" class="pull-right">往期编推>></a>
                 </div>
                 <div class="container-fluid text-center">
                     <div class="row">
