@@ -24,9 +24,7 @@ class MessageController extends Controller
             return response()->success([
                 'message' => new MessageResource($message),
             ]);
-        }else{
-            return response()->error(config('error.403'), 403);
-        }
+        return response()->error(config('error.403'), 403);
     }
 
     public function sendMessages(StoreMessage $form)
@@ -36,9 +34,7 @@ class MessageController extends Controller
             return response()->success([
                 'messages' => MessageResource::collection($messages),
             ]);
-        }else{
-            return response()->error(config('error.403'), 403);
-        }
+        return response()->error(config('error.403'), 403);
     }
 
     public function index(User $user, Request $request)
