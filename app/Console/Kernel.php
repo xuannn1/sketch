@@ -8,39 +8,49 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
+    * The Artisan commands provided by your application.
+    *
+    * @var array
+    */
     protected $commands = [
         \App\Console\Commands\CountWebStat::class,
     ];
 
     /**
-     * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
-     */
+    * Define the application's command schedule.
+    *
+    * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+    * @return void
+    */
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('webstat:count')
-                ->daily();
+        ->name('webstat:count')
+        ->daily()
+        ->onOneServer();
         $schedule->command('data:recalculation')
-                ->hourly();
-                  //->everyFiveMinutes();
+        ->name('data:recalculation')
+        ->hourly()
+        ->onOneServer();
+        //->everyFiveMinutes();
         $schedule->command('cache:clear')
-               ->daily()
-               ->timezone('Asia/Shanghai')
-               ->between('3:00', '5:00')
-               ->withoutOverlapping(10);
+        ->name('cache:clear')
+        ->daily()
+        ->timezone('Asia/Shanghai')
+        ->between('3:00', '5:00')
+        ->withoutOverlapping(10)
+        ->onOneServer();
+        $schedule->command('testlog:send')
+        ->name('testlog:send')
+        ->everyMinute()
+        ->onOneServer();
     }
 
     /**
-     * Register the Closure based commands for the application.
-     *
-     * @return void
-     */
+    * Register the Closure based commands for the application.
+    *
+    * @return void
+    */
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
