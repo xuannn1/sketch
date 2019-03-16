@@ -77,5 +77,19 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+        'cloudwatch' => [
+            'driver' => 'custom',
+            'via' => \App\Logging\CloudWatchLoggerFactory::class,
+            'sdk' => [
+                'region' => env('AWS_DEFAULT_REGION', 'us-west-2'),
+                'version' => 'latest',
+                'credentials' => [
+                    'key' => env('AWS_ACCESS_KEY_ID'),
+                    'secret' => env('AWS_SECRET_ACCESS_KEY')
+                ]
+            ],
+            'retention' => env('CLOUDWATCH_LOG_RETENTION',7),
+            'level' => env('CLOUDWATCH_LOG_LEVEL','error')
+        ],
     ],
 ];

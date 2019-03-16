@@ -42,7 +42,7 @@ class Kernel extends ConsoleKernel
         ->onOneServer();
         $schedule->command('testlog:send')
         ->name('testlog:send')
-        ->everyMinute()
+        ->everyFiveMinutes();
         ->onOneServer();
     }
 

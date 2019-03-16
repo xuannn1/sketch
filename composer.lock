@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f5b439aac4de9e1f7267e54036aff84",
+    "content-hash": "8c7c7a4304357a2636d9f6e8ebda2dd1",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1278,6 +1278,56 @@
             ],
             "description": "Flysystem adapter for the AWS S3 SDK v3.x",
             "time": "2019-01-31T15:07:25+00:00"
+        },
+        {
+            "name": "maxbanton/cwh",
+            "version": "v1.1.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maxbanton/cwh.git",
+                "reference": "419c94d784edaf53d51b4e9daf624a96e0a92584"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maxbanton/cwh/zipball/419c94d784edaf53d51b4e9daf624a96e0a92584",
+                "reference": "419c94d784edaf53d51b4e9daf624a96e0a92584",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "^3.18",
+                "monolog/monolog": "^1.20",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "maxbanton/dd": "^1.0",
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/phpunit": "^5.6",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Maxbanton\\Cwh\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Max Leonov",
+                    "email": "hi@maxleonov.pw",
+                    "homepage": "https://maxleonov.pw"
+                }
+            ],
+            "description": "AWS CloudWatch Handler for Monolog library",
+            "keywords": [
+                "aws",
+                "cloudwatch",
+                "monolog"
+            ],
+            "time": "2018-10-05T13:30:30+00:00"
         },
         {
             "name": "monolog/monolog",
