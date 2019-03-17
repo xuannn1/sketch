@@ -6,10 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
-    //
-    //protected $primaryKey = ['user_id','votable_type','votable_id'];  
-    //public $incrementing = false;
-    //protected $keyType = 'string';
     protected $guarded = [];
     const UPDATED_AT = null;
 
@@ -24,4 +20,3 @@ class Vote extends Model
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }
 }
-

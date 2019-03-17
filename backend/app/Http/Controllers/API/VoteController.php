@@ -7,11 +7,12 @@ use App\Models\Vote;
 use App\Models\Post;
 use App\Models\Quote;
 use App\Models\Status;
+use App\Models\UserInfo;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVote;
 use App\Http\Resources\VoteResource;
 use App\Sosadfun\Traits\FindModelTrait;
-
+use App\Http\Resources\PaginateResource;
 
 
 class VoteController extends Controller
@@ -31,25 +32,25 @@ class VoteController extends Controller
         return $this->findModel(
             $request['votable_type'],
             $request['votable_id'],
-            array('Post','Quote','Status')
+            array('Post','Quote','Status','Thread')
         );
     }
 
     public function index(Request $request)
     {
-        // TODO: 目前只给出一个物品被vote的结果，以后应允许管理员查看是谁提交了这些vote，也允许用户查看所有upvote的提供人。
         $voted_model=$this->findVotableModel($request->all());
         if(empty($voted_model)){abort(404);}
 
-        $votes=$voted_model->votes;
+        $votes=$voted_model->votes()->paginate(config('constants.votes_per_page'));
+
         return response()->success([
-            'votes' => VoteResource::collection($votes),
+            'votes' => VoteResource::collection($votes->load('author')),
+            'paginate' => new PaginateResource($votes),
         ]);
     }
 
     public function store(StoreVote $form)
     {
-        //
         $voted_model=$this->findVotableModel($form->all());
         if(empty($voted_model)){abort(404);} //检查被投票的对象是否存在
 
@@ -58,8 +59,19 @@ class VoteController extends Controller
     }
 
 
-    public function destroy(Vote $vote)
+    public function destroy(Request $request)
     {
-        // TODO：应该提供删除vote的方法：找到，然后删掉
+        $count = $request->attitude.'_count';
+
+        $vote = Vote::where('user_id',auth('api')->id())
+            ->where('votable_type',$request->votable_type)
+            ->where('votable_id', $request->votable_id)
+            ->where('attitude',$request->attitude)
+            ->first();
+        if(!$vote){
+            abort(404);
+        }
+        $vote->delete();
+        return response()->success('deleted');
     }
 }
