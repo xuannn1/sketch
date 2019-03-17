@@ -12,14 +12,13 @@ use DB;
 class Thread extends Model
 {
     use SoftDeletes, ColumnTrait;
+    use Traits\VoteTrait;
 
     protected $guarded = [];
     protected $hidden = [
         'creation_ip',
     ];
     protected $dates = ['deleted_at'];
-
-
 
     const UPDATED_AT = null;
 
@@ -173,7 +172,7 @@ class Thread extends Model
             return $query->orderBy('responded_at', 'desc');
         }
     }
-
+    // 以下是其他function
     public function tags_validate($tags)//检查由用户提交的tags组合，是否符合基本要求
     {
         $valid_tags = [];//通过检查的tag
