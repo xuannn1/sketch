@@ -18,7 +18,7 @@ class CreateVotesTable extends Migration
             $table->morphs('votable');  //post,quote,status
             $table->string('attitude', 10);  //upvote,downvote,funnyvote,foldvote
             $table->dateTime('created_at')->nullable();
-            $table->primary(['user_id','votable_type','votable_id','attitude']);
+            $table->primary(['user_id','votable_type', 'votable_id','attitude']);
             $table->index(['user_id','votable_type', 'votable_id']);
         });
     }

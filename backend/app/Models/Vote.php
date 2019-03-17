@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Vote extends Model
 {
     //
-    //protected $primaryKey = ['user_id','votable_type','votable_id'];  
-    //public $incrementing = false;
-    //protected $keyType = 'string';
+    protected $primaryKey = ['user_id','votable_type','votable_id'];  
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $guarded = [];
     const UPDATED_AT = null;
 
