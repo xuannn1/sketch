@@ -122,7 +122,7 @@ class MessageTest extends TestCase
         $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
         $body = 'send this message';
 
-        $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
+        $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(200)
         ->assertJsonStructure([
             'code',
@@ -175,10 +175,10 @@ class MessageTest extends TestCase
         ]);
         $this->actingAs($admin, 'api');
 
-        $receivers_id = [$this->faker->numberBetween(50000,60000), $this->create_receiver(false)->id];
+        $receivers_id = [99999, $this->create_receiver(false)->id];
         $body = 'send this message';
 
-        $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
+        $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(403);
     }
 
@@ -191,7 +191,7 @@ class MessageTest extends TestCase
         $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
         $body = 'send this message';
 
-        $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
+        $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(403);
     }
 
@@ -201,7 +201,7 @@ class MessageTest extends TestCase
         $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
         $body = 'send this message';
 
-        $response = $this->post('/api/sendmessages', ['sendTo' => $receivers_id, 'body' => $body])
+        $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(401);
     }
 

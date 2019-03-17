@@ -20,8 +20,9 @@ class StoreMessage extends FormRequest
         $user = auth('api')->user();
         return auth('api')->check()
             && ($user->isAdmin() //管理员群发私信的验证
-            || ($user->info->message_limit > 0 // 普通用户仍然有信息余量
-            && !is_array(Request('sendTo')))); // 用户没有试图群发私信
+            || (!$user->isAdmin() // 用户发私信的验证
+            && $user->info->message_limit > 0 // 普通用户仍然有信息余量
+            && is_int(Request('sendTo')))); // 用户没有试图群发私信
     }
 
     /**
@@ -36,12 +37,12 @@ class StoreMessage extends FormRequest
         ];
     }
 
-    public function generateMessage($sendTo)
+    public function generateMessage($sendTo, $message_body = null)
     {
         $message_data['poster_id'] = auth('api')->id();
         $message_data['receiver_id'] = $sendTo;
-        $message = DB::transaction(function() use($message_data) {
-            if(!$message_body = MessageBody::where('body', Request('body'))->first()){
+        $message = DB::transaction(function() use($message_data, $message_body) {
+            if(!$message_body){
                 $message_body = MessageBody::create(['body' => Request('body')]);
             }
             $message_data['message_body_id'] = $message_body->id;
@@ -62,26 +63,36 @@ class StoreMessage extends FormRequest
         && auth('api')->id() != $sendTo->id // 不能给自己发私信
         && !$sendTo->info->no_stranger_message){ // 对方允许接收陌生用户信息
             return $this->generateMessage(Request('sendTo'));
-        }else{
-            return ;
         }
+
+        return ;
     }
 
     public function adminSend()
     {
-        $sendTos = User::whereIn('id', Request('sendTo'))
+        $sendTos = User::whereIn('id', Request('sendTos'))
             ->where('id', '<>', auth('api')->id())
             ->whereNull('deleted_at')
             ->select('id')
             ->get()
             ->pluck('id')
             ->toArray();
-        if($sendTos != Request('sendTo')){
+        if($sendTos != Request('sendTos')){
             return ;
         }
-        foreach ($sendTos as $sendTo) {
-            $messages[] = $this->generateMessage($sendTo);
+
+        DB::beginTransaction();
+        try{
+            $message_body = MessageBody::create(['body' => Request('body')]);
+
+            foreach ($sendTos as $sendTo) {
+                $messages[] = $this->generateMessage($sendTo, $message_body);
+            }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollback();
         }
+
         return collect($messages);
     }
 }

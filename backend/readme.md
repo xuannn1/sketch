@@ -598,7 +598,7 @@ http://127.0.0.1:8000/api/messages
 方法: POST  
 授权：必须登陆，且登录用户为管理员  
 必填项：  
-sendTo(array) 所有接收用户id  
+sendTos(array) 所有接收用户id  
 body(string) 消息内容
 
 #### 4.5.10 vote相关
