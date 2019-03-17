@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Http\Resources\UserBriefResource;
+use App\Http\Resources\PaginateResource;
 
 class UserController extends Controller
 {
@@ -81,5 +84,33 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+
+    /**
+    * 好友关系
+    **/
+    public function followers($id)
+    {
+        $followers = User::find($id)
+        ->followers()
+        ->paginate(config('constants.index_per_page'));
+        return response()->success([
+            'user_id'=> $id,
+            'followers' => UserBriefResource::collection($followers),
+            'paginate' => new PaginateResource($followers),
+        ]);
+    }
+
+    public function followings($id)
+    {
+        $followings = User::find($id)
+        ->followings()
+        ->paginate(config('constants.index_per_page'));
+        return response()->success([
+            'user_id'=> $id,
+            'followings' => UserBriefResource::collection($followings),
+            'paginate'=> new PaginateResource($followings),
+            ]);
     }
 }
