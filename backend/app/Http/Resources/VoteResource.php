@@ -27,10 +27,14 @@ class VoteResource extends JsonResource
             $author = [];
         }
         return [
-            'votable_type' => (string)$this->votable_type,
-            'votable_id' => (int)$this->votable_id,
-            'attitude' => (string)$this->attitude,
-            'created_at' => (string)$this->created_at,
+            'type' => 'vote',
+            'id' => (int)$this->id,
+            'attributes' => [
+                'votable_type' => (string)$this->votable_type,
+                'votable_id' => (int)$this->votable_id,
+                'attitude' => (string)$this->attitude,
+                'created_at' => (string)$this->created_at,
+            ],
             'author' => $author,
         ];
     }

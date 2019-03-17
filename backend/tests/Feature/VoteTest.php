@@ -74,15 +74,16 @@ class VoteTest extends TestCase
         ];
 
         $response = $this->post('api/vote', $data);
-
         $response->assertStatus(200)
-        ->assertSee('user_id');
-
+        ->assertSee('author');
+        // TODO: 这里需要重新写一下如何看见model resource。之前的版本里，oteResource没有遵循和前端约定的数值返回格式。
 
         $this->assertDatabaseHas('votes',$data);
 
 
     }
+
+    // TODO: 重写测试管理员相关能看见的vote内容
     // /** @test */
     // public function test_other_votes_have_no_userid(){
     //     $user = factory('App\Models\User')->create();
@@ -139,19 +140,11 @@ class VoteTest extends TestCase
         ];
 
         $response = $this->post('api/vote', $data);
-
         $response->assertStatus(200);
-
-        $data = [
-            'votable_type' => 'Quote',
-            'votable_id' => $quote->id,
-            'attitude' => 'upvote',
-        ];
-
         $this->assertDatabaseHas('votes',$data);
 
-
-        $response = $this->delete('api/vote', $data);
+        $content = $response->decodeResponseJson();
+        $response = $this->delete('api/vote/'.$content['data']['id']);
         $response->assertStatus(200);
         $this->assertDatabaseMissing('votes',$data);
 

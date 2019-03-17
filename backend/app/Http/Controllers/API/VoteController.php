@@ -38,6 +38,7 @@ class VoteController extends Controller
 
     public function index(Request $request)
     {
+        // TODO： 有待完成管理员可以看见各种投票内容的部分（怎样将管理员数据传递到resource内部去，需要研究一下）
         $voted_model=$this->findVotableModel($request->all());
         if(empty($voted_model)){abort(404);}
 
@@ -55,23 +56,21 @@ class VoteController extends Controller
         if(empty($voted_model)){abort(404);} //检查被投票的对象是否存在
 
         $vote = $form->generateVote($voted_model);
-        return response()->success(new VoteResource($vote));
+        // TODO：有待补充递增被投票用户的票数（分值系统一起做），同时应该给投票人以奖励
+        return response()->success(new VoteResource($vote->load('author')));
     }
 
 
-    public function destroy(Request $request)
+    public function destroy(Vote $vote)
     {
-        $count = $request->attitude.'_count';
-
-        $vote = Vote::where('user_id',auth('api')->id())
-            ->where('votable_type',$request->votable_type)
-            ->where('votable_id', $request->votable_id)
-            ->where('attitude',$request->attitude)
-            ->first();
         if(!$vote){
             abort(404);
         }
+        if($vote->user_id!=auth('api')->id()){
+            abort(403);
+        }
         $vote->delete();
+        // TODO：有待补充递减被投票用户的票数（分值系统一起做），同时应该给投票人以惩罚
         return response()->success('deleted');
     }
 }

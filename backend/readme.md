@@ -615,7 +615,7 @@ http://127.0.0.1:8000/api/vote
 方法：POST
 授权：必须登陆
 必填项：
-votable_type(string):'Post'|'Quote'|'Status' 被投票对象
+votable_type(string):'Post'|'Quote'|'Status'|'Thread' 被投票对象
 votable_id(int) 被投票对象id
 attitude(string):'upvote'|'downvote'|'funnyvote'|'foldvote' 投票类型
 

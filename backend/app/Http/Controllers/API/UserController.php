@@ -111,6 +111,7 @@ class UserController extends Controller
             'user_id'=> $id,
             'followings' => UserBriefResource::collection($followings),
             'paginate'=> new PaginateResource($followings),
-            ]);
+        ]);
     }
+
 }

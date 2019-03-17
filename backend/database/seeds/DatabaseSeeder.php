@@ -16,6 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(QuotesTableSeeder::class);
         $this->call(StatusesTableSeeder::class);
         $this->call(ThreadsTableSeeder::class);
-        $this->call(FollowerTableSeeder::class);
+        $this->call(FollowersTableSeeder::class);
     }
 }
