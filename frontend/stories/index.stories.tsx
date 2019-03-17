@@ -5,7 +5,7 @@ import { withViewport } from '@storybook/addon-viewport';
 import { withConsole } from '@storybook/addon-console';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import { Core } from '../src/core';
-import { Chapter } from '../src/view/components/book/chapter';
+// import { Chapter } from '../src/view/components/book/chapter';
 import { HomeThread } from '../src/view/components/thread/thread-home';
 import '../src/theme.scss';
 import { pageDecorator } from './decorator';
@@ -60,17 +60,17 @@ storiesOf('Home', module)
     )
 ;
 
-storiesOf('Book', module)
-    .addDecorator(withViewport())
-    .addDecorator(withKnobs)
-    .add('Chapter', () =>
-        <Chapter chapter={{
-            type: 'chapter',
-            id: 0,
-            attributes: {
-                title: '',
-                body: '',
-            }
-        }} /> 
-    )
-;
+// storiesOf('Book', module)
+//     .addDecorator(withViewport())
+//     .addDecorator(withKnobs)
+//     .add('Chapter', () =>
+//         <Chapter chapter={{
+//             type: 'chapter',
+//             id: 0,
+//             attributes: {
+//                 title: '',
+//                 body: '',
+//             }
+//         }} /> 
+//     )
+// ;

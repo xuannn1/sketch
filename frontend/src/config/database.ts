@@ -176,7 +176,7 @@ export namespace Database {
         not_sad?:boolean;
         is_approved?:boolean;
         reviewer_id?:Increments;
-        xianyus?:number;
+        xianyu?:number;
         created_at?:Timestamp;
     }
 

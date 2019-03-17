@@ -19,6 +19,7 @@ import { StatusCollection } from './status/collection';
 import { MessageUnread } from './message/unread';
 import { CollectionThread } from './collection/thread';
 import { CollectionList } from './collection/list';
+import { CreateQuote } from './createquote';
 
 interface Props {
     core:Core;
@@ -66,6 +67,7 @@ export const MobileRoute:RouteComponentType[] = [
     // message
     { path: '/message/unread', component: MessageUnread },
     { path: '/message/all', component: Message },
+    { path: '/createquote', component: CreateQuote },
 ];
 
 export class MobileRouter extends React.Component<Props, State> {
