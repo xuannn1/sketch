@@ -16,8 +16,6 @@ export class ThreadPreview extends React.Component<Props, State> {
         const { attributes, id, author, tags, last_post } = this.props.data;
         const mini = this.props.mini || false; // true表示精简版， false表示非精简版
 
-        console.log(attributes);
-
         return <div className="thread-item" key={id}>
 
         <div className="first-line">
