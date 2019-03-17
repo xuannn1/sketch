@@ -59,7 +59,7 @@ class PassportController extends Controller
         $user = $this->create($request->all());
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['name'] =  $user->name;
-        $success['id'] => $user->id;
+        $success['id'] = $user->id;
         return response()->success($success);
     }
 
@@ -76,7 +76,7 @@ class PassportController extends Controller
             }else{
                 $success['token'] =  $user->createToken('MyApp')->accessToken;
                 $success['name'] =  $user->name;
-                $success['id'] => $user->id;
+                $success['id'] = $user->id;
                 return response()->success($success);
             }
         }
