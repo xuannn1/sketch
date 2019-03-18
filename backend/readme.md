@@ -635,6 +635,37 @@ http://127.0.0.1:8000/api/vote
 votable_type(string):'Post'|'Quote'|'Status' 被投票对象
 votable_id(int) 被投票对象id
 
+#### 4.5.11 follower相关
+##### 4.5.11.1 展示用户的所有粉丝
+http://127.0.0.1:8000/api/user/{user}/follower/
+方法：GET
+授权：不需要使用token登陆  
+
+##### 4.5.11.2 展示用户的所有关注
+http://127.0.0.1:8000/api/user/{user}/following/
+方法：GET
+授权：不需要使用token登陆  
+
+##### 4.5.11.3 关注某个用户
+http://127.0.0.1:8000/api/user/follow/{user}
+方法：POST
+授权：必须登录，只能为本人账户操作
+
+##### 4.5.11.4 取关某个用户
+http://127.0.0.1:8000/api/user/follow/{user}
+方法： DELETE
+授权：必须登录，只能为本人账户操作
+
+##### 4.5.11.5 切换是否跟踪某账户的动态
+http://127.0.0.1:8000/api/user/keepNotified/{user}
+方法：PATCH
+授权：必须登录，只能为本人账户操作
+
+##### 4.5.11.5 获取与某段关注关系相关的信息（是否跟踪动态，是否已阅更新）
+http://127.0.0.1:8000/api/user/follow/{user}
+方法：GET
+授权：必须登录，只能为本人账户操作
+
 ## 5. 如何测试
 #### 5.1 写一个新的专项测试文件
 在backend/tests/Feature目录下，放置对应的测试文件。
