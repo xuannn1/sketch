@@ -63,6 +63,7 @@ Route::patch('user/{user}/title/{title}', 'API\TitleController@update');// 用�
 //好友关系
 Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
 Route::get('user/{user}/following', 'API\FollowerController@following');//展示该用户的所有关注
+Route::get('user/{user}/followingStatuses', 'API\FollowerController@followingStatuses');//展示该用户的所有关注，附带关注信息更新状态
 Route::post('user/{user}/follow','API\FollowerController@store');//关注某人
 Route::delete('user/{user}/follow','API\FollowerController@destroy');//取关某人
 Route::patch('user/{user}/follow','API\FollowerController@update');//切换是否跟踪动态

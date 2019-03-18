@@ -7,8 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Follower;
 use App\Http\Resources\UserBriefResource;
-use App\Http\Resources\FollowerResource;
+use App\Http\Resources\UserFollowResource;
 use App\Http\Resources\PaginateResource;
+use Validator;
 
 use DB;
 
@@ -54,32 +55,38 @@ class FollowerController extends Controller
     }
 
     /**
-    * switch whether to receive notifications
+    * switch whether to receive updates of this user
     */
-    // TODO： 需要补test
     public function update(User $user, Request $request)
     {
-        $validatedData = $request->validate([
+        $relationship = auth('api')->user()->followStatus($user->id);
+        if(!$relationship){abort(412);}
+
+        $validator = Validator::make($request->all(), [
             'keep_updated' => 'required|boolean',
         ]);
+        if ($validator->fails()) {
+            return response()->error($validator->errors(), 422);
+        }
+
         auth('api')->user()->followings()->updateExistingPivot($user->id, ['keep_updated'=>$request->keep_updated]);
 
-        $relationship = auth('api')->user()->followings()->where('id', $user->id)->first();
+        $relationship = auth('api')->user()->followStatus($user->id);
 
-        return response()->success(new FollowerResource($relationship));
+        return response()->success(new UserFollowResource($relationship));
     }
 
     /**
     * show the profile of the relationship for the given following
     **/
-    // TODO： 需要补test
+    //
     public function show(User $user)
     {
-        $relationship = auth('api')->user()->followings()->where('id', $user->id)->first();
+        $relationship = auth('api')->user()->followStatus($user->id);
 
         if(!$relationship){abort(404);}
 
-        return response()->success(new FollowerResource($relationship));
+        return response()->success(new UserFollowResource($relationship));
 
     }
 
@@ -99,9 +106,23 @@ class FollowerController extends Controller
     public function following(User $user)
     {
         $followings = $user->followings()->paginate(config('constants.index_per_page'));
+
         return response()->success([
             'user'=> new UserBriefResource($user),
             'followings' => UserBriefResource::collection($followings),
+            'paginate' => new PaginateResource($followings),
+        ]);
+    }
+
+    public function followingStatuses(User $user)
+    {
+        if(auth('api')->id()!=$user->id){abort(403);}
+
+        $followings = $user->followings()->paginate(config('constants.index_per_page'));
+
+        return response()->success([
+            'user'=> new UserBriefResource($user),
+            'followingStatuses' => UserFollowResource::collection($followings),
             'paginate' => new PaginateResource($followings),
         ]);
     }

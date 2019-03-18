@@ -38,6 +38,10 @@ export namespace ResData {
         type:'user';
         id:number;
         attributes:Database.User_Default;
+        followInfo?:{
+            keep_updated:boolean;
+            is_updated:boolean;
+        }
     }
 
     export function allocUser () : User {
@@ -119,15 +123,6 @@ export namespace ResData {
         review?:Review;
         answer?:Thread;
         chapter?:Chapter;
-    }
-
-    export interface Follow {
-        type:'follow';
-        attributes:{
-            keep_updated:boolean;
-            is_updated:boolean;
-        }
-        user?:User;
     }
 
     export function allocPost () : Post {

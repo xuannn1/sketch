@@ -189,4 +189,9 @@ class User extends Authenticatable
         return $this->followings()->where('id', $user_id)->count();
     }
 
+    public function followStatus($user_id)
+    {
+        return $this->followings()->where('id', $user_id)->first();
+    }
+
 }

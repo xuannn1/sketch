@@ -130,37 +130,51 @@ class FollowerTest extends TestCase
      * @return void
      */
      // TODO：需要补充test
-    // public function test_one_can_change_notification_status()
-    // {
-    //     $follower = factory('App\Models\User')->create();
-    //     $followed_user = factory('App\Models\User')->create();
-    //     $this->actingAs($follower,'api');
-    //     // test one cannot toggle notification for someone they're not following
-    //     $this->patch('api/user/keepNotified/'.$followed_user->id)
-    //         ->assertStatus(412);
-    //     //follow the user
-    //     $this->post('api/user/follow/'.$followed_user->id)
-    //         ->assertStatus(200);
-    //     // test user by default get notification
-    //     $response = $this->get('api/user/follow/'.$followed_user->id)
-    //         ->assertJson([
-    //             'code' => 200,
-    //             'data' => [
-    //                 'id' => $followed_user->id,
-    //                 'keep_notified' => true,
-    //                 'is_notified' => false
-    //             ]]);
-    //     // test one can toggle notification for some
-    //     $this->patch('api/user/keepNotified/'.$followed_user->id)
-    //         ->assertStatus(200);
-    //     $response = $this->get('api/user/follow/'.$followed_user->id)
-    //         ->assertJson([
-    //             'code' => 200,
-    //             'data' => [
-    //                 'id' => $followed_user->id,
-    //                 'keep_notified' => false,
-    //                 'is_notified' => false
-    //             ]]);
-    // }
+    public function test_one_can_change_notification_status()
+    {
+        $follower = factory('App\Models\User')->create();
+        $followed_user = factory('App\Models\User')->create();
+        $this->actingAs($follower,'api');
+
+        $data = [
+            'keep_updated' => false,
+        ];
+
+        // test one cannot toggle notification for someone they're not following
+        $this->patch('api/user/'.$followed_user->id.'/follow', $data)
+            ->assertStatus(412);
+
+        //follow the user
+        $this->post('api/user/'.$followed_user->id.'/follow')
+            ->assertStatus(200);
+
+        // test user by default get notification
+        $response = $this->get('api/user/'.$followed_user->id.'/follow')
+            ->assertJson([
+                'code' => 200,
+                'data' => [
+                    'id' => $followed_user->id,
+                    'followInfo' => [
+                        'keep_updated' => true,
+                        'is_updated' => false,
+                    ],
+                ]
+            ]);
+        // test one can toggle notification for some
+        $this->patch('api/user/'.$followed_user->id.'/follow', $data)
+            ->assertStatus(200);
+
+            $response = $this->get('api/user/'.$followed_user->id.'/follow')
+                ->assertJson([
+                    'code' => 200,
+                    'data' => [
+                        'id' => $followed_user->id,
+                        'followInfo' => [
+                            'keep_updated' => false,
+                            'is_updated' => false,
+                        ],
+                    ]
+                ]);
+    }
 
 }

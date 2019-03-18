@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\User;
 
-class FollowerResource extends JsonResource
+class UserFollowResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +15,16 @@ class FollowerResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => 'follow',
+            'type' => 'user',
+            'id' => (int)$this->id,
             'attributes' => [
+                'name' => (string)$this->name,
+            ],
+            'title' => new TitleBriefResource($this->whenLoaded('mainTitle')),
+            'followInfo' => [
                 'keep_updated'=>(boolean)$this->pivot->keep_updated,
                 'is_updated'=>(boolean)$this->pivot->is_updated,
             ],
-            'user' => new UserBriefResource($this),
-
         ];
     }
 }
