@@ -5,8 +5,11 @@ import { EventBus } from '../../utils/events';
 
 interface Props {
     slides:JSX.Element[];
+    afterSlides?:JSX.Element[];
+    getIndex?: (index:number) => void;
     indicator?:boolean;
     windowResizeEvent:EventBus<void>;
+    startIndex?:number;
 }
 
 interface State {
@@ -20,7 +23,7 @@ export class Carousel extends React.Component<Props, State> {
     // configs
     public duration = 200;
     public easing = 'ease-out';
-    public startIndex = 0;
+    public startIndex = this.props.startIndex === undefined ? 0 : this.props.startIndex;
     public draggable = true;
     public threshold = 20;
     public loop = true;
@@ -39,6 +42,7 @@ export class Carousel extends React.Component<Props, State> {
 
     public shouldComponentUpdate (nextProps) {
         this.slideCount = nextProps.slides.length;
+        this.startIndex = nextProps.startIndex === undefined ? 0 : nextProps.startIndex;
         this.current = this.startIndex % this.slideCount;
         return true;
     }
@@ -117,21 +121,25 @@ export class Carousel extends React.Component<Props, State> {
     public prev () {
         if (this.current === 0) {
             const currentSlideOffset = this.getSlideOffset();
+            if (this.props.getIndex) { this.props.getIndex(this.current); }
             this.slideTo(currentSlideOffset);
             return;
         }
         this.current -= 1;
-        const prevSlideOffset = this.getSlideOffset();
+        if (this.props.getIndex) { this.props.getIndex(this.current); }
+        const prevSlideOffset = this.getSlideOffset(this.current);
         this.slideTo(prevSlideOffset);
     }
 
     public next () {
         if (this.current === this.slideCount - 1) {
             const currentSlideOffset = this.getSlideOffset();
+            if (this.props.getIndex) { this.props.getIndex(this.current); }
             this.slideTo(currentSlideOffset);
             return;
         }
         this.current += 1;
+        if (this.props.getIndex) { this.props.getIndex(this.current); }
         const nextSlideOffset = this.getSlideOffset();
         this.slideTo(nextSlideOffset);
     }
@@ -208,6 +216,13 @@ export class Carousel extends React.Component<Props, State> {
                     }
                 </div>
             }
+            
+            { this.props.afterSlides && 
+                <div className="after-slide">
+                    { this.props.afterSlides }
+                </div>
+            }
+
         </Card>;
     }
 }

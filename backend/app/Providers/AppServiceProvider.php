@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
             'Post' => 'App\Models\Post',
             'Quote' => 'App\Models\Quote',
             'Status' => 'App\Models\Status',
+            'Thread' => 'App\Models\Thread',
         ]);
     }
 

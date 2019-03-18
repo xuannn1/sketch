@@ -8,6 +8,7 @@ return [
     'chapters_per_page' => 2, //一页显示多少章节
     'posts_per_page' => 2,//一页显示多少回帖
     'messages_per_page' => 3,//一页显示多少消息
+    'votes_per_page' => 2,//一页显示多少投票信息
     'quotes_on_homepage' => 2,//首页一次申请调度多少个题头
     'books_on_homepage' => 2,//首页显示多少本最新图书
     'threads_on_homepage' => 2,//首页显示多少本最新讨论帖

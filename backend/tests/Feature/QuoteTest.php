@@ -44,7 +44,7 @@ class QuoteTest extends TestCase
         $this->actingAs($user, 'api');
 
         $body = $this->faker->sentence;
-        $majia = $this->faker->word;
+        $majia = 'niming';
         $response = $this->post('api/quote', ['body' => $body, 'is_anonymous' => 1, 'majia' => $majia])
         ->assertStatus(200)
         ->assertJsonStructure([

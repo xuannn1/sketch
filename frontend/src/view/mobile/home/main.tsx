@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Page, Card, TabCard } from '../../components/common';
 import { Link } from 'react-router-dom';
-import { Carousel } from '../../components/carousel';
+import { Quotes } from '../../components/quotes';
 import { checkType } from '../../../utils/types';
 import { APIGet } from '../../../config/api';
 import { HomeNav } from './nav';
@@ -34,12 +34,10 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
 
     public render () {
         return (<Page nav={<HomeNav />}>
-            <Carousel  
-                windowResizeEvent={this.props.core.windowResizeEvent}
-                slides={this.state.data.quotes.map((quote, i) => 
-                    <span key={i}>{quote.attributes.body}</span>
-                )}
-                indicator={true} />
+            <Quotes
+                quotes={this.state.data.quotes}
+                core={this.props.core}
+            />
 
             { !this.props.core.user.isLoggedIn() &&
                 <Card style={{
