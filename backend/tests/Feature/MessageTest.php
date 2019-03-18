@@ -179,7 +179,7 @@ class MessageTest extends TestCase
         $body = 'send this message';
 
         $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
-        ->assertStatus(403);
+        ->assertStatus(404);
     }
 
     /** @test */
