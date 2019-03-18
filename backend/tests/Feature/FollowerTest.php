@@ -7,22 +7,24 @@ use Tests\TestCase;
 class FollowerTest extends TestCase
 {
     /**
-     * test whether one user can follow another 
-     * 
+     * test whether one user can follow another
+     *
      * @return void
      */
+    /** @test */
     public function test_one_can_follow_another()
     {
+
         $follower = factory('App\Models\User')->create();
 
         // assert that the newly created user doesn't follow the other
-        $response = $this->get('api/user/'.$follower->id.'/following/')
+        $response = $this->get('api/user/'.$follower->id.'/following')
             ->assertStatus(200)
             //test whether the information returned is complete
             ->assertJsonStructure([
                 'code',
                 'data' => [
-                    'user_id',
+                    'user',
                     'followings',
                     'paginate',
                 ],
@@ -34,58 +36,67 @@ class FollowerTest extends TestCase
         $this->actingAs($follower,'api');
 
         // assert that one cannot follow themself
-        $this->post('api/user/follow/'.$follower->id)
-            ->assertStatus(412);
+        $this->post('api/user/'.$follower->id.'/follow')
+            ->assertStatus(403);
         // assert one can follow aother
-        $this->post('api/user/follow/'.$followed_user->id)
+        $this->post('api/user/'.$followed_user->id.'/follow')
             ->assertStatus(200);
         // check the following list
-        $response = $this->get('api/user/'.$follower->id.'/following/')
+        $response = $this->get('api/user/'.$follower->id.'/following')
                          ->assertJson([
                             'code' => 200,
                             'data' => [
-                                'user_id' => $follower->id,
+                                'user' => [
+                                    'id' => $follower->id,
+                                ],
                                 'followings' => [
                                     [
                                         'id' => $followed_user->id,
-                                        'name' => $followed_user->name
+                                        'attributes' => [
+                                            'name' => $followed_user->name
+                                        ],
                                     ]
                                 ]
                             ]]);
 
         // check the follower list
-        $response = $this->get('api/user/'.$followed_user->id.'/follower/')
+        $response = $this->get('api/user/'.$followed_user->id.'/follower')
                  ->assertJson([
                     'code' => 200,
                     'data' => [
-                        'user_id' => $followed_user->id,
+                        'user' => [
+                            'id' => $followed_user->id,
+                        ],
                         'followers' => [
                             [
                                 'id' => $follower->id,
-                                'name' => $follower->name
-                            ]
-                        ]
+                                'attributes' => [
+                                    'name' => $follower->name,
+                                ],
+                            ],
+                        ],
                     ]]);
     }
 
 
     /**
-     * test whether one user can unfollow another 
+     * test whether one user can unfollow another
      *
      * @return void
      */
+    /** @test */
     public function test_one_can_unfollow_another()
     {
         $follower = factory('App\Models\User')->create();
         $followed_user = factory('App\Models\User')->create();
         // assert that the newly created user doesn't have any followers
-        $response = $this->get('api/user/'.$follower->id.'/follower/')
+        $response = $this->get('api/user/'.$follower->id.'/follower')
             ->assertStatus(200)
             //test whether the information returned is complete
             ->assertJsonStructure([
                 'code',
                 'data' => [
-                    'user_id',
+                    'user',
                     'followers',
                     'paginate',
                 ],
@@ -94,60 +105,62 @@ class FollowerTest extends TestCase
 
         //unfollow a not-following user
         $this->actingAs($follower,'api')
-                         ->delete('api/user/follow/'.$followed_user->id)
+                         ->delete('api/user/'.$followed_user->id.'/follow')
                          ->assertStatus(412);
 
         //follow
-        $this->post('/api/user/follow/'.$followed_user->id)
-                         ->assertStatus(200);
-        $response = $this->get('api/user/'.$follower->id.'/following/')
+        $this->actingAs($follower,'api')
+                        ->post('/api/user/'.$followed_user->id.'/follow')
+                        ->assertStatus(200);
+        $response = $this->get('api/user/'.$follower->id.'/following')
                          ->assertJsonCount(1,'data.followings');
 
         //unfollow
         $this->actingAs($follower,'api')
-            ->delete('api/user/follow/'.$followed_user->id)
-            ->assertStatus(200);
+                        ->delete('api/user/'.$followed_user->id.'/follow')
+                        ->assertStatus(200);
 
-        $response = $this->get('api/user/'.$follower->id.'/following/')
-                         ->assertJsonCount(0,'data.followings');
+        $response = $this->get('api/user/'.$follower->id.'/following')
+                        ->assertJsonCount(0,'data.followings');
     }
 
     /**
-     * test whether one user can switch their following notification status 
+     * test whether one user can switch their following notification status
      *
      * @return void
      */
-    public function test_one_can_change_notification_status()
-    {
-        $follower = factory('App\Models\User')->create();
-        $followed_user = factory('App\Models\User')->create();
-        $this->actingAs($follower,'api');
-        // test one cannot toggle notification for someone they're not following
-        $this->patch('api/user/keepNotified/'.$followed_user->id)
-            ->assertStatus(412);
-        //follow the user
-        $this->post('api/user/follow/'.$followed_user->id)
-            ->assertStatus(200);
-        // test user by default get notification
-        $response = $this->get('api/user/follow/'.$followed_user->id)
-            ->assertJson([
-                'code' => 200,
-                'data' => [
-                    'id' => $followed_user->id,
-                    'keep_notified' => true,
-                    'is_notified' => false
-                ]]);
-        // test one can toggle notification for some
-        $this->patch('api/user/keepNotified/'.$followed_user->id)
-            ->assertStatus(200);
-        $response = $this->get('api/user/follow/'.$followed_user->id)
-            ->assertJson([
-                'code' => 200,
-                'data' => [
-                    'id' => $followed_user->id,
-                    'keep_notified' => false,
-                    'is_notified' => false
-                ]]);
-    }
+     // TODO：需要补充test
+    // public function test_one_can_change_notification_status()
+    // {
+    //     $follower = factory('App\Models\User')->create();
+    //     $followed_user = factory('App\Models\User')->create();
+    //     $this->actingAs($follower,'api');
+    //     // test one cannot toggle notification for someone they're not following
+    //     $this->patch('api/user/keepNotified/'.$followed_user->id)
+    //         ->assertStatus(412);
+    //     //follow the user
+    //     $this->post('api/user/follow/'.$followed_user->id)
+    //         ->assertStatus(200);
+    //     // test user by default get notification
+    //     $response = $this->get('api/user/follow/'.$followed_user->id)
+    //         ->assertJson([
+    //             'code' => 200,
+    //             'data' => [
+    //                 'id' => $followed_user->id,
+    //                 'keep_notified' => true,
+    //                 'is_notified' => false
+    //             ]]);
+    //     // test one can toggle notification for some
+    //     $this->patch('api/user/keepNotified/'.$followed_user->id)
+    //         ->assertStatus(200);
+    //     $response = $this->get('api/user/follow/'.$followed_user->id)
+    //         ->assertJson([
+    //             'code' => 200,
+    //             'data' => [
+    //                 'id' => $followed_user->id,
+    //                 'keep_notified' => false,
+    //                 'is_notified' => false
+    //             ]]);
+    // }
 
 }

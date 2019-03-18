@@ -82,7 +82,7 @@ class CollectionTest extends TestCase
         //增
         $response = $this->post('api/thread/'.$thread1->id.'/collect');
         $response = $this->post('api/thread/'.$thread2->id.'/collect');
-        $response = $this->get('api/collection')
+        $response = $this->get('api/user/'.$user->id.'/collection')
         ->assertStatus(200)
         ->assertJsonStructure([
             'data' => [
@@ -96,7 +96,7 @@ class CollectionTest extends TestCase
         $data = [
             'withType' => 'thread',
         ];
-        $response = $this->get('api/collection', $data)
+        $response = $this->get('api/user/'.$user->id.'/collection', $data)
         ->assertStatus(200)
         ->assertJsonStructure([
             'data' => [

@@ -16,8 +16,8 @@ class CreateFollowersTable extends Migration
         Schema::create('followers', function (Blueprint $table) {
             $table->unsignedInteger('user_id')->index();
             $table->unsignedInteger('follower_id')->index();
-            $table->boolean('keep_notified')->default(true);//是否跟踪动态
-            $table->boolean('is_notified')->default(false);//是否有新动态
+            $table->boolean('keep_updated')->default(true);//是否跟踪动态
+            $table->boolean('is_updated')->default(false);//是否有新动态
         });
     }
 

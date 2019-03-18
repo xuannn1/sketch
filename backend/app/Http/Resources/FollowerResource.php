@@ -16,9 +16,13 @@ class FollowerResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'=>(int)$this->user_id,
-            'keep_notified'=>(boolean)$this->keep_notified,
-            'is_notified'=>(boolean)$this->is_notified,
+            'type' => 'follow',
+            'attributes' => [
+                'keep_updated'=>(boolean)$this->pivot->keep_updated,
+                'is_updated'=>(boolean)$this->pivot->is_updated,
+            ],
+            'user' => new UserBriefResource($this),
+
         ];
     }
 }

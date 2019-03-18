@@ -155,7 +155,7 @@ class User extends Authenticatable
     }
 
 
-    /** 
+    /**
     * follow relationships
     */
     public function followers()
@@ -165,7 +165,7 @@ class User extends Authenticatable
 
     public function followings()
     {
-        return $this->belongsToMany(User::Class, 'followers', 'follower_id', 'user_id');
+        return $this->belongsToMany(User::Class, 'followers', 'follower_id', 'user_id')->withPivot(['keep_updated','is_updated']);
     }
 
     public function follow($user_ids)
@@ -186,7 +186,7 @@ class User extends Authenticatable
 
     public function isFollowing($user_id)
     {
-        return $this->followings->contains($user_id);
+        return $this->followings()->where('id', $user_id)->count();
     }
 
 }

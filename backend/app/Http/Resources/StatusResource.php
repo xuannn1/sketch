@@ -21,7 +21,7 @@ class StatusResource extends JsonResource
                 'body' => (string)$this->body,
                 'created_at' => (string)$this->created_at,
             ],
-            'author' => new AuthorIdentifierResource($this->whenLoaded('author')),
+            'author' => new UserBriefResource($this->whenLoaded('author')),
         ];
     }
 }

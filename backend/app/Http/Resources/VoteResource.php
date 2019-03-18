@@ -22,7 +22,7 @@ class VoteResource extends JsonResource
     public function toArray($request)
     {
         if ($this->showUser($this)){
-            $author = new AuthorIdentifierResource($this->whenLoaded('author'));
+            $author = new UserBriefResource($this->whenLoaded('author'));
         }else{
             $author = [];
         }

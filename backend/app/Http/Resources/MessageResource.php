@@ -24,8 +24,8 @@ class MessageResource extends JsonResource
                 'created_at' => (string)$this->created_at,
                 'seen' => (bool)$this->seen,
             ],
-            'poster' => new AuthorIdentifierResource($this->poster),
-            'receiver' => new AuthorIdentifierResource($this->receiver),
+            'poster' => new UserBriefResource($this->poster),
+            'receiver' => new UserBriefResource($this->receiver),
         ];
     }
 }

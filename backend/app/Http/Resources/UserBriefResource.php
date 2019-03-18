@@ -15,8 +15,12 @@ class UserBriefResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'=>(int)$this->id,
-            'name'=>(string)$this->name,
+            'type' => 'user',
+            'id' => (int)$this->id,
+            'attributes' => [
+                'name' => (string)$this->name,
+            ],
+            'title' => new TitleBriefResource($this->whenLoaded('mainTitle')),
         ];
     }
 }

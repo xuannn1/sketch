@@ -6,81 +6,104 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Follower;
-
+use App\Http\Resources\UserBriefResource;
 use App\Http\Resources\FollowerResource;
+use App\Http\Resources\PaginateResource;
+
+use DB;
 
 class FollowerController extends Controller
 {
-    public function _construct()
+    public function __construct()
     {
-    	$this->middleware('auth:api');
+        $this->middleware('auth:api')->except(['follower','following']);
     }
 
     /**
-     * follow
-     */
-    public function store($id)
+    * follow 关注某人
+    */
+    public function store(User $user)
     {
-    	//check if target user exists
-    	$user = User::findOrFail($id);
-    	//check !self_following && !already_following
-        if (!(auth('api')->check())) return response()->error('api check not passed');
-    	if (auth('api')->check() &&
-                auth('api')->id() != $id && 
-                !auth('api')->user()->isFollowing($id))
-    	{
-    		auth('api')->user()->follow($id);
-    		return response()->success('followed the user');
-    	}
-    	return response()->error(config('error.412'), 412);
+        if (auth('api')->id()===$user->id){abort(403);}
+
+        if (auth('api')->user()->isFollowing($user->id)){abort(412);}
+
+        auth('api')->user()->follow($user->id);
+
+        return response()->success([
+            'user' => new UserBriefResource($user),
+        ]);
+
     }
 
     /**
-     * unfollow
-     */
-    public function destroy($id)
+    * unfollow
+    */
+    public function destroy(User $user)
     {
-    	//check if target user exists
-    	$user = User::findOrFail($id);
-    	//check valid auth && !self_unfo && already_following
-    	if (auth('api')->check() &&
-                auth('api')->id()!=$id && 
-                auth('api')->user()->isFollowing($id))
-    	{
-    		auth('api')->user()->unfollow($id);
-    		return response()->success('unfollowed the user');
-    	}
-    	return response()->error(config('error.412'), 412);
+        if (auth('api')->id()===$user->id){abort(403);}
+
+        if (!auth('api')->user()->isFollowing($user->id)){abort(412);}
+
+        auth('api')->user()->unfollow($user->id);
+
+        return response()->success([
+            'user' => new UserBriefResource($user),
+        ]);
+
     }
 
     /**
-     * switch whether to receive notifications
-     */
-    public function toggleNotifications($id)
+    * switch whether to receive notifications
+    */
+    // TODO： 需要补test
+    public function update(User $user, Request $request)
     {
-        $query = Follower::where([['user_id','=',$id],['follower_id','=',auth('api')->id()]]);
-    	$follower = $query->first();
-        if ($follower){
-            $tmp = !$follower->keep_notified;
-            $data = ['keep_notified' => $tmp];
-            $query->update($data);
-            return response()->success('success');
-        }
-        return response()->error(config('error.412'),412);
+        $validatedData = $request->validate([
+            'keep_updated' => 'required|boolean',
+        ]);
+        auth('api')->user()->followings()->updateExistingPivot($user->id, ['keep_updated'=>$request->keep_updated]);
+
+        $relationship = auth('api')->user()->followings()->where('id', $user->id)->first();
+
+        return response()->success(new FollowerResource($relationship));
     }
 
     /**
-     * show the profile of the relationship for the given following
-     **/
-    public function show($id)
+    * show the profile of the relationship for the given following
+    **/
+    // TODO： 需要补test
+    public function show(User $user)
     {
-        $data = Follower::where([['user_id','=',$id],['follower_id','=',auth('api')->id()]])->first();
-        if ($data)
-        {
-            return response()->success(new FollowerResource($data));
-        }
-        return response()->error(config('error.412'), 412);
+        $relationship = auth('api')->user()->followings()->where('id', $user->id)->first();
+
+        if(!$relationship){abort(404);}
+
+        return response()->success(new FollowerResource($relationship));
 
     }
+
+    /**
+    * 好友关系
+    **/
+    public function follower(User $user)
+    {
+        $followers = $user->followers()->paginate(config('constants.index_per_page'));
+        return response()->success([
+            'user'=> new UserBriefResource($user),
+            'followers' => UserBriefResource::collection($followers),
+            'paginate' => new PaginateResource($followers),
+        ]);
+    }
+
+    public function following(User $user)
+    {
+        $followings = $user->followings()->paginate(config('constants.index_per_page'));
+        return response()->success([
+            'user'=> new UserBriefResource($user),
+            'followings' => UserBriefResource::collection($followings),
+            'paginate' => new PaginateResource($followings),
+        ]);
+    }
+
 }
-

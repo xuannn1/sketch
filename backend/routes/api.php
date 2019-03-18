@@ -61,18 +61,18 @@ Route::patch('user/{user}/title/{title}', 'API\TitleController@update');// 用�
 
 
 //好友关系
-Route::get('user/{user}/follower', 'API\UserController@followers');//展示该用户的所有粉丝
-Route::get('user/{user}/following', 'API\UserController@followings');//展示该用户的所有关注
-Route::post('user/follow/{user}','API\FollowerController@store');//关注某人
-Route::delete('user/follow/{user}','API\FollowerController@destroy');//取关某人
-Route::patch('user/keepNotified/{user}','API\FollowerController@toggleNotifications');//切换是否跟踪动态
-Route::get('user/follow/{user}','API\FollowerController@show');//返回与该关注相关的信息（是否跟踪动态，是否已阅更新）
+Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
+Route::get('user/{user}/following', 'API\FollowerController@following');//展示该用户的所有关注
+Route::post('user/{user}/follow','API\FollowerController@store');//关注某人
+Route::delete('user/{user}/follow','API\FollowerController@destroy');//取关某人
+Route::patch('user/{user}/follow','API\FollowerController@update');//切换是否跟踪动态
+Route::get('user/{user}/follow','API\FollowerController@show');//返回与该关注相关的信息（是否跟踪动态，是否已阅更新）
 
 //收藏部分
 Route::post('/thread/{thread}/collect', 'API\CollectionController@store');//收藏某个thread
 Route::patch('/collection/{collection}', 'API\CollectionController@update');//修改某个收藏
 Route::delete('/collection/{collection}', 'API\CollectionController@destroy');//删除某个收藏
-Route::get('/collection', 'API\CollectionController@index');//查看收藏夹
+Route::get('user/{user}/collection', 'API\CollectionController@index');//查看收藏夹
 
 
 // 动态部分
