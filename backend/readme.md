@@ -591,22 +591,30 @@ reviewRedirects(json) => [
 ```
 #### 4.5.8 quote相关
 ###### 4.5.8.1 创建quote
-http://127.0.0.1:8000/api/quote
-方法：POST
-授权：必须登陆
-必填项：
-body(string)题头内容
-选填项：
-is_anonymous(bool)是否匿名
-majia(string):马甲，仅当存在“is_anonymous”的时候才保存马甲内容
+http://127.0.0.1:8000/api/quote  
+方法：POST  
+授权：必须登陆  
+必填项：  
+body(string) 题头内容  
+选填项：  
+is_anonymous(bool) 是否匿名  
+majia(string): 马甲，仅当存在“is_anonymous”的时候才保存马甲内容
 
 #### 4.5.9 message相关
 ###### 4.5.9.1 创建message
-http://127.0.0.1:8000/api/messages
-方法：POST
-授权：必须登陆，且登陆用户的message_limit>0，接收用户的no_stranger_message=0
-必填项：
-sendTo(int) 接收用户id
+http://127.0.0.1:8000/api/message  
+方法：POST  
+授权：必须登陆，且登陆用户的message_limit>0，接收用户的no_stranger_message=0  
+必填项：  
+sendTo(int) 接收用户id  
+body(string) 消息内容
+
+###### 4.5.9.2 管理员群发私信
+http://127.0.0.1:8000/api/messages  
+方法: POST  
+授权：必须登陆，且登录用户为管理员  
+必填项：  
+sendTos(array) 所有接收用户id  
 body(string) 消息内容
 
 #### 4.5.10 vote相关
