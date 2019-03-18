@@ -15,7 +15,7 @@ class ThreadCollectionResource extends JsonResource
     public function toArray($request)
     {
         if (!$this->is_anonymous){
-            $author = new AuthorIdentifierResource($this->author);
+            $author = new UserBriefResource($this->author);
         }else{
             $author = [];
         }

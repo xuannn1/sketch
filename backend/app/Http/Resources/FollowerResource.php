@@ -3,8 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\User;
 
-class StatusResource extends JsonResource
+class FollowerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,13 +16,13 @@ class StatusResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => 'Status',
-            'id' => (int)$this->id,
+            'type' => 'follow',
             'attributes' => [
-                'body' => (string)$this->body,
-                'created_at' => (string)$this->created_at,
+                'keep_updated'=>(boolean)$this->pivot->keep_updated,
+                'is_updated'=>(boolean)$this->pivot->is_updated,
             ],
-            'author' => new UserBriefResource($this->whenLoaded('author')),
+            'user' => new UserBriefResource($this),
+
         ];
     }
 }

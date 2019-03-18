@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Http\Resources\UserBriefResource;
+use App\Http\Resources\PaginateResource;
 
 class UserController extends Controller
 {
@@ -82,4 +85,6 @@ class UserController extends Controller
     {
         //
     }
+    
+
 }

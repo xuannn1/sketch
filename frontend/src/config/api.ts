@@ -121,6 +121,15 @@ export namespace ResData {
         chapter?:Chapter;
     }
 
+    export interface Follow {
+        type:'follow';
+        attributes:{
+            keep_updated:boolean;
+            is_updated:boolean;
+        }
+        user?:User;
+    }
+
     export function allocPost () : Post {
         return {
             type: 'post',
@@ -265,7 +274,7 @@ export namespace ReqData {
 
     export namespace Collection {
         export enum Type {
-            thread = 'thread', 
+            thread = 'thread',
             book = 'book',
             list = 'list',
             request = 'request',
@@ -399,7 +408,7 @@ export interface APIGet {
     '/status':APISchema<{
         // fixme:
         req:{
-            
+
         };
         res:{
 

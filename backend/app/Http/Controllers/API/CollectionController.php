@@ -12,7 +12,7 @@ use App\Http\Resources\PaginateResource;
 
 use App\Models\Thread;
 use App\Models\Collection;
-
+use App\Models\User;
 
 class CollectionController extends Controller
 {
@@ -35,15 +35,14 @@ class CollectionController extends Controller
         $this->middleware('filter_thread')->only('store');
     }
 
-    public function index(Request $request)//显示自己的收藏内容, 默认显示图书收藏
+    public function index(User $user, Request $request)//显示自己的收藏内容, 默认显示图书收藏
     {
-        $user_id = $request->user_id
-          &&auth('api')->user()->isAdmin()?$request->user_id:auth('api')->id();//除非是管理员，否则不能任意设定看谁的收藏夹
+        if(!auth('api')->user()->isAdmin()&&($user->id!=auth('api')->id())){abort(403);}
 
         $threads = Thread::with('author','tags', 'last_component', 'last_post')
         ->join('collections', 'threads.id','=','collections.thread_id')
         ->withType($request->withType??'book')
-        ->where('collections.user_id', $user_id)
+        ->where('collections.user_id', $user->id)
         ->ordered($request->ordered)
         ->select('threads.id', 'threads.user_id', 'channel_id',  'title',  'is_anonymous', 'majia', 'is_public', 'is_bianyuan', 'collections.is_updated', 'collections.keep_updated', 'collections.id as collection_id')
         ->paginate(config('constants.items_per_page'));
