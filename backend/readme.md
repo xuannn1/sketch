@@ -349,7 +349,7 @@ withMaxRating(int): 最多几分（可选择没打分的）
 ordered(string): 'latest_created'/ 'most_upvoted' / 'most_redirected' (默认按最多导航排序) / 'oldest_created' / 'random',    
 
 #### 4.4.5 查看信箱
-http://127.0.0.1:8000/api/user/1/messages  
+http://127.0.0.1:8000/api/user/1/message   
 方法：GET  
 授权：当前登录用户为管理员或当前登录用户访问自己的信箱  
 必填项：  
@@ -610,7 +610,7 @@ sendTo(int) 接收用户id
 body(string) 消息内容
 
 ###### 4.5.9.2 管理员群发私信
-http://127.0.0.1:8000/api/messages  
+http://127.0.0.1:8000/api/groupmessage   
 方法: POST  
 授权：必须登陆，且登录用户为管理员  
 必填项：  

@@ -92,7 +92,7 @@ class ThreadController extends Controller
         }
         $posts = Post::where('thread_id',$thread->id)
         ->with('author', 'tags')
-        ->ordered('defualt')//排序方式
+        ->ordered($request->ordered)//排序方式
         ->paginate(config('constants.posts_per_page'));
 
         $channel = $thread->channel();
@@ -140,6 +140,9 @@ class ThreadController extends Controller
 
     public function synctags(Request $request, Thread $thread)
     {
+        if(auth('api')->id()!=$thread->user_id){
+            abort(403);
+        }
         $original_tags = json_decode($request->tags);
         $validated_tags = $thread->tags_validate($original_tags);
         if($original_tags===$validated_tags){

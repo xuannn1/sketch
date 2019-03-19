@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Models\User;
 use App\Models\MessageBody;
 use DB;
+use Carbon\Carbon;
 
 class StoreMessage extends FormRequest
 {
@@ -17,11 +18,7 @@ class StoreMessage extends FormRequest
     */
     public function authorize()
     {
-        $user = auth('api')->user();
-        return auth('api')->check()
-        && ($user->isAdmin() //管理员群发私信的验证
-        || ($user->info->message_limit > 0 // 普通用户仍然有信息余量
-        && is_int(Request('sendTo')))); // 用户没有试图群发私信
+        return true;
     }
 
     /**
@@ -32,6 +29,7 @@ class StoreMessage extends FormRequest
     public function rules()
     {
         return [
+            'sendTo' => 'numeric',
             'body' => 'required|string|max:20000',
         ];
     }
@@ -45,8 +43,8 @@ class StoreMessage extends FormRequest
 
     public function adminSend()
     {
-        $this->validateSendTos(Request('sendTos'));
-        return $messages = $this->generateMessages(Request('sendTos'), Request('body'));
+        $sendToIds = $this->validateSendTos(Request('sendTos'), auth('api')->id());
+        return $messages = $this->generateMessages($sendToIds, Request('body'));
     }
 
     public function generateMessages($sendTos, $body)
@@ -72,33 +70,42 @@ class StoreMessage extends FormRequest
 
     public function generateMessageRecords($sendTos, $bodyId)
     {
+        $created_at = Carbon::now();
         foreach ($sendTos as $sendTo) {
             $message_datas[] = [
                 'poster_id' => auth('api')->id(),
                 'receiver_id' => $sendTo,
                 'message_body_id' => $bodyId,
+                'created_at'=> $created_at,
             ];
         }
         Message::insert($message_datas);
         return $messages = Message::where('message_body_id', $bodyId)->get();
     }
 
-    private function validateSendTos($sendTos)
+    private function validateSendTos($sendTos, $selfId)
     {
-        if(!$sendTos){abort(404);}
-        $newSendTos = User::whereIn('id', $sendTos)
-        ->where('id', '<>', auth('api')->id())
+        if(!auth('api')->user()->isAdmin()){abort(403);}
+        $sendToIds = (array)json_decode($sendTos);
+        if(!$sendToIds){abort(404);}
+        $newSendTos = User::whereIn('id', $sendToIds)
+        ->where('id', '<>', $selfId)
         ->whereNull('deleted_at')
         ->select('id')
         ->get()
         ->pluck('id')
         ->toArray();
-        $unavailable = array_diff($sendTos, $newSendTos);//未来可以考虑将这个信息返回？也或许不需要……
+        $unavailable = array_diff($sendToIds, $newSendTos);//未来可以考虑将这个信息返回？也或许不需要……
         if($unavailable){abort(404);}
+        return $sendToIds;
     }
 
     private function validateSendTo($sendToId, $selfId)
     {
+        if((!auth('api')->user()->isAdmin())
+            &&(auth('api')->user()->info->message_limit <= 0)){
+                abort(403,'message limit violation');
+        }
         $sendToUser = User::find($sendToId);
         if(!$sendToUser){abort(404);}
         if($selfId === $sendToId){abort(403,'cannot send message to oneself');}

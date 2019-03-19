@@ -31,12 +31,13 @@ Route::get('/homethread', 'API\PageController@homethread')->name('homethread');/
 Route::get('config/allTags', 'API\PageController@allTags');
 Route::get('config/noTongrenTags', 'API\PageController@noTongrenTags');
 Route::get('config/allChannels', 'API\PageController@allChannels');
+Route::get('config/titles', 'API\PageController@titles');
 
 // 讨论串/讨论楼/讨论帖
 Route::apiResource('thread', 'API\ThreadController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
 Route::get('/thread/{thread}/recommendation', 'API\ThreadController@recommendation');// 展示这个书籍名下recommendation的index
-Route::post('/thread/{thread}/synctags', 'API\ThreadController@synctags')->name('synctags');// 用户给自己的thread修改对应的tag信息
+Route::patch('/thread/{thread}/synctags', 'API\ThreadController@synctags')->name('synctags');// 用户给自己的thread修改对应的tag信息
 Route::patch('/thread/{thread}/post/{post}/turnToPost', 'API\PostController@turnToPost');// 把任意的component转化成post
 
 // 书评清单部分
@@ -56,11 +57,7 @@ Route::resource('/thread/{thread}/chapter', 'API\ChapterController')->only(['sto
 // 用户
 Route::apiResource('user', 'API\UserController');
 Route::get('user/{user}/thread', 'API\UserController@showthread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
-Route::get('user/{user}/title', 'API\TitleController@index');// 展示某用户的全部title，当本人或管理查询时，允许出现私密title
-Route::patch('user/{user}/title/{title}', 'API\TitleController@update');// 用户可以控制某个title是否公开
-
-
-//好友关系
+Route::resource('/user/{user}/title', 'API\TitleController')->only(['index', 'update']);// title resource
 Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
 Route::get('user/{user}/following', 'API\FollowerController@following');//展示该用户的所有关注
 Route::get('user/{user}/followingStatuses', 'API\FollowerController@followingStatuses');//展示该用户的所有关注，附带关注信息更新状态
@@ -85,7 +82,7 @@ Route::post('quote', 'API\QuoteController@store');
 // 私信部分
 Route::get('/user/{user}/message', 'API\MessageController@index');// 展示某用户的信箱，仅允许本人和管理员查询
 Route::post('message', 'API\MessageController@store');
-Route::post('sendmessages', 'API\MessageController@sendMessages');//管理员群发私信
+Route::post('groupmessage', 'API\MessageController@groupmessage');//管理员群发私信
 
 // 消息部分
 Route::get('/user/{user}/notification', 'API\NotificationController@index');// 展示某用户的信箱，仅允许本人和管理员查询

@@ -11,6 +11,7 @@ use App\Http\Resources\StatusResource;
 use App\Http\Resources\ThreadBriefResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\ChannelResource;
+use App\Http\Resources\TitleResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostInfoResource;
 use Cache;
@@ -81,6 +82,13 @@ class PageController extends Controller
     {
         return response()->success([
             'channels' => ChannelResource::collection(ConstantObjects::allChannels()),
+        ]);
+    }
+
+    public function titles()
+    {
+        return response()->success([
+            'titles' => TitleResource::collection(ConstantObjects::titles()),
         ]);
     }
 }

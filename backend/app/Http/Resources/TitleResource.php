@@ -14,7 +14,7 @@ class TitleResource extends JsonResource
     */
     public function toArray($request)
     {
-        $is_public = [];
+        $is_public = '';
         if($this->pivot){
             $is_public = (bool)$this->pivot->is_public;
         }

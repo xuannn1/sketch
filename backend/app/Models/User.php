@@ -21,7 +21,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'title_id'
     ];
 
     /**
@@ -192,6 +192,18 @@ class User extends Authenticatable
     public function followStatus($user_id)
     {
         return $this->followings()->where('id', $user_id)->first();
+    }
+
+    public function titleStatus($title_id)
+    {
+        return $this->titles()->where('id', $title_id)->first();
+    }
+
+    public function wearTitle($title_id)
+    {
+        $this->update([
+            'title_id' => $title_id,
+        ]);
     }
 
 }

@@ -122,7 +122,7 @@ class MessageTest extends TestCase
         $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
         $body = 'send this message';
 
-        $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
+        $response = $this->post('/api/groupmessage', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(200)
         ->assertJsonStructure([
             'code',
@@ -178,7 +178,7 @@ class MessageTest extends TestCase
         $receivers_id = [99999, $this->create_receiver(false)->id];
         $body = 'send this message';
 
-        $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
+        $response = $this->post('/api/groupmessage', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(404);
     }
 
@@ -191,7 +191,7 @@ class MessageTest extends TestCase
         $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
         $body = 'send this message';
 
-        $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
+        $response = $this->post('/api/groupmessage', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(403);
     }
 
@@ -201,7 +201,7 @@ class MessageTest extends TestCase
         $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
         $body = 'send this message';
 
-        $response = $this->post('/api/sendmessages', ['sendTos' => $receivers_id, 'body' => $body])
+        $response = $this->post('/api/groupmessage', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(401);
     }
 
@@ -396,4 +396,6 @@ class MessageTest extends TestCase
 
         $response = $this->get('/api/user/'.$user->id.'/message?withStyle=dialogue&chatWith='.$chatWith->id)->assertStatus(401);
     }
+
+    // TODO: 写groupmessage的test
 }
