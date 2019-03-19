@@ -94,3 +94,6 @@ Route::get('/user/{user}/notification', 'API\NotificationController@index');// �
 
 // 投票
 Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'destroy']);
+
+// 打赏
+Route::apiResource('reward', 'API\RewardController')->only(['index', 'store', 'destroy']);
