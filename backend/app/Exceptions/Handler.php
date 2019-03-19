@@ -61,7 +61,7 @@ class Handler extends ExceptionHandler
         }
         if ($exception instanceof HttpException) {
             $statusCode = $exception->getStatusCode();
-            return response()->error(config('error.'.$statusCode), $statusCode);
+            return response()->error($exception->getMessage()??config('error.'.$statusCode), $statusCode);
         }
         if ($exception instanceof PDOException) {
             $dbCode = trim($exception->getCode());

@@ -30,6 +30,7 @@ class StoreMessage extends FormRequest
     {
         return [
             'sendTo' => 'numeric',
+            'sendTos' => 'array',
             'body' => 'required|string|max:20000',
         ];
     }
@@ -43,8 +44,8 @@ class StoreMessage extends FormRequest
 
     public function adminSend()
     {
-        $sendToIds = $this->validateSendTos(Request('sendTos'), auth('api')->id());
-        return $messages = $this->generateMessages($sendToIds, Request('body'));
+        $this->validateSendTos(Request('sendTos'), auth('api')->id());
+        return $messages = $this->generateMessages(Request('sendTos'), Request('body'));
     }
 
     public function generateMessages($sendTos, $body)
@@ -86,18 +87,15 @@ class StoreMessage extends FormRequest
     private function validateSendTos($sendTos, $selfId)
     {
         if(!auth('api')->user()->isAdmin()){abort(403);}
-        $sendToIds = (array)json_decode($sendTos);
-        if(!$sendToIds){abort(404);}
-        $newSendTos = User::whereIn('id', $sendToIds)
+        $newSendTos = User::whereIn('id', $sendTos)
         ->where('id', '<>', $selfId)
         ->whereNull('deleted_at')
         ->select('id')
         ->get()
         ->pluck('id')
         ->toArray();
-        $unavailable = array_diff($sendToIds, $newSendTos);//未来可以考虑将这个信息返回？也或许不需要……
-        if($unavailable){abort(404);}
-        return $sendToIds;
+        $unavailable = array_diff($sendTos, $newSendTos);//未来可以考虑将这个信息返回？也或许不需要……
+        if($unavailable){abort(404,json_encode($unavailable));}
     }
 
     private function validateSendTo($sendToId, $selfId)
