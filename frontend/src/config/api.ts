@@ -38,6 +38,10 @@ export namespace ResData {
         type:'user';
         id:number;
         attributes:Database.User_Default;
+        followInfo?:{
+            keep_updated:boolean;
+            is_updated:boolean;
+        }
     }
 
     export function allocUser () : User {
@@ -265,7 +269,7 @@ export namespace ReqData {
 
     export namespace Collection {
         export enum Type {
-            thread = 'thread', 
+            thread = 'thread',
             book = 'book',
             list = 'list',
             request = 'request',
@@ -399,7 +403,7 @@ export interface APIGet {
     '/status':APISchema<{
         // fixme:
         req:{
-            
+
         };
         res:{
 

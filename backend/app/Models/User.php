@@ -21,7 +21,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'title_id'
     ];
 
     /**
@@ -153,4 +153,57 @@ class User extends Authenticatable
     {
         return $this->inRole('admin');
     }
+
+
+    /**
+    * follow relationships
+    */
+    public function followers()
+    {
+        return $this->belongsToMany(User::Class, 'followers', 'user_id', 'follower_id');
+    }
+
+    public function followings()
+    {
+        return $this->belongsToMany(User::Class, 'followers', 'follower_id', 'user_id')->withPivot(['keep_updated','is_updated']);
+    }
+
+    public function follow($user_ids)
+    {
+        if (!is_array($user_ids)) {
+            $user_ids = compact('user_ids');
+        }
+        $this->followings()->sync($user_ids, false);
+    }
+
+    public function unfollow($user_ids)
+    {
+        if (!is_array($user_ids)) {
+            $user_ids = compact('user_ids');
+        }
+        $this->followings()->detach($user_ids);
+    }
+
+    public function isFollowing($user_id)
+    {
+        return $this->followings()->where('id', $user_id)->count();
+    }
+
+    public function followStatus($user_id)
+    {
+        return $this->followings()->where('id', $user_id)->first();
+    }
+
+    public function titleStatus($title_id)
+    {
+        return $this->titles()->where('id', $title_id)->first();
+    }
+
+    public function wearTitle($title_id)
+    {
+        $this->update([
+            'title_id' => $title_id,
+        ]);
+    }
+
 }

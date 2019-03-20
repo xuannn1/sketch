@@ -11,6 +11,7 @@ use App\Http\Requests\UpdatePost;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\ThreadProfileResource;
 use App\Http\Resources\ThreadBriefResource;
+use App\Http\Resources\PaginateResource;
 
 class PostController extends Controller
 {

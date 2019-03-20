@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use App\Models\Tag;
+use App\Models\Title;
 use Cache;
 use DB;
 
@@ -47,6 +48,13 @@ class ConstantObjects
     {
         return Cache::remember('noTongrenTags', 10, function (){
             return Tag::whereNotIn('tag_type', ['同人原著', '同人CP'])->get();
+        });
+    }
+
+    public static function titles()//获得站上所有的titles
+    {
+        return Cache::remember('titles', 10, function (){
+            return Title::all();
         });
     }
 

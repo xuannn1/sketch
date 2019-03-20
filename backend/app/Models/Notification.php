@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Vote extends Model
+class Notification extends Model
 {
     protected $guarded = [];
     const UPDATED_AT = null;
@@ -12,10 +12,10 @@ class Vote extends Model
     public function user(){
     	return $this->belongsTo(User::class,'user_id');
     }
-    public function votable(){
+    public function notifiable(){
     	return $this->morphTo();
     }
-    public function author()
+    public function receiver()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }
