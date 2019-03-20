@@ -16,13 +16,15 @@ export class BookPreview extends React.Component<Props, State> {
         const { attributes, id, author, tags, last_component } = this.props.data;
         const mini = this.props.mini || false;
 
+        const cid = attributes.last_post_id;
+
         return <div className="book-item" key={id}>
             <Link className="title" to={`/book/${id}`}>{ attributes.title }</Link>
             {!mini && !attributes.is_bianyuan && <span className="tag" style={{color: 'red'}}>边</span>}
 
             <div className="biref">{ attributes.brief }</div>
             { !mini && last_component &&
-                <span className="latest-chapter">最新章节: { last_component.attributes.title }</span>
+                <Link className="latest-chapter" to={`/book/${id}/chapter/${cid}`}>最新章节: { last_component.attributes.title }</Link>
             }
             { !mini && tags &&
                 <div className="tags">
