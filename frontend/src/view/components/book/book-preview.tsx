@@ -20,7 +20,7 @@ export class BookPreview extends React.Component<Props, State> {
 
         return <div className="book-item" key={id}>
             <Link className="title" to={`/book/${id}`}>{ attributes.title }</Link>
-            {!mini && !attributes.is_bianyuan && <span className="tag" style={{color: 'red'}}>边</span>}
+            {!mini && attributes.is_bianyuan && <span className="tag" style={{color: 'red'}}>边</span>}
 
             <div className="biref">{ attributes.brief }</div>
             { !mini && last_component &&
