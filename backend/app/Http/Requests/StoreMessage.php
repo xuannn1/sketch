@@ -6,6 +6,7 @@ use App\Http\Requests\FormRequest;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\MessageBody;
+use App\Models\PublicNotice;
 use DB;
 use Carbon\Carbon;
 
@@ -82,6 +83,22 @@ class StoreMessage extends FormRequest
         }
         Message::insert($message_datas);
         return $messages = Message::where('message_body_id', $bodyId)->get();
+    }
+
+    public function generatePublicNotice()
+    {
+        if(!auth('api')->user()->isAdmin()){abort(403);}
+
+        $notice_data['notice_body'] = Request('body');
+        $notice_data['user_id'] = auth('api')->id();
+        $public_notice = DB::transaction(function() use($notice_data) {
+            $public_notice = PublicNotice::create($notice_data);
+            DB::table('users')->increment('unread_reminders');
+            DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
+            return $public_notice;
+        });
+
+        return $public_notice;
     }
 
     private function validateSendTos($sendTos, $selfId)

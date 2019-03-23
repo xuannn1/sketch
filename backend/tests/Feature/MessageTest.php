@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use DB;
+use App\Models\PublicNotice;
 
 class MessageTest extends TestCase
 {
@@ -203,6 +204,70 @@ class MessageTest extends TestCase
 
         $response = $this->post('/api/groupmessage', ['sendTos' => $receivers_id, 'body' => $body])
         ->assertStatus(401);
+    }
+
+    /** @test */
+    public function admin_can_send_public_notice() // 管理员可发系统消息
+    {
+        $admin = $this->create_sender(1);
+        DB::table('role_user')->insert([
+            'user_id' => $admin->id,
+            'role' => 'admin',
+        ]);
+        $this->actingAs($admin, 'api');
+        $body = 'send this public notice';
+        $unread_reminders = (int)$admin->unread_reminders;
+
+        $response = $this->post('/api/publicnotice', ['body' => $body])
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'code',
+            'data' => [
+                'public_notice' => [
+                    'type',
+                    'id',
+                    'attributes' => [
+                        'user_id',
+                        'notice_body',
+                        'created_at',
+                    ],
+                ],
+            ],
+        ])
+        ->assertJson([
+            'code' => 200,
+            'data' => [
+                'public_notice' => [
+                    'type' => 'public_notice',
+                    'attributes' => [
+                        'user_id' => $admin->id,
+                        'notice_body' => $body,
+                    ],
+                ],
+            ],
+        ]);
+
+        $public_notice_id = PublicNotice::orderBy('created_at', 'desc')->first()->id;
+        $latest_public_notice_id = DB::table('system_variables')->first()->latest_public_notice_id;
+        $this->assertEquals($public_notice_id, $latest_public_notice_id);
+        $this->assertEquals($unread_reminders+1, (int)$admin->fresh()->unread_reminders);
+    }
+
+    /** @test */
+    public function user_can_not_send_public_notice() // 用户不可发系统消息
+    {
+        $user = $this->create_sender(1);
+        $this->actingAs($user, 'api');
+        $body = 'send this public notice';
+        $response = $this->post('/api/publicnotice', ['body' => $body])
+        ->assertStatus(403);
+    }
+
+    public function guest_can_not_send_public_notice() // 游客不可发系统消息
+    {
+        $body = 'send this public notice';
+        $response = $this->post('/api/publicnotice', ['body' => $body])
+        ->assertStatus(403);
     }
 
     /** @test */
