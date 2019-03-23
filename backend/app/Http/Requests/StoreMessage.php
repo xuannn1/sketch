@@ -39,6 +39,7 @@ class StoreMessage extends FormRequest
     public function userSend()
     {
         $this->validateSendTo(Request('sendTo'), auth('api')->id());
+        $this->isDuplicateMessage(Request('body'), auth('api')->id());
         $messages = $this->generateMessages([Request('sendTo')], Request('body'));
         return $messages[0];
     }
@@ -46,6 +47,7 @@ class StoreMessage extends FormRequest
     public function adminSend()
     {
         $this->validateSendTos(Request('sendTos'), auth('api')->id());
+        $this->isDuplicateMessage(Request('body'), auth('api')->id());
         return $messages = $this->generateMessages(Request('sendTos'), Request('body'));
     }
 
@@ -125,5 +127,13 @@ class StoreMessage extends FormRequest
         if(!$sendToUser){abort(404);}
         if($selfId === $sendToId){abort(403,'cannot send message to oneself');}
         if($sendToUser->info->no_stranger_message){abort(403,'receiver refuse to get message');}
+    }
+
+    private function isDuplicateMessage($body, $selfId)
+    {
+        $last_message = Message::where('poster_id', $selfId)
+        ->orderBy('created_at', 'desc')
+        ->first();
+        if(!empty($last_message) && (strcmp($last_message->body->body, $body) === 0)){abort(403, 'cannot send duplicate message');}
     }
 }

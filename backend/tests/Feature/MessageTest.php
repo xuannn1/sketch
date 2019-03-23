@@ -111,6 +111,19 @@ class MessageTest extends TestCase
     }
 
     /** @test */
+    public function user_can_not_send_duplicate_message()//登陆用户可发私信
+    {
+        $poster = $this->create_sender(2);
+        $receiver = $this->create_receiver(false);
+        $this->actingAs($poster, 'api');
+        $body = 'send this message';
+        $response = $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body])
+        ->assertStatus(200);
+        $response2 = $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body])
+        ->assertStatus(403);
+    }
+
+    /** @test */
     public function admin_can_send_mass_messages()//管理员可以群发私信
     {
         $admin = $this->create_sender(1);
