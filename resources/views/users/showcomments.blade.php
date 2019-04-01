@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', $user->name.'-'.'长评列表')
+@section('title', $user->name.'-'.'评论列表')
 
 @section('content')
 <div class="container-fluid">
@@ -11,7 +11,7 @@
       </div>
       <div class="panel panel-default">
          <div class="panel-heading">
-            <h4>长评目录</h4>
+            <h4>评论目录</h4>
          </div>
          <div class="panel-body">
             {{$posts->links()}}

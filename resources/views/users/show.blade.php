@@ -66,13 +66,13 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4><a href="{{ route('user.showlongcomments', $user->id) }}">长评目录</a></h4>
+                <h4><a href="{{ route('user.showcomments', $user->id) }}">评论目录</a></h4>
             </div>
             <div class="panel-body">
                 @include('posts._posts')
                 @if($posts->hasMorePages())
                 <div class="text-center h5">
-                    <a href="{{ route('user.showlongcomments', $user->id) }}">全部长评</a>
+                    <a href="{{ route('user.showcomments', $user->id) }}">全部评论</a>
                 </div>
                 @endif
             </div>

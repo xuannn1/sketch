@@ -274,4 +274,14 @@ class BooksController extends Controller
         }
         return redirect()->route('books.selector',$bookquery);
     }
+
+    public function tags()
+    {
+        return view('books.tags');
+    }
+
+    public function bookselector()
+    {
+        return view('books.selector');
+    }
 }

@@ -26,6 +26,12 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="email_confirmation">确认邮箱：</label>
+                        <input type="text" name="email_confirmation" class="form-control" value="{{ old('email_confirmation') }}">
+                        <h6><span style="color:#d66666">请仔细检查邮箱输入情况，几乎所有的登陆问题都是邮箱输入错误导致。输入错误的邮箱将无法找回自己的账户。</span></h6>
+                    </div>
+
+                    <div class="form-group">
                         <label for="password">密码：</label>
                         <input type="password" name="password" class="form-control" value="{{ old('password') }}">
                     </div>
@@ -54,7 +60,7 @@
                         </div>
                         <div class="panel-footer text-center">
                             <input type="checkbox" name="have_read_policy" value=true>
-                            <span>我已阅读并同意注册协议</span>&nbsp;<u><a href="{{'about'}}">更多内容</a></u>
+                            <span>我已阅读并同意注册协议</span>&nbsp;<u><a href="{{'about'}}">协议详情</a></u>
                         </div>
                     </div>
                     <div class="text-center">

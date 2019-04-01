@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <link rel="shortcut icon" href="{{ secure_asset('img/So-logo.ico') }}" >
 </head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-137377077-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-137377077-1');
+</script>
 <body>
     @include('layouts._header')
     @include('shared.messages')

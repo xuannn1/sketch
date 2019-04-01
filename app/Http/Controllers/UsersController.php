@@ -62,26 +62,31 @@ class UsersController extends Controller
         return $threads;
     }
 
-    public function findlongcomments($id, $paginate, $group)
+    public function findcomments($id, $paginate, $group)
     //需要调整
     {
         if ($id == Auth::id()){
             return $posts = DB::table('posts')
             ->join('users','users.id','=','posts.user_id')
-            ->join('threads','threads.id','=','posts.thread_id')
-            ->where([['posts.user_id','=',$id],['posts.long_comment','=',1],['posts.deleted_at','=',null]])
+            ->join('threads', function($join) {
+	               $join->on([['posts.thread_id', '=', 'threads.id'],['posts.id','<>','threads.post_id']]);
+            })
+            ->where([['posts.id','<>','threads.post_id'], ['posts.user_id','=',$id], ['posts.maintext','=',0], ['posts.deleted_at','=',null]])
             ->select('posts.*','threads.title as thread_title', 'users.name')
             ->orderBy('posts.created_at', 'desc')
             ->simplePaginate($paginate);
         }else{
             return $posts = DB::table('posts')
             ->join('users','users.id','=','posts.user_id')
-            ->join('threads','threads.id','=','posts.thread_id')
+            ->join('threads', function($join) {
+	               $join->on([['posts.thread_id', '=', 'threads.id'],['posts.id','<>','threads.post_id']]);
+            })
             ->join('channels', 'threads.channel_id','=','channels.id')
-            ->where([['posts.user_id','=',$id],['posts.anonymous','=',0],['posts.long_comment','=',1],['posts.deleted_at','=',null],['channels.channel_state','<',$group]])
-            ->select('posts.*','threads.title as thread_title', 'users.name')
+            ->where([['posts.user_id','=',$id], ['posts.maintext','=',0],['posts.anonymous','=',0], ['posts.deleted_at','=',null],['channels.channel_state','<',$group]])
+            ->select('posts.*', 'threads.title as thread_title', 'users.name')
             ->orderBy('posts.created_at', 'desc')
             ->simplePaginate($paginate);
+
         }
     }
     public function findstatuses($id, $paginate)
@@ -135,7 +140,7 @@ class UsersController extends Controller
             $group = Auth::check() ? Auth::user()->group : 10;
             $books=$this->findbooks($id,config('constants.index_per_part'));
             $threads=$this->findthreads($id,config('constants.index_per_part'), $group);
-            $posts=$this->findlongcomments($id,config('constants.index_per_part'), $group);
+            $posts=$this->findcomments($id,config('constants.index_per_part'), $group);
             $statuses=$this->findstatuses($id,config('constants.index_per_part'));
             $upvotes=$this->findupvotes($id,config('constants.index_per_part'), $group);
             $xianyus=$this->findxianyus($id,config('constants.index_per_part'), $group);
@@ -165,13 +170,13 @@ class UsersController extends Controller
         }
     }
 
-    public function showlongcomments($id)
+    public function showcomments($id)
     {
         $user = User::find($id);
         $group = Auth::check() ? Auth::user()->group : 10;
         if ($user){
-            $posts=$this->findlongcomments($id,config('constants.index_per_page'),$group);
-            return view('users.showlongcomments', compact('user','posts'))->with('as_longcomments',0);
+            $posts=$this->findcomments($id,config('constants.index_per_page'), $group);
+            return view('users.showcomments', compact('user','posts'))->with('as_longcomments',0);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }

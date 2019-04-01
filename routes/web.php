@@ -53,7 +53,7 @@
    Route::get('users/{id}/threads','UsersController@showthreads')->name('user.showthreads');//展示某用户的全部主题贴
    Route::get('users/{id}/books','UsersController@showbooks')->name('user.showbooks');//展示某用户的全部文章
    Route::get('users/{id}/statuses','UsersController@showstatuses')->name('user.showstatuses');//展示某用户的全部动态
-   Route::get('users/{id}/longcomments','UsersController@showlongcomments')->name('user.showlongcomments');//展示某用户的全部长评
+   Route::get('users/{id}/comments','UsersController@showcomments')->name('user.showcomments');//展示某用户的全部长评
    Route::get('/users/{id}/upvotes', 'UsersController@showupvotes')->name('user.showupvotes');
    Route::get('/users/{id}/xianyus', 'UsersController@showxianyus')->name('user.showxianyus');
    Route::get('/users/{id}/records', 'UsersController@showrecords')->name('user.showrecords')->middleware('admin');//展示某用户的全部管理记录
@@ -116,6 +116,8 @@
    Route::get('/book-tag/{booktag}','BooksController@booktag')->name('books.booktag');//图书过滤-tag
    Route::get('/bookselector/{bookquery}','BooksController@selector')->name('books.selector');//图书过滤
    Route::post('/book-filter','BooksController@filter')->name('books.filter');//输入过滤信息表格
+   Route::get('/tags', 'BooksController@tags')->name('book.tags');//全站标签列表
+   Route::get('/selector', 'BooksController@bookselector')->name('book.selector');//全站详细搜索
 }
 
 {//以下是回帖模块
