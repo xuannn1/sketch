@@ -7,7 +7,7 @@
               <span class="bigger-20">
                   <strong>
                       <span>
-                          <a href="{{ route('thread.show', $recommend_book->thread_id) }}">
+                          <a href="{{ route('thread.show', ['thread' => $recommend_book->thread_id, 'recommendation' => $recommend_book->id]) }}">
                               {{ $recommend_book->title }}
                           </a>
                       </span>

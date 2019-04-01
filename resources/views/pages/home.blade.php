@@ -31,10 +31,10 @@
             <div class="panel-heading h4">
                 <a href="{{route('recommend_records')}}">编辑推荐</a>
             </div>
+            @foreach($recom_sr as $int => $recommendation)
             <div class="panel-body">
                 <div class="container-fluid">
                     <div class="recommendation">
-                        @foreach($recom_sr as $int => $recommendation)
                         <div class="row">
                             <div class="col-xs-12">
                                 <a href="{{ route('thread.show', ['thread' => $recommendation->thread_id, 'recommendation' => $recommendation->id]) }}" class="bigger-10">《{{ $recommendation->title }}》
@@ -42,24 +42,24 @@
                                 </a>
                             </div>
                         </div>
-                        @endforeach
                     </div>
                 </div>
             </div>
+            @endforeach
+            @foreach($recom_lg as $int => $recommendation)
             <div class="panel-body">
                 <div class="container-fluid">
                     <div class="recommendation">
                         <div class="row">
-                            @foreach($recom_lg as $int => $recommendation)
-                                <div class="col-xs-12">
-                                    <a href="{{ route('thread.showpost', ['post' => $recommendation->thread_id, 'recommendation' => $recommendation->id]) }}" class="bigger-10">长评推荐《{{ $recommendation->title }}》：<span class="grayout smaller-15">{{ $recommendation->recommendation }}</span>
-                                    </a>
-                                </div>
-                            @endforeach
+                            <div class="col-xs-12">
+                                <a href="{{ route('thread.showpost', ['post' => $recommendation->thread_id, 'recommendation' => $recommendation->id]) }}" class="bigger-10">长评推荐《{{ $recommendation->title }}》：<span class="grayout smaller-15">{{ $recommendation->recommendation }}</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            @endforeach
         </div>
     </div>
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
