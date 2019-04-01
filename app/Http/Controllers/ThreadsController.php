@@ -60,12 +60,12 @@ class threadsController extends Controller
 
     public function show(Thread $thread, Request $request)
     {
-        // if (request('recommendation')){
-        //     $recommendation = RecommendBook::find(request('recommendation'));
-        //     if($recommendation){
-        //         $recommendation->increment('clicks');
-        //     }
-        // }
+        if (request('recommendation')){
+            $recommendation = RecommendBook::find(request('recommendation'));
+            if($recommendation){
+                $recommendation->increment('clicks');
+            }
+        }
         $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
         $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
         $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')

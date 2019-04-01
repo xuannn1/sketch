@@ -220,7 +220,7 @@ class PagesController extends Controller
         return view('pages.contacts');
     }
 
-    public function recommende_records()
+    public function recommend_records()
     {
         $recommend_books = DB::table('threads')
         ->join('users', 'threads.user_id', '=', 'users.id')
