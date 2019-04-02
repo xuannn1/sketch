@@ -16,6 +16,7 @@
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="name">用户名（笔名）：</label>
+                        <h6 class="grayout">（用户名注册后，暂时无法更改哦。）</h6>
                         <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                     </div>
 
@@ -54,7 +55,7 @@
                             <p>比欲哭无泪更加down，不抑郁不要钱</p>
                             <p>本站<u><em><b>禁抄袭，禁人身攻击，禁人肉，禁恋童</b></em></u></p>
                             <p>请<u><em><b>不要发布侵犯他人版权的文字</b></em></u></p>
-                            <p>请确保您已<u><em><b>年满十八岁</b></em></u></p>
+                            <p>请确保您已<u><em><b>年满<span style="color:#d66666">十八</span>岁</b></em></u></p>
                             <p>祝您玩得愉快</p>
                             <br>
                         </div>

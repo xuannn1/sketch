@@ -90,6 +90,7 @@ class BooksController extends Controller
         $logged = Auth::check()? true:false;
         $page = is_numeric($request->page)? $request->page:1;
         $bookqueryid = 'booksQuery'.($logged? '-Loggedd':'-notLogged')//logged or not
+        .($request->showbianyuan? '-ShowBianyuan':'')
         .($request->label? '-Label'.$request->label:'')
         .($request->channel? '-Channel'.$request->channel:'')
         .($request->book_length? '-Booklength'.$request->book_length:'')
@@ -100,7 +101,7 @@ class BooksController extends Controller
         .'-P'.$page;
         $books = Cache::remember($bookqueryid, 5, function () use($request, $page, $logged) {
             $query = $this->join_book_tables();
-            if(!$logged){$query = $query->where('bianyuan','=',0);}
+            if((!$logged)||(!$request->showbianyuan)){$query = $query->where('bianyuan','=',0);}
             if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
             if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
             if($request->book_length){$query = $query->where('books.book_length','=',$request->book_length);}
@@ -111,7 +112,7 @@ class BooksController extends Controller
             $query = $this->return_book_fields($query);
             $books = $this->bookOrderBy($query, $request->orderby)
             ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page','label','channel','book_length','book_status','sexual_orientation','rating','orderby'));
+            ->appends($request->only('page','label','channel','book_length','book_status','sexual_orientation','rating','orderby','showbianyuan'));
             return $books;
         });
         return view('books.index', compact('books'))->with('show_as_collections', false);

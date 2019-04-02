@@ -6,7 +6,6 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
-        "aws/aws-sdk-php": "^3.90",
         "components/font-awesome": "^5.0",
         "fideloper/proxy": "^4.0",
         "genert/bbcode": "^1.1",
@@ -14,8 +13,6 @@
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
         "league/flysystem-aws-s3-v3": "^1.0",
-        "maxbanton/cwh": "^1.1",
-        "monolog/monolog": "^1.24",
         "pragmarx/firewall": "^2.2",
         "predis/predis": "^1.1"
     },
