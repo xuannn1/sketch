@@ -50,7 +50,10 @@ class CountWebStat extends Command
             $clicks_data->{'created_at'} = Carbon::now()->toDateString();
         return (array)$clicks_data;
         });
-        DB::table('historical_users_data')->insert($clicks_data_collection->toArray());
+        $clicks_data_to_insert = $clicks_data_collection->toArray();
+        foreach (array_chunk($clicks_data_to_insert, 1000) as $t){
+            DB::table('historical_users_data')->insert($t);
+        }
         WebStat::create($data);
         DB::table('users')->update(['clicks'=>DB::raw('daily_clicks + clicks'), 'daily_clicks'=>0]);
     }
