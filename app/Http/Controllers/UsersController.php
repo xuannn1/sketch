@@ -65,7 +65,7 @@ class UsersController extends Controller
     public function findcomments($id, $paginate, $group)
     //需要调整
     {
-        if ($id == Auth::id()){
+        if ((Auth::check())&&($id === Auth::id()||Auth::user()->admin)){
             return $posts = DB::table('posts')
             ->join('users','users.id','=','posts.user_id')
             ->join('threads', function($join) {
