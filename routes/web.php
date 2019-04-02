@@ -220,7 +220,6 @@
 //留言箱功能
 {
     Route::get('/users/{user}/questions/create','QuestionsController@create')->name('questions.create');//加载新建问题页面
-    Route::get('/users/{user}/question','QuestionsController@redirectcreate')->name('question.redirectcreate');//加载新建问题页面，旧api
     Route::post('/users/{user}/questions','QuestionsController@store')->name('questions.store');//储存问题路径
     Route::get('/users/{user}/questions', 'QuestionsController@index')->name('questions.index');//问题列表
     Route::post('/users/{user}/questions/{question}/answer','QuestionsController@answer')->name('questions.answer');//储存回答路径

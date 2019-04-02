@@ -21,7 +21,9 @@ class ChannelsController extends Controller
     {
         $channel = Helper::allChannels()->keyBy('id')->get($channel);
         $logged = Auth::check()? true:false;
-        $threadqueryid = '-threadQueryChannel'.$channel->id
+        $threadqueryid = 'threadChannelQuery'
+        .url('/')
+        .$channel->id
         .($logged?'-logged':'-notLogged')
         .($request->label? '-Label'.$request->label:'')
         .($request->sexual_orientation? '-SexualOrientation'.$request->sexual_orientation:'')

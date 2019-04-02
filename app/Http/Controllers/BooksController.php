@@ -89,7 +89,9 @@ class BooksController extends Controller
     {
         $logged = Auth::check()? true:false;
         $page = is_numeric($request->page)? $request->page:1;
-        $bookqueryid = 'booksQuery'.($logged? '-Loggedd':'-notLogged')//logged or not
+        $bookqueryid = 'booksQuery'
+        .url('/')
+        .($logged? '-Loggedd':'-notLogged')//logged or not
         .($request->showbianyuan? '-ShowBianyuan':'')
         .($request->label? '-Label'.$request->label:'')
         .($request->channel? '-Channel'.$request->channel:'')
@@ -98,7 +100,7 @@ class BooksController extends Controller
         .($request->sexual_orientation? '-SexualOrientation'.$request->sexual_orientation:'')
         .($request->rating? '-Rating'.$request->rating:'-noRating')
         .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
-        .'-P'.$page;
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
         $books = Cache::remember($bookqueryid, 5, function () use($request, $page, $logged) {
             $query = $this->join_book_tables();
             if((!$logged)||(!$request->showbianyuan)){$query = $query->where('bianyuan','=',0);}
@@ -128,7 +130,12 @@ class BooksController extends Controller
         }
         $logged = Auth::check()? true:false;
         $page = is_numeric($request->page) ? $request->page:1;
-        $books = Cache::remember('booksQuery'.($logged? '-Logged':'-notLogged').'-selector:'.$bookquery_original.'-P'.$page, 10, function () use($bookinfo, $page, $logged, $book_info, $request) {
+        $bookselectorid = 'booksSelector'
+        .url('/')
+        .($logged? '-Loggedd':'-notLogged')//logged or not
+        .$bookquery_original
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+        $books = Cache::remember($bookselectorid, 10, function () use($bookinfo, $page, $logged, $book_info, $request) {
             if((!empty($bookinfo[5]))&&($bookinfo[5][0]>0)){//用户是否提交了标签(tag)筛选要求？
                 $query = $this->join_complex_book_tables();//包含标签筛选
             }else{
@@ -168,7 +175,13 @@ class BooksController extends Controller
 
     public function booktag(Tag $booktag, Request $request){
         $logged = Auth::check()? true:false;
-        $books = Cache::remember('-tag-'.($logged? 'Lgd':'nLg').$booktag->id.($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy').(is_numeric($request->page)? 'P'.$request->page:'P1'), 2, function () use($request, $booktag, $logged) {
+        $tagqueryid = 'tagQuery'
+        .url('/')
+        .($logged? '-Loggedd':'-notLogged')//logged or not
+        .$booktag->id
+        .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+        $books = Cache::remember($tagqueryid, 2, function () use($request, $booktag, $logged) {
             $query = $this->join_book_tables();
             $query = $this->filter_tag($query, $booktag);
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);

@@ -38,7 +38,9 @@ class threadsController extends Controller
         $group = 10;
         $logged = Auth::check()? true:false;
         if(Auth::check()){$group = Auth::user()->group;}
-        $threadqueryid = '-tQry-'.$group
+        $threadqueryid = 'threadQuery'
+        .url('/')
+        .$group
         .($logged?'Lgd':'nLg')
         .($request->label? 'L'.$request->label:'')
         .($request->channel? 'Ch'.$request->channel:'')

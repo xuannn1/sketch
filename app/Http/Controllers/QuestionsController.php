@@ -15,7 +15,7 @@ class QuestionsController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'only' => ['answer'],
+            'only' => ['answer','create','store'],
         ]);
     }
 
@@ -85,10 +85,5 @@ class QuestionsController extends Controller
         }else{
             return back()->with('danger','请您登陆正确的账户');
         }
-    }
-
-    public function redirectcreate(User $user)
-    {
-        return redirect()->route('questions.create', $user);
     }
 }
