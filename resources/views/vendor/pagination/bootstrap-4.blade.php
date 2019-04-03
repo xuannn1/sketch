@@ -32,9 +32,16 @@
             @endif
         @endif
             @for ($i = $start; $i <= $end; $i++)
-                <li class="page-item {{ ($paginator->currentPage() == $i) ? ' active' : '' }}">
+                @if($paginator->currentPage() == $i)
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link" href="{{ $paginator->url($i) }}">{{$i}}</span>
+                </li>
+                @else
+                <li class="page-item">
                     <a class="page-link" href="{{ $paginator->url($i) }}">{{$i}}</a>
                 </li>
+                @endif
+
             @endfor
         @if($end < $paginator->lastPage())
             @if($paginator->currentPage() + 3 != $paginator->lastPage())
