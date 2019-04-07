@@ -26,7 +26,7 @@
     </div>
     @else
         <!-- 章节-正文 -->
-        <div>
+        <div class="chapter">
             @if($post->markdown)
             {!! Helper::sosadMarkdown($post->body) !!}
             @else
