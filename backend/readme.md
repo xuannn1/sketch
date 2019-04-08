@@ -617,6 +617,13 @@ http://127.0.0.1:8000/api/groupmessage
 sendTos(array) 所有接收用户id  
 body(string) 消息内容
 
+###### 4.5.9.3 管理员发系统消息  
+http://127.0.0.1:8000/api/publicnotice  
+方法：POST  
+授权：必须登陆，且登录用户为管理员  
+必填项：  
+body(string) 系统消息内容  
+
 #### 4.5.10 vote相关
 ###### 4.5.10.1 创建vote
 http://127.0.0.1:8000/api/vote
