@@ -655,5 +655,8 @@ class DefaultSettingsSeeder extends Seeder
         //     'invitation_times' => 10,
         //     'invite_until' => Carbon::now()->addYears(2),
         // ]);
+        DB::table('system_variables')->insert([
+            'latest_public_notice_id' => 0,
+        ]);
     }
 }
