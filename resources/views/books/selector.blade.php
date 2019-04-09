@@ -14,6 +14,7 @@
 
                     <div class="selector detailed-selector">
                         <h4>类别筛选：</h4>
+                        <h6 class="grayout">（类别筛选仅显示符合全部已勾选的结果）</h6>
                         <div class="">
                             <span class="lead">原创性：</span>
                             <input type="checkbox" name="original[]" value="1" checked />&nbsp;原创&nbsp;&nbsp;&nbsp;
@@ -58,6 +59,7 @@
                         <div class="">
                             <div class="">
                                 <h4>通用标签：</h4>
+                                <h6 class="grayout">（通用标签筛选会显示符合以下任意已勾选标签的结果）</h6>
                                     <?php $tag_info = 0; ?>
                                     @foreach(Helper::tags_general() as $key=>$tag)
                                         @if((Auth::check())||($tag->tag_group!==5))
