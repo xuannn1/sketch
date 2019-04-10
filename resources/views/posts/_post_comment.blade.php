@@ -7,7 +7,15 @@
     @else
     <a href="{{ route('user.show', $postcomment->owner->id) }}">{{ $postcomment->owner->name }}</a>
     @endif
-    <span class="grayout">{{ Carbon\Carbon::parse($postcomment->created_at)->diffForHumans() }}：</span>{{ $postcomment->body }}
+    <span class="grayout">{{ Carbon\Carbon::parse($postcomment->created_at)->diffForHumans() }}：</span>
+    @if(($thread->bianyuan)&&(!Auth::check()))
+    <div class="text-center">
+        <h6 class="grayout"><a href="{{ route('login') }}">登陆查看点评</a></h6>
+    </div>
+    @else
+    {{ $postcomment->body }}
+    @endif
+    
     @if((Auth::check())&&(Auth::user()->admin))
     @include('admin._delete_postcomment')
     @endif

@@ -44,7 +44,9 @@
                 @endif
                 <a href="{{ route('books.index',['label'=>$thread->label_id]) }}">{{ $label->labelname }}</a>
                 @foreach ($thread->tags as $int=>$tag)
-                - <a href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
+                    @if(($tag->tag_group!=5)||Auth::check())
+                    - <a href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
+                    @endif
                 @endforeach
             </p></em>
         </b>

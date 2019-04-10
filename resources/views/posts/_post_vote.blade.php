@@ -1,14 +1,14 @@
 <span class="voteposts">
     @include('posts._post_vote_buttons')
 </span>
-@if((!$thread->locked)&&(Auth::user()->no_posting < Carbon\Carbon::now()))
+@if((!$thread->locked)&&(Auth::user()->no_posting < Carbon\Carbon::now())&&($post->fold_state==0))
 <span class="voteposts">
     <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostComment{{ $post->id }}" class="btn btn-default btn-xs">点评</a>
 </span>
 <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $post->id }}, '{{ Helper::trimtext($post->body, 10)}}')">回复</a></span>
 @endif
 
-@if($post->user_id == Auth::id()&&(!$thread->locked)&&($thread->channel->channel_state!=2))
+@if($post->user_id == Auth::id()&&(!$thread->locked)&&($thread->channel->channel_state!=2)&&($post->fold_state==0))
 @if(($post->maintext)&&($thread->channel->channel_state==1))
 <span><a class="btn btn-danger sosad-button btn-xs" href="{{ route('book.editchapter', $post->chapter_id) }}">编辑</a></span>
 @else

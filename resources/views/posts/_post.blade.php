@@ -1,6 +1,6 @@
 @if($post->fold_state)
 <div class="text-center">
-    <a data-toggle="collapse" data-target="#post{{ $post->id }}" class="h6">该回帖被折叠，点击展开</a>
+    <a type="button" data-toggle="collapse" data-target="#post{{ $post->id }}" style="cursor: pointer;" class="h6">该回帖被折叠，点击展开</a>
 </div>
 @endif
 
