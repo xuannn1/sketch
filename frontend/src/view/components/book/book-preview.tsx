@@ -14,7 +14,7 @@ interface State {
 export class BookPreview extends React.Component<Props, State> {
     public render () {
         const { attributes, id, author, tags, last_component } = this.props.data;
-        const mini = this.props.mini || false;
+        const mini = this.props.mini;
 
         const cid = attributes.last_post_id;
 
