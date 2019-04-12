@@ -41,7 +41,7 @@
         </div>
     </div>
 </div>
-@if($xianyus)
+@if($xianyus->count()>0)
 <div class="grayout h6">
     投掷咸鱼：
     @foreach($xianyus as $xianyu)
