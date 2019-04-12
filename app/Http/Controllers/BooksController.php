@@ -75,8 +75,12 @@ class BooksController extends Controller
             ->latest()
             ->with('owner','reply_to_post','comments.owner')
             ->paginate(config('constants.items_per_page'));
-
-            return view('books.show', compact('book','thread', 'posts', 'channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
+            if($request->page>1){
+                $xianyus = [];
+            }else{
+                $xianyus = Helper::xianyus($thread->id);
+            }
+            return view('books.show', compact('book','thread', 'posts', 'channel','label', 'xianyus'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }
