@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Page, TabCard } from '../../components/common';
+import { Page, TabCard, Card, Slider } from '../../components/common';
 import { APIGet, ResData, ReqData } from '../../../config/api';
 import { Tags } from '../../components/book/tags';
 import { HomeNav } from './nav';
@@ -61,6 +61,12 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
                     },
                 ]}
             />
+            
+            <Card>
+                <Slider morePath={''}>
+                    {this.state.data.recent_custom_short_recommendations.map(data => this.renderRecomPreivew(data, data.id))}
+                </Slider>
+            </Card>
 
             <TabCard
                 tabs={[
@@ -89,8 +95,8 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
         </Page>);
     }
 
-    public renderRecomPreivew = (data:ResData.Post) => {
-        return <RecomPreview data={data} />;
+    public renderRecomPreivew = (data:ResData.Post, key:number) => {
+        return <RecomPreview data={data} key={key} />;
     }
 
     public renderPostPreview = (data:ResData.Post) => {
