@@ -7,6 +7,7 @@ use Genert\BBCode\BBCode;
 use App\Models\Channel;
 use App\Models\Label;
 use App\Models\Tag;
+use App\Models\Xianyu;
 use Cache;
 use DB;
 
@@ -40,6 +41,14 @@ class Helper
             return Label::all();
         });
     }
+
+    public static function xianyus($thread_id)//获得站上某thread所有咸鱼列表
+    {
+        return Cache::remember('xianyus-'.$thread_id, 10, function () use($thread_id){
+            return Xianyu::where('thread_id','=', $thread_id)->with('creator')->orderBy('created_at','desc')->get();
+        });
+    }
+
     public static function alltags()//获得站上所有的label
     {
         return Cache::remember('allTags', 10, function (){

@@ -41,7 +41,14 @@
         </div>
     </div>
 </div>
-
+@if($xianyus)
+<div class="grayout h6">
+    投掷咸鱼：
+    @foreach($xianyus as $xianyu)
+        <a href="{{ route('user.show', $xianyu->user_id) }}">{{ $xianyu->creator->name }}，</a>
+    @endforeach
+</div>
+@endif
 <div class="modal fade" id="TriggerPostComment{{ $thread->mainpost->id }}" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">

@@ -77,12 +77,15 @@ class threadsController extends Controller
             $thread->increment('viewed');
         }
         $book = [];
-
-        if ($thread->book_id>0){
+        if($thread->book_id>0){
             $book = $thread->book;
         }
-
-        return view('threads.show', compact('thread', 'posts','book', 'channel','label'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
+        if($request->page>1){
+            $xianyus = [];
+        }else{
+            $xianyus = Helper::xianyus($thread->id);
+        }
+        return view('threads.show', compact('thread', 'posts','book', 'channel', 'label', 'xianyus'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
     }
 
     public function createThreadForm($channel)
