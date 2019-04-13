@@ -12,7 +12,7 @@ export class PostPreview extends React.Component<Props, State> {
     public render () {
 
         const {attributes, id} = this.props.data;
-        return <div key={id}>
+        return <div>
             <Link className="title" to={`/thread/${id}`}>{ attributes.title }</Link>
             <div className="biref">
                 {attributes.body}
