@@ -21,7 +21,7 @@ export class User {
 
     public async login (email:string, pwd:string, backto?: string) {
         //todo:
-        const res = await this.db.post(`/login`, {email, password: pwd});
+        const res = await this.db.login({email, password: pwd});
         if (!res) { return false; }
         this.isLogin = true;
         //this.history.push('/');

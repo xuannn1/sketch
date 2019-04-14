@@ -1,4 +1,5 @@
-export type URLQuery = {[key:string]:string|number|boolean|any[]|undefined};
+export type BasicType = string|number|boolean;
+export type URLQuery = {[key:string]:BasicType|BasicType[]|undefined};
 export function parsePath (path:string, query:URLQuery) {
     let res = path;
 
