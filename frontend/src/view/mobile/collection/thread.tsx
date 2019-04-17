@@ -2,11 +2,11 @@ import * as React from 'react';
 import { MobileRouteProps } from '../router';
 import { Page, Pagination, Card, List } from '../../components/common';
 import { CollectionNav } from './nav';
-import { APIGet, ResData, ReqData } from '../../../config/api';
+import { ResData, ReqData, API } from '../../../config/api';
 import { ThreadPreview } from '../../components/thread/thread-preview';
 
 interface State {
-    data:APIGet['/collection']['res']['data'];
+    data:API.Get['/collection'];
 }
 
 export class CollectionThread extends React.Component<MobileRouteProps, State> {
@@ -18,11 +18,10 @@ export class CollectionThread extends React.Component<MobileRouteProps, State> {
     };
 
     public async componentDidMount () {
-        const res = await this.props.core.db.get('/collection', {
-            withType: ReqData.Collection.Type.thread,
-        });
-        if (!res || !res.data) { return; }
-        this.setState({data: res.data});
+        const data = await this.props.core.db.getCollection(ReqData.Collection.type.thread);
+        if (data) {
+            this.setState({data});
+        }
     }
 
     public render () {

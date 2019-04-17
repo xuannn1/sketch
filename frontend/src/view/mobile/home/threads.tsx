@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Page, Pagination, Card, List } from '../../components/common';
 import { HomeNav } from './nav';
 import { MobileRouteProps } from '../router';
-import { APIGet, ResData, ReqData } from '../../../config/api';
+import { API, ResData, ReqData } from '../../../config/api';
 import { URLParser } from '../../../utils/url';
 import { ThreadPreview } from '../../components/thread/thread-preview';
 import { UnregisterCallback } from 'history';
 
 interface State {
-    data:APIGet['/thread']['res']['data'];
+    data:API.Get['/thread'];
 }
 
 export class Threads extends React.Component<MobileRouteProps, State> {
@@ -45,15 +45,16 @@ export class Threads extends React.Component<MobileRouteProps, State> {
             const url = new URLParser();
             if (url.getAllPath()[0] !== this.props.path) { return; }
 
-            const res = await this.props.core.db.get('/thread', {
+            const data = await this.props.core.db.getThreadList({
                 page: url.getQuery('page'),
                 tags: url.getQuery('tags'),
                 channels: url.getQuery('channels'),
                 withType: ReqData.Thread.withType.thread,
                 ordered: url.getQuery('ordered'),
             });
-            if (!res || !res.data) { return; }
-            this.setState({data: res.data});
+            if (data) {
+                this.setState({data});
+            }
         })();
     }
 }

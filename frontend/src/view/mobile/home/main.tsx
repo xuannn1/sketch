@@ -3,14 +3,14 @@ import { Page, Card, TabCard } from '../../components/common';
 import { Link } from 'react-router-dom';
 import { Quotes } from '../../components/quotes';
 import { checkType } from '../../../utils/types';
-import { APIGet } from '../../../config/api';
+import { API } from '../../../config/api';
 import { HomeNav } from './nav';
 import { MobileRouteProps } from '../router';
 import { BookPreview } from '../../components/book/book-preview';
 import { ThreadPreview } from '../../components/thread/thread-preview';
 import { StatusPreview } from '../../components/status/status-preview';
 interface State {
-    data:APIGet['/']['res']['data'];
+    data:API.Get['/'];
 }
 
 export class HomeMain extends React.Component<MobileRouteProps, State> {
@@ -25,10 +25,9 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
     }
 
     public async componentDidMount () {
-        const res = await this.props.core.db.get('/', undefined);
-        if (!res) { return; }
-        if (checkType(res.data, this.state.data)) {
-            this.setState({data: res.data});
+        const data = await this.props.core.db.getPageHome();
+        if (data) {
+            this.setState({data});
         }
     }
 

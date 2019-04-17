@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Page, TabCard, Card, Slider } from '../../components/common';
-import { APIGet, ResData, ReqData } from '../../../config/api';
+import { API, ResData, ReqData } from '../../../config/api';
 import { Tags } from '../../components/book/tags';
 import { HomeNav } from './nav';
 import { MobileRouteProps } from '../router';
@@ -9,8 +9,8 @@ import { PostPreview } from '../../components/post/post-preview';
 import { BookPreview } from '../../components/book/book-preview';
 
 interface State {
-    data:APIGet['/homebook']['res']['data'];
-    tags:APIGet['/config/noTongrenTags']['res']['data']['tags'];
+    data:API.Get['/homebook'];
+    tags:API.Get['/config/noTongrenTags'];
 }
 
 export class HomeBook extends React.Component<MobileRouteProps, State> {
@@ -109,17 +109,19 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
 
     public loadData (tags?:number[]) {
         (async () => {
-            const res = await this.props.core.db.get('/homebook', undefined);
-            if (!res || !res.data) { return; }
-            this.setState({data: res.data});
+            const data = await this.props.core.db.getPageHomeBook();
+            if (data) {
+                this.setState({data});
+            }
         })();
     }
 
     public loadNoTongrenTags () {
         (async () => {
-            const res = await this.props.core.db.get('/config/noTongrenTags', undefined);
-            if (!res || !res.data) { return; }
-            this.setState({tags: res.data.tags});
+            const tags = await this.props.core.db.getNoTongrenTags();
+            if (tags) {
+                this.setState({tags});
+            }
         })();
     }
 }

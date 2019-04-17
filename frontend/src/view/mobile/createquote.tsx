@@ -2,9 +2,6 @@ import * as React from 'react';
 import { Page, Card, NotificationError } from '../components/common';
 import { Topnav } from '../components/topnav';
 import { MobileRouteProps } from './router';
-import { Core } from '../../core/index';
-import { EventBus } from '../../utils/events';
-import { ResData, APIPost } from '../../config/api';
 
 // interface Props {
 //     core: Core;
@@ -27,11 +24,11 @@ export class CreateQuote extends React.Component<MobileRouteProps, State> {
     }
 
     public createQuote = async (body: string, isAnonymous: boolean, majia) =>
-        await this.props.core.db.post("/quote", {
-        body,
-        is_anonymous: isAnonymous,
-        majia: isAnonymous ? majia : undefined
-    })
+        await this.props.core.db.addQuote({
+            body,
+            is_anonymous: isAnonymous,
+            majia: isAnonymous ? majia : undefined
+        });
 
     public render () {
         return <Page nav={<Topnav core={this.props.core} center={'创建题头'}/>}>

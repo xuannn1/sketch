@@ -1,11 +1,8 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Carousel } from './carousel';
-import { EventBus } from '../../utils/events';
-import { ResData, APIPost } from '../../config/api';
-import { CreateQuote } from '../mobile/createquote';
+import { ResData, } from '../../config/api';
 import { Core } from '../../core/index';
-import { NotificationError } from './common';
 
 interface Props {
     quotes: ResData.Quote[];

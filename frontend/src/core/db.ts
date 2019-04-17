@@ -1,41 +1,43 @@
 import { History } from '.';
-import { ResData, ReqData, Increments } from '../config/api';
+import { ResData, ReqData, Increments, API } from '../config/api';
 import { parsePath, URLQuery } from '../utils/url';
-import { loadStorage } from '../utils/storage';
+import { loadStorage, saveStorage } from '../utils/storage';
 import { ErrorMsg, ErrorCodeKeys } from '../config/error';
+import { User } from './user';
 
-type JSONType = {[name:string]:any};
-type FetchOptions<T extends JSONType> = {
-    initData?:T,
+type JSONType = {[name:string]:any}|string;
+type FetchOptions = {
     query?:URLQuery,
     body?:JSONType,
+    pathInsert?:(number|string)[],
     errorMsg?:{[code:string]:string},
     errorCodes?:ErrorCodeKeys[],
 }
 
 export class DB {
+    private user:User;
+    private history:History;
     private host:string;
     private port:number;
     private protocol:string;
     private API_PREFIX = '/api';
 
-    constructor (history:History) {
+    constructor (user:User, history:History) {
+        this.user = user;
+        this.history = history;
         this.protocol = 'http';
         // this.host = 'sosad.fun'; //fixme:
         this.host = 'localhost'; // for test
         this.port = 8000; // for test
     }
-
     private commonOption:RequestInit = {
         headers: {
-            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json, text/plain, */*',
         },
         mode: 'cors',
     };
-
-    private async _fetch<T extends JSONType> (path:string, reqInit:RequestInit, spec:FetchOptions<T> = {}) {
+    private async _fetch<T extends JSONType> (path:string, reqInit:RequestInit, spec:FetchOptions = {}) {
         const headers = Object.assign({}, this.commonOption.headers, reqInit['headers']||{});
         const options = Object.assign({}, this.commonOption, reqInit, {headers});
         const token = loadStorage('token');
@@ -43,6 +45,11 @@ export class DB {
             options.headers!['Authorization'] = `Bearer ${token}`;
         }
         let _path = path;
+        if (spec.pathInsert) {
+            for (let i = 0; i < spec.pathInsert.length; i ++) {
+                _path = _path.replace(`$${i}`, '' + spec.pathInsert[i]);
+            }
+        }
         if (spec.query) {
             _path = parsePath(path, spec.query);
         }
@@ -84,251 +91,37 @@ export class DB {
             return;
         }
     }
-
-    private async _get<T extends JSONType> (path:string, ops:FetchOptions<T> = {}) {
-        const res = await this._fetch(path, {method: 'GET'}, ops);
-        if (res) { return res as T; }
-        if (ops.initData) {
-            return ops.initData;
-        }
-        return;
+    private async _get<Path extends keyof API.Get> (path:Path, ops:FetchOptions = {}) {
+        return await this._fetch<API.Get[Path]>(path, {method: 'GET'}, ops);
+    }
+    private _post<Path extends keyof API.Post> (path:Path, ops:FetchOptions = {}) {
+        return this._fetch<API.Post[Path]>(path, {method: 'POST'}, ops);
+    }
+    private _patch<Path extends keyof API.Patch> (path:Path, ops:FetchOptions = {}) {
+        return this._fetch<API.Patch[Path]>(path, {method: 'PATCH'}, ops);
+    }
+    private _put<Path extends keyof API.Put> (path:Path, ops:FetchOptions = {}) {
+        return this._fetch<API.Put[Path]>(path, {method: 'PUT'}, ops);
+    }
+    private _delete<Path extends keyof API.Delete> (path:Path, ops:FetchOptions = {}) {
+        return this._fetch<API.Delete[Path]>(path, {method: 'DELETE'}, ops);
     }
 
-    private _post<T extends JSONType> (path:string, ops:FetchOptions<T> = {}) {
-        return this._fetch(path, {method: 'POST'}, ops);
-    }
-    private _patch<T extends JSONType> (path:string, ops:FetchOptions<T> = {}) {
-        return this._fetch(path, {method: 'PATCH'}, ops);
-    }
-    private _put<T extends JSONType> (path:string, ops:FetchOptions<T> = {}) {
-        return this._fetch(path, {method: 'PUT'}, ops);
-    }
-    private _delete<T extends JSONType> (path:string, ops:FetchOptions<T> = {}) {
-        return this._fetch(path, {method: 'DELETE'}, ops);
-    }
-
-    // page fetch
+    // page
     public getPageHome () {
-        return this._get('/home', {
-            initData: {
-                quotes: [] as ResData.Quote[],
-                recent_added_chapter_books: [] as ResData.Thread[],
-                recent_responded_books: [] as ResData.Thread[],
-                recent_responded_threads: [] as ResData.Thread[],
-                recent_statuses: [] as ResData.Status[],
-            },
-        });
+        return this._get('/');
     }
     public getPageHomeThread () {
-        return this._get('/homethread', {
-            initData: {} as {
-                [idx:string]:{
-                    channel:ResData.Channel;
-                    threads:ResData.Thread[];
-                },
-            },
-        });
+        return this._get('/homethread');
     }
     public getPageHomeBook () {
-        return this._get('/homebook', {
-            initData: {
-                recent_long_recommendations: [] as ResData.Post[],
-                recent_short_recommendations: [] as ResData.Post[],
-                random_short_recommendations: [] as ResData.Post[],
-                recent_custom_short_recommendations: [] as ResData.Post[],
-                recent_custom_long_recommendations: [] as ResData.Post[],
-                recent_added_chapter_books: [] as ResData.Thread[],
-                recent_responded_books: [] as ResData.Thread[],
-                highest_jifen_books: [] as ResData.Thread[],
-                most_collected_books: [] as ResData.Thread[],
-            }
-        });
-    }
-
-    public getAllTags () {
-        return this._get('/config/allTags', {
-            initData: {
-                tags: [] as ResData.Tag[],
-            },
-        });
-    }
-
-    public getNoTongrenTags () {
-        return this._get('/config/noTongrenTags', {
-            initData: {
-                tags: [] as ResData.Tag[],
-            },
-        });
-    }
-
-    public getThreadList (query?:{
-        channels?:number[],
-        tags?:number[],
-        excludeTag?:number[],
-        withBianyuan?:ReqData.Thread.withBianyuan,
-        ordered?:ReqData.Thread.ordered,
-        withType?:ReqData.Thread.withType,
-        page?:number;
-    }) {
-        return this._get( '/thread', {
-            initData: {
-                threads:[] as ResData.Thread[],
-                paginate: ResData.allocChapter(),
-            },
-            query,
-        });
-    }
-
-    public getThread (id:number, page?:number) {
-        const query = page ? {page} : undefined;
-        return this._get(
-            `/thread/${id}`, {
-            initData: {
-                thread: ResData.allocThread(),
-                posts: [] as ResData.Post[],
-                paginate: ResData.allocThreadPaginate(),
-            },
-            query,
-        });
-    }
-
-    public getBook (id:number, page?:number) {
-        const query = page ? { page } : undefined;
-        const initData = {
-            thread: ResData.allocThread(),
-            chapters: [] as ResData.Post[],
-            volumns: [] as ResData.Volumn[],
-            paginate: ResData.allocThreadPaginate(),
-            most_upvoted: ResData.allocPost(),
-            top_review: null as null|ResData.Post,
-        };
-        return this._get('/book/' + id, {
-            initData,
-            query,
-        });
-    }
-
-    public getCollection (query?:{
-        user_id?:number;
-        withType?:ReqData.Collection.Type;
-        ordered?:ReqData.Thread.ordered;
-    }) {
-        const initData = {
-            threads: [] as ResData.Thread[],
-            paginate: ResData.allocThreadPaginate(),
-        };
-        return this._get('/collection', {
-            initData,
-            query,
-        });
-    }
-
-    public getUserMessage (id:number, query:{
-        withStyle:ReqData.Message.style;
-        chatWith?:Increments;
-        ordered?:ReqData.Message.ordered;
-        read?:ReqData.Message.read;
-    }) {
-        const initData = {
-            messages: [] as ResData.Message[],
-            paginate: ResData.allocThreadPaginate(),
-            style: ReqData.Message.style.sendbox,
-        };
-        return this._get(`/user/${id}/message`, {
-            initData,
-            query,
-        });
-    }
-
-    public getStatus () {
-        //fixme:
-        return this._get( '/status', {});
-    }
-
-    public register (body:{
-        name:string;
-        password:string;
-        email:string;
-    }) {
-        return this._post('/register', {
-            body,
-            errorMsg: {
-                422: '用户名/密码/邮箱格式错误',
-            },
-        });
-    }
-
-    public login (body:{
-        email:string;
-        password:string;
-    }) {
-        return this._post('/login', {
-            body,
-            errorMsg: {
-                401: '用户名/密码错误',
-            },
-        });
-    }
-
-    public publishThread (req:{
-        title:string;
-        brief:string;
-        body:string;
-        no_reply?:boolean;
-        use_markdown?:boolean;
-        use_indentation?:boolean;
-        is_bianyuan?:boolean;
-        is_not_public?:boolean;
-    }) {
-        return this._post( '/thread', req);
-    }
-
-    public updateTagToThread (threadId:number, tags:number[]) {
-        return this._post(`/thread/${threadId}`, {tags});
-    }
-
-    public addPostToThread (threadId:number, post:{
-        body:string;
-        brief:string;
-        is_anonymous?:boolean;
-        majia?:string;
-        reply_id?:number;
-        use_markdown?:boolean;
-        use_indentation?:boolean;
-        is_bianyuan?:boolean;
-    }) {
-        return this._post(`/thread/${threadId}/post`, post);
-    }
-
-    public addChapterToThread (threadId:number, chapter:{
-        title:string;
-        brief:string;
-        body:string;
-        annotation?:string;
-        annotation_infront?:boolean;
-    }) {
-        return this._post(`/thread/${threadId}/chapter`, chapter);
-    }
-
-    public addRecommendation (req:{
-        type:'short'|'long'|'topic';
-        body?:string;
-        users:number[];
-    }) {
-        return this._post('/recommendation', req);
-    }
-
-    public addQuote (req:{
-        body:string;
-        is_anonymous?:boolean;
-        majia?:string;
-    }) {
-        return this._post('/quote', req);
+        return this._get('/homebook');
     }
 
     // follow system
     public followUser (userId:number) {
-        return this._post<{user:ResData.User}>(`/user/${userId}/follow`, {
+        return this._post(`/user/$0/follow`, {
+            pathInsert: [userId],
             errorCodes: [401],
             errorMsg: {
                 403: '不能关注自己',
@@ -338,7 +131,8 @@ export class DB {
         });
     }
     public unFollowUser (userId:number) {
-        return this._delete<{user:ResData.User}>(`/user/${userId}/follow`, {
+        return this._delete(`/user/$0/follow`, {
+            pathInsert: [userId],
             errorCodes: [401],
             errorMsg: {
                 403: '不能取关自己',
@@ -348,44 +142,281 @@ export class DB {
         });
     }
     public updateFollowStatus (userId:number, keep_updated:boolean) {
-        return this._patch<ResData.User>(`/user/${userId}/follow`, {
+        return this._patch(`/user/$0/follow`, {
+            pathInsert: [userId],
             body: {keep_updated},
             errorCodes: [401, 403, 404, 412],
         })
     }
     public getFollowingIndex (userId:number) {
-        const initData = {
-            user: ResData.allocUser(),
-            followings: [] as ResData.User[],
-            paginate: ResData.allocThreadPaginate(),
-        };
-        return this._get(`/user/${userId}/following`, {
-            initData, 
+        return this._get(`/user/$0/following`, {
+            pathInsert: [userId],
             errorCodes: [401],
         });
     }
     public getFollowingStatuses (userId:number) {
-        const initData = {
-            user: ResData.allocUser(),
-            followingStatuses: [] as ResData.User[],
-            paginate: ResData.allocThreadPaginate(),
-        };
-        return this._get(`/user/${userId}/followingStatuses`, {
-            initData,
+        return this._get(`/user/$0/followingStatuses`, {
+            pathInsert: [userId],
             errorCodes: [401],
         });
     }
     public getFollowers (userId:number) {
-        const initData = {
-            user: ResData.allocUser(),
-            followers: [] as ResData.User[],
-            paginate: ResData.allocThreadPaginate(),
-        };
-        return this._get(`/user/${userId}/follower`, {
-            initData,
+        return this._get(`/user/$0/follower`, {
+            pathInsert: [userId],
             errorCodes: [401],
         });
     }
 
     // Message System
+    public sendMessage (toUserId:number, content:string) {
+        return this._post('/message', {
+            body: {
+                sendTo: toUserId,
+                body: content,
+            },
+            errorCodes: [403],
+        });
+    }
+    public sendGroupMessage (toUsers:number[], content:string) {
+        return this._post('/groupmessage', {
+            body: {
+                sendTos: toUsers,
+                body: content,
+            },
+            errorCodes: [403],
+            errorMsg: {
+                404: '未能找到全部对应的收信人',
+            },
+        });
+    }
+    public getMessages (id:number, query:{
+        withStyle:ReqData.Message.style;
+        chatWith:Increments;
+        ordered?:ReqData.Message.ordered;
+        read?:ReqData.Message.read;
+    }) {
+        return this._get(`/user/$0/message`, {
+            pathInsert: [id],
+            query,
+        });
+    }
+    public sendPublicNotice (content:string) {
+        return this._post('/publicnotce', {
+            body: {
+                body: content,
+            },
+            errorCodes: [403],
+        });
+    }
+
+    // User Title System
+    public getAllTitles () {
+        return this._get('/config/titles');
+    }
+    public getUserTitles (userId:number) {
+        return this._get(`/user/$0/title`, {
+            pathInsert: [userId],
+            errorCodes: [401],
+        });
+    }
+    public updateTitleStatus (userId:number, titleId:number, status:ReqData.Title.status) {
+        return this._patch(`/user/$0/title/$1`, {
+            pathInsert: [userId, titleId],
+            body: {
+                options: status,
+            },
+            errorCodes: [401, 409],
+        });
+    }
+
+    // Vote System
+    public vote (type:ReqData.Vote.type, id:number, attitude:ReqData.Vote.attitude) {
+        return this._post('/vote', {
+            body: {
+                votable_type: type,
+                votable_id: id,
+                attitude,
+            },
+            errorCodes: [401],
+            errorMsg: {
+                404: '未找到该投票对象',
+                409: '不能重复投票或请先踩赞冲突',
+            },
+        });
+    }
+    public getVotes (type:ReqData.Vote.type, id:number, attitude?:ReqData.Vote.attitude) {
+        return this._get('/vote', {
+            query: {
+                votable_type: type,
+                votable_id: id,
+                attitude,
+            },
+        });
+    }
+    public deleteVote (voteId:number) {
+        return this._delete(`/vote/$0`);
+    }
+
+    // Thread System
+    public getThreadList (query?:{
+        channels?:number[],
+        tags?:number[],
+        excludeTag?:number[],
+        withBianyuan?:ReqData.Thread.withBianyuan,
+        ordered?:ReqData.Thread.ordered,
+        withType?:ReqData.Thread.withType,
+        page?:number;
+    }) {
+        return this._get('/thread', {
+            query,
+        });
+    }
+    public getThread (id:number, query?:{
+        page?:number,
+        ordered?:ReqData.Thread.ordered
+    }) {
+        return this._get(`/thread/$0`, {
+            pathInsert: [id],
+            query,
+        });
+    }
+    public getThreadPosts (threadId:number, query?:{
+        withType?:ReqData.Post.withType,
+        withComponent?:ReqData.Post.withComponent,
+        userOnly?:number, // user id
+        withReplyTo?:number, // post id
+        ordered?:ReqData.Post.ordered,
+    }) {
+        return this._get(`/thread/$0/post`, {
+            pathInsert: [threadId],
+            query,
+        });
+    }
+    public turnToPost (threadId:number, postId:number) {
+        return this._patch(`/thread/$0/post/$1/turnToPost`, {
+            pathInsert: [threadId, postId],
+        });
+    }
+    public updateThreadTags (threadId:number, tags:number[]) {
+        return this._patch(`/thread/$0/synctags`, {
+            pathInsert: [threadId],
+            body: {
+                tags,
+            },
+        });
+    }
+    // public publishThread (req:{
+    //     title:string;
+    //     brief:string;
+    //     body:string;
+    //     no_reply?:boolean;
+    //     use_markdown?:boolean;
+    //     use_indentation?:boolean;
+    //     is_bianyuan?:boolean;
+    //     is_not_public?:boolean;
+    // }) {
+    //     return this._post( '/thread', req);
+    // }
+
+    // public addPostToThread (threadId:number, post:{
+    //     body:string;
+    //     brief:string;
+    //     is_anonymous?:boolean;
+    //     majia?:string;
+    //     reply_id?:number;
+    //     use_markdown?:boolean;
+    //     use_indentation?:boolean;
+    //     is_bianyuan?:boolean;
+    // }) {
+    //     return this._post(`/thread/${threadId}/post`, post);
+    // }
+
+    // Book System
+    public addChapterToThread (threadId:number, chapter:{
+        title:string;
+        brief:string;
+        body:string;
+        annotation?:string;
+        annotation_infront?:boolean;
+    }) {
+        return this._post(`/thread/$0/chapter`, {
+            pathInsert: [threadId],
+            body: chapter,
+        });
+    }
+    public getBook (id:number, page?:number) {
+        const query = page ? { page } : undefined;
+        return this._get('/book/$0', {
+            pathInsert: [id],
+            query,
+        });
+    }
+
+    // Collection System
+    public collectThread (threadId:number) {
+        return this._post(`/thread/$0/collect`, {
+            pathInsert: [threadId],
+        });
+    }
+    public getCollection (withType?:ReqData.Collection.type) {
+        return this._get('/collection', {
+            query: {
+                withType,
+            },
+        })
+    }
+
+    // User System
+    public async register (body:{
+        name:string;
+        password:string;
+        email:string;
+    }) {
+        const res = await this._post('/register', {
+            body,
+            errorMsg: {
+                422: '用户名/密码/邮箱格式错误',
+            },
+        });
+        if (!res) { return false; }
+        this.user.isLogin = true;
+        this.history.push('/');
+        saveStorage('token', res.token);
+        return true;
+    }
+    public async login (email:string, password:string, backto?:string) {
+        const res = await this._post('/login', {
+            body: {
+                email,
+                password,
+            },
+            errorMsg: {
+                401: '用户名/密码错误',
+            },
+        });
+        if (!res) { return false; }
+        this.user.isLogin = true;
+        saveStorage('token', res.token);
+        backto ? this.history.push(backto) : this.history.push('/');
+        return true;
+    }
+    public resetPassword (email:string) {
+        // fixme:
+        return new Promise<boolean>((resolve) => resolve(true));
+    }
+
+    // Status System
+
+    // others
+    public addQuote (body:{
+        body:string;
+        is_anonymous?:boolean;
+        majia?:string;
+    }) {
+        return this._post('/quote', body);
+    }
+    public getNoTongrenTags () {
+        // fixme:
+        return [];
+    }
 }

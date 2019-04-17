@@ -25,8 +25,8 @@ export class Core {
         });
 
         this.tag = new Tag();
-        this.db = new DB(this.history);
-        this.user = new User(this.db, this.history);
+        this.user = new User(this.history);
+        this.db = new DB(this.user, this.history);
         this.windowResizeEvent = new EventBus();
         window.addEventListener('resize', debounce(() => {
             this.windowResizeEvent.notify(undefined);

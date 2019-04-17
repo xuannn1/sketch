@@ -4,24 +4,24 @@ export function parsePath (path:string, query:URLQuery) {
     let res = path;
 
     let obj = Object.assign({}, query);
-    const matches = path.match(/:\w+/g);
+    // const matches = path.match(/:\w+/g);
 
-    if (matches) {
-        for (const match of matches) {
-            const key = match.substr(1);
-            const value = obj[key];
-            if (value && (
-                typeof value === 'string' ||
-                typeof value === 'number' ||
-                typeof value === 'boolean'
-            )) {
-                res = res.replace(match, value.toString());
-                delete obj[key];
-            } else {
-                res = res.replace(match, '');
-            }
-        }
-    }
+    // if (matches) {
+    //     for (const match of matches) {
+    //         const key = match.substr(1);
+    //         const value = obj[key];
+    //         if (value && (
+    //             typeof value === 'string' ||
+    //             typeof value === 'number' ||
+    //             typeof value === 'boolean'
+    //         )) {
+    //             res = res.replace(match, value.toString());
+    //             delete obj[key];
+    //         } else {
+    //             res = res.replace(match, '');
+    //         }
+    //     }
+    // }
 
     const url = new URLParser();
     url.pathname = res;

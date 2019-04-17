@@ -1,46 +1,19 @@
-import { DB } from "./db";
 import { History } from '.';
 import { loadStorage, saveStorage } from "../utils/storage";
 
 export class User {
-    private db:DB;
     private history:History;
     
-    private isLogin = false;
-    private name = '';
+    public isLogin = false;
+    public name = '';
 
-    constructor (db:DB, history:History) {
-        this.db = db;
+    constructor (history:History) {
         this.history = history;
 
         const token = loadStorage('token');
         if (token) {
             this.isLogin = true;
         }
-    }
-
-    public async login (email:string, pwd:string, backto?: string) {
-        //todo:
-        const res = await this.db.login({email, password: pwd});
-        if (!res) { return false; }
-        this.isLogin = true;
-        //this.history.push('/');
-        saveStorage('token', res.data.token);
-        backto ? this.history.push(backto) : this.history.push('/');
-        return true;
-    }
-
-    public async register (spec:{
-        email:string,
-        password:string,
-        name:string,
-    }) {
-        const res = await this.db.post(`/register`, spec);
-        if (!res) { return false; }
-        this.isLogin = true;
-        this.history.push('/');
-        saveStorage('token', res.data.token);
-        return true;
     }
 
     public isAdmin () : boolean {

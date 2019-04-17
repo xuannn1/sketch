@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Page, Anchor, Pagination } from '../../components/common';
 import { BookProfile } from '../../components/book/book-profile';
 import { ChapterList } from '../../components/book/chapter-list';
-import { APIGet, ResData } from '../../../config/api';
+import { ResData, API } from '../../../config/api';
 import { Topnav } from '../../components/topnav';
 import { MobileRouteProps } from '../router';
 import { Post } from '../../components/post/post';
 
 interface State {
-    data:APIGet['/book/:id']['res']['data'];
+    data:API.Get['/book/$0'];
 }
 
 export class Book extends React.Component<MobileRouteProps, State> {
@@ -24,11 +24,10 @@ export class Book extends React.Component<MobileRouteProps, State> {
     };
 
     public async componentDidMount () {
-        const res = await this.props.core.db.get('/book/:id', {
-            id: +this.props.match.params.id,
-        });
-        if (!res || !res.data) { return; }
-        this.setState({data: res.data});
+        const data = await this.props.core.db.getBook(+this.props.match.params.id);
+        if (data) {
+            this.setState({data});
+        }
     }
 
     public render () {

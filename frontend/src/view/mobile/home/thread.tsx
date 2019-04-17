@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ResData, APIGet } from '../../../config/api';
+import { ResData, API } from '../../../config/api';
 import { Page, Pagination } from '../../components/common';
 import { Topnav } from '../../components/topnav';
 import { URLParser } from '../../../utils/url';
@@ -9,7 +9,7 @@ import { Post } from '../../components/post/post';
 
 
 interface State {
-    data:APIGet['/thread/:id']['res']['data'];
+    data:API.Get['/thread/$0'];
 }
 
 export class Thread extends React.Component<MobileRouteProps, State> {
@@ -25,12 +25,12 @@ export class Thread extends React.Component<MobileRouteProps, State> {
         const url = new URLParser();
         const id = this.props.match.params.id;
 
-        const res = await this.props.core.db.get('/thread/:id', {
-            id: +id,
+        const data = await this.props.core.db.getThread(+id, {
             page: url.getQuery('page'),
-        });
-        if (!res || !res.data) { return; }
-        this.setState({data: res.data});
+        })
+        if (data) {
+            this.setState({data});
+        }
     }
     public render () {
         const { thread, paginate, posts } = this.state.data;
