@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Page, Pagination, List } from '../../components/common';
 import { MobileRouteProps } from '../router';
 import { API, ResData, ReqData } from '../../../config/api';
 import { URLParser } from '../../../utils/url';
 import { UnregisterCallback } from 'history';
-import { Tags } from '../../components/book/tags';
-import { HomeNav } from './nav';
-import { ThreadPreview } from '../../components/thread/thread-preview';
+import { TagList } from '../../components/common/tag-list';
+import { HomeMenu } from './home-menu';
+import { ThreadPreview } from '../../components/home/thread-preview';
+import { Page } from '../../components/common/page';
+import { Pagination } from '../../components/common/pagination';
+import { List } from '../../components/common/list';
 
 interface State {
     data:API.Get['/thread'];
@@ -62,8 +64,8 @@ export class Books extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return <Page nav={<HomeNav />}>
-            <Tags
+        return <Page top={<HomeMenu />}>
+            <TagList
                 tags={this.state.tags}
                 search={(pathname, tags) => {
                     this.props.core.history.push(pathname, {tags});

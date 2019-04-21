@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { MobileRouteProps } from '../router';
-import { Page, Pagination, Card, List } from '../../components/common';
 import { CollectionNav } from './nav';
 import { ResData, ReqData, API } from '../../../config/api';
-import { ThreadPreview } from '../../components/thread/thread-preview';
+import { ThreadPreview } from '../../components/home/thread-preview';
+import { Page } from '../../components/common/page';
+import { Pagination } from '../../components/common/pagination';
+import { Card } from '../../components/common/card';
+import { List } from '../../components/common/list';
 
 interface State {
     data:API.Get['/collection'];
@@ -26,7 +29,7 @@ export class CollectionThread extends React.Component<MobileRouteProps, State> {
 
     public render () {
         const { data } = this.state;
-        return (<Page nav={<CollectionNav />}>
+        return (<Page top={<CollectionNav />}>
             <Pagination currentPage={data.paginate.current_page} lastPage={data.paginate.total_pages} />
             <Card>
                 <List children={data.threads.map((thread) => <ThreadPreview data={thread} />)} />

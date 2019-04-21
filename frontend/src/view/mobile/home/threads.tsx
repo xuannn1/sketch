@@ -1,11 +1,14 @@
 import * as React from 'react';
-import { Page, Pagination, Card, List } from '../../components/common';
-import { HomeNav } from './nav';
+import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
 import { API, ResData, ReqData } from '../../../config/api';
 import { URLParser } from '../../../utils/url';
-import { ThreadPreview } from '../../components/thread/thread-preview';
+import { ThreadPreview } from '../../components/home/thread-preview';
 import { UnregisterCallback } from 'history';
+import { Page } from '../../components/common/page';
+import { Pagination } from '../../components/common/pagination';
+import { Card } from '../../components/common/card';
+import { List } from '../../components/common/list';
 
 interface State {
     data:API.Get['/thread'];
@@ -31,7 +34,7 @@ export class Threads extends React.Component<MobileRouteProps, State> {
 
     public render () {
         const { data } = this.state;
-        return <Page nav={<HomeNav />}>
+        return <Page top={<HomeMenu />}>
             <Pagination currentPage={data.paginate.current_page} lastPage={data.paginate.total_pages} />
             <Card>
                 <List children={data.threads.map((thread) =>

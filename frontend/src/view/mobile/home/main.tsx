@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { Page, Card, TabCard } from '../../components/common';
 import { Link } from 'react-router-dom';
-import { Quotes } from '../../components/quotes';
-import { checkType } from '../../../utils/types';
+import { Quotes } from '../../components/home/quotes';
 import { API } from '../../../config/api';
-import { HomeNav } from './nav';
+import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
-import { BookPreview } from '../../components/book/book-preview';
-import { ThreadPreview } from '../../components/thread/thread-preview';
-import { StatusPreview } from '../../components/status/status-preview';
+import { BookPreview } from '../../components/home/book-preview';
+import { ThreadPreview } from '../../components/home/thread-preview';
+import { StatusPreview } from '../../components/home/status-preview';
+import { Page } from '../../components/common/page';
+import { Card } from '../../components/common/card';
+import { Tab } from '../../components/common/tab';
+import { MainMenu } from '../main-menu';
 interface State {
     data:API.Get['/'];
 }
@@ -32,7 +34,9 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return (<Page nav={<HomeNav />}>
+        return (<Page 
+            bottom={<MainMenu />}
+            top={<HomeMenu />} >
             <Quotes
                 quotes={this.state.data.quotes}
                 core={this.props.core}
@@ -49,7 +53,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
 
             {/* <Recommendation recommendations={this.state.data.recommendation} core={this.props.core} /> */}
 
-            <TabCard
+            <Tab
                 tabs={[
                     {
                         name: '最新更新',
@@ -64,7 +68,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
                 ]}
             />
 
-            <TabCard
+            <Tab
                 tabs={[
                     {
                         name: '最新讨论',
@@ -79,7 +83,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
                 ]}
             />
 
-            <TabCard
+            <Tab
                 tabs={[
                     {
                         name: '最新动态',
