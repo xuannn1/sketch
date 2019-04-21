@@ -1,16 +1,18 @@
 import * as React from 'react';
-import { Page, TabCard, Card, Slider } from '../../components/common';
-import { APIGet, ResData, ReqData } from '../../../config/api';
-import { Tags } from '../../components/book/tags';
-import { HomeNav } from './nav';
+import { API, ResData, ReqData } from '../../../config/api';
+import { TagList } from '../../components/common/tag-list';
+import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
-import { RecomPreview } from '../../components/post/recom-preview';
-import { PostPreview } from '../../components/post/post-preview';
-import { BookPreview } from '../../components/book/book-preview';
+import { FeaturedPreview } from '../../components/home/featured-preview';
+import { BookPreview } from '../../components/home/book-preview';
+import { Page } from '../../components/common/page';
+import { Card } from '../../components/common/card';
+import { Slider } from '../../components/common/slider';
+import { Tab } from '../../components/common/tab';
 
 interface State {
-    data:APIGet['/homebook']['res']['data'];
-    tags:APIGet['/config/noTongrenTags']['res']['data']['tags'];
+    data:API.Get['/homebook'];
+    tags:API.Get['/config/noTongrenTags'];
 }
 
 export class HomeBook extends React.Component<MobileRouteProps, State> {
@@ -34,8 +36,8 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
     }
 
     public render () {
-        return (<Page className="books" nav={<HomeNav />}>
-            <Tags
+        return (<Page className="books" top={<HomeMenu />}>
+            <TagList
                 tags={this.state.tags}
                 redirectPathname="/books"
                 search={(pathname, tags) => {
@@ -45,19 +47,19 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
                     this.loadNoTongrenTags();
                 }} />
 
-            <TabCard
+            <Tab
                 tabs={[
                     {
                         name: '长推',
-                        children: this.state.data.recent_long_recommendations.map(this.renderPostPreview),
+                        children: this.state.data.recent_long_recommendations.map(this.renderRecomPreivew),
                     },
                     {
                         name: '最新',
-                        children: this.state.data.recent_short_recommendations.map(this.renderPostPreview),
+                        children: this.state.data.recent_short_recommendations.map(this.renderRecomPreivew),
                     },
                     {
                         name: '往期',
-                        children: this.state.data.random_short_recommendations.map(this.renderPostPreview)
+                        children: this.state.data.random_short_recommendations.map(this.renderRecomPreivew)
                     },
                 ]}
             />
@@ -68,7 +70,7 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
                 </Slider>
             </Card>
 
-            <TabCard
+            <Tab
                 tabs={[
                     {
                         name: '最新更新',
@@ -96,11 +98,7 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
     }
 
     public renderRecomPreivew = (data:ResData.Post, key:number) => {
-        return <RecomPreview data={data} key={key} />;
-    }
-
-    public renderPostPreview = (data:ResData.Post) => {
-        return <PostPreview data={data} />;
+        return <FeaturedPreview data={data} key={key} />;
     }
 
     public renderBookPreview = (data:ResData.Thread) => {
@@ -109,17 +107,19 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
 
     public loadData (tags?:number[]) {
         (async () => {
-            const res = await this.props.core.db.get('/homebook', undefined);
-            if (!res || !res.data) { return; }
-            this.setState({data: res.data});
+            const data = await this.props.core.db.getPageHomeBook();
+            if (data) {
+                this.setState({data});
+            }
         })();
     }
 
     public loadNoTongrenTags () {
         (async () => {
-            const res = await this.props.core.db.get('/config/noTongrenTags', undefined);
-            if (!res || !res.data) { return; }
-            this.setState({tags: res.data.tags});
+            const tags = await this.props.core.db.getNoTongrenTags();
+            if (tags) {
+                this.setState({tags});
+            }
         })();
     }
 }
