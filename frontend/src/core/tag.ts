@@ -1,10 +1,10 @@
 export class Tag {
-    constructor () {
+  constructor () {
 
-    }
+  }
 
-    public getId (name:string) : number {
-        // fixme;
-        return 0;
-    }
+  public getId (name:string) : number {
+    // fixme;
+    return 0;
+  }
 }

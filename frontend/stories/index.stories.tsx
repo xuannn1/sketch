@@ -16,19 +16,19 @@ const core = new Core();
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 
 storiesOf('Home', module)
-    .addDecorator(withViewport())
-    .addDecorator(withKnobs)
-    .addDecorator(pageDecorator)
-    .add('Carousel', () => 
-        <Carousel
-            windowResizeEvent={core.windowResizeEvent}
-            slides={[
-                <span>one</span>,
-                <span>two</span>,
-                <span>three</span>,
-            ]}
-            indicator={boolean(true)} />
-    )
+  .addDecorator(withViewport())
+  .addDecorator(withKnobs)
+  .addDecorator(pageDecorator)
+  .add('Carousel', () => 
+    <Carousel
+      windowResizeEvent={core.windowResizeEvent}
+      slides={[
+        <span>one</span>,
+        <span>two</span>,
+        <span>three</span>,
+      ]}
+      indicator={boolean(true)} />
+  )
 ;
 
 // storiesOf('Book', module)

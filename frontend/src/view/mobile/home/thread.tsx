@@ -9,37 +9,37 @@ import { Pagination } from '../../components/common/pagination';
 
 
 interface State {
-    data:API.Get['/thread/$0'];
+  data:API.Get['/thread/$0'];
 }
 
 export class Thread extends React.Component<MobileRouteProps, State> {
-    public state = {
-        data: {
-            thread: ResData.allocThread(),
-            paginate: ResData.allocThreadPaginate(),
-            posts: [] as ResData.Post[],
-        },
-    };
+  public state = {
+    data: {
+      thread: ResData.allocThread(),
+      paginate: ResData.allocThreadPaginate(),
+      posts: [] as ResData.Post[],
+    },
+  };
 
-    public async componentDidMount () {
-        const url = new URLParser();
-        const id = this.props.match.params.id;
+  public async componentDidMount () {
+    const url = new URLParser();
+    const id = this.props.match.params.id;
 
-        const data = await this.props.core.db.getThread(+id, {
-            page: url.getQuery('page'),
-        })
-        if (data) {
-            this.setState({data});
-        }
+    const data = await this.props.core.db.getThread(+id, {
+      page: url.getQuery('page'),
+    })
+    if (data) {
+      this.setState({data});
     }
-    public render () {
-        const { thread, paginate, posts } = this.state.data;
+  }
+  public render () {
+    const { thread, paginate, posts } = this.state.data;
 
-        return <Page top={<NavBar core={this.props.core}
-                center={thread.attributes.title} /> }>
-            {/* <ThreadProfile data={thread} /> */}
-            {posts.map((post, idx) => <Post data={post} key={idx} />)}
-            <Pagination currentPage={paginate.current_page} lastPage={paginate.total_pages} />
-        </Page>;
-    }
+    return <Page top={<NavBar core={this.props.core}
+        center={thread.attributes.title} /> }>
+      {/* <ThreadProfile data={thread} /> */}
+      {posts.map((post, idx) => <Post data={post} key={idx} />)}
+      <Pagination currentPage={paginate.current_page} lastPage={paginate.total_pages} />
+    </Page>;
+  }
 }

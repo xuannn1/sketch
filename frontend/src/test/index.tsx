@@ -13,9 +13,9 @@ a();
 const btn = document.createElement('button');
 btn.innerText = 'click me';
 btn.onclick = (ev) => {
-    import(/* webpackChunkName: "pageA" */ './pageA').then((pageA) => {
-        console.log('imported pageA');
-    })
+  import(/* webpackChunkName: "pageA" */ './pageA').then((pageA) => {
+    console.log('imported pageA');
+  })
 }
 document.body.appendChild(btn);
 

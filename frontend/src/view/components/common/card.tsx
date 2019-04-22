@@ -9,15 +9,15 @@ export function Card (props:{
   title?:string|{text:string, link:string};
 }) {
   return <div className={`card ${props.className || ''}`}
-      ref={(el) => props.ref && props.ref(el)}
-      style={Object.assign({
-          marginTop: '10px',
-          padding: '10px',
-          position: 'relative',
-      }, props.style || {})}>
-      {props.title && (typeof props.title !== 'string' ? 
-          <Link to={props.title.link} className="title">{props.title.text}</Link> : 
-          <span className="title">{props.title}</span>)}
-      {props.children}
+    ref={(el) => props.ref && props.ref(el)}
+    style={Object.assign({
+      marginTop: '10px',
+      padding: '10px',
+      position: 'relative',
+    }, props.style || {})}>
+    {props.title && (typeof props.title !== 'string' ? 
+      <Link to={props.title.link} className="title">{props.title.text}</Link> : 
+      <span className="title">{props.title}</span>)}
+    {props.children}
   </div>;
 }

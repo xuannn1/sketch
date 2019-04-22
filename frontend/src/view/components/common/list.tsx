@@ -5,11 +5,11 @@ export function List (props:{
   className?:string;
 }) {
   return <div className={props.className}>
-      {props.children.map((child, idx) => {
-          return <div style={{}} key={idx}>
-              {idx !== 0 && <hr />}
-              {child}
-          </div>;
-      })}
+    {props.children.map((child, idx) => {
+      return <div style={{}} key={idx}>
+        {idx !== 0 && <hr />}
+        {child}
+      </div>;
+    })}
   </div>;
 }
