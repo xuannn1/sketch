@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Page, Card, List } from '../../components/common';
-import { APIGet } from '../../../config/api';
-import { HomeNav } from './nav';
+import { API } from '../../../config/api';
+import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
-import { ThreadPreview } from '../../components/thread/thread-preview';
+import { ThreadPreview } from '../../components/home/thread-preview';
+import { Page } from '../../components/common/page';
+import { Card } from '../../components/common/card';
+import { List } from '../../components/common/list';
 
 interface State {
-    data:APIGet['/homethread']['res']['data'];
+    data:API.Get['/homethread'];
 }
 
 export class HomeThread extends React.Component<MobileRouteProps, State> {
@@ -15,15 +17,16 @@ export class HomeThread extends React.Component<MobileRouteProps, State> {
     };
 
     public async componentDidMount () {
-        const res = await this.props.core.db.get('/homethread', undefined); 
-        if (!res || !res.data) { return; }
-        this.setState({data: res.data});
+        const data = await this.props.core.db.getPageHomeThread();
+        if (data) {
+            this.setState({data});
+        }
     }
 
     public render () {
         const { data } = this.state; 
         const channelIdx = Object.keys(data);
-        return <Page nav={<HomeNav />}>
+        return <Page top={<HomeMenu />}>
             {channelIdx.map((idx) =>
                 <Card title={{
                     text: data[idx].channel.attributes.channel_name,

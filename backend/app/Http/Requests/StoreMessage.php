@@ -6,6 +6,7 @@ use App\Http\Requests\FormRequest;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\MessageBody;
+use App\Models\PublicNotice;
 use DB;
 use Carbon\Carbon;
 
@@ -38,6 +39,7 @@ class StoreMessage extends FormRequest
     public function userSend()
     {
         $this->validateSendTo(Request('sendTo'), auth('api')->id());
+        $this->isDuplicateMessage(Request('body'), auth('api')->id());
         $messages = $this->generateMessages([Request('sendTo')], Request('body'));
         return $messages[0];
     }
@@ -45,6 +47,7 @@ class StoreMessage extends FormRequest
     public function adminSend()
     {
         $this->validateSendTos(Request('sendTos'), auth('api')->id());
+        $this->isDuplicateMessage(Request('body'), auth('api')->id());
         return $messages = $this->generateMessages(Request('sendTos'), Request('body'));
     }
 
@@ -84,6 +87,22 @@ class StoreMessage extends FormRequest
         return $messages = Message::where('message_body_id', $bodyId)->get();
     }
 
+    public function generatePublicNotice()
+    {
+        if(!auth('api')->user()->isAdmin()){abort(403);}
+
+        $notice_data['notice_body'] = Request('body');
+        $notice_data['user_id'] = auth('api')->id();
+        $public_notice = DB::transaction(function() use($notice_data) {
+            $public_notice = PublicNotice::create($notice_data);
+            DB::table('users')->increment('unread_reminders');
+            DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
+            return $public_notice;
+        });
+
+        return $public_notice;
+    }
+
     private function validateSendTos($sendTos, $selfId)
     {
         if(!auth('api')->user()->isAdmin()){abort(403);}
@@ -108,5 +127,13 @@ class StoreMessage extends FormRequest
         if(!$sendToUser){abort(404);}
         if($selfId === $sendToId){abort(403,'cannot send message to oneself');}
         if($sendToUser->info->no_stranger_message){abort(403,'receiver refuse to get message');}
+    }
+
+    private function isDuplicateMessage($body, $selfId)
+    {
+        $last_message = Message::where('poster_id', $selfId)
+        ->orderBy('created_at', 'desc')
+        ->first();
+        if(!empty($last_message) && (strcmp($last_message->body->body, $body) === 0)){abort(403, 'cannot send duplicate message');}
     }
 }

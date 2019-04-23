@@ -10,6 +10,7 @@ class Post extends Model
 {
     use SoftDeletes, ColumnTrait;
     use Traits\VoteTrait;
+    use Traits\RewardTrait;
 
     protected $guarded = [];
     protected $post_types = array('chapter', 'question', 'answer', 'request', 'post', 'comment', 'review'); // post的分类类别
