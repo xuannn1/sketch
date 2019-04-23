@@ -16,5 +16,9 @@ use Faker\Generator as Faker;
 $factory->define(App\Models\UserInfo::class, function (Faker $faker) {
     return [
         'user_id' => factory(App\Models\User::class),
+    	'jifen' => 50,
+    	'shengfan' => 50,
+    	'sangdian' => 50,
+    	'xianyu' =>50,
     ];
 });

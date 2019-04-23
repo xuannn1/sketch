@@ -83,6 +83,7 @@ Route::post('quote', 'API\QuoteController@store');
 Route::get('/user/{user}/message', 'API\MessageController@index');// 展示某用户的信箱，仅允许本人和管理员查询
 Route::post('message', 'API\MessageController@store');
 Route::post('groupmessage', 'API\MessageController@groupmessage');//管理员群发私信
+Route::post('publicnotice', 'API\MessageController@publicnotice');//管理员发系统消息
 
 // 消息部分
 Route::get('/user/{user}/notification', 'API\NotificationController@index');// 展示某用户的信箱，仅允许本人和管理员查询
@@ -91,3 +92,6 @@ Route::get('/user/{user}/notification', 'API\NotificationController@index');// �
 
 // 投票
 Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'destroy']);
+
+// 打赏
+Route::apiResource('reward', 'API\RewardController')->only(['index', 'store', 'destroy']);

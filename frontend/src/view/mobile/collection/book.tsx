@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { MobileRouteProps } from '../router';
-import { Page, Pagination, Card, List } from '../../components/common';
 import { CollectionNav } from './nav';
-import { APIGet, ReqData, ResData } from '../../../config/api';
-import { BookPreview } from '../../components/book/book-preview';
-
+import { ReqData, ResData, API } from '../../../config/api';
+import { BookPreview } from '../../components/home/book-preview';
+import { Pagination } from '../../components/common/pagination';
+import { Page } from '../../components/common/page';
+import { Card } from '../../components/common/card';
+import { List } from '../../components/common/list';
 
 interface State {
-    data:APIGet['/collection']['res']['data'];
+    data:API.Get['/collection'];
 }
 
 export class CollectionBook extends React.Component<MobileRouteProps, State> {
@@ -19,16 +21,15 @@ export class CollectionBook extends React.Component<MobileRouteProps, State> {
     };
 
     public async componentDidMount () {
-        const res = await this.props.core.db.get('/collection', {
-            withType: ReqData.Collection.Type.book,
-        });
-        if (!res || !res.data) { return; }
-        this.setState({data: res.data});
+        const data = await this.props.core.db.getCollection(ReqData.Collection.type.book);
+        if (data) {
+            this.setState({data});
+        }
     }
 
     public render () {
         const { data } = this.state;
-        return (<Page nav={<CollectionNav />}>
+        return (<Page top={<CollectionNav />}>
             <Pagination currentPage={data.paginate.current_page} lastPage={data.paginate.total_pages} />
             <Card>
                 <List children={data.threads.map((thread) => <BookPreview data={thread} />)} />

@@ -4,8 +4,7 @@ import { Core } from '../../core';
 import { CollectionBook } from './collection/book';
 import { User } from './user';
 import { Status } from './status';
-import { Navbar } from './navbar';
-import { LoginRoute } from './login';
+import { LoginRoute } from './user/login';
 import { HomeMain } from './home/main';
 import { HomeThread } from './home/homethread';
 import { HomeBook } from './home/homebook';
@@ -14,12 +13,10 @@ import { Chapter } from './home/chapter';
 import { Thread } from './home/thread';
 import { Threads } from './home/threads';
 import { Books } from './home/books';
-import { Message } from './message';
 import { StatusCollection } from './status/collection';
-import { MessageUnread } from './message/unread';
 import { CollectionThread } from './collection/thread';
 import { CollectionList } from './collection/list';
-import { CreateQuote } from './createquote';
+import { CreateQuote } from './home/createquote';
 
 interface Props {
     core:Core;
@@ -64,49 +61,31 @@ export const MobileRoute:RouteComponentType[] = [
     { path: '/status/collection', component: StatusCollection },
     { path: '/status/all', component: Status },
 
-    // message
-    { path: '/message/unread', component: MessageUnread },
-    { path: '/message/all', component: Message },
+    // others
     { path: '/createquote', component: CreateQuote },
 ];
 
 export class MobileRouter extends React.Component<Props, State> {
     public render () {
         const { core } = this.props;
-        const h = window.innerHeight;
 
-        return (<div style={{
-            position: 'absolute',
-            height: '100%',
-            width: `100%`,
-        }}>
-            <div className="container" style={{
-                backgroundColor: '#f3f3f3',
-                top: '0',
-                height: `${(1 - (3.25 * 16 / h)) * 100}%`, // 3.25 rem is the bottom navbar height
-                overflow: 'auto',
-                width: '100%',
-                position: 'relative',
-            }}>
-                <Switch>
-                    {MobileRoute.map((route, i) =>
-                        <Route exact={route.exact || false}
-                            path={route.path}
-                            key={i}
-                            render={(props) => React.createElement(
-                                route.component,
-                                {
-                                    core,
-                                    path: route.path,
-                                    ...props,
-                                },
-                            )}
-                        />
-                    )}
-                </Switch>
-            </div>
-
-            <Navbar core={this.props.core} />
+        return (<div>
+            <Switch>
+                {MobileRoute.map((route, i) =>
+                    <Route exact={route.exact || false}
+                        path={route.path}
+                        key={i}
+                        render={(props) => React.createElement(
+                            route.component,
+                            {
+                                core,
+                                path: route.path,
+                                ...props,
+                            },
+                        )}
+                    />
+                )}
+            </Switch>
         </div>);
     }
 }

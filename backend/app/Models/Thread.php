@@ -13,6 +13,7 @@ class Thread extends Model
 {
     use SoftDeletes, ColumnTrait;
     use Traits\VoteTrait;
+    use Traits\RewardTrait;
 
     protected $guarded = [];
     protected $hidden = [

@@ -1,15 +1,17 @@
 import * as React from 'react';
-import { Page, Pagination, List } from '../../components/common';
 import { MobileRouteProps } from '../router';
-import { APIGet, ResData, ReqData } from '../../../config/api';
+import { API, ResData, ReqData } from '../../../config/api';
 import { URLParser } from '../../../utils/url';
 import { UnregisterCallback } from 'history';
-import { Tags } from '../../components/book/tags';
-import { HomeNav } from './nav';
-import { ThreadPreview } from '../../components/thread/thread-preview';
+import { TagList } from '../../components/common/tag-list';
+import { HomeMenu } from './home-menu';
+import { ThreadPreview } from '../../components/home/thread-preview';
+import { Page } from '../../components/common/page';
+import { Pagination } from '../../components/common/pagination';
+import { List } from '../../components/common/list';
 
 interface State {
-    data:APIGet['/thread']['res']['data'];
+    data:API.Get['/thread'];
     tags:ResData.Tag[]; //fixme:
 }
 
@@ -38,31 +40,32 @@ export class Books extends React.Component<MobileRouteProps, State> {
             const url = new URLParser();
             if (url.getAllPath()[0] !== this.props.path) { return; }
 
-            const res = await this.props.core.db.get('/thread', {
+            const data = await this.props.core.db.getThreadList({
                 page: url.getQuery('page'),
                 tags: tags || url.getQuery('tags'),
                 channels: url.getQuery('channels'),
                 withType: ReqData.Thread.withType.book,
                 ordered: url.getQuery('ordered'),
             });
-            if (!res || !res.data) { return; }
-            this.setState({data: res.data});
-
+            if (data) {
+                this.setState({data});
+            }
             this.loadNoTongrenTags();
         })();
     }
 
     public loadNoTongrenTags () {
         (async () => {
-            const res = await this.props.core.db.get('/config/noTongrenTags', undefined);
-            if (!res || !res.data) { return; }
-            this.setState({tags: res.data.tags});
+            const tags = await this.props.core.db.getNoTongrenTags();
+            if (tags) {
+                this.setState({tags});
+            }
         })();
     }
 
     public render () {
-        return <Page nav={<HomeNav />}>
-            <Tags
+        return <Page top={<HomeMenu />}>
+            <TagList
                 tags={this.state.tags}
                 search={(pathname, tags) => {
                     this.props.core.history.push(pathname, {tags});
