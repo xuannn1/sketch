@@ -11,53 +11,53 @@ import { Card } from '../../components/common/card';
 import { List } from '../../components/common/list';
 
 interface State {
-    data:API.Get['/thread'];
+  data:API.Get['/thread'];
 }
 
 export class Threads extends React.Component<MobileRouteProps, State> {
-    public state:State = {
-        data: {
-            threads: [],
-            paginate: ResData.allocThreadPaginate(),
-        },
-    };
+  public state:State = {
+    data: {
+      threads: [],
+      paginate: ResData.allocThreadPaginate(),
+    },
+  };
 
-    public unlisten:UnregisterCallback|null = null;
-    public componentDidMount () {
-        this.loadData();
-        this.props.core.history.listen(() => this.loadData())
-    }
+  public unlisten:UnregisterCallback|null = null;
+  public componentDidMount () {
+    this.loadData();
+    this.props.core.history.listen(() => this.loadData())
+  }
 
-    public componentWillUnmount () {
-        this.unlisten && this.unlisten();
-    }
+  public componentWillUnmount () {
+    this.unlisten && this.unlisten();
+  }
 
-    public render () {
-        const { data } = this.state;
-        return <Page top={<HomeMenu />}>
-            <Pagination currentPage={data.paginate.current_page} lastPage={data.paginate.total_pages} />
-            <Card>
-                <List children={data.threads.map((thread) =>
-                    <ThreadPreview data={thread} />)} />
-            </Card>
-        </Page>;
-    }
+  public render () {
+    const { data } = this.state;
+    return <Page top={<HomeMenu />}>
+      <Pagination currentPage={data.paginate.current_page} lastPage={data.paginate.total_pages} />
+      <Card>
+        <List children={data.threads.map((thread) =>
+          <ThreadPreview data={thread} />)} />
+      </Card>
+    </Page>;
+  }
 
-    public loadData () {
-        (async () => {
-            const url = new URLParser();
-            if (url.getAllPath()[0] !== this.props.path) { return; }
+  public loadData () {
+    (async () => {
+      const url = new URLParser();
+      if (url.getAllPath()[0] !== this.props.path) { return; }
 
-            const data = await this.props.core.db.getThreadList({
-                page: url.getQuery('page'),
-                tags: url.getQuery('tags'),
-                channels: url.getQuery('channels'),
-                withType: ReqData.Thread.withType.thread,
-                ordered: url.getQuery('ordered'),
-            });
-            if (data) {
-                this.setState({data});
-            }
-        })();
-    }
+      const data = await this.props.core.db.getThreadList({
+        page: url.getQuery('page'),
+        tags: url.getQuery('tags'),
+        channels: url.getQuery('channels'),
+        withType: ReqData.Thread.withType.thread,
+        ordered: url.getQuery('ordered'),
+      });
+      if (data) {
+        this.setState({data});
+      }
+    })();
+  }
 }

@@ -19,7 +19,7 @@ import { CollectionList } from './collection/list';
 import { CreateQuote } from './home/createquote';
 
 interface Props {
-    core:Core;
+  core:Core;
 }
 
 interface State {
@@ -28,64 +28,64 @@ interface State {
 
 
 export interface MobileRouteProps extends RouteComponentProps<any> {
-    core:Core;
-    path:string;
+  core:Core;
+  path:string;
 }
 export type RouteComponentType = {
-    path:string;
-    component:React.ComponentClass<MobileRouteProps,any>;
-    exact?:boolean;
+  path:string;
+  component:React.ComponentClass<MobileRouteProps,any>;
+  exact?:boolean;
 }
 export const MobileRoute:RouteComponentType[] = [
-    // home
-    { path: '/', component: HomeMain, exact: true },
-    { path: '/homebook', component: HomeBook },
-    { path: '/homethread', component: HomeThread },
-    { path: '/threads', component: Threads },
-    { path: '/books', component: Books },
-    { path: '/book/:bid/chapter/:cid', component: Chapter },
-    { path: '/book/:id', component: Book },
-    { path: '/thread/:id', component: Thread },
+  // home
+  { path: '/', component: HomeMain, exact: true },
+  { path: '/homebook', component: HomeBook },
+  { path: '/homethread', component: HomeThread },
+  { path: '/threads', component: Threads },
+  { path: '/books', component: Books },
+  { path: '/book/:bid/chapter/:cid', component: Chapter },
+  { path: '/book/:id', component: Book },
+  { path: '/thread/:id', component: Thread },
 
-    // user
-    { path: '/user', component: User },
-    { path: '/login', component: LoginRoute },
-    { path: '/register', component: LoginRoute },
+  // user
+  { path: '/user', component: User },
+  { path: '/login', component: LoginRoute },
+  { path: '/register', component: LoginRoute },
 
-    // collection
-    { path: '/collection/book', component: CollectionBook },
-    { path: '/collection/thread', component: CollectionThread },
-    { path: '/collection/list', component: CollectionList },
+  // collection
+  { path: '/collection/book', component: CollectionBook },
+  { path: '/collection/thread', component: CollectionThread },
+  { path: '/collection/list', component: CollectionList },
 
-    // status
-    { path: '/status/collection', component: StatusCollection },
-    { path: '/status/all', component: Status },
+  // status
+  { path: '/status/collection', component: StatusCollection },
+  { path: '/status/all', component: Status },
 
-    // others
-    { path: '/createquote', component: CreateQuote },
+  // others
+  { path: '/createquote', component: CreateQuote },
 ];
 
 export class MobileRouter extends React.Component<Props, State> {
-    public render () {
-        const { core } = this.props;
+  public render () {
+    const { core } = this.props;
 
-        return (<div>
-            <Switch>
-                {MobileRoute.map((route, i) =>
-                    <Route exact={route.exact || false}
-                        path={route.path}
-                        key={i}
-                        render={(props) => React.createElement(
-                            route.component,
-                            {
-                                core,
-                                path: route.path,
-                                ...props,
-                            },
-                        )}
-                    />
-                )}
-            </Switch>
-        </div>);
-    }
+    return (<div>
+      <Switch>
+        {MobileRoute.map((route, i) =>
+          <Route exact={route.exact || false}
+            path={route.path}
+            key={i}
+            render={(props) => React.createElement(
+              route.component,
+              {
+                core,
+                path: route.path,
+                ...props,
+              },
+            )}
+          />
+        )}
+      </Switch>
+    </div>);
+  }
 }

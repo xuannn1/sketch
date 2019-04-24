@@ -8,9 +8,9 @@ interface State {
 }
 
 export class Chapter extends React.Component<MobileRouteProps, State> {
-    public render () {
-        return <Page top={<NavBar core={this.props.core} center={''} />}>
-            bookId: {this.props.match.params.bid}, chapterId: {this.props.match.params.cid}
-        </Page>;
-    }
+  public render () {
+    return <Page top={<NavBar core={this.props.core} center={''} />}>
+      bookId: {this.props.match.params.bid}, chapterId: {this.props.match.params.cid}
+    </Page>;
+  }
 }

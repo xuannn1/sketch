@@ -7,9 +7,9 @@ interface State {
 }
 
 export class Status extends React.Component<MobileRouteProps, State> {
-    public render () {
-        return (<Page top={<StatusNav />}>
-            status
-        </Page>);
-    }
+  public render () {
+    return (<Page top={<StatusNav />}>
+      status
+    </Page>);
+  }
 }
