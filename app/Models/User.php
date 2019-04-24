@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Notifications\ResetPasswordNotification;
 use DB;
+use Auth;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\Helper;
 
@@ -321,5 +323,15 @@ class User extends Authenticatable
             DB::table('linkaccounts')->where('account1','=',$this->id)->pluck('account2')->toArray()
         );
         return DB::table('users')->whereIn('id',$links)->select('id','name')->get();
+    }
+
+    public function recent_previous_message()
+    {
+        if(!Auth::check()){return false;}
+        $previous_message = Message::where('poster_id','=',$this->id)
+        ->where('receiver_id','=', Auth::id())
+        ->latest()
+        ->first();
+        return $previous_message&&$previous_message->created_at>Carbon::now()->subdays(2)->toDateTimeString();
     }
 }

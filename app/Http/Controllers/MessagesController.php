@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
 use Auth;
+use Carbon\Carbon;
 use App\Models\Message;
 use App\Models\User;
 use App\Helpers\Helper;
@@ -298,16 +299,24 @@ class MessagesController extends Controller
 
     public function conversation(User $user, $is_group_messaging){
         $messages = $this->findconversation($user->id, config('constants.index_per_page'), $is_group_messaging);
-        return view('messages.conversations', compact('messages','user','is_group_messaging'))->with('as_longcomments',0);
+        $recent_previous_message = $user->recent_previous_message();
+        return view('messages.conversations', compact('messages','user','is_group_messaging', 'recent_previous_message'))->with('as_longcomments',0);
     }
     public function create(User $user)
     {
-        return view('messages.create', compact('user'));
+        $recent_previous_message = $user->recent_previous_message();
+        return view('messages.create', compact('user', 'recent_previous_message'));
     }
 
     public function store(User $user, Request $request)
     {
-        if((Auth::user()->admin)||($user->isFollowing(Auth::id()))||(($user->receive_messages_from_stranger)&&(Auth::user()->message_limit>0))){
+        $recent_previous_message = $user->recent_previous_message();
+        if(
+            (Auth::user()->admin)
+            ||($user->isFollowing(Auth::id()))
+            ||(($user->receive_messages_from_stranger)&&(Auth::user()->message_limit>0))
+            ||($recent_previous_message)
+        ){
             $this->validate($request, [
                 'body' => 'required|string|max:20000|min:10',
             ]);

@@ -46,7 +46,7 @@
                     <h6 class="display-4"><a href="{{ route('login') }}">本章节为隐藏格式，只对注册用户开放，请登录后查看</a></h6>
                 </div>
                 @else
-                <div class="text-left main-text {{ $chapter->mainpost->indentation? 'indentation':'' }}">
+                <div class="text-left main-text {{ $chapter->mainpost->indentation? 'indentation':'' }} chapter">
                     @if($chapter->mainpost->markdown)
                     {!! Helper::sosadMarkdown($chapter->mainpost->body) !!}
                     @else

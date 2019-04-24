@@ -18,6 +18,14 @@
                 <div class="radio">
                     <label><input type="radio" name="controluser" value="14">解禁用户</label>
                 </div>
+                <div class="radio">
+                    <label><input type="radio" name="controluser" value="18">设置禁止登陆时间</label>
+                    <label><input type="text" style="width: 40px" name="days" value="0">天</label>
+                    <label><input type="text" style="width: 40px" name="hours" value="0">小时</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="controluser" value="19">解除禁止登陆用户</label>
+                </div>
                 <div class="form-group">
                     <label for="reason"></label>
                     <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)"></textarea>

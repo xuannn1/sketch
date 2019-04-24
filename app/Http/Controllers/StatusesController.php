@@ -63,6 +63,7 @@ class StatusesController extends Controller
         $statuses = DB::table('statuses')
         ->join('users','statuses.user_id','=','users.id')
         ->where('users.deleted_at', '=', null)
+        ->where('statuses.deleted_at', '=', null)
         ->select('statuses.*','users.name')
         ->orderBy('statuses.created_at','desc')
         ->simplePaginate(config('constants.index_per_page'));
@@ -75,7 +76,11 @@ class StatusesController extends Controller
         $statuses = DB::table('followers')
         ->join('users','followers.user_id','=','users.id')
         ->join('statuses','users.id','=','statuses.user_id')
-        ->where([['followers.follower_id','=',$user->id], ['users.deleted_at', '=', null]])
+        ->where([
+            ['followers.follower_id','=',$user->id],
+            ['users.deleted_at', '=', null],
+            ['statuses.deleted_at', '=', null],
+        ])
         ->select('statuses.*','users.name','followers.keep_updated as keep_updated','followers.updated as updated')
         ->orderBy('statuses.created_at','desc')
         ->simplePaginate(config('constants.index_per_page'));

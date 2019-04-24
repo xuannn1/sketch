@@ -18,7 +18,7 @@
             <br>
             <div class="panel-body">
                 @if((!$user->isFollowing(Auth::id()))&&(!Auth::user()->admin))
-                @if(!$user->receive_messages_from_stranger)
+                @if(!$user->receive_messages_from_stranger&&(!$recent_previous_message))
                 <p>很抱歉，{{ $user->name }}未关注您，且并不接收陌生人的私信，</p>
                 @elseif(Auth::user()->message_limit>0)
                 <p>{{ $user->name }}未关注您，您今日的陌生人私信限额还有{{ Auth::user()->message_limit }}条</p>

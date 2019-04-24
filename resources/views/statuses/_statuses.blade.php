@@ -10,6 +10,9 @@
                 <a href="{{ route('user.show', $status->user_id) }}">{{ $status->name }}</a>&nbsp;
                 {{ Carbon\Carbon::parse($status->created_at)->diffForHumans() }}
             </span>
+            @if((Auth::check())&&(Auth::user()->admin))
+            @include('admin._delete_status')
+            @endif
             @if((Auth::check())&&(Auth::id()==$status->user_id))
             <button type="button" name="button" class="sosad-button btn btn-xs btn-danger pull-right" onclick="destroystatus({{$status->id}})">删除动态</button>
             @endif

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Carbon\Carbon;
 use DB;
 
 class ReCalculateData extends Command
@@ -73,5 +74,8 @@ class ReCalculateData extends Command
             'books.tongren_yuanzhu'=>DB::raw('tongrens.tongren_yuanzhu'),
             'books.tongren_cp'=>DB::raw('tongrens.tongren_cp'),
         ]);
+        DB::table('users')
+        ->where('no_logging', '<', Carbon::now()->toDateTimeString())
+        ->update(['no_logging_or_not'=>0]);
     }
 }

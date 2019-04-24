@@ -12,6 +12,7 @@ use App\Models\Tag;
 use App\Models\Thread;
 use App\Models\Chapter;
 use App\Models\Post;
+use App\Models\Status;
 use App\Models\User;
 use App\Models\PostComment;
 use App\Models\LongComment;
@@ -46,7 +47,12 @@ class AdminsController extends Controller
         ->join('threads','threads.id','=','posts.thread_id')
         ->join('channels', 'threads.channel_id','=','channels.id')
         ->join('long_comments','posts.id','=','long_comments.post_id')
-        ->where([['posts.deleted_at','=',null],['channels.channel_state','<=',1],['threads.public','=',1],['posts.as_longcomment','=',1]])
+        ->where([
+            ['posts.deleted_at','=',null],
+            ['channels.channel_state','<=',1],
+            ['threads.public','=',1],
+            ['posts.as_longcomment','=',1]
+        ])
         ->select('posts.*','threads.title as thread_title', 'users.name','long_comments.reviewed','long_comments.approved')
         ->orderBy('posts.created_at', 'desc')
         ->paginate(config('constants.index_per_page'));
@@ -302,6 +308,24 @@ class AdminsController extends Controller
         }
         return redirect()->back()->with("warning","什么都没做");
     }
+    public function statusmanagement(Status $status, Request $request)
+    {
+        $this->validate($request, [
+            'reason' => 'required|string',
+        ]);
+        if(request("delete")){
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '17',//:删动态
+                'item_id' => $status->id,
+                'reason' => request('reason'),
+                'administratee_id' => $status->user_id,
+            ]);
+            $status->delete();
+            return redirect()->back()->with("success","已经成功处理该动态");
+        }
+        return redirect()->back()->with("warning","什么都没做");
+    }
     public function advancedthreadform(Thread $thread)
     {
         $channels = Channel::all();
@@ -337,6 +361,33 @@ class AdminsController extends Controller
                 'administratee_id' => $user->id,
             ]);
             $user->no_posting = Carbon::now();
+            $user->save();
+            return redirect()->back()->with("success","已经成功处理该用户");
+        }
+        if ($var=="18"){//设置禁止登陆时间
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '18',//:增加禁言时间
+                'item_id' => $user->id,
+                'reason' => request('reason'),
+                'administratee_id' => $user->id,
+            ]);
+            $user->no_logging = Carbon::now()->addDays(request('days'))->addHours(request('hours'));
+            $user->no_logging_or_not = 1;
+            $user->remember_token = null;
+            $user->save();
+            return redirect()->back()->with("success","已经成功处理该用户");
+        }
+        if ($var=="19"){//解除禁止登陆
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '19',//:更新禁止登陆时间
+                'item_id' => $user->id,
+                'reason' => request('reason'),
+                'administratee_id' => $user->id,
+            ]);
+            $user->no_logging = Carbon::now();
+            $user->no_logging_or_not = 0;
             $user->save();
             return redirect()->back()->with("success","已经成功处理该用户");
         }

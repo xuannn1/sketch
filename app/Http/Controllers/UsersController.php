@@ -94,6 +94,7 @@ class UsersController extends Controller
         return $statuses = DB::table('statuses')
         ->join('users','users.id','=','statuses.user_id')
         ->where('statuses.user_id','=',$id)
+        ->where('statuses.deleted_at','=',null)
         ->select('statuses.*','users.name')
         ->orderBy('statuses.created_at', 'desc')
         ->simplePaginate($paginate);

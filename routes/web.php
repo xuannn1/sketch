@@ -145,6 +145,7 @@
    Route::post('/admin/postmanagement/{post}','AdminsController@postmanagement')->name('admin.postmanagement');//管理员管理回帖
    Route::post('/admin/usermanagement/{user}','AdminsController@usermanagement')->name('admin.usermanagement');//管理员管理用户
    Route::post('/admin/postcommentmanagement/{postcomment}','AdminsController@postcommentmanagement')->name('admin.postcommentmanagement');//管理员管理点评
+   Route::post('/admin/statusmanagement/{status}','AdminsController@statusmanagement')->name('admin.statusmanagement');//管理员管理动态
    Route::get('/admin/advancedthreadform/{thread}','AdminsController@advancedthreadform')->name('admin.advancedthreadform');//高级管理主题贴页面
    Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform')->middleware('admin');//发送提醒通知表格
    Route::post('/admin/sendpublicnotice', 'AdminsController@sendpublicnotice')->name('admin.sendpublicnotice')->middleware('admin');//发送提醒通知

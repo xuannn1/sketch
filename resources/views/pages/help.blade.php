@@ -47,6 +47,7 @@
                                     <li><a href="#help-4-5">什么是段首缩进，怎么操作？</a></li>
                                     <li><a href="#help-4-6">你们什么时候制作app？网上那个app是你们的吗，为什么logo不一样？</a></li>
                                     <li><a href="#help-4-7">如何支持你们？</a></li>
+                                    <li><a href="#help-4-8">更多问题？戳我</a></li>
                                 </ul>
                                 <li><a href="#help-5" class="h4">5. 当前设置</a></li>
                                 <ul>
@@ -72,7 +73,7 @@
                                             <li>注册：本论坛目前采用邀请码注册制度。邀请码获取请关注相关宣传信息。</li>
                                             <li>激活： 由于邮件服务不足，邮件激活功能暂时关闭，目前不需手工激活，注册即可登陆。</li>
                                             <li>忘记密码： 在登陆页面点选“忘记密码”，输入自己的邮箱，即可接收重置密码邮件，点开其中的链接重置密码。</li>
-                                            <li>其他疑难，可以在<em><a href="http://sosad.fun/threads/49">版务管理专版</a></em>跟帖，或者微博站长@文栈君咨询。</li>
+                                            <li>其他疑难，可以在<em><a href="http://sosad.fun/threads/49">版务管理专版</a></em>跟帖，或者微博管理员公共账户“废文网大内总管”咨询。</li>
                                         </ul>
                                     </div>
                                     <br>
@@ -122,7 +123,7 @@
                                             <li>帮助页面：就是您现在浏览的页面。</li>
                                             <li>关于页面：本站概况和相关原则。注册用户默认遵守这些规则，请务必仔细查看。</li>
                                             <li>Github：本站源代码。</li>
-                                            <li>管理记录：管理员进行操作的记录，公示以示约束。</li>
+                                            <li>管理记录：管理员进行操作的记录在此公示。</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -228,7 +229,7 @@
                                     <div id="help-4-4">
                                         <h4>4.4 页面崩溃，丢失数据怎么办？急，在线等！</h4>
                                         <div class="indentation main-text">
-                                            <p>用户登录后，所有大文本框下均有<code>”恢复数据“</code>按键，是随时向服务器提交您之前输入的数据的，点选它即可恢复上次输入的文本文件。<code>如果不小心误按，再点一次即可撤销。</code></p>
+                                            <p>用户登录后，所有大文本框下均有<code>”恢复数据“</code>按键，是随时向服务器提交您之前输入的数据的，点选它即可恢复上次输入的文本文件。连续点击“恢复数据”可以从多个恢复数据档案中切换<code>如果不小心误按，再点一次即可撤销。</code></p>
                                         </div>
                                     </div>
                                     <br>
@@ -242,7 +243,8 @@
                                     <div id="help-4-6">
                                         <h4>你们什么时候制作app？网上那个app是你们的吗，为什么logo不一样？</h4>
                                         <div class="indentation main-text">
-                                            <p>抱歉我们目前暂时无力制作app，网络上有第三方制作的app，需要的同学可以自行搜索获取。本站欢迎各路英雄好汉制作第三方app，会在日后积极开放API接口，但是！但是！但是！重要的话说三遍，本站<code>不负责</code>第三方app的任何安全、技术支持、维护、美容……等等问题。本站不向用户收取任何使用费用，第三方app也不得收取任何附加费用/进行商业盈利行为。简而言之，请各位新老咸鱼<code>擦亮双眼</code>，根据自己的需要合理选择。</p>
+                                            <p>本站官方APP仍在建设中，预计19年暑期后上线。</p>
+                                            <p>目前网络上存在的是第三方制作的套壳app，需要的同学可以自行搜索获取。本站<code>不负责</code>第三方app的任何安全、技术支持、维护、美容等问题。本站不向用户收取任何使用费用，第三方app也不得收取任何附加费用/进行商业盈利行为。简而言之，请各位新老咸鱼<code>擦亮双眼</code>，根据自己的需要合理选择。</p>
                                         </div>
                                     </div>
                                     <br>
@@ -251,6 +253,13 @@
                                         <div class="indentation main-text">
                                             <p>感谢各位朋友好意，本站暂不需要经济支持，感恩笔芯！不过，欢迎有经验、有兴趣、有时间的朋友联系加入我们的开发工作，比如说：具有 mysql 数据库使用经验、laravel 开发经验、app 开发经验、熟悉PHP编程语言...如果感兴趣，联系方式按照程序员的惯例...相信你们一定是找得到的！</p>
                                             <p>大家积极产粮，友善看文，热爱科学，天天向丧，就是对我们最好的支持！</p>
+                                        </div>
+                                    </div>
+                                    <div id="help-4-8">
+                                        <h4>4.8 更多问题？戳我</h4>
+                                        <div class="indentation main-text">
+                                            <li><a href="https://sosad.fun/threads/9756">《网站使用FAQ汇总楼》</a></li>
+                                            <li><a href="https://sosad.fun/threads/49">《网站使用答疑楼》</a></li>
                                         </div>
                                     </div>
                                 </div>
@@ -277,9 +286,7 @@
                                                 @foreach($data['level_up'] as $level=>$level_requirement)
                                                 <li>等级：{{$level}}</li>
                                                 <ul>
-                                                    <li>所需积分： {{$level_requirement['experience_points']}}</li>
-                                                    <li>所需咸鱼： {{$level_requirement['xianyu']}}</li>
-                                                    <li>所需丧点： {{$level_requirement['sangdian']}}</li>
+                                                    <li>所需积分： {{$level_requirement['experience_points']}}，所需咸鱼： {{$level_requirement['xianyu']}}，所需丧点： {{$level_requirement['sangdian']}}</li>
                                                 </ul>
                                                 @endforeach
                                             </ul>

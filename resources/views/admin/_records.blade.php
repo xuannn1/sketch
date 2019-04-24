@@ -6,7 +6,7 @@
 	   {{ $record->created_at }}
 	   &nbsp;
 	   {{ $admin_operation[$record->operation] }}
-	    {!! Helper::trimtext($record->thread_title.$record->post_body.$record->postcomment_body.$record->operated_users_name,20) !!}
+	    {!! Helper::trimtext($record->thread_title.$record->post_body.$record->postcomment_body.$record->status_body.$record->operated_users_name,20) !!}
 	   &nbsp;
 	   原因：{{ $record->reason }}
 	</h5>

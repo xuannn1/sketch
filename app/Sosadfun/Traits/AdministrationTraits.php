@@ -27,6 +27,11 @@ trait AdministrationTraits{
             $join->where('administrations.operation','=',8);
             $join->on('administrations.item_id','=','post_comments.id');
         })
+        ->leftjoin('statuses',function($join)
+        {
+            $join->where('administrations.operation','=',17);
+            $join->on('administrations.item_id','=','statuses.id');
+        })
         ->leftjoin('users as operated_users',function($join)
         {
             $join->whereIn('administrations.operation',[13,14]);
@@ -36,7 +41,7 @@ trait AdministrationTraits{
             $query->where('administrations.administratee_id','=',$id);
         }
         $records = $query->where('administrations.deleted_at','=',null)
-        ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body','operated_users.name as operated_users_name' )
+        ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body', 'statuses.content as status_body', 'operated_users.name as operated_users_name' )
         ->orderBy('administrations.created_at','desc')
         ->simplePaginate($paginate);
         return $records;

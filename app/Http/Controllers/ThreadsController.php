@@ -70,8 +70,12 @@ class threadsController extends Controller
         }
         $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
         $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
-        $posts = Post::allPosts($thread->id,$thread->post_id)->userOnly(request('useronly'))->withOrder('oldest')
-        ->with('owner','reply_to_post','comments.owner', 'chapter')->paginate(config('constants.items_per_page'));
+        $posts = Post::allPosts($thread->id,$thread->post_id)
+        ->userOnly(request('useronly'))
+        ->withOrder('oldest')
+        ->with('owner','reply_to_post','comments.owner', 'chapter')
+        ->paginate(config('constants.items_per_page'))
+        ->appends($request->only('useronly','page'));
         //$thread->load(['creator', 'tags', 'mainpost']);
         if(!Auth::check()||(Auth::id()!=$thread->user_id)){
             $thread->increment('viewed');
@@ -121,7 +125,7 @@ class threadsController extends Controller
 
     public function update(StoreThread $form, Thread $thread)
     {
-        if ((Auth::id() == $thread->user_id)&&(!$thread->locked)){
+        if ((Auth::id() == $thread->user_id)&&((!$thread->locked)||(Auth::user()->admin))){
             $form->updateThread($thread);
             return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
         }else{

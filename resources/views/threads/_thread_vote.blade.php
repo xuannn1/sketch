@@ -6,7 +6,7 @@
         <button class="btn btn-sm btn-success sosad-button" id="itemcollection{{$thread->id}}" onclick="item_add_to_collection({{$thread->id}},1,0)">收藏{{ $thread->collection }}</button>
     </span>
     <span>
-        @if ((Auth::id() == $thread->user_id)&&(!$thread->locked))
+        @if ((Auth::id() == $thread->user_id)&&((!$thread->locked)||(Auth::user()->admin)))
         @if($thread->book_id != 0)
         <a class="btn btn-sm btn-warning sosad-button" href="{{ route('book.createchapter', $thread->book_id) }}">新建章节</a>
         <a class="btn btn-sm btn-danger sosad-button" href="{{ route('book.edit', $thread->book_id) }}">修改文案</a>
