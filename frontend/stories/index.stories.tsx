@@ -25,28 +25,28 @@ storiesOf('Common Components', module)
   />) */
 
   // 在后面加入其他组件
-  .add('Badge1', () => 
+  .add('Badge number', () => 
     <Badge num={value}>
       <span>
       test
       </span>
     </Badge>
   )
-  .add('Badge2', () => 
+  .add('Badge max number', () => 
     <Badge num={value+90} max={max}>
       <span>
       test
       </span>
     </Badge>
   )
-  .add('Badge3', () => 
+  .add('Badge dot', () => 
     <Badge dot>
       <span>
       test
       </span>
     </Badge>
   )
-  .add('Badge4', () => 
+  .add('Badge hidden', () => 
     <Badge hidden>
       <span>
       test
