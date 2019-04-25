@@ -12,13 +12,10 @@ import { Badge } from '../src/view/components/common/badge';
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 
-
-let value:number = 10;
-let max:number = 99;
 storiesOf('Common Components', module)
   .addDecorator(withViewport())
   .addDecorator(withKnobs) 
-  
+
   /* .add('Accordion', () => <Accordion 
     title={'test'}
     items={[]} 
@@ -26,14 +23,14 @@ storiesOf('Common Components', module)
 
   // 在后面加入其他组件
   .add('Badge number', () => 
-    <Badge num={value}>
+    <Badge num={10}>
       <span>
       test
       </span>
     </Badge>
   )
   .add('Badge max number', () => 
-    <Badge num={value+90} max={max}>
+    <Badge num={100} max={99}>
       <span>
       test
       </span>

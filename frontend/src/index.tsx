@@ -5,14 +5,14 @@ import { Core } from './core';
 import './theme.scss';
 
 (async function () {
-    const core = new Core();
+  const core = new Core();
 
-    const root = document.createElement('div');
-    root.id = 'app';
-    document.body.appendChild(root);
+  const root = document.createElement('div');
+  root.id = 'app';
+  document.body.appendChild(root);
 
-    ReactDOM.render(
-        <App core={core} />,
-        root,
-    );
+  ReactDOM.render(
+    <App core={core} />,
+    root,
+  );
 })();

@@ -9,9 +9,8 @@ interface State {
 }
 
 export class Button extends React.Component<Props, State> {
-    public render () {
-        return <div>
-            
-        </div>;
-    }
+  public render () {
+    return <div>
+    </div>;
+  }
 }
