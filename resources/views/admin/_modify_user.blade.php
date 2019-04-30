@@ -12,16 +12,16 @@
                 </div>
                 <div class="radio">
                     <label><input type="radio" name="controluser" value="13">设置禁言时间</label>
-                    <label><input type="text" style="width: 40px" name="days" value="0">天</label>
-                    <label><input type="text" style="width: 40px" name="hours" value="0">小时</label>
+                    <label><input type="text" style="width: 40px" name="noposting-days" value="0">天</label>
+                    <label><input type="text" style="width: 40px" name="noposting-hours" value="0">小时</label>
                 </div>
                 <div class="radio">
                     <label><input type="radio" name="controluser" value="14">解禁用户</label>
                 </div>
                 <div class="radio">
                     <label><input type="radio" name="controluser" value="18">设置禁止登陆时间</label>
-                    <label><input type="text" style="width: 40px" name="days" value="0">天</label>
-                    <label><input type="text" style="width: 40px" name="hours" value="0">小时</label>
+                    <label><input type="text" style="width: 40px" name="nologging-days" value="0">天</label>
+                    <label><input type="text" style="width: 40px" name="nologging-hours" value="0">小时</label>
                 </div>
                 <div class="radio">
                     <label><input type="radio" name="controluser" value="19">解除禁止登陆用户</label>

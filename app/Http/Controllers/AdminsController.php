@@ -336,8 +336,10 @@ class AdminsController extends Controller
     {
         $this->validate($request, [
             'reason' => 'required|string',
-            'days' => 'required|numeric',
-            'hours' => 'required|numeric',
+            'noposting-days' => 'required|numeric',
+            'noposting-hours' => 'required|numeric',
+            'nologging-days' => 'required|numeric',
+            'nologging-hours' => 'required|numeric',
         ]);
         $var = request('controluser');//
         if ($var=="13"){//设置禁言时间
@@ -348,7 +350,7 @@ class AdminsController extends Controller
                 'reason' => request('reason'),
                 'administratee_id' => $user->id,
             ]);
-            $user->no_posting = Carbon::now()->addDays(request('days'))->addHours(request('hours'));
+            $user->no_posting = Carbon::now()->addDays(request('noposting-days'))->addHours(request('noposting-hours'));
             $user->save();
             return redirect()->back()->with("success","已经成功处理该用户");
         }
@@ -372,7 +374,7 @@ class AdminsController extends Controller
                 'reason' => request('reason'),
                 'administratee_id' => $user->id,
             ]);
-            $user->no_logging = Carbon::now()->addDays(request('days'))->addHours(request('hours'));
+            $user->no_logging = Carbon::now()->addDays(request('nologging-days'))->addHours(request('nologging-hours'));
             $user->no_logging_or_not = 1;
             $user->remember_token = null;
             $user->save();
