@@ -8,14 +8,20 @@ import { Badge } from '../src/view/components/common/badge';
 import { action } from '@storybook/addon-actions';
 import { Tag } from '../src/view/components/common/tag';
 import { TagList } from '../src/view/components/common/tag-list';
+import { FilterBar } from '../src/view/components/common/filter-bar';
+import { Dropdown } from '../src/view/components/common/dropdown';
+
+import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
+import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
+import '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
+import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
 addDecorator(withKnobs);
 
 storiesOf('Common Components', module)
-  .add('Badge', () => 
-    <Badge num={number('num', 10)}
+  .add('Badge', () => <Badge num={number('num', 10)}
       max={number('max', 0)}
       dot={boolean('dot', false)}
       hidden={boolean('hidden', false)}>
@@ -50,7 +56,7 @@ storiesOf('Common Components', module)
       selectable={boolean('selectable', true)}
     >{text('text', 'test')}</Tag>;
   })
-  .add('Tag List', () => {
+  .add('TagList', () => {
     const colorOptions = {
       default: '',
       black: 'black',
@@ -67,7 +73,7 @@ storiesOf('Common Components', module)
     return <TagList>
       {(new Array(number('length', 20)).fill(text('text', 'tag')).map((text, i) => <Tag
         key={i} 
-        onClick={action('tag click', i)}
+        onClick={action('tag click ' + i)}
         size={select('size', {
           normal: 'normal',
           medium: 'medium',
@@ -79,6 +85,21 @@ storiesOf('Common Components', module)
         selectable={boolean('selectable', true)}
       >{text}</Tag>))}
     </TagList>
+  })
+  .add('Dropwdown', () => <Dropdown
+    list={[{text: '1', value: 1}, {text: '2', value: 2}]}
+    onIndex={0}
+    onClick={action('onClick')}
+  />)
+  .add('Dropdown (with title)', () => {
+    return <Dropdown
+      list={[{text: '1', value: 1}, {text: '2', value: 2}]}
+      title={text('title', 'dropdown menu')}
+      onClick={action('onClick')}
+    />;
+  })
+  .add('FilterBar', () => {
+    return <FilterBar></FilterBar>
   })
 ;
 

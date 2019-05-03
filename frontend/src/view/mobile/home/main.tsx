@@ -11,6 +11,8 @@ import { Page } from '../../components/common/page';
 import { Card } from '../../components/common/card';
 import { Tab } from '../../components/common/tab';
 import { MainMenu } from '../main-menu';
+import { FilterBar } from '../../components/common/filter-bar';
+import { Dropdown } from '../../components/common/dropdown';
 interface State {
   data:API.Get['/'];
 }
@@ -42,6 +44,11 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
         core={this.props.core}
       />
 
+      <Dropdown
+        list={[{text: '1', value: 1}, {text: '2', value: 2}]}
+        title={'dropdown menu'}
+        onClick={() => {}}
+      />
       { !this.props.core.user.isLoggedIn() &&
         <Card style={{
         border: 'none',
