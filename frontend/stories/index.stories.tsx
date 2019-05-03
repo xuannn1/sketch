@@ -10,6 +10,8 @@ import { Tag } from '../src/view/components/common/tag';
 import { TagList } from '../src/view/components/common/tag-list';
 import { FilterBar } from '../src/view/components/common/filter-bar';
 import { Dropdown } from '../src/view/components/common/dropdown';
+import { Popup } from '../src/view/components/common/popup';
+import { Center } from '../src/view/components/common/center';
 
 import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
@@ -101,6 +103,30 @@ storiesOf('Common Components', module)
   .add('FilterBar', () => {
     return <FilterBar></FilterBar>
   })
+  .add('Popup', () => React.createElement(class extends React.Component {
+    public state = {
+      showPopup: true,
+      darkerBackgrond: boolean('darkerBackground', true),
+      content: text('content', 'test'),
+      bottom: boolean('bottom', false),
+    };
+    public render () {
+      return <div>
+        <button className="button" onClick={() => this.setState({showPopup: true})}>show popup</button>
+        {this.state.showPopup &&
+          <Popup
+            bottom={this.state.bottom}
+            darkerBackground={this.state.darkerBackgrond}
+            onClose={() => this.setState({showPopup: false})}>
+            <div>{this.state.content}</div>
+          </Popup>
+        }
+      </div>;
+    }
+  }))
+  .add('Center', () => <Center width={text('width', '')} height={text('height','')}>
+    <div>center anything</div>
+  </Center>)
 ;
 
 storiesOf('Home Components', module)

@@ -43,12 +43,6 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
         quotes={this.state.data.quotes}
         core={this.props.core}
       />
-
-      <Dropdown
-        list={[{text: '1', value: 1}, {text: '2', value: 2}]}
-        title={'dropdown menu'}
-        onClick={() => {}}
-      />
       { !this.props.core.user.isLoggedIn() &&
         <Card style={{
         border: 'none',

@@ -1294,12 +1294,11 @@
   resolved "http://registry.npm.taobao.org/@types/range-parser/download/@types/range-parser-1.2.2.tgz#fa8e1ad1d474688a757140c91de6dace6f4abc8d"
   integrity sha1-+o4a0dR0aIp1cUDJHebazm9KvI0=
 
-"@types/react-dom@^16.0.7":
-  version "16.0.7"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.7.tgz#54d0f867a76b90597e8432030d297982f25c20ba"
-  integrity sha1-VND4Z6drkFl+hDIDDSl5gvJcILo=
+"@types/react-dom@^16.8.4":
+  version "16.8.4"
+  resolved "https://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-16.8.4.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Freact-dom%2Fdownload%2F%40types%2Freact-dom-16.8.4.tgz#7fb7ba368857c7aa0f4e4511c4710ca2c5a12a88"
+  integrity sha1-f7e6NohXx6oPTkURxHEMosWhKog=
   dependencies:
-    "@types/node" "*"
     "@types/react" "*"
 
 "@types/react-router-dom@^4.3.1":
@@ -1327,10 +1326,10 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@^16.8.6":
-  version "16.8.6"
-  resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.8.6.tgz#fa1de3fe56cc9b6afeddc73d093d7f30fd5e31cc"
-  integrity sha1-+h3j/lbMm2r+3cc9CT1/MP1eMcw=
+"@types/react@^16.8.15":
+  version "16.8.15"
+  resolved "https://registry.npm.taobao.org/@types/react/download/@types/react-16.8.15.tgz#a76515fed5aa3e996603056f54427fec5f2a5122"
+  integrity sha1-p2UV/tWqPplmAwVvVEJ/7F8qUSI=
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
