@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './popup.scss';
+import { classnames } from '../../../utils/classname';
 
 export function Popup (props:{
   children:React.ReactNode;
@@ -19,7 +20,7 @@ export function Popup (props:{
       style={{
         background: props.darkerBackground ? undefined : 'none',
     }}></div>
-    <div className={`modal-content ${props.className || ''}`}
+    <div className={classnames('modal-content', props.className)}
       style={Object.assign({
         width: props.width || '80%',
         minHeight: props.minHeight || '30%',

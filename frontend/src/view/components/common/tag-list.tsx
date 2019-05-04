@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { classnames } from '../../../utils/classname';
 
 export class TagList extends React.Component<{
   // props
@@ -9,7 +10,7 @@ export class TagList extends React.Component<{
   // states
 }> {
   public render () {
-    return <div className={`tags ${this.props.className || ''}`} style={this.props.style}>
+    return <div className={classnames('tags', this.props.className)} style={this.props.style}>
       {this.props.children}
     </div>;
   }

@@ -3,6 +3,7 @@ import { List } from './list';
 import { Link } from 'react-router-dom';
 import { Card } from './card';
 import './tab.scss';
+import { classnames } from '../../../utils/classname';
 
 export class Tab extends React.Component<{
   tabs:{name:string, children:React.ReactNode[], more?:string}[];
@@ -15,16 +16,15 @@ export class Tab extends React.Component<{
   }
 
   public render () {
-    const className = this.props.className || '';
     const tab = this.props.tabs[this.state.onTab];
 
-    return <Card className={`tab-card ${className}`}>
+    return <Card className={classnames('tab-card', this.props.className)}>
       <div className="tabs is-boxed">
         <ul>
           {this.props.tabs.map((tab, i) =>
             <li key={i}
               onClick={() => this.setState({onTab: i})}
-              className={this.state.onTab === i ? 'is-active' : ''}>
+              className={classnames({'is-active': this.state.onTab === i})}>
               <a><span>{tab.name}</span></a>
             </li>)}
         </ul>

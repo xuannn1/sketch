@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { classnames } from '../../../utils/classname';
 
 type TagColor = 'black'|'dark'|'light'|'white'|'primary'|'link'|'info'|'success'|'warning'|'danger'; 
 
@@ -26,10 +27,15 @@ export class Tag extends React.Component<{
     const selectedColor = this.props.selectedColor ? 'is-' + this.props.selectedColor : 'is-warning';
     const color = this.props.color ? 'is-' + this.props.color : '';
     const size = this.props.size ? 'is-' + this.props.size : '';
-    const className = this.props.className || '';
-    const rounded = this.props.rounded ? 'is-rounded' : '';
 
-    return <a className={`tag ${className} ${this.props.selectable ? (this.state.selected ? selectedColor : color) : selectedColor} ${size} ${rounded}`}
+    return <a className={classnames(
+        'tag',
+        this.props.className,
+        size,
+        {'is-rounded': this.props.rounded},
+        {[selectedColor]: this.props.selectable && this.state.selected},
+        {[color]: this.props.selectable && !this.state.selected}
+      )}
       style={this.props.style}
       onClick={() => {
         if (!this.props.selectable) { return; }

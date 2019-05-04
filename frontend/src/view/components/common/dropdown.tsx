@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import './dropdown.scss';
 import { isMobile } from '../../../utils/mobile';
+import { classnames } from '../../../utils/classname';
 
 interface Props<T> {
   list:{text:string, value:T, icon?:string}[];
@@ -37,7 +38,7 @@ export class Dropdown<T extends string|number> extends React.Component<Props<T>,
 
   public renderMobile () {
     // todo: css
-    return <select className={`dropdown-mobile ${this.props.className || ''}`}
+    return <select className={classnames('dropdown-mobile', this.props.className)}
       ref={(el) => this.selectEl = el}
       onChange={(ev) => {
         for (let i = 0; i < this.props.list.length; i ++) {
@@ -72,14 +73,14 @@ export class Dropdown<T extends string|number> extends React.Component<Props<T>,
         aria-controls="dropdown-menu">
         <span>{text}</span>
         <span className="icon is-small">
-          <i className={`fas fa-angle-${this.state.active ? 'up' : 'down'}`} aria-hidden="true"></i>
+          <i className={classnames('fas', `fa-angle-${this.state.active ? 'up' : 'down'}`)} aria-hidden="true"></i>
         </span>
       </button>
     </div>;
   }
 
   public renderWeb () {
-    return <div className={`dropdown ${this.state.active ? 'is-active' : ''} ${this.props.className || ''}`}>
+    return <div className={classnames('dropdown', {'is-active': this.state.active}, this.props.className)}>
       {this.renderTrigger(() => this.setState((prevState) => ({active: !prevState.active})))}
       <div className="dropdown-menu" role="menu">
         <div className="dropdown-content">
