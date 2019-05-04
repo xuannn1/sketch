@@ -14,11 +14,14 @@ import { Popup } from '../src/view/components/common/popup';
 import { Center } from '../src/view/components/common/center';
 import { List } from '../src/view/components/common/list';
 import { Accordion } from '../src/view/components/common/accordion';
+import { RouteMenu } from '../src/view/components/common/route-menu';
 
 import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
+import { Router } from 'react-router';
+import { createBrowserHistory } from 'history';
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
@@ -145,6 +148,34 @@ storiesOf('Common Components', module)
       <List.Item>2</List.Item>
     </List>
   </Accordion>)
+  .add('Menu', () => React.createElement(class extends React.Component {
+    public state = {
+      onIndex: 0,
+      icon: boolean('icon', false),
+    };
+    public render () {
+      const items = [
+        {to: '', label: 'menu1'},
+        {to: '', label: 'menu2'},
+        {to: '', label: 'menu3'}
+      ];
+      if (this.state.icon) {
+        for (let i = 0; i < items.length; i ++) {
+          const item = items[i];
+          item['icon'] = 'fas fa-star';
+          item['selectedColor'] = 'red';
+          item['defaultColor'] = 'black';
+        }
+      }
+      return <Router history={createBrowserHistory()}>
+          <RouteMenu
+            items={items}
+            onIndex={this.state.onIndex}
+            onClick={(_, i) => this.setState({onIndex: i})}
+          ></RouteMenu>
+      </Router>;
+    }
+  }))
 ;
 
 storiesOf('Home Components', module)
