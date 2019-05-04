@@ -13,6 +13,7 @@ import { Dropdown } from '../src/view/components/common/dropdown';
 import { Popup } from '../src/view/components/common/popup';
 import { Center } from '../src/view/components/common/center';
 import { List } from '../src/view/components/common/list';
+import { Accordion } from '../src/view/components/common/accordion';
 
 import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
@@ -128,13 +129,22 @@ storiesOf('Common Components', module)
   .add('Center', () => <Center width={text('width', '')} height={text('height','')}>
     <div>center anything</div>
   </Center>)
-  .add('list', () => <List>
+  .add('List', () => <List>
     {['a', 'b', 'c'].map((item) => <List.Item
       onClick={() => alert('click item ' + item)}
       arrow={boolean('arrow', false)}>
       {item}
     </List.Item>)}
   </List>)
+  .add('Accordion', () => <Accordion
+    title={text('title', 'accordion title')}
+    arrow={boolean('arrow', true)}
+  >
+    <List>
+      <List.Item>1</List.Item>
+      <List.Item>2</List.Item>
+    </List>
+  </Accordion>)
 ;
 
 storiesOf('Home Components', module)
