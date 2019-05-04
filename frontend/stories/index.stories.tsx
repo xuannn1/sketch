@@ -12,6 +12,7 @@ import { FilterBar } from '../src/view/components/common/filter-bar';
 import { Dropdown } from '../src/view/components/common/dropdown';
 import { Popup } from '../src/view/components/common/popup';
 import { Center } from '../src/view/components/common/center';
+import { List } from '../src/view/components/common/list';
 
 import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
@@ -127,6 +128,13 @@ storiesOf('Common Components', module)
   .add('Center', () => <Center width={text('width', '')} height={text('height','')}>
     <div>center anything</div>
   </Center>)
+  .add('list', () => <List>
+    {['a', 'b', 'c'].map((item) => <List.Item
+      onClick={() => alert('click item ' + item)}
+      arrow={boolean('arrow', false)}>
+      {item}
+    </List.Item>)}
+  </List>)
 ;
 
 storiesOf('Home Components', module)
