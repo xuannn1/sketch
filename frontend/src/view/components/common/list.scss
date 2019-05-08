@@ -1,0 +1,20 @@
+.list {
+  $border: #e6e6e6 1px solid;
+
+  width: 100%;
+  background-color: white;
+  border-radius: 0;
+  box-shadow: none;
+  border-top: $border;
+  .list-item {
+    border-bottom: $border; 
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .list-arrow {
+    float: right;
+    color: #8c8787;
+  }
+}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { API, ResData, ReqData } from '../../../config/api';
-import { TagList } from '../../components/common/tag-list';
+import { TagFilter } from '../../components/common/tag-filter';
 import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
 import { FeaturedPreview } from '../../components/home/featured-preview';
@@ -37,7 +37,7 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
 
   public render () {
     return (<Page className="books" top={<HomeMenu />}>
-      <TagList
+      <TagFilter
         tags={this.state.tags}
         redirectPathname="/books"
         search={(pathname, tags) => {
