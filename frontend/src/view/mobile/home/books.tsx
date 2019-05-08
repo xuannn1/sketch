@@ -3,7 +3,7 @@ import { MobileRouteProps } from '../router';
 import { API, ResData, ReqData } from '../../../config/api';
 import { URLParser } from '../../../utils/url';
 import { UnregisterCallback } from 'history';
-import { TagList } from '../../components/common/tag-list';
+import { TagFilter } from '../../components/common/tag-filter';
 import { HomeMenu } from './home-menu';
 import { ThreadPreview } from '../../components/home/thread-preview';
 import { Page } from '../../components/common/page';
@@ -65,7 +65,7 @@ export class Books extends React.Component<MobileRouteProps, State> {
 
   public render () {
     return <Page top={<HomeMenu />}>
-      <TagList
+      <TagFilter
         tags={this.state.tags}
         search={(pathname, tags) => {
           this.props.core.history.push(pathname, {tags});
