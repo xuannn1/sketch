@@ -28,6 +28,7 @@ export class RouteMenu extends React.Component<Props, State> {
         const selected = i === this.props.onIndex;
         const selectedCln = selected ? 'selected' : '';
         return <div className={classnames('item', selectedCln)}
+          key={item.to + item.label + selected}
           onClick={() => this.props.onClick && this.props.onClick(item, i)}>
           {item.icon && <div style={{
             color: selected ? (item.selectedColor || '') : (item.defaultColor || ''), 

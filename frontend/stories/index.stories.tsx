@@ -3,7 +3,6 @@ import { storiesOf, addDecorator } from '@storybook/react';
 import { withViewport } from '@storybook/addon-viewport';
 import { withConsole } from '@storybook/addon-console';
 import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
-import '../src/theme.scss';
 import { Badge } from '../src/view/components/common/badge';
 import { action } from '@storybook/addon-actions';
 import { Tag } from '../src/view/components/common/tag';
@@ -22,6 +21,8 @@ import '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
 import { Router } from 'react-router';
 import { createBrowserHistory } from 'history';
+
+import '../src/theme.scss';
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
@@ -98,7 +99,7 @@ storiesOf('Common Components', module)
     onIndex={0}
     onClick={action('onClick')}
   />)
-  .add('Dropdown (with title)', () => {
+  .add('Dropdown(with title)', () => {
     return <Dropdown
       list={[{text: '1', value: 1}, {text: '2', value: 2}]}
       title={text('title', 'dropdown menu')}
@@ -133,7 +134,8 @@ storiesOf('Common Components', module)
     <div>center anything</div>
   </Center>)
   .add('List', () => <List>
-    {['a', 'b', 'c'].map((item) => <List.Item
+    {['a', 'b', 'c'].map((item, i) => <List.Item
+      key={i}
       onClick={() => alert('click item ' + item)}
       arrow={boolean('arrow', false)}>
       {item}

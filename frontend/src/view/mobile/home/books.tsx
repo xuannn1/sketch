@@ -16,7 +16,7 @@ interface State {
 }
 
 export class Books extends React.Component<MobileRouteProps, State> {
-  public state = {
+  public state:State = {
     data: {
       threads: [],
       paginate: ResData.allocThreadPaginate(),
@@ -79,7 +79,7 @@ export class Books extends React.Component<MobileRouteProps, State> {
       />
       <List
         children={this.state.data.threads.map((thread) =>
-          <ThreadPreview data={thread} />)}
+          <ThreadPreview data={thread} key={thread.id} />)}
       />
     </Page>;
   }

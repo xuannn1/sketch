@@ -102,7 +102,7 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
   }
 
   public renderBookPreview = (data:ResData.Thread) => {
-    return <BookPreview data={data} />;
+    return <BookPreview data={data} key={data.id} />;
   }
 
   public loadData (tags?:number[]) {
