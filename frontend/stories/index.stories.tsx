@@ -4,6 +4,7 @@ import { withViewport } from '@storybook/addon-viewport';
 import { withConsole } from '@storybook/addon-console';
 import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
 import { Badge } from '../src/view/components/common/badge';
+import { Mark } from '../src/view/components/common/mark';
 import { action } from '@storybook/addon-actions';
 import { Tag } from '../src/view/components/common/tag';
 import { TagList } from '../src/view/components/common/tag-list';
@@ -178,6 +179,14 @@ storiesOf('Common Components', module)
       </Router>;
     }
   }))
+  .add('Mark', () => 
+    <Mark length={5} onClick={(val) => alert(val)} />
+  
+  )
+  .add('Mark disabled', () => 
+    <Mark length={5} mark={4} />
+
+  )
 ;
 
 storiesOf('Home Components', module)
