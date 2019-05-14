@@ -65,7 +65,7 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
       />
       
       <Card>
-        <Slider morePath={''}>
+        <Slider>
           {this.state.data.recent_custom_short_recommendations.map(data => this.renderRecomPreivew(data, data.id))}
         </Slider>
       </Card>
