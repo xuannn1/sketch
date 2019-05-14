@@ -21,7 +21,7 @@ export class Mark extends React.Component<Props, State> {
     }
   }
 
-  selectValue(value:number) {
+  private selectValue(value:number) {
     const {onClick, mark} = this.props;
     if(mark) {
       return;
@@ -35,7 +35,7 @@ export class Mark extends React.Component<Props, State> {
     });
   }
 
-  setCurrentValue(e:Object, value:number) {
+  private setCurrentValue(value:number) {
 
     const {mark} = this.props;
     if(mark) {
@@ -47,18 +47,17 @@ export class Mark extends React.Component<Props, State> {
     });
   }
 
-  resetCurrentValue() {
+  private resetCurrentValue() {
 
     const {mark} = this.props;
     if(mark) {
       return;
     }
 
-    const {value} = this.state;
-
-    this.setState({
-      currentValue: value
-    });
+    this.setState((prevState) => ({
+      currentValue: prevState.value
+    }));
+    
   }
 
   public render () {
@@ -67,10 +66,10 @@ export class Mark extends React.Component<Props, State> {
 
     return (
       <div>
-        {[...Array(length)].map((v, k) => (
+        {(new Array(length)).fill("").map((v, k) => (
           <span 
             style={{cursor: mark ? "auto" : "pointer"}}
-            onMouseMove={(e) => this.setCurrentValue(e, k)}
+            onMouseMove={(e) => this.setCurrentValue(k)}
             onMouseLeave={() => this.resetCurrentValue()}
             onClick={() => this.selectValue(k)}
             key={k}
