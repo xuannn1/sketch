@@ -17,6 +17,7 @@ import { Accordion } from '../src/view/components/common/accordion';
 import { RouteMenu } from '../src/view/components/common/route-menu';
 import { Slider } from '../src/view/components/common/slider';
 import { Card } from '../src/view/components/common/card';
+import { Tab } from '../src/view/components/common/tab';
 
 import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
@@ -206,6 +207,22 @@ storiesOf('Common Components', module)
       )}
     </Slider>
   )
+  .add('tab', () => {
+    const tabContent = [1, 2, 3, 4, 5].map((tab) => {
+      return {
+        name: 'tab' + tab,
+        children: <List noBorder>
+          {[1, 2, 3, 4].map((item) =>
+            <List.Item key={item}>tab {tab} list-item {item}</List.Item>
+          )}
+        </List>
+      }
+    });
+    return <Tab
+      tabs={tabContent}
+      onClickTab={action('onClickTab')}
+    />;
+  });
 ;
 
 storiesOf('Home Components', module)
