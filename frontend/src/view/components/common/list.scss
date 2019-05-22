@@ -1,13 +1,13 @@
 .list {
-  $border: #e6e6e6 1px solid;
+  $border: #dbdbdb 1px solid;
 
   width: 100%;
   background-color: white;
   border-radius: 0;
   box-shadow: none;
   border-top: $border;
+  border-bottom: $border;
   .list-item {
-    border-bottom: $border; 
     &:hover {
       cursor: pointer;
     }

@@ -4,6 +4,7 @@ import { withViewport } from '@storybook/addon-viewport';
 import { withConsole } from '@storybook/addon-console';
 import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
 import { Badge } from '../src/view/components/common/badge';
+import { Mark } from '../src/view/components/common/mark';
 import { action } from '@storybook/addon-actions';
 import { Tag } from '../src/view/components/common/tag';
 import { TagList } from '../src/view/components/common/tag-list';
@@ -14,6 +15,9 @@ import { Center } from '../src/view/components/common/center';
 import { List } from '../src/view/components/common/list';
 import { Accordion } from '../src/view/components/common/accordion';
 import { RouteMenu } from '../src/view/components/common/route-menu';
+import { Slider } from '../src/view/components/common/slider';
+import { Card } from '../src/view/components/common/card';
+import { Tab } from '../src/view/components/common/tab';
 
 import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
@@ -178,6 +182,47 @@ storiesOf('Common Components', module)
       </Router>;
     }
   }))
+  .add('Mark', () => 
+    <Mark length={5} onClick={(val) => alert(val)} />
+  )
+  .add('Mark disabled', () => 
+    <Mark length={5} mark={4} />
+  )
+  .add('Slider', () => 
+    <Slider>
+      {[1, 2, 3, 4, 5, 6, 7].map((i) => 
+        <Slider.Item key={i}>
+          <Card style={{
+            width: '70px',
+            height: '70px',
+            border: '1px solid grey',
+            padding: '1px',
+            marginTop: '0',
+          }}>
+            <Center>
+              card {i}
+            </Center>
+          </Card>
+        </Slider.Item>
+      )}
+    </Slider>
+  )
+  .add('tab', () => {
+    const tabContent = [1, 2, 3, 4, 5].map((tab) => {
+      return {
+        name: 'tab' + tab,
+        children: <List noBorder>
+          {[1, 2, 3, 4].map((item) =>
+            <List.Item key={item}>tab {tab} list-item {item}</List.Item>
+          )}
+        </List>
+      }
+    });
+    return <Tab
+      tabs={tabContent}
+      onClickTab={action('onClickTab')}
+    />;
+  });
 ;
 
 storiesOf('Home Components', module)
