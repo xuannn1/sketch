@@ -1,33 +1,33 @@
-import * as React from 'react';
-import { storiesOf, addDecorator } from '@storybook/react';
-import { withViewport } from '@storybook/addon-viewport';
-import { withConsole } from '@storybook/addon-console';
-import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
-import { Badge } from '../view/components/common/badge';
-import { Mark } from '../view/components/common/mark';
-import { action } from '@storybook/addon-actions';
-import { Tag } from '../view/components/common/tag';
-import { TagList } from '../view/components/common/tag-list';
-import { FilterBar } from '../view/components/common/filter-bar';
-import { Dropdown } from '../view/components/common/dropdown';
-import { Popup } from '../view/components/common/popup';
-import { Center } from '../view/components/common/center';
-import { List } from '../view/components/common/list';
-import { Accordion } from '../view/components/common/accordion';
-import { RouteMenu } from '../view/components/common/route-menu';
-import { Slider } from '../view/components/common/slider';
-import { Card } from '../view/components/common/card';
-import { Tab } from '../view/components/common/tab';
-
-import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
+import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
-import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
-import { Router } from 'react-router';
+import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
+import { action } from '@storybook/addon-actions';
+import { withConsole } from '@storybook/addon-console';
+import { boolean, number, select, text, withKnobs } from '@storybook/addon-knobs';
+import { withViewport } from '@storybook/addon-viewport';
+import { addDecorator, storiesOf } from '@storybook/react';
 import { createBrowserHistory } from 'history';
-
+import React from 'react';
+import { Router } from 'react-router';
 import '../theme.scss';
+import { Accordion } from '../view/components/common/accordion';
+import { Animate } from '../view/components/common/animate';
+import { Badge } from '../view/components/common/badge';
+import { Card } from '../view/components/common/card';
+import { Center } from '../view/components/common/center';
+import { Dropdown } from '../view/components/common/dropdown';
+import { FilterBar } from '../view/components/common/filter-bar';
+import { List } from '../view/components/common/list';
+import { Mark } from '../view/components/common/mark';
 import { NavBar } from '../view/components/common/navbar';
+import { Popup } from '../view/components/common/popup';
+import { PopupMenu } from '../view/components/common/popup-menu';
+import { RouteMenu } from '../view/components/common/route-menu';
+import { Slider } from '../view/components/common/slider';
+import { Tab } from '../view/components/common/tab';
+import { Tag } from '../view/components/common/tag';
+import { TagList } from '../view/components/common/tag-list';
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
@@ -106,19 +106,17 @@ storiesOf('Common Components', module)
   .add('Popup', () => React.createElement(class extends React.Component {
     public state = {
       showPopup: true,
-      darkerBackgrond: boolean('darkerBackground', true),
-      content: text('content', 'test'),
-      bottom: boolean('bottom', false),
     };
     public render () {
       return <div>
         <button className="button" onClick={() => this.setState({showPopup: true})}>show popup</button>
         {this.state.showPopup &&
           <Popup
-            bottom={this.state.bottom}
-            darkerBackground={this.state.darkerBackgrond}
+            width={text('width', '')}
+            bottom={text('bottom', '')}
+            darkBackground={number('darkBackground', 0.8)}
             onClose={() => this.setState({showPopup: false})}>
-            <div>{this.state.content}</div>
+            {text('content', 'example content')}
           </Popup>
         }
       </div>;
@@ -211,6 +209,45 @@ storiesOf('Common Components', module)
       onClickTab={action('onClickTab')}
     />;
   })
+  .add('popup menu', () => React.createElement(class extends React.Component<{}, {showPopup: boolean}> {
+    public state = {
+      showPopup: true,
+    };
+    public render () {
+      return <div>
+        <div className="button"
+          onClick={() => this.setState((prevState) => ({showPopup: !prevState.showPopup}))}>
+          show popup
+        </div>
+        {this.state.showPopup && <PopupMenu
+          list={[
+            { title: 'one', onClick: action('clickOne')},
+            { title: 'two', onClick: action('clickTwo')},
+          ]}
+          onClose={() => this.setState({showPopup: false})}
+        />}
+    </div>; 
+    }
+  }))
+  .add('animation', () => <Animate
+    name={select('name', {
+      slideInUp: 'slideInUp',    
+      slideOutUp: 'slideOutUp',
+      slideInDown: 'slideInDown',
+      slideOutDown: 'slideOutDown',
+      slideInRight: 'slideInRight',
+      slideOutRight: 'slideOutRight',
+      slideInLeft: 'slideInLeft',
+      slideOutLeft: 'slideOutLeft',
+    })}
+    speed={select('speed', {
+      slow: 'slow',
+      slower: 'slower',
+      fast: 'fast',
+      faster: 'faster',
+    })}
+    infinite={boolean('infinite', false)}
+  ><div>example animation</div></Animate>)
 ;
 
 storiesOf('Common Components/Dropdown', module)
@@ -236,10 +273,26 @@ storiesOf('Common Components/Navigation Bar', module)
     <div className="button">阅读模式</div>
     <div className="button">论坛模式</div>
   </NavBar>)
-  .add('with menu', () => <NavBar goBack={action('goBack')}
-    onMenuClick={action('onMenuClick')}>
-    {text('title', 'example title')}
-  </NavBar>)
+  .add('with menu', () => React.createElement(class extends React.Component {
+    public state = {
+      showPopup: false,
+    };
+    public render () {
+      return <NavBar goBack={action('goBack')}
+      onMenuClick={() => this.setState({showPopup: true})}>
+      {text('title', 'example title')}
+      {this.state.showPopup &&
+        <PopupMenu
+          list={[
+            {title: 'menu1', onClick: action('click menu1')},
+            {title: 'menu2', onClick: action('click menu2')},
+          ]}
+          onClose={() => this.setState({showPopup: false})}
+        />
+      }
+    </NavBar>;
+    }
+  }))
 ;
 
 storiesOf('Home Components', module)
