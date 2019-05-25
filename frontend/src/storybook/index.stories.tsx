@@ -3,33 +3,32 @@ import { storiesOf, addDecorator } from '@storybook/react';
 import { withViewport } from '@storybook/addon-viewport';
 import { withConsole } from '@storybook/addon-console';
 import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
-import { Badge } from '../src/view/components/common/badge';
-import { Mark } from '../src/view/components/common/mark';
+import { Badge } from '../view/components/common/badge';
+import { Mark } from '../view/components/common/mark';
 import { action } from '@storybook/addon-actions';
-import { Tag } from '../src/view/components/common/tag';
-import { TagList } from '../src/view/components/common/tag-list';
-import { FilterBar } from '../src/view/components/common/filter-bar';
-import { Dropdown } from '../src/view/components/common/dropdown';
-import { Popup } from '../src/view/components/common/popup';
-import { Center } from '../src/view/components/common/center';
-import { List } from '../src/view/components/common/list';
-import { Accordion } from '../src/view/components/common/accordion';
-import { RouteMenu } from '../src/view/components/common/route-menu';
-import { Slider } from '../src/view/components/common/slider';
-import { Card } from '../src/view/components/common/card';
-import { Tab } from '../src/view/components/common/tab';
-import { Core } from '../src/core/index';
-import { NavBar } from '../src/view/components/common/navbar';
+import { Tag } from '../view/components/common/tag';
+import { TagList } from '../view/components/common/tag-list';
+import { FilterBar } from '../view/components/common/filter-bar';
+import { Dropdown } from '../view/components/common/dropdown';
+import { Popup } from '../view/components/common/popup';
+import { Center } from '../view/components/common/center';
+import { List } from '../view/components/common/list';
+import { Accordion } from '../view/components/common/accordion';
+import { RouteMenu } from '../view/components/common/route-menu';
+import { Slider } from '../view/components/common/slider';
+import { Card } from '../view/components/common/card';
+import { Tab } from '../view/components/common/tab';
 
 import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
 import { Router } from 'react-router';
+import { createBrowserHistory } from 'history';
 
-import '../src/theme.scss';
+import '../theme.scss';
+import { NavBar } from '../view/components/common/navbar';
 
-const core = new Core();
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
 addDecorator(withKnobs);
@@ -100,18 +99,7 @@ storiesOf('Common Components', module)
       >{text}</Tag>))}
     </TagList>
   })
-  .add('Dropwdown', () => <Dropdown
-    list={[{text: '1', value: 1}, {text: '2', value: 2}]}
-    onIndex={0}
-    onClick={action('onClick')}
-  />)
-  .add('Dropdown(with title)', () => {
-    return <Dropdown
-      list={[{text: '1', value: 1}, {text: '2', value: 2}]}
-      title={text('title', 'dropdown menu')}
-      onClick={action('onClick')}
-    />;
-  })
+
   .add('FilterBar', () => {
     return <FilterBar></FilterBar>
   })
@@ -175,7 +163,7 @@ storiesOf('Common Components', module)
           item['defaultColor'] = 'black';
         }
       }
-      return <Router history={core.history}>
+      return <Router history={createBrowserHistory()}>
           <RouteMenu
             items={items}
             onIndex={this.state.onIndex}
@@ -184,11 +172,9 @@ storiesOf('Common Components', module)
       </Router>;
     }
   }))
-  .add('Mark', () => 
-    <Mark length={5} onClick={(val) => alert(val)} />
-  )
-  .add('Mark disabled', () => 
-    <Mark length={5} mark={4} />
+  .add('Mark', () => <Mark length={number('length', 5)} 
+      mark={boolean('disabled', false) ? 4 : undefined}
+      onClick={action('onClick')} />
   )
   .add('Slider', () => 
     <Slider>
@@ -209,7 +195,7 @@ storiesOf('Common Components', module)
       )}
     </Slider>
   )
-  .add('Tab', () => {
+  .add('tab', () => {
     const tabContent = [1, 2, 3, 4, 5].map((tab) => {
       return {
         name: 'tab' + tab,
@@ -225,25 +211,42 @@ storiesOf('Common Components', module)
       onClickTab={action('onClickTab')}
     />;
   })
-  .add('Navbar', () => {
-    return <NavBar
-      core={core}
-      center={text('title', 'title')}
+;
+
+storiesOf('Common Components/Dropdown', module)
+  .add('Dropwdown', () => <Dropdown
+    list={[{text: '1', value: 1}, {text: '2', value: 2}]}
+    onIndex={0}
+    onClick={action('onClick')}
+    />)
+  .add('Dropdown(with title)', () => {
+    return <Dropdown
+      list={[{text: '1', value: 1}, {text: '2', value: 2}]}
+      title={text('title', 'dropdown menu')}
+      onClick={action('onClick')}
     />;
-  });
+  })
+;
+
+storiesOf('Common Components/Navigation Bar', module)
+  .add('simple', () => <NavBar goBack={action('goBack')} >
+    {text('title', 'example title')}
+  </NavBar>)
+  .add('buttons', () => <NavBar goBack={action('goBack')}>
+    <div className="button">阅读模式</div>
+    <div className="button">论坛模式</div>
+  </NavBar>)
+  .add('with menu', () => <NavBar goBack={action('goBack')}
+    onMenuClick={action('onMenuClick')}>
+    {text('title', 'example title')}
+  </NavBar>)
 ;
 
 storiesOf('Home Components', module)
-.addDecorator(withViewport())
-.addDecorator(withKnobs)
 ;
 
 storiesOf('User Components', module)
-.addDecorator(withViewport())
-.addDecorator(withKnobs)
 ;
 
 storiesOf('Thread Components', module)
-.addDecorator(withViewport())
-.addDecorator(withKnobs)
 ;
