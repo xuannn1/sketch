@@ -28,6 +28,7 @@ import { Slider } from '../view/components/common/slider';
 import { Tab } from '../view/components/common/tab';
 import { Tag } from '../view/components/common/tag';
 import { TagList } from '../view/components/common/tag-list';
+import { FloatButton } from '../view/components/common/float-button';
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
@@ -293,6 +294,20 @@ storiesOf('Common Components/Navigation Bar', module)
     </NavBar>;
     }
   }))
+;
+
+storiesOf('Common Components/Float Button', module)
+  .add('plus', () => <FloatButton.Plus
+    onClick={action('onClick')}
+  />)
+  .add('page', () => <div style={{ height: '1000px', position: 'relative', overflowY: 'auto' }}><FloatButton.Page
+    currentPage={number('currentPage', 1)}
+    totalPage={number('totalPage', 3)}
+    onClick={action('onClick')}
+  /></div>)
+  .add('customize', () => <FloatButton>
+    <div className="button">customize</div>
+  </FloatButton>)
 ;
 
 storiesOf('Home Components', module)
