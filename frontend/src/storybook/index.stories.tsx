@@ -29,6 +29,10 @@ import { Tab } from '../view/components/common/tab';
 import { Tag } from '../view/components/common/tag';
 import { TagList } from '../view/components/common/tag-list';
 import { FloatButton } from '../view/components/common/float-button';
+import { Core } from '../core/index';
+import { Carousel } from '../view/components/common/carousel';
+
+const core = new Core();
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
@@ -248,7 +252,18 @@ storiesOf('Common Components', module)
       faster: 'faster',
     })}
     infinite={boolean('infinite', false)}
-  ><div>example animation</div></Animate>)
+    ><div>example animation</div></Animate>)
+  .add('carousel', () => <Carousel
+    windowResizeEvent={core.windowResizeEvent}
+    slides={[
+      <div> sample slide 1 </div>,
+      <div> sample slide 2 </div>,
+      <div> sample slide 3 </div>,
+    ]}
+    getIndex={action('getIndex')}
+    indicator={boolean('indicator', true)}
+    startIndex={number('startIndex', 0)}
+  />)
 ;
 
 storiesOf('Common Components/Dropdown', module)
