@@ -31,6 +31,7 @@ import { TagList } from '../view/components/common/tag-list';
 import { FloatButton } from '../view/components/common/float-button';
 import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
+import { NoticeBar } from '../view/components/common/notice-bar';
 
 const core = new Core();
 
@@ -264,6 +265,28 @@ storiesOf('Common Components', module)
     indicator={boolean('indicator', true)}
     startIndex={number('startIndex', 0)}
   />)
+;
+
+storiesOf('Common Components/Notice Bar', module)
+  .add('short message', () => <NoticeBar
+    icon={text('icon', 'fas fa-bullhorn')}
+    closable={boolean('closable', true)}
+    onClick={action('onClick')}
+    customizeLink={(() => {
+      if (boolean('customizeLink', false)) {
+        return <div>go</div>
+      }
+      return undefined;
+    })()}
+    >example notice message
+  </NoticeBar>)
+  .add('long message', () => <NoticeBar
+    icon={text('icon', 'fas fa-bullhorn')}
+    closable={boolean('closable', true)} 
+    onClick={action('onClick')}
+  >
+    example super super super super super super super super super super super super super super super super super super long notice message
+  </NoticeBar>)
 ;
 
 storiesOf('Common Components/Dropdown', module)

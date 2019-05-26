@@ -35,9 +35,7 @@ export class CreateQuote extends React.Component<MobileRouteProps, State> {
         </NavBar>}>
       {this.props.core.user.isLoggedIn() &&
         <Card>
-          {this.state.errorMsg && <NoticeBar
-            text={this.state.errorMsg} />
-          }
+          {this.state.errorMsg && <NoticeBar>{this.state.errorMsg}</NoticeBar>}
           新题头：
           <textarea className="textarea" 
             placeholder="不丧不成活~"
