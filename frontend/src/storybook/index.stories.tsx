@@ -32,6 +32,7 @@ import { FloatButton } from '../view/components/common/float-button';
 import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
+import { Loading } from '../view/components/common/loading';
 
 const core = new Core();
 
@@ -265,6 +266,19 @@ storiesOf('Common Components', module)
     indicator={boolean('indicator', true)}
     startIndex={number('startIndex', 0)}
   />)
+  .add('Loading', () =>
+    <Loading>
+      <div style={{
+        width: '200px',
+        height: '200px',
+        border: '1px solid black',
+        lineHeight: '200px',
+        textAlign: 'center',
+      }}>
+        <p> 加载中请稍后</p>
+      </div>
+    </Loading>,
+  )
 ;
 
 storiesOf('Common Components/Notice Bar', module)
