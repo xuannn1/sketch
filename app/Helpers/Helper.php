@@ -45,7 +45,7 @@ class Helper
     public static function xianyus($thread_id)//获得站上某thread所有咸鱼列表
     {
         return Cache::remember('xianyus-'.$thread_id, 10, function () use($thread_id){
-            return Xianyu::where('thread_id','=', $thread_id)->with('creator')->orderBy('created_at','desc')->get();
+            return Xianyu::where('thread_id','=', $thread_id)->with('creator')->orderBy('created_at','desc')->limit(100)->get();
         });
     }
 

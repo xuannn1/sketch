@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 @endif
-                @if(Auth::check()&&($channel->id<=2))
+                @if(Auth::check()&&(Auth::user()->user_level>1))
                 <a class="btn btn-primary sosad-button pull-right" href="{{ route('channel.show', array_merge(['channel' => $channel->id, 'showbianyuan' => request()->showbianyuan?'':'1'], request()->only('label', 'sexual_orientation', 'orderby'))) }}" role="button">{{request()->showbianyuan?'取消':''}}显示边限</a>
                 @endif
                 @include('threads._threads')
@@ -64,6 +64,8 @@
             <div class="panel-heading">
                 @if(Auth::user()->no_posting > Carbon\Carbon::now())
                 <h6 class="text-center">您被禁言至{{ Carbon\Carbon::parse(Auth::user()->no_posting)->diffForHumans() }}，暂时不能发帖。</h6>
+                @elseif(Auth::user()->user_level < 2)
+                <h6 class="text-center">您的等级不到2级，暂时不能发布新主题。</h6>
                 @else
                 @if ($channel->channel_state == 1)
                 <a class="btn btn-lg btn-primary sosad-button" href="{{ route('book.create') }}" role="button">发布文章</a>

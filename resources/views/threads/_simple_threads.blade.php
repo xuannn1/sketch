@@ -28,6 +28,5 @@
             <!-- thread title end   -->
         </div>
     </div>
-    <hr>
 </article>
 @endforeach

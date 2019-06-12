@@ -20,9 +20,9 @@
             {{ $post->title }}
         </div>
     </div>
-    @if((($post->bianyuan)||(($thread->bianyuan)))&&(!Auth::check()))
+    @if((($post->bianyuan)||(($thread->bianyuan)))&&(!Auth::check()||(Auth::check()&&(Auth::user()->user_level < 1))))
     <div class="text-center">
-        <h6 class="display-4 grayout"><a href="{{ route('login') }}">本章节为隐藏格式，只对注册用户开放，请登录后查看</a></h6>
+        <h6 class="display-4 grayout"><a href="{{ route('login') }}">本章节为隐藏格式，只对1级以上注册用户开放，请登录后查看</a></h6>
     </div>
     @else
         <!-- 章节-正文 -->

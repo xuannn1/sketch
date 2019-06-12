@@ -62,7 +62,7 @@
                                 <h6 class="grayout">（通用标签筛选会显示符合以下任意已勾选标签的结果）</h6>
                                     <?php $tag_info = 0; ?>
                                     @foreach(Helper::tags_general() as $key=>$tag)
-                                        @if((Auth::check())||($tag->tag_group!==5))
+                                        @if((Auth::check()&&Auth::user()->user_level>1)||($tag->tag_group!==5))
                                             @if(($tag_info<$tag->tag_info)&&($tag_info>0))
                                                 <br>
                                             @endif

@@ -19,15 +19,6 @@ class QuestionsController extends Controller
         ]);
     }
 
-    public function create(User $user)
-    {
-        if ((Auth::check())&&(Auth::id()==$user->id)){
-            return redirect()->route('questions.index', $user);
-        }else{
-            return view('questions.create_question', compact('user'));
-        }
-    }
-
     public function index(User $user)
     {
         $questions=$user->questions()->orderBy('created_at', 'desc')->paginate(config('constants.items_per_part'));

@@ -53,9 +53,9 @@
     </div>
     <!-- 书本文案 -->
     <div class="panel-body text-center main-text">
-        @if(($thread->bianyuan)&&(!Auth::check())&&($thread->mainpost->body))
+        @if(($thread->bianyuan)&&(!Auth::check()||((Auth::check())&&(Auth::user()->user_level < 1)))&&($thread->mainpost->body))
         <div class="text-center">
-            <h6 class="display-4"><a href="{{ route('login') }}">本文为限制级，文案暂时隐藏，只对注册用户开放，请登录后查看</a></h6>
+            <h6 class="display-4"><a href="{{ route('login') }}">本文为限制级，文案暂时隐藏，只对1级以上注册用户开放，请登录后查看</a></h6>
         </div>
         @else
             @if($thread->mainpost->markdown)
