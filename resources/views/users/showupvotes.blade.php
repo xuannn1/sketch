@@ -15,7 +15,7 @@
             </div>
             <div class="panel-body">
                 {{$posts->links()}}
-                @include('posts._posts')
+                @include('posts._upvotes')
                 {{$posts->links()}}
             </div>
         </div>

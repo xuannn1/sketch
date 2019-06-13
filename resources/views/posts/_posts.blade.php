@@ -25,6 +25,7 @@
             </span>
         </div>
         <div class="col-xs-12 h5">
+            @if(Auth::check()&&(Auth::user()->user_level > 2))
             <div id="full{{$post->id}}" class="hidden main-text">
                 <h5 class="text-center"><strong>{{ $post->title }}</strong></h5>
                 @if($post->markdown)
@@ -36,10 +37,8 @@
             <span id="abbreviated{{$post->id}}"><strong>{{ $post->title }}</strong>{{ $post->title ? ' ': ''}}{!! Helper::trimtext($post->body,70) !!}</span>
             <a type="button" name="button" id="expand{{$post->id}}" onclick="expandpost('{{$post->id}}')">展开</a>
             @include('posts._post_simplevote')
+            @endif
         </div>
-        @if((Auth::check())&&(Auth::user()->admin)&&($as_longcomments))
-        @include('admin._longcomments_review_buttons')
-        @endif
     </div>
     <hr>
 </article>

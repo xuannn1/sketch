@@ -1,12 +1,14 @@
+@if(Auth::user()->user_level >= 1)
 <span class="voteposts">
     @include('posts._post_vote_buttons')
 </span>
+@endif
 @if((!$thread->locked)&&(!$thread->noreply)&&(Auth::user()->no_posting < Carbon\Carbon::now())&&($post->fold_state==0)&&(Auth::user()->user_level >= 2))
 <span class="voteposts">
     <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostComment{{ $post->id }}" class="btn btn-default btn-xs">点评</a>
 </span>
 <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $post->id }}, '{{ Helper::trimtext($post->body, 10)}}')">回复</a></span>
-@endif
+
 
 @if($post->user_id == Auth::id()
     &&((Auth::user()->admin)
@@ -52,3 +54,4 @@
         </div>
     </div>
 </div>
+@endif
