@@ -53,6 +53,23 @@ class ReCalculateData extends Command
             (select count(id) from posts
             where chapters.id = posts.chapter_id and posts.deleted_at is null and posts.maintext =0 )
         ');
+
+        //重新统计每一本书的字数
+        DB::statement('
+            update books
+            set total_char=
+            (select sum(distinct chapters.characters)
+            from chapters, posts
+            where books.id = chapters.book_id and chapters.post_id = posts.id and posts.deleted_at is null and posts.maintext = 1
+            )
+        ');
+
+        //隐藏没有章节的文章
+        $threads = DB::table("threads")
+        ->join('books','books.id','=','threads.book_id')
+        ->where('books.total_char','=',0)
+	    ->update(['threads.public' => false]);
+
         //统计总积分：咸鱼+剩饭+点击+回复+下载+收藏
         DB::table('threads')
         ->update(['jifen'=>DB::raw('xianyu * 2000 + shengfan *100 + viewed*2 + responded * 100 + downloaded * 2000 + collection * 2000')]);
@@ -77,5 +94,7 @@ class ReCalculateData extends Command
         DB::table('users')
         ->where('no_logging', '<', Carbon::now()->toDateTimeString())
         ->update(['no_logging_or_not'=>0]);
+
+
     }
 }

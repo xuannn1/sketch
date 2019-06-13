@@ -14,7 +14,7 @@
                         <h5>
                             <a href="{{ route('user.show', $record->user_id) }}">{{ $record->name }}</a>
                             &nbsp;
-                            {{ Carbon\Carbon::parse($record->created_at)->setTimezone(8) }}
+                            {{ Carbon\Carbon::parse($record->created_at)->setTimezone('Asia/Shanghai') }}
                             {{ $admin_operation[$record->operation] }}
                             {!! Helper::trimtext($record->thread_title.$record->post_body.$record->postcomment_body.$record->status_body.$record->operated_users_name,20) !!}
                             &nbsp;
