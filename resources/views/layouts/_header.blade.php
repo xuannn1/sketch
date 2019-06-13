@@ -27,7 +27,9 @@
                         <ul class="dropdown-menu">
                             <li><a href="{{ route('user.show', Auth::user()->id) }}">个人主页</a></li>
                             <li><a href="{{ route('users.edit') }}">编辑资料</a></li>
+                            @if(Auth::user()->user_level>=1)
                             <li><a href="{{ route('book.create') }}">我要发文</a></li>
+                            @endif
                             <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ auth()->user()->unreadmessages()>0 ? auth()->user()->unreadmessages():''}}</span></a></li>
                             <li><a href="{{ route('linkedaccounts.index') }}">切换马甲</a></li>
                             <li><a href="{{ route('logout') }}" onclick="event.preventDefault();

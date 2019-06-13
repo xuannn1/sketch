@@ -31,7 +31,7 @@
                 </div>
                 @else
                 <div class="radio">
-                    <label><input type="radio" name="controlpost" value="12">取消折叠' : '折叠帖子' }}</label>
+                    <label><input type="radio" name="controlpost" value="12">取消折叠</label>
                 </div>
                 @endif
 
