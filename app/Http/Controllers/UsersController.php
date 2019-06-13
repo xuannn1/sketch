@@ -215,9 +215,9 @@ class UsersController extends Controller
         $user = User::find($id);
         if ($user){
             $group = Auth::check() ? Auth::user()->group : 10;
-            $posts=$this->findupvotes($id,config('constants.index_per_page'), $group);
+            $upvotes=$this->findupvotes($id,config('constants.index_per_page'), $group);
             $collections = false;
-            return view('users.showupvotes', compact('user','posts','collections'))->with('as_longcomments',0);
+            return view('users.showupvotes', compact('user','upvotes','collections'))->with('as_longcomments',0);
         }else{
             return redirect()->route('error', ['error_code' => '404']);
         }

@@ -14,9 +14,9 @@
                 <h4>赞赏列表</h4>
             </div>
             <div class="panel-body">
-                {{$posts->links()}}
+                {{$upvotes->links()}}
                 @include('posts._upvotes')
-                {{$posts->links()}}
+                {{$upvotes->links()}}
             </div>
         </div>
     </div>
