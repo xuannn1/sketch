@@ -19,7 +19,7 @@ trait AdministrationTraits{
         })
         ->leftjoin('posts',function($join)
         {
-            $join->whereIn('administrations.operation',[7,10,11,12]);
+            $join->whereIn('administrations.operation',[7,10,11,12,30]);
             $join->on('administrations.item_id','=','posts.id');
         })
         ->leftjoin('post_comments',function($join)
@@ -35,7 +35,7 @@ trait AdministrationTraits{
         ->leftjoin('users as operated_users',function($join)
         {
             $join->whereIn('administrations.operation',[13,14,18,19,20,30]);
-            $join->on('administrations.item_id','=','operated_users.id');
+            $join->on('administrations.administratee_id','=','operated_users.id');
         });
         if ($id>0){
             $query->where('administrations.administratee_id','=',$id);
@@ -44,6 +44,7 @@ trait AdministrationTraits{
         ->select('users.name','administrations.*','threads.title as thread_title','posts.body as post_body','post_comments.body as postcomment_body', 'statuses.content as status_body', 'operated_users.name as operated_users_name' )
         ->orderBy('administrations.created_at','desc')
         ->simplePaginate($paginate);
+
         return $records;
     }
 
