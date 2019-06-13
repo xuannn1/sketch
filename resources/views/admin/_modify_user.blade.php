@@ -26,6 +26,9 @@
                 <div class="radio">
                     <label><input type="radio" name="controluser" value="19">解除禁止登陆用户</label>
                 </div>
+                <div class="radio">
+                    <label><input type="radio" name="controluser" value="20">用户等级积分归零</label>
+                </div>
                 <div class="form-group">
                     <label for="reason"></label>
                     <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)"></textarea>

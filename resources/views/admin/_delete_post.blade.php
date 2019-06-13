@@ -24,9 +24,21 @@
                         <input type="text" name="majia" class="form-control" value="{{$post->majia ?:'匿名咸鱼'}}">
                     </div>
                 </div>
+
+                @if(!$post->fold_state)
                 <div class="radio">
-                    <label><input type="radio" name="controlpost" value="11">{{ $post->fold_state ? '取消折叠' : '折叠帖子' }}</label>
+                    <label><input type="radio" name="controlpost" value="11">折叠帖子</label>
                 </div>
+                @else
+                <div class="radio">
+                    <label><input type="radio" name="controlpost" value="12">取消折叠' : '折叠帖子' }}</label>
+                </div>
+                @endif
+
+                <div class="radio">
+                    <label><input type="radio" name="controlpost" value="30">零级小号水贴套餐（积分等级清零，回帖折叠，发帖人禁言一天）</label>
+                </div>
+
                 <div class="form-group">
                     <label for="reason"></label>
                     <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)"></textarea>

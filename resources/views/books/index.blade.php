@@ -10,7 +10,7 @@
             </div>
             <div class="panel-body">
                 {{ $books->links() }}
-                @if(Auth::check()&&(Auth::user()->user_level>1))
+                @if(Auth::check()&&(Auth::user()->user_level>2))
                 <div class="text-center">
                     <a class="btn btn-primary sosad-button" href="{{ route('books.index', ['showbianyuan' => request()->showbianyuan?'':'1']) }}" role="button">{{request()->showbianyuan?'取消':''}}显示边限</a>
                 </div>

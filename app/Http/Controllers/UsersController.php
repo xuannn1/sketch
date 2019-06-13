@@ -296,7 +296,7 @@ class UsersController extends Controller
                 $reward_base = 1;
                 if(($user->continued_qiandao>=5)&&($user->continued_qiandao%5==0)){
                     $reward_base = intval($user->continued_qiandao/10)+2;
-                    if($reward_base>10){$reward_base = 10;}
+                    if($reward_base > 10){$reward_base = 10;}
                     $message .="您获得了特殊奖励！";
                 }
                 $user->increment('xianyu', 1*$reward_base);

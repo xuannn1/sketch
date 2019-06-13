@@ -16,17 +16,47 @@
                     <div class="admin-symbol">
                         <h1>管理员权限专区</h1>
                     </div>
+                    @if(!$thread->locked)
                     <div class="radio">
-                        <label><input type="radio" name="controlthread" value="1">{{ $thread->locked ? '解锁' : '锁帖' }}</label>
+                        <label><input type="radio" name="controlthread" value="1">锁帖</label>
                     </div>
+                    @else
                     <div class="radio">
-                        <label><input type="radio" name="controlthread" value="2">{{ $thread->public ? '转为私密' : '转为公开' }}</label>
+                        <label><input type="radio" name="controlthread" value="2">解锁</label>
                     </div>
-                    <div class="radio">
-                        <p class="lead admin-symbol"><label><input type="radio" name="controlthread" value="3">{{ $thread->deleted_at ? '恢复已删除' : '删除帖子' }}</label></p>
-                    </div>
+                    @endif
 
-                    <label><input type="radio" name="controlthread" value="4">转换板块（注意，如果点选了下面其他选项，记得回头把这个选一下）</label>
+                    @if($thread->public)
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="3">转私密</label>
+                    </div>
+                    @else
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="4">转公开</label>
+                    </div>
+                    @endif
+
+                    @if(!$thread->bianyuan)
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="15">转边缘</label>
+                    </div>
+                    @else
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="16">转非边缘</label>
+                    </div>
+                    @endif
+
+                    @if(!$thread->deleted_at)
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="5">删除主题</label>
+                    </div>
+                    @else
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="6">恢复主题</label>
+                    </div>
+                    @endif
+
+                    <label><input type="radio" name="controlthread" value="9">转换板块（注意，如果点选了下面其他选项，记得回头把这个选一下）</label>
                     @foreach($channels as $channel)
                     <div class="">
                         <label class="radio-inline"><input type="radio" name="channel" value="{{$channel->id}}" onclick="document.getElementById('{{$channel->channelname}}').style.display = 'block'">{{$channel->channelname}}</label>

@@ -1,6 +1,8 @@
 @if((Auth::user()->admin)||((!$thread->noreply)&&(!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::user()->id))))
 @if(Auth::user()->no_posting > Carbon\Carbon::now() )
 <h6 class="text-center">您被禁言至{{ Carbon\Carbon::parse(Auth::user()->no_posting)->diffForHumans() }}，暂时不能回帖。</h6>
+@elseif(Auth::user()->user_level < 2)
+<h6 class="text-center">您的等级不足2级，不能回帖</h6>
 @else
 <div class="panel-group">
     <form id="replyToThread" action="{{ route('post.store', $thread) }}" method="POST">
@@ -9,6 +11,7 @@
             <span class="" id="reply_to_post_info"></span>
             <button type="button" class="label"><span class="glyphicon glyphicon glyphicon-remove" onclick="cancelreplytopost()"></span></button>
         </div>
+        <h6 class="text-center greyout">请勿无意义水贴意图升级，一经发现积分等级清零处理。</h6>
         <input type="hidden" name="reply_to_post_id" id="reply_to_post_id" class="form-control" value="0"></input>
         <input type="hidden" name="default_chapter_id" id="default_chapter_id" value="{{ $defaultchapter }}"></input>
         <div class="form-group">

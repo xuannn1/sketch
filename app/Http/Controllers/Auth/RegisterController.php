@@ -62,6 +62,16 @@ class RegisterController extends Controller
             'have_read_policy' => 'required',
             'invitation_token' => 'required|string|exists:invitation_tokens,token|max:255',
         ]);
+        $validator->after(function ($validator) {
+            $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
+            if (!$invitation_token){
+                $validator->errors()->add('invitation_token', '邀请码拼写错误，请重新检查，复制粘贴。');
+            }else{
+                if (($invitation_token->invitation_times < 1)||($invitation_token->invite_until <  Carbon::now())){
+                    $validator->errors()->add('invitation_token', '邀请码已失效，请更换新版邀请码');
+                }
+            }
+        });
         return $validator;
     }
 
@@ -77,12 +87,15 @@ class RegisterController extends Controller
         return DB::transaction(function()use($data){
             $user = User::firstOrCreate([
                 'email' => $data['email']
-                ],[
+            ],[
                 'name' => $data['name'],
                 'password' => bcrypt($data['password']),
                 'invitation_token' => $data['invitation_token'],
                 'activated' => true,
             ]);
+            $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
+            $invitation_token->decrement('invitation_times');
+            $invitation_token->increment('invited');
             return $user;
         });
     }

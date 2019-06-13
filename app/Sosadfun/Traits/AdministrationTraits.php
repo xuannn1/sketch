@@ -34,7 +34,7 @@ trait AdministrationTraits{
         })
         ->leftjoin('users as operated_users',function($join)
         {
-            $join->whereIn('administrations.operation',[13,14]);
+            $join->whereIn('administrations.operation',[13,14,18,19,20,30]);
             $join->on('administrations.item_id','=','operated_users.id');
         });
         if ($id>0){

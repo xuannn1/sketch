@@ -116,10 +116,10 @@ class AdminsController extends Controller
             'reason' => 'required|string|max:180',
         ]);
         $var = request('controlthread');
-        if ($var=="1"){
-            $thread->locked = !$thread->locked;
-            $thread->save();
-            if($thread->locked){
+        if ($var=="1"){//锁帖
+            if(!$thread->locked){
+                $thread->locked = true;
+                $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
                     'operation' => '1',//1:锁帖
@@ -127,10 +127,17 @@ class AdminsController extends Controller
                     'reason' => request('reason'),
                     'administratee_id' => $thread->user_id,
                 ]);
-            }else{
+            }
+            return redirect()->back()->with("success","已经成功处理该主题");
+        }
+
+        if ($var=="2"){//解锁
+            if($thread->locked){
+                $thread->locked = false;
+                $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
-                    'operation' => '2',//1:解锁
+                    'operation' => '2',//2:解锁
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
                     'administratee_id' => $thread->user_id,
@@ -138,21 +145,29 @@ class AdminsController extends Controller
             }
             return redirect()->back()->with("success","已经成功处理该主题");
         }
-        if ($var=="2"){
-            $thread->public = !$thread->public;
-            $thread->save();
+
+        if ($var=="3"){//转私密
+            if($thread->public){
+                $thread->public = false;
+                $thread->save();
+                Administration::create([
+                    'user_id' => Auth::id(),
+                    'operation' => '3',//3:转私密
+                    'item_id' => $thread->id,
+                    'reason' => request('reason'),
+                    'administratee_id' => $thread->user_id,
+                ]);
+            }
+            return redirect()->back()->with("success","已经成功处理该主题");
+        }
+
+        if ($var=="4"){//转公开
             if(!$thread->public){
+                $thread->public = true;
+                $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
-                    'operation' => '3',//3:转为私密
-                    'item_id' => $thread->id,
-                    'reason' => request('reason'),
-                    'administratee_id' => $thread->user_id,
-                ]);
-            }else{
-                Administration::create([
-                    'user_id' => Auth::id(),
-                    'operation' => '4',//4:转为公开
+                    'operation' => '4',//4:转公开
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
                     'administratee_id' => $thread->user_id,
@@ -160,7 +175,9 @@ class AdminsController extends Controller
             }
             return redirect()->back()->with("success","已经成功处理该主题");
         }
-        if ($var=="3"){
+
+
+        if ($var=="5"){
             Administration::create([
                 'user_id' => Auth::id(),
                 'operation' => '5',//5:删帖
@@ -171,7 +188,7 @@ class AdminsController extends Controller
             $thread->delete();
             return redirect('/')->with("success","已经删帖");
         }
-        if ($var=="4"){//书本/主题贴转移版块
+        if ($var=="9"){//书本/主题贴转移版块
             DB::transaction(function () use($thread){
                 Administration::create([
                     'user_id' => Auth::id(),
@@ -213,10 +230,11 @@ class AdminsController extends Controller
             $thread->save();
             return redirect()->route('thread.show', $thread)->with("success","已经转移操作");
         }
-        if ($var=="5"){//打边缘限制
-            $thread->bianyuan = !$thread->bianyuan;
-            $thread->save();
-            if($thread->bianyuan){
+
+        if ($var=="15"){//打边缘限制
+            if(!$thread->bianyuan){
+                $thread->bianyuan = true;
+                $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
                     'operation' => '15',//15:转为边缘限制
@@ -224,10 +242,17 @@ class AdminsController extends Controller
                     'reason' => request('reason'),
                     'administratee_id' => $thread->user_id,
                 ]);
-            }else{
+            }
+            return redirect()->back()->with("success","已经成功处理该主题");
+        }
+
+        if ($var=="16"){//取消边缘限制
+            if($thread->bianyuan){
+                $thread->bianyuan = false;
+                $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
-                    'operation' => '16',//16:转为非边缘限制
+                    'operation' => '16',//16:取消边缘限制
                     'item_id' => $thread->id,
                     'reason' => request('reason'),
                     'administratee_id' => $thread->user_id,
@@ -277,18 +302,51 @@ class AdminsController extends Controller
             return redirect()->back()->with("success","已经成功处理该回帖");
         }
         if ($var=="11"){//折叠
-            $post->fold_state = !$post->fold_state;
-            $post->save();
+            if(!$post->fold_state){
+                Administration::create([
+                    'user_id' => Auth::id(),
+                    'operation' => 11, //11 => '折叠帖子'
+                    'item_id' => $post->id,
+                    'reason' => request('reason'),
+                    'administratee_id' => $post->user_id,
+                ]);
+                $post->fold_state = true;
+                $post->save();
+            }
+            return redirect()->back()->with("success","已经成功处理该回帖");
+        }
+        if ($var=="12"){//解折叠
+            if($post->fold_state){
+                Administration::create([
+                    'user_id' => Auth::id(),
+                    'operation' => 12, //12 => '解折帖子'
+                    'item_id' => $post->id,
+                    'reason' => request('reason'),
+                    'administratee_id' => $post->user_id,
+                ]);
+                $post->fold_state = false;
+                $post->save();
+            }
+            return redirect()->back()->with("success","已经成功处理该回帖");
+        }
+
+        if ($var=="30"){//无意义水贴套餐：禁言、折叠、积分清零
             Administration::create([
                 'user_id' => Auth::id(),
-                'operation' => ($post->fold_state? '11':'12'),//11 => '折叠帖子',12 => '解折帖子'
+                'operation' => 30, //30 => 无意义水贴套餐：禁言、折叠、积分清零
                 'item_id' => $post->id,
                 'reason' => request('reason'),
                 'administratee_id' => $post->user_id,
             ]);
+            $post->fold_state = true;
+            $post->save();
+            $user=$post->user;
+            $user->no_posting = Carbon::now()->addDays(1);
+            $user->user_level = 0;
+            $user->jifen = 0;
+            $user->save();
             return redirect()->back()->with("success","已经成功处理该回帖");
         }
-        return redirect()->back()->with("warning","什么都没做");
     }
     public function postcommentmanagement(PostComment $postcomment, Request $request)
     {
@@ -390,6 +448,19 @@ class AdminsController extends Controller
             ]);
             $user->no_logging = Carbon::now();
             $user->no_logging_or_not = 0;
+            $user->save();
+            return redirect()->back()->with("success","已经成功处理该用户");
+        }
+        if ($var=="20"){//用户等级积分清零
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '20',//:用户等级积分清零
+                'item_id' => $user->id,
+                'reason' => request('reason'),
+                'administratee_id' => $user->id,
+            ]);
+            $user->user_level = 0;
+            $user->jifen = 0;
             $user->save();
             return redirect()->back()->with("success","已经成功处理该用户");
         }

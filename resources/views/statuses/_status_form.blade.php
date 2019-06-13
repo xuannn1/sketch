@@ -1,3 +1,4 @@
+@if(Auth::check()&&Auth::user()->no_posting < Carbon\Carbon::now())
 <div class="panel-heading">
     @include('shared.errors')
     <form action="{{ route('statuses.store') }}" method="POST">
@@ -15,3 +16,8 @@
         </div>
     </form>
 </div>
+@else
+<div class="">
+<h6 class="text-center">您被禁言至{{ Carbon\Carbon::parse(Auth::user()->no_posting)->diffForHumans() }}，暂时不能发动态。</h6>
+</div>
+@endif

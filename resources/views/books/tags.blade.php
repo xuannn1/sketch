@@ -19,7 +19,7 @@
                         <h4>通用标签：</h4>
                         <?php $tag_info = 0; ?>
                         @foreach(Helper::tags_general() as $key=>$tag)
-                        @if((Auth::check()&&(Auth::user()->user_level>1))||($tag->tag_group!==5))
+                        @if((Auth::check()&&(Auth::user()->user_level>2))||($tag->tag_group!==5))
                         @if(($tag_info<$tag->tag_info)&&($tag_info>0))
                         <br>
                         @endif
