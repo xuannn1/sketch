@@ -140,10 +140,10 @@ $message_body = 453;
 foreach($receivers as $receiver){
     if ($receiver->id>=23135){
         \App\Models\Message::create([
-          'message_body' => $message_body,
-          'poster_id' => 1,
-          'receiver_id' => $receiver->id,
-          'private' => false,
+            'message_body' => $message_body,
+            'poster_id' => 1,
+            'receiver_id' => $receiver->id,
+            'private' => false,
         ]);
         $receiver->increment('message_reminders');
         $receiver->increment('unread_reminders');
@@ -278,4 +278,28 @@ $outfile = "";
 foreach ($quotes as $quote){
     $user = App\Models\User::find($quote->user_id);
     $outfile .= "题头：". $quote->quote."\n"."作者：".($quote->anonymous ? ($quote->majia ?? '匿名咸鱼') : $user->name)."\n咸鱼数：".$quote->xianyu."\n\n";
+}
+
+
+// 20190613 批量清理零级小号水区回帖
+$post_ids = DB::table('posts')->join('threads','threads.id','=','posts.thread_id')->join('users','users.id','=','posts.user_id')->where('posts.created_at','>','2019-06-12 21:50:00')->where('posts.created_at','<','2019-06-13 01:00:00')->where('users.user_level','=',0)->where('posts.fold_state','=',0)->where('posts.deleted_at','=',null)->where('threads.bianyuan','=',1)->whereRaw('posts.body REGEXP "等级|看不见|看不了|看不到|升级|后悔|我错了|不能看|是0级"')->select('posts.id','posts.user_id')->get();
+foreach ($post_ids as $record){
+    DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'30', 'item_id' => $record->id, 'reason' => '批处理零级小号文区水贴，误伤请版务区申诉', 'administratee_id' => $record->user_id, 'created_at' => Carbon\Carbon::now()->toDateTimeString(), 'updated_at' => Carbon\Carbon::now()->toDateTimeString()]);
+    DB::table('users')->where('id','=',$record->user_id)->update(['no_posting' => '2019-06-14 23:59:59','jifen' => 0,]);
+    DB::table('posts')->where('id','=',$record->id)->update(['fold_state' => 1]);
+}
+
+//20190613 统计批处理最多的号，禁止登陆一周
+
+select count(*) as count, administratee_id as uid
+from administrations
+where operation = 30
+group By administratee_id
+
+$abused = DB::table('administrations')->join('users','users.id','=','administrations.administratee_id')->where('administrations.operation','=',30)->where('users.user_level','=',0)->groupBy('administratee_id')->select(DB::raw('count(*) as count, administratee_id as uid'))->get();
+foreach($abused as $user){
+    if($user->count>3){
+        DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'13', 'item_id' => $user->uid, 'reason' => '连续水贴'.$user->count.'条，每条禁言1天', 'administratee_id' => $user->uid, 'created_at' => Carbon\Carbon::now()->toDateTimeString(), 'updated_at' => Carbon\Carbon::now()->toDateTimeString()]);
+        DB::table('users')->where('id','=',$user->uid)->update(['no_posting' => Carbon\Carbon::now()->addDays($user->count)->toDateTimeString()]);
+    }
 }

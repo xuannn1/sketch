@@ -1,3 +1,9 @@
+@if((($post->bianyuan)||(($thread->bianyuan)))&&(!Auth::check()||(Auth::check()&&(Auth::user()->user_level < 1))))
+<div class="text-center">
+    <h6 class="display-4 grayout"><a href="{{ route('login') }}">本内容为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></h6>
+</div>
+@else
+
 <!-- 回复他人帖子的相关信息 -->
 @if($post->reply_to_post_id!=0)
 <div class="post-reply grayout">
@@ -11,20 +17,16 @@
 
 <div class="main-text {{ $post->indentation? 'indentation':'' }}">
     @if(($post->maintext)&&($channel->channel_state==1))
-    <!-- 章节-标题 -->
-    <div class="text-center h5">
-        <div class="">
-            <strong>{{ $post->chapter->title }}</strong>
+        <!-- 章节-标题 -->
+        <div class="text-center h5">
+            <div class="">
+                <strong>{{ $post->chapter->title }}</strong>
+            </div>
+            <div class="grayout smaller-10">
+                {{ $post->title }}
+            </div>
         </div>
-        <div class="grayout smaller-10">
-            {{ $post->title }}
-        </div>
-    </div>
-    @if((($post->bianyuan)||(($thread->bianyuan)))&&(!Auth::check()||(Auth::check()&&(Auth::user()->user_level < 1))))
-    <div class="text-center">
-        <h6 class="display-4 grayout"><a href="{{ route('login') }}">本章节为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></h6>
-    </div>
-    @else
+
         <!-- 章节-正文 -->
         <div class="chapter">
             @if($post->markdown)
@@ -42,12 +44,12 @@
             <br>
         </div>
         @endif
-    @endif
-    <!-- 章节-数据统计 -->
-    <div class="container-fluid">
-        <u><a class="smaller-10" href="{{ route('book.showchapter', $post->chapter_id) }}">前往文库阅读</a></u>
-        <span class="pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->chapter->characters }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->chapter->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->chapter->responded }}</em></span>
-    </div>
+
+        <!-- 章节-数据统计 -->
+        <div class="container-fluid">
+            <u><a class="smaller-10" href="{{ route('book.showchapter', $post->chapter_id) }}">前往文库阅读</a></u>
+            <span class="pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->chapter->characters }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->chapter->viewed }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->chapter->responded }}</em></span>
+        </div>
     @else
         <!-- 普通回帖展开式 -->
         @if($post->title)
@@ -55,16 +57,13 @@
             <strong>{{ $post->title }}</strong>
         </div>
         @endif
-        @if((($post->bianyuan)||(($thread->bianyuan)))&&(!Auth::check()))
-        <div class="text-center">
-            <h6 class="display-4 grayout"><a href="{{ route('login') }}">回帖隐藏，请登录后查看</a></h6>
-        </div>
+
+        @if($post->markdown)
+        {!! Helper::sosadMarkdown($post->body) !!}
         @else
-            @if($post->markdown)
-            {!! Helper::sosadMarkdown($post->body) !!}
-            @else
-            {!! Helper::wrapParagraphs($post->body) !!}
-            @endif
+        {!! Helper::wrapParagraphs($post->body) !!}
         @endif
+
     @endif
 </div>
+@endif

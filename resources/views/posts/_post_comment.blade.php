@@ -8,14 +8,12 @@
     <a href="{{ route('user.show', $postcomment->owner->id) }}">{{ $postcomment->owner->name }}</a>
     @endif
     <span class="grayout">{{ Carbon\Carbon::parse($postcomment->created_at)->diffForHumans() }}：</span>
-    @if(($thread->bianyuan)&&(!Auth::check()))
-    <div class="text-center">
-        <h6 class="grayout"><a href="{{ route('login') }}">登陆查看点评</a></h6>
-    </div>
+    @if((($post->bianyuan)||(($thread->bianyuan)))&&(!Auth::check()||(Auth::check()&&(Auth::user()->user_level < 1))))
+        <span class="grayout"><a href="{{ route('login') }}">本内容为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></span>
     @else
     {{ $postcomment->body }}
     @endif
-    
+
     @if((Auth::check())&&(Auth::user()->admin))
     @include('admin._delete_postcomment')
     @endif
