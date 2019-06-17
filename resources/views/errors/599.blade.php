@@ -6,6 +6,12 @@
     </head>
 
     <body class="error-page">
-        <h2>抱歉，出错了</h2>
+        <div class="container">
+            <div class="content text-center">
+                <div class="title">
+                    <h2>抱歉，出错了</h2>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

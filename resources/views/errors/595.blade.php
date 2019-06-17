@@ -6,10 +6,14 @@
     </head>
 
     <body class="error-page">
-
-        <h2>您好，废文网数据库不能正常连接，请稍后再来。</h2>
-        <h4>建议等待数分钟后再刷新，一般就可以使用了。</h4>
-        <br>
-
+        <div class="container">
+            <div class="content text-center">
+                <div class="title">
+                    <h1>您好，废文网数据库不能正常连接，请稍后再来。</h1>
+                    <h3>很可能是人太多导致的。建议等待数分钟后再刷新，一般就可以使用了。错峰登陆也可解决问题。</h3>
+                    <br>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

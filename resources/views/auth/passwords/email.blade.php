@@ -24,7 +24,7 @@
                                 <input type="email" class="form-control" name="email" value="{{ old('email') }}">
                             </div>
                         </div>
-
+                        <label for="" class="h6">(有时重置邮件会发送至个人垃圾箱，请注意查看。请注意,<code>不要重复点击</code>“重置”。重复发送邮件会被邮箱系统判断为<code>垃圾邮件</code>拒收。)</label>
                         <button type="submit" class="btn btn-danger sosad-button">重置</button>
 
                     </form>
