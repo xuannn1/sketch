@@ -11,7 +11,10 @@ class PostComment extends Model
     protected $dates = ['deleted_at'];
 
     protected $guarded = [];
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withDefault();
+    }
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();

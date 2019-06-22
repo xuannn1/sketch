@@ -14,7 +14,7 @@
                     {{ csrf_field() }}
                     <div class="form-group">
                         <div>
-                            <textarea name="body" rows="2" id="postcomment{{$post->id}}" class="form-control" placeholder="点评："></textarea>
+                            <textarea name="body" rows="2" id="postcomment{{$post->id}}" class="form-control" placeholder="站内严禁污言秽语人身攻击，讨论气氛有赖每条咸鱼的维护～"></textarea>
                         </div>
                         <div class="text-left">
                             <button type="button" onclick="retrievecache('postcomment{{$post->id}}')" class="sosad-button-control addon-button">恢复数据</button>

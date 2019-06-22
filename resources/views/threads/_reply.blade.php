@@ -14,7 +14,7 @@
         <input type="hidden" name="reply_to_post_id" id="reply_to_post_id" class="form-control" value="0"></input>
         <input type="hidden" name="default_chapter_id" id="default_chapter_id" value="{{ $defaultchapter }}"></input>
         <div class="form-group">
-            <textarea name="body" rows="7" class="form-control" id="markdowneditor" placeholder="评论十个字起哦～请勿无意义水贴，会遭到等级积分清零。文区气氛有赖每一条咸鱼的爱惜维护～" value="{{ old('body') }}"></textarea>
+            <textarea name="body" rows="7" class="form-control" id="markdowneditor" placeholder="评论十个字起哦～请勿无意义水贴，站内严禁污言秽语、人身攻击，文区气氛有赖每一条咸鱼的爱惜维护～" value="{{ old('body') }}"></textarea>
             <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
             <button type="button" onclick="removespace('markdowneditor')" class="sosad-button-control addon-button">清理段首空格</button>
             <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>

@@ -36,14 +36,18 @@
                             @endforeach
                         </ul>
                     </span>
+
                     <span class="button-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">限制<span class="caret"></span></button>
                         <ul class="dropdown-menu">
-                            @foreach(config('constants.book_info.rating_info') as $key=>$rating)
-                            <li><input type="checkbox" name="rating[]" value={{$key}} checked />&nbsp;{{$rating}}</li>
-                            @endforeach
+                            <li><input type="checkbox" name="rating[]" value="1" checked />&nbsp;非边限</li>
+                            @if(Auth::check()&&Auth::user()->user_level>3)
+                                <li><input type="checkbox" name="rating[]" value="2" />&nbsp;边限</li>
+                            @endif
                         </ul>
+
                     </span>
+
                     <span class="button-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">排序<span class="caret"></span></button>
                         <ul class="dropdown-menu">

@@ -353,7 +353,8 @@ class AdminsController extends Controller
         $this->validate($request, [
             'reason' => 'required|string',
         ]);
-        if(request("delete")){
+        $var = request('controlpostcomment');//
+        if($var=='8'){
             Administration::create([
                 'user_id' => Auth::id(),
                 'operation' => '8',//:删回帖
@@ -362,6 +363,23 @@ class AdminsController extends Controller
                 'administratee_id' => $postcomment->user_id,
             ]);
             $postcomment->delete();
+            return redirect()->back()->with("success","已经成功处理该点评");
+        }
+        if ($var=="31"){//无意义水贴套餐：禁言、折叠、积分清零
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => 31, //30 => 无意义点评套餐：禁言、折叠、积分清零
+                'item_id' => $postcomment->id,
+                'reason' => request('reason'),
+                'administratee_id' => $postcomment->user_id,
+            ]);
+            $postcomment->deleted_at = Carbon::now();
+            $postcomment->save();
+            $user=$postcomment->user;
+            $user->no_posting = Carbon::now()->addDays(1);
+            $user->user_level = 0;
+            $user->jifen = 0;
+            $user->save();
             return redirect()->back()->with("success","已经成功处理该点评");
         }
         return redirect()->back()->with("warning","什么都没做");
