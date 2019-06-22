@@ -74,7 +74,7 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request, 'auth.failed_activated');
           }
           if ($user->no_logging_or_not == 1) {
-            return $this->sendFailedLoginResponse($request, 'auth.failed_allowedlogging'.'解禁时间:'.Carbon::parse($user->no_logging)->setTimezone('Asia/Shanghai'));
+            return $this->sendFailedLoginResponse($request, '您的账户被禁止登陆，'.'解禁时间:'.Carbon::parse($user->no_logging)->setTimezone('Asia/Shanghai')->format('Y-m-d'));
           }
         }
 
