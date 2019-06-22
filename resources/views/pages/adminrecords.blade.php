@@ -16,7 +16,7 @@
                             &nbsp;
                             {{ Carbon\Carbon::parse($record->created_at)->setTimezone('Asia/Shanghai') }}
                             {{ $admin_operation[$record->operation] }}
-                            {!! $record->operated_users_name.' '.Helper::trimtext($record->thread_title.$record->post_body.$record->postcomment_body.$record->status_body,20) !!}
+                            {!! $record->operated_users_name.' '.Helper::trimtext($record->thread_title.$record->post_body.$record->postcomment_body.$record->status_body,30) !!}
                             &nbsp;
                             原因：{{ $record->reason }}
                         </h5>
