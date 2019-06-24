@@ -154,6 +154,9 @@
    Route::get('/admin/longcomments', 'AdminsController@longcommentsreview')->name('admin.review_longcomments');//审核是否允许成为长评
    Route::get('/admin/searchusersform', 'AdminsController@searchusersform')->name('admin.searchusersform');//审核是否存在某用户
    Route::get('/admin/searchusers', 'AdminsController@searchusers')->name('admin.searchusers');//审核是否存在某用户
+   Route::get('/admin/invitation_token', 'InvitationTokensController@index')->name('invitation_tokens.index');//管理员查看邀请码列表
+   Route::get('/admin/invitation_token/create', 'InvitationTokensController@create')->name('invitation_token.create');//管理员新建邀请码
+   Route::post('/admin/invitation_token/store', 'InvitationTokensController@store')->name('invitation_token.store');//管理员储存邀请码
 
 }
 

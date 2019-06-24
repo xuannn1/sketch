@@ -20,6 +20,10 @@ class NoLogControl
                 Auth::logout();
                 return $next($request);
             }
+            if(!Auth::user()->activated){
+                Auth::logout();
+                return $next($request);
+            }
         }
         return $next($request);
     }

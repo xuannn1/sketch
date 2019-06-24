@@ -42,7 +42,7 @@
                         <div class="">
                             <span class="lead">限制：</span>
                             <input type="checkbox" name="rating[]" value="1" checked/>&nbsp;非边限&nbsp;&nbsp;&nbsp;
-                            @if(Auth::check()&&Auth::user()->user_level>3)
+                            @if(Auth::check()&&Auth::user()->user_level>=3)
                             <input type="checkbox" name="rating[]" value="2"/>&nbsp;边限&nbsp;&nbsp;&nbsp;
                             @endif
                         </div>

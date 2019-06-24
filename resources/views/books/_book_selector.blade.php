@@ -41,7 +41,7 @@
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">限制<span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li><input type="checkbox" name="rating[]" value="1" checked />&nbsp;非边限</li>
-                            @if(Auth::check()&&Auth::user()->user_level>3)
+                            @if(Auth::check()&&Auth::user()->user_level>=3)
                                 <li><input type="checkbox" name="rating[]" value="2" />&nbsp;边限</li>
                             @endif
                         </ul>

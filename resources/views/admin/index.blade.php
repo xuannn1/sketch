@@ -59,6 +59,10 @@
                     <li><a href="{{ route('recommend_books.create') }}">添加推荐书籍</a></li>
                     <li><a href="{{ route('recommend_books.index') }}">推荐书籍列表</a></li>
                 </ul>
+                <h4>邀请码（Invitation Token）管理</h4>
+                <ul>
+                    <li><a href="{{ route('invitation_tokens.index') }}">查看邀请码列表</a></li>
+                </ul>
             </div>
         </div>
     </div>

@@ -60,8 +60,26 @@
                             <br>
                         </div>
                         <div class="panel-footer text-center">
-                            <input type="checkbox" name="have_read_policy" value=true>
-                            <span>我已阅读并同意注册协议</span>&nbsp;<u><a href="{{'about'}}">协议详情</a></u>
+                            <div class="text-center chapter">
+                                <label for="promise">注册担保：</label>
+                                <h6 class="grayout">请手工输入下面这句红色的话：</h6>
+                                <h6 class="" style="color:#f44248"><em>{{ config('constants.register_promise') }}</em></h6>
+                                <input type="text" name="promise" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="panel-footer text-center h6">
+                            <div class="">
+                                <input type="checkbox" name="have_read_policy1" value=true>
+                                <span>我知道在所有页面的右下角的《帮助》页面可以找到所有使用疑难解答</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
+                            </div>
+                            <div class="">
+                                <input type="checkbox" name="have_read_policy2" value=true>
+                                <span>我知道在所有页面的右下角的《关于》页面可以找到本站介绍和《版规》</span>&nbsp;<u><a href="{{'about'}}">关于页面</a></u>
+                            </div>
+                            <div class="">
+                                <input type="checkbox" name="have_read_policy3" value=true>
+                                <span>我已阅读《版规》中约定的社区公约，同意遵守版规</span>&nbsp;<u><a href="{{ route('thread.show', 136) }}">版规详情</a></u>
+                            </div>
                         </div>
                     </div>
                     <div class="text-center">

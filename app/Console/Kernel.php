@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     */
     protected $commands = [
         \App\Console\Commands\CountWebStat::class,
+        \App\Console\Commands\RefreshToken::class,
     ];
 
     /**
@@ -43,6 +44,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('testlog:send')
         ->name('testlog:send')
         ->hourly()
+        ->onOneServer();
+        $schedule->command('token:refresh')
+        ->name('token:refresh')
+        ->daily()
+        ->timezone('Asia/Shanghai')
+        ->between('3:00', '5:00')
         ->onOneServer();
     }
 

@@ -59,10 +59,16 @@ class RegisterController extends Controller
             'name' => 'required|string|alpha_dash|max:12|unique:users',
             'email' => 'required|string|email|max:255|unique:users|confirmed',
             'password' => 'required|string|min:8|confirmed',
-            'have_read_policy' => 'required',
+            'have_read_policy1' => 'required',
+            'have_read_policy2' => 'required',
+            'have_read_policy3' => 'required',
             'invitation_token' => 'required|string|exists:invitation_tokens,token|max:255',
+            'promise' => 'required',
         ]);
         $validator->after(function ($validator) {
+            if(request('promise')!=config('constants.register_promise')){
+                $validator->errors()->add('promise', '注册担保输入不正确，请认真打字，重新输入。');
+            }
             $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
             if (!$invitation_token){
                 $validator->errors()->add('invitation_token', '邀请码拼写错误，请重新检查，复制粘贴。');
@@ -91,7 +97,7 @@ class RegisterController extends Controller
                 'name' => $data['name'],
                 'password' => bcrypt($data['password']),
                 'invitation_token' => $data['invitation_token'],
-                'activated' => true,
+                'activated' => false,
             ]);
             $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
             $invitation_token->decrement('invitation_times');
@@ -108,13 +114,12 @@ class RegisterController extends Controller
             $user = $this->create($request->all());
             $expiresAt = Carbon::now()->addMinutes(10);
             Cache::put('registration-limit-' . request()->ip(), true, $expiresAt);
-            session()->flash('success', '账户已建立并激活，直接登录就可以玩耍了，快来试试吧！');
+            event(new Registered($user));
+            $this->sendEmailConfirmationTo($user);
+            session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
         }else{
             session()->flash('danger', '您的IP十分钟内已经成功注册，请尝试直接登陆您已注册的账户。');
         }
-        // event(new Registered($user));
-        // $this->sendEmailConfirmationTo($user);
-        // session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
         return redirect('/');
     }
 
@@ -125,9 +130,9 @@ class RegisterController extends Controller
         $from = env('MAIL_USERNAME','null');
         $name = env('MAIL_NAME','null');
         $to = $user->email;
-        $subject = "感谢注册废文网！请确认你的邮箱。";
+        $subject = $user->name."您好，感谢注册废文网！请确认你的邮箱。";
 
-        Mail::queue($view, $data, function ($message) use ($from, $name, $to, $subject) {
+        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
             $message->from($from, $name)->to($to)->subject($subject);
         });
     }

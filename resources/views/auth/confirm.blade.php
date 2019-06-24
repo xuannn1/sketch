@@ -2,10 +2,10 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>注册确认链接</title>
+    <title>{{ $user->name }}的注册确认链接</title>
 </head>
 <body>
-    <h1>感谢您在 废文网 进行注册！</h1>
+    <h1>{{ $user->name }}&nbsp;您好，感谢您在 废文网 进行注册！</h1>
 
     <p>
         请点击下面的链接完成注册：
