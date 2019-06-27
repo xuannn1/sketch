@@ -29,7 +29,7 @@
                     <div class="form-group">
                         <label for="email_confirmation">确认邮箱：</label>
                         <input type="text" name="email_confirmation" class="form-control" value="{{ old('email_confirmation') }}">
-                        <h6><span style="color:#d66666">请【【仔细】】检查邮箱输入情况，确认邮箱无误。几乎所有的登陆问题都是邮箱输入错误导致。输入错误的邮箱将无法激活自己的账户，也无法找回自己的账户。</span></h6>
+                        <h6><span style="color:#d66666">友情提醒，请【仔细】检查邮箱输入情况，确认邮箱无误！</span>输入错误的邮箱将无法激活自己的账户，也无法找回自己的账户。<br>虽然很多用户都说自己的输入“绝对没有问题”，然而实践表明，几乎——几乎——所有的登陆问题都是邮箱输入错误导致……<br>为了确保验证邮件正常送达，请务必使用个人<code>目前常用、可用的</code>邮箱地址。</h6>
                     </div>
 
                     <div class="form-group">

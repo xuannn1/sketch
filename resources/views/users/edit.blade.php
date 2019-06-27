@@ -31,6 +31,7 @@
                         <h6>最新验证邮件发送于 {{ Carbon\Carbon::parse($last_email->created_at)->diffForHumans() }}</h6>
                         <h6 class="grayout">请仔细检查个人收件箱/垃圾箱，或通过搜索引擎帮助修改自己的垃圾邮件设置，再重发邮件。</h6>
                         <h6 class="grayout">友情提醒，新邮件会取消所有旧邮件的验证资格（显示为“令牌不存在”），且重复发件容易被收件箱拒收，因此请您等待恰当时间间隔再行重发邮件。</h6>
+                        <h6>如果一直无法收到验证邮件，建议彻底更换邮箱。</h6>
                         @endif
                         @endif
                     </div>
