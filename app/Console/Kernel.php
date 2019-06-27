@@ -36,9 +36,8 @@ class Kernel extends ConsoleKernel
         //->everyFiveMinutes();
         $schedule->command('cache:clear')
         ->name('cache:clear')
-        ->daily()
         ->timezone('Asia/Shanghai')
-        ->between('3:00', '5:00')
+        ->dailyAt('4:00')
         ->withoutOverlapping(10)
         ->onOneServer();
         $schedule->command('testlog:send')
@@ -47,9 +46,8 @@ class Kernel extends ConsoleKernel
         ->onOneServer();
         $schedule->command('token:refresh')
         ->name('token:refresh')
-        ->daily()
         ->timezone('Asia/Shanghai')
-        ->between('3:00', '5:00')
+        ->dailyAt('3:00')
         ->onOneServer();
     }
 

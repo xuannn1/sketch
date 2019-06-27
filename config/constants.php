@@ -10,6 +10,7 @@ return [
    'longcomment_lenth' => 200, //“长评”必须达到该字数
    'default_user_group' => 10,
    'online_count_interval' => 10, //统计在线时间时，间隔多少分钟的时间算一次。
+   'monthly_email_resets' => 5, //一个月能修改多少次邮箱
    'default_majia' => '匿名咸鱼',
 
    'collection_type_info' => [
@@ -108,6 +109,8 @@ return [
       20 => '等级清零',
       30 => '无意义水贴套餐：禁言、折叠、积分清零',
       31 => '无意义点评套餐：禁言、折叠、积分清零',
+      40 => '帖子上浮',
+      41 => '帖子下沉',
    ],
    'activities' => [
       '1' => '回复主题',

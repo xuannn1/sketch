@@ -154,6 +154,7 @@ return [
         'have_read_policy1'     => '帮助文档已阅勾选',
         'have_read_policy2'     => '关于文档已阅勾选',
         'have_read_policy3'     => '版规文档已阅勾选',
+        'have_read_policy4'     => '年龄担保已勾选',
         'promise'               => '注册担保',
         'originalornot'         => '原创性',
         'book_status'           => '连载进度',

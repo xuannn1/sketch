@@ -11,6 +11,9 @@ use Auth;
 use Hash;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\EmailModifyHistory;
+use App\Models\PasswordReset;
+use Mail;
 
 class UsersController extends Controller
 {
@@ -21,7 +24,7 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'only' => ['edit', 'update', 'destroy', 'qiandao'],
+            'only' => ['edit', 'update', 'edit_email', 'update_email', 'destroy', 'qiandao', 'send_email_confirmation'],
         ]);
     }
     public function findbooks($id, $paginate)
@@ -249,36 +252,73 @@ class UsersController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        return view('users.edit', compact('user'));
+        $last_email = PasswordReset::where('email','=',$user->email)->latest()->first();
+        $email_confirmed = $user->activation_token ? false:true;
+        return view('users.edit', compact('user','last_email','email_confirmed'));
     }
     public function update(Request $request)
     {
-        //dd($request);
+        $user = Auth::user();
+        $this->validate($request, [
+            'introduction' => 'string|nullable|max:2000',
+        ]);
+        $user->update([
+            'introduction' => request('introduction'),
+        ]);
+        return redirect()->route('user.show', Auth::id())->with("success", "您已成功修改个人资料");
+    }
+
+    public function edit_email()
+    {
+        $user = Auth::user();
+        $previous_history_counts = EmailModifyHistory::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
+        return view('users.edit_email', compact('user','previous_history_counts'));
+    }
+
+    public function update_email(Request $request)
+    {
         $user = Auth::user();
         if(Hash::check(request('old-password'), $user->password)) {
-            // if ((request('name'))&&(request('name')!=$user->name)){//要修改名字
-            //    $this->validate($request, [
-            //       'name' => 'required|string|alpha_dash|max:10|unique:users',
-            //    ]);
-            // }
             $this->validate($request, [
-                'introduction' => 'string|nullable|max:2000',
+                'email' => 'required|string|email|max:255|unique:users|confirmed',
             ]);
-            if (request('password')){//要修改密码
-                $this->validate($request, [
-                    'password' => 'required|min:8|max:16|confirmed',
-                ]);
-                $user->update(['password' => bcrypt(request('password'))]);
+            $old_email = $user->email;
+            $previous_history_counts = EmailModifyHistory::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
+            if ($previous_history_counts>=config('constants.monthly_email_resets')){
+                return redirect()->back()->with('warning','一个月内只能修改'.config('constants.monthly_email_resets').'次邮箱。');
             }
-            $user->update([
-                // 'name' => request('name'),
-                'introduction' => request('introduction'),
+            EmailModifyHistory::create([
+                'old-email' => $old_email,
+                'new-email' => request('email'),
+                'user_id' => Auth::id(),
+                'ip_address' => request()->ip(),
             ]);
-            return redirect()->route('user.show', Auth::id())->with("success", "您已成功修改个人资料");
-        }else{
-            return back()->with("danger", "您的旧密码输入错误");
+            $user->email = request('email');
+            $user->activation_token = str_random(30);
+            $user->save();
+            return redirect()->route('users.edit', Auth::id())->with("success", "您已成功修改个人资料");
         }
+        return back()->with("danger", "您的旧密码输入错误");
     }
+
+
+    public function edit_password(){
+        $user = Auth::user();
+        return view('users.edit_password', compact('user'));
+    }
+
+    public function update_password(Request $request){
+        $user = Auth::user();
+        if(Hash::check(request('old-password'), $user->password)) {
+            $this->validate($request, [
+                'password' => 'required|min:8|max:16|confirmed',
+            ]);
+            $user->update(['password' => bcrypt(request('password'))]);
+            return redirect()->route('users.edit', Auth::id())->with("success", "您已成功修改个人密码");
+        }
+        return back()->with("danger", "您的旧密码输入错误");
+    }
+
     public function qiandao()
     {
         $user = Auth::user();

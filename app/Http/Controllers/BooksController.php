@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreBook;
 use App\Sosadfun\Traits\BookTraits;
+use App\Sosadfun\Traits\RecordViewHistoryTraits;
 use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\Book;
@@ -19,6 +20,7 @@ use Auth;
 class BooksController extends Controller
 {
     use BookTraits;
+    use RecordViewHistoryTraits;
 
     public function __construct()
     {
@@ -62,8 +64,11 @@ class BooksController extends Controller
     {
         $thread = $book->thread;
         if($thread->id>0){
-            if(!Auth::check()||(Auth::id()!=$thread->user_id)){
-                $thread->increment('viewed');
+            if(Auth::check()){
+                $view_history=$this->recordViewHistory(request()->ip(),Auth::id(),$thread->id,0);
+                if(Auth::id()!=$thread->user_id){
+                    $thread->increment('viewed');
+                }
             }
             $book->load('chapters.mainpost_info','tongren');
             $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);

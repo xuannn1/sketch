@@ -18,6 +18,7 @@
 
    Route::post('login', 'Auth\LoginController@login')->name('login');
    Route::get('register/confirm/{token}', 'Auth\RegisterController@confirmEmail')->name('confirm_email');//确认邮箱正确
+   Route::get('/user/send_email_confirmation', 'Auth\RegisterController@resend_email_confirmation')->name('email_confirmation.send'); // 重新发送当前用户的注册邮箱
     Route::get('/linkedaccounts','LinkedAccountsController@index')->name('linkedaccounts.index');
    Route::get('/linkedaccounts/create','LinkedAccountsController@create')->name('linkedaccounts.create');
    Route::post('/linkedaccounts/store','LinkedAccountsController@store')->name('linkedaccounts.store');
@@ -65,7 +66,14 @@
    Route::post('/followers/togglekeepupdate', 'FollowersController@togglekeepupdate')->name('followers.togglekeepupdate');//是否订阅动态更新提醒
    Route::get('/users', 'UsersController@index')->name('users.index');//展示所有用户，按最后签到时间排序
    Route::get('/user/edit', 'UsersController@edit')->name('users.edit');//更改用户的个人信息
+
    Route::post('/user/update', 'UsersController@update')->name('users.update');//更新用户的个人信息
+   Route::get('/user/edit_email', 'UsersController@edit_email')->name('users.edit_email');//更改用户的邮箱信息
+   Route::post('/user/update_email', 'UsersController@update_email')->name('users.update_email');//更新用户的邮箱信息
+   Route::get('/user/edit_password', 'UsersController@edit_password')->name('users.edit_password');//更改用户的密码信息
+   Route::post('/user/update_password', 'UsersController@update_password')->name('users.update_password');//更新用户的密码信息
+
+
 }
 
 {//以下展示论坛贴按标签（label）与板块（channel）分布的视图

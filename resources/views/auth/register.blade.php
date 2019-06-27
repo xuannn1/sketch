@@ -29,7 +29,7 @@
                     <div class="form-group">
                         <label for="email_confirmation">确认邮箱：</label>
                         <input type="text" name="email_confirmation" class="form-control" value="{{ old('email_confirmation') }}">
-                        <h6><span style="color:#d66666">请仔细检查邮箱输入情况，几乎所有的登陆问题都是邮箱输入错误导致。输入错误的邮箱将无法找回自己的账户。</span></h6>
+                        <h6><span style="color:#d66666">请【【仔细】】检查邮箱输入情况，确认邮箱无误。几乎所有的登陆问题都是邮箱输入错误导致。输入错误的邮箱将无法激活自己的账户，也无法找回自己的账户。</span></h6>
                     </div>
 
                     <div class="form-group">
@@ -43,7 +43,10 @@
                     </div>
                     <div class="form-group">
                         <label for="invitation_token">邀请码：</label>
-                        <h6 class="grayout">（邀请码可以从朋友处得到，可以从站内公用邀请码楼得到，也可以关注站子答疑总微博 @废文网大内总管 ，私信留言关键词“邀请码”自动获取～）</h6>
+                        <h6 class="grayout">（ 邀请码详情查看微博号“废文网大内总管”，或查看站内 <a href="{{ route('thread.show', 2615) }}">公用邀请码楼</a> ）</h6>
+                        <h6 class="grayout">（ 公共邀请码最近一次“刷新”大约发生在
+                            {!! Carbon\Carbon::parse(Helper::system_variable()->token_refreshed_at)->diffForHumans() !!} ）
+                        </h6>
                         <input type="text" name="invitation_token" class="form-control" value="{{ old('invitation_token') }}">
                     </div>
                     <div class="panel panel-default text-center">
@@ -64,21 +67,25 @@
                                 <label for="promise">注册担保：</label>
                                 <h6 class="grayout">请手工输入下面这句红色的话：</h6>
                                 <h6 class="" style="color:#f44248"><em>{{ config('constants.register_promise') }}</em></h6>
-                                <input type="text" name="promise" class="form-control" value="">
+                                <input type="text" name="promise" class="form-control" value="{{ old('promise') }}">
                             </div>
                         </div>
                         <div class="panel-footer text-center h6">
                             <div class="">
                                 <input type="checkbox" name="have_read_policy1" value=true>
-                                <span>我知道在所有页面的右下角的《帮助》页面可以找到所有使用疑难解答</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
+                                <span>我知道在所有页面的右下角的《帮助》页面可以找到各种使用疑难解答</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
                             </div>
                             <div class="">
                                 <input type="checkbox" name="have_read_policy2" value=true>
-                                <span>我知道在所有页面的右下角的《关于》页面可以找到本站介绍和《版规》</span>&nbsp;<u><a href="{{'about'}}">关于页面</a></u>
+                                <span>我知道在所有页面的右下角的《关于》页面可以找到本站介绍和《版规》入口</span>&nbsp;<u><a href="{{'about'}}">关于页面</a></u>
                             </div>
                             <div class="">
                                 <input type="checkbox" name="have_read_policy3" value=true>
                                 <span>我已阅读《版规》中约定的社区公约，同意遵守版规</span>&nbsp;<u><a href="{{ route('thread.show', 136) }}">版规详情</a></u>
+                            </div>
+                            <div class="">
+                                <input type="checkbox" name="have_read_policy4" value=true>
+                                <span>我已<span style="color:#d66666">年满十八周岁</span>，神智健全清醒，保证为自己的言行负责。</span>
                             </div>
                         </div>
                     </div>

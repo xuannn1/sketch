@@ -12,7 +12,7 @@
             <form method="POST" action="{{ route('thread.store', $channel->id) }}">
                 {{ csrf_field() }}
                 <?php $labels = $channel->labels()->get(); ?>
-                <h6>（<span style="color:#d66666">开帖前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a>，不要违反版规哦</span>。想要在帖子中讨论边缘限制内容，请移步<a href="http://sosad.fun/threads/1863">《<u>午夜场申请专楼</u> 》</a>。需要帮助可以前往版务区<a href="http://sosad.fun/threads/88">《<u>文章帖子删除、转移、编辑等专楼</u> 》</a>求助。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">《<u>关于本站</u>》</a>，<a href="{{ route('help') }}">《<u>使用帮助</u>》</a>，或前往答疑楼<a href="http://sosad.fun/threads/49">《<u>废文网使用答疑</u>》提问</a>。感谢开楼讨论！）</h6>
+                <h5><span style="color:#d66666">开帖前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a>，不要违反版规哦</span>。<br>想要在帖子中讨论<code>边缘限制</code>内容，请移步<a href="http://sosad.fun/threads/1863">《<u>午夜场申请专楼</u> 》</a>。<br>需要<code>帮助</code>可以前往版务区<a href="http://sosad.fun/threads/88">《<u>文章帖子删除、转移、编辑等专楼</u> 》</a>求助。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">《<u>关于本站</u>》</a>，<a href="{{ route('help') }}">《<u>使用帮助</u>》</a>，或前往答疑楼<a href="http://sosad.fun/threads/49">《<u>废文网使用答疑</u>》提问</a>。<br>请不要轻率发布关于“<code>升级</code>”，“<code>签到</code>”，“<code>边限看不到</code>”等话题的日经讨论，不光会被下沉锁定，还有可能面临积分等级<code>清零</code>！<br>感谢开楼讨论!</h5>
                 <h4>请选择主题对应类型：</h4>
                 @foreach ($labels as $index => $label)
                 <label class="radio-inline"><input type="radio" name="label" value="{{ $label->id }}">{{ $label->labelname }}</label>

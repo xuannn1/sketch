@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 use App\Http\Requests\StoreThread;
 use App\Sosadfun\Traits\ThreadTraits;
-
+use App\Sosadfun\Traits\RecordViewHistoryTraits;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Models\Tag;
@@ -27,6 +27,7 @@ use App\Helpers\Helper;
 class threadsController extends Controller
 {
     use ThreadTraits;
+    use RecordViewHistoryTraits;
 
     public function __construct()
     {
@@ -77,8 +78,11 @@ class threadsController extends Controller
         ->paginate(config('constants.items_per_page'))
         ->appends($request->only('useronly','page'));
         //$thread->load(['creator', 'tags', 'mainpost']);
-        if(!Auth::check()||(Auth::id()!=$thread->user_id)){
-            $thread->increment('viewed');
+        if(Auth::check()){
+            $view_history=$this->recordViewHistory(request()->ip(),Auth::id(),$thread->id,0);
+            if(Auth::id()!=$thread->user_id){
+                $thread->increment('viewed');
+            }
         }
         $book = [];
         if($thread->book_id>0){

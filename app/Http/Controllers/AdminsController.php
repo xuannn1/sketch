@@ -260,6 +260,32 @@ class AdminsController extends Controller
             }
             return redirect()->back()->with("success","已经成功处理该主题");
         }
+        if ($var=="40"){// 上浮
+            $thread->lastresponded_at = Carbon::now();
+            $thread->save();
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '40',//40:上浮
+                'item_id' => $thread->id,
+                'reason' => request('reason'),
+                'administratee_id' => $thread->user_id,
+            ]);
+            return redirect()->back()->with("success","已经成功处理该主题");
+        }
+
+        if ($var=="41"){// 下沉
+            $thread->lastresponded_at = Carbon::now()->subMonths(6);
+            $thread->save();
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '41',//41:下沉
+                'item_id' => $thread->id,
+                'reason' => request('reason'),
+                'administratee_id' => $thread->user_id,
+            ]);
+            return redirect()->back()->with("success","已经成功处理该主题");
+        }
+        
         return redirect()->back()->with("danger","请选择操作类型（转换板块？）");
     }
     public function postmanagement(Post $post, Request $request)

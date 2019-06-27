@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use DB;
+use Carbon\Carbon;
+use Cache;
 
 class RefreshToken extends Command
 {
@@ -41,5 +43,10 @@ class RefreshToken extends Command
         DB::table('invitation_tokens')
         ->where('refresh_times','>',0)
         ->update(['invitation_times' => DB::raw('refresh_times')]);
+
+        DB::table('system_variables')
+        ->update(['token_refreshed_at' => Carbon::now()]);
+
+        Cache::pull('system_variable');
     }
 }

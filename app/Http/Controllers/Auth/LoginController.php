@@ -27,17 +27,17 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
+    * Where to redirect users after login.
+    *
+    * @var string
+    */
     protected $redirectTo = '/';
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    * Create a new controller instance.
+    *
+    * @return void
+    */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
@@ -70,37 +70,38 @@ class LoginController extends Controller
         $this->incrementLoginAttempts($request);
         // Customization: If client status is inactive (0) return failed_status error.
         if($user){
-          if ($user->activated == 0) {
-            return $this->sendFailedLoginResponse($request, 'auth.failed_activated');
-          }
-          if ($user->no_logging_or_not == 1) {
-            return $this->sendFailedLoginResponse($request, '您的账户被禁止登陆，'.'解禁时间:'.Carbon::parse($user->no_logging)->setTimezone('Asia/Shanghai')->format('Y-m-d'));
-          }
+            if ($user->no_logging_or_not == 1) {
+                return $this->sendFailedLoginResponse($request, '您的账户被禁止登陆，'.'解禁时间:'.Carbon::parse($user->no_logging)->setTimezone('Asia/Shanghai')->format('Y-m-d'));
+            }
         }
 
         return $this->sendFailedLoginResponse($request);
     }
     /**
-     * Get the needed authorization credentials from the request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
+    * Get the needed authorization credentials from the request.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return array
+    */
     protected function credentials(Request $request)
     {
-        $credentials = $request->only($this->username(), 'password');
+        if(filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)){
+            $credentials = ['email'=>$request->get('email'),'password'=>$request->get('password')];
+        }else{
+            $credentials = ['name'=>$request->get('email'),'password'=>$request->get('password')];
+        }
         // Customization: validate if client status is active (1)
-        $credentials['activated'] = 1;
-        $credentials['no_logging_or_not'] = 0;
+        // $credentials['activated'] = 1;
+        // $credentials['no_logging_or_not'] = 0;
         return $credentials;
     }
     /**
-     * Get the failed login response instance.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $field
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    * Get the failed login response instance.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  string  $field
+    * @return \Illuminate\Http\RedirectResponse
+    */
     protected function sendFailedLoginResponse(Request $request, $trans = 'auth.failed')
     {
         $errors = [$this->username() => trans($trans)];
@@ -108,8 +109,8 @@ class LoginController extends Controller
             return response()->json($errors, 422);
         }
         return redirect()->back()
-            ->withInput($request->only($this->username(), 'remember'))
-            ->withErrors($errors);
+        ->withInput($request->only($this->username(), 'remember'))
+        ->withErrors($errors);
     }
 
     function authenticated(Request $request, $user)
@@ -120,7 +121,7 @@ class LoginController extends Controller
     }
     public function redirectTo()
     {
-      return (Session::get('backUrl') ? Session::get('backUrl') : $this->redirectTo);
+        return (Session::get('backUrl') ? Session::get('backUrl') : $this->redirectTo);
     }
     public function logout(Request $request)
     {
@@ -131,10 +132,10 @@ class LoginController extends Controller
         return redirect()->back();
     }
     public function getLogout()
-   {
-       Auth::logout();
+    {
+        Auth::logout();
 
-       return redirect()->back();
-   }
+        return redirect()->back();
+    }
 
 }

@@ -18,7 +18,8 @@
             <form method="POST" action="{{ route('book.store') }}" name="create_book">
                 {{ csrf_field() }}
                 <div>
-                    <h6>（<span style="color:#d66666">发文前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a>，不要违反版规哦</span>。“原创小说”，“同人小说”从这里发文。但如果文章属于“随笔”、“诗歌”、”读书心得”、“私人笔记”、”日记”等不能用传统小说归纳的类目，请移步首页，选择对应板块发布文章。除文章原创性之外，其他内容均可日后修改，需要帮助可以前往版务区<a href="http://sosad.fun/threads/88">《<u>文章帖子删除、转移、编辑等专楼</u> 》</a>求助。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">《<u>关于本站</u>》</a>，<a href="{{ route('help') }}">《<u>使用帮助</u>》</a>，或前往答疑楼<a href="http://sosad.fun/threads/49">《<u>废文网使用答疑</u>》提问</a>。感谢发文！）</h6>
+                    <h5><span style="color:#d66666">发文前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a>，不要违反版规哦</span>!<br>“<code>原创小说</code>”，“<code>同人小说</code>”从这里发文。<br>但如果文章属于“随笔”、“诗歌”、”读书心得”、“私人笔记”、”日记”等不能用传统小说归纳的类目，请移步首页，选择对应板块发布文章。<br>除文章原创性之外，其他内容均可日后修改。<br>需要帮助可以前往版务区<a href="http://sosad.fun/threads/88">《<u>文章帖子删除、转移、编辑等专楼</u> 》</a>求助。关于网站使用的常规问题，可以查看如下页面：<a href="{{ route('about') }}">《<u>关于本站</u>》</a>，<a href="{{ route('help') }}">《<u>使用帮助</u>》</a>，或前往答疑楼<a href="http://sosad.fun/threads/49">《<u>废文网使用答疑</u>》提问</a>。<br>感谢发文！<br></h5>
+                    <br>
                     <h4>1. 请选择文章原创性</h4>
                     <label class="radio-inline"><input type="radio" name="channel_id" value="1"  onclick="document.getElementById('yuanchuang').style.display = 'block'; document.getElementById('tongren').style.display = 'none';uncheckAll('tongrentags');document.getElementById('tongrentags').style.display = 'none'" {{ old('channel_id')=='1'?'checked':''}}>原创</label>
                     <label class="radio-inline"><input type="radio" name="channel_id" value="2"  onclick="document.getElementById('tongren').style.display = 'block'; document.getElementById('yuanchuang').style.display = 'none';document.getElementById('tongrentags').style.display = 'block'"{{ old('channel_id')=='2'?'checked':''}}>同人</label>
@@ -112,7 +113,7 @@
                 <div class="form-group">
                     <label for="brief"><h4>7. 简介：</h4></label>
                     <div id="biaotiguiding" class="h6">
-                        <span style="color:#d66666">简介中不得含有性描写、性暗示成分。<span>
+                        <span style="color:#d66666">简介中不得含有性描写、性暗示成分。<span>简介中请勿放置与文章无关的内容。
                     </div>
                     <input type="text" name="brief" class="form-control" value="{{ old('brief') }}" placeholder="请输入不超过25字的简介">
                 </div>

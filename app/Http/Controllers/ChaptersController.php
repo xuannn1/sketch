@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreChapter;
 use Illuminate\Support\Facades\DB;
-
+use App\Sosadfun\Traits\RecordViewHistoryTraits;
 use App\Models\Label;
 use App\Models\Thread;
 use App\Models\Book;
@@ -20,6 +20,8 @@ use Auth;
 
 class ChaptersController extends Controller
 {
+    use RecordViewHistoryTraits;
+
     public function createChapterForm(Book $book)
     {
         if (Auth::id()==$book->thread->creator->id){
@@ -83,9 +85,14 @@ class ChaptersController extends Controller
             ->with(['owner', 'comments.owner', 'reply_to_post'])
             ->latest()
             ->paginate(config('constants.items_per_page'));
-            if(!Auth::check()||(Auth::id()!=$thread->user_id)){
-                $chapter->increment('viewed');
+
+            if(Auth::check()){
+                $view_history=$this->recordViewHistory(request()->ip(),Auth::id(),$thread->id,$chapter->post_id);
+                if(Auth::id()!=$thread->user_id){
+                    $chapter->increment('viewed');
+                }
             }
+
             return view('chapters.chaptershow', compact('chapter', 'posts', 'thread', 'book', 'previous', 'next'))->with('chapter_replied',false);
         }else{
             return redirect()->route('error', ['error_code' => '404']);

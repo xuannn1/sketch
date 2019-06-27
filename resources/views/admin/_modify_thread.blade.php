@@ -40,6 +40,10 @@
                 </div>
                 @endif
 
+                <div class="radio">
+                    <label><input type="radio" name="controlthread" value="40">帖子上浮（顶帖）</label>
+                </div>
+
                 @if(!$thread->deleted_at)
                 <div class="radio">
                     <label><input type="radio" name="controlthread" value="5">删除主题</label>

@@ -11,7 +11,7 @@
                 <form method="POST" action="{{ route('login') }}">
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label for="email">邮箱：</label>
+                        <label for="email">邮箱/用户名：</label>
                         <input type="text" name="email" class="form-control" value="{{ old('email') }}">
                     </div>
                     <div class="form-group">
