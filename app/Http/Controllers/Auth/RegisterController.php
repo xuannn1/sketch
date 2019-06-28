@@ -167,7 +167,7 @@ class RegisterController extends Controller
         $user->activation_token = null;
         $user->save();
         session()->flash('success', '恭喜你，激活成功！');
-        return view('auth.login');
+        return redirect('/');
     }
 
     public function resend_email_confirmation(){
