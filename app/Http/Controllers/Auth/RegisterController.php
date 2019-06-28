@@ -49,7 +49,7 @@ class RegisterController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('guest')->except('resend_email_confirmation');
+        $this->middleware('guest')->except('resend_email_confirmation','confirmEmail');
         $this->middleware('auth')->only('resend_email_confirmation');
     }
 
