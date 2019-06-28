@@ -1,12 +1,9 @@
 <?php
-
 namespace App\Auth;
-
 use App\Models\User;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Support\Facades\Cache;
-
 /**
  * Class CacheUserProvider
  * @package App\Auth
@@ -21,14 +18,13 @@ class CacheUserProvider extends EloquentUserProvider
     {
         parent::__construct($hasher, User::class);
     }
-
     /**
      * @param mixed $identifier
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function retrieveById($identifier)
     {
-        return Cache::remember('user.' . $identifier, 60, function () use ($identifier) {
+        return Cache::remember('user-auth.' . $identifier, 60, function () use ($identifier) {
             return parent::retrieveById($identifier);
         });
     }
