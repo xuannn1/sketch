@@ -279,7 +279,7 @@ public static function all_quiz_answers()
 
 public static function find_quiz_set($quiz_id)
 {
-    return Cache::remember('quiz-'.$quiz_id, 30, function() use($quiz_id) {
+    return Cache::remember('quiz-'.$quiz_id, 20, function() use($quiz_id) {
         $quiz = Quiz::with('quiz_options')->find($quiz_id);
         return $quiz;
     });

@@ -24,13 +24,13 @@
                 <div class="">
                     正确选项：
                     @foreach($quiz_set['correct_answers'] as $answer)
-                    {{ $answer }}&nbsp;
+                    qoid{{ $answer }},&nbsp;
                     @endforeach
                 </div>
                 <div class="">
                     您的选项：
                     @foreach($quiz_set['submitted_answers'] as $answer)
-                    {{ $answer }}&nbsp;
+                    qoid{{ $answer }},&nbsp;
                     @endforeach
                 </div>
             </div>
