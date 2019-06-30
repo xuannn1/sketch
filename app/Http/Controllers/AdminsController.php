@@ -285,7 +285,7 @@ class AdminsController extends Controller
             ]);
             return redirect()->back()->with("success","已经成功处理该主题");
         }
-        
+
         return redirect()->back()->with("danger","请选择操作类型（转换板块？）");
     }
     public function postmanagement(Post $post, Request $request)
@@ -442,6 +442,11 @@ class AdminsController extends Controller
             'noposting-hours' => 'required|numeric',
             'nologging-days' => 'required|numeric',
             'nologging-hours' => 'required|numeric',
+            'jifen' => 'required|numeric',
+            'shengfan' => 'required|numeric',
+            'xianyu' => 'required|numeric',
+            'sangdian' => 'required|numeric',
+            'level' => 'required|numeric',
         ]);
         $var = request('controluser');//
         if ($var=="13"){//设置禁言时间
@@ -505,6 +510,22 @@ class AdminsController extends Controller
             ]);
             $user->user_level = 0;
             $user->jifen = 0;
+            $user->save();
+            return redirect()->back()->with("success","已经成功处理该用户");
+        }
+        if ($var=="50"){// 分值管理
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '50',//: 分值管理
+                'item_id' => $user->id,
+                'reason' => request('reason'),
+                'administratee_id' => $user->id,
+            ]);
+            $user->jifen +=  (int)request('jifen');
+            $user->shengfan +=  (int)request('shengfan');
+            $user->xianyu +=  (int)request('xianyu');
+            $user->sangdian +=  (int)request('sangdian');
+            $user->user_level +=  (int)request('level');
             $user->save();
             return redirect()->back()->with("success","已经成功处理该用户");
         }

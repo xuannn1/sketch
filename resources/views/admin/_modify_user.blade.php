@@ -29,6 +29,14 @@
                 <div class="radio">
                     <label><input type="radio" name="controluser" value="20">用户等级积分归零</label>
                 </div>
+                <div class="radio">
+                    <label><input type="radio" name="controluser" value="50">分值管理（正加分，负减分，请在<code>管理理由</code>中记录具体分值）</label>
+                    <label><input type="text" style="width: 40px" name="jifen" value="0">积分</label>
+                    <label><input type="text" style="width: 40px" name="shengfan" value="0">剩饭</label>
+                    <label><input type="text" style="width: 40px" name="xianyu" value="0">咸鱼</label>
+                    <label><input type="text" style="width: 40px" name="sangdian" value="0">丧点</label>
+                    <label><input type="text" style="width: 40px" name="level" value="0">等级</label>
+                </div>
                 <div class="form-group">
                     <label for="reason"></label>
                     <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)"></textarea>
