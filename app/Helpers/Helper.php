@@ -8,6 +8,7 @@ use App\Models\Channel;
 use App\Models\Label;
 use App\Models\Tag;
 use App\Models\Xianyu;
+use App\Models\Quiz;
 use Cache;
 use DB;
 
@@ -232,6 +233,17 @@ public static function wrapParagraphs($post= null)
     return $post;
 }
 
+public static function wrapSpan($post= null)
+{
+    $post = self::trimSpaces($post);
+    $bbCode = new BBCode();
+    $bbCode = self::addCustomParserBBCode($bbCode);
+    $post = $bbCode->convertToHtml($post);
+    $post = preg_replace('/\n{1,}/', "<br>", $post);
+    $post = "{$post}";
+    return $post;
+}
+
 public static function convert_to_public($string= null)
 {
     $badstring = config('constants.word_filter.not_in_public');
@@ -250,4 +262,27 @@ public static function convertBBCodetoMarkdown($string){//其实反过来的。�
     $string = BBCode::convertToHtml($string);
     return $string;
 }
+
+public static function random_quizzes($level=0)
+{
+    return Cache::remember('random_quizzes'.$level, 10, function () use ($level) {
+        return Quiz::with('random_options')->where('quiz_level','=',$level)->inRandomOrder()->take(config('constants.quiz_test_number'))->get();
+    });
+}
+
+public static function all_quiz_answers()
+{
+    return Cache::remember('all_quiz_answers', 20, function() {
+        return DB::table('quiz_options')->select('id', 'quiz_id', 'is_correct')->get();
+    });
+}
+
+public static function find_quiz_set($quiz_id)
+{
+    return Cache::remember('quiz-'.$quiz_id, 30, function() use($quiz_id) {
+        $quiz = Quiz::with('quiz_options')->find($quiz_id);
+        return $quiz;
+    });
+}
+
 }

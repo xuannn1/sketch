@@ -63,6 +63,11 @@
                 <ul>
                     <li><a href="{{ route('invitation_tokens.index') }}">查看邀请码列表</a></li>
                 </ul>
+
+                <h4>答题测试（Quiz）管理</h4>
+                <ul>
+                    <li><a href="{{ route('quiz.review') }}">查看题库列表</a></li>
+                </ul>
             </div>
         </div>
     </div>

@@ -175,6 +175,10 @@ return [
         'sexual_orientation'    => '性向',
         'channel_id'            => '版块',
         'label_id'              => '类别',
+        'quiz-body'             => '题干',
+        'quiz-hint'             => '答题提示',
+        'quiz-level'            => '题目等级',
+        'quiz-option'           => '题目选项',
     ],
 
 ];

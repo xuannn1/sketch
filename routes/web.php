@@ -246,3 +246,15 @@
     Route::get('/recommend_books/{recommend_book}/edit', 'RecommendBooksController@edit')->name('recommend_books.edit');//修改书籍信息
     Route::post('/recommend_books/{recommend_book}/update', 'RecommendBooksController@update')->name('recommend_books.update');//保存修改
 }
+
+// 答题测试模块 quiz
+{
+    Route::get('admin/quiz/review', 'QuizController@review')->name('quiz.review');//管理员查看所有的题目
+    Route::get('admin/quiz/create', 'QuizController@create')->name('quiz.create');//管理员增加题目
+    Route::post('admin/quiz/store', 'QuizController@store')->name('quiz.store');//管理员存储新题目
+    Route::get('admin/quiz/{quiz}/edit','QuizController@edit')->name('quiz.edit');//管理员修改某题目
+    Route::get('admin/quiz/{quiz}','QuizController@show')->name('quiz.show');//管理员修改某题目
+    Route::post('admin/quiz/{quiz}/update','QuizController@update')->name('quiz.update');//管理员更新某题目
+    Route::get('quiz/taketest','QuizController@taketest')->name('quiz.taketest');//测试
+    Route::post('quiz/submittest','QuizController@submittest')->name('quiz.submittest');//测试
+}

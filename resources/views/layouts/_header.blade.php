@@ -10,6 +10,10 @@
                     @endif
                     @if (Auth::check()&&(Auth::user()->lastrewarded_at <= Carbon\Carbon::today()->subHours(2)->toDateTimeString()))
                     <li><a href="{{ route('qiandao') }}" style="color:#d66666">我要签到</a></li>
+                    @else
+                        @if(Auth::check()&&Auth::user()->admin&&!Auth::user()->quizzed)
+                        <li><a href="{{ route('quiz.taketest') }}" style="color:#e3a300">我要答题</a></li>
+                        @endif
                     @endif
                     @if(Auth::check())
                     <li><a href="{{ route('statuses.collections') }}">动态</a></li>
@@ -31,6 +35,9 @@
                             <li><a href="{{ route('book.create') }}">我要发文</a></li>
                             @endif
                             <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ auth()->user()->unreadmessages()>0 ? auth()->user()->unreadmessages():''}}</span></a></li>
+                            @if(Auth::user()->admin)
+                            <li><a href="{{ route('quiz.taketest') }}">我要答题</a></li>
+                            @endif
                             <li><a href="{{ route('linkedaccounts.index') }}">切换马甲</a></li>
                             <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">退出</a>

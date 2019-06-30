@@ -26,7 +26,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password', 'lastresponded_at', 'introduction', 'invitation_token', 'majia', 'maximum_qiandao' , 'unread_messages', 'indentation',
+        'name', 'email', 'password', 'lastresponded_at', 'introduction', 'invitation_token', 'majia', 'maximum_qiandao' , 'unread_messages', 'indentation', 'last_quizzed_at',
     ];
 
     /**
@@ -278,6 +278,15 @@ class User extends Authenticatable
             break;
             case "online_reward"://保持登陆奖励
             $this->increment('experience_points',1);
+            break;
+            case "first_quiz":// 首次答题奖励
+            $this->increment('experience_points',10);
+            $this->increment('jifen',10);
+            $this->increment('xianyu',2);
+            break;
+            case "more_quiz":// 重复答题奖励
+            $this->increment('experience_points',5);
+            $this->increment('shengfan',5);
             break;
             default:
             echo "应该奖励什么呢？一个bug呀……";

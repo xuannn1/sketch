@@ -17,10 +17,10 @@ class FilterThread
     */
     public function handle($request, Closure $next)
     {
-        if(Auth::check()&&!Auth::user()->activated){
+        $thread = $request->route('thread');
+        if($thread->bianyuan&&Auth::check()&&!Auth::user()->activated){
             return redirect()->route('users.edit', Auth::id())->with("warning", "您的邮箱尚未激活，请激活后再访问该版面");
         }
-        $thread = $request->route('thread');
         $channel= Helper::allChannels()->keyBy('id')->get($thread->channel_id);
         if($thread&&$channel){
             if ((Auth::check())&&((Auth::user()->admin)||($thread->user_id == Auth::id()))){//原作者本人或管理员可见帖子

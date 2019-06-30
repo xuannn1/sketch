@@ -12,7 +12,7 @@ return [
    'online_count_interval' => 10, //统计在线时间时，间隔多少分钟的时间算一次。
    'monthly_email_resets' => 5, //一个月能修改多少次邮箱
    'default_majia' => '匿名咸鱼',
-
+   'quiz_test_number' => 5, //目前每次测试取5道题
    'collection_type_info' => [
       1 => '书籍收藏单',
       2 => '讨论贴收藏单',
