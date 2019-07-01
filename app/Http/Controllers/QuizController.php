@@ -131,7 +131,7 @@ class QuizController extends Controller
             }
         }
         if(empty($wrong_quiz)){
-            if(!$user->quizzed){
+            if(!$user->last_quizzed_at){
                 $user->reward('first_quiz');
                 $user->last_quizzed_at = Carbon::now();
                 $user->save();

@@ -18,6 +18,7 @@
 
                     <div class="form-group">
                         <label for="old-email">邮箱：</label>
+                        <h6><a href="route('thread.show', 14361)">（戳我看《万能的邮箱激活验证/修改/使用指南》）</a> </h6>
                         <input type="text" name="email" class="form-control" value="{{ $user->email }}" disabled>
                         @if($email_confirmed)
                         <p><span class="glyphicon glyphicon-ok">该邮箱已验证</span></p>
