@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 @endif
-                @if(Auth::check()&&(Auth::user()->user_level>2))
+                @if($show_bianyuan_tab&&Auth::check()&&(Auth::user()->user_level>2))
                 <a class="btn btn-primary sosad-button pull-right" href="{{ route('channel.show', array_merge(['channel' => $channel->id, 'showbianyuan' => request()->showbianyuan?'':'1'], request()->only('label', 'sexual_orientation', 'orderby'))) }}" role="button">{{request()->showbianyuan?'取消':''}}显示边限</a>
                 @endif
                 @include('threads._threads')

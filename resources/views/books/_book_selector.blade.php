@@ -11,7 +11,7 @@
             <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">篇幅<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach(config('constants.book_info.book_length_info') as $key=>$book_length)
-                <li><a href="{{ route('books.index', array_merge(['book_length'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{$book_length}}</a></li>
+                <li><a href="{{ route('books.index', array_merge(['book_length'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{$book_length}}</a></li>
                 @endforeach
             </ul>
         </span>
@@ -19,7 +19,7 @@
             <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">进度<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach(config('constants.book_info.book_status_info') as $key=>$book_status)
-                <li><a href="{{ route('books.index', array_merge(['book_status'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ $book_status }}</a></li>
+                <li><a href="{{ route('books.index', array_merge(['book_status'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_length',  'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ $book_status }}</a></li>
                 @endforeach
             </ul>
         </span>
@@ -27,7 +27,7 @@
             <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">性向<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach(config('constants.book_info.sexual_orientation_info') as $key=>$sexual_orientation)
-                <li><a href="{{ route('books.index', array_merge(['sexual_orientation'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ $sexual_orientation }}</a></li>
+                <li><a href="{{ route('books.index', array_merge(['sexual_orientation'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'book_tag', 'orderby'))) }}">{{ $sexual_orientation }}</a></li>
                 @endforeach
             </ul>
         </span>
@@ -39,11 +39,8 @@
                 @endforeach
             </ul>
         </span>
+        <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control" href="{{ route('book.selector') }}">复合筛选</a>
+        <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control" href="{{ route('book.tags') }}">标签列表</a>
 
-        &nbsp;&nbsp;&nbsp;
-        <span class="pull-right">
-            <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control" href="{{ route('book.selector') }}">复合筛选</a>&nbsp;
-            <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control" href="{{ route('book.tags') }}">标签列表</a>
-        </span>
     </div>
 </div>

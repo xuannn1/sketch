@@ -56,7 +56,7 @@
 
                 <div class="form-group">
                     <label for="reason"></label>
-                    <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)"></textarea>
+                    <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)，以及处理参数（如禁言时间，精华时间）。"></textarea>
                 </div>
                 <a href="{{ route('admin.advancedthreadform', $thread) }}">高级管理</a>
                 <div class="">

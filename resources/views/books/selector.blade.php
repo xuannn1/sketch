@@ -7,53 +7,52 @@
             <div>
                 <form method="POST" action="{{ route('books.filter') }}"  name="book_filter">
                     {{ csrf_field() }}
-                    <div class="">
-                        <a type="button" name="button" class="btn btn-xs btn-primary sosad-button-control pull-right" href="{{ route('book.tags') }}">标签列表</a>
-                    </div>
+                    <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control pull-right" href="{{ route('book.tags') }}">标签列表</a>
                     <div class="selector detailed-selector">
                         <h4>类别筛选：</h4>
+
                         <h6 class="grayout">（类别筛选仅显示符合全部已勾选的结果，等级较低时一部分筛选项不可见）</h6>
-                        <div class="">
+                        <div class="h4">
                             <span class="lead">原创性：</span>
                             <input type="checkbox" name="original[]" value="1" checked />&nbsp;原创&nbsp;&nbsp;&nbsp;
                             <input type="checkbox" name="original[]" value="2" checked />&nbsp;同人&nbsp;&nbsp;&nbsp;
                         </div>
 
-                        <div class="">
+                        <div class="h4">
                             <span class="lead">篇幅：</span>
                             @foreach(config('constants.book_info.book_length_info') as $key=>$book_length)
                             <input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_length}}&nbsp;&nbsp;&nbsp;
                             @endforeach
                         </div>
 
-                        <div class="">
+                        <div class="h4">
                             <span class="lead">进度：</span>
                             @foreach(config('constants.book_info.book_status_info') as $key=>$book_status)
                             <input type="checkbox" name="status[]" value={{$key}} checked/>&nbsp;{{$book_status}}&nbsp;&nbsp;&nbsp;
                             @endforeach
                         </div>
 
-                        <div class="">
+                        <div class="h4">
                             <span class="lead">性向：</span>
                             @foreach(config('constants.book_info.sexual_orientation_info') as $key=>$sexual_orientation)
                             <input type="checkbox" name="sexual_orientation[]" value={{$key}} checked/>&nbsp;{{$sexual_orientation}}&nbsp;&nbsp;&nbsp;
                             @endforeach
                         </div>
-                        <div class="">
+                        <div class="h4">
                             <span class="lead">限制：</span>
                             <input type="checkbox" name="rating[]" value="1" checked/>&nbsp;非边限&nbsp;&nbsp;&nbsp;
                             @if(Auth::check()&&Auth::user()->user_level>=3)
                             <input type="checkbox" name="rating[]" value="2"/>&nbsp;边限&nbsp;&nbsp;&nbsp;
                             @endif
                         </div>
-                        <div class="">
+                        <div class="h4">
                             <span class="lead">排序：</span>
                             @foreach(config('constants.book_info.orderby_info') as $key=>$orderby)
                             <input type="radio" name="orderby" value={{$key}} checked />&nbsp;{{$orderby}}&nbsp;&nbsp;&nbsp;
                             @endforeach
                         </div>
 
-                        <div class="">
+                        <div class="h4">
                             <div class="">
                                 <h4>通用标签：</h4>
                                 <h6 class="grayout">（通用标签筛选会显示符合以下任意已勾选标签的结果，等级较低时一部分筛选项不可见）</h6>

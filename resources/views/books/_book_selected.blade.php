@@ -33,10 +33,14 @@
     <a class="btn btn-info sosad-button-control" href="{{ route('books.index',
     request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag')) }}" role="button">{{ config('constants.book_info.orderby_info')[request()->orderby] }}<span class="glyphicon glyphicon-remove"></span></a>
     @endif
-    
-    @if(Auth::check()&&(Auth::user()->user_level>2)&&$show_bianyuan_tab)
-    <a class="btn btn-primary sosad-button pull-right" href="{{ route('books.index',
-    array_merge(['showbianyuan' => request()->showbianyuan?'':'1'], request()->only('channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag' ))) }}" role="button">显示边限<span class="{{ request()->showbianyuan?'glyphicon glyphicon-remove':''}}"></span></a>
-    @endif
 
+
+    @if(Auth::check()&&(Auth::user()->user_level>2)&&$show_bianyuan_tab)
+    <span class="pull-right">
+        &nbsp;
+        <a class="btn btn-primary sosad-button" href="{{ route('books.index',
+        array_merge(['showbianyuan' => request()->showbianyuan?'':'1'], request()->only('channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag' ))) }}" role="button">显示边限<span class="{{ request()->showbianyuan?'glyphicon glyphicon-remove':''}}"></span></a>
+        &nbsp;&nbsp;&nbsp;
+    </span>
+    @endif
 </div>

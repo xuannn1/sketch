@@ -330,3 +330,5 @@ foreach($abused as $user){
         DB::table('users')->where('id','=',$user->uid)->update(['no_posting' => Carbon\Carbon::now()->addDays($user->count)->toDateTimeString()]);
     }
 }
+
+DB::table('recommend_books')->join('threads','threads.id','=','recommend_books.thread_id')->where('recommend_books.long','=',0)->where('recommend_books.valid','=',1)->update(['threads.recommended'=>1]);
