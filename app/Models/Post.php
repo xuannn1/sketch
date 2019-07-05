@@ -71,8 +71,8 @@ class Post extends Model
     {
         if (!$this->maintext){//必须不能是某章节正文
             $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$this->body);
-            $lenth = iconv_strlen($string, 'utf-8');
-            if($lenth>=config('constants.longcomment_lenth')){
+            $length = iconv_strlen($string, 'utf-8');
+            if($length>=config('constants.longcomment_length')){
                 $longcomment = LongComment::firstOrCreate(['post_id' => $this->id,]);
                 $this->update(['long_comment'=>1,'long_comment_id'=>$longcomment->id]);
                 $this->user->reward('longcomment');

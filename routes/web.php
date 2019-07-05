@@ -37,6 +37,7 @@
     Route::get('/search','PagesController@search')->name('search');
     Route::get('error/{error_code}', 'PagesController@error')->name('error');
     Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
+    Route::get('/administrationrecords/self', 'PagesController@self_adminnistrationrecords')->name('administrationrecords.self');
     Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
     Route::get('/recommend_records', 'PagesController@recommend_records')->name('recommend_records');//普通用户查看推荐书籍历史
 }
@@ -121,7 +122,7 @@
    Route::get('/chapters/{chapter}/edit', 'ChaptersController@edit')->name('book.editchapter');//编辑章节
    Route::post('chapters/{chapter}/update', 'ChaptersController@update')->name('book.updatechapter');//编辑章节
    Route::get('/books', 'BooksController@index')->name('books.index');//看全部书
-   Route::get('/book-tag/{booktag}','BooksController@booktag')->name('books.booktag');//图书过滤-tag
+   // Route::get('/book-tag/{booktag}','BooksController@booktag')->name('books.booktag');//图书过滤-tag
    Route::get('/bookselector/{bookquery}','BooksController@selector')->name('books.selector');//图书过滤
    Route::post('/book-filter','BooksController@filter')->name('books.filter');//输入过滤信息表格
    Route::get('/tags', 'BooksController@tags')->name('book.tags');//全站标签列表

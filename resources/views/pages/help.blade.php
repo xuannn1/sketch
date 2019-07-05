@@ -280,7 +280,7 @@
                                                 <li>信息每分区显示：{{ $data['items_per_part'] }}个</li>
                                                 <li>目录每页显示：{{ $data['index_per_page'] }}个</li>
                                                 <li>目录每分区显示：{{ $data['index_per_part'] }}个</li>
-                                                <li>长评标准：{{ $data['longcomment_lenth'] }}字</li>
+                                                <li>长评标准：{{ $data['longcomment_length'] }}字</li>
                                                 <li>新章节的更新字数必须达到{{ $data['update_min'] }}字，才能计入本书“最后更新”的排名数据（顶帖）</li>
                                             </ul>
                                         </div>

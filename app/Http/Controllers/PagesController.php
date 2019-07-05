@@ -28,7 +28,7 @@ class PagesController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'only' => ['search'],
+            'only' => ['search', 'self_adminnistrationrecords'],
         ]);
     }
 
@@ -168,7 +168,14 @@ class PagesController extends Controller
     {
         $records = $this->findAdminRecords(0,config('constants.index_per_page'));
         $admin_operation = config('constants.administrations');
-        return view('pages.adminrecords',compact('records','admin_operation'));
+        return view('pages.adminrecords',compact('records','admin_operation'))->with('active','1');
+    }
+
+    public function self_adminnistrationrecords()
+    {
+        $records = $this->findAdminRecords(Auth::id(),config('constants.index_per_page'));
+        $admin_operation = config('constants.administrations');
+        return view('pages.adminrecords',compact('records','admin_operation'))->with('active','2');
     }
 
     public function search(Request $request){

@@ -5,7 +5,10 @@
             <!-- thread title -->
             <span>
                 @if( $thread->top == 1)
-                <span class="btn btn-xs btn-success sosad-button tag-button-left tag-red">置顶</span>
+                <span class="badge newchapter-badge badge-tag">置顶</span>
+                @endif
+                @if( $thread->jinghua > Carbon\Carbon::now())
+                <span class="badge newchapter-badge badge-tag">精华</span>
                 @endif
                 <span class="bigger-20"><strong><a href="{{ route('thread.show', $thread->id) }}">
                     {{ $thread->title }}

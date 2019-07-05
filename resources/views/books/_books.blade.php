@@ -46,10 +46,10 @@
             </span>
             <small>
                 @if($book->tongren_yuanzhu_tagname)
-                <a class="btn btn-xs btn-success tag-button-left tag-blue" href="{{ route('books.booktag', $book->tongren_yuanzhu_tag_id) }}">{{$book->tongren_yuanzhu_tagname}}</a>
+                <a class="btn btn-xs btn-success tag-button-left tag-blue" href="{{ route('books.index', ['book_tag'=>$book->tongren_yuanzhu_tag_id]) }}">{{$book->tongren_yuanzhu_tagname}}</a>
                 @endif
                 @if($book->tongren_cp_tagname)
-                <a class="btn btn-xs btn-warning tag-button-right tag-yellow" href="{{ route('books.booktag', $book->tongren_cp_tag_id) }}">{{$book->tongren_cp_tagname}}</a>
+                <a class="btn btn-xs btn-warning tag-button-right tag-yellow" href="{{ route('books.index', ['book_tag'=>$book->tongren_cp_tag_id]) }}">{{$book->tongren_cp_tagname}}</a>
                 @endif
                 @if( $book->bianyuan == 1)
                 <span class="badge bianyuan-tag badge-tag">限</span>
@@ -67,6 +67,17 @@
                 <span class="glyphicon glyphicon-warning-sign"></span>
                 @endif
             </small>
+            @if( $book->recommended == 1)
+            <span class="recommend-label">
+                <span class="glyphicon glyphicon-grain recommend-icon"></span>
+                <span class="recommend-text">推</span>
+            </span>
+            @endif
+            @if( $book->jinghua > Carbon\Carbon::now())
+            <span class="jinghua-label">
+                <span class="glyphicon glyphicon-thumbs-up jinghua-icon"></span>
+            </span>
+            @endif
             @if(($show_as_collections)&&($book->updated))
             <span class="badge newchapter-badge">有更新</span>
             @endif
@@ -88,7 +99,7 @@
         <div class="col-xs-12 h5 brief">
             <span class="grayout smaller-10"><a href="{{ route('book.showchapter', $book->last_chapter_id) }}">{{ $book->last_chapter_title }}</a></span>
             <span class="pull-right smaller-10"><em>
-                <a href="{{ route('books.index',['channel'=>(int)($book->channel_id)]) }}">{{ config('constants.book_info')['channel_info'][$book->channel_id] }}</a>-<a href="{{ route('books.index',['book_length'=>$book->book_length]) }}">{{ config('constants.book_info')['book_lenth_info'][$book->book_length] }}</a>-<a href="{{ route('books.index',['book_status'=>$book->book_status]) }}">{{ config('constants.book_info')['book_status_info'][$book->book_status] }}</a>-<a href="{{ route('books.index',['label'=>$book->label_id]) }}">{{ $book->labelname }}</a>-<a href="{{ route('books.index',['sexual_orientation'=>$book->sexual_orientation]) }}">{{ config('constants.book_info')['sexual_orientation_info'][$book->sexual_orientation] }}</a>
+                <a href="{{ route('books.index', array_merge(['channel'=>(int)($book->channel_id)], request()->only('showbianyuan', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ config('constants.book_info')['channel_info'][$book->channel_id] }}</a>-<a href="{{ route('books.index',array_merge(['book_length'=>$book->book_length], request()->only('showbianyuan', 'channel', 'label', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ config('constants.book_info')['book_length_info'][$book->book_length] }}</a>-<a href="{{ route('books.index',array_merge(['book_status'=>$book->book_status], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ config('constants.book_info')['book_status_info'][$book->book_status] }}</a>-<a href="{{ route('books.index',array_merge(['label'=>$book->label_id], request()->only('showbianyuan', 'channel', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ $book->labelname }}</a>-<a href="{{ route('books.index',array_merge(['sexual_orientation'=>$book->sexual_orientation], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'book_tag', 'orderby'))) }}">{{ config('constants.book_info')['sexual_orientation_info'][$book->sexual_orientation] }}</a>
             </em></span>
         </div>
         @if(($show_as_collections==2)&&($book->collection_body))

@@ -1,66 +1,49 @@
+<div class="selector">
+    <div class="dropdown">
+        <span class="button-group">
+            <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">原创<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a class="" href="{{ route('books.index', array_merge(['channel'=>'1'], request()->only('showbianyuan', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">原创</a></li>
+                <li><a href="{{ route('books.index', array_merge(['channel'=>'2'], request()->only('showbianyuan', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">同人</a></li>
+            </ul>
+        </span>
+        <span class="button-group">
+            <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">篇幅<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                @foreach(config('constants.book_info.book_length_info') as $key=>$book_length)
+                <li><a href="{{ route('books.index', array_merge(['book_length'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{$book_length}}</a></li>
+                @endforeach
+            </ul>
+        </span>
+        <span class="button-group">
+            <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">进度<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                @foreach(config('constants.book_info.book_status_info') as $key=>$book_status)
+                <li><a href="{{ route('books.index', array_merge(['book_status'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ $book_status }}</a></li>
+                @endforeach
+            </ul>
+        </span>
+        <span class="button-group">
+            <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">性向<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                @foreach(config('constants.book_info.sexual_orientation_info') as $key=>$sexual_orientation)
+                <li><a href="{{ route('books.index', array_merge(['sexual_orientation'=>$key], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby'))) }}">{{ $sexual_orientation }}</a></li>
+                @endforeach
+            </ul>
+        </span>
+        <span class="button-group">
+            <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">排序方式<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                @foreach(config('constants.book_info.orderby_info') as $key=>$orderby)
+                <li><a class="dropdown-item" href="{{ route('books.index', array_merge(['orderby' => $key], request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag'))) }}">{{ $orderby }}</a></li>
+                @endforeach
+            </ul>
+        </span>
 
-<div class="container-fluid">
-    <div class="row text-center">
-        <form method="POST" action="{{ route('books.filter') }}"  name="book_filter">
-            {{ csrf_field() }}
-            <div class="selector brief-selector">
-                <div class="dropdown">
-                    <span class="button-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">原创<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <li><input type="checkbox" name="original[]" value="1"checked />&nbsp;原创</li>
-                            <li><input type="checkbox" name="original[]" value="2"checked />&nbsp;同人</li>
-                        </ul>
-                    </span>
-                    <span class="button-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">篇幅<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            @foreach(config('constants.book_info.book_lenth_info') as $key=>$book_lenth)
-                            <li><input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_lenth}}</li>
-                            @endforeach
-                        </ul>
-                    </span>
-                    <span class="button-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">进度<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            @foreach(config('constants.book_info.book_status_info') as $key=>$book_status)
-                            <li><input type="checkbox" name="status[]" value={{$key}} checked />&nbsp;{{$book_status}}</li>
-                            @endforeach
-                        </ul>
-                    </span>
-                    <span class="button-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">性向<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            @foreach(config('constants.book_info.sexual_orientation_info') as $key=>$sexual_orientation)
-                            <li><input type="checkbox" name="sexual_orientation[]" value={{$key}} checked />&nbsp;{{$sexual_orientation}}</li>
-                            @endforeach
-                        </ul>
-                    </span>
-
-                    <span class="button-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">限制<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            <li><input type="checkbox" name="rating[]" value="1" checked />&nbsp;非边限</li>
-                            @if(Auth::check()&&Auth::user()->user_level>=3)
-                                <li><input type="checkbox" name="rating[]" value="2" />&nbsp;边限</li>
-                            @endif
-                        </ul>
-
-                    </span>
-
-                    <span class="button-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">排序<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                            @foreach(config('constants.book_info.orderby_info') as $key=>$orderby)
-                            <li><input type="radio" name="orderby" value={{$key}} checked/>{{ $orderby }}</li>
-                            @endforeach
-                        </ul>
-                    </span>
-                    <button type="submit" name="button" class="btn btn-xs btn-primary sosad-button">提交</button>&nbsp;&nbsp;&nbsp;
-                    <a type="button" name="button" class="btn btn-xs btn-primary sosad-button-control" href="{{ route('book.selector') }}">展开筛选</a>
-                    <a type="button" name="button" class="btn btn-xs btn-primary sosad-button-control" href="{{ route('book.tags') }}">标签列表</a>
-                </div>
-            </div>
-        </form>
+        &nbsp;&nbsp;&nbsp;
+        <span class="pull-right">
+            <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control" href="{{ route('book.selector') }}">复合筛选</a>&nbsp;
+            <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control" href="{{ route('book.tags') }}">标签列表</a>
+        </span>
     </div>
 </div>

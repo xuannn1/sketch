@@ -11,6 +11,7 @@
                 </ul>
             </div>
             <div class="panel-body">
+                @include('threads._simple_threads')
                 {{ $threads->links() }}
                 @include('threads._threads')
                 {{ $threads->links() }}

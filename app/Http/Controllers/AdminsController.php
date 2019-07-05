@@ -114,6 +114,7 @@ class AdminsController extends Controller
     {
         $this->validate($request, [
             'reason' => 'required|string|max:180',
+            'jinghua-days' => 'numeric',
         ]);
         $var = request('controlthread');
         if ($var=="1"){//锁帖
@@ -209,13 +210,14 @@ class AdminsController extends Controller
                         if($thread->book_id==0){//这篇主题本来并不算文章,新建文章
                             $book = Book::create([
                                 'thread_id' => $thread->id,
-                                'book_status' => 0,
-                                'book_length' => 0,
+                                'book_status' => 1,
+                                'book_length' => 1,
                                 'lastaddedchapter_at' => Carbon::now(),
                             ]);
-                            $tongren = App\Models\Tongren::create(
+                            $tongren = \App\Models\Tongren::create(
                                 ['book_id' => $book->id]
                             );
+                            $thread->book_id = $book->id;
                         }else{
                             $book = Book::findOrFail($thread->book_id);
                             $book->save();
@@ -243,7 +245,7 @@ class AdminsController extends Controller
                     'administratee_id' => $thread->user_id,
                 ]);
             }
-            return redirect()->back()->with("success","已经成功处理该主题");
+            return redirect()->back()->with("success","已经成功打上边缘标记");
         }
 
         if ($var=="16"){//取消边缘限制
@@ -258,7 +260,7 @@ class AdminsController extends Controller
                     'administratee_id' => $thread->user_id,
                 ]);
             }
-            return redirect()->back()->with("success","已经成功处理该主题");
+            return redirect()->back()->with("success","已经成功取消边缘该主题");
         }
         if ($var=="40"){// 上浮
             $thread->lastresponded_at = Carbon::now();
@@ -270,7 +272,7 @@ class AdminsController extends Controller
                 'reason' => request('reason'),
                 'administratee_id' => $thread->user_id,
             ]);
-            return redirect()->back()->with("success","已经成功处理该主题");
+            return redirect()->back()->with("success","已经成功上浮该主题");
         }
 
         if ($var=="41"){// 下沉
@@ -283,7 +285,60 @@ class AdminsController extends Controller
                 'reason' => request('reason'),
                 'administratee_id' => $thread->user_id,
             ]);
-            return redirect()->back()->with("success","已经成功处理该主题");
+            return redirect()->back()->with("success","已经下沉该主题");
+        }
+
+        if ($var=="42"){// 添加推荐
+            $thread->lastresponded_at = Carbon::now();
+            $thread->recommended = true;
+            $thread->save();
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '42',//42:推荐
+                'item_id' => $thread->id,
+                'reason' => request('reason'),
+                'administratee_id' => $thread->user_id,
+            ]);
+            return redirect()->back()->with("success","已经成功推荐该主题");
+        }
+
+        if ($var=="43"){// 取消推荐
+            $thread->recommended = false;
+            $thread->save();
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '43',//43:取消推荐
+                'item_id' => $thread->id,
+                'reason' => request('reason'),
+                'administratee_id' => $thread->user_id,
+            ]);
+            return redirect()->back()->with("success","已经取消推荐该主题");
+        }
+
+        if ($var=="44"){// 加精华
+            $thread->jinghua = Carbon::now()->addDays(request('jinghua-days'));
+            $thread->save();
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '44',//44:加精华
+                'item_id' => $thread->id,
+                'reason' => request('reason'),
+                'administratee_id' => $thread->user_id,
+            ]);
+            return redirect()->back()->with("success","已经成功对该主题加精华");
+        }
+
+        if ($var=="45"){// 取消精华
+            $thread->jinghua = Carbon::now();
+            $thread->save();
+            Administration::create([
+                'user_id' => Auth::id(),
+                'operation' => '45',//45:取消精华
+                'item_id' => $thread->id,
+                'reason' => request('reason'),
+                'administratee_id' => $thread->user_id,
+            ]);
+            return redirect()->back()->with("success","已经成功对该主题取消精华");
         }
 
         return redirect()->back()->with("danger","请选择操作类型（转换板块？）");

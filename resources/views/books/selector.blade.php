@@ -21,8 +21,8 @@
 
                         <div class="">
                             <span class="lead">篇幅：</span>
-                            @foreach(config('constants.book_info.book_lenth_info') as $key=>$book_lenth)
-                            <input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_lenth}}&nbsp;&nbsp;&nbsp;
+                            @foreach(config('constants.book_info.book_length_info') as $key=>$book_length)
+                            <input type="checkbox" name="length[]" value={{$key}} checked />&nbsp;{{$book_length}}&nbsp;&nbsp;&nbsp;
                             @endforeach
                         </div>
 

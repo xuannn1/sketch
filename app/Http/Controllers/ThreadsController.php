@@ -58,7 +58,14 @@ class threadsController extends Controller
             ->appends($request->only('page','label','channel'));
             return $threads;
         });
-        return view('threads.index', compact('threads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
+
+        $simplethreads = Cache::remember('jinghua-threads', 2, function (){
+            return Thread::where('jinghua','>',Carbon::now())
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+        });
+        return view('threads.index', compact('threads','simplethreads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
     }
 
     public function show(Thread $thread, Request $request)

@@ -7,6 +7,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h1>管理记录列表</h1>
+                    <ul class="nav nav-tabs">
+                        <li role="presentation" class="{{$active==1? 'active':''}}"><a href="{{ route('administrationrecords') }}">全部管理记录</a></li>
+                        <li role="presentation" class="pull-right {{$active==2? 'active':''}}"><a href="{{ route('administrationrecords.self') }}">和我有关的管理记录</a></li>
+                    </ul>
                 </div>
                 <div class="panel-body">
                     @foreach($records as $record)

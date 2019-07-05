@@ -46,17 +46,14 @@
                 </a></strong></span>
                 @if($thread->channel_id==2)
                 @if($thread->tongren_yuanzhu_tagname)
-                <a class="btn btn-xs btn-success tag-button-left tag-blue" href="{{ route('books.booktag', $thread->tongren_yuanzhu_tag_id) }}">{{$thread->tongren_yuanzhu_tagname}}</a>
+                <a class="btn btn-xs btn-success tag-button-left tag-blue" href="{{ route('books.index', ['book_tag' => $thread->tongren_yuanzhu_tag_id]) }}">{{$thread->tongren_yuanzhu_tagname}}</a>
                 @endif
                 @if($thread->tongren_cp_tagname)
-                <a class="btn btn-xs btn-warning tag-button-right tag-yellow" href="{{ route('books.booktag', $thread->tongren_cp_tag_id) }}">{{$thread->tongren_cp_tagname}}</a>
+                <a class="btn btn-xs btn-warning tag-button-right tag-yellow" href="{{ route('books.index', ['book_tag'=>$thread->tongren_cp_tag_id]) }}">{{$thread->tongren_cp_tagname}}</a>
                 @endif
                 @endif
                 @if( $thread->bianyuan == 1)
                 <span class="badge bianyuan-tag badge-tag">限</span>
-                @endif
-                @if(($show_as_collections)&&($thread->updated))
-                <span class="badge newchapter-badge badge-tag">有更新</span>
                 @endif
                 <small>
                     @if(!$thread->public)
@@ -69,6 +66,21 @@
                     <span class="glyphicon glyphicon-warning-sign"></span>
                     @endif
                 </small>
+                @if( $thread->recommended == 1)
+                <span class="recommend-label">
+                    <span class="glyphicon glyphicon-grain recommend-icon"></span>
+                    <span class="recommend-text">推</span>
+                </span>
+                @endif
+                @if( $thread->jinghua > Carbon\Carbon::now())
+                <span class="jinghua-label">
+                    <span class="glyphicon glyphicon-thumbs-up jinghua-icon"></span>
+                </span>
+                @endif
+                @if(($show_as_collections)&&($thread->updated))
+                <span class="badge newchapter-badge badge-tag">有更新</span>
+                @endif
+
             </span>
             <!-- thread title end   -->
             <!-- author  -->

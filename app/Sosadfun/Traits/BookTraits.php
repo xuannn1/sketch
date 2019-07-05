@@ -41,7 +41,7 @@ trait BookTraits{
         'threads.id','threads.user_id','threads.book_id', 'threads.title', 'threads.brief', 'threads.locked', 'threads.public', 'threads.bianyuan', 'threads.anonymous', 'threads.majia', 'threads.noreply', 'threads.viewed', 'threads.responded', 'threads.lastresponded_at', 'threads.channel_id', 'threads.label_id', 'threads.deleted_at', 'threads.created_at', 'threads.edited_at', 'threads.post_id', 'threads.last_post_id', 'threads.downloaded',
         'tongrens.tongren_yuanzhu', 'tongrens.tongren_cp', 'tongrens.tongren_yuanzhu_tag_id', 'tongrens.tongren_cp_tag_id',
         'users.name', 'labels.labelname', 'chapters.title as last_chapter_title', 'chapters.responded as last_chapter_responded', 'chapters.post_id as last_chapter_post_id',
-        'tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname','tongren_cp_tags.tagname as tongren_cp_tagname');
+        'tongren_yuanzhu_tags.tagname as tongren_yuanzhu_tagname','tongren_cp_tags.tagname as tongren_cp_tagname', 'threads.top', 'threads.recommended','threads.jinghua');
         return $query;
     }
 

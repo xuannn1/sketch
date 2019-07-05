@@ -63,6 +63,27 @@
                         <label><input type="radio" name="controlthread" value="41">帖子下沉（踩贴）</label>
                     </div>
 
+                    @if(!$thread->recommended)
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="42">添加推荐</label>
+                    </div>
+                    @else
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="43">取消推荐</label>
+                    </div>
+                    @endif
+
+                    @if($thread->jinghua < Carbon\Carbon::now())
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="44">添加精华</label>
+                        <label><input type="text" style="width: 40px" name="jinghua-days" value="0">精华时间（天）</label>
+                    </div>
+                    @else
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="45">取消精华</label>
+                    </div>
+                    @endif
+
                     <label><input type="radio" name="controlthread" value="9">转换板块（注意，如果点选了下面其他选项，记得回头把这个选一下）</label>
                     @foreach($channels as $channel)
                     <div class="">

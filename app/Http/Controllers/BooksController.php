@@ -107,7 +107,7 @@ class BooksController extends Controller
         .($request->book_length? '-Booklength'.$request->book_length:'')
         .($request->book_status? '-Bookstatus'.$request->book_status:'')
         .($request->sexual_orientation? '-SexualOrientation'.$request->sexual_orientation:'')
-        .($request->rating? '-Rating'.$request->rating:'-noRating')
+        .($request->book_tag? '-Tag'.$request->book_tag:'-noTag')//book-tag
         .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
         $books = Cache::remember($bookqueryid, 5, function () use($request, $page, $logged) {
@@ -118,15 +118,17 @@ class BooksController extends Controller
             if($request->book_length){$query = $query->where('books.book_length','=',$request->book_length);}
             if($request->book_status){$query = $query->where('books.book_status','=',$request->book_status);}
             if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
-            if($request->rating){$query = $query->where('threads.bianyuan','=',$request->rating-1);}
+            if($request->book_tag){
+                $query = $this->filter_tag($query, $request->book_tag);
+            }
             $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
             $query = $this->return_book_fields($query);
             $books = $this->bookOrderBy($query, $request->orderby)
             ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page','label','channel','book_length','book_status','sexual_orientation','rating','orderby','showbianyuan'));
+            ->appends($request->only('page','label','channel','book_length','book_status','sexual_orientation','orderby','showbianyuan','book_tag'));
             return $books;
         });
-        return view('books.index', compact('books'))->with('show_as_collections', false);
+        return view('books.index', compact('books'))->with('show_as_collections', false)->with('show_bianyuan_tab', true);
     }
 
     public function selector($bookquery_original, Request $request)
@@ -155,7 +157,7 @@ class BooksController extends Controller
             if(!empty($bookinfo[0])&&count($bookinfo[0])==1){//原创性筛选
                 $query->where('threads.channel_id','=', $bookinfo[0][0]);
             }
-            if((!empty($bookinfo[1]))&&count($bookinfo[1])<count($book_info['book_lenth_info'])){//书籍长度筛选
+            if((!empty($bookinfo[1]))&&count($bookinfo[1])<count($book_info['book_length_info'])){//书籍长度筛选
                 $query->whereIn('books.book_length',$bookinfo[1]);
             }
             if((!empty($bookinfo[2]))&&count($bookinfo[2])<count($book_info['book_status_info'])){//书籍进度筛选
@@ -179,32 +181,36 @@ class BooksController extends Controller
             ->appends($request->only('page'));
             return $books;
         });
-        return view('books.index', compact('books'))->with('show_as_collections', false);
+        return view('books.index', compact('books'))->with('show_as_collections', false)->with('show_bianyuan_tab', false);
     }
 
     public function booktag(Tag $booktag, Request $request){
-        $logged = Auth::check()? true:false;
-        $tagqueryid = 'tagQuery'
-        .url('/')
-        .($logged? '-Loggedd':'-notLogged')//logged or not
-        .$booktag->id
-        .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
-        .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $books = Cache::remember($tagqueryid, 2, function () use($request, $booktag, $logged) {
-            $query = $this->join_book_tables();
-            $query = $this->filter_tag($query, $booktag);
-            $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-            if(!$logged){$query = $query->where('bianyuan','=',0);}
-            $query = $this->return_book_fields($query);
-            $books = $this->bookOrderBy($query, $request->orderby)
-            ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page'));
-            return $books;
-        });
-        return view('books.index', compact('books'))->with('show_as_collections', false);
+        // $logged = Auth::check()? true:false;
+        // $tagqueryid = 'tagQuery'
+        // .url('/')
+        // .($logged? '-Loggedd':'-notLogged')//logged or not
+        // .($request->showbianyuan? '-ShowBianyuan':'')
+        // .$booktag->id
+        // .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
+        // .(is_numeric($request->page)? 'P'.$request->page:'P1');
+        // $books = Cache::remember($tagqueryid, 2, function () use($request, $booktag, $logged) {
+        //     $query = $this->join_book_tables();
+        //     $query = $this->filter_tag($query, $booktag);
+        //     $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
+        //     if((!$logged)||(!$request->showbianyuan)){$query = $query->where('bianyuan','=',0);}
+        //     $query = $this->return_book_fields($query);
+        //     $books = $this->bookOrderBy($query, $request->orderby)
+        //     ->paginate(config('constants.index_per_page'))
+        //     ->appends($request->only('page','showbianyuan'));
+        //     return $books;
+        // });
+        // return view('books.index', compact('books'))->with('show_as_collections', false)->with('show_bianyuan_tab', true);
     }
-    public function filter_tag($query, $tag)
+    public function filter_tag($query, $tag_id)
     {
+        $tag = Cache::remember('book-tag'.$tag_id, 30, function () use($tag_id) {
+            return Tag::find($tag_id);
+        });
         if($tag->tag_group===10){
             return $query->where('tongren_yuanzhu_tags.id','=',$tag->id);
         }

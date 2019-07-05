@@ -20,13 +20,13 @@
             @if(!$thread->original())
             <p>
                 @if($book->tongren->tongren_yuanzhu_tag_id>0)
-                <a href="{{ route('books.booktag', $book->tongren->tongren_yuanzhu_tag_id) }}">《{{$book->tongren->tongren_yuanzhu}}》</a>
+                <a href="{{ route('books.index', ['book_tag'=>$book->tongren->tongren_yuanzhu_tag_id]) }}">《{{$book->tongren->tongren_yuanzhu}}》</a>
                 @else
                 {{ $book->tongren->tongren_yuanzhu }}
                 @endif
                 -
                 @if($book->tongren->tongren_CP_tag_id>0)
-                <a href="{{ route('books.booktag', $book->tongren->tongren_CP_tag_id) }}">{{$book->tongren->tongren_cp}}</a>
+                <a href="{{ route('books.index', ['book_tag'=>$book->tongren->tongren_CP_tag_id]) }}">{{$book->tongren->tongren_cp}}</a>
                 @else
                 {{ $book->tongren->tongren_cp }}
                 @endif
@@ -34,7 +34,7 @@
             @endif
             <em><p>
                 <a href="{{ route('books.index', ['channel'=>(int)($book->channel_id)]) }}">{{ config('constants.book_info')['channel_info'][$thread->channel_id] }}</a>
-                -&nbsp;<a href="{{ route('books.index',['book_length'=>$book->book_length]) }}">{{ config('constants.book_info')['book_lenth_info'][$book->book_length] }}</a>
+                -&nbsp;<a href="{{ route('books.index',['book_length'=>$book->book_length]) }}">{{ config('constants.book_info')['book_length_info'][$book->book_length] }}</a>
                 -&nbsp;<a href="{{ route('books.index',['book_status'=>$book->book_status]) }}">{{ config('constants.book_info')['book_status_info'][$book->book_status] }}</a>
                 -&nbsp;<a href="{{ route('books.index',['sexual_orientation'=>$book->sexual_orientation]) }}">{{ config('constants.book_info')['sexual_orientation_info'][$book->sexual_orientation] }}</a>
             </p>
@@ -45,7 +45,7 @@
                 <a href="{{ route('books.index',['label'=>$thread->label_id]) }}">{{ $label->labelname }}</a>
                 @foreach ($thread->tags as $int=>$tag)
                     @if(($tag->tag_group!=5)||Auth::check())
-                    - <a href="{{ route('books.booktag', $tag->id) }}">{{ $tag->tagname }}</a>
+                    - <a href="{{ route('books.index', ['book_tag' => $tag->id]) }}">{{ $tag->tagname }}</a>
                     @endif
                 @endforeach
             </p></em>

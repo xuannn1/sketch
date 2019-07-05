@@ -5,7 +5,10 @@
 <div class="container">
     <div class="col-sm-offset-3 col-sm-6">
         <div class="panel panel-default">
-            <div class="panel-heading lead">登录</div>
+            <div class="panel-heading">
+                <h2>登录</h2>
+            </div>
+
             <div class="panel-body">
                 @include('shared.errors')
                 <form method="POST" action="{{ route('login') }}">
@@ -27,6 +30,7 @@
                 <br>
                 <div class="">
                     <u><a href="{{ route('password.request') }}">忘记密码/重新激活</a></u>
+
                 </div>
                 <hr>
             </div>

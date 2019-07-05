@@ -4,11 +4,11 @@
 
 <div class="modal fade" id="TriggerAdminThread{{ $thread->id }}" role="dialog">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content h4">
             <form action="{{ route('admin.threadmanagement',$thread->id)}}" method="POST">
                 {{ csrf_field() }}
                 <div class="admin-symbol">
-                    <h1>管理员权限专区：警告！请勿进行私人用户操作！</h1>
+                    <h2>管理员权限专区：警告！请勿进行私人用户操作！</h2>
                 </div>
                 @if(!$thread->locked)
                 <div class="radio">

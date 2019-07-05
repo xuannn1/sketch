@@ -41,8 +41,9 @@ class RecommendBooksController extends Controller
                       $recommendation['bianyuan']=$thread->bianyuan;
                   }
             }
-            $recommend['long']=$request->long? 1 : 0;
+            $recommendation['long']=$request->long? 1 : 0;
             $recommend_book = RecommendBook::create($recommendation);
+            $thread->update(['recommended'=>1]);
             return redirect()->route('recommend_books.index')->with("success", "您已成功添加推荐书籍");
         }
     }
