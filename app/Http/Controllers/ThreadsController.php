@@ -31,7 +31,7 @@ class threadsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->except(['index', 'show', 'showpost']);
+        $this->middleware('auth')->except(['index', 'show', 'showpost','jinghua_index']);
     }
 
     public function index(Request $request)
@@ -68,6 +68,23 @@ class threadsController extends Controller
         return view('threads.index', compact('threads','simplethreads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
     }
 
+    public function jinghua_index(Request $request)
+    {
+        $threadqueryid = 'jinghua_index_Query'
+        .url('/')
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+        $threads = Cache::remember($threadqueryid, 2, function () use($request) {
+            $query = $this->join_no_book_thread_tables()
+            ->where([['threads.book_id','=',0],['threads.deleted_at', '=', null],['channels.channel_state','<',10],['threads.public','=',1],['threads.jinghua','>',0]]);
+            $threads = $this->return_no_book_thread_fields($query)
+            ->orderBy('threads.jinghua', 'desc')
+            ->paginate(config('constants.index_per_page'))
+            ->appends($request->only('page'));
+            return $threads;
+        });
+        return view('threads.index_jinghua', compact('threads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',3);
+    }
+
     public function show(Thread $thread, Request $request)
     {
         if (request('recommendation')){
@@ -84,7 +101,7 @@ class threadsController extends Controller
         ->with('owner','reply_to_post','comments.owner', 'chapter')
         ->paginate(config('constants.items_per_page'))
         ->appends($request->only('useronly','page'));
-        //$thread->load(['creator', 'tags', 'mainpost']);
+        $thread->load(['creator', 'tags', 'mainpost']);
         if(Auth::check()){
             $view_history=$this->recordViewHistory(request()->ip(),Auth::id(),$thread->id,0);
             if(Auth::id()!=$thread->user_id){
@@ -131,7 +148,6 @@ class threadsController extends Controller
         }else{
             return redirect()->back()->with("danger","本版面无法编辑内容");
         }
-
     }
 
     public function update(StoreThread $form, Thread $thread)
@@ -145,12 +161,6 @@ class threadsController extends Controller
     }
     public function showpost(Post $post, Request $request)
     {
-        // if (request('recommendation')){
-        //     $recommendation = RecommendBook::find(request('recommendation'));
-        //     if($recommendation){
-        //         $recommendation->increment('clicks');
-        //     }
-        // }
         $thread = $post->thread;
         $totalposts = Post::allPosts($thread->id,$thread->post_id)
         ->where('created_at', '<', $post->created_at)

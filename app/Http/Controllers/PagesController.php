@@ -102,7 +102,8 @@ class PagesController extends Controller
 
     public function home()
     {
-        $group = Auth::check()? Auth::user()->group : 10;
+        $group = 10;
+        if(Auth::check()&&Auth::user()->group>10){$group = Auth::user()->group;}
         $channels = Helper::allchannels()->filter(function ($channel) use ($group) {
             return $channel->channel_state<=10 and $channel->channel_state<$group;
         });
@@ -227,16 +228,22 @@ class PagesController extends Controller
         return view('pages.contacts');
     }
 
-    public function recommend_records()
+    public function recommend_records(Request $request)
     {
-        $recommend_books = DB::table('threads')
-        ->join('users', 'threads.user_id', '=', 'users.id')
-        ->join('recommend_books', 'threads.id', '=', 'recommend_books.thread_id')
-        ->where('long', '=', 0)
-        ->where('valid','=',1)
-        ->select('threads.user_id', 'threads.bianyuan', 'threads.locked', 'threads.public', 'threads.noreply', 'threads.anonymous', 'threads.majia', 'threads.title', 'recommend_books.id', 'recommend_books.thread_id', 'recommend_books.recommendation', 'users.name', 'recommend_books.created_at')
-        ->orderBy('recommend_books.id','desc')
-        ->paginate(config('constants.items_per_page'));
+        $recommendid = 'recommendQuery'
+        .url('/')
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+        $recommend_books = Cache::remember($recommendid, 5, function () use ($request){
+            return DB::table('threads')
+            ->join('users', 'threads.user_id', '=', 'users.id')
+            ->join('recommend_books', 'threads.id', '=', 'recommend_books.thread_id')
+            ->where('long', '=', 0)
+            ->where('valid','=',1)
+            ->select('threads.user_id', 'threads.bianyuan', 'threads.locked', 'threads.public', 'threads.noreply', 'threads.anonymous', 'threads.majia', 'threads.title', 'recommend_books.id', 'recommend_books.thread_id', 'recommend_books.recommendation', 'users.name', 'recommend_books.created_at')
+            ->orderBy('recommend_books.id','desc')
+            ->paginate(config('constants.items_per_page'))
+            ->appends($request->only('page'));
+        });
 
         return view('pages.recommend_records', compact('recommend_books'))->with('active', 1);
     }

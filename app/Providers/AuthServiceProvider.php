@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-// use App\Auth\CacheUserProvider;
-// use Illuminate\Support\Facades\Auth;
+use App\Auth\CacheUserProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -15,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
@@ -28,7 +28,6 @@ class AuthServiceProvider extends ServiceProvider
         // Auth::provider('cache-user', function() {
         //     return resolve(CacheUserProvider::class);
         // });
-         $this->registerPolicies();
-        //
+        $this->registerPolicies();
     }
 }

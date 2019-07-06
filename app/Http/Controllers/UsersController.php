@@ -139,7 +139,7 @@ class UsersController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         if ($user){
             $group = Auth::check() ? Auth::user()->group : 10;
             $books=$this->findbooks($id,config('constants.index_per_part'));

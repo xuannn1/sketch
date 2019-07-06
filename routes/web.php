@@ -87,6 +87,7 @@
 
 {//以下是论坛主题模块
    Route::get('/threads', 'ThreadsController@index')->name('threads.index');//看全部主题
+   Route::get('/jinghua_threads', 'ThreadsController@jinghua_index')->name('threads.jinghua_index');//看全部精华贴
    Route::get('/threads/{thread}', 'ThreadsController@show')->name('thread.show')->middleware('filter_thread');//看某个主题,注意必须有权限
    Route::get('/threads/{thread}/edit', 'ThreadsController@edit')->name('thread.edit');
    Route::post('/threads/{thread}/update', 'ThreadsController@update')->name('thread.update');

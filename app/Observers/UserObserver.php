@@ -14,7 +14,7 @@ class UserObserver
      */
     public function saved(User $user)
     {
-        Cache::put("user.{$user->id}", $user, 60);
+        Cache::put("user-auth.{$user->id}", $user, 60);
     }
 
     /**
@@ -22,7 +22,7 @@ class UserObserver
      */
     public function deleted(User $user)
     {
-        Cache::forget("user.{$user->id}");
+        Cache::forget("user-auth.{$user->id}");
     }
 
     /**
@@ -30,7 +30,7 @@ class UserObserver
      */
     public function restored(User $user)
     {
-        Cache::put("user.{$user->id}", $user, 60);
+        Cache::put("user-auth.{$user->id}", $user, 60);
     }
 
     /**
@@ -38,6 +38,6 @@ class UserObserver
      */
     public function retrieved(User $user)
     {
-        Cache::add("user.{$user->id}", $user, 60);
+        Cache::add("user-auth.{$user->id}", $user, 60);
     }
 }

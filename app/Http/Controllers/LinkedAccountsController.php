@@ -7,6 +7,8 @@ use Hash;
 use App\Models\User;
 use Auth;
 use DB;
+use Cache;
+use Carbon\Carbon;
 use App\Models\Linkaccount;
 
 class LinkedAccountsController extends Controller
@@ -61,10 +63,14 @@ class LinkedAccountsController extends Controller
             return redirect()->back()->with("warning","您的等级限制了您能够关联的账户上限，请升级后再关联更多账户。");
         }
     }
-    public function switch($id)
+    public function switch($id, Request $request)
     {
         if(Auth::user()->linked($id)){
             Auth::loginUsingId($id);
+            $user = User::findOrFail($id);
+            $user->last_login = Carbon::now();
+            $user->last_login_ip = $request->getClientIp();
+            $user->save();
             return redirect()->back()->with("success","您已成功切换账号");
         }else{
             return redirect()->back()->with("danger","您并未关联该账号");

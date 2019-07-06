@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
-//use App\Models\User;
-//use App\Observers\UserObserver;
+use App\Models\User;
+use App\Observers\UserObserver;
 use Illuminate\Support\Facades\Schema;
 use Blade;
 
@@ -18,9 +18,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-         //User::observe(UserObserver::class);
+         // User::observe(UserObserver::class);
          Schema::defaultStringLength(191);
          Carbon::setLocale('zh');
+
     }
 
     /**
