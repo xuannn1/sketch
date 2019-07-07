@@ -43,8 +43,11 @@ class ResetPasswordController extends Controller
             'password' => bcrypt($password),
             'remember_token' => str_random(60),
             'activated' => true,
-            'activation_token' => null,
         ])->save();
+        $info = $user->info;
+        $info->update([
+            'activation_token' => null,
+        ]);
 
         $this->guard()->login($user);
     }

@@ -102,7 +102,7 @@ class PagesController extends Controller
 
     public function home()
     {
-        $group = Auth::check()? Auth::user()->group : 10;
+        $group = Auth::check()&&Auth::user()->seeHomework()?20:10;
         $channels = Helper::allchannels()->filter(function ($channel) use ($group) {
             return $channel->channel_state<=10 and $channel->channel_state<$group;
         });

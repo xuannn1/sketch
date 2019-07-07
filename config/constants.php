@@ -9,7 +9,7 @@ return [
    'update_min' => 1000, //章节更新必须达到这个水平才能进入排名榜
    'longcomment_length' => 200, //“长评”必须达到该字数
    'default_user_group' => 10,
-   'online_count_interval' => 10, //统计在线时间时，间隔多少分钟的时间算一次。
+   'online_count_interval' => 15, //统计在线时间时，间隔多少分钟的时间算一次。
    'monthly_email_resets' => 5, //一个月能修改多少次邮箱
    'default_majia' => '匿名咸鱼',
    'quiz_test_number' => 5, //目前每次测试取5道题
@@ -128,37 +128,37 @@ return [
    //1:post to one's thread 2: post to one's post 3: comment to one's post 4: comment to one's comment; 5:upvote to one's post
    'level_up' => [
       1 => [//
-         'experience_points' => 20,
+         'jifen' => 20,
          'xianyu' => 0,
          'sangdian' => 0,
       ],
       2 => [//可以下载图书（含回帖方式）
-         'experience_points' => 50,
+         'jifen' => 50,
          'xianyu' => 10,
          'sangdian' => 0,
       ],
       3 => [//可以下载图书（脱水方式）
-         'experience_points' => 100,
+         'jifen' => 100,
          'xianyu' => 25,
          'sangdian' => 0,
       ],
       4 => [//
-         'experience_points' => 300,
+         'jifen' => 300,
          'xianyu' => 30,
          'sangdian' => 10,
       ],
       5 => [//可以按扣除咸鱼／丧点的方式发私信给陌生人（未做）
-         'experience_points' => 500,
+         'jifen' => 500,
          'xianyu' => 50,
          'sangdian' => 15,
       ],
       6 => [//可以按扣除咸鱼／丧点的方式发私信给陌生人（未做）
-         'experience_points' => 700,
+         'jifen' => 700,
          'xianyu' => 100,
          'sangdian' => 20,
       ],
       7 => [//可以按扣除咸鱼／丧点的方式发私信给陌生人（未做）
-         'experience_points' => 1000,
+         'jifen' => 1000,
          'xianyu' => 50,
          'sangdian' => 25,
       ],

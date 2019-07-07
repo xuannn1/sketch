@@ -14,4 +14,11 @@ class InvitationToken extends Model
     {
         return $this->belongsTo(User::class, 'user_id')->withDefault();
     }
+    public function inactive_once()
+    {
+        $this->invitation_times+=1;
+        $this->invited+=1;
+        $this->save();
+        return $this;
+    }
 }

@@ -12,4 +12,9 @@ class Shengfan extends Model
     {
         return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
     }
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class, 'post_id')->withDefault();
+    }
 }

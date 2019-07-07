@@ -77,7 +77,7 @@ class Thread extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'tagging_threads', 'thread_id', 'tag_id');
+        return $this->belongsToMany(Tag::class, 'tag_thread', 'thread_id', 'tag_id');
     }
 
     public function book()

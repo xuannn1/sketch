@@ -322,30 +322,28 @@ class UsersController extends Controller
     public function qiandao()
     {
         $user = Auth::user();
-        if ($user->lastrewarded_at <= Carbon::today()->subHours(2)->toDateTimeString())
+        $info = $user->info;
+        if ($user->qiandao_at <= Carbon::today()->subHours(2)->toDateTimeString())
         {
-            $message = DB::transaction(function () use($user){
-                if ($user->lastrewarded_at > Carbon::now()->subdays(2)->toDateTimeString()) {
-                    $user->increment('continued_qiandao');
-                    if($user->continued_qiandao>$user->maximum_qiandao){$user->maximum_qiandao = $user->continued_qiandao;}
+            $message = DB::transaction(function () use($user, $info){
+                if ($user->qiandao_at > Carbon::now()->subdays(2)->toDateTimeString()) {
+                    $info->continued_qiandao+=1;
+                    if($info->continued_qiandao>$info->max_qiandao){$info->max_qiandao = $info->continued_qiandao;}
                 }else{
-                    $user->continued_qiandao=1;
+                    $info->continued_qiandao=1;
                 }
-                $user->lastrewarded_at = Carbon::now();
-                $message = "您已成功签到！连续签到".$user->continued_qiandao."天！";
+                $user->qiandao_at = Carbon::now();
+                $message = "您已成功签到！连续签到".$info->continued_qiandao."天！";
                 $reward_base = 1;
-                if(($user->continued_qiandao>=5)&&($user->continued_qiandao%5==0)){
-                    $reward_base = intval($user->continued_qiandao/10)+2;
+                if(($info->continued_qiandao>=5)&&($info->continued_qiandao%5==0)){
+                    $reward_base = intval($info->continued_qiandao/10)+2;
                     if($reward_base > 10){$reward_base = 10;}
                     $message .="您获得了特殊奖励！";
                 }
-                $user->increment('xianyu', 1*$reward_base);
-                $user->increment('shengfan', 5*$reward_base);
-                $user->increment('jifen', 5*$reward_base);
-                $user->increment('experience_points', 5*$reward_base);
-                $user->message_limit = $user->user_level;
-                $user->collection_list_limit = $user->user_level;
-                $user->save();
+                $info->reward(5*$reward_base, 5*$reward_base, 5*$reward_base, 1*$reward_base, 0);
+                $info->message_limit = $user->level;
+                $info->list_limit = $user->level;
+                $info->save();
                 if($user->checklevelup()){
                     $message .="您的个人等级已提高!";
                 }

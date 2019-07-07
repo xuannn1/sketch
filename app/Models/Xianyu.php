@@ -14,4 +14,9 @@ class Xianyu extends Model
     {
         return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
     }
+
+    public function thread()
+    {
+        return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
+    }
 }

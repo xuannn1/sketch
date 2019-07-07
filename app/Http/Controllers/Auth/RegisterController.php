@@ -104,12 +104,16 @@ class RegisterController extends Controller
             ],[
                 'name' => $data['name'],
                 'password' => bcrypt($data['password']),
-                'invitation_token' => $data['invitation_token'],
                 'activated' => false,
             ]);
-            $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
-            $invitation_token->decrement('invitation_times');
-            $invitation_token->increment('invited');
+            $info = User::firstOrCreate([
+                'user_id' => $user->id
+            ],[
+                'invitation_token' => $data['invitation_token'],
+                'activation_token' => str_random(45);
+            ]);
+            $invitation_token = InvitationToken::where('token', $data['invitation_token'])->first();
+            $invitation_token->inactive_once();
             return $user;
         });
     }
@@ -126,7 +130,7 @@ class RegisterController extends Controller
             $this->sendEmailConfirmationTo($user);
             session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
         }else{
-            session()->flash('danger', '您的IP一小时内已经成功注册，请尝试直接登陆您已注册的账户。');
+            session()->flash('danger', '您的IP于1小时内已经成功注册，请尝试直接登陆您已注册的账户。');
         }
         return redirect('/');
     }
@@ -161,11 +165,9 @@ class RegisterController extends Controller
 
     public function confirmEmail($token)
     {
-        $user = User::where('activation_token', $token)->firstOrFail();
-
-        $user->activated = true;
-        $user->activation_token = null;
-        $user->save();
+        $user_info = UserInfo::where('activation_token', $token)->firstOrFail();
+        $user_info->activate_user();
+        
         session()->flash('success', '恭喜你，激活成功！');
         return redirect('/');
     }

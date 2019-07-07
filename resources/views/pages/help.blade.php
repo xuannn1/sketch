@@ -291,7 +291,7 @@
                                                 @foreach($data['level_up'] as $level=>$level_requirement)
                                                 <li>等级：{{$level}}</li>
                                                 <ul>
-                                                    <li>所需积分： {{$level_requirement['experience_points']}}，所需咸鱼： {{$level_requirement['xianyu']}}，所需丧点： {{$level_requirement['sangdian']}}</li>
+                                                    <li>所需积分： {{$level_requirement['jifen']}}，所需咸鱼： {{$level_requirement['xianyu']}}，所需丧点： {{$level_requirement['sangdian']}}</li>
                                                 </ul>
                                                 @endforeach
                                             </ul>

@@ -25,27 +25,25 @@ class CreateUserInfosTable extends Migration
             $table->string('majia')->nullable();
             $table->boolean('indentation')->default(false);//上次锁进设置
             $table->integer('views')->unsigned()->default(0);
-            $table->string('activation_token')->nullable();//邮箱验证码
-            $table->string('invitation_token')->nullable();//邀请码
+            $table->string('activation_token', 50)->nullable();//邮箱验证码
+            $table->string('invitation_token', 50)->nullable();//邀请码
             $table->dateTime('no_posting_until')->nullable();//禁言时限
             $table->dateTime('no_logging_until')->nullable();//禁止登陆时限
-            $table->dateTime('qiandao_at')->nullable();//上次签到时间
             $table->integer('continued_qiandao')->unsigned()->default(0);
             $table->integer('max_qiandao')->unsigned()->default(0);
-            $table->integer('quiz_level')->unsigned()->default(0);// 答题等级
             $table->integer('message_limit')->unsigned()->default(0);
             $table->integer('list_limit')->unsigned()->default(0);
             $table->boolean('no_stranger_msg')->default(false);//是否接受来自陌生人的私信
             $table->boolean('no_upvote_reminders')->default(false);//是否接受点赞提醒
             $table->integer('clicks')->unsigned()->default(0);
             $table->integer('daily_clicks')->unsigned()->default(0);
-            $table->integer('reply_reminders')->unsigned();
-            $table->integer('upvote_reminders')->unsigned();
-            $table->integer('message_reminders')->unsigned();
-            $table->integer('public_notices')->unsigned(); //已经阅读的公共通知数量
-            $table->integer('collection_threads_updates')->unsigned();
-            $table->integer('collection_books_updates')->unsigned();
-            $table->integer('collection_statuses_updates')->unsigned();
+            $table->integer('reply_reminders')->unsigned()->default(0);
+            $table->integer('upvote_reminders')->unsigned()->default(0);
+            $table->integer('message_reminders')->unsigned()->default(0);
+            $table->integer('public_notices')->unsigned()->default(0); //已经阅读的公共通知数量
+            $table->integer('collection_threads_updates')->unsigned()->default(0);
+            $table->integer('collection_books_updates')->unsigned()->default(0);
+            $table->integer('collection_statuses_updates')->unsigned()->default(0);
             $table->string('login_ip')->nullable();//上一次访问的ip地址
             $table->dateTime('login_at')->nullable();//上次登录时间
             $table->dateTime('active_at')->nullable();//上次活跃时间

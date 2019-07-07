@@ -70,8 +70,8 @@ class LoginController extends Controller
         $this->incrementLoginAttempts($request);
         // Customization: If client status is inactive (0) return failed_status error.
         if($user){
-            if ($user->no_logging_or_not == 1) {
-                return $this->sendFailedLoginResponse($request, '您的账户被禁止登陆，'.'解禁时间:'.Carbon::parse($user->no_logging)->setTimezone('Asia/Shanghai')->format('Y-m-d'));
+            if ($user->no_logging == 1) {
+                return $this->sendFailedLoginResponse($request, '您的账户被禁止登陆');
             }
         }
 
@@ -90,9 +90,6 @@ class LoginController extends Controller
         }else{
             $credentials = ['name'=>$request->get('email'),'password'=>$request->get('password')];
         }
-        // Customization: validate if client status is active (1)
-        // $credentials['activated'] = 1;
-        // $credentials['no_logging_or_not'] = 0;
         return $credentials;
     }
     /**
@@ -115,9 +112,10 @@ class LoginController extends Controller
 
     function authenticated(Request $request, $user)
     {
-        $user->last_login = Carbon::now();
-        $user->last_login_ip = $request->getClientIp();
-        $user->save();
+        $info = $user->info;
+        $info->login_at = Carbon::now();
+        $info->login_ip = $request->getClientIp();
+        $info->save();
     }
     public function redirectTo()
     {
