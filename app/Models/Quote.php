@@ -6,10 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quote extends Model
 {
-    protected $guarded = [];
+    use Traits\VoteTrait;
 
-    public function creator()
+    protected $guarded = [];
+    const UPDATED_AT = null;
+
+    public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->withDefault();
+        return $this->belongsTo(User::class);
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
+    }
+    
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewer_id')->select('id','name', 'title_id');
     }
 }

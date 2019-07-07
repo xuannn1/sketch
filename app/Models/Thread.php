@@ -4,130 +4,221 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\App;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Auth;
+use App\Helpers\ConstantObjects;
+use App\Sosadfun\Traits\ColumnTrait;
+
+use DB;
 
 class Thread extends Model
 {
-    use Traits\ThreadFilterable;
-    use Traits\RegularTraits;
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    use SoftDeletes, ColumnTrait;
+    use Traits\VoteTrait;
+    use Traits\RewardTrait;
+    use Traits\ValidateTagTraits;
 
     protected $guarded = [];
+    protected $hidden = [
+        'creation_ip',
+    ];
+    protected $dates = ['deleted_at'];
 
-    public function path()
-    {
-        return '/threads/' . $this->id;
-    }
-    public function posts()
-    {
-        return $this->hasMany(Post::class, 'thread_id')->where('id','<>',$this->post_id);
-    }
+    const UPDATED_AT = null;
 
-    public function mainpost()
-    {
-        return $this->belongsTo(Post::class, 'post_id')->withDefault();
-    }
-
-
-    public function last_post()
-    {
-        return $this->belongsTo(Post::class, 'last_post_id')->withDefault();
-    }
-
-    public function lastpost()
-    {
-        return $this->hasOne(Post::class, 'thread_id','id')->latest();
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
-    }
-
+    //以下是relationship关系
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->withDefault();
-    }
-
-    public function addPost($post)
-    {
-        $this->posts()->create($post);
+        return $this->belongsTo(User::class);
     }
 
     public function channel()
     {
-        return $this->belongsTo(Channel::class, 'channel_id')->withDefault();
+        return collect(config('channel'))->keyby('id')->get($this->channel_id);
     }
 
-    public function responded()
+    public function author()
     {
-        $this->update(['lastresponded_at' => Carbon::now()]);
-        $this->increment('responded');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name', 'title_id');
     }
 
-    public function label()
+    public function posts()
     {
-        return $this->belongsTo(Label::class, 'label_id')->withDefault();
+        return $this->hasMany(Post::class);
     }
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'tag_thread', 'thread_id', 'tag_id');
+        return $this->belongsToMany(Tag::class);
     }
 
-    public function book()
+    public function votes()
     {
-        return $this->belongsTo(Book::class, 'book_id')->withDefault();
+        return $this->morphMany('App\Models\Vote', 'votable');
     }
-    public function xianyu_voted(User $user, $ip)
+
+    public function last_component()
     {
-        $xianyus = $this->recentXianyus();
-        $id = $user->id;
-        if (($xianyus->where('user_id', $id)->first())||($xianyus->where('user_ip', $ip)->first())) {
-            return true;
+        return $this->belongsTo(Post::class, 'last_component_id');
+    }
+
+    public function last_post()
+    {
+        return $this->belongsTo(Post::class, 'last_post_id');
+    }
+
+    public function collectors()
+    {
+        return $this->belongsToMany(User::class, 'collections', 'thread_id', 'user_id')->select(['id','name']);
+    }
+
+
+    //以下是scopes
+
+    public function scopeInChannel($query, $withChannels)
+    {
+        if($withChannels){
+            $channels=(array)json_decode($withChannels);
+            if(!empty($channels)){
+                return $query->whereIn('channel_id', $channels);
+            }
         }
-        return false;
+        return $query;
     }
 
-    public function xianyus(){
-        return $this->hasMany(Xianyu::class, 'thread_id');
-    }
-
-    public function recentXianyus(){
-        $timelimit = Carbon::now()->subDays(7);//目前设置，一周内只能投一次咸鱼。
-        $recent_xianyus = $this->xianyus()->where('created_at', '>', '$timelimit');
-        return ($recent_xianyus);
-    }
-
-    public function collection($user_id, $collection_list_id=0)
+    public function scopeWithType($query, $withType)
     {
-        if($collection_list_id==0){
-            return Collection::where('item_id', $this->id)->where('user_id', $user_id)->first();
+        if($withType){
+            return $query->whereIn('channel_id', ConstantObjects::publicChannelTypes($withType));
+        }
+        return $query;
+    }
+
+    public function scopeWithBianyuan($query, $withBianyuan)
+    {
+        if($withBianyuan==='bianyuan_only'){
+            return $query->where('is_bianyuan', true);
+        }
+        if($withBianyuan==='none_bianyuan_only'){
+            return $query->where('is_bianyuan', false);
+        }
+        return $query;
+    }
+
+    public function scopeWithTag($query, $withTags)
+    {
+        if ($withTags){
+            $tags=(array)json_decode($withTags);
+            return $query->whereHas('tags', function ($query) use ($tags){
+                $query->whereIn('id', $tags);
+            });
         }else{
-            return Collection::where('item_id', $this->id)->where('collection_list_id', $collection_list_id)->first();
+            return $query;
         }
-
     }
 
-    public function homework()
+    public function scopeExcludeTag($query, $excludeTags)
     {
-        return $this->belongsTo(Homework::class, 'homework_id')->withDefault();
+        if ($excludeTags){
+            $tags=(array)json_decode($excludeTags);
+            return $query->whereDoesntHave('tags', function ($query) use ($tags){
+                $query->whereIn('id', $tags);
+            });
+        }else{
+            return $query;
+        }
     }
 
-    public function original()
+    public function scopeIsPublic($query)//在thread index的时候，只看公共channel内的公开thread
     {
-        return (int)(2-$this->channel_id);
+        return $query->where('is_public', true)->whereIn('channel_id', ConstantObjects::public_channels());
     }
-    public function registerhomework(){
-        DB::table('register_homeworks')
-        ->join('homeworks','homeworks.id','=','register_homeworks.homework_id')
-        ->where('register_homeworks.user_id','=',Auth::id())
-        ->where('homeworks.active','=',true)
-        ->update(['register_homeworks.thread_id' => $this->id]);
+
+    public function scopeThreadInfo($query)
+    {
+        return $query->select(array_diff( $this->thread_columns, ['body']));
     }
+
+    public function scopeThreadBrief($query)
+    {
+        return $query->select($this->threadbrief_columns);
+    }
+
+    public function scopeOrdered($query, $ordered)
+    {
+        switch ($ordered) {
+            case 'latest_add_component'://最新更新
+            return $query->orderBy('add_component_at', 'desc');
+            break;
+            case 'jifen'://总积分
+            return $query->orderBy('jifen', 'desc');
+            break;
+            case 'weighted_jifen'://字数平衡积分
+            return $query->orderBy('weighted_jifen', 'desc');
+            break;
+            case 'latest_created'://创建时间
+            return $query->orderBy('created_at', 'desc');
+            break;
+            case 'id'://创建顺序
+            return $query->orderBy('id', 'asc');
+            break;
+            case 'collection_count'://收藏数
+            return $query->orderBy('collection_count', 'desc');
+            break;
+            case 'random'://随机排序
+            return $query->inRandomOrder();
+            break;
+            case 'total_char'://总字数
+            return $query->orderBy('total_char', 'desc');
+            break;
+            default://默认按最后回复排序
+            return $query->orderBy('responded_at', 'desc');
+        }
+    }
+    // 以下是其他function
+
+
+    public function remove_custom_tags()//去掉所有用户自己提交的tag,返回成功去掉的
+    {
+        $detach_tags = [];
+        foreach($this->tags as $tag){
+            if(!array_key_exists($tag->tag_type, config('tag.limits.user_not_manageable'))){
+                array_push($detach_tags,$tag->id);
+            }
+        }
+        if(!empty($detach_tags)){
+            $this->tags()->detach($detach_tags);
+            return count($detach_tags);
+        }else{
+            return 0;
+        }
+    }
+
+    public function count_char()//计算本thread内所有chapter的characters总和
+    {
+        return  DB::table('posts')
+        ->where('deleted_at', '=', null)
+        ->whereNotIn('type',['post','comment'])
+        ->where('thread_id', '=', $this->id)
+        ->sum('char_count');
+    }
+
+    public function most_upvoted()//这个thread里面，普通的post中，最多赞的评论
+    {
+        return Post::postInfo()
+        ->where('thread_id', $this->id)
+        ->where('type', '=', 'post')
+        ->orderBy('upvote_count', 'desc')
+        ->first();
+    }
+
+    public function top_review()//对这个thread的review里最热门的一个
+    {
+        return Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
+        ->where('reviews.thread_id', $this->id)
+        ->where('reviews.recommend', true)
+        ->where('reviews.author_disapprove', false)
+        ->orderby('reviews.redirects', 'desc')
+        ->select('posts.*')
+        ->first();
+    }
+
 }
