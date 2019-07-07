@@ -31,6 +31,11 @@ class Post extends Model
         return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
     }
 
+    public function replies()
+    {
+        return $this->hasMany(Post::class, 'reply_to_id','id');
+    }
+
     public function comments()
     {
         return $this->hasMany(PostComment::class)->orderBy('created_at','desc');
