@@ -9,6 +9,7 @@ trait ModifyQuoteNStatusTraits{
     public function modifyQuoteNStatus()
     {
         $this->modifyQuote();
+        $this->shrinkStatus();
         $this->modifyStatus();
     }
 
@@ -33,16 +34,35 @@ trait ModifyQuoteNStatusTraits{
         }
     }
 
-    public function modifyStatus()
+    public function shrinkStatus()
     {
-        echo "start task updateStatuses\n";
+        echo "start shrink statuses\n";
         DB::table('statuses')->where('content','like','%]更新了《%')
         ->delete();
         DB::table('statuses')->where('content','like','%<p>更新了[url=%')
         ->delete();
+        $statuses = DB::table('statuses')->where('content','like','%<p>%')
+        ->get();
+        foreach($statuses as $status){
+            $string = $status->content;
+            $string = str_replace("<p>", "", $string);
+            $string = str_replace("</p>", "", $string);
+            DB::table('statuses')->where('id','=',$status->id)
+            ->update([
+                'content' => $string
+            ]);
+        }
+        echo "shrinked statuses \n";
+
+    }
+
+    public function modifyStatus()
+    {
+        echo "start task updateStatuses\n";
         if (Schema::hasColumn('statuses', 'content')){
             Schema::table('statuses', function($table){
-                $table->renameColumn('content', 'body');
+                $table->renameColumn('content', 'brief');
+                $table->text('body')->nullable();
                 $table->string('attachable_type',10)->nullable();
                 $table->unsignedInteger('attachable_id')->default(0);
                 $table->unsignedInteger('reply_to_id')->default(0)->index();
@@ -50,9 +70,15 @@ trait ModifyQuoteNStatusTraits{
                 $table->unsignedInteger('reply_count')->default(0);
                 $table->unsignedInteger('forward_count')->default(0);
                 $table->unsignedInteger('upvote_count')->default(0);
+                $table->string('creation_ip', 45)->nullable();//创建时IP地址
                 $table->dropColumn(['updated_at']);
                 echo "echo updated statuses table.\n";
             });
         }
+        DB::table('statuses')->update([
+            'body' => DB::raw('brief')
+        ]);
+        echo "finished updateStatuses\n";
     }
+
 }

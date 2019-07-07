@@ -6,32 +6,21 @@ use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 use App\Helpers\Helper;
 use Cache;
-use App\Console\Commands\TemporaryTraits\ModifyUserTableTraits;
-use App\Console\Commands\TemporaryTraits\ModifyThreadTableTraits;
-use App\Console\Commands\TemporaryTraits\ModifyRewardNVoteTableTraits;
-use App\Console\Commands\TemporaryTraits\ModifyPostTableTraits;
-use App\Console\Commands\TemporaryTraits\ModifyAdminRecordsTraits;
-use App\Console\Commands\TemporaryTraits\ModifyQuestionBoxTraits;
-use App\Console\Commands\TemporaryTraits\ModifyActivityTableTraits;
-use App\Console\Commands\TemporaryTraits\ModifyReviewNCollectionTraits;
-use App\Console\Commands\TemporaryTraits\ModifyQuoteNStatusTraits;
-use App\Console\Commands\TemporaryTraits\CleanUpExtraThingsTraits;
-
-
 
 class RebuildDatabase extends Command
 {
-    use ModifyUserTableTraits;
-    use ModifyThreadTableTraits;
-    use ModifyRewardNVoteTableTraits;
-    use ModifyPostTableTraits;
-    use ModifyAdminRecordsTraits;
-    use ModifyQuestionBoxTraits;
-    use ModifyActivityTableTraits;
-    use ModifyReviewNCollectionTraits;
-    use ModifyQuoteNStatusTraits;
-    use CleanUpExtraThingsTraits;
-
+    use TemporaryTraits\ModifyUserTableTraits;
+    use TemporaryTraits\ModifyThreadTableTraits;
+    use TemporaryTraits\ModifyRewardNVoteTableTraits;
+    use TemporaryTraits\ModifyPostTableTraits;
+    use TemporaryTraits\ModifyAdminRecordsTraits;
+    use TemporaryTraits\ModifyQuestionBoxTraits;
+    use TemporaryTraits\ModifyActivityTableTraits;
+    use TemporaryTraits\ModifyReviewNCollectionTraits;
+    use TemporaryTraits\ModifyQuoteNStatusTraits;
+    use TemporaryTraits\CleanUpExtraThingsTraits;
+    use TemporaryTraits\ShrinkColumnLengthTraits;
+    use TemporaryTraits\AddTablesTraits;
     /**
     * The name and signature of the console command.
     *
@@ -61,16 +50,18 @@ class RebuildDatabase extends Command
     public function handle()
     {
 
-        // $this->modifyUserTable();//task 1
-        // $this->modifyThreadTable(); // task 2
-        // $this->modifyRewardNVoteTable(); // task 3
-        // $this->modifyPostTable(); // task 4
+        // $this->modifyUserTable();
+        // $this->modifyThreadTable();
+        // $this->modifyRewardNVoteTable();
+        // $this->modifyPostTable();
         // $this->modifyAdminRecords();
         // $this->modifyQuestionBox();
         // $this->modifyActivityTable();
         // $this->modifyReviewNCollection();
         // $this->modifyQuoteNStatus();
-        $this->cleanUpExtraThings();
+        // $this->cleanUpExtraThings();
+        // $this->shrinkColumnLength();
+        // $this->addTables();
 
     }
 

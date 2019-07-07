@@ -55,7 +55,7 @@ trait CleanUpExtraThingsTraits{
     {
         if (Schema::hasColumn('threads', 'label_id')){
             Schema::table('threads', function($table){
-                $table->dropColumn(['book_id','label_id','updated_at','homework_id','post_id','show_homework_profile','top','jinghua','recommended']);
+                $table->dropColumn(['book_id','label_id','updated_at','homework_id','post_id','show_homework_profile','top','jinghua','recommended', 'old_list_id']);
                 echo "simplified threads table.\n";
             });
         }
