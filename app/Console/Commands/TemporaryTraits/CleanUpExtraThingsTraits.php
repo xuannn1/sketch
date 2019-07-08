@@ -14,6 +14,7 @@ trait CleanUpExtraThingsTraits{
         $this->simplifyThreads();
         $this->simplifyPosts();
         $this->simplifyVolumns();
+        $this->duplicateLinkedAccounts();
     }
     public function mainCleanUp()
     {
@@ -98,5 +99,37 @@ trait CleanUpExtraThingsTraits{
             });
             echo "dropped old columns of volumn table\n";
         }
+    }
+
+    public function duplicateLinkedAccounts(){
+        echo "start duplicate linked accounts\n";
+        $links = DB::table('linkaccounts')
+        ->get();
+        $insert_links = [];
+        foreach ($links as $link){
+            $data = [
+                'account1' => $link->account2,
+                'account2' => $link->account1,
+            ];
+            array_push($insert_links, $data);
+        }
+        DB::table('linkaccounts')->insert($insert_links);
+        echo "added duplicated link accounts\n";
+
+        DB::statement('
+            DELETE l1 FROM linkaccounts l1
+            INNER JOIN
+            linkaccounts l2
+            WHERE
+            l1.id < l2.id AND l1.account1 = l2.account1 and l1.account2 = l2.account2;
+        ');
+        echo "removed duplicated link accounts\n";
+
+        Schema::table('linkaccounts', function($table){
+            $table->unique(['account1','account2']);
+        });
+        echo "added unique index of linked accounts\n";
+
+
     }
 }
