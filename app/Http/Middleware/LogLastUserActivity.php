@@ -26,8 +26,8 @@ class LogLastUserActivity
                 ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_count_interval'));
                 Cache::put('usr-on-' . Auth::id(), true, $expiresAt);
-                Auth::user()->info->active_now(request()->ip());
-                Auth::user()->reward('online_reward');
+                CacheUser::findCachedUserInfo(Auth::id())->active_now(request()->ip());
+                CacheUser::findCachedUser(Auth::id())->reward('online_reward');
             }
         }
         return $next($request);

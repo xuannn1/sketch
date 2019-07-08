@@ -4,6 +4,8 @@ use Closure;
 use Auth;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
+use CacheUser;
+
 class NoLogControl
 {
     /**
@@ -16,7 +18,7 @@ class NoLogControl
     public function handle($request, Closure $next)
     {
         if(Auth::check()) {
-            if(Auth::user()->no_logging_or_not){
+            if(CacheUser::findCachedUser(Auth::id())->no_logging){
                 Auth::logout();
                 return $next($request);
             }
