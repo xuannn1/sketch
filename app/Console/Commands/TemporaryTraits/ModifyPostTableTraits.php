@@ -36,6 +36,7 @@ trait ModifyPostTableTraits{
         if(!Schema::hasColumn('posts', 'upvote_count')){
             Schema::table('posts', function($table){
                 $table->renameColumn('trim_body', 'brief');
+                $table->renameColumn('lastresponded_at', 'responded_at');
                 $table->renameColumn('up_voted', 'upvote_count');
                 $table->renameColumn('fold_state', 'is_folded');
                 $table->renameColumn('reply_to_post_id', 'reply_to_id');
