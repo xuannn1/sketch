@@ -92,21 +92,6 @@ class User extends Authenticatable
         return $this->hasOne(UserInfo::class, 'user_id');
     }
 
-    public function isAdmin()
-    {
-        return $this->role==='admin';
-    }
-
-    public function isEditor()
-    {
-        return $this->role==='editor';
-    }
-
-    public function seeHomework()
-    {
-        return $this->role==='admin'||$this->role==='editor'||$this->role==='senior';
-    }
-
     public function followers()
     {
         return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
@@ -116,6 +101,13 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
     }
+
+    public function collectedItems()
+    {
+        return $this->belongsToMany('App\Models\Thread', 'collection_count', 'user_id', 'thread_id');
+    }
+
+
 
     public function follow($user_ids)
     {
@@ -136,6 +128,22 @@ class User extends Authenticatable
     {
         return $this->followings->contains($user_id);
     }
+
+    public function isAdmin()
+    {
+        return $this->role==='admin';
+    }
+
+    public function isEditor()
+    {
+        return $this->role==='editor';
+    }
+
+    public function seeHomework()
+    {
+        return $this->role==='admin'||$this->role==='editor'||$this->role==='senior';
+    }
+
     public function checklevelup()
     {
         $level_ups = config('constants.level_up');
@@ -152,11 +160,6 @@ class User extends Authenticatable
         }
         return false;
     }
-
-    public function linked($id){
-        return;
-    }
-
 
     public function reward($kind, $base = 0){
         return $this->info->reward($kind, $base);
