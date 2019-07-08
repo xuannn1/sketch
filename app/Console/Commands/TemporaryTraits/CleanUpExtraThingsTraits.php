@@ -13,6 +13,7 @@ trait CleanUpExtraThingsTraits{
         $this->simplifyChapters();
         $this->simplifyThreads();
         $this->simplifyPosts();
+        $this->simplifyVolumns();
     }
     public function mainCleanUp()
     {
@@ -82,6 +83,20 @@ trait CleanUpExtraThingsTraits{
                 $table->dropColumn(['updated_at','post_id']);
                 echo "simplified books table.\n";
             });
+        }
+    }
+
+    public function simplifyVolumns(){
+        echo "start cleanupVolumn\n";
+        if(Schema::hasColumn('volumns', 'book_id')){
+            Schema::table('volumns', function($table){
+                $table->dropColumn(['volumn_order','deleted_at','created_at','updated_at']);
+                $table->renameColumn('book_id', 'thread_id');
+                $table->string('title',30)->change();
+                $table->string('brief',50)->nullable();
+                $table->integer('order_by')->default(0);
+            });
+            echo "dropped old columns of volumn table\n";
         }
     }
 }
