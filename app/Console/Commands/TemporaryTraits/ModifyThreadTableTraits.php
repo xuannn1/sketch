@@ -46,6 +46,7 @@ trait ModifyThreadTableTraits{
                 $table->boolean('is_bianyuan')->default(false);
                 $table->boolean('is_primary')->default(false);
                 $table->unsignedInteger('channel_id')->default(0);//是否某个channel专属
+                $table->index('parent_id');
                 echo "echo added new columns to tags table.\n";
             });
             Schema::table('tags', function($table){
@@ -331,14 +332,15 @@ trait ModifyThreadTableTraits{
         Cache::put('allLabels', \App\Models\Label::all(), 10);
 
         \App\Models\Thread::with('book.tongren')->chunk(1000, function ($threads) {
+            $insert_tags = [];
             foreach ($threads as $thread) {
-                $insert_tags = [];
                 if($thread->book_id>0){
                     $book = $thread->book;
                     if($book->id>0){
                         if($book->book_length>0){
                             $tag = $this->findTagByName(config('constants.book_info.book_length_info')[$book->book_length]);
                             if($tag){array_push($insert_tags,['tag_id'=>$tag->id,'thread_id'=>$thread->id]);}
+                            else{echo "no tag".$book->book_length;}
                         }
                         if($book->book_status>0){
                             $tag = $this->findTagByName(config('constants.book_info.book_status_info')[$book->book_status]);
