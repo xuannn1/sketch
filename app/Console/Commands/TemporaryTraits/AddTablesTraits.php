@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 trait AddTablesTraits{
 
-
     public function addTables()//
     {
         echo "start task20 remakeSystemsTables\n";
@@ -32,6 +31,7 @@ trait AddTablesTraits{
             $table->unsignedInteger('user_id')->index();
             $table->unsignedInteger('title_id')->index();
             $table->boolean('is_public')->default(true);//对外公示
+            $table->unique(['user_id', 'title_id']);
         });
         Schema::create('titles', function ($table) {
             $table->increments('id');
@@ -40,6 +40,15 @@ trait AddTablesTraits{
             $table->unsignedInteger('user_count')->default(0);//多少人获得了这个头衔
         });
         echo "finished remakeSystemsTables\n";
+
+        Schema::table('tag_thread', function($table){
+            $table->unique(['tag_id','thread_id']);
+        });
+
+        Schema::table('votes', function($table){
+            $table->unique(['user_id','votable_type','votable_id','attitude_type']);
+        });
+
     }
 
 }

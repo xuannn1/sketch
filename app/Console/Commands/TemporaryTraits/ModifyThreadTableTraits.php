@@ -4,7 +4,6 @@ namespace App\Console\Commands\TemporaryTraits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
-use Carbon\Carbon;
 use App\Helpers\Helper;
 
 use Auth;
@@ -267,6 +266,7 @@ trait ModifyThreadTableTraits{
         if(!Schema::hasColumn('threads', 'total_char')){
             Schema::table('threads', function($table){
                 $table->unsignedInteger('last_component_id')->default(0);
+                $table->unsignedInteger('first_component_id')->default(0);
                 $table->dateTime('add_component_at')->nullable();
                 $table->string('creation_ip', 45)->nullable();//创建时IP地址
                 $table->boolean('markdown')->default(false);
@@ -392,26 +392,11 @@ trait ModifyThreadTableTraits{
 
     public function findTagByName($tagname)
     {
-        $tag = Helper::alltags()->keyBy('tag_name')->get($tagname);
-        // $tag = \App\Models\Tag::where('tag_name','=', $tagname)->first();
-        if(!$tag){
-            echo "cannot find tag=".$tagname."|";
-        }
-        return $tag;
+        $tag = Helper::find_tag_by_name($tagname);
     }
     public function findTagByLabelId($label_id)
     {
-        $label_tag = null;
-        $label = Helper::allLabels()->keyBy('id')->get($label_id);
-        if($label){
-            $label_tag = Helper::alltags()->keyBy('tag_name')->get($label->labelname);
-            if(!$label_tag){
-                echo "cannot find label_tag:label_id=".$label->id."label_name=".$label->labelname."\n";
-            }
-        }else{
-            echo "cannot find old_label->label_id=".$label_id."\n";
-        }
-        return $label_tag;
+        $tag = Helper::find_tag_by_label_id($label_id);
     }
 
     public function modifyTongrenTable() //task 2.5
@@ -424,12 +409,11 @@ trait ModifyThreadTableTraits{
             echo "added thread_id column to tongrens\n";
         }
         if(Schema::hasColumn('tongrens', 'tongren_yuanzhu_tag_id')){
-            \App\Models\Tongren::with('book.thread')->chunk(200, function ($tongrens) {
+            \App\Models\Tongren::with('book')->chunk(200, function ($tongrens) {
                 foreach($tongrens as $tongren){
                     $book = $tongren->book;
-                    $thread = $book->thread;
-                    if($book&&$thread){
-                        $tongren->thread_id = $thread->id;
+                    if($book&&$book->thread_id>0){
+                        $tongren->thread_id = $book->thread_id;
                         if($tongren->tongren_yuanzhu_tag_id>0){
                             $tag = \App\Models\Tag::find($tongren->tongren_yuanzhu_tag_id);
                             if($tag){
@@ -446,18 +430,15 @@ trait ModifyThreadTableTraits{
                                 echo "this tongren_cp_id cannot find tag:".$tongren->tongren_CP_tag_id."\n";
                             }
                         }
-                        $tongren->save();
-                    }else{
-                        echo "this tongren has problem find book tongren_id=".$tongren->id."\n";
                     }
                     if($tongren->tongren_yuanzhu_tag_id>0&&$tongren->tongren_CP_tag_id>0){
                         $tongren->delete();
-                    }
-                    if($tongren->thread_id===0){
+                    }elseif($tongren->thread_id===0){
                         $tongren->delete();
-                    }
-                    if($tongren->tongren_yuanzhu===null&&$tongren->tongren_cp===null){
+                    }elseif($tongren->tongren_yuanzhu===null&&$tongren->tongren_cp===null){
                         $tongren->delete();
+                    }else{
+                        $tongren->save();
                     }
                 }
                 echo $tongren->id.'|';

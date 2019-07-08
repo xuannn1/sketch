@@ -16,7 +16,6 @@ class AddTitleToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->integer('title_id')->unsigned()->default(0);
             $table->string('role',10)->nullable();
-            $table->integer('unread_reminders')->unsigned()->default(0);
             $table->integer('unread_updates')->unsigned()->default(0);
             $table->dateTime('qiandao_at')->nullable();//上次签到时间
             $table->TinyInteger('quiz_level')->unsigned()->default(0);//最后做题等级

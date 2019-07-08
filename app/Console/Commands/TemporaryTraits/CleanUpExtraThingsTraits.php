@@ -29,6 +29,7 @@ trait CleanUpExtraThingsTraits{
         Schema::dropIfExists('shengfans');
         Schema::dropIfExists('vote_posts');
         Schema::dropIfExists('xianyus');
+        Schema::dropIfExists('session_statuses');
 
         echo "dropped extra tables\n";
     }
@@ -67,6 +68,19 @@ trait CleanUpExtraThingsTraits{
             Schema::table('posts', function($table){
                 $table->dropColumn(['updated_at','chapter_id','long_comment','long_comment_id','popular','recommended','as_longcomment']);
                 echo "simplified posts table.\n";
+            });
+        }
+    }
+
+    public function simplifyViewHistories()
+    {
+        if (Schema::hasColumn('view_histories', 'updated_at')){
+            DB::table('view_histories')
+            ->where('post_id','>',0)
+            ->delete();
+            Schema::table('view_histories', function($table){
+                $table->dropColumn(['updated_at','post_id']);
+                echo "simplified books table.\n";
             });
         }
     }

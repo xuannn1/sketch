@@ -13,7 +13,9 @@ trait ModifyAdminRecordsTraits{
                 $table->string('record', 40)->nullable();
                 $table->string('administratable_type', 10)->nullable()->index();
                 $table->unsignedInteger('administratable_id')->default(0)->index();
-                echo "echo added new columns to tags table.\n";
+                $table->index('item_id');
+                $table->index('operation');
+                echo "echo added new columns to administrations table.\n";
             });
         }
         DB::table('administrations')
@@ -44,23 +46,10 @@ trait ModifyAdminRecordsTraits{
 
         if(Schema::hasColumn('posts', 'postcomment_id')){
             DB::table('administrations')
-            ->join('posts','administrations.item_id','=','posts.postcomment_id')
-            ->where('administrations.operation','=',8)
+            ->join('posts','administrations.item_id','=','post_comments.id')
+            ->whereIn('administrations.operation',[8,31])
             ->update([
-                'administrations.record' => DB::raw('substring(posts.brief,1,20)'),
-                'administrations.administratable_type' => 'post',
-                'administrations.administratable_id' => DB::raw('posts.id'),
-                'administrations.operation' => 7,
-            ]);
-
-            DB::table('administrations')
-            ->join('posts','administrations.item_id','=','posts.postcomment_id')
-            ->where('administrations.operation','=',31)
-            ->update([
-                'administrations.record' => DB::raw('substring(posts.brief,1,20)'),
-                'administrations.administratable_type' => 'post',
-                'administrations.administratable_id' => DB::raw('posts.id'),
-                'administrations.operation' => 30,
+                'administrations.record' => DB::raw('substring(post_comments.body,1,20)'),
             ]);
 
             echo"updated postcomments administration records\n";
@@ -87,7 +76,5 @@ trait ModifyAdminRecordsTraits{
             'administrations.administratable_id' => DB::raw('administrations.item_id'),
         ]);
         echo"updated user admin records\n";
-
     }
-
 }

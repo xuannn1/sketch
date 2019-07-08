@@ -21,6 +21,7 @@ trait ModifyReviewNCollectionTraits{
         Schema::create('reviews', function ($table) {
             $table->unsignedInteger('post_id')->primary();
             $table->unsignedInteger('thread_id')->default(0)->index();//以后也允许登记外站书籍
+            $table->unsignedInteger('thread_component_id')->default(0)->index();//对一些书籍，直接跳转到对应章节
             $table->boolean('recommend')->default(true);//是否对外推荐
             $table->boolean('long')->default(false);//是否属于长评，字数超过几百字xx算长评
             $table->boolean('editor_recommend')->default(false);//编辑推荐
@@ -83,6 +84,12 @@ trait ModifyReviewNCollectionTraits{
                 echo $post_id,"|";
             }
         }
+        DB::table('threads')
+        ->join('user_infos','user_infos.user_id','=','threads.user_id')
+        ->where('threads.channel_id','=',13)
+        ->update([
+            'user_infos.default_list_id' => DB::raw('threads.id')
+        ]);
         echo "finished task12.2 createReviewList\n";
     }
 

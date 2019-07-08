@@ -29,6 +29,7 @@ trait ModifyPostTableTraits{
                 $table->unsignedInteger('view_count')->default(0);
                 $table->unsignedInteger('char_count')->default(0);
                 $table->unsignedInteger('postcomment_id')->default(0)->index();
+                $table->unsignedInteger('in_component_id')->default(0)->index();
                 echo "added new post columns.\n";
             });
         }
@@ -95,12 +96,25 @@ trait ModifyPostTableTraits{
         ->where('maintext','=',0)
         ->where('reply_to_id','>',0)
         ->update(['type'=>'comment']);
+
+        DB::table('posts')
+        ->join('chapters','chapters.id','=','posts.chapter_id')
+        ->where('posts.maintext','=',0)
+        ->where('posts.reply_to_id','>',0)
+        ->update([
+            'posts.in_component_id' => DB::raw('chapters.post_id')
+        ]);
+
         echo "updated comment type.\n";
         DB::table('posts')
         ->join('chapters','chapters.id','=','posts.chapter_id')
         ->where('posts.maintext','=',0)
         ->where('posts.reply_to_id','=',0)
-        ->update(['posts.reply_to_id'=>DB::raw('chapters.post_id')]);
+        ->update([
+            'posts.reply_to_id' => DB::raw('chapters.post_id'),
+            'posts.in_component_id' => DB::raw('chapters.post_id')
+        ]);
+
         DB::table('posts as p1')
         ->join('posts as p2','p2.reply_to_id','=','p1.id')
         ->update(['p1.new_reply_id'=>DB::raw('p2.id')]);

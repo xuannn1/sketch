@@ -3,6 +3,7 @@ namespace App\Console\Commands\TemporaryTraits;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 trait ModifyUserTableTraits{
 

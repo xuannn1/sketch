@@ -44,6 +44,8 @@ class CreateUserInfosTable extends Migration
             $table->integer('collection_threads_updates')->unsigned()->default(0);
             $table->integer('collection_books_updates')->unsigned()->default(0);
             $table->integer('collection_statuses_updates')->unsigned()->default(0);
+            $table->unsignedInteger('default_list_id')->unsigned()->default(0);
+            $table->unsignedInteger('default_box_id')->unsigned()->default(0);
             $table->string('login_ip')->nullable();//上一次访问的ip地址
             $table->dateTime('login_at')->nullable();//上次登录时间
             $table->dateTime('active_at')->nullable();//上次活跃时间

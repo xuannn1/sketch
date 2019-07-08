@@ -38,6 +38,8 @@ trait modifyQuestionBoxTraits{
                         'created_at' => $question->created_at,
                         'channel_id' => 14,
                     ]);
+                    $user->info->default_box_id = $thread_id;
+                    $user->info->save();
                 }
             }
         }

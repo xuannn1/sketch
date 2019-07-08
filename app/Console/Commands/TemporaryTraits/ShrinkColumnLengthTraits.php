@@ -16,13 +16,13 @@ trait ShrinkColumnLengthTraits{
         ]);
         echo "shrinked posts\n";
 
-        // Schema::table('posts', function (Blueprint $table) {
-        //     $table->string('title', 10)->change();
-        //     $table->string('brief', 20)->change();
-        //     $table->string('reply_to_brief', 20)->change();
-        //     $table->string('creation_ip', 45)->change();
-        // });
-        // echo "updated posts table\n";
+        Schema::table('posts', function ($table) {
+            $table->string('title', 10)->change();
+            $table->string('brief', 20)->change();
+            $table->string('reply_to_brief', 20)->change();
+            $table->string('creation_ip', 45)->change();
+        });
+        echo "updated posts table\n";
 
         DB::table('threads')->update([
             'title' => DB::raw('substring(brief,1,30)'),
@@ -30,21 +30,27 @@ trait ShrinkColumnLengthTraits{
         ]);
         echo "shrinked threads\n";
 
-        // Schema::table('threads', function (Blueprint $table) {
-        //     $table->string('title', 30)->change();
-        //     $table->string('brief', 50)->change();
-        // });
-        // echo "updated threads table\n";
+        Schema::table('threads', function ($table) {
+            $table->string('title', 30)->change();
+            $table->string('brief', 50)->change();
+        });
+        echo "updated threads table\n";
 
         DB::table('statuses')->update([
             'brief' => DB::raw('substring(brief,1,20)'),
         ]);
         echo "shrinked statuses\n";
 
-        // Schema::table('statuses', function (Blueprint $table) {
-        //     $table->string('brief', 20)->change();
-        // });
-        // echo "updated statuses table\n";
+        Schema::table('statuses', function ($table) {
+            $table->string('brief', 20)->change();
+        });
+        echo "updated statuses table\n";
+
+        Schema::table('administrations', function ($table) {
+            $table->string('reason', 40)->change();
+        });
+        echo "updated statuses table\n";
+
     }
 
 }

@@ -54,7 +54,7 @@ class RebuildDatabase extends Command
         // $this->modifyThreadTable();
         // $this->modifyRewardNVoteTable();
         // $this->modifyPostTable();
-        // $this->modifyAdminRecords();
+        $this->modifyAdminRecords();
         // $this->modifyQuestionBox();
         // $this->modifyActivityTable();
         // $this->modifyReviewNCollection();
