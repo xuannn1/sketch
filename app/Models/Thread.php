@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Helpers\ConstantObjects;
-use App\Sosadfun\Traits\ColumnTrait;
 
 use DB;
 
 class Thread extends Model
 {
-    use SoftDeletes, ColumnTrait;
+    use SoftDeletes;
     use Traits\VoteTrait;
     use Traits\RewardTrait;
     use Traits\ValidateTagTraits;
@@ -99,13 +98,13 @@ class Thread extends Model
 
     public function scopeWithBianyuan($query, $withBianyuan)
     {
-        if($withBianyuan==='withBianyuan'){
-            return $query;
+        if($withBianyuan==='non_bianyuan_only'){
+            return $query->where('bianyuan', false);
         }
         if($withBianyuan==='bianyuan_only'){
             return $query->where('bianyuan', true);
         }
-        return $query->where('bianyuan', false);
+        return $query;
     }
 
     public function scopeWithTag($query, $withTags)
@@ -120,31 +119,9 @@ class Thread extends Model
         }
     }
 
-    public function scopeExcludeTag($query, $excludeTags)
-    {
-        if ($excludeTags){
-            $tags=(array)json_decode($excludeTags);
-            return $query->whereDoesntHave('tags', function ($query) use ($tags){
-                $query->whereIn('id', $tags);
-            });
-        }else{
-            return $query;
-        }
-    }
-
     public function scopeIsPublic($query)//在thread index的时候，只看公共channel内的公开thread
     {
         return $query->where('is_public', true)->whereIn('channel_id', ConstantObjects::public_channels());
-    }
-
-    public function scopeThreadInfo($query)
-    {
-        return $query->select(array_diff( $this->thread_columns, ['body']));
-    }
-
-    public function scopeThreadBrief($query)
-    {
-        return $query->select($this->threadbrief_columns);
     }
 
     public function scopeOrdered($query, $ordered)

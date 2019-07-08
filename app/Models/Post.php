@@ -32,6 +32,11 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function last_reply()
+    {
+        return $this->belongsTo(Post::class, 'last_reply_id');
+    }
+
     public function replies()
     {
         return $this->hasMany(Post::class, 'reply_id');
@@ -40,11 +45,6 @@ class Post extends Model
     public function parent()
     {
         return $this->belongsTo(Post::class, 'reply_id');
-    }
-
-    public function parent_brief()
-    {
-        return $this->belongsTo(Post::class, 'reply_id')->select($this->postbrief_columns);
     }
 
     public function author()
@@ -66,10 +66,6 @@ class Post extends Model
         return $this->belongsToMany('App\Models\Tag', 'tag_post', 'post_id', 'tag_id');
     }
 
-    public function scopeExclude($query, $value = array())
-    {
-        return $query->select( array_diff( $this->post_columns,(array) $value));
-    }
     public function scopeUserOnly($query, $userOnly)
     {
         if($userOnly){
@@ -102,16 +98,6 @@ class Post extends Model
             return $query->where('reply_id', $withReplyTo);
         }
         return $query;
-    }
-
-    public function scopePostBrief($query)
-    {
-        return $query->select($this->postbrief_columns);
-    }
-
-    public function scopePostInfo($query)
-    {
-        return $query->select($this->postinfo_columns);
     }
 
     public function scopeOrdered($query, $ordered)
@@ -230,15 +216,6 @@ class Post extends Model
         ->where('reply_id', $this->id)
         ->with('author')
         ->orderBy('upvote_count', 'desc')
-        ->first();
-    }
-
-    public function newest_reply()//这个post里面，回复它的里面，最新的
-    {
-        return Post::postBrief()
-        ->where('reply_id', $this->id)
-        ->with('author')
-        ->orderBy('created_at', 'desc')
         ->first();
     }
 
