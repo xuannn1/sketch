@@ -52,12 +52,17 @@ class Thread extends Model
 
     public function votes()
     {
-        return $this->morphMany('App\Models\Vote', 'votable');
+        return $this->morphMany(Vote::class, 'votable');
     }
 
     public function last_component()
     {
         return $this->belongsTo(Post::class, 'last_component_id');
+    }
+
+    public function first_component()
+    {
+        return $this->belongsTo(Post::class, 'first_component_id');
     }
 
     public function last_post()
@@ -94,13 +99,13 @@ class Thread extends Model
 
     public function scopeWithBianyuan($query, $withBianyuan)
     {
+        if($withBianyuan==='withBianyuan'){
+            return $query;
+        }
         if($withBianyuan==='bianyuan_only'){
-            return $query->where('is_bianyuan', true);
+            return $query->where('bianyuan', true);
         }
-        if($withBianyuan==='none_bianyuan_only'){
-            return $query->where('is_bianyuan', false);
-        }
-        return $query;
+        return $query->where('bianyuan', false);
     }
 
     public function scopeWithTag($query, $withTags)

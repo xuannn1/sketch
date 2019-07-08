@@ -27,10 +27,8 @@
 }
 
 {//以下是静态页面模块
-    Route::group(['middleware' => 'fw-block-blacklisted'], function ()
-    {
+
     Route::get('/', 'PagesController@home')->name('home');
-    });
     Route::get('about', 'PagesController@about')->name('about');
     Route::get('help', 'PagesController@help')->name('help');
     Route::get('contacts', 'PagesController@contacts')->name('contacts');

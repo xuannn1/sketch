@@ -92,6 +92,11 @@ class User extends Authenticatable
         return $this->hasOne(UserInfo::class, 'user_id');
     }
 
+    public function collectedItems()
+    {
+        return $this->belongsToMany('App\Models\Thread', 'collection_count', 'user_id', 'thread_id');
+    }
+
     public function followers()
     {
         return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
@@ -100,11 +105,6 @@ class User extends Authenticatable
     public function followings()
     {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
-    }
-
-    public function collectedItems()
-    {
-        return $this->belongsToMany('App\Models\Thread', 'collection_count', 'user_id', 'thread_id');
     }
 
 
@@ -128,6 +128,7 @@ class User extends Authenticatable
     {
         return $this->followings->contains($user_id);
     }
+
 
     public function isAdmin()
     {
@@ -168,6 +169,13 @@ class User extends Authenticatable
     public function isOnline()
     {
         return Cache::has('usr-on-' . $this->id);
+    }
+
+    public function wearTitle($title_id)
+    {
+        $this->update([
+            'title_id' => $title_id,
+        ]);
     }
 
 
