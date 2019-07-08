@@ -68,6 +68,7 @@ trait ModifyQuoteNStatusTraits{
                 $table->unsignedInteger('reply_to_id')->default(0)->index();
                 $table->boolean('no_reply')->default(false);
                 $table->unsignedInteger('reply_count')->default(0);
+                $table->unsignedInteger('last_reply_id')->default(0)->index();
                 $table->unsignedInteger('forward_count')->default(0);
                 $table->unsignedInteger('upvote_count')->default(0);
                 $table->string('creation_ip', 45)->nullable();//创建时IP地址

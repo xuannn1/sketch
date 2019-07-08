@@ -295,17 +295,22 @@ public static function find_tag_by_name($tagname)
 public static function find_tag_by_id($tagid)
 {
     return Cache::remember('tagid-'.$tagid, 20, function() use($tagid) {
-        return $tag = self::alltags()->keyBy('id')->get($tagid);
+        return self::alltags()->keyBy('id')->get($tagid);
     });
 }
 
-public function find_tag_by_label_id($labelid)
+public static function find_label_by_id($labelid)
+{
+    return Cache::remember('labelid-'.$labelid, 20, function() use($labelid) {
+        return self::allLabels()->keyBy('id')->get($labelid);
+    });
+}
+
+public static function find_tag_by_label_id($labelid)
 {
     return Cache::remember('tagbylabelid-'.$labelid, 20, function() use($labelid) {
-        $label_tag = null;
-        $label = Helper::allLabels()->keyBy('id')->get($label_id);
-        $label_tag = Helper::alltags()->keyBy('tag_name')->get($label->labelname);
-        return $label_tag;
+        $label = self::find_label_by_id($labelid);
+        return self::find_tag_by_name($label->labelname);
     });
 }
 

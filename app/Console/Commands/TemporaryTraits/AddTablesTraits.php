@@ -12,9 +12,10 @@ trait AddTablesTraits{
         Schema::dropIfExists('firewall');
         Schema::create('firewall', function ($table) {
             $table->increments('id');
-            $table->string('ip_address', 45)->index();//被封禁IP地址
-            $table->unsignedInteger('user_id')->default(0)->index();//执行封禁的管理员id
-            $table->string('reason')->nullable();//封禁理由
+            $table->string('ip_address', 45)->nullable()->index();//被封禁IP地址
+            $table->unsignedInteger('user_id')->default(0)->index();//被封禁用户
+            $table->unsignedInteger('admin_id')->default(0)->index();//执行封禁的管理员id
+            $table->string('reason', 40)->nullable();//封禁理由
             $table->dateTime('created_at')->nullable();//创建时间
             $table->dateTime('end_at')->nullable();//停止封禁时间
             $table->boolean('is_valid')->default(true);//是否可用
@@ -49,6 +50,15 @@ trait AddTablesTraits{
             $table->unique(['user_id','votable_type','votable_id','attitude_type']);
         });
 
+        Schema::rename('register_homeworks', 'homework_registrations');
+        Schema::table('homework_registrations', function($table){
+            $table->renameColumn('updated_at', 'submitted_at');
+            echo "modified homework_registrations table\n";
+        });
+        Schema::table('homeworks', function($table){
+            $table->unsignedInteger('registration_thread_id')->default(0)->index();
+            $table->unsignedInteger('profile_thread_id')->default(0)->index();
+            echo "modified homeworks table\n";
+        });
     }
-
 }

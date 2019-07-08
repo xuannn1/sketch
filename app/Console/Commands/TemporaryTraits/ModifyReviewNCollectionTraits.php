@@ -103,7 +103,7 @@ trait ModifyReviewNCollectionTraits{
             });
             echo "echo added old_list_id column to threads table.\n";
         }
-        echo "task13.1 createList:";
+        echo "task createList:\n";
         $collectionlists = \App\Models\CollectionList::where('type','<',4)->get();
         $insert_lists = [];
         foreach($collectionlists as $collectionlist){
@@ -144,7 +144,7 @@ trait ModifyReviewNCollectionTraits{
         foreach ( $collection_reviews as $collection_review ){
             $post_data = [
                 'thread_id'=> $collection_review->list_id,
-                'brief' => \App\Helpers\Helper::trimtext($collection_review->body, 20),
+                'brief' => \App\Helpers\Helper::trimtext($collection_review->body, 40),
                 'body' => $collection_review->body,
                 'created_at' => $collection_review->created_at,
                 'type' => 'review',

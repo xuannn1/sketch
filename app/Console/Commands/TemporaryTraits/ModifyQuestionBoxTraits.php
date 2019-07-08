@@ -42,13 +42,14 @@ trait modifyQuestionBoxTraits{
                     $user->info->save();
                 }
             }
+            echo $question->id.'|';
         }
         echo "created boxes.\n";
     }
     public function insertQuestionAnswerToBox()//15.2
     {
         echo "task insertQuestionAnswerToBox\n";
-        $questions = \App\Models\Question::all();
+        $questions = \App\Models\Question::with('answer')->get();
         foreach($questions as $question){
             $thread = \App\Models\Thread::where('user_id',$question->user_id)
             ->where('channel_id', 14)

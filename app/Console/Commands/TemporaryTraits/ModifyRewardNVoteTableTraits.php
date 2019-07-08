@@ -28,7 +28,7 @@ trait ModifyRewardNVoteTableTraits{
             echo "created rewards table\n";
         }
         echo "started storing shengfans to rewards\n";
-        \App\Models\Shengfan::with('post')->chunk(1000, function ($shengfans) {
+        \App\Models\Shengfan::with('post')->chunk(5000, function ($shengfans) {
             $insert_shengfan = [];
             foreach($shengfans as $shengfan){
                 $post = $shengfan->post;
@@ -49,7 +49,7 @@ trait ModifyRewardNVoteTableTraits{
         });
         echo "finished storing shengfans\n";
         echo "start storing xianyus\n";
-        \App\Models\Xianyu::with('thread')->chunk(1000, function ($xianyus) {
+        \App\Models\Xianyu::chunk(5000, function ($xianyus) {
             $insert_xianyu = [];
             foreach($xianyus as $xianyu){
                 if($xianyu->thread_id>0){
@@ -82,28 +82,23 @@ trait ModifyRewardNVoteTableTraits{
                 $table->unsignedInteger('record_id')->default(0)->index();// 原来的记录地址
                 $table->string('attitude_type',10)->nullable()->index();
                 $table->dateTime('created_at')->nullable();
-                // $table->unique(['user_id','votable_type','votable_id','attitude_type']);
             });
             echo "created votes table\n";
         }
         echo "started inserting votes to table\n";
-        \App\Models\VotePosts::with('user','post')->chunk(1000, function ($votes) {
+        \App\Models\VotePosts::chunk(5000, function ($votes) {
             $insert_votes = [];
             foreach($votes as $vote){
-                $post = $vote->post;
-                $user = $vote->user;
-                if($post&&$user){
-                    if($vote->upvoted){
-                        $vote_data=[
-                            'user_id' => $vote->user_id,
-                            'votable_type' => 'post',
-                            'attitude_type' => 'upvote',
-                            'created_at' => $vote->upvoted_at,
-                            'record_id' => $vote->id,
-                            'votable_id' => $vote->post_id,
-                        ];
-                        array_push($insert_votes,$vote_data);
-                    }
+                if($vote->upvoted){
+                    $vote_data=[
+                        'user_id' => $vote->user_id,
+                        'votable_type' => 'post',
+                        'attitude_type' => 'upvote',
+                        'created_at' => $vote->upvoted_at,
+                        'record_id' => $vote->id,
+                        'votable_id' => $vote->post_id,
+                    ];
+                    array_push($insert_votes,$vote_data);
                 }
             }
             DB::table('votes')->insert($insert_votes);

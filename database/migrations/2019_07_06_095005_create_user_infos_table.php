@@ -21,7 +21,7 @@ class CreateUserInfosTable extends Migration
             $table->integer('sangdian')->unsigned()->default(0);
             $table->integer('exp')->unsigned()->default(0);
             $table->integer('upvote_count')->unsigned()->default(0);
-            $table->string('brief_intro', 20)->nullable();// 极简介绍
+            $table->string('brief_intro', 50)->nullable();// 极简介绍
             $table->string('majia')->nullable();
             $table->boolean('indentation')->default(false);//上次锁进设置
             $table->integer('views')->unsigned()->default(0);

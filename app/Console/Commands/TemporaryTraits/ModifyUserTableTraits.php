@@ -57,7 +57,7 @@ trait ModifyUserTableTraits{
                     'sangdian' => $user->sangdian,
                     'exp' => $user->experience_points,
                     'upvote_count' => $user->upvoted,
-                    'brief_intro' => \App\Helpers\Helper::trimtext($user->introduction, 20),
+                    'brief_intro' => \App\Helpers\Helper::trimtext($user->introduction, 40),
                     'majia' => $user->majia,
                     'indentation' =>$user->indentation,
                     'activation_token' => $user->activation_token,

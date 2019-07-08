@@ -10,7 +10,7 @@ trait ModifyAdminRecordsTraits{
     {
         if(!Schema::hasColumn('administrations', 'record')){
             Schema::table('administrations', function($table){
-                $table->string('record', 40)->nullable();
+                $table->string('record', 50)->nullable();
                 $table->string('administratable_type', 10)->nullable()->index();
                 $table->unsignedInteger('administratable_id')->default(0)->index();
                 $table->index('item_id');
@@ -20,7 +20,7 @@ trait ModifyAdminRecordsTraits{
         }
         DB::table('administrations')
         ->update([
-            'reason' => DB::raw('substring(reason,1,30)'),
+            'reason' => DB::raw('substring(reason,1,50)'),
         ]);
         echo"truncated all admin records\n";
 
@@ -28,7 +28,7 @@ trait ModifyAdminRecordsTraits{
         ->join('threads','administrations.item_id','=','threads.id')
         ->whereIn('administrations.operation',[1,2,3,4,5,6,9,15,16,40,41,42,43,44,45])
         ->update([
-            'administrations.record' => DB::raw('substring(threads.title,1,20)'),
+            'administrations.record' => DB::raw('substring(threads.title,1,50)'),
             'administrations.administratable_type' => 'thread',
             'administrations.administratable_id' => DB::raw('administrations.item_id'),
         ]);
@@ -38,30 +38,24 @@ trait ModifyAdminRecordsTraits{
         ->join('posts','administrations.item_id','=','posts.id')
         ->whereIn('administrations.operation',[7,10,11,12,30])
         ->update([
-            'administrations.record' => DB::raw('substring(posts.brief,1,20)'),
+            'administrations.record' => DB::raw('substring(posts.brief,1,50)'),
             'administrations.administratable_type' => 'post',
             'administrations.administratable_id' => DB::raw('administrations.item_id'),
         ]);
         echo"updated post admin records\n";
 
-        if(Schema::hasColumn('posts', 'postcomment_id')){
-            DB::table('administrations')
-            ->join('posts','administrations.item_id','=','post_comments.id')
-            ->whereIn('administrations.operation',[8,31])
-            ->update([
-                'administrations.record' => DB::raw('substring(post_comments.body,1,20)'),
-            ]);
-
-            echo"updated postcomments administration records\n";
-        }else{
-            echo"ERROR:have not transferred postcomments to posts\n";
-        }
+        DB::table('administrations')
+        ->join('post_comments','administrations.item_id','=','post_comments.id')
+        ->whereIn('administrations.operation',[8,31])
+        ->update([
+            'administrations.record' => DB::raw('substring(post_comments.body,1,50)'),
+        ]);
 
         DB::table('administrations')
         ->join('statuses','administrations.item_id','=','statuses.id')
         ->where('administrations.operation','=',17)
         ->update([
-            'administrations.record' => DB::raw('substring(statuses.content,1,20)'),
+            'administrations.record' => DB::raw('substring(statuses.content,1,50)'),
             'administrations.administratable_type' => 'status',
             'administrations.administratable_id' => DB::raw('administrations.item_id'),
         ]);

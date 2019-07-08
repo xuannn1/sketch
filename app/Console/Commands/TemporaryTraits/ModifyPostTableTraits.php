@@ -24,7 +24,7 @@ trait ModifyPostTableTraits{
                 $table->string('type',10)->nullable();
                 $table->string('reply_to_brief')->nullable();
                 $table->unsignedInteger('reply_to_position')->default(0);
-                $table->unsignedInteger('new_reply_id')->default(0);
+                $table->unsignedInteger('last_reply_id')->default(0);
                 $table->unsignedInteger('reply_count')->default(0);
                 $table->unsignedInteger('view_count')->default(0);
                 $table->unsignedInteger('char_count')->default(0);
@@ -117,7 +117,7 @@ trait ModifyPostTableTraits{
 
         DB::table('posts as p1')
         ->join('posts as p2','p2.reply_to_id','=','p1.id')
-        ->update(['p1.new_reply_id'=>DB::raw('p2.id')]);
+        ->update(['p1.last_reply_id'=>DB::raw('p2.id')]);
 
         echo "finished updatePostTypeColumn\n";
     }
@@ -170,15 +170,15 @@ trait ModifyPostTableTraits{
             SET P1.reply_count=P2.ParentCount
         ');
         echo "counted replies for each post\n";
-
         DB::statement('
             UPDATE posts
-            SET brief = SUBSTRING(body,1,20)
-            where brief is null
+            SET brief = SUBSTRING(brief,1,50)
+            where brief is not null
         ');
         DB::statement('
             UPDATE posts
-            SET brief = SUBSTRING(brief,1,20)
+            SET brief = SUBSTRING(body,1,50)
+            where brief is null
         ');
         echo "updated briefs as substring of body\n";
 

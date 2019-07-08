@@ -16,6 +16,7 @@ trait ModifyThreadTableTraits{
         $this->modifyTagTable();//task 2.2
         $this->updateThreadTable();//task 2.3
         $this->insertThreadTable();//task 2.4
+        $this->syncOldThreadTags();//
         $this->modifyTongrenTable();//task 2.5
     }
 
@@ -320,13 +321,16 @@ trait ModifyThreadTableTraits{
             'threads.last_component_id' => DB::raw('books.last_chapter_id'),
             'threads.add_component_at' => DB::raw('books.lastaddedchapter_at'),
         ]);
+    }
 
+    public function syncOldThreadTags()
+    {
         echo "start sync threads old tags\n";
 
         Cache::put('allTags', \App\Models\Tag::all(), 10);
         Cache::put('allLabels', \App\Models\Label::all(), 10);
 
-        \App\Models\Thread::with('book.tongren')->chunk(50, function ($threads) {
+        \App\Models\Thread::with('book.tongren')->chunk(1000, function ($threads) {
             foreach ($threads as $thread) {
                 $insert_tags = [];
                 if($thread->book_id>0){
@@ -392,11 +396,11 @@ trait ModifyThreadTableTraits{
 
     public function findTagByName($tagname)
     {
-        $tag = Helper::find_tag_by_name($tagname);
+        return Helper::find_tag_by_name($tagname);
     }
     public function findTagByLabelId($label_id)
     {
-        $tag = Helper::find_tag_by_label_id($label_id);
+        return Helper::find_tag_by_label_id($label_id);
     }
 
     public function modifyTongrenTable() //task 2.5
@@ -408,44 +412,26 @@ trait ModifyThreadTableTraits{
             });
             echo "added thread_id column to tongrens\n";
         }
-        if(Schema::hasColumn('tongrens', 'tongren_yuanzhu_tag_id')){
-            \App\Models\Tongren::with('book')->chunk(200, function ($tongrens) {
-                foreach($tongrens as $tongren){
-                    $book = $tongren->book;
-                    if($book&&$book->thread_id>0){
-                        $tongren->thread_id = $book->thread_id;
-                        if($tongren->tongren_yuanzhu_tag_id>0){
-                            $tag = \App\Models\Tag::find($tongren->tongren_yuanzhu_tag_id);
-                            if($tag){
-                                $tongren->tongren_yuanzhu = null;
-                            }else{
-                                echo "this tongren_yuanzhu_id cannot find tag:".$tongren->tongren_yuanzhu_tag_id."\n";
-                            }
-                        }
-                        if($tongren->tongren_CP_tag_id>0){
-                            $tag = \App\Models\Tag::find($tongren->tongren_CP_tag_id);
-                            if($tag){
-                                $tongren->tongren_cp = null;
-                            }else{
-                                echo "this tongren_cp_id cannot find tag:".$tongren->tongren_CP_tag_id."\n";
-                            }
-                        }
-                    }
-                    if($tongren->tongren_yuanzhu_tag_id>0&&$tongren->tongren_CP_tag_id>0){
-                        $tongren->delete();
-                    }elseif($tongren->thread_id===0){
-                        $tongren->delete();
-                    }elseif($tongren->tongren_yuanzhu===null&&$tongren->tongren_cp===null){
-                        $tongren->delete();
-                    }else{
-                        $tongren->save();
-                    }
-                }
-                echo $tongren->id.'|';
-            });
-        }
-        DB::table('tongrens')->where('thread_id', '=', 0)->delete();
-        DB::table('tongrens')->where('tongren_yuanzhu', '=', null)->where('tongren_cp', '=', null)->delete();
+        DB::table('tongrens')
+        ->join('books','books.id','=','tongrens.book_id')
+        ->update([
+            'tongrens.thread_id' => DB::raw('books.thread_id')
+        ]);
+        echo "updated thread_id column to tongrens\n";
+        DB::table('tongrens')
+        ->where('tongren_yuanzhu_tag_id','>',0)
+        ->update(['tongren_yuanzhu'=>null]);
+        echo "updated tongren_yuanzhu column to tongrens\n";
+        DB::table('tongrens')
+        ->where('tongren_CP_tag_id','>',0)
+        ->update(['tongren_cp'=>null]);
+        echo "updated tongren_cp column to tongrens\n";
+        DB::table('tongrens')
+        ->where('tongren_yuanzhu','=',null)
+        ->where('tongren_cp','=',null)
+        ->delete();
+        echo "deleted unnecessary columns of tongrens\n";
+
         if(Schema::hasColumn('tongrens', 'book_id')){
             Schema::table('tongrens', function($table){
                 $table->dropColumn(['book_id','tongren_CP_tag_id', 'tongren_yuanzhu_tag_id', 'deleted_at','created_at','updated_at']);
