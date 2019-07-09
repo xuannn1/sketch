@@ -8,9 +8,11 @@ trait ModifyUserTableTraits{
 
     public function modifyUserTable()//task 01
     {
-        $this->updateUserInfoNIntro();// task 01.1
-        $this->deleteExtraUserColumns();// task 01.2
-        $this->renameExtraUserColumns();// task 01.2
+        // $this->updateUserInfoNIntro();// task 01.1
+        $this->recalculateFollowers();
+        // $this->deleteExtraUserColumns();// task 01.2
+        // $this->renameExtraUserColumns();// task 01.2
+
     }
 
     public function updateUserInfoNIntro()//task 01.1
@@ -89,6 +91,25 @@ trait ModifyUserTableTraits{
             DB::table('user_infos')->insert($insert_info);
             echo $user->id."|";
         });
+    }
+
+    public function recalculateFollowers()
+    {
+        echo "start calculating followers\n";
+        DB::statement('
+            update user_infos
+            set follower_count =
+            (select count(*) from followers
+            where followers.user_id = user_infos.user_id)
+        ');
+        echo "recalculated followers\n";
+        DB::statement('
+            update user_infos
+            set following_count =
+            (select count(*) from followers
+            where followers.follower_id = user_infos.user_id)
+        ');
+        echo "recalculated followings\n";
     }
 
     public function deleteExtraUserColumns()

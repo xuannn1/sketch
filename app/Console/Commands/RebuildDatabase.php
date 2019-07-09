@@ -61,7 +61,7 @@ class RebuildDatabase extends Command
     public function handle()
     {
 
-        // $this->modifyUserTable();//task 1
+        $this->modifyUserTable();//task 1
         // $this->modifyThreadTable(); // task 2
         // $this->modifyRewardNVoteTable(); // task 3
         // $this->modifyPostTable(); // task 4
@@ -70,7 +70,7 @@ class RebuildDatabase extends Command
         // $this->modifyActivityTable();
         // $this->modifyReviewNCollection();
         // $this->modifyQuoteNStatus();
-        $this->cleanUpExtraThings();
+        // $this->cleanUpExtraThings();
 
     }
 
