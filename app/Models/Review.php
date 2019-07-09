@@ -10,14 +10,14 @@ class Review extends Model
     public $timestamps = false;
     protected $primaryKey = 'post_id';
 
-    public function mainpost()
+    public function post()
     {
-        return $this->belongsTo(Post::class, 'post_id');
+        return $this->belongsTo(Post::class, 'post_id')->withDefault();
     }
 
     public function reviewee()//被评论的文章
     {
-        return $this->belongsTo(Thread::class, 'thread_id')->select($this->threadbrief_columns);
+        return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
     }
 
 }

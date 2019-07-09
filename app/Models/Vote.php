@@ -8,6 +8,7 @@ class Vote extends Model
 {
     protected $guarded = [];
     const UPDATED_AT = null;
+    protected $dates = ['created_at'];
 
     public function user(){
     	return $this->belongsTo(User::class,'user_id');

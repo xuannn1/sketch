@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', '帮助')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel-group">
             <div class="panel panel-default">
@@ -276,19 +276,15 @@
                                             <h4>5.1 当前页面数据</h4>
                                             <ul>
                                                 <li>当前在线注册用户数：{{ $users_online }}人</li>
-                                                <li>信息每页显示：{{ $data['items_per_page'] }}个</li>
-                                                <li>信息每分区显示：{{ $data['items_per_part'] }}个</li>
-                                                <li>目录每页显示：{{ $data['index_per_page'] }}个</li>
-                                                <li>目录每分区显示：{{ $data['index_per_part'] }}个</li>
-                                                <li>长评标准：{{ $data['longcomment_length'] }}字</li>
-                                                <li>新章节的更新字数必须达到{{ $data['update_min'] }}字，才能计入本书“最后更新”的排名数据（顶帖）</li>
+                                                <li>长评标准：{{ config('constants.longcomment_length') }}字</li>
+                                                <li>新章节的更新字数必须达到{{ config('update_min') }}字，才能计入本书“最后更新”的排名数据（顶帖）</li>
                                             </ul>
                                         </div>
                                         <br>
                                         <div id="help-5-2">
                                             <h4>5.2 升级标准</h4>
                                             <ul>
-                                                @foreach($data['level_up'] as $level=>$level_requirement)
+                                                @foreach( config('level.level_up') as $level=>$level_requirement)
                                                 <li>等级：{{$level}}</li>
                                                 <ul>
                                                     <li>所需积分： {{$level_requirement['jifen']}}，所需咸鱼： {{$level_requirement['xianyu']}}，所需丧点： {{$level_requirement['sangdian']}}</li>
@@ -334,7 +330,7 @@
                                             <br>
                                             <div id="help-5-5-2">
                                                 <h5>5.5.2 出现在书名中会被隐藏的特殊字符（用‘|’隔开）：</h5><h6>
-                                                    {{ $data['word_filter']['not_in_title'] }}
+                                                    {{ config('forbiddenwords.not_in_title') }}
                                                 </h6>
                                             </div>
                                         </div>

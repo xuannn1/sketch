@@ -10,7 +10,7 @@ class UserInfo extends Model
     protected $guarded = [];
     protected $primaryKey = 'user_id';
     const UPDATED_AT = null;
-    protected $dates = ['created_at'];
+    protected $dates = ['created_at','no_posting_until','no_logging_until','login_at','active_at'];
 
     public function user()
     {
@@ -67,9 +67,9 @@ class UserInfo extends Model
             case "homework_regular":
             $this->rewardData(50,50,50,20,$base*2);
             break;
-            case "online_reward"://保持登陆奖励
-            $info->reward(1,0,0,0,0);
-            break;
+            // case "online_reward"://保持登陆奖励
+            // $info->reward(1,0,0,0,0);
+            // break;
             case "first_quiz":// 首次答题奖励
             $this->rewardData(10,10,0,2,0);
             break;
@@ -82,15 +82,17 @@ class UserInfo extends Model
         $this->save();
     }
 
-    public function activate_user(){
+    public function activate(){
         $user = $this->user;
         $user->activated = true;
         $this->activation_token = null;
         $user->save();
         $this->save();
     }
+
     public function active_now($ip=null){
         $this->active_at = Carbon::now();
+        $this->rewardData(1,0,0,0,0);
         $this->save();
     }
 

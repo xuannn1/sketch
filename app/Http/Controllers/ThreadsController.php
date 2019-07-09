@@ -6,28 +6,14 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-
-use App\Http\Requests\StoreThread;
-use App\Sosadfun\Traits\ThreadTraits;
-use App\Sosadfun\Traits\RecordViewHistoryTraits;
-use App\Models\Thread;
+use App\Helpers\ThreadObjects;
 use App\Models\Post;
-use App\Models\Tag;
-use App\Models\Channel;
-use App\Models\RecommendBook;
-use Carbon\Carbon;
+
 use Auth;
-use App\Models\User;
-use App\Helpers\Helper;
-// use App\RegisterHomework;
+
 
 class threadsController extends Controller
 {
-    use ThreadTraits;
-    use RecordViewHistoryTraits;
 
     public function __construct()
     {
@@ -68,39 +54,41 @@ class threadsController extends Controller
         return view('threads.index', compact('threads','simplethreads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
     }
 
-    public function show(Thread $thread, Request $request)
+    public function show($id, Request $request)
     {
-        if (request('recommendation')){
-            $recommendation = RecommendBook::find(request('recommendation'));
-            if($recommendation){
-                $recommendation->increment('clicks');
-            }
-        }
-        $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
-        $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
-        $posts = Post::allPosts($thread->id,$thread->post_id)
-        ->userOnly(request('useronly'))
-        ->withOrder('oldest')
-        ->with('owner','reply_to_post','comments.owner', 'chapter')
-        ->paginate(config('constants.items_per_page'))
-        ->appends($request->only('useronly','page'));
-        //$thread->load(['creator', 'tags', 'mainpost']);
-        if(Auth::check()){
-            $view_history=$this->recordViewHistory(request()->ip(),Auth::id(),$thread->id,0);
-            if(Auth::id()!=$thread->user_id){
-                $thread->increment('viewed');
-            }
-        }
-        $book = [];
-        if($thread->book_id>0){
-            $book = $thread->book;
-        }
-        if($request->page>1){
-            $xianyus = [];
+        $page = is_numeric($request->page)? $request->page:1;
+        if($page==1){
+            $thread = ThreadObjects::threadProfile($id);
         }else{
-            $xianyus = Helper::xianyus($thread->id);
+            $thread = ThreadObjects::thread($id);
         }
-        return view('threads.show', compact('thread', 'posts','book', 'channel', 'label', 'xianyus'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
+        $posts = ThreadObjects::threadPostsOldest($id, $page);
+        return view('threads.show', compact('thread', 'posts'));
+    }
+
+    public function filterpost($id, Request $request)
+    {
+        $thread = ThreadObjects::thread($id);
+        $page = is_numeric($request->page)? $request->page:1;
+        $posts = \App\Models\Post::where('thread_id',$id)
+        ->with('author.title','tags')
+        ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
+        ->withComponent($request->withComponent)//可以选择是只看component，还是不看component
+        ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
+        ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
+        ->ordered($request->ordered)//排序方式
+        ->paginate(config('constants.posts_per_page'));
+
+        $channel = $thread->channel();
+        if($channel->type==='book'){
+            $posts->load('chapter');
+        }
+        if($channel->type==='review'){
+            $posts->load('review.reviewee');
+            $posts->review->reviewee->load('tags','author');
+        }
+
+        return view('threads.show', compact('thread', 'posts'));
     }
 
     public function createThreadForm($channel)
@@ -143,20 +131,13 @@ class threadsController extends Controller
             return redirect()->route('error', ['error_code' => '403']);
         }
     }
-    public function showpost(Post $post, Request $request)
+    public function showpost(Post $post)
     {
-        // if (request('recommendation')){
-        //     $recommendation = RecommendBook::find(request('recommendation'));
-        //     if($recommendation){
-        //         $recommendation->increment('clicks');
-        //     }
-        // }
-        $thread = $post->thread;
-        $totalposts = Post::allPosts($thread->id,$thread->post_id)
+        $previousposts = Post::where('thread_id',$post->thread_id)
         ->where('created_at', '<', $post->created_at)
         ->count();
-        $page = intdiv($totalposts, config('constants.items_per_page'))+1;
-        $url = 'threads/'.$thread->id.'?page='.$page.'#post'.$post->id;
+        $page = intdiv($previousposts, config('preference.posts_per_page'))+1;
+        $url = 'threads/'.$post->thread_id.'?page='.$page.'#post'.$post->id;
         return redirect($url);
     }
 }

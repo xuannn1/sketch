@@ -15,7 +15,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'qiandao_at'];
     public $timestamps = false;
 
     /**
@@ -67,7 +67,7 @@ class User extends Authenticatable
         return $this->hasMany(Vote::class);
     }
 
-    public function mainTitle()
+    public function title()
     {
         return $this->belongsTo(Title::class, 'title_id');
     }
@@ -105,6 +105,11 @@ class User extends Authenticatable
     public function followings()
     {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
+    }
+
+    public function homeworks()
+    {
+        return $this->belongsToMany(Homework::class, 'homework_registrations', 'homework_id', 'user_id');
     }
 
 
@@ -147,7 +152,7 @@ class User extends Authenticatable
 
     public function checklevelup()
     {
-        $level_ups = config('constants.level_up');
+        $level_ups = config('level.level_up');
         $info = $this->info;
         foreach($level_ups as $level=>$requirement){
             if (($this->level < $level)
@@ -178,5 +183,9 @@ class User extends Authenticatable
         ]);
     }
 
+    public function active_now($ip)
+    {
+        $this->info->active_now($ip);
+    }
 
 }

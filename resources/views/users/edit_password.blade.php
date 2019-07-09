@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', '修改密码资料')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <style media="screen">
     </style>
     <div class="col-sm-offset-3 col-sm-6">

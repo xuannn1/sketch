@@ -7,7 +7,7 @@ use Auth;
 use App\Models\ViewHistory;
 
 trait RecordViewHistoryTraits{
-    public function recordViewHistory($ip='', $uid=0, $tid=0, $pid=0)
+    public function recordViewHistory($ip='', $uid=0, $tid=0)
     {
         if(Auth::check()) {
             if (!Cache::has('ip'.$ip.'uid'.$uid.'tid'.$tid)){

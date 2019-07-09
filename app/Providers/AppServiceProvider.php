@@ -5,36 +5,46 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 use App\Models\User;
-use App\Observers\UserObserver;
 use App\Models\UserInfo;
+use App\Models\UserIntro;
+use App\Observers\UserObserver;
 use App\Observers\UserInfoObserver;
+use App\Observers\UserIntroObserver;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
+    * Bootstrap any application services.
+    *
+    * @return void
+    */
     public function boot()
     {
-         Schema::defaultStringLength(191);
-         Carbon::setLocale('zh');
-         User::observe(UserObserver::class);
-         UserInfo::observe(UserInfoObserver::class);
+        Schema::defaultStringLength(191);
+        Carbon::setLocale('zh');
+        User::observe(UserObserver::class);
+        UserInfo::observe(UserInfoObserver::class);
+        UserIntro::observe(UserIntroObserver::class);
+        Relation::morphMap([
+            'post' => 'App\Models\Post',
+            'quote' => 'App\Models\Quote',
+            'status' => 'App\Models\Status',
+            'thread' => 'App\Models\Thread',
+        ]);
     }
 
     /**
-     * Register any application services.
-     *
-     * @return void
-     */
+    * Register any application services.
+    *
+    * @return void
+    */
     public function register()
     {
         if ($this->app->isLocal()){
-           $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+            $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
         }
     }
 }

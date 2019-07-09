@@ -20,9 +20,14 @@ class Quote extends Model
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }
-    
+
     public function reviewer()
     {
         return $this->belongsTo(User::class, 'reviewer_id')->select('id','name', 'title_id');
+    }
+
+    public function scopeNotSad($query)
+    {
+        return $query->where('notsad','=',true);
     }
 }

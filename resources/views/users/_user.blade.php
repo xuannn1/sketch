@@ -1,35 +1,23 @@
-<h3>
-    <span type="button" class="{{$user->admin? 'admin-symbol' : '' }}"><span class="glyphicon glyphicon-user"></span></span>
+<h1>
+    <span type="button" class="{{$user->isAdmin()? 'admin-symbol' : '' }}"><span class="glyphicon glyphicon-user"></span></span>
     {{ $user->name }}
-</h3>
-@if($user->isOnline())
-<span class="badge newchapter-badge ">在线</span>
-@endif
-<div class="row h5 text-center stat">
+</h1>
+<div class="row h4 text-center stat">
     <span><a href="{{route('users.followings', $user->id)}}">关注：{{ $user->followings()->count() }}</a></span>
-    @include('users._follow_button')
     &nbsp;&nbsp;
-    <a type="button" class="btn btn-xs btn-primary sosad-button" href="{{ route('questions.index', $user) }}">问题箱</a>
     &nbsp;&nbsp;
-    @include('users._message_button')
     <span><a href="{{route('users.followers', $user->id)}}">粉丝：{{ $user->followers()->count() }}</a></span>
 </div>
-@if((Auth::check())&&(Auth::user()->admin))
-@include('admin._modify_user')
-@endif
-<div class="stats">
-    <span>等级：{{ $user->user_level }}</span>，
-    <span>盐度：{{ $user->experience_points }}</span>，
-    <span>积分：{{ $user->jifen }}</span>，
-    <span>剩饭：{{ $user->shengfan }}</span>，
-    <span>咸鱼：{{ $user->xianyu }}</span>，
-    <span>丧点：{{ $user->sangdian }}</span>，
+<div class="stats h5">
+    <span>等级：{{ $user->level }}</span>，
+    <span>盐度：{{ $info->exp }}</span>，
+    <span>积分：{{ $info->jifen }}</span>，
+    <span>剩饭：{{ $info->shengfan }}</span>，
+    <span>咸鱼：{{ $info->xianyu }}</span>，
+    <span>丧点：{{ $info->sangdian }}</span>，
     <br>
-    <span>连续签到：{{ $user->continued_qiandao }}天</span>，
-    <span>最多签到：{{ $user->maximum_qiandao }}天</span>，
-    <span>最后签到时间：{{ Carbon\Carbon::parse($user->lastrewarded_at)->diffForHumans() }}</span>
+    <span>连续签到：{{ $info->continued_qiandao }}天</span>，
+    <span>最多签到：{{ $info->max_qiandao }}天</span>，
+    <span>最后签到时间：{{ $user->qiandao_at->diffForHumans() }}</span>
 </div>
 <br>
-<div class = "main-text">
-    {!! Helper::wrapParagraphs($user->introduction) !!}
-</div>

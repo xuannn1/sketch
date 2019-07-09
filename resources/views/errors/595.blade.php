@@ -6,7 +6,7 @@
     </head>
 
     <body class="error-page">
-        <div class="container">
+        <div class="container-fluid">
             <div class="content text-center">
                 <div class="title">
                     <h1>您好，废文网数据库不能正常连接，请稍后再来。</h1>

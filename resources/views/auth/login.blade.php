@@ -2,7 +2,7 @@
 @section('title', '登录')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="col-sm-offset-3 col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">

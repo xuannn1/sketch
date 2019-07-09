@@ -50,6 +50,7 @@
 
 {//以下是用户信息展示模块
    Route::get('/users/{id}', 'UsersController@show')->name('user.show');//展示某用户的个人页面
+
    Route::get('users/{id}/threads','UsersController@showthreads')->name('user.showthreads');//展示某用户的全部主题贴
    Route::get('users/{id}/books','UsersController@showbooks')->name('user.showbooks');//展示某用户的全部文章
    Route::get('users/{id}/statuses','UsersController@showstatuses')->name('user.showstatuses');//展示某用户的全部动态
@@ -57,22 +58,23 @@
    Route::get('/users/{id}/upvotes', 'UsersController@showupvotes')->name('user.showupvotes');
    Route::get('/users/{id}/xianyus', 'UsersController@showxianyus')->name('user.showxianyus');
    Route::get('/users/{id}/records', 'UsersController@showrecords')->name('user.showrecords')->middleware('admin');//展示某用户的全部管理记录
-   //Route::get('/users/{id}/shengfans', 'UsersController@showshengfans')->name('user.showshengfans');
+
    Route::get('/users/{id}/followings', 'UsersController@followings')->name('users.followings');
    Route::get('/users/{id}/followers', 'UsersController@followers')->name('users.followers');
    Route::post('/users/followers/{id}', 'FollowersController@store')->name('followers.store');
    Route::delete('/users/followers/{id}', 'FollowersController@destroy')->name('followers.destroy');
    Route::post('/followers/togglekeepupdate', 'FollowersController@togglekeepupdate')->name('followers.togglekeepupdate');//是否订阅动态更新提醒
    Route::get('/users', 'UsersController@index')->name('users.index');//展示所有用户，按最后签到时间排序
-   Route::get('/user/edit', 'UsersController@edit')->name('users.edit');//更改用户的个人信息
+}
 
-   Route::post('/user/update', 'UsersController@update')->name('users.update');//更新用户的个人信息
-   Route::get('/user/edit_email', 'UsersController@edit_email')->name('users.edit_email');//更改用户的邮箱信息
-   Route::post('/user/update_email', 'UsersController@update_email')->name('users.update_email');//更新用户的邮箱信息
-   Route::get('/user/edit_password', 'UsersController@edit_password')->name('users.edit_password');//更改用户的密码信息
-   Route::post('/user/update_password', 'UsersController@update_password')->name('users.update_password');//更新用户的密码信息
-
-
+{ // 以下是用户个人信息自己更改
+    Route::get('/usercenter', 'UsersController@usercenter')->name('user.center');//展示某用户的个人中心
+    Route::get('/user/edit', 'UsersController@edit')->name('users.edit');//更改用户的个人信息
+    Route::post('/user/update', 'UsersController@update')->name('users.update');//更新用户的个人信息
+    Route::get('/user/edit_email', 'UsersController@edit_email')->name('users.edit_email');//更改用户的邮箱信息
+    Route::post('/user/update_email', 'UsersController@update_email')->name('users.update_email');//更新用户的邮箱信息
+    Route::get('/user/edit_password', 'UsersController@edit_password')->name('users.edit_password');//更改用户的密码信息
+    Route::post('/user/update_password', 'UsersController@update_password')->name('users.update_password');//更新用户的密码信息
 }
 
 {//以下展示论坛贴按标签（label）与板块（channel）分布的视图
@@ -85,7 +87,10 @@
 
 {//以下是论坛主题模块
    Route::get('/threads', 'ThreadsController@index')->name('threads.index');//看全部主题
-   Route::get('/threads/{thread}', 'ThreadsController@show')->name('thread.show')->middleware('filter_thread');//看某个主题,注意必须有权限
+   Route::get('/threads/{thread}', 'ThreadsController@show')->name('thread.show');//看某个主题,注意必须有权限 // 19.7.8
+   Route::get('/threads/{thread}/filterpost', 'ThreadsController@filterpost')->name('thread.filterpost');//看某个主题,注意必须有权限 // 19.7.8
+
+
    Route::get('/threads/{thread}/edit', 'ThreadsController@edit')->name('thread.edit');
    Route::post('/threads/{thread}/update', 'ThreadsController@update')->name('thread.update');
    Route::post('/threads/{thread}/posts', 'PostsController@store')->name('post.store');//在某个主题发表回帖
@@ -128,13 +133,13 @@
 }
 
 {//以下是回帖模块
-   Route::get('/thread-posts/{post}', 'ThreadsController@showpost')->name('thread.showpost')->middleware('filter_post');//展示某个主题贴下的特定回帖
+   Route::get('/thread-posts/{post}', 'ThreadsController@showpost')->name('thread.showpost');//展示某个主题贴下的特定回帖
    Route::get('/posts/{post}/edit', 'PostsController@edit')->name('post.edit');//更改已回复主题，必须有权限
    Route::post('/posts/{post}/update', 'PostsController@update')->name('post.update');//更改帖子，必须有权限
    Route::delete('/posts/{post}', 'PostsController@destroy')->name('post.destroy');//删除已回复帖子，必须有权限
    Route::post('/posts/{post}/comments', 'PostCommentsController@store')->name('postcomment.store');//对某个回帖发点评
    Route::delete('/postcomments/{postcomment}', 'PostCommentsController@destroy')->name('postcomment.destroy');//对某个回帖发点评
-   Route::get('/posts/{post}/', 'PostsController@show')->name('post.show')->middleware('filter_post');//查看某个回帖
+   Route::get('/posts/{post}/', 'PostsController@show')->name('post.show');//查看某个回帖
    Route::get('/posts/{post}/shengfan', 'ShengfansController@vote_post')->name('shengfan.vote_post');//为回帖投剩饭；
    Route::get('/posts/{post}/shengfan-index', 'ShengfansController@index')->name('shengfan.index');//显示本条信息下所有剩饭投喂情况；
 
@@ -256,4 +261,8 @@
     Route::post('admin/quiz/{quiz}/update','QuizController@update')->name('quiz.update');//管理员更新某题目
     Route::get('quiz/taketest','QuizController@taketest')->name('quiz.taketest');//测试
     Route::post('quiz/submittest','QuizController@submittest')->name('quiz.submittest');//测试
+}
+
+{
+    Route::get('reward/create','RewardController@create')->name('reward.create');//新增打赏
 }

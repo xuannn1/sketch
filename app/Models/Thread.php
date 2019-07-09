@@ -19,7 +19,7 @@ class Thread extends Model
     protected $hidden = [
         'creation_ip',
     ];
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at','created_at','responded_at', 'edited_at', 'add_component_at'];
 
     const UPDATED_AT = null;
 
@@ -62,6 +62,11 @@ class Thread extends Model
     public function first_component()
     {
         return $this->belongsTo(Post::class, 'first_component_id');
+    }
+
+    public function rewards()
+    {
+        return $this->morphMany(Reward::class, 'rewardable');
     }
 
     public function last_post()
@@ -121,7 +126,7 @@ class Thread extends Model
 
     public function scopeIsPublic($query)//在thread index的时候，只看公共channel内的公开thread
     {
-        return $query->where('is_public', true)->whereIn('channel_id', ConstantObjects::public_channels());
+        return $query->where('public', true)->whereIn('channel_id', ConstantObjects::public_channels());
     }
 
     public function scopeOrdered($query, $ordered)
@@ -201,6 +206,16 @@ class Thread extends Model
         ->orderby('reviews.redirects', 'desc')
         ->select('posts.*')
         ->first();
+    }
+
+    public function latest_rewards()
+    {
+        return Reward::with('author')
+        ->withType('thread')
+        ->withId($this->id)
+        ->latest()
+        ->take(10)
+        ->get();
     }
 
 }

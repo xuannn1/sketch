@@ -13,7 +13,6 @@ class ConstantObjects
     public static function allChannels()//获得站上所有的channel
     {
         return collect(config('channel'));//将channels转化成collection
-
     }
 
     public static function publicChannelTypes($type='')

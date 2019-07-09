@@ -2,9 +2,10 @@
 namespace App\Http\Middleware;
 use Closure;
 use Auth;
-use Illuminate\Support\Facades\Cache;
+use Cache;
 use Carbon\Carbon;
 use App\Models\LoggingStatus;
+use CacheUser;
 class LogLastUserActivity
 {
     /**
@@ -24,10 +25,9 @@ class LogLastUserActivity
                     'logged_on' => time(),
                     'ip' => request()->ip(),
                 ]);
-                $expiresAt = Carbon::now()->addMinutes(config('constants.online_count_interval'));
+                $expiresAt = Carbon::now()->addMinutes(config('constants.online_interval'));
                 Cache::put('usr-on-' . Auth::id(), true, $expiresAt);
-                CacheUser::findCachedUserInfo(Auth::id())->active_now(request()->ip());
-                CacheUser::findCachedUser(Auth::id())->reward('online_reward');
+                CacheUser::Ainfo()->active_now(request()->ip());
             }
         }
         return $next($request);

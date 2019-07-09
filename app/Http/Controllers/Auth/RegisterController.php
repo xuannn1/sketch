@@ -166,8 +166,8 @@ class RegisterController extends Controller
     public function confirmEmail($token)
     {
         $user_info = UserInfo::where('activation_token', $token)->firstOrFail();
-        $user_info->activate_user();
-        
+        $user_info->activate();
+
         session()->flash('success', '恭喜你，激活成功！');
         return redirect('/');
     }

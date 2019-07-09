@@ -2,13 +2,13 @@
 <div class="jumbotron item {{$int==0? 'active':''}}" >
     <article>
         <div class="container-fluid">
-            <h2 class="daily-quote display-1">{{ $quote->quote }}</h2>
+            <h2 class="daily-quote display-1">{{ $quote->body }}</h2>
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 text-right">
                     @if ($quote->anonymous)
                     ——{{ $quote->majia }}
                     @else
-                    ——<a href="#">{{ $quote->name }}</a>
+                    ——<a href="#">{{ $quote->author->name }}</a>
                     @endif
                     <br>
                 </div>

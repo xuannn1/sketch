@@ -1,5 +1,5 @@
-@foreach($recommend_books as $recommend_book)
-<article class="{{ 'recommend_book'.$recommend_book->id }}">
+@foreach($short_reviews as $post)
+<article class="{{ 'recommend_book'.$post->review->thread_id }}">
     <div class="row">
         <div class="col-xs-12 h5">
             <!-- 帖子的相关信息 -->
@@ -7,44 +7,45 @@
               <span class="bigger-20">
                   <strong>
                       <span>
-                          <a href="{{ route('thread.show', ['thread' => $recommend_book->thread_id, 'recommendation' => $recommend_book->id]) }}">
-                              {{ $recommend_book->title }}
+                          <a href="{{ route('thread.show', $post->review->thread_id) }}">
+                              《{{ $post->review->reviewee->title }}》
                           </a>
                       </span>
                   </strong>
               </span>
 
                 <small>
-                    @if( $recommend_book->bianyuan == 1)
+                    @if( $post->review->reviewee->bianyuan == 1)
                     <span class="badge bianyuan-tag badge-tag">限</span>
                     @endif
-                    @if(!$recommend_book->public)
+                    @if(!$post->review->reviewee->public)
                     <span class="glyphicon glyphicon-eye-close"></span>
                     @endif
-                    @if($recommend_book->locked)
+                    @if($post->review->reviewee->locked)
                     <span class="glyphicon glyphicon-lock"></span>
                     @endif
-                    @if($recommend_book->noreply)
+                    @if($post->review->reviewee->noreply)
                     <span class="glyphicon glyphicon-warning-sign"></span>
                     @endif
                 </small>
             </span>
 
             <span class = "pull-right">
-                @if($recommend_book->anonymous)
-                <span>{{ $recommend_book->majia ?? '匿名咸鱼'}}</span>
-                @if((Auth::check()&&(Auth::user()->admin)))
-                <span class="admin-anonymous"><a href="{{ route('user.show', $recommend_book->user_id) }}">{{ $recommend_book->name }}</a></span>
+                @if($post->review->reviewee->anonymous)
+                <span>{{ $post->review->reviewee->majia ?? '匿名咸鱼'}}</span>
+                @if((Auth::check()&&(Auth::user()->isAdmin)))
+                <span class="admin-anonymous"><a href="{{ route('user.show', $recommend_book->user_id) }}">{{ $post->review->reviewee->author->name }}</a></span>
                 @endif
                 @else
-                <a href="{{ route('user.show', $recommend_book->user_id) }}">{{ $recommend_book->name }}</a>
+                <a href="{{ route('user.show', $post->review->reviewee->user_id) }}">{{  $post->review->reviewee->author->name }}</a>
                 @endif
             </span>
         </div>
 
         <div class="col-xs-12 h5 ">
             <!-- 帖子的推荐语、点击率（通过推荐版块点击） -->
-            <span>推荐语：{{ $recommend_book->recommendation }}</span>
+            <span>推荐语：{{ $post->body }}</span>
+            <span class = "pull-right smaller-10">
         </div>
     </div>
     <hr>

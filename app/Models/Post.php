@@ -20,7 +20,7 @@ class Post extends Model
         'creation_ip',
     ];
 
-    protected $dates = ['deleted_at', ];
+    protected $dates = ['deleted_at', 'edited_at', 'created_at', 'responded_at'];
 
     public function thread()
     {
@@ -34,7 +34,7 @@ class Post extends Model
 
     public function last_reply()
     {
-        return $this->belongsTo(Post::class, 'last_reply_id');
+        return $this->belongsTo(Post::class, 'last_reply_id')->select(['id','brief']);
     }
 
     public function replies()
@@ -69,7 +69,7 @@ class Post extends Model
     public function scopeUserOnly($query, $userOnly)
     {
         if($userOnly){
-            return $query->where('user_id', $userOnly)->where('is_anonymous', false);
+            return $query->where('user_id', $userOnly)->where('anonymous', false);
         }
         return $query;
     }

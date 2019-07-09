@@ -7,3 +7,4 @@
 </div>
 @endif
 @endforeach
+<div class="hidden alert" id="ajax-message"></div>

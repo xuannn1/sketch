@@ -9,11 +9,14 @@ use App\Helpers\ConstantObjects;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-
+use Auth;
 use Carbon\Carbon;
+
+use App\Sosadfun\Traits\AdministrationTraits;
 
 class PagesController extends Controller
 {
+    use AdministrationTraits;
 
     public function __construct()
     {
@@ -24,11 +27,20 @@ class PagesController extends Controller
 
     public function home()
     {
-        $quotes = PageObjects::recent_quotes();
-        $long_recom = PageObjects::recent_long_recommendations();
-        $short_recom = PageObjects::recent_short_recommendations();
-        dd($quotes);
-        return view('pages/home',compact('quotes','recom_sr','recom_lg'));
+        $quotes = PageObjects::quotes();
+        $short_recom = PageObjects::short_recommendations();
+        $thread_recom = PageObjects::thread_recommendation();
+        $channels = ConstantObjects::allChannels();
+        $channel_threads = [];
+        foreach($channels as $channel){
+            if($channel->is_public){
+                $channel_threads[$channel->id] = [
+                    'channel' => $channel,
+                    'threads' => PageObjects::channel_threads($channel->id)
+                ];
+            }
+        }
+        return view('pages/home',compact('quotes','short_recom','thread_recom','channel_threads'));
     }
     public function about()
     {
@@ -37,18 +49,9 @@ class PagesController extends Controller
 
     public function help()
     {
-        $users_online = Cache::remember('users-online-count', config('constants.online_count_interval'), function () {
-            $users_online = DB::table('logging_statuses')
-            ->where('logged_on', '>', time()-60*30)
-            ->count();
-            return $users_online;
-        });
-        $data = config('constants');
-        $webstat = Cache::remember('webstat-yesterday', config('constants.online_count_interval'), function () {
-            $webstat = WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
-            return $webstat;
-        });
-        return view('pages/help',compact('data','webstat','users_online'));
+        $users_online = PageObjects::users_online();
+        $webstat = PageObjects::web_stat();
+        return view('pages/help',compact('webstat','users_online'));
     }
 
     public function test()
@@ -68,18 +71,21 @@ class PagesController extends Controller
         $error_message = $errors[$error_code];
         return view('errors.errorpage', compact('error_message'));
     }
-    public function administrationrecords()
+    public function administrationrecords(Request $request)
     {
-        $records = $this->findAdminRecords(0,config('constants.index_per_page'));
-        $admin_operation = config('constants.administrations');
-        return view('pages.adminrecords',compact('records','admin_operation'))->with('active','1');
+        $page = is_numeric($request->page)? $request->page:'1';
+        $records = Cache::remember('adminrecords-p'.$page, config('constants.online_count_interval'), function () use($page) {
+            return $this->findAdminRecords(0, $page);
+        });
+        return view('pages.adminrecords',compact('records'))->with('record_page_set','total');
     }
 
-    public function self_adminnistrationrecords()
+    public function self_adminnistrationrecords(Request $request)
     {
-        $records = $this->findAdminRecords(Auth::id(),config('constants.index_per_page'));
-        $admin_operation = config('constants.administrations');
-        return view('pages.adminrecords',compact('records','admin_operation'))->with('active','2');
+        $page = is_numeric($request->page)? $request->page:'1';
+        $records = $this->findAdminRecords(Auth::id(), $page);
+
+        return view('pages.adminrecords',compact('records'))->with('record_page_set','self');
     }
 
     public function search(Request $request){
@@ -131,17 +137,20 @@ class PagesController extends Controller
         return view('pages.contacts');
     }
 
-    public function recommend_records()
+    public function recommend_records(Request $request)
     {
-        $recommend_books = DB::table('threads')
-        ->join('users', 'threads.user_id', '=', 'users.id')
-        ->join('recommend_books', 'threads.id', '=', 'recommend_books.thread_id')
-        ->where('long', '=', 0)
-        ->where('valid','=',1)
-        ->select('threads.user_id', 'threads.bianyuan', 'threads.locked', 'threads.public', 'threads.noreply', 'threads.anonymous', 'threads.majia', 'threads.title', 'recommend_books.id', 'recommend_books.thread_id', 'recommend_books.recommendation', 'users.name', 'recommend_books.created_at')
-        ->orderBy('recommend_books.id','desc')
-        ->paginate(config('constants.items_per_page'));
-
-        return view('pages.recommend_records', compact('recommend_books'))->with('active', 1);
+        $page = is_numeric($request->page)? $request->page:'1';
+        $short_reviews = Cache::remember('recommendation_indexes'.$page, 1, function () {
+            $short_reviews = \App\Models\Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
+            ->reviewRecommend('recommend_only')
+            ->reviewEditor('editor_only')
+            ->reviewLong('short_only')
+            ->reviewOrdered('latest_created')
+            ->select('posts.*')
+            ->paginate(config('preference.items_per_page'));
+            $short_reviews->load('review.reviewee.author');
+            return $short_reviews;
+        });
+        return view('reviews.index',compact('short_reviews'));
     }
 }

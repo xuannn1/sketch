@@ -8,12 +8,14 @@ class Collection extends Model
 {
     protected $guarded = [];
     public $timestamps = false;
-    public function user()
+
+    public function owner()//谁收藏的
     {
-        return $this->belongsTo(User::class, 'user_id')->withDefault();
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }
-    public function collection_list()
+
+    public function thread()//收藏的对象
     {
-        return $this->belongsTo(CollectionList::class, 'collection_list_id')->withDefault();
+        return $this->belongsTo(Thread::class, 'thread_id');
     }
 }
