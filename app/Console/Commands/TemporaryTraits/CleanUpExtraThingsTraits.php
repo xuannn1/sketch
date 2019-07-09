@@ -17,6 +17,7 @@ trait CleanUpExtraThingsTraits{
         $this->duplicateLinkedAccounts();
         $this->simplifyActivity();
         $this->simplifyAdministration();
+        $this->simplifyVote();
     }
     public function mainCleanUp()
     {
@@ -150,6 +151,16 @@ trait CleanUpExtraThingsTraits{
                 $table->dropColumn(['updated_at']);
             });
             echo "dropped old columns of administrations table\n";
+        }
+    }
+
+    public function simplifyVote(){
+        echo "start simplify votes table\n";
+        if(Schema::hasColumn('votes', 'record_id')){
+            Schema::table('votes', function($table){
+                $table->dropColumn(['record_id']);
+            });
+            echo "dropped old columns of votes table\n";
         }
     }
 }
