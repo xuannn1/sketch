@@ -94,21 +94,21 @@ trait ModifyUserTableTraits{
 
     public function recalculateFollowers()
     {
-        echo "start calculating followers\n"
+        echo "start calculating followers\n";
         DB::statement('
             update user_infos
             set follower_count =
             (select count(*) from followers
             where followers.user_id = user_infos.user_id)
         ');
-        echo "recalculated followers\n"
+        echo "recalculated followers\n";
         DB::statement('
             update user_infos
             set following_count =
             (select count(*) from followers
             where followers.follower_id = user_infos.user_id)
         ');
-        echo "recalculated followings\n"
+        echo "recalculated followings\n";
     }
 
 
