@@ -32,7 +32,7 @@ trait ModifyRewardNVoteTableTraits{
             $insert_shengfan = [];
             foreach($shengfans as $shengfan){
                 $post = $shengfan->post;
-                if($post->id>0&&$post->thread_id>0&&$post->user_id>0){
+                if($post->id>0&&$post->thread_id>0){
                     $shengfan_data = [
                         'user_id' => $shengfan->user_id,
                         'rewardable_type' => 'thread',

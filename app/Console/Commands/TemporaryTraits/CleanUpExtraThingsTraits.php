@@ -15,6 +15,8 @@ trait CleanUpExtraThingsTraits{
         $this->simplifyPosts();
         $this->simplifyVolumns();
         $this->duplicateLinkedAccounts();
+        $this->simplifyActivity();
+        $this->simplifyAdministration();
     }
     public function mainCleanUp()
     {
@@ -129,7 +131,25 @@ trait CleanUpExtraThingsTraits{
             $table->unique(['account1','account2']);
         });
         echo "added unique index of linked accounts\n";
+    }
 
+    public function simplifyActivity(){
+        echo "start simplify activity\n";
+        if(Schema::hasColumn('activities', 'type')){
+            Schema::table('activities', function($table){
+                $table->dropColumn(['type']);
+            });
+            echo "dropped old columns of activities table\n";
+        }
+    }
 
+    public function simplifyAdministration(){
+        echo "start simplify administrations table\n";
+        if(Schema::hasColumn('administrations', 'updated_at')){
+            Schema::table('administrations', function($table){
+                $table->dropColumn(['updated_at']);
+            });
+            echo "dropped old columns of administrations table\n";
+        }
     }
 }

@@ -22,7 +22,6 @@ class CreateUserInfosTable extends Migration
             $table->integer('exp')->unsigned()->default(0);
             $table->integer('upvote_count')->unsigned()->default(0);
             $table->string('brief_intro', 50)->nullable();// 极简介绍
-            $table->string('majia')->nullable();
             $table->boolean('indentation')->default(false);//上次锁进设置
             $table->integer('views')->unsigned()->default(0);
             $table->string('activation_token', 50)->nullable();//邮箱验证码
@@ -40,6 +39,7 @@ class CreateUserInfosTable extends Migration
             $table->integer('reply_reminders')->unsigned()->default(0);
             $table->integer('upvote_reminders')->unsigned()->default(0);
             $table->integer('message_reminders')->unsigned()->default(0);
+            $table->integer('reward_reminders')->unsigned()->default(0);
             $table->integer('public_notices')->unsigned()->default(0); //已经阅读的公共通知数量
             $table->integer('collection_threads_updates')->unsigned()->default(0);
             $table->integer('collection_books_updates')->unsigned()->default(0);

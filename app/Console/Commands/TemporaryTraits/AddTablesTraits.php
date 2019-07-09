@@ -60,5 +60,8 @@ trait AddTablesTraits{
             $table->unsignedInteger('profile_thread_id')->default(0)->index();
             echo "modified homeworks table\n";
         });
+        Schema::table('system_variables', function($table){
+            $table->unsignedInteger('homepage_thread_id')->default(0);
+        });
     }
 }

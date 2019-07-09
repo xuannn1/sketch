@@ -95,6 +95,15 @@ trait ModifyPostTableTraits{
         echo "start task4.4 updatePostTypeColumn\n";
         DB::table('posts')
         ->where('maintext','=',0)
+        ->update(['type'=>'post']);
+
+        DB::table('posts')
+        ->where('maintext','=',0)
+        ->where('reply_to_id','>',0)
+        ->update(['type'=>'comment']);
+
+        DB::table('posts')
+        ->where('maintext','=',0)
         ->where('reply_to_id','>',0)
         ->update(['type'=>'comment']);
 

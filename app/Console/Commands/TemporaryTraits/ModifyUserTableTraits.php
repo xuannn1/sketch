@@ -58,7 +58,6 @@ trait ModifyUserTableTraits{
                     'exp' => $user->experience_points,
                     'upvote_count' => $user->upvoted,
                     'brief_intro' => \App\Helpers\Helper::trimtext($user->introduction, 40),
-                    'majia' => $user->majia,
                     'indentation' =>$user->indentation,
                     'activation_token' => $user->activation_token,
                     'invitation_token' => $user->invitation_token,
@@ -96,7 +95,7 @@ trait ModifyUserTableTraits{
     {
         echo "task 1.2.1 delete extra users table\n";
         Schema::table('users', function($table){
-            $table->dropColumn(['activation_token', 'created_at', 'updated_at', 'shengfan', 'xianyu', 'jifen', 'upvoted', 'downvoted', 'lastresponded_at', 'introduction', 'viewed', 'invitation_token', 'last_login_ip', 'last_login', 'admin', 'superadmin', 'group', 'no_posting', 'no_logging', 'lastrewarded_at', 'sangdian', 'guarden_deadline', 'continued_qiandao', 'post_reminders', 'postcomment_reminders', 'reply_reminders', 'replycomment_reminders', 'message_reminders', 'collection_threads_updated', 'collection_books_updated', 'collection_statuses_updated', 'majia','message_limit', 'receive_messages_from_stranger', 'no_registration', 'upvote_reminders', 'no_upvote_reminders', 'total_char', 'experience_points', 'lastsearched_at', 'maximum_qiandao', 'indentation', 'system_reminders', 'collection_lists_updated', 'collection_list_limit', 'clicks', 'daily_clicks', 'daily_posts', 'daily_chapters', 'daily_characters', 'last_quizzed_at', 'quizzed']);
+            $table->dropColumn(['activation_token', 'created_at', 'updated_at', 'shengfan', 'xianyu', 'jifen', 'upvoted', 'downvoted', 'lastresponded_at', 'introduction', 'viewed', 'invitation_token', 'last_login_ip', 'last_login', 'admin', 'superadmin', 'group', 'no_posting', 'no_logging', 'lastrewarded_at', 'sangdian', 'guarden_deadline', 'continued_qiandao', 'post_reminders', 'postcomment_reminders', 'reply_reminders', 'replycomment_reminders', 'message_reminders', 'collection_threads_updated', 'collection_books_updated', 'collection_statuses_updated', 'message_limit', 'receive_messages_from_stranger', 'no_registration', 'upvote_reminders', 'no_upvote_reminders', 'total_char', 'experience_points', 'lastsearched_at', 'maximum_qiandao', 'indentation', 'system_reminders', 'collection_lists_updated', 'collection_list_limit', 'clicks', 'daily_clicks', 'daily_posts', 'daily_chapters', 'daily_characters', 'last_quizzed_at', 'quizzed']);
             echo "echo deleted extra users columns.\n";
         });
     }

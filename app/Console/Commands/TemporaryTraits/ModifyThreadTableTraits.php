@@ -302,7 +302,8 @@ trait ModifyThreadTableTraits{
             'threads.body' => DB::raw('posts.body'),
             'threads.creation_ip' => DB::raw('posts.user_ip'),
             'threads.markdown' => DB::raw('posts.markdown'),
-            'threads.indentation' => DB::raw('posts.indentation')
+            'threads.indentation' => DB::raw('posts.indentation'),
+            'posts.deleted_at' => DB::raw('threads.created_at')
         ]);
 
         DB::table('threads')

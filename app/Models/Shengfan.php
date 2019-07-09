@@ -15,6 +15,6 @@ class Shengfan extends Model
 
     public function post()
     {
-        return $this->belongsTo(Post::class, 'post_id')->select(['id','thread_id']);
+        return $this->belongsTo(Post::class, 'post_id')->select(['id','thread_id','user_id']);
     }
 }

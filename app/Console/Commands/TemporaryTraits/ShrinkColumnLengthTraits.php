@@ -25,7 +25,7 @@ trait ShrinkColumnLengthTraits{
         echo "updated posts table\n";
 
         DB::table('threads')->update([
-            'title' => DB::raw('substring(brief,1,30)'),
+            'title' => DB::raw('substring(title,1,30)'),
             'brief' => DB::raw('substring(brief,1,50)'),
         ]);
         echo "shrinked threads\n";
