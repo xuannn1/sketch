@@ -49,21 +49,23 @@ trait ModifyReviewNCollectionTraits{
                 if($recommend->long){
                     //长推
                     $recommendation_post = \App\Models\Post::find($recommend->thread_id);
-                    $post_id = DB::table('posts')->insertGetId([
-                        'thread_id'=> $list_id,
-                        'brief' => $recommend->recommendation,
-                        'body' => $recommendation_post->body,
-                        'created_at' => $recommend->created_at,
-                        'type' => 'review',
-                    ]);
-                    DB::table('reviews')->insert([
-                        'post_id' => $post_id,
-                        'thread_id'=> 0,
-                        'recommend' => true,
-                        'long' => true,
-                        'editor_recommend' =>true,
-                        'redirects' => $recommend->clicks,
-                    ]);
+                    if($recommendation_post){
+                        $post_id = DB::table('posts')->insertGetId([
+                            'thread_id'=> $list_id,
+                            'brief' => $recommend->recommendation,
+                            'body' => $recommendation_post->body,
+                            'created_at' => $recommend->created_at,
+                            'type' => 'review',
+                        ]);
+                        DB::table('reviews')->insert([
+                            'post_id' => $post_id,
+                            'thread_id'=> 0,
+                            'recommend' => true,
+                            'long' => true,
+                            'editor_recommend' =>true,
+                            'redirects' => $recommend->clicks,
+                        ]);
+                    }
                 }else{
                     //短推
                     $post_id = DB::table('posts')->insertGetId([
@@ -84,13 +86,7 @@ trait ModifyReviewNCollectionTraits{
                 echo $post_id,"|";
             }
         }
-        DB::table('threads')
-        ->join('user_infos','user_infos.user_id','=','threads.user_id')
-        ->where('threads.channel_id','=',13)
-        ->update([
-            'user_infos.default_list_id' => DB::raw('threads.id')
-        ]);
-        echo "finished task12.2 createReviewList\n";
+
     }
 
     public function createNewCollectionList()//13.1
@@ -124,6 +120,14 @@ trait ModifyReviewNCollectionTraits{
         }
         DB::table('threads')->insert($insert_lists);
         echo "created new lists\n";
+
+        DB::table('threads')
+        ->join('user_infos','user_infos.user_id','=','threads.user_id')
+        ->where('threads.channel_id','=',13)
+        ->update([
+            'user_infos.default_list_id' => DB::raw('threads.id')
+        ]);
+        echo "finished createNewCollectionList\n";
     }
     public function insertReviewToCollectionList()
     {

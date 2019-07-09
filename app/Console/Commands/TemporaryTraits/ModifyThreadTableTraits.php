@@ -46,7 +46,6 @@ trait ModifyThreadTableTraits{
                 $table->boolean('is_bianyuan')->default(false);
                 $table->boolean('is_primary')->default(false);
                 $table->unsignedInteger('channel_id')->default(0);//是否某个channel专属
-                $table->index('parent_id');
                 echo "echo added new columns to tags table.\n";
             });
             Schema::table('tags', function($table){
@@ -54,6 +53,7 @@ trait ModifyThreadTableTraits{
                 $table->renameColumn('books', 'book_count');
                 $table->renameColumn('tagname', 'tag_name');
                 $table->unique('tag_name');
+                $table->index('parent_id');
                 echo "echo renamed tags table columns.\n";
             });
         }
