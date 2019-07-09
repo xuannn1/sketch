@@ -86,7 +86,11 @@
 
 
 {//以下是论坛主题模块
-   Route::get('/threads', 'ThreadsController@index')->name('threads.index');//看全部主题
+   Route::get('/threads', 'ThreadsController@index')->name('threads.index');//绝对复杂筛选所有thread
+   Route::get('/thread_index', 'ThreadsController@thread_index')->name('threads.thread_index');//论坛全部帖子
+   Route::get('/thread_jinghua', 'ThreadsController@thread_jinghua')->name('threads.thread_jinghua');//论坛全部帖子
+   Route::get('/thread_list', 'ThreadsController@thread_list')->name('threads.thread_list');//论坛全部帖子
+   Route::get('/thread_box', 'ThreadsController@thread_box')->name('threads.thread_box');//论坛全部帖子
    Route::get('/threads/{thread}', 'ThreadsController@show')->name('thread.show');//看某个主题,注意必须有权限 // 19.7.8
    Route::get('/threads/{thread}/filterpost', 'ThreadsController@filterpost')->name('thread.filterpost');//看某个主题,注意必须有权限 // 19.7.8
 

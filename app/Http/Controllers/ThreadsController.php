@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\ThreadObjects;
+use App\Helpers\ConstantObjects;
 use App\Models\Post;
+use App\Models\Thread;
 
 use Auth;
 
@@ -22,9 +24,17 @@ class threadsController extends Controller
 
     public function index(Request $request)
     {
-        $page = is_numeric($request->page)? $request->page:1;
-        $threads = Cache::remember('threads.P'.$page, 2, function () use($group, $request, $logged) {
-            $threads=Thread::with('author', 'tags', 'last_component', 'last_post')
+        $queryid = 'threadQ'
+        .url('/')
+        .'-channel'.$request->channels
+        .'-withType'.$request->withType
+        .'-withBianyuan'.$request->withBianyuan
+        .'-tags'.$request->tags
+        .'-excludeTags'.$request->excludeTags
+        .'-ordered'.$request->ordered
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+        $threads = Cache::remember($queryid, 5, function () use($request) {
+            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->inChannel($request->channels)
             ->isPublic()//复杂的筛选
             ->withType($request->withType)
@@ -32,34 +42,58 @@ class threadsController extends Controller
             ->withTag($request->tags)
             ->excludeTag($request->excludeTags)
             ->ordered($request->ordered)
-            ->paginate(config('constants.threads_per_page'))
+            ->paginate(config('preference.threads_per_page'))
             ->appends($request->only('channels','withType','withBianyuan','tags','excludeTags','ordered'));
-            return $threads;
         });
 
-        $group = 10;
-        $logged = Auth::check()? true:false;
-        if(Auth::check()){$group = Auth::user()->group;}
-        $threadqueryid = 'threadQuery'
-        .url('/')
-        .$group
-        .($logged?'Lgd':'nLg')
-        .($request->label? 'L'.$request->label:'')
-        .($request->channel? 'Ch'.$request->channel:'')
-        .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $threads = Cache::remember($threadqueryid, 2, function () use($group, $request, $logged) {
-
-            return $threads;
-        });
-
-        $simplethreads = Cache::remember('jinghua-threads', 2, function (){
-            return Thread::where('jinghua','>',Carbon::now())
-            ->inRandomOrder()
-            ->take(3)
-            ->get();
-        });
-        return view('threads.index', compact('threads','simplethreads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
+        return view('threads.filter', compact('threads'));
     }
+
+    public function thread_index(Request $request)
+    {
+        $page = is_numeric($request->page)? $request->page:'1';
+        $threads = Cache::remember('thread_index_P'.$page, 5, function () use($page) {
+            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->isPublic()//复杂的筛选
+            ->withType('thread')
+            ->withBianyuan()
+            ->ordered()
+            ->paginate(config('preference.threads_per_page'))
+            ->appends(['page'=>$page]);
+        });
+
+        $simplethreads = ThreadObjects::jinghua_threads();
+
+        return view('threads.thread_index', compact('threads','simplethreads'))->with('threads_tab','index');
+    }
+
+    public function thread_jinghua(Request $request)
+    {
+        $page = is_numeric($request->page)? $request->page:'1';
+        $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
+        $threads = Cache::remember('thread_jinghua_P'.$page, 5, function () use($page, $jinghua_tag) {
+            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->isPublic()//复杂的筛选
+            ->withTag($jinghua_tag->id)
+            ->ordered()
+            ->paginate(config('preference.threads_per_page'))
+            ->appends(['page'=>$page]);
+        });
+
+        return view('threads.thread_jinghua', compact('threads'))->with('threads_tab','jinghua');
+    }
+
+    public function thread_list(Request $request)
+    {
+
+    }
+
+    public function thread_box(Request $request)
+    {
+
+    }
+
+
 
     public function show($id, Request $request)
     {

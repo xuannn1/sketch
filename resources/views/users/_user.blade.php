@@ -3,10 +3,10 @@
     {{ $user->name }}
 </h1>
 <div class="row h4 text-center stat">
-    <span><a href="{{route('users.followings', $user->id)}}">关注：{{ $user->followings()->count() }}</a></span>
+    <span><a href="{{route('users.followings', $user->id)}}">关注：{{ $info->following_count }}</a></span>
     &nbsp;&nbsp;
     &nbsp;&nbsp;
-    <span><a href="{{route('users.followers', $user->id)}}">粉丝：{{ $user->followers()->count() }}</a></span>
+    <span><a href="{{route('users.followers', $user->id)}}">粉丝：{{ $info->follower_count }}</a></span>
 </div>
 <div class="stats h5">
     <span>等级：{{ $user->level }}</span>，

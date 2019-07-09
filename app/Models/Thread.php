@@ -93,7 +93,7 @@ class Thread extends Model
         return $query;
     }
 
-    public function scopeWithType($query, $withType)
+    public function scopeWithType($query, $withType="")
     {
         if($withType){
             return $query->whereIn('channel_id', ConstantObjects::publicChannelTypes($withType));
@@ -101,37 +101,41 @@ class Thread extends Model
         return $query;
     }
 
-    public function scopeWithBianyuan($query, $withBianyuan)
+    public function scopeWithBianyuan($query, $withBianyuan="")
     {
-        if($withBianyuan==='non_bianyuan_only'){
-            return $query->where('bianyuan', false);
+        if($withBianyuan==='include_bianyuan'){
+            return $query;
         }
         if($withBianyuan==='bianyuan_only'){
             return $query->where('bianyuan', true);
         }
-        return $query;
+        return $query->where('bianyuan', false);
     }
 
-    public function scopeWithTag($query, $withTags)
+    public function scopeWithTag($query, $withTags="")
     {
         if ($withTags){
             $tags=(array)json_decode($withTags);
             foreach($tags as $tag){
-                $query = $query->whereHas('tags', function ($query) use ($tag){
-                    $query->where('id', '=', $tag);
-                });
+                if(is_numeric($tag)&&$tag>0){
+                    $query = $query->whereHas('tags', function ($query) use ($tag){
+                        $query->where('tags.id', '=', $tag);
+                    });
+                }
             }
         }
         return $query;
     }
 
-    public function scopeExcludeTag($query, $excludeTags)
+    public function scopeExcludeTag($query, $excludeTags="")
     {
         if ($excludeTags){
             $tags=(array)json_decode($excludeTags);
-            return $query->whereDoesntHave('tags', function ($query) use ($tags){
-                $query->whereIn('id', $tags);
-            });
+            if($tags){
+                return $query->whereDoesntHave('tags', function ($query) use ($exclude_tags){
+                    $query->whereIn('tags.id', $exclude_tags);
+                });
+            }
         }
         return $query;
     }
@@ -141,7 +145,7 @@ class Thread extends Model
         return $query->where('public', true)->whereIn('channel_id', ConstantObjects::public_channels());
     }
 
-    public function scopeOrdered($query, $ordered)
+    public function scopeOrdered($query, $ordered="")
     {
         switch ($ordered) {
             case 'latest_add_component'://最新更新

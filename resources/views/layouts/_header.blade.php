@@ -19,7 +19,7 @@
                     @endif
                     <li><a href="{{ route('statuses.collections') }}">动态</a></li>
                     <li><a href="{{ route('books.index') }}">文库</a></li>
-                    <li><a href="{{ route('threads.index') }}">论坛</a></li>
+                    <li><a href="{{ route('threads.thread_index') }}">论坛</a></li>
                     <li><a href="{{ route('collections.books') }}">收藏<span class="badge">{{ $Auser->unread_updates!=0? $Auser->unread_updates :''}}</span></a></li>
 
                     <li class="dropdown">

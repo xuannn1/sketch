@@ -72,13 +72,15 @@
                                 <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ $thread->title }}</a>
                             </span>
                             <span class = "pull-right">
-                                @if($thread->anonymous)
-                                <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
-                                @if((Auth::check()&&(Auth::user()->admin)))
-                                <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a></span>
-                                @endif
-                                @else
-                                <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a>
+                                @if($thread->author)
+                                    @if($thread->anonymous)
+                                    <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
+                                        @if((Auth::check()&&(Auth::user()->admin)))
+                                        <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a></span>
+                                        @endif
+                                    @else
+                                        <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a>
+                                    @endif
                                 @endif
                             </span>
                         </div>

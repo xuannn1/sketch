@@ -50,6 +50,20 @@ class ConstantObjects
         });
     }
 
+    public static function find_tag_by_name($tagname)
+    {
+        return Cache::remember('tagname-'.$tagname, 20, function() use($tagname) {
+            return $tag = self::alltags()->keyBy('tag_name')->get($tagname);
+        });
+    }
+
+    public static function find_tag_by_id($tagid)
+    {
+        return Cache::remember('tagid-'.$tagid, 20, function() use($tagid) {
+            return self::alltags()->keyBy('id')->get($tagid);
+        });
+    }
+
     public static function titles()//获得站上所有的titles
     {
         return Cache::remember('titles', 10, function (){

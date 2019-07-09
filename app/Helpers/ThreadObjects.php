@@ -41,4 +41,17 @@ class ThreadObjects
         ->ordered($orderBy)
         ->paginate(config('constants.posts_per_page'));
     }
+
+    public static function jinghua_threads()
+    {
+        $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
+        return Cache::remember('jinghua-threads', 5, function () use ($jinghua_tag){
+            return \App\Models\Thread::with('author','tags')
+            ->isPublic()
+            ->withTag($jinghua_tag->id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+        });
+    }
 }

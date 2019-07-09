@@ -13,5 +13,6 @@ return [
     'index_per_part' => 2,//当index用于整合页面的时候，一个分区显示多少项目
 
     'posts_per_page' => 10, //每页展示10个post
+    'threads_per_page' => 20, //每页展示20个threads
     'register_promise' => '我保证在废文好好做鱼，认真读版规，不扒马不骂人不盗文，自觉维护站内和谐风气',
 ];

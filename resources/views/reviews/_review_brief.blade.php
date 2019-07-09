@@ -31,13 +31,15 @@
             </span>
 
             <span class = "pull-right">
-                @if($post->review->reviewee->anonymous)
-                <span>{{ $post->review->reviewee->majia ?? '匿名咸鱼'}}</span>
-                @if((Auth::check()&&(Auth::user()->isAdmin)))
-                <span class="admin-anonymous"><a href="{{ route('user.show', $recommend_book->user_id) }}">{{ $post->review->reviewee->author->name }}</a></span>
-                @endif
-                @else
-                <a href="{{ route('user.show', $post->review->reviewee->user_id) }}">{{  $post->review->reviewee->author->name }}</a>
+                @if($post->review->reviewee->author)
+                    @if($post->review->reviewee->anonymous)
+                    <span>{{ $post->review->reviewee->majia ?? '匿名咸鱼'}}</span>
+                        @if((Auth::check()&&(Auth::user()->isAdmin)))
+                        <span class="admin-anonymous"><a href="{{ route('user.show', $recommend_book->user_id) }}">{{ $post->review->reviewee->author->name }}</a></span>
+                        @endif
+                    @else
+                        <a href="{{ route('user.show', $post->review->reviewee->user_id) }}">{{  $post->review->reviewee->author->name }}</a>
+                    @endif
                 @endif
             </span>
         </div>

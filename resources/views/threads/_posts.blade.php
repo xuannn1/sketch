@@ -10,16 +10,18 @@
             <div class="col-xs-12">
                 <span>
                     <!-- 显示作者名称 -->
-                    @if ($post->maintext)
-                        <span>作者</span>
-                    @else
-                        @if ($post->anonymous)
-                        <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
-                            @if((Auth::check()&&(Auth::user()->isAdmin())))
-                            <span class="admin-anonymous"><a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a></span>
-                            @endif
+                    @if($post->author)
+                        @if ($post->maintext)
+                            <span>作者</span>
                         @else
-                            <a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a>
+                            @if ($post->anonymous)
+                            <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
+                                @if((Auth::check()&&(Auth::user()->isAdmin())))
+                                <span class="admin-anonymous"><a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a></span>
+                                @endif
+                            @else
+                                <a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a>
+                            @endif
                         @endif
                     @endif
 
@@ -78,8 +80,9 @@
 
     @if(Auth::check())
     <div class="text-right post-vote">
-        if($post->type<>'post'&&$post->type<>'comment')
+        @if($post->type<>'post'&&$post->type<>'comment')
         <a href="#" class="pull-left h6">帖子详情</a>
+        @endif
         @if(Auth::user()->level >= 1)
             <span class="voteposts"><button class="btn btn-default btn-xs" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
         @endif

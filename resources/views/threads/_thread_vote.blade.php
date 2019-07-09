@@ -19,8 +19,10 @@
 <div class="grayout h6">
     新鲜打赏：
     @foreach($thread->temp_rewards as $reward)
-        <a href="{{ route('user.show', $reward->user_id) }}">{{ $reward->author->name }},&nbsp;</a>
+        @if($reward->author)
+            <a href="{{ route('user.show', $reward->user_id) }}">{{ $reward->author->name }},&nbsp;</a>
+        @endif
     @endforeach
-    |总计:咸鱼{{ $thread->xianyu }},&nbsp;剩饭{{ $thread->shengfan }}
+    &nbsp;&nbsp;总计:咸鱼{{ $thread->xianyu }},&nbsp;剩饭{{ $thread->shengfan }}
 </div>
 @endif

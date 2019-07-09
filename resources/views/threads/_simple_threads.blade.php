@@ -4,29 +4,52 @@
         <div class="col-xs-12 h5">
             <!-- thread title -->
             <span>
-                @if( $thread->top == 1)
-                <span class="badge newchapter-badge badge-tag">置顶</span>
-                @endif
-                @if( $thread->jinghua > Carbon\Carbon::now())
-                <span class="badge newchapter-badge badge-tag">精华</span>
-                @endif
-                <span class="bigger-20"><strong><a href="{{ route('thread.show', $thread->id) }}">
-                    {{ $thread->title }}
-                </a></strong></span>
-                @if( $thread->bianyuan == 1)
-                <span class="badge bianyuan-tag badge-tag">限</span>
-                @endif
-                <small>
-                    @if(!$thread->public)
-                    <span class="glyphicon glyphicon-eye-close"></span>
+                <span>
+                    @if( $thread->tags->contains('tag_name', '置顶') )
+                    <span class="badge newchapter-badge badge-tag">置顶</span>
                     @endif
-                    @if($thread->locked)
-                    <span class="glyphicon glyphicon-lock"></span>
+                    @if( $thread->tags->contains('tag_name', '精华') )
+                    <span class="badge newchapter-badge badge-tag">精华</span>
                     @endif
-                    @if($thread->noreply)
-                    <span class="glyphicon glyphicon-warning-sign"></span>
+                    <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>
+                    <small>
+                        @if( !$thread->public )
+                        <span class="glyphicon glyphicon-eye-close"></span>
+                        @endif
+                        @if( $thread->locked )
+                        <span class="glyphicon glyphicon-lock"></span>
+                        @endif
+                        @if( $thread->no_reply )
+                        <span class="glyphicon glyphicon-warning-sign"></span>
+                        @endif
+                    </small>
+                    @if( $thread->bianyuan == 1)
+                    <span class="badge bianyuan-tag badge-tag">限</span>
                     @endif
-                </small>
+                    @if( $thread->tags->contains('tag_type', '编推') )
+                    <span class="recommend-label">
+                        <span class="glyphicon glyphicon-grain recommend-icon"></span>
+                        <span class="recommend-text">推</span>
+                    </span>
+                    @endif
+                    @if( $thread->tags->contains('tag_type', '管理') )
+                    <span class="jinghua-label">
+                        <span class="glyphicon glyphicon-thumbs-up jinghua-icon"></span>
+                    </span>
+                    @endif
+                </span>
+            </span>
+            <span class="pull-right">
+                @if($thread->author)
+                    @if ($thread->anonymous)
+                        <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
+                        @if((Auth::check()&&(Auth::user()->isAdmin())))
+                            <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a></span>
+                        @endif
+                    @else
+                        <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a>
+                    @endif
+                @endif
             </span>
             <!-- thread title end   -->
         </div>

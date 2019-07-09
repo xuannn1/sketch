@@ -5,10 +5,12 @@
             <h2 class="daily-quote display-1">{{ $quote->body }}</h2>
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 text-right">
-                    @if ($quote->anonymous)
-                    ——{{ $quote->majia }}
-                    @else
-                    ——<a href="#">{{ $quote->author->name }}</a>
+                    @if($quote->author)
+                        @if ($quote->anonymous)
+                        ——{{ $quote->majia }}
+                        @else
+                        ——<a href="#">{{ $quote->author->name }}</a>
+                        @endif
                     @endif
                     <br>
                 </div>
