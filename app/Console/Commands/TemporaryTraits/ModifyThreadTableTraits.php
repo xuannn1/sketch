@@ -359,7 +359,7 @@ trait ModifyThreadTableTraits{
                     $tag = $this->findTagByName('置顶');
                     if($tag){array_push($insert_tags,['tag_id'=>$tag->id,'thread_id'=>$thread->id]);}
                 }
-                if($thread->jinghua){
+                if($thread->jinghua>Carbon::now()){
                     $tag = $this->findTagByName('精华');
                     if($tag){array_push($insert_tags,['tag_id'=>$tag->id,'thread_id'=>$thread->id]);}
                 }

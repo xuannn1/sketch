@@ -21,8 +21,23 @@
                     <li><a href="{{ route('books.index') }}">文库</a></li>
                     <li><a href="{{ route('threads.index') }}">论坛</a></li>
                     <li><a href="{{ route('collections.books') }}">收藏<span class="badge">{{ $Auser->unread_updates!=0? $Auser->unread_updates :''}}</span></a></li>
-                    <li><a href="{{ route('user.center') }}"><span class="{{ $Auser->unread_reminders>0? 'blink_me reminder-sign':''}}">
-                        <span class="glyphicon glyphicon-bell {{ $Auser->unread_reminders>0? :'hidden'}}"></span>{{ $Auser->name }}</span></a></li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{Auth::user()->unread_reminders>0? 'blink_me reminder-sign':''}}">
+                            <span class="glyphicon glyphicon-bell {{Auth::user()->unread_reminders>0? :'hidden'}}"></span>{{ Auth::user()->name }} <b class="caret"></b></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ route('user.show', Auth::user()->id) }}">个人主页</a></li>
+                            <li><a href="{{ route('user.center') }}">个人中心</a></li>
+                            <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ Auth::user()->unread_reminders>0 ? Auth::user()->unread_reminders:''}}</span></a></li>
+                            <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();">退出</a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    {{ csrf_field() }}
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
                 @else
                 <ul class="nav navbar-nav navbar-right text-right">
