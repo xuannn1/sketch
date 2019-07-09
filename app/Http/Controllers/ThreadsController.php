@@ -22,6 +22,21 @@ class threadsController extends Controller
 
     public function index(Request $request)
     {
+        $page = is_numeric($request->page)? $request->page:1;
+        $threads = Cache::remember('threads.P'.$page, 2, function () use($group, $request, $logged) {
+            $threads=Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->inChannel($request->channels)
+            ->isPublic()//复杂的筛选
+            ->withType($request->withType)
+            ->withBianyuan($request->withBianyuan)
+            ->withTag($request->tags)
+            ->excludeTag($request->excludeTags)
+            ->ordered($request->ordered)
+            ->paginate(config('constants.threads_per_page'))
+            ->appends($request->only('channels','withType','withBianyuan','tags','excludeTags','ordered'));
+            return $threads;
+        });
+
         $group = 10;
         $logged = Auth::check()? true:false;
         if(Auth::check()){$group = Auth::user()->group;}
@@ -33,15 +48,7 @@ class threadsController extends Controller
         .($request->channel? 'Ch'.$request->channel:'')
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
         $threads = Cache::remember($threadqueryid, 2, function () use($group, $request, $logged) {
-            $query = $this->join_no_book_thread_tables()
-            ->where([['threads.book_id','=',0],['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]]);
-            if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
-            if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
-            if(!$logged){$query = $query->where('threads.bianyuan','=',0);}
-            $threads = $this->return_no_book_thread_fields($query)
-            ->orderBy('threads.lastresponded_at', 'desc')
-            ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page','label','channel'));
+
             return $threads;
         });
 

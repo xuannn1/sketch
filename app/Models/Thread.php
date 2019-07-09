@@ -116,12 +116,24 @@ class Thread extends Model
     {
         if ($withTags){
             $tags=(array)json_decode($withTags);
-            return $query->whereHas('tags', function ($query) use ($tags){
+            foreach($tags as $tag){
+                $query = $query->whereHas('tags', function ($query) use ($tag){
+                    $query->where('id', '=', $tag);
+                });
+            }
+        }
+        return $query;
+    }
+
+    public function scopeExcludeTag($query, $excludeTags)
+    {
+        if ($excludeTags){
+            $tags=(array)json_decode($excludeTags);
+            return $query->whereDoesntHave('tags', function ($query) use ($tags){
                 $query->whereIn('id', $tags);
             });
-        }else{
-            return $query;
         }
+        return $query;
     }
 
     public function scopeIsPublic($query)//在thread index的时候，只看公共channel内的公开thread
