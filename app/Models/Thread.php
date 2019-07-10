@@ -28,6 +28,11 @@ class Thread extends Model
         return $this->hasMany(Post::class, 'thread_id')->where('id','<>',$this->post_id);
     }
 
+    public function chapterposts()
+    {
+        return $this->hasMany(Post::class, 'thread_id')->where('id','<>',$this->post_id)->where('maintext','=',1);
+    }
+
     public function mainpost()
     {
         return $this->belongsTo(Post::class, 'post_id')->withDefault();

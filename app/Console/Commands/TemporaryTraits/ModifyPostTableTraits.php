@@ -148,6 +148,7 @@ trait ModifyPostTableTraits{
                     $post_data['created_at'] = $postcomment->created_at;
                     $post_data['thread_id'] = $post->thread_id;
                     $post_data['user_id'] = $postcomment->user_id;
+                    $post_data['chapter_id'] = $post->chapter_id;
                     if($post->maintext){
                         $post_data['type']='post';
                         $post_data['reply_to_id']=$post->id;
@@ -165,6 +166,14 @@ trait ModifyPostTableTraits{
             echo $postcomment->id.'|';
         });
         echo "finished task4.6 movePostCommentToPost\n";
+        DB::table('posts')
+        ->join('chapters','chapters.id','=','posts.chapter_id')
+        ->where('posts.maintext','=',0)
+        ->where('posts.reply_to_id','>',0)
+        ->update([
+            'posts.in_component_id' => DB::raw('chapters.post_id')
+        ]);
+        echo "finished update post comment in_component_id \n";
     }
 
     public function updatePostReply() //task 06

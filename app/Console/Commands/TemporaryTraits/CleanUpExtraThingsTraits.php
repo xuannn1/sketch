@@ -71,7 +71,7 @@ trait CleanUpExtraThingsTraits{
     {
         if (Schema::hasColumn('posts', 'long_comment')){
             Schema::table('posts', function($table){
-                $table->dropColumn(['updated_at','chapter_id','long_comment','long_comment_id','popular','recommended','as_longcomment']);
+                $table->dropColumn(['updated_at','chapter_id','long_comment','long_comment_id','popular','recommended','as_longcomment','maintext']);
                 echo "simplified posts table.\n";
             });
         }

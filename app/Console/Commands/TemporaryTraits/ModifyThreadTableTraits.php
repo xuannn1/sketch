@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use App\Helpers\Helper;
-
+use Carbon\Carbon;
 use Auth;
 
 trait ModifyThreadTableTraits{
@@ -50,7 +50,7 @@ trait ModifyThreadTableTraits{
             });
             Schema::table('tags', function($table){
                 $table->renameColumn('tag_belongs_to', 'parent_id');
-                $table->renameColumn('books', 'book_count');
+                $table->renameColumn('books', 'thread_count');
                 $table->renameColumn('tagname', 'tag_name');
                 $table->unique('tag_name');
                 $table->index('parent_id');
@@ -96,6 +96,8 @@ trait ModifyThreadTableTraits{
                     'channel_id' => $label->channel_id,
                     'tag_type' => '大类',
                     'is_primary' => true,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ]);
             }
         }
@@ -104,62 +106,90 @@ trait ModifyThreadTableTraits{
             DB::table('tags')->insert([
                 'tag_name' => '短篇',
                 'tag_type' => '篇幅',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '中篇',
                 'tag_type' => '篇幅',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '长篇',
                 'tag_type' => '篇幅',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '大纲',
                 'tag_type' => '篇幅',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
         }
         {
             DB::table('tags')->insert([
                 'tag_name' => '连载',
                 'tag_type' => '进度',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '完结',
                 'tag_type' => '进度',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '暂停',
                 'tag_type' => '进度',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
         }
         {
             DB::table('tags')->insert([
                 'tag_name' => 'BL',
                 'tag_type' => '性向',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => 'GL',
                 'tag_type' => '性向',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => 'BG',
                 'tag_type' => '性向',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => 'GB',
                 'tag_type' => '性向',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '混合性向',
                 'tag_type' => '性向',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '无CP',
                 'tag_type' => '性向',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '其他性向',
                 'tag_type' => '性向',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
         }
         {
@@ -167,12 +197,16 @@ trait ModifyThreadTableTraits{
             DB::table('tags')->insert([
                 'tag_name' => '荤素均衡',
                 'is_bianyuan' => false,
-                'tag_type' => '床戏性质'
+                'tag_type' => '床戏性质',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '肉渣',
                 'is_bianyuan' => false,
-                'tag_type' => '床戏性质'
+                'tag_type' => '床戏性质',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
         }
@@ -180,56 +214,82 @@ trait ModifyThreadTableTraits{
             DB::table('tags')->insert([
                 'tag_name' => '专题推荐',
                 'tag_type' => '编推',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '当前编推',
                 'tag_type' => '编推',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '往期编推',
                 'tag_type' => '编推',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '高亮',
                 'tag_type' => '管理',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '置顶',
                 'tag_type' => '管理',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '精华',
                 'tag_type' => '管理',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
         }
         {
             DB::table('tags')->insert([
                 'tag_name' => '想读',
                 'tag_type' => '阅读进度',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '正在读',
                 'tag_type' => '阅读进度',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '养肥',
                 'tag_type' => '阅读进度',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '弃文',
                 'tag_type' => '阅读进度',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '已读',
                 'tag_type' => '阅读进度',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '多次阅读',
                 'tag_type' => '阅读反馈',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
             DB::table('tags')->insert([
                 'tag_name' => '推荐',
                 'tag_type' => '阅读反馈',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
         }
 
@@ -320,7 +380,7 @@ trait ModifyThreadTableTraits{
         ->where('books.deleted_at','=',null)
         ->where('chapters.deleted_at','=',null)
         ->update([
-            'threads.last_component_id' => DB::raw('books.last_chapter_id'),
+            'threads.last_component_id' => DB::raw('chapters.post_id'),
             'threads.add_component_at' => DB::raw('books.lastaddedchapter_at'),
         ]);
     }
@@ -366,7 +426,7 @@ trait ModifyThreadTableTraits{
                     $tag = $this->findTagByName('置顶');
                     if($tag){array_push($insert_tags,['tag_id'=>$tag->id,'thread_id'=>$thread->id]);}
                 }
-                if($thread->jinghua){
+                if($thread->jinghua>Carbon::now()){
                     $tag = $this->findTagByName('精华');
                     if($tag){array_push($insert_tags,['tag_id'=>$tag->id,'thread_id'=>$thread->id]);}
                 }

@@ -49,13 +49,13 @@ class RebuildDatabase extends Command
     */
     public function handle()
     {
-        $this->modifyUserTable();
-        $this->modifyRewardNVoteTable();
-        $this->modifyThreadTable();
-        $this->modifyPostTable();
-        $this->modifyAdminRecords();
-        $this->modifyQuestionBox();
-        $this->modifyActivityTable();
+        // $this->modifyUserTable();
+        // $this->modifyRewardNVoteTable();
+        // $this->modifyThreadTable();
+        // $this->modifyPostTable();
+        // $this->modifyAdminRecords();
+        // $this->modifyQuestionBox();
+        // $this->modifyActivityTable();
         $this->modifyReviewNCollection();
         $this->modifyQuoteNStatus();
         $this->cleanUpExtraThings();
