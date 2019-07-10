@@ -8,11 +8,11 @@ trait ModifyReviewNCollectionTraits{
 
     public function modifyReviewNCollection()
     {
-        // $this->createReviewTable();
-        // $this->createReviewList();
-        // $this->createNewCollectionList();
-        // $this->insertReviewToCollectionList();
-        // $this->updateCollectionsTable();
+        $this->createReviewTable();
+        $this->createReviewList();
+        $this->createNewCollectionList();
+        $this->insertReviewToCollectionList();
+        $this->updateCollectionsTable();
         $this->recalculateData();
     }
 
@@ -76,6 +76,7 @@ trait ModifyReviewNCollectionTraits{
                         'body' => $recommend->recommendation,
                         'created_at' => $recommend->created_at,
                         'type' => 'review',
+                        'user_id' =>$editor->id,
                     ]);
                     DB::table('reviews')->insert([
                         'post_id' => $post_id,
@@ -144,13 +145,14 @@ trait ModifyReviewNCollectionTraits{
         $collection_reviews = DB::table('collections')
         ->join('collection_lists','collections.collection_list_id','=','collection_lists.id')
         ->join('threads','threads.old_list_id','=','collection_lists.id')
-        ->select('threads.id as list_id','collections.brief as brief','collections.body as body','collections.lastupdated_at as created_at','collection_lists.anonymous as anonymous','collection_lists.majia as majia','collections.item_id as collection_thread_id')
+        ->select('threads.id as list_id','threads.user_id as user_id', 'collections.brief as brief','collections.body as body','collections.lastupdated_at as created_at','threads.anonymous as anonymous','threads.majia as majia','collections.item_id as collection_thread_id')
         ->get();
 
         $insert_posts = [];
         foreach ( $collection_reviews as $collection_review ){
             $post_data = [
                 'thread_id'=> $collection_review->list_id,
+                'user_id'=> $collection_review->user_id,
                 'brief' => \App\Helpers\Helper::trimtext($collection_review->body, 40),
                 'body' => $collection_review->body,
                 'created_at' => $collection_review->created_at,
@@ -169,8 +171,8 @@ trait ModifyReviewNCollectionTraits{
         ->where('collection_thread_id','>',0)
         ->get();
 
+        $insert_reviews = [];
         foreach($prepare_review_data as $prepare_data){
-            $insert_reviews = [];
             $review_data = [
                 'post_id' => $prepare_data->id,
                 'thread_id'=> $prepare_data->collection_thread_id,
@@ -215,39 +217,39 @@ trait ModifyReviewNCollectionTraits{
 
     public function recalculateData()
     {
-        // echo "redo updatePostReply\n";
-        // DB::statement('
-        //     UPDATE posts P1
-        //     JOIN (
-        //         SELECT reply_to_id, Count(reply_to_id) as ParentCount
-        //         FROM posts
-        //         GROUP BY reply_to_id
-        //     ) P2 ON P1.id=P2.reply_to_id
-        //     SET P1.reply_count=P2.ParentCount
-        // ');
-        // echo "redo counted replies for each post\n";
-        //
-        // DB::statement('
-        //     update threads
-        //     set reply_count =
-        //     (select count(id) from posts
-        //     where threads.id = posts.thread_id and posts.deleted_at is null and threads.post_id <> posts.id and posts.maintext = 0)
-        // ');
-        // echo "redo thread reply count\n";
+        echo "redo updatePostReply\n";
+        DB::statement('
+            UPDATE posts P1
+            JOIN (
+                SELECT reply_to_id, Count(reply_to_id) as ParentCount
+                FROM posts
+                GROUP BY reply_to_id
+            ) P2 ON P1.id=P2.reply_to_id
+            SET P1.reply_count=P2.ParentCount
+        ');
+        echo "redo counted replies for each post\n";
 
-        // DB::table('threads')
-        // ->join('posts','threads.id','=','posts.thread_id')
-        // ->where('posts.created_at','>','threads.responded_at')
-        // ->update(['threads.responded_at' => DB::raw('posts.created_at')]);
-        // echo "redo thread responded time count\n";
-        //
-        // DB::statement('
-        //     update tags
-        //     set thread_count =
-        //     (select count(id) from tag_thread
-        //     where tag_thread.tag_id = tags.id)
-        // ');
-        // echo "redo tag thread_count\n";
+        DB::statement('
+            update threads
+            set reply_count =
+            (select count(id) from posts
+            where threads.id = posts.thread_id and posts.deleted_at is null and threads.post_id <> posts.id and posts.maintext = 0)
+        ');
+        echo "redo thread reply count\n";
+
+        DB::table('threads')
+        ->join('posts','threads.id','=','posts.thread_id')
+        ->where('posts.created_at','>','threads.responded_at')
+        ->update(['threads.responded_at' => DB::raw('posts.created_at')]);
+        echo "redo thread responded time count\n";
+
+        DB::statement('
+            update tags
+            set thread_count =
+            (select count(id) from tag_thread
+            where tag_thread.tag_id = tags.id)
+        ');
+        echo "redo tag thread_count\n";
 
         \App\Models\Thread::with('chapterposts.chapter')->where('channel_id','<',3)->chunk(10, function ($threads) {
             foreach($threads as $thread){
