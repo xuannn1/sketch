@@ -1,3 +1,4 @@
+<!-- 置顶精华帖区域，每个帖展示很少的信息 -->
 @foreach($simplethreads as $thread)
 <article class="{{ 'item2id'.$thread->thread_id }}">
     <div class="row">

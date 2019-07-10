@@ -4,12 +4,7 @@
         <div class="col-xs-12 h5">
             <!-- thread title -->
             <span>
-                @if( $thread->tags->contains('tag_name', '置顶') )
-                <span class="badge newchapter-badge badge-tag">置顶</span>
-                @endif
-                @if( $thread->tags->contains('tag_name', '精华') )
-                <span class="badge newchapter-badge badge-tag">精华</span>
-                @endif
+                <span class="badge newchapter-badge badge-tag">{{ $thread->channel()->channel_name }}</span>
                 <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>
                 <small>
                     @if( !$thread->public )

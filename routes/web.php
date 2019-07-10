@@ -78,8 +78,8 @@
 }
 
 {//以下展示论坛贴按标签（label）与板块（channel）分布的视图
-   Route::get('/channels', 'ChannelsController@index')->name('channel.show');//展示某个板块的所有帖子
-   Route::get('/channels/{channel}', 'ChannelsController@show')->name('channel.show')->middleware('filter_channel');//展示某个板块的所有帖子
+   Route::get('/channels/{channel}', 'ThreadsController@channel_index')->name('channel.show')->middleware('filter_channel');//展示某个板块的帖子目录 //7.9
+
    Route::get('/channels/{channel}/threads/create', 'ThreadsController@createThreadForm')->name('thread.create')->middleware('filter_channel');//发布新主题页面
    Route::post('/channels/{channel}/threads/create','ThreadsController@store')->name('thread.store')->middleware('filter_channel');//在特定板块发表主题
 }
@@ -91,14 +91,22 @@
    Route::get('/thread_jinghua', 'ThreadsController@thread_jinghua')->name('threads.thread_jinghua');//论坛全部帖子
    Route::get('/thread_list', 'ThreadsController@thread_list')->name('threads.thread_list');//论坛全部帖子
    Route::get('/thread_box', 'ThreadsController@thread_box')->name('threads.thread_box');//论坛全部帖子
-   Route::get('/threads/{thread}', 'ThreadsController@show')->name('thread.show');//看某个主题,注意必须有权限 // 19.7.8
-   Route::get('/threads/{thread}/filterpost', 'ThreadsController@filterpost')->name('thread.filterpost');//看某个主题,注意必须有权限 // 19.7.8
+
+   Route::get('/threads/{thread}/profile', 'ThreadsController@show_profile')->name('thread.show_profile')->middleware('filter_thread');//固定内容 // 19.7.9
+
+   Route::get('/threads/{thread}', 'ThreadsController@show')->name('thread.show')->middleware('filter_thread');//条件过滤Post，没有则显示首页 19.7.9
+
+   Route::get('/threads/{thread}/index', 'ThreadsController@component_index')->name('thread.component_index')->middleware('filter_thread');//看某个主题的内部目录 // 19.7.9
+
+   Route::get('/threads/{thread}/chapter_index', 'ThreadsController@chapter_index')->name('thread.chapter_index')->middleware('filter_thread');//看某个主题的内部目录 // 19.7.9
+
+
 
 
    Route::get('/threads/{thread}/edit', 'ThreadsController@edit')->name('thread.edit');
    Route::post('/threads/{thread}/update', 'ThreadsController@update')->name('thread.update');
    Route::post('/threads/{thread}/posts', 'PostsController@store')->name('post.store');//在某个主题发表回帖
-   Route::get('/threads/{thread}/xianyu', 'XianyusController@vote')->name('xianyu.vote');//为主题投放咸鱼
+   // Route::get('/threads/{thread}/xianyu', 'XianyusController@vote')->name('xianyu.vote');//为主题投放咸鱼
 }
 
 {//作业模块
@@ -121,7 +129,7 @@
    Route::post('/book/create', 'BooksController@store')->name('book.store');//发表新的文章
    Route::get('/books/{book}/edit', 'BooksController@edit')->name('book.edit');//修改文章
    Route::post('/books/{book}/update', 'BooksController@update')->name('book.update');//更新文章修改
-   Route::get('/books/{book}', 'BooksController@show')->name('book.show')->middleware('filter_book');//查看某本书的目录
+   Route::get('/books/{book}', 'BooksController@show')->name('book.show');//查看某本书的目录
 
    Route::get('/books/{book}/createchapter', 'ChaptersController@createChapterForm')->name('book.createchapter');//更新章节的表格
    Route::post('/books/{book}/storechapter', 'ChaptersController@store')->name('book.storechapter');//储存新章节
@@ -129,11 +137,8 @@
    Route::get('/chapters/{chapter}/edit', 'ChaptersController@edit')->name('book.editchapter');//编辑章节
    Route::post('chapters/{chapter}/update', 'ChaptersController@update')->name('book.updatechapter');//编辑章节
    Route::get('/books', 'BooksController@index')->name('books.index');//看全部书
-   // Route::get('/book-tag/{booktag}','BooksController@booktag')->name('books.booktag');//图书过滤-tag
-   Route::get('/bookselector/{bookquery}','BooksController@selector')->name('books.selector');//图书过滤
-   Route::post('/book-filter','BooksController@filter')->name('books.filter');//输入过滤信息表格
-   Route::get('/tags', 'BooksController@tags')->name('book.tags');//全站标签列表
-   Route::get('/selector', 'BooksController@bookselector')->name('book.selector');//全站详细搜索
+
+   Route::get('/tags', 'PagesController@tags')->name('all.tags');//全站标签列表
 }
 
 {//以下是回帖模块
@@ -141,18 +146,20 @@
    Route::get('/posts/{post}/edit', 'PostsController@edit')->name('post.edit');//更改已回复主题，必须有权限
    Route::post('/posts/{post}/update', 'PostsController@update')->name('post.update');//更改帖子，必须有权限
    Route::delete('/posts/{post}', 'PostsController@destroy')->name('post.destroy');//删除已回复帖子，必须有权限
-   Route::post('/posts/{post}/comments', 'PostCommentsController@store')->name('postcomment.store');//对某个回帖发点评
-   Route::delete('/postcomments/{postcomment}', 'PostCommentsController@destroy')->name('postcomment.destroy');//对某个回帖发点评
-   Route::get('/posts/{post}/', 'PostsController@show')->name('post.show');//查看某个回帖
-   Route::get('/posts/{post}/shengfan', 'ShengfansController@vote_post')->name('shengfan.vote_post');//为回帖投剩饭；
-   Route::get('/posts/{post}/shengfan-index', 'ShengfansController@index')->name('shengfan.index');//显示本条信息下所有剩饭投喂情况；
+   // Route::post('/posts/{post}/comments', 'PostCommentsController@store')->name('postcomment.store');//对某个回帖发点评
+   // Route::delete('/postcomments/{postcomment}', 'PostCommentsController@destroy')->name('postcomment.destroy');//对某个回帖发点评
 
-   Route::get('/posts/{post}/upvote','VotePostsController@upvote')->name('voteposts.upvote');//为回帖投票赞
-   Route::get('/posts/{post}/downvote','VotePostsController@downvote')->name('voteposts.downvote');//为回帖投票踩
-   Route::get('/posts/{post}/funny','VotePostsController@funny')->name('voteposts.funny');//为回帖投票踩
-   Route::get('/posts/{post}/fold','VotePostsController@fold')->name('voteposts.fold');//为回帖投票踩
-   Route::get('/longcomments', 'LongCommentsController@index')->name('longcomments.index');
-   Route::get('/posts/{post}/toggle_review/{longcomment_method}','AdminsController@toggle_review_longcomment')->name('longcomment.toggle_review');//通过长评
+   Route::get('/posts/{post}/', 'PostsController@show')->name('post.show');//查看某个回帖 //7.9.19
+
+   // Route::get('/posts/{post}/shengfan', 'ShengfansController@vote_post')->name('shengfan.vote_post');//为回帖投剩饭；
+   // Route::get('/posts/{post}/shengfan-index', 'ShengfansController@index')->name('shengfan.index');//显示本条信息下所有剩饭投喂情况；
+
+   // Route::get('/posts/{post}/upvote','VotePostsController@upvote')->name('voteposts.upvote');//为回帖投票赞
+   // Route::get('/posts/{post}/downvote','VotePostsController@downvote')->name('voteposts.downvote');//为回帖投票踩
+   // Route::get('/posts/{post}/funny','VotePostsController@funny')->name('voteposts.funny');//为回帖投票踩
+   // Route::get('/posts/{post}/fold','VotePostsController@fold')->name('voteposts.fold');//为回帖投票踩
+   // Route::get('/longcomments', 'LongCommentsController@index')->name('longcomments.index');
+   // Route::get('/posts/{post}/toggle_review/{longcomment_method}','AdminsController@toggle_review_longcomment')->name('longcomment.toggle_review');//通过长评
 }
 
 {//以下是admin
@@ -223,36 +230,39 @@
        'index', 'store', 'destroy'
    ]]);
    Route::get('/statuses/collections', 'StatusesController@collections')->name('statuses.collections');//显示关注对象的所有动态
-   Route::post('/cache/save', 'CachesController@save')->name('cache.save');
-   Route::get('/cache/retrieve', 'CachesController@retrieve')->name('cache.retrieve');
-   Route::get('/cache/initcache','CachesController@initcache')->name('cache.initcache');
+
+}
+
+{//缓存模块
+    Route::post('/cache/save', 'CachesController@save')->name('cache.save');
+    Route::get('/cache/retrieve', 'CachesController@retrieve')->name('cache.retrieve');
+    Route::get('/cache/initcache','CachesController@initcache')->name('cache.initcache');
 }
 
 //动态下载模块
 {
     Route::get('/downloads/index/{thread}', 'DownloadsController@index')->name('download.index')->middleware('filter_thread');//下载某个主题,注意必须有权限
-   Route::get('/downloads/thread_txt/{thread}','DownloadsController@thread_txt')->name('download.thread_txt')->middleware('filter_thread');
-   Route::get('/downloads/book_noreview_text/{thread}','DownloadsController@book_noreview_text')->name('download.book_noreview_text')->middleware('filter_thread');
+   // Route::get('/downloads/thread_txt/{thread}','DownloadsController@thread_txt')->name('download.thread_txt')->middleware('filter_thread');
+   // Route::get('/downloads/book_noreview_text/{thread}','DownloadsController@book_noreview_text')->name('download.book_noreview_text')->middleware('filter_thread');
 
 }
-    Route::resource('polls', 'PollsController');
 
 //留言箱功能
 {
-    Route::post('/users/{user}/questions','QuestionsController@store')->name('questions.store');//储存问题路径
-    Route::get('/users/{user}/questions', 'QuestionsController@index')->name('questions.index');//问题列表
-    Route::post('/users/{user}/questions/{question}/answer','QuestionsController@answer')->name('questions.answer');//储存回答路径
+    // Route::post('/users/{user}/questions','QuestionsController@store')->name('questions.store');//储存问题路径
+    // Route::get('/users/{user}/questions', 'QuestionsController@index')->name('questions.index');//问题列表
+    // Route::post('/users/{user}/questions/{question}/answer','QuestionsController@answer')->name('questions.answer');//储存回答路径
 }
 
 //推荐书籍功能
 {
-    Route::get('/recommend_books/create', 'RecommendBooksController@create')->name('recommend_books.create');//添加推荐书籍
-    Route::post('/recommend_books/store', 'RecommendBooksController@store')->name('recommend_books.store');//储存推荐书籍
-    Route::get('/recommend_books/index', 'RecommendBooksController@index')->name('recommend_books.index');//查看推荐书籍
-    Route::get('/recommend_books/recommend_longcomments', 'RecommendBooksController@longcomments')->name('recommend_books.longcomments');//查看推荐长评
-    Route::get('/recommend_books/{recommend_book}', 'RecommendBooksController@show')->name('recommend_books.show');//推荐书籍信息
-    Route::get('/recommend_books/{recommend_book}/edit', 'RecommendBooksController@edit')->name('recommend_books.edit');//修改书籍信息
-    Route::post('/recommend_books/{recommend_book}/update', 'RecommendBooksController@update')->name('recommend_books.update');//保存修改
+    // Route::get('/recommend_books/create', 'RecommendBooksController@create')->name('recommend_books.create');//添加推荐书籍
+    // Route::post('/recommend_books/store', 'RecommendBooksController@store')->name('recommend_books.store');//储存推荐书籍
+    // Route::get('/recommend_books/index', 'RecommendBooksController@index')->name('recommend_books.index');//查看推荐书籍
+    // Route::get('/recommend_books/recommend_longcomments', 'RecommendBooksController@longcomments')->name('recommend_books.longcomments');//查看推荐长评
+    // Route::get('/recommend_books/{recommend_book}', 'RecommendBooksController@show')->name('recommend_books.show');//推荐书籍信息
+    // Route::get('/recommend_books/{recommend_book}/edit', 'RecommendBooksController@edit')->name('recommend_books.edit');//修改书籍信息
+    // Route::post('/recommend_books/{recommend_book}/update', 'RecommendBooksController@update')->name('recommend_books.update');//保存修改
 }
 
 // 答题测试模块 quiz

@@ -44,6 +44,21 @@ class Thread extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class,'thread_id');
+    }
+
+    public function editor_recommends()
+    {
+        return $this->hasMany(Review::class,'thread_id')->where('editor_recommend','=',1);
+    }
+
+    public function user_recommends()
+    {
+        return $this->hasMany(Review::class,'thread_id')->where('editor_recommend','=',0);
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
@@ -115,7 +130,7 @@ class Thread extends Model
     public function scopeWithTag($query, $withTags="")
     {
         if ($withTags){
-            $tags=(array)json_decode($withTags);
+            $tags = explode('-',$withTags);
             foreach($tags as $tag){
                 if(is_numeric($tag)&&$tag>0){
                     $query = $query->whereHas('tags', function ($query) use ($tag){
@@ -127,22 +142,33 @@ class Thread extends Model
         return $query;
     }
 
-    public function scopeExcludeTag($query, $excludeTags="")
+    public function scopeExcludeTag($query, $excludeTag="")
     {
-        if ($excludeTags){
-            $tags=(array)json_decode($excludeTags);
-            if($tags){
-                return $query->whereDoesntHave('tags', function ($query) use ($exclude_tags){
-                    $query->whereIn('tags.id', $exclude_tags);
+        if ($excludeTag){
+            $tags = explode('-',$withTags);
+            $exclude_tag = [];
+            foreach($tags as $tag){
+                if(is_numeric($tag)&&$tag>0){
+                    array_push($exclude_tag, $tag);
+                }
+            }
+            if($exclude_tag){
+                return $query->whereDoesntHave('tags', function ($query) use ($exclude_tag){
+                    $query->whereIn('tags.id', $exclude_tag);
                 });
             }
         }
         return $query;
     }
 
-    public function scopeIsPublic($query)//在thread index的时候，只看公共channel内的公开thread
+    public function scopeInPublicChannel($query)//只看公共channel内的
     {
-        return $query->where('public', true)->whereIn('channel_id', ConstantObjects::public_channels());
+        return $query->whereIn('channel_id', ConstantObjects::public_channels());
+    }
+
+    public function scopeIsPublic($query)//只看作者决定公开的
+    {
+        return $query->where('public', true);
     }
 
     public function scopeOrdered($query, $ordered="")

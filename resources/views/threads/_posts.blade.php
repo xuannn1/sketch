@@ -1,3 +1,4 @@
+<!-- 展示该主题下每一个帖子 -->
 @foreach($posts as $key=>$post)
 @if($post->is_folded)
 <div class="text-center">
@@ -25,8 +26,8 @@
                         @endif
                     @endif
 
-                    @if((!$post->anonymous)&&((!$thread->anonymous)||(!$post->maintext)))
-                        <span class="grayout smaller-20"><a href="{{ route('thread.filterpost', ['thread'=>$thread->id, 'useronly'=>$post->user_id]) }}">只看该用户</a></span>
+                    @if(($post->user_id>0)&&(!$post->anonymous)&&((!$thread->anonymous)||(!$post->maintext)))
+                        <span class="grayout smaller-20"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'userOnly'=>$post->user_id]) }}">只看该用户</a></span>
                     @endif
                     <!-- 发表时间 -->
                     <span class="smaller-20">
@@ -44,13 +45,13 @@
 
                 </span>
                 <span class="pull-right">
-                    <a href="{{ route('thread.showpost', $post) }}">No.{{ ($posts->currentPage()-1)*$posts->perPage()+$key+1 }}</a>
+                    <a href="{{ route('thread.showpost', $post) }}">No.{{ $post->id }}</a>
                 </span>
             </div>
         </div>
     </div>
     <div class="panel-body post-body">
-        @if((($post->bianyuan)||(($thread->bianyuan)))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
+        @if((($post->bianyuan)||($thread->bianyuan))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
         <div class="text-center">
             <h6 class="display-4 grayout"><a href="{{ route('login') }}">本内容为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></h6>
         </div>
@@ -62,17 +63,53 @@
                 </div>
             @endif
 
+            <!-- 展示推荐书籍内情 -->
+            @if($post->type==='review'&&$post->review)
+                <div class="post-reply grayout">
+                    @if($post->review->reviewee)
+                    <a href="{{ route('thread.show_profile', $post->review->thread_id) }}">《{{ $post->review->reviewee->title }}》</a>
+                    @endif
+
+                    @for ($i = 0; $i < $post->review->rating; $i++)
+                    @if($i%2!=0)
+                    <i class="fa fa-star recommend-star" aria-hidden="true"></i>
+                    @endif
+                    @endfor
+
+                    @if($post->review->rating>0&&$post->review->rating%2!=0)
+                    <i class="fa fa-star-half-o recommend-star" aria-hidden="true"></i>
+                    @endif
+                    @if($post->review->recommend)
+                    <span class="badge newchapter-badge badge-tag"><i class="fa fa-heartbeat" aria-hidden="true"></i>推荐</span>
+                    @endif
+                </div>
+            @endif
+
             <!-- 普通回帖展开 -->
             <div class="main-text {{ $post->indentation? 'indentation':'' }}">
                 @if($post->title)
                 <div class="text-center">
-                    <strong>{{ $post->title }}</strong>
+                    <strong><a href="{{ route('post.show', $post->id) }}">{{ $post->title }}</a></strong>
                 </div>
                 @endif
+
+                @if($post->type==="chapter"&&$post->chapter&&$post->chapter->warning)
+                <div class="text-center grayout">
+                    {{ $post->chapter->warning }}
+                </div>
+                <br>
+                @endif
+
                 @if($post->markdown)
                 {!! Helper::sosadMarkdown($post->body) !!}
                 @else
                 {!! Helper::wrapParagraphs($post->body) !!}
+                @endif
+                <br>
+                @if($post->type==="chapter"&&$post->chapter&&$post->chapter->annotation)
+                <div class="text-left grayout">
+                    {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
+                </div>
                 @endif
             </div>
         @endif
@@ -80,14 +117,14 @@
 
     @if(Auth::check())
     <div class="text-right post-vote">
-        @if($post->type<>'post'&&$post->type<>'comment')
-        <a href="#" class="pull-left h6">帖子详情</a>
+        @if($post->type==='chapter')
+        <a href="#" class="pull-left h5"><em>前往阅读模式</em></a>
         @endif
         @if(Auth::user()->level >= 1)
             <span class="voteposts"><button class="btn btn-default btn-xs" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
         @endif
         @if((!$thread->locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$post->is_folded)&&(Auth::user()->level >= 2))
-            <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $post->id }}, '{{ $post->brief }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
+            <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
         @endif
 
         @if(($post->user_id===Auth::id())&&(!$thread->locked)&&(!$post->is_folded)&&($thread->channel()->allow_edit))
@@ -101,6 +138,7 @@
     <div class="panel-footer">
         <div class="smaller-10" id="postcomment{{$post->last_reply_id}}">
             <a href="{{ route('thread.showpost', $post->last_reply_id) }}" class="grayout">最新回复：{{ $post->last_reply->brief }}</a>
+            <a href="{{ route('thread.show', ['thread' => $post->thread_id, 'withReplyTo' => $post->id]) }}" class="pull-right">>>全部回帖</a>
         </div>
     </div>
     @endif

@@ -39,12 +39,22 @@ class Post extends Model
 
     public function replies()
     {
-        return $this->hasMany(Post::class, 'reply_id');
+        return $this->hasMany(Post::class, 'reply_to_id');
+    }
+
+    public function answers()
+    {
+        return $this->hasMany(Post::class, 'reply_to_id')->where('type','=','answer');
+    }
+
+    public function question()
+    {
+        return $this->belongsTo(Post::class, 'reply_to_id')->where('type','=','question');
     }
 
     public function parent()
     {
-        return $this->belongsTo(Post::class, 'reply_id');
+        return $this->belongsTo(Post::class, 'reply_to_id');
     }
 
     public function author()
@@ -95,12 +105,12 @@ class Post extends Model
     public function scopeWithReplyTo($query, $withReplyTo)
     {
         if($withReplyTo){
-            return $query->where('reply_id', $withReplyTo);
+            return $query->where('reply_to_id', $withReplyTo);
         }
         return $query;
     }
 
-    public function scopeOrdered($query, $ordered)
+    public function scopeOrdered($query, $ordered='')
     {
         switch ($ordered) {
             case 'latest_created'://最新
@@ -110,7 +120,7 @@ class Post extends Model
             return $query->orderBy('reply_count', 'desc');
             break;
             case 'most_upvoted'://按赞数倒序
-            return $query->orderBy('upvotes', 'desc');
+            return $query->orderBy('upvote_count', 'desc');
             break;
             case 'random'://随机排序
             return $query->inRandomOrder();
@@ -209,13 +219,25 @@ class Post extends Model
         }
     }
 
+    public function scopePostInfo($query)
+    {
+        return $query->select('id', 'type', 'user_id', 'thread_id', 'title', 'brief', 'created_at', 'bianyuan', 'char_count', 'view_count', 'reply_count', 'upvote_count');
+    }
+
 
     public function favorite_reply()//这个post里面，回复它的postcomment中，最多赞的
     {
-        return Post::postBrief()
-        ->where('reply_id', $this->id)
-        ->with('author')
+        return Post::where('reply_to_id', $this->id)
+        ->with('author.title')
         ->orderBy('upvote_count', 'desc')
+        ->first();
+    }
+
+    public function newest_reply()//这个post里面，回复它的postcomment中，最新的一个，全部内容
+    {
+        return Post::where('reply_to_id', $this->id)
+        ->with('author.title')
+        ->orderBy('created_at', 'desc')
         ->first();
     }
 

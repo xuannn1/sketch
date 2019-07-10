@@ -5,7 +5,7 @@
 <div class="container-fluid">
     <div class="content text-center">
         <div class="title">
-            <h1>数据冲突错误</h1>
+            <h1>权限不足</h1>
             <h2>{{ $exception->getMessage() }}</h2>
         </div>
     </div>

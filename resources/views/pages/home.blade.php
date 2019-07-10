@@ -23,7 +23,7 @@
     </div>
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <!-- insert editor's recommendation after the second channel -->
-        <div class="panel panel-default">
+        <div class="panel panel-default h5">
             <div class="panel-heading h4">
                 <a href="{{route('recommend_records')}}">编辑推荐</a>
             </div>

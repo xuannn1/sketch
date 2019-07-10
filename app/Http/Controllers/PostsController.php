@@ -14,7 +14,8 @@ use Auth;
 use App\Models\Chapter;
 use App\Models\Activity;
 use App\Models\Collection;
-use App\Helpers\Helper;
+use App\Helpers\ThreadObjects;
+
 
 class PostsController extends Controller
 {
@@ -64,13 +65,14 @@ class PostsController extends Controller
             return redirect()->route('error', ['error_code' => '403']);
         }
     }
-    public function show(Post $post)
+    public function show($id)
     {
-        $thread = ThreadObject::thread($post->thread_id);
-        $post->load('author.title','tags','review.reviewee','chapter');
-        $replies = $post->allcomments()->with('owner')->paginate(config('constants.items_per_page'));
-        $defaultchapter=$post->chapter_id;
-        return view('posts.show',compact('post','thread','postcomments','defaultchapter','book', 'channel','label'))->with('show_as_book',false)->with('chapter_replied',true);
+        $post = ThreadObjects::post($id);
+        if(!$post){
+            abort(404);
+        }
+        $thread = ThreadObjects::thread($post->thread_id);
+        return view('posts.show',compact('post','thread'));
     }
 
     public function destroy($id){

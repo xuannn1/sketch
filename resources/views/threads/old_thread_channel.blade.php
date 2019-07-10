@@ -10,30 +10,20 @@
             <a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channelname }}</a>
         </div>
         <div class="panel panel-default">
-            <!-- 分级目录 -->
+            <!-- 各tag目录 -->
             <div class="panel-heading">
                 <ul class="nav nav-tabs">
-                    <li role="presentation" class="{{ request('label') ? '': 'active' }}"><a href="{{ route('channel.show', $channel) }}">全部<span class="badge"></span></a></li>
-                    @foreach($labels as $label)
-                    <li role="presentation" id="label-{{ $label->id }}" class="{{ request('label')===$label->id ? 'active':'' }}">
-                        <a href="{{ route('channel.show', array_merge(['channel'=>$channel->id,'label'=>$label->id], request()->only('showbianyuan','orderby'))) }}" >
-                            {{ $label->labelname }}<span class="badge">{{ $label->threads_count }}</span>
+                    <li role="presentation" class="{{ request('label') ? '': 'active' }}"><a href="{{ route('channel.show', $channel->id) }}">全部<span class="badge"></span></a></li>
+                    @foreach($tags as $tag)
+                    <li role="presentation" id="tag-{{ $tag->id }}" class="{{ request('withTag')==$tag->id ? 'active':'' }}">
+                        <a href="{{ route('channel.show', request()->only('showbianyuan','orderby','withTag') ) }}" >
+                            {{ $tag->tag_name }}<span class="badge">{{ $tag->book_count }}</span>
                         </a>
                     </li>
                     @endforeach
-                    @if($channel->channel_state==1)
-                    @foreach($sexual_orientation_info as $key=>$value)
-                    @if(!$key==0)
-                    <li role="presentation" id="sexual_orientation-{{ $key }}" class="{{ request('sexual_orientation')=== $key ? 'active':'' }}">
-                        <a href="{{ route('channel.show',array_merge(['channel'=>$channel->id, 'sexual_orientation' => $key ],request()->only('showbianyuan','orderby'))) }}" >
-                            {{ $value }}<span class="badge">{{ array_key_exists($key, $s_count)? $s_count[$key]:'0' }}</span>
-                        </a>
-                    </li>
-                    @endif
-                    @endforeach
-                    @endif
                 </ul>
             </div>
+
             <!-- 置顶 -->
             <div class="panel-body">
                 @include('threads._simple_threads')

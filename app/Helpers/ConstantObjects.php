@@ -43,6 +43,20 @@ class ConstantObjects
         });
     }
 
+    public static function organizeBookTags()//获得书籍必备的tag列表
+    {
+        $book_length_tags = self::noTongrenTags()->where('tag_type','=','篇幅');
+        $book_status_tags = self::noTongrenTags()->where('tag_type','=','进度');
+        $sexual_orientation_tags = self::noTongrenTags()->where('tag_type','=','性向');
+        $editor_tags = self::noTongrenTags()->where('tag_type','=','编推');
+        return [
+            'book_length_tags' => $book_length_tags,
+            'book_status_tags' => $book_status_tags,
+            'sexual_orientation_tags' => $sexual_orientation_tags,
+            'editor_tags' => $editor_tags,
+        ];
+    }
+
     public static function noTongrenTags()//获得站上非同人的所有的tags
     {
         return Cache::remember('noTongrenTags', 10, function (){
@@ -62,6 +76,23 @@ class ConstantObjects
         return Cache::remember('tagid-'.$tagid, 20, function() use($tagid) {
             return self::alltags()->keyBy('id')->get($tagid);
         });
+    }
+
+    public static function decodeSelectedTags($tags='')
+    {
+        $located_tags = [];
+        if($tags){
+            $tag_ids = json_decode($tags);
+            foreach($tag_ids as $id){
+                if($id){
+                    $tag = self::find_tag_by_id($id);
+                    if($tag){
+                        array_push($located_tags, $tag);
+                    }
+                }
+            }
+        }
+        return $located_tags;
     }
 
     public static function titles()//获得站上所有的titles
@@ -84,13 +115,6 @@ class ConstantObjects
             return DB::table('firewall')->where('is_valid',true)->pluck('ip_address')->toArray();
         });
 
-    }
-
-    public static function role_users()//目前系统所保存的所有现在在使用中的特殊的用户身份列表，如是否admin，editor，no-logging，no-posting, channel_admin, tag_admin
-    {
-        return Cache::remember('role_users', config('constants.cache_time'), function () {
-            return DB::table('role_user')->where('is_valid', true)->select(['user_id','role', 'options'])->get();
-        });
     }
 
 }

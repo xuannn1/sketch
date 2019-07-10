@@ -4,23 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreBook;
-use App\Sosadfun\Traits\BookTraits;
-use App\Sosadfun\Traits\RecordViewHistoryTraits;
-use Carbon\Carbon;
-use App\Models\Post;
-use App\Models\Book;
-use App\Models\Tag;
-use App\Helpers\Helper;
+use App\Models\Thread;
+use App\Helpers\ConstantObjects;
+
 use Auth;
 
 class BooksController extends Controller
 {
-    use BookTraits;
-    use RecordViewHistoryTraits;
 
     public function __construct()
     {
@@ -60,75 +53,39 @@ class BooksController extends Controller
         }
     }
 
-    public function show(Book $book, Request $request)
-    {
-        $thread = $book->thread;
-        if($thread->id>0){
-            if(Auth::check()){
-                $view_history=$this->recordViewHistory(request()->ip(),Auth::id(),$thread->id,0);
-                if(Auth::id()!=$thread->user_id){
-                    $thread->increment('viewed');
-                }
-            }
-            $book->load('chapters.mainpost_info','tongren');
-            $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
-            $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
-            $thread->load(['creator', 'tags', 'mainpost']);
-            $posts = Post::allPosts($thread->id,$thread->post_id)
-            ->noMaintext()
-            ->userOnly(request('useronly'))
-            ->latest()
-            ->with('owner','reply_to_post','comments.owner')
-            ->paginate(config('constants.items_per_page'));
-            if($request->page>1){
-                $xianyus = [];
-            }else{
-                $xianyus = Helper::xianyus($thread->id);
-            }
-            return view('books.show', compact('book','thread', 'posts', 'channel','label', 'xianyus'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
-        }else{
-            return redirect()->route('error', ['error_code' => '404']);
-        }
-
+    public function show($id, Request $request)
+    {   $book = DB::table('books')->where('id','=',$id)->first();
+        redirect()->route('thread.show_profile', $book->thread_id);
     }
 
 
 
     public function index(Request $request)
     {
-        $logged = Auth::check()? true:false;
-        $page = is_numeric($request->page)? $request->page:1;
-        $bookqueryid = 'booksQuery'
+        $tags = ConstantObjects::organizeBookTags();
+
+        $queryid = 'bookQ'
         .url('/')
-        .($logged? '-Loggedd':'-notLogged')//logged or not
-        .($request->showbianyuan? '-ShowBianyuan':'')
-        .($request->label? '-Label'.$request->label:'')
-        .($request->channel? '-Channel'.$request->channel:'')
-        .($request->book_length? '-Booklength'.$request->book_length:'')
-        .($request->book_status? '-Bookstatus'.$request->book_status:'')
-        .($request->sexual_orientation? '-SexualOrientation'.$request->sexual_orientation:'')
-        .($request->book_tag? '-Tag'.$request->book_tag:'-noTag')//book-tag
-        .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
+        .'-inChannel'.$request->inChannel
+        .'-withBianyuan'.$request->withBianyuan
+        .'-withTag'.$request->withTag
+        .'-excludeTag'.$request->excludeTag
+        .'-ordered'.$request->ordered
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $books = Cache::remember($bookqueryid, 5, function () use($request, $page, $logged) {
-            $query = $this->join_book_tables();
-            if((!$logged)||(!$request->showbianyuan)){$query = $query->where('bianyuan','=',0);}
-            if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
-            if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
-            if($request->book_length){$query = $query->where('books.book_length','=',$request->book_length);}
-            if($request->book_status){$query = $query->where('books.book_status','=',$request->book_status);}
-            if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
-            if($request->book_tag){
-                $query = $this->filter_tag($query, $request->book_tag);
-            }
-            $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-            $query = $this->return_book_fields($query);
-            $books = $this->bookOrderBy($query, $request->orderby)
-            ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page','label','channel','book_length','book_status','sexual_orientation','orderby','showbianyuan','book_tag'));
-            return $books;
+        $threads = Cache::remember($queryid, 5, function () use($request) {
+            return Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->inChannel($request->inChannel)
+            ->isPublic()
+            ->withType('book')
+            ->withBianyuan($request->withBianyuan)
+            ->withTag($request->withTag)
+            ->excludeTag($request->excludeTag)
+            ->ordered($request->ordered)
+            ->paginate(config('preference.threads_per_page'))
+            ->appends($request->only('inChannel','withBianyuan','withTag','excludeTag','ordered'));
         });
-        return view('books.index', compact('books'))->with('show_as_collections', false)->with('show_bianyuan_tab', true);
+
+        return view('books.index', compact('threads','tags'));
     }
 
     public function selector($bookquery_original, Request $request)

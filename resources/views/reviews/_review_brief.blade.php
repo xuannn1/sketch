@@ -7,7 +7,7 @@
               <span class="bigger-20">
                   <strong>
                       <span>
-                          <a href="{{ route('thread.show', $post->review->thread_id) }}">
+                          <a href="{{ route('thread.show_profile', $post->review->thread_id) }}">
                               《{{ $post->review->reviewee->title }}》
                           </a>
                       </span>

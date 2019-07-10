@@ -150,6 +150,12 @@ class User extends Authenticatable
         return $this->role==='admin'||$this->role==='editor'||$this->role==='senior';
     }
 
+    public function canSeeChannel($id)
+    {
+        $channel = collect(config('channel'))->keyby('id')->get($id);
+        return $channel->is_public||$this->role==='admin'||($channel->type==='homework'&&$this->role==='editor')||($channel->type==='homework'&&$this->role==='senior');
+    }
+
     public function checklevelup()
     {
         $level_ups = config('level.level_up');

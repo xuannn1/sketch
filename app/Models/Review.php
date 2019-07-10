@@ -12,12 +12,12 @@ class Review extends Model
 
     public function post()
     {
-        return $this->belongsTo(Post::class, 'post_id')->withDefault();
+        return $this->belongsTo(Post::class, 'post_id');
     }
 
     public function reviewee()//被评论的文章
     {
-        return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
+        return $this->belongsTo(Thread::class, 'thread_id');
     }
 
 }

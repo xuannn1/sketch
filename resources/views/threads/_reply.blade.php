@@ -1,3 +1,4 @@
+<!-- 回复输入框 -->
 @if(!Auth::user()->isAdmin()&&(($thread->locked)||($thread->no_reply&&$thread->user_id<>Auth::id())))
     <div class="text-center">
         本帖锁定或由于作者设置，不能跟帖
@@ -13,7 +14,7 @@
             {{ csrf_field() }}
             <div class="hidden" id="reply_to_post">
                 <span class="" id="reply_to_post_info"></span>
-                <button type="button" class="label"><span class="glyphicon glyphicon glyphicon-remove" onclick="cancelreplytopost()"></span></button>
+                <i class="fa fa-times" aria-hidden="true" type="button" onclick="cancelreplytopost()"></i>
             </div>
             <input type="hidden" name="reply_to_post_id" id="reply_to_post_id" class="form-control" value="0"></input>
             <div class="form-group">
