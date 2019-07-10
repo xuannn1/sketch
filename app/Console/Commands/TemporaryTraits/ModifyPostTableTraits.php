@@ -38,11 +38,15 @@ trait ModifyPostTableTraits{
                 $table->renameColumn('trim_body', 'brief');
                 $table->renameColumn('lastresponded_at', 'responded_at');
                 $table->renameColumn('up_voted', 'upvote_count');
+                $table->renameColumn('down_voted', 'downvote_count');
                 $table->renameColumn('fold_state', 'is_folded');
                 $table->renameColumn('reply_to_post_id', 'reply_to_id');
                 $table->renameColumn('user_ip', 'creation_ip');
                 $table->index('reply_to_id');//增加一个index
                 $table->index('type');//增加一个index
+                $table->index('upvote_count');//增加一个index
+                $table->index('reply_count');//增加一个index
+                $table->index('created_at');
                 echo "renamed post columns.\n";
             });
         }

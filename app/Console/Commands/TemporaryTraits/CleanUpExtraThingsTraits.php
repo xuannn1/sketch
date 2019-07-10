@@ -35,6 +35,8 @@ trait CleanUpExtraThingsTraits{
         Schema::dropIfExists('vote_posts');
         Schema::dropIfExists('xianyus');
         Schema::dropIfExists('session_statuses');
+        Schema::dropIfExists('labels');
+        Schema::dropIfExists('channels');
 
         echo "dropped extra tables\n";
     }
@@ -52,6 +54,7 @@ trait CleanUpExtraThingsTraits{
     {
         if (Schema::hasColumn('chapters', 'book_id')){
             Schema::table('chapters', function($table){
+                $table->index('post_id');
                 $table->dropColumn(['book_id','title','deleted_at','created_at','updated_at','characters','viewed','responded','edited_at']);
                 echo "simplified chapters table.\n";
             });
@@ -61,6 +64,7 @@ trait CleanUpExtraThingsTraits{
     {
         if (Schema::hasColumn('threads', 'label_id')){
             Schema::table('threads', function($table){
+                $table->index('reply_count');
                 $table->dropColumn(['book_id','label_id','updated_at','homework_id','post_id','show_homework_profile','top','jinghua','recommended', 'old_list_id']);
                 echo "simplified threads table.\n";
             });
@@ -71,7 +75,7 @@ trait CleanUpExtraThingsTraits{
     {
         if (Schema::hasColumn('posts', 'long_comment')){
             Schema::table('posts', function($table){
-                $table->dropColumn(['updated_at','chapter_id','long_comment','long_comment_id','popular','recommended','as_longcomment','maintext']);
+                $table->dropColumn(['updated_at','chapter_id','long_comment','long_comment_id','popular','recommended','as_longcomment','maintext','collection_thread_id','postcomment_id']);
                 echo "simplified posts table.\n";
             });
         }

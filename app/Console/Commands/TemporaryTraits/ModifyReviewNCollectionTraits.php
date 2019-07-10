@@ -254,14 +254,29 @@ trait ModifyReviewNCollectionTraits{
         \App\Models\Thread::with('chapterposts.chapter')->where('channel_id','<',3)->chunk(10, function ($threads) {
             foreach($threads as $thread){
                 $posts = $thread->chapterposts;
-                $posts->sortBy('id');
-                $previous = null;
-                foreach($posts as $post){
-                    if($previous){
-                        $post->chapter->update(['previous_id' => $previous->id]);
-                        $previous->chapter->update(['next_id' => $post->id]);
+                if($posts){
+                    $posts->sortBy('id');
+                    $previous = null;
+                    $first = null;
+                    foreach($posts as $post){
+                        if(!$first){
+                            $first = $post;
+                        }
+                        if($previous){
+                            if($post->chapter->previous_id<>$previous->id){
+                                $post->chapter->update(['previous_id' => $previous->id]);
+                            }
+                            if($previous->chapter->next_id<>$post->id){
+                                $previous->chapter->update(['next_id' => $post->id]);
+                            }
+                        }
+                        $previous = $post;
                     }
-                    $previous = $post;
+                    if($first){
+                        if($thread->first_component_id<>$first->id){
+                            $thread->update(['first_component_id' => $first->id]);
+                        }
+                    }
                 }
             }
             echo $thread->id."|";

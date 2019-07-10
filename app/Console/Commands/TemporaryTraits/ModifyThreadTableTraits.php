@@ -335,6 +335,7 @@ trait ModifyThreadTableTraits{
                 $table->boolean('indentation')->default(true);
                 $table->unsignedInteger('weighted_jifen')->default(0);
                 $table->unsignedInteger('total_char')->default(0);
+                $table->index('created_at');
                 echo "added new columns to threads table.\n";
             });
         }
