@@ -24,7 +24,7 @@
                     @if($post->review->reviewee->locked)
                     <span class="glyphicon glyphicon-lock"></span>
                     @endif
-                    @if($post->review->reviewee->noreply)
+                    @if($post->review->reviewee->no_reply)
                     <span class="glyphicon glyphicon-warning-sign"></span>
                     @endif
                 </small>

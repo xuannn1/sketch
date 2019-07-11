@@ -11,7 +11,10 @@ class ThreadObjects
     {
         return Cache::remember('threadProfile.'.$id, 15, function () use($id){
             $thread = self::thread($id);
-            $thread->load('tags', 'author.title', 'last_post', 'last_component','editor_recommends.post.author');
+            $thread->load('tags', 'author.title', 'last_post', 'last_component', 'editor_recommends.post.author');
+            if($thread->channel()->type==="list"&&$thread->last_component_id>0&&$thread->last_component){
+                $thread->last_component->load('review.reviewee');
+            }
             $thread->setAttribute('temp_rewards', $thread->latest_rewards());
             return $thread;
         });
@@ -35,7 +38,7 @@ class ThreadObjects
         });
     }
 
-    public static function post($id)
+    public static function postProfile($id)
     {
         return Cache::remember('post.'.$id, 15, function () use($id) {
             $post = \App\Models\Post::find($id);
@@ -60,16 +63,6 @@ class ThreadObjects
 
             return $post;
         });
-    }
-
-    public static function threadPostsOldest($id, $page=1)
-    {
-        if($page<=3){//只缓存前三页的结果
-            return Cache::remember('threadPosts.'.$id.'P'.$page, 10, function () use($id, $page){
-                return self::findPosts($id, $page);
-            });
-        }
-        return self::findPosts($id, $page);
     }
 
     public static function findPosts($id, $page=1, $orderBy='')
@@ -129,6 +122,15 @@ class ThreadObjects
             ->where('posts.thread_id',$id)
             ->where('posts.type', '=', 'chapter')
             ->select('posts.id', 'posts.user_id', 'posts.thread_id', 'posts.title', 'posts.brief', 'posts.created_at', 'posts.edited_at','posts.bianyuan', 'posts.char_count', 'posts.view_count', 'posts.reply_count', 'posts.upvote_count', 'chapters.order_by', 'chapters.volumn_id')
+            ->get();
+        });
+    }
+    public static function threadReviewIndex($id)
+    {
+        return Cache::remember('threadReviewIndex.'.$id, 15, function () use($id) {
+            return \App\Models\Post::with('review.reviewee.author')
+            ->where('thread_id','=',$id)
+            ->withType('review')
             ->get();
         });
     }

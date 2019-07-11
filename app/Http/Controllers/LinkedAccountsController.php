@@ -18,16 +18,13 @@ class LinkedAccountsController extends Controller
 
     public function create()
     {
-        if(Auth::user()->linkedaccounts()->count() <= Auth::user()->user_level){
-            return view('users.linkaccounts');
-        }else{
-            return redirect()->back()->with("warning","您的等级限制了您能够关联的账户上限，请升级后再关联更多账户。");
-        }
+        $accounts = Auth::user()->linkedaccounts;
+        return view('users.linkaccounts', compact('accounts'));
     }
 
     public function index()
     {
-        $accounts = Auth::user()->linkedaccounts();
+        $accounts = Auth::user()->linkedaccounts;
         return view('users.linkedaccounts', compact('accounts'));
     }
 

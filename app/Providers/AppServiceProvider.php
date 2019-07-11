@@ -6,10 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserInfo;
-use App\Models\UserIntro;
 use App\Observers\UserObserver;
 use App\Observers\UserInfoObserver;
-use App\Observers\UserIntroObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Blade;
@@ -27,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('zh');
         User::observe(UserObserver::class);
         UserInfo::observe(UserInfoObserver::class);
-        UserIntro::observe(UserIntroObserver::class);
+        
         Relation::morphMap([
             'post' => 'App\Models\Post',
             'quote' => 'App\Models\Quote',

@@ -8,6 +8,7 @@ use App\Models\Chapter;
 use App\Models\Thread;
 use App\Models\Post;
 use Carbon\Carbon;
+use DB;
 
 class StorePost extends FormRequest
 {
@@ -30,55 +31,60 @@ class StorePost extends FormRequest
     {
         return [
             'body' => 'required|string|min:10|max:20000',
-            'reply_to_post_id' => 'numeric',
+            'reply_to_id' => 'numeric',
             'majia' => 'string|max:10',
+            'title' => 'string|nullable|max:25',
         ];
     }
 
     public function generatePost(Thread $thread){
+        $user = auth()->user();
         $data = $this->only('body');
         $data['body'] = Helper::trimSpaces($data['body']);
-        $data['trim_body']=Helper::trimtext($data['body'], 50);
-        $data['user_ip'] = request()->ip();
-        if ($this->anonymous){
+        if ($this->isDuplicatePost($data)){
+            abort(400,'请求已登记，请勿重复提交相同数据');
+        }
+        $data['brief']=Helper::trimtext($data['body'], 45);
+        $data['creation_ip'] = request()->ip();
+        $data['char_count'] = iconv_strlen($data['body'], 'utf-8');
+        if ($this->anonymous&&$thread->channel()->allow_anonymous){
             $data['anonymous']=1;
             $data['majia']=$this->majia;
-            auth()->user()->update(['majia'=>$data['majia']]);
         }else{
             $data['anonymous']=0;
         }
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;
-        $data['as_longcomment']=$this->as_longcomment ? true:false;
-
-        $data['chapter_id'] = (int)$this->default_chapter_id;
-        if ($data['chapter_id']!=0){
-            $chapter = Chapter::find($data['chapter_id']);
-            if ((!$chapter)||($thread->book_id == 0)||($chapter->book_id != $thread->book->id)){
-                abort(403,'数据冲突');
+        if($this->reply_to_id>0){
+            $reply = Post::find($this->reply_to_id);
+            if($reply){
+                $data['reply_to_id'] = $reply->id;
+                $data['reply_to_brief'] = $reply->brief;
+                if($reply->type==='post'||$reply->type==='comment'){
+                    $data['in_component_id'] = $reply->in_component_id;
+                    $data['type'] = 'comment';
+                }else{
+                    $data['in_component_id'] = $reply->id;
+                    $data['type'] = 'post';
+                }
             }
         }
-
-        $data['reply_to_post_id'] = (int)$this->reply_to_post_id;
-        if ($data['reply_to_post_id']!= 0){
-            $reply = Post::find($data['reply_to_post_id']);
-            if ((!$reply)||($reply->thread_id != $thread->id)){
-                abort(403,'数据冲突');
-            }
-            if($reply->maintext){//假如回复的是某章节，
-                $data['reply_to_post_id'] = 0;
-            }
-            $data['chapter_id'] = $reply->chapter_id;
-        }
-        $data['user_id']=auth()->id();
+        $data['user_id']=$user->id;
         $data['thread_id']= $thread->id;
-
-        if (!$this->isDuplicatePost($data)){
+        $post = DB::transaction(function () use($user, $data){
             $post = Post::create($data);
-            auth()->user()->update(['indentation'=>$data['indentation']]);
-        }else{
-            abort(400,'请求已登记，请勿重复提交相同数据');
-        }
+            $user->info->update(['indentation'=>$data['indentation']]);
+            if($data['anonymous']){
+                $user->update([
+                    'majia'=>$data['majia'],
+                    'indentation' => $data['indentation']
+                ]);
+            }
+            return $post;
+        });
+
+
+
         return $post;
     }
 
@@ -92,14 +98,14 @@ class StorePost extends FormRequest
 
     public function updatePost(Post $post)
     {
-        $data = $this->only('body');
+        $data = $this->only('body','title');
         $data['body'] = Helper::trimSpaces($data['body']);
-        $data['trim_body']=Helper::trimtext($data['body'], 50);
-        $data['anonymous']=$this->anonymous ? 1:0;
+        $data['char_count'] = iconv_strlen($data['body'], 'utf-8');
+        $data['brief']=Helper::trimtext($data['body'], 45);
+        $data['anonymous']=$this->anonymous&&$post->thread->channel()->allow_anonymous ? 1:0;
         $data['markdown']=$this->markdown ? true:false;
         $data['indentation']=$this->indentation ? true:false;
-        $data['as_longcomment']=$this->as_longcomment ? true:false;
-        auth()->user()->update(['indentation'=>$data['indentation']]);
+        auth()->user()->info->update(['indentation'=>$data['indentation']]);
         $data['edited_at']=Carbon::now();
         $post->update($data);
         return $post;

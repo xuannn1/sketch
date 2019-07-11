@@ -6,11 +6,18 @@
         <div class="panel-group">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1>管理记录列表</h1>
-                    <ul class="nav nav-tabs">
-                        <li role="presentation" class="{{$record_page_set=='total'? 'active':''}}"><a href="{{ route('administrationrecords') }}">全站管理记录</a></li>
-                        <li role="presentation" class="pull-right {{$record_page_set=='self'? 'active':''}}"><a href="{{ route('administrationrecords.self') }}">和我有关的管理记录</a></li>
-                    </ul>
+                    @if($user_name)
+                    <h1>和{{ $user_name }}有关的管理记录列表</h1>
+                    <a href="{{route('administrationrecords')}}" class="btn btn-lg btn-danger sosad-button-control">看全站管理记录</a>
+                    @else
+                    <h1>全站管理记录列表</h1>
+                    @if(Auth::check())
+                    <a href="{{route('administrationrecords', ['user_id'=>Auth::id()])}}" class="btn btn-lg btn-danger sosad-button-control">看和我有关的管理记录</a>
+                    @else
+                    <a href="{{route('login')}}">登陆看和我有关的管理记录</a>
+                    @endif
+                    @endif
+
                 </div>
                 <div class="panel-body">
                     @foreach($records as $record)

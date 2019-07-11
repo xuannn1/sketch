@@ -21,7 +21,7 @@
                     <h4>修改邮箱</h4>
                     <h6>（您本月已修改{{ $previous_history_counts }}次邮箱，最多只能修改{{ config('constants.monthly_email_resets') }}次）</h6>
                 @include('shared.errors')
-                <form method="POST" action="{{ route('users.update_email') }}">
+                <form method="POST" action="{{ route('user.update_email') }}">
                         {{ csrf_field() }}
                     <div class="form-group">
                         <label for="old-password">旧密码 (必填，用于身份验证)：</label>

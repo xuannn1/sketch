@@ -27,9 +27,9 @@
                             <span class="glyphicon glyphicon-bell {{Auth::user()->unread_reminders>0? :'hidden'}}"></span>{{ Auth::user()->name }} <b class="caret"></b></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ route('user.show', Auth::user()->id) }}">个人主页</a></li>
                             <li><a href="{{ route('user.center') }}">个人中心</a></li>
                             <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ Auth::user()->unread_reminders>0 ? Auth::user()->unread_reminders:''}}</span></a></li>
+                            <li><a href="{{ route('linkedaccounts.index') }}">切换账户</a></li>
                             <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">退出</a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

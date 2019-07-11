@@ -1,6 +1,6 @@
-<span class = "pull-right">
-    <a href="#" data-toggle="modal" data-target="#TriggerAdminThread{{ $thread->id }}" class="btn btn-sm btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
-</span>
+<div>
+    <a href="#" data-toggle="modal" data-target="#TriggerAdminThread{{ $thread->id }}" class="btn btn-lg btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
+</div>
 
 <div class="modal fade" id="TriggerAdminThread{{ $thread->id }}" role="dialog">
     <div class="modal-dialog">
@@ -58,7 +58,7 @@
                     <label for="reason"></label>
                     <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)，以及处理参数（如禁言时间，精华时间）。"></textarea>
                 </div>
-                <a href="{{ route('admin.advancedthreadform', $thread) }}">高级管理</a>
+                
                 <div class="">
                     <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>
                 </div>

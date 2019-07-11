@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Status;
 use App\Models\User;
 use Auth;
+use CacheUser;
 use App\Models\Follower;
 
 class FollowersController extends Controller
@@ -22,32 +23,49 @@ class FollowersController extends Controller
 
     public function store($id)
     {
-        $user = User::findOrFail($id);
+        $user = CacheUser::user($id);
+        $info = CacheUser::info($id);
 
-        if (Auth::user()->id === $user->id) {
-            return redirect('/');
+        $Auser = CacheUser::Auser();
+        $Ainfo = CacheUser::Ainfo();
+
+        if ($Auser->id === $user->id) {
+            return 'notwork';
         }
 
-        if (!Auth::user()->isFollowing($id)) {
-            Auth::user()->follow($id);
+        if (!$Auser->isFollowing($id)) {
+            $Auser->follow($id);
+
+            $info->follower_count+=1;
+            $info->save();
+            $Ainfo->following_count+=1;
+            $Ainfo->save();
         }
 
-        return redirect()->route('user.show', $id);
+        return 'successfully followed user';
     }
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
+        $user = CacheUser::user($id);
+        $info = CacheUser::info($id);
 
-        if (Auth::user()->id === $user->id) {
-            return redirect('/');
+        $Auser = CacheUser::Auser();
+        $Ainfo = CacheUser::Ainfo();
+
+        if ($Auser->id === $user->id) {
+            return "notwork";
         }
 
-        if (Auth::user()->isFollowing($id)) {
-            Auth::user()->unfollow($id);
+        if ($Auser->isFollowing($id)) {
+            $Auser->unfollow($id);
+            $info->follower_count-=1;
+            $info->save();
+            $Ainfo->following_count-=1;
+            $Aiinfo->save();
         }
 
-        return redirect()->route('user.show', $id);
+        return 'successfully unfollowed user';
     }
     public function togglekeepupdate(Request $request)
     {

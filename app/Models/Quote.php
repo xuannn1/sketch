@@ -18,7 +18,7 @@ class Quote extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id','level');
     }
 
     public function reviewer()

@@ -22,16 +22,16 @@ class PostsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('show');
     }
 
     public function store(StorePost $form, Thread $thread)
     {
-        if ((Auth::user()->admin)||((!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id())))){
+        if ((Auth::user()->isAdmin())||((!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id())))){
             $post = $form->generatePost($thread);
             $post->checklongcomment();
             event(new NewPost($post));
-            if(($thread->book_id>0)&&($post->chapter_id>0)&&($post->chapter->responded<=2)){
+            if($post->parent&&$post->parent->type==="chapter"&&$post->parent->reply_count){
                 $post->user->reward("first_post");
                 return back()->with('success', '您得到了新章节率先回帖的特殊奖励');
             }else{
@@ -45,8 +45,8 @@ class PostsController extends Controller
     public function edit(Post $post)
     {
         $thread=$post->thread;
-        $channel=$thread->channel;
-        if ((Auth::user()->admin)||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($channel->channel_state!=2))){
+        $channel=$thread->channel();
+        if((Auth::user()->isAdmin())||((Auth::id() === $post->user_id)&&(!$thread->locked)&&($thread->channel()->allow_edit))){
             return view('posts.post_edit', compact('post'));
         }else{
             return redirect()->route('error', ['error_code' => '403']);
@@ -56,10 +56,8 @@ class PostsController extends Controller
     public function update(StorePost $form, Post $post)
     {
         $thread=$post->thread;
-        $channel=$thread->channel;
-        if ((Auth::user()->admin)||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($channel->channel_state!=2))){
+        if ((Auth::user()->isAdmin())||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($thread->channel()->allow_edit))){
             $form->updatePost($post);
-            $post->checklongcomment();
             return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
         }else{
             return redirect()->route('error', ['error_code' => '403']);
@@ -67,7 +65,7 @@ class PostsController extends Controller
     }
     public function show($id)
     {
-        $post = ThreadObjects::post($id);
+        $post = ThreadObjects::postProfile($id);
         if(!$post){
             abort(404);
         }

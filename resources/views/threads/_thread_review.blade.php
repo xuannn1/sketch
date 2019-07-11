@@ -2,10 +2,12 @@
     <div class="panel-heading">
         <div class="row">
             <div class="col-xs-12 h5">
+                @if($review->editor_recommend)
                 <span class="recommend-label">
                     <span class="glyphicon glyphicon-grain recommend-icon"></span>
                     <span class="recommend-text">推</span>
                 </span>
+                @endif
                 <span>
                     @if($review->post->author)
                     @if($review->post->anonymous)

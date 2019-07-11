@@ -5,7 +5,7 @@
                 <span>
                     <!-- 显示作者名称 -->
                     @if($reply->author)
-                        @if ($reply->maintext)
+                        @if ($reply->type==='chapter')
                             <span>作者</span>
                         @else
                             @if ($reply->anonymous)

@@ -5,17 +5,32 @@
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
-            <div class="panel-heading text-center">
-                @include('users._user')
+            <div class="panel-body text-center">
+                @include('users._user_stat')
+            </div>
+            <div class="">
+                <div class="row text-center">
+                    <div class="col-xs-4">
+                        <a href="{{ route('user.show', $user->id) }}" class="btn btn-info btn-lg sosad-button-control">查看个人主页</a>
+                    </div>
+                    <div class="col-xs-4">
+                        <a href="{{ route('user.edit_introduction') }}" class="btn btn-info btn-lg sosad-button-control">修改个人介绍</a>
+                    </div>
+                    <div class="col-xs-4">
+                        <a href="" class="btn btn-info btn-lg sosad-button-control">佩戴头衔</a>
+                    </div>
+                </div>
+                <br>
             </div>
         </div>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="h3">
-                    <ul><a href="#">我的发布<span class="grayout h4">&nbsp;&nbsp;&nbsp;(动态、讨论、评论、赞赏、题头)</span></a></ul>
-                    <ul><a href="#">我的文章<span class="grayout h4">&nbsp;&nbsp;&nbsp;(原创小说、同人小说、随笔)</span></a></ul>
-                    <ul><a href="#">我的清单<span class="grayout h4">&nbsp;&nbsp;&nbsp;(书单、电影单)</span></a></ul>
-                    <ul><a href="#">我的问答<span class="grayout h4">&nbsp;&nbsp;&nbsp;(我的提问、我的回答)</span></a></ul>
+                    <ul><a href="#">我的书籍</a></ul>
+                    <ul><a href="#">我的讨论帖</a></ul>
+                    <ul><a href="#">我的清单</a></ul>
+                    <ul><a href="#">我的问题箱</a></ul>
 
                 </div>
             </div>
@@ -24,9 +39,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="h3">
+                    <ul><a href="#">我的题头</a></ul>
                     <ul><a href="#">我的投票</a></ul>
                     <ul><a href="#">我的打赏</a></ul>
-                    <ul><a href="{{ route('administrationrecords.self') }}">管理记录</a></ul>
+                    <ul><a href="{{ route('administrationrecords', ['user_id'=> $user->id]) }}">我的管理记录</a></ul>
                     <ul><a href="{{ route('quiz.taketest') }}">我要答题</a></ul>
                 </div>
             </div>
@@ -36,8 +52,8 @@
             <div class="panel-heading">
                 <div class="h3">
                     <ul><a href="#">隐私设置</a></ul>
-                    <ul><a href="{{ route('users.edit') }}">编辑信息</a></ul>
-                    <ul><a href="{{ route('linkedaccounts.index') }}">切换账户</a></ul>
+                    <ul><a href="{{ route('users.edit') }}">编辑资料</a></ul>
+                    <ul><a href="{{ route('linkedaccounts.index') }}">管理马甲账户</a></ul>
                 </div>
             </div>
         </div>

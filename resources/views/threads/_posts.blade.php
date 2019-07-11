@@ -12,16 +12,24 @@
                 <span>
                     <!-- 显示作者名称 -->
                     @if($post->author)
-                        @if ($post->maintext)
+                        @if ($post->type==="chapter")
+                            <span>作者</span>
+                        @elseif ($post->type==="review"||$post->type==="answer")
                             <span>作者</span>
                         @else
                             @if ($post->anonymous)
-                            <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
+                                <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
                                 @if((Auth::check()&&(Auth::user()->isAdmin())))
                                 <span class="admin-anonymous"><a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a></span>
                                 @endif
                             @else
-                                <a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a>
+                                <a href="{{ route('user.show', $post->user_id) }}">
+                                    <span>lv.{{ $post->author->level }}</span>
+                                    @if($post->author->title&&$post->author->title->name)
+                                    <span>{{ $post->author->title->name }}</span>
+                                    @endif
+                                    {{ $post->author->name }}
+                                </a>
                             @endif
                         @endif
                     @endif
@@ -44,7 +52,7 @@
                     @endif
 
                 </span>
-                <span class="pull-right">
+                <span class="pull-right smaller-20">
                     <a href="{{ route('thread.showpost', $post) }}">No.{{ $post->id }}</a>
                 </span>
             </div>
@@ -59,13 +67,13 @@
             <!-- 回复他人帖子的相关信息 -->
             @if($post->reply_to_id!=0)
                 <div class="post-reply grayout">
-                    回复&nbsp;<a href="{{ route('thread.showpost', $post->reply_to_id) }}">{{ $post->reply_to_brief }}</a>
+                    回复&nbsp;<a href="{{ route('thread.showpost', $post->reply_to_id) }}">{{ StringProcess::simpletrim($post->reply_to_brief, 30) }}</a>
                 </div>
             @endif
 
             <!-- 展示推荐书籍内情 -->
             @if($post->type==='review'&&$post->review)
-                <div class="post-reply grayout">
+                <div class="post-reply grayout h4">
                     @if($post->review->reviewee)
                     <a href="{{ route('thread.show_profile', $post->review->thread_id) }}">《{{ $post->review->reviewee->title }}》</a>
                     @endif
@@ -105,8 +113,9 @@
                 @else
                 {!! Helper::wrapParagraphs($post->body) !!}
                 @endif
-                <br>
+
                 @if($post->type==="chapter"&&$post->chapter&&$post->chapter->annotation)
+                <br>
                 <div class="text-left grayout">
                     {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
                 </div>
@@ -116,19 +125,19 @@
     </div>
 
     @if(Auth::check())
-    <div class="text-right post-vote">
+    <div class="text-right post-vote h5">
         @if($post->type==='chapter')
         <a href="#" class="pull-left h5"><em>前往阅读模式</em></a>
         @endif
         @if(Auth::user()->level >= 1)
-            <span class="voteposts"><button class="btn btn-default btn-xs" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
+            <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
         @endif
         @if((!$thread->locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$post->is_folded)&&(Auth::user()->level >= 2))
-            <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
+            <span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
         @endif
 
         @if(($post->user_id===Auth::id())&&(!$thread->locked)&&(!$post->is_folded)&&($thread->channel()->allow_edit))
-            <span><a class="btn btn-danger sosad-button btn-xs" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
+            <span><a class="btn btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
         @endif
 
     </div>
@@ -136,8 +145,8 @@
 
     @if ($post->last_reply)
     <div class="panel-footer">
-        <div class="smaller-10" id="postcomment{{$post->last_reply_id}}">
-            <a href="{{ route('thread.showpost', $post->last_reply_id) }}" class="grayout">最新回复：{{ $post->last_reply->brief }}</a>
+        <div class="smaller-20" id="postcomment{{$post->last_reply_id}}">
+            <a href="{{ route('thread.showpost', $post->last_reply_id) }}" class="grayout">最新回复：{{ StringProcess::simpletrim($post->last_reply->brief,20) }}</a>
             <a href="{{ route('thread.show', ['thread' => $post->thread_id, 'withReplyTo' => $post->id]) }}" class="pull-right">>>全部回帖</a>
         </div>
     </div>

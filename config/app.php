@@ -231,6 +231,7 @@ return [
 
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
         'Helper' => App\Helpers\Helper::class,
+        'Carbon' => \Carbon\Carbon::class,
         'ConstantObjects' => App\Helpers\ConstantObjects::class,
         'StringProcess' => App\Helpers\StringProcess::class,
         'BBCode' => \Genert\BBCode\Facades\BBCode::class,

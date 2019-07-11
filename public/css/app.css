@@ -11436,12 +11436,12 @@ a {
 #logo {
   float: left;
   margin-right: 10px;
-  font-size: 1.7em;
+  font-size: 2.8em;
   color: #fff;
   text-decoration: none;
-  letter-spacing: -1px;
-  padding-top: 9px;
-  font-weight: bold;
+  letter-spacing: -5px;
+  padding-top: 0;
+  font-weight: 200;
 }
 
 #logo:hover {
@@ -11588,7 +11588,13 @@ h6,
 .h3,
 .h4,
 .h5,
-.h6 {
+.h6,
+.font-1,
+.font-2,
+.font-3,
+.font-4,
+.font-5,
+.font-6 {
   font-family: inherit;
   font-weight: 500;
   line-height: 2.0;
@@ -11600,10 +11606,49 @@ h4,
 h5,
 .h5,
 h6,
-.h6 {
+.h6,
+.font-4,
+.font-5,
+.font-6 {
   margin-top: 5px;
   margin-bottom: 5px;
   line-height: 1.5;
+}
+
+h1,
+.h1,
+.font-1 {
+  font-size: 48px;
+}
+
+h2,
+.h2,
+.font-2 {
+  font-size: 36px;
+}
+
+h3,
+.h3,
+.font-3 {
+  font-size: 30px;
+}
+
+h4,
+.h4,
+.font-4 {
+  font-size: 22px;
+}
+
+h5,
+.h5,
+.font-5 {
+  font-size: 16px;
+}
+
+h6,
+.h6,
+.font-6 {
+  font-size: 14px;
 }
 
 .panel {
@@ -11644,6 +11689,25 @@ hr {
 .navbar-nav > li,
 .navbar-nav {
   float: left !important;
+}
+
+.navbar-nav > li a,
+.navbar-nav a {
+  padding-top: 20px;
+  font-weight: 400;
+  font-size: 1.4em;
+}
+
+.navbar-nav > li .dropdown li,
+.navbar-nav .dropdown li {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 1.2em;
+  letter-spacing: 2px;
+}
+
+.navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
+  padding-top: 20px;
 }
 
 .navbar-nav.navbar-right:last-child {
@@ -12107,5 +12171,17 @@ img {
 
 .recommend-star {
   color: #ffb200;
+}
+
+textarea {
+  font-size: 1em;
+}
+
+.form-control {
+  font-size: 1em;
+}
+
+.md-editor > textarea {
+  font-size: 1em;
 }
 

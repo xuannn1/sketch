@@ -4,7 +4,7 @@
         <div class="col-xs-12 h5">
             <span>
                 <span class="badge newchapter-badge badge-tag">{{ $thread->channel()->channel_name }}</span>
-                <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>
+                <a href="{{ route('thread.show_profile',$thread->id) }} " class="bigger-10">{{ $thread->title }}</a>
                 <small>
                     @if( !$thread->public )
                     <span class="glyphicon glyphicon-eye-close"></span>
@@ -47,10 +47,10 @@
         </div>
         <div class="col-xs-12 h5 brief">
             <span>{{ $thread->brief }}</span>
-            <span class = "pull-right smaller-10"><em><span class="glyphicon glyphicon-pencil"></span>{{ $thread->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $thread->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->reply_count }}</em></span>
+            <span class = "pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $thread->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $thread->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->reply_count }}</em></span>
         </div>
         <div class="col-xs-12 h5 brief">
-            <span class="grayout smaller-10"><a href="#">{{ $thread->last_component? $thread->last_component->title:''}}</a></span>
+            <span class="grayout smaller-10"><a href="#">{{ $thread->last_component? $thread->last_component->title.'：'.StringProcess::simpletrim($thread->last_component->brief, 10):''}}</a></span>
             <span class="pull-right smaller-10">
                 @foreach($thread->tags as $tag)
                 @if($tag->tag_type!='编推')

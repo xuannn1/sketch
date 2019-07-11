@@ -5,7 +5,7 @@
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <!-- 首页／版块／导航 -->
-        <div class="h3">
+        <div class="">
             <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
             &nbsp;/&nbsp;
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
@@ -23,8 +23,10 @@
                         <div>
                             <!-- 显示作者名称 -->
                             @if($post->author)
-                                @if ($post->maintext)
-                                    <span class="h2">作者</span>
+                                @if($post->type==='chapter')
+                                    <span class="h4">作者</span>
+                                @elseif($post->type==='list'||$post->type==='answer')
+                                    <span class="h4">楼主</span>
                                 @else
                                     @if ($post->anonymous)
                                     <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
@@ -32,7 +34,13 @@
                                         <span class="admin-anonymous"><a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a></span>
                                         @endif
                                     @else
-                                        <a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a>
+                                        <a href="{{ route('user.show', $post->user_id) }}">
+                                            <span>lv.{{ $post->author->level }}</span>
+                                            @if($post->author->title&&$post->author->title->name)
+                                            <span>{{ $post->author->title->name }}</span>
+                                            @endif
+                                            {{ $post->author->name }}
+                                        </a>
                                     @endif
                                 @endif
                             @endif
@@ -56,6 +64,9 @@
                     </div>
                 </div>
             </div>
+            @if($post->type==="chapter"&&$post->chapter)
+                @include('posts._previous_next_chapter_tab')
+            @endif
             <div class="panel-body post-body">
                 @if((($post->bianyuan)||($thread->bianyuan))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
                 <div class="text-center">
@@ -112,13 +123,14 @@
                         {!! Helper::wrapParagraphs($post->body) !!}
                         @endif
                         <br>
-                        @if($post->type==="chapter"&&$post->chapter&&$post->chapter->annotation)
-                        <div class="text-left grayout">
-                            {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
-                        </div>
-                        @endif
-                    </div>
 
+                    </div>
+                    @if($post->type==="chapter"&&$post->chapter&&$post->chapter->annotation)
+                    <br>
+                    <div class="text-left grayout">
+                        {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
+                    </div>
+                    @endif
                 @endif
             </div>
 
@@ -134,39 +146,14 @@
                 @if(($post->user_id===Auth::id())&&(!$thread->locked)&&(!$post->is_folded)&&($thread->channel()->allow_edit))
                     <span><a class="btn btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
                 @endif
-
-                @if($post->type==="chapter"&&$post->chapter)
-                <div class="container-fluid">
-                    <br>
-                    <div class="row">
-                        <div class="col-xs-4">
-                            @if(!$post->chapter->previous_id===0)
-                            <a href="#" class = "sosad-button btn btn-success btn-block disabled">这是第一章</a>
-                            @else
-                            <a href="{{ route('post.show', $post->chapter->previous_id) }}" class="btn btn-info btn-block btn-lg sosad-button">上一章</a>
-                            @endif
-                        </div>
-                        <div class="col-xs-4">
-                            <a href="{{ route('thread.chapter_index', $thread->id) }}" class="btn btn-info btn-block btn-lg sosad-button-control">目录</a>
-                        </div>
-                        <div class="col-xs-4">
-                            @if(!$post->chapter->next_id===0)
-                            <a href="#" class = "sosad-button btn btn-success btn-block disabled">这是最后一章</a>
-                            @else
-                            <a href="{{ route('post.show', $post->chapter->next_id) }}" class="btn btn-info btn-block btn-lg sosad-button">下一章</a>
-                            @endif
-                        </div>
-                        <br>
-                        <br>
-                    </div>
-                </div>
-                @endif
-
             </div>
+            @endif
+            @if($post->type==="chapter"&&$post->chapter)
+                @include('posts._previous_next_chapter_tab')
             @endif
         </div>
         <div class="text-center h3">
-            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id]) }}" class="">>>前往讨论区查看全部评论</a>
+            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id]) }}" class="">>>前往讨论区查看本帖评论</a>
         </div>
         <div class="contailer-fluid">
             <div class="row">

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Auth;
 use Carbon\Carbon;
+use App\Helpers\CacheUser;
 
 use App\Sosadfun\Traits\AdministrationTraits;
 
@@ -73,19 +74,27 @@ class PagesController extends Controller
     }
     public function administrationrecords(Request $request)
     {
+        $user_id = 0;
+        $user_name = null;
         $page = is_numeric($request->page)? $request->page:'1';
-        $records = Cache::remember('adminrecords-p'.$page, config('constants.online_count_interval'), function () use($page) {
-            return $this->findAdminRecords(0, $page);
-        });
-        return view('pages.adminrecords',compact('records'))->with('record_page_set','total');
-    }
 
-    public function self_adminnistrationrecords(Request $request)
-    {
-        $page = is_numeric($request->page)? $request->page:'1';
-        $records = $this->findAdminRecords(Auth::id(), $page);
+        if(Auth::check()&&$request->user_id==Auth::id()){
+            $user_id = Auth::id();
+        }
+        if(Auth::check()&&Auth::user()->isAdmin()&&$request->user_id>0){
+            $user_id = $request->user_id;
+        }
 
-        return view('pages.adminrecords',compact('records'))->with('record_page_set','self');
+        if($user_id>0){
+            $records = $this->findAdminRecords($user_id, $page);
+            $user_name = CacheUser::user($user_id)->name;
+        }else{
+            $records = Cache::remember('adminrecords-p'.$page, config('constants.online_count_interval'), function () use($page) {
+                return $this->findAdminRecords(0, $page);
+            });
+        }
+
+        return view('pages.adminrecords',compact('records', 'user_name'));
     }
 
     public function search(Request $request){

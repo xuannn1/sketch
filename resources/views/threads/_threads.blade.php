@@ -5,7 +5,7 @@
             <!-- thread title -->
             <span>
                 <span class="badge newchapter-badge badge-tag">{{ $thread->channel()->channel_name }}</span>
-                <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>
+                <a href="{{ route('thread.show',$thread->id) }}" class="bigger-10">{{ $thread->title }}</a>
                 <small>
                     @if( !$thread->public )
                     <span class="glyphicon glyphicon-eye-close"></span>
@@ -52,8 +52,8 @@
             <span>{{ $thread->brief }}</span>
             <span class="pull-right smaller-10"><em><span class="glyphicon glyphicon-eye-open"></span>{{ $thread->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->reply_count }}</em></span>
         </div>
-        <div class="col-xs-12 h5 grayout brief">
-            <span class="smaller-10"><a href="{{ route('thread.showpost', $thread->last_post_id) }}">{{ $thread->last_post?$thread->last_post->brief:' ' }}</a></span>
+        <div class="col-xs-12 h5 grayout brief smaller-10">
+            <span class="smaller-10"><a href="{{ route('thread.showpost', $thread->last_post_id) }}">{{ $thread->last_post? StringProcess::simpletrim($thread->last_post->brief, 25):' ' }}</a></span>
             <span class="pull-right smaller-10">{{ $thread->created_at->diffForHumans() }}/{{ $thread->responded_at->diffForHumans() }}</span>
         </div>
     </div>

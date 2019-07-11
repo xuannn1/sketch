@@ -4,7 +4,7 @@
         @if($post->bianyuan)
             <span class="glyphicon glyphicon-info-sign"></span>
         @endif
-        {{ $post->title }}:{{ $post->brief }}</a>
+        {{ $post->title.'：'.StringProcess::simpletrim($post->brief, 10) }}</a>
 
     @endforeach
 </div>

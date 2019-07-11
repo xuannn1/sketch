@@ -2,11 +2,12 @@
 <article class="{{ 'user'.$user->id }}">
     <div class="container-fluid">
         <div class="h5">
+            <span>lv.{{ $user->level }}</span>
+            @if($user->title&&$user->title->name)
+            <span>{{ $user->title->name }}</span>
+            @endif
             <span class="glyphicon glyphicon-user {{$user->admin? 'admin-symbol' : '' }}"><a href="{{ route('user.show', $user->id) }}">{{ $user->name }}</a></span>&nbsp;&nbsp;
-            <span class="smaller-10">{!! Helper::trimtext($user->introduction,15) !!}</span>
-            <span class="pull-right">
-                @include('users._follow_button')
-            </span>
+            <span class="smaller-10">{{ $user->info->brief_intro }}</span>
         </div>
     </div>
     <hr class="narrow">

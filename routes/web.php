@@ -35,7 +35,6 @@
     Route::get('/search','PagesController@search')->name('search');
     Route::get('error/{error_code}', 'PagesController@error')->name('error');
     Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
-    Route::get('/administrationrecords/self', 'PagesController@self_adminnistrationrecords')->name('administrationrecords.self');
     Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
     Route::get('/recommend_records', 'PagesController@recommend_records')->name('recommend_records');//普通用户查看推荐书籍历史
 }
@@ -49,12 +48,14 @@
 }
 
 {//以下是用户信息展示模块
-   Route::get('/users/{id}', 'UsersController@show')->name('user.show');//展示某用户的个人页面
+   Route::get('/users/{id}', 'UsersController@show')->name('user.show');//展示某用户的个人页面(这里只展示书籍)
 
-   Route::get('users/{id}/threads','UsersController@showthreads')->name('user.showthreads');//展示某用户的全部主题贴
-   Route::get('users/{id}/books','UsersController@showbooks')->name('user.showbooks');//展示某用户的全部文章
-   Route::get('users/{id}/statuses','UsersController@showstatuses')->name('user.showstatuses');//展示某用户的全部动态
-   Route::get('users/{id}/comments','UsersController@showcomments')->name('user.showcomments');//展示某用户的全部长评
+   Route::get('users/{id}/threads','UsersController@show_threads')->name('user.show_threads');//展示某用户的全部主题贴
+
+   Route::get('users/{id}/statuses','UsersController@show_statuses')->name('user.show_statuses');//展示某用户的全部动态
+
+   Route::get('users/{id}/comments','UsersController@show_comments')->name('user.show_comments');//展示某用户的全部评论
+
    Route::get('/users/{id}/upvotes', 'UsersController@showupvotes')->name('user.showupvotes');
    Route::get('/users/{id}/xianyus', 'UsersController@showxianyus')->name('user.showxianyus');
    Route::get('/users/{id}/records', 'UsersController@showrecords')->name('user.showrecords')->middleware('admin');//展示某用户的全部管理记录
@@ -68,13 +69,14 @@
 }
 
 { // 以下是用户个人信息自己更改
-    Route::get('/usercenter', 'UsersController@usercenter')->name('user.center');//展示某用户的个人中心
+    Route::get('/usercenter', 'UsersController@usercenter')->name('user.center');//展示某用户的个人中心 7.8
     Route::get('/user/edit', 'UsersController@edit')->name('users.edit');//更改用户的个人信息
-    Route::post('/user/update', 'UsersController@update')->name('users.update');//更新用户的个人信息
-    Route::get('/user/edit_email', 'UsersController@edit_email')->name('users.edit_email');//更改用户的邮箱信息
-    Route::post('/user/update_email', 'UsersController@update_email')->name('users.update_email');//更新用户的邮箱信息
-    Route::get('/user/edit_password', 'UsersController@edit_password')->name('users.edit_password');//更改用户的密码信息
-    Route::post('/user/update_password', 'UsersController@update_password')->name('users.update_password');//更新用户的密码信息
+    Route::get('/user/edit_email', 'UsersController@edit_email')->name('user.edit_email');//更改用户的邮箱信息
+    Route::post('/user/update_email', 'UsersController@update_email')->name('user.update_email');//更新用户的邮箱信息
+    Route::get('/user/edit_password', 'UsersController@edit_password')->name('user.edit_password');//更改用户的密码信息
+    Route::post('/user/update_password', 'UsersController@update_password')->name('user.update_password');//更新用户的密码信息
+    Route::get('/user/edit_introduction', 'UsersController@edit_introduction')->name('user.edit_introduction');//更改用户的个人简介
+    Route::post('/user/update_introduction', 'UsersController@update_introduction')->name('user.update_introduction');//更改用户的个人简介
 }
 
 {//以下展示论坛贴按标签（label）与板块（channel）分布的视图
@@ -99,6 +101,8 @@
    Route::get('/threads/{thread}/index', 'ThreadsController@component_index')->name('thread.component_index')->middleware('filter_thread');//看某个主题的内部目录 // 19.7.9
 
    Route::get('/threads/{thread}/chapter_index', 'ThreadsController@chapter_index')->name('thread.chapter_index')->middleware('filter_thread');//看某个主题的内部目录 // 19.7.9
+
+    Route::get('/threads/{thread}/review_index', 'ThreadsController@review_index')->name('thread.review_index')->middleware('filter_thread');//看某个主题的内部目录 // 19.7.9
 
 
 
@@ -169,7 +173,10 @@
    Route::post('/admin/usermanagement/{user}','AdminsController@usermanagement')->name('admin.usermanagement');//管理员管理用户
    Route::post('/admin/postcommentmanagement/{postcomment}','AdminsController@postcommentmanagement')->name('admin.postcommentmanagement');//管理员管理点评
    Route::post('/admin/statusmanagement/{status}','AdminsController@statusmanagement')->name('admin.statusmanagement');//管理员管理动态
-   Route::get('/admin/advancedthreadform/{thread}','AdminsController@advancedthreadform')->name('admin.advancedthreadform');//高级管理主题贴页面
+
+   Route::get('/admin/threadform/{thread}','AdminsController@threadform')->name('admin.threadform');//进入管理主题贴页面
+   Route::get('/admin/statusform/{status}','AdminsController@statusform')->name('admin.statusform');//进入管理动态页面
+
    Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform')->middleware('admin');//发送提醒通知表格
    Route::post('/admin/sendpublicnotice', 'AdminsController@sendpublicnotice')->name('admin.sendpublicnotice')->middleware('admin');//发送提醒通知
    Route::get('/admin/createtag', 'AdminsController@create_tag_form')->name('admin.createtag')->middleware('admin');//显示新建tag表格
@@ -187,7 +194,7 @@
    Route::get('/threads/{thread}/collection', 'CollectionsController@store')->name('collection.store')->middleware('filter_thread');//收藏某个主题帖
    Route::get('/collections/books', 'CollectionsController@books')->name('collections.books');//显示收藏夹内容（首先是书）
    Route::get('/collections/threads', 'CollectionsController@threads')->name('collections.threads');//显示收藏夹内容（其他讨论）
-   Route::get('/collections/statuses', 'CollectionsController@statuses')->name('collections.statuses');//显示收藏夹内容（用户动态）
+
    Route::get('/collections/collection_lists', 'CollectionsController@collection_lists')->name('collections.collection_lists');//显示收藏夹内容（收藏列表中的更新）
    Route::post('/collections/cancel', 'CollectionsController@cancel')->name('collection.cancel');//取消收藏某个主题帖
    Route::post('/collections/store', 'CollectionsController@storeitem')->name('collection.storeitem');//收藏某个主题帖

@@ -12,7 +12,7 @@
                     @if( $thread->tags->contains('tag_name', '精华') )
                     <span class="badge newchapter-badge badge-tag">精华</span>
                     @endif
-                    <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>
+                    <a href="{{ route('thread.show',$thread->id) }}" class="bigger-10">{{ $thread->title }}</a>
                     <small>
                         @if( !$thread->public )
                         <span class="glyphicon glyphicon-eye-close"></span>

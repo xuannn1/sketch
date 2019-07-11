@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', '论坛')
+@section('title', '论坛-'.$channel->channel_name)
 @section('content')
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
@@ -10,6 +10,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
+                <h1>{{ $channel->channel_name }}</h1>
                 <ul class="nav nav-tabs">
                     <li role="presentation" class="{{ request('withTag') ? '': 'active' }}"><a href="{{ route('channel.show', $channel->id) }}">全部</a></li>
                     @foreach($primary_tags as $tag)
@@ -23,6 +24,7 @@
             </div>
             <div class="panel-body">
                 @include('threads._simple_threads')
+                <hr>
                 {{ $threads->links() }}
                 @include('threads._threads')
                 {{ $threads->links() }}

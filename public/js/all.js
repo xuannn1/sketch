@@ -17107,12 +17107,12 @@ function post_shengfan(post_id){
 };
 
 function replytopost(post_id, post_trim){
-    document.getElementById("reply_to_post_id").value = post_id;
+    document.getElementById("reply_to_id").value = post_id;
     document.getElementById("reply_to_post").classList.remove('hidden');
     document.getElementById("reply_to_post_info").innerHTML = '回复 ' + post_trim ;
 };
 function cancelreplytopost(){
-    document.getElementById("reply_to_post_id").value = 0;
+    document.getElementById("reply_to_id").value = 0;
     document.getElementById("reply_to_post").classList.add('hidden');
     document.getElementById("reply_to_post_info").innerHTML = "";
 };
@@ -17393,7 +17393,7 @@ $('textarea').keyup(debounce(function() {
             }
         }
     });
-}, 1000));
+}, 2000));
 
 function retrievecache(itemname){
     //console.log('going to retrieve cache');

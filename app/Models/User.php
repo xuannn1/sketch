@@ -77,14 +77,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Title::class, 'title_user', 'user_id', 'title_id')->withPivot('is_public');
     }
 
+    public function linkedaccounts()
+    {
+        return $this->belongsToMany(User::class, 'linkaccounts', 'master_account', 'branch_account');
+    }
+
     public function statuses()
     {
         return $this->hasMany(Status::class);
-    }
-
-    public function intro()
-    {
-        return $this->hasOne(UserIntro::class, 'user_id');
     }
 
     public function info()
@@ -193,5 +193,7 @@ class User extends Authenticatable
     {
         $this->info->active_now($ip);
     }
+
+
 
 }

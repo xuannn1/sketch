@@ -4,6 +4,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        @include('shared.errors')
         @include('threads._site_map')
         @include('threads._thread_profile')
         <div class="h4 text-center">

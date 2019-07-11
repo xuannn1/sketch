@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\DB;
-
+use DB;
 use App\Models\Status;
-use App\Models\User;
 use Auth;
-use Carbon\Carbon;
-
+use Carbon;
+use Cache;
+use StringProcess;
 
 class StatusesController extends Controller
 {
@@ -22,31 +21,28 @@ class StatusesController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'content' => 'required|string|max:180'
+            'status_body' => 'required|string|max:180'
         ]);
-        $content = trim($request->content);
+        $status_body = trim($request->status_body);
         $last_status = Status::where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
-        if (!empty($last_status) && strcmp($last_status->content, $content) === 0){
+        if (!empty($last_status) && strcmp($last_status->body, $status_body) === 0){
             return redirect()->back()->with('warning','您已成功提交状态，请不要重复提交哦！');
         }else{
             if(($last_status)&&(Carbon::now()->subMinutes(15)->toDateTimeString() < $last_status->created_at )){
-                return redirect()->back()->with('warning','15分钟内只能提交一条状态');
+                return redirect()->back()->with('warning','15分钟内只能提交一条状态，请等待缓存后提交下一条状态');
             }else{
-                DB::transaction(function() use($content){
+                DB::transaction(function() use($status_body){
                     Auth::user()->statuses()->create([
-                        'content' => $content
+                        'body' => $status_body,
+                        'brief' => StringProcess::trimtext($status_body, 45)
                     ]);
-                    DB::table('followers')//告诉所有粉丝, 自己发布了新动态
-                    ->join('users','users.id','=','followers.follower_id')
-                    ->where([['followers.user_id','=',Auth::id()],['followers.keep_updated','=',true]])
-                    ->update(['followers.updated'=>1,'users.collection_statuses_updated'=>DB::raw('users.collection_statuses_updated + 1')]);
-                    Auth::user()->reward('regular_status');
                 });
+                Cache::pull('key');
             }
         }
-        return back()->with('success','动态成功发布');
+        return redirect(route('user.statuses'));
     }
 
     public function destroy(Status $status)
@@ -58,32 +54,35 @@ class StatusesController extends Controller
             return redirect()->route('error', ['error_code' => '403']);
         }
     }
-    public function index()
+    public function index(Request $request)
     {
-        $statuses = DB::table('statuses')
-        ->join('users','statuses.user_id','=','users.id')
-        ->where('users.deleted_at', '=', null)
-        ->where('statuses.deleted_at', '=', null)
-        ->select('statuses.*','users.name')
-        ->orderBy('statuses.created_at','desc')
-        ->simplePaginate(config('constants.index_per_page'));
-        $collections = false;
-        return view('statuses.index', compact('statuses','collections'))->with('show_as_collections', false)->with('active',0);
+        $queryid = 'statusesIndex.'
+        .url('/')
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+
+        $statuses = Cache::remember($queryid, 1, function () use($request) {
+            return DB::table('statuses')
+            ->join('users','users.id','=','statuses.user_id')
+            ->leftjoin('titles','titles.id','=','users.title_id')
+            ->orderBy('statuses.created_at','desc')
+            ->select('statuses.*','users.name as user_name','titles.name as title_name','users.title_id')
+            ->simplePaginate(config('preference.statuses_per_page'))
+            ->appends($request->only('page'));
+        });
+
+        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'all']);
     }
+
     public function collections()
     {
-        $user = Auth::user();
-        $statuses = DB::table('followers')
-        ->join('users','followers.user_id','=','users.id')
-        ->join('statuses','users.id','=','statuses.user_id')
-        ->where([
-            ['followers.follower_id','=',$user->id],
-            ['users.deleted_at', '=', null],
-            ['statuses.deleted_at', '=', null],
-        ])
-        ->select('statuses.*','users.name','followers.keep_updated as keep_updated','followers.updated as updated')
+        $statuses = DB::table('statuses')
+        ->join('followers','followers.user_id','=','statuses.user_id')
+        ->join('users','users.id','=','statuses.user_id')
+        ->leftjoin('titles','titles.id','=','users.title_id')
+        ->where('followers.follower_id','=',Auth::id())
         ->orderBy('statuses.created_at','desc')
-        ->simplePaginate(config('constants.index_per_page'));
-        return view('statuses.collections', compact('statuses','user'))->with('show_as_collections',1)->with('active',1);
+        ->select('statuses.*','users.name as user_name','titles.name as title_name','users.title_id')
+        ->simplePaginate(config('preference.statuses_per_page'));
+        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'follow']);
     }
 }

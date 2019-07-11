@@ -2,24 +2,22 @@
 <article class="{{ 'status'.$status->id }} {{ 'followuser'.$status->user_id}}">
     <div class="row">
         <div class="col-xs-12 h5">
-            @if($show_as_collections==1)
-            <button type="button" class="btn btn-xs btn-danger sosad-button hidden cancel-button" onclick="cancelfollow({{$status->user_id}})">取消关注</button>
-            <button class="btn btn-xs btn-warning sosad-button hidden cancel-button {{'togglekeepupdateuser'.$status->user_id}}" type="button" name="button" onClick="ToggleKeepUpdateUser({{$status->user_id}})">{{$status->keep_updated? '不再提醒':'接收提醒'}}</button>
-            @endif
             <span>
-                <a href="{{ route('user.show', $status->user_id) }}">{{ $status->name }}</a>&nbsp;
-                {{ Carbon\Carbon::parse($status->created_at)->diffForHumans() }}
+                <a href="{{ route('user.show', $status->user_id) }}">{{ $status->user_name }}</a>&nbsp;
+                {{ Carbon::parse($status->created_at)->diffForHumans() }}
             </span>
-            @if((Auth::check())&&(Auth::user()->admin))
-            @include('admin._delete_status')
-            @endif
-            @if((Auth::check())&&(Auth::id()==$status->user_id))
-            <button type="button" name="button" class="sosad-button btn btn-xs btn-danger pull-right" onclick="destroystatus({{$status->id}})">删除动态</button>
-            @endif
+            <span class="pull-right">
+                @if((Auth::check())&&(Auth::id()==$status->user_id))
+                <button type="button" name="button" class="sosad-button btn btn-md btn-danger" onclick="destroystatus({{$status->id}})">删除动态</button>
+                @elseif((Auth::check())&&(Auth::user()->isAdmin()))
+                <a href="{{ route('admin.statusform', $status->id) }}" class="btn btn-md btn-danger admin-button">管理动态</a>
+                @endif
+            </span>
+
         </div>
         <div class="col-xs-12 h5 brief">
             <span class="smaller-10">
-                {!! Helper::wrapParagraphs($status->content) !!}
+                {!! Helper::wrapParagraphs($status->body) !!}
             </span>
         </div>
     </div>

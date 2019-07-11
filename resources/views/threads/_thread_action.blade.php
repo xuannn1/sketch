@@ -30,12 +30,17 @@
     @if($thread->channel()->type !='thread')
     <!-- 点击阅读  书籍/收藏单/问题箱   -->
     <div class="row">
-        <div class="col-xs-6">
-            <a href="#" class="btn btn-lg btn-danger btn-block sosad-button-control">开始阅读</a>
-        </div>
         @if($thread->channel()->type==='book')
         <div class="col-xs-6">
+            <a href="{{ route('post.show', $thread->first_component_id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">开始阅读</a>
+        </div>
+        <div class="col-xs-6">
             <a href="{{ route('thread.chapter_index', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">章节目录</a>
+        </div>
+        @endif
+        @if($thread->channel()->type==='list')
+        <div class="col-xs-12 pull-right">
+            <a href="{{ route('thread.review_index', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">评论列表</a>
         </div>
         @endif
     </div>

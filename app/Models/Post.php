@@ -27,6 +27,11 @@ class Post extends Model
         return $this->belongsTo(Thread::class);
     }
 
+    public function simpleThread()
+    {
+        return $this->belongsTo(Thread::class, 'thread_id')->select('id','channel_id','title','brief');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -59,7 +64,7 @@ class Post extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id','level');
     }
 
     public function chapter()
@@ -76,6 +81,11 @@ class Post extends Model
         return $this->belongsToMany('App\Models\Tag', 'tag_post', 'post_id', 'tag_id');
     }
 
+    public function scopeBrief($query)
+    {
+        return $query->select('id','user_id','title','type','brief','created_at', 'edited_at', 'bianyuan','upvote_count','reply_count','char_count','view_count');
+    }
+
     public function scopeUserOnly($query, $userOnly)
     {
         if($userOnly){
@@ -83,6 +93,7 @@ class Post extends Model
         }
         return $query;
     }
+
     public function scopeWithType($query, $withType)
     {
         if(in_array($withType, $this->post_types)){
@@ -239,6 +250,15 @@ class Post extends Model
         ->with('author.title')
         ->orderBy('created_at', 'desc')
         ->first();
+    }
+
+    public function checklongcomment()
+    {
+        if($this->char_count>config('constants.longcomment_length')){
+            $this->user->reward('long_post');
+            return true;
+        }
+        return false;
     }
 
 }

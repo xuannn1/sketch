@@ -36,7 +36,7 @@ class Thread extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id','name', 'title_id');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name', 'title_id','level');
     }
 
     public function posts()
@@ -71,12 +71,17 @@ class Thread extends Model
 
     public function last_component()
     {
+        return $this->belongsTo(Post::class, 'last_component_id')->select('id','type', 'user_id','title','brief','created_at');
+    }
+
+    public function last_chapter()
+    {
         return $this->belongsTo(Post::class, 'last_component_id');
     }
 
     public function first_component()
     {
-        return $this->belongsTo(Post::class, 'first_component_id');
+        return $this->belongsTo(Post::class, 'first_component_id')->select('id','type','user_id','title','brief','created_at');
     }
 
     public function rewards()
@@ -86,7 +91,7 @@ class Thread extends Model
 
     public function last_post()
     {
-        return $this->belongsTo(Post::class, 'last_post_id');
+        return $this->belongsTo(Post::class, 'last_post_id')->select('id','type','user_id','title','brief','created_at');
     }
 
     public function collectors()
@@ -140,6 +145,23 @@ class Thread extends Model
             }
         }
         return $query;
+    }
+
+    public function scopeWithUser($query, $id)
+    {
+        return $query->where('user_id','=',$id);
+    }
+
+    public function scopeWithAnonymous($query, $withAnonymous='')
+    {
+        if($withAnonymous==='anonymous_only'){
+            return $query->where('anonymous','=',1);
+        }
+        if($withAnonymous==='none_anonymous_only'){
+            return $query->where('anonymous','=',0);
+        }
+        return $query;
+
     }
 
     public function scopeExcludeTag($query, $excludeTag="")

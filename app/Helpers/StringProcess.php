@@ -19,6 +19,15 @@ class StringProcess
         return $substr;
     }
 
+    public static function simpletrim($text=null, int $len)//截取一个特定长度的字串
+    {
+        $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
+        if(iconv_strlen($text) > iconv_strlen($substr)){
+            $substr.='…';
+        }
+        return $substr;
+    }
+
     public static function trimSpaces($text=null)//去掉输入的一段文字里，多余的html-tag，多余的换行，和每段开头多余的空格
     {
         //去除内容中的html-tag（前端需要对html-tag类似物进行提醒）

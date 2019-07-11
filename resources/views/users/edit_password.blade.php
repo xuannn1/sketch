@@ -12,7 +12,7 @@
             <div class="panel-body">
                     <h4>修改密码</h4>
                 @include('shared.errors')
-                <form method="POST" action="{{ route('users.update_password') }}">
+                <form method="POST" action="{{ route('user.update_password') }}">
                         {{ csrf_field() }}
                     <div class="form-group">
                         <label for="old-password">旧密码 (必填，用于身份验证)：</label>

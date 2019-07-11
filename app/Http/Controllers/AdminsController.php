@@ -40,25 +40,6 @@ class AdminsController extends Controller
         return view('admin.quotesreview', compact('quotes'));
     }
 
-    public function longcommentsreview()
-    {
-        $posts = DB::table('posts')
-        ->join('users','users.id','=','posts.user_id')
-        ->join('threads','threads.id','=','posts.thread_id')
-        ->join('channels', 'threads.channel_id','=','channels.id')
-        ->join('long_comments','posts.id','=','long_comments.post_id')
-        ->where([
-            ['posts.deleted_at','=',null],
-            ['channels.channel_state','<=',1],
-            ['threads.public','=',1],
-            ['posts.as_longcomment','=',1]
-        ])
-        ->select('posts.*','threads.title as thread_title', 'users.name','long_comments.reviewed','long_comments.approved')
-        ->orderBy('posts.created_at', 'desc')
-        ->paginate(config('constants.index_per_page'));
-        return view('admin.longcommentsreview', compact('posts'))->with('as_longcomments',1);
-    }
-
     public function toggle_review_quote(Quote $quote, $quote_method)
     {
         switch ($quote_method):
@@ -80,34 +61,6 @@ class AdminsController extends Controller
             echo "应该奖励什么呢？一个bug呀……";
         endswitch;
         return $quote;
-    }
-
-    public function toggle_review_longcomment(Post $post, $longcomment_method)
-    {
-        $longcomment = LongComment::where('post_id',$post->id)->first();
-        if($longcomment){
-            switch ($longcomment_method):
-                case "approve"://通过长评
-                if(!$longcomment->approved){
-                    $longcomment->approved = 1;
-                    $longcomment->reviewed = 1;
-                    $longcomment->save();
-                }
-                break;
-                case "disapprove"://不通过长评(已经通过了的，不允许通过；或没有评价过的，不允许通过)
-                if((!$longcomment->reviewed)||($longcomment->approved)){
-                    $longcomment->approved = 0;
-                    $longcomment->reviewed = 1;
-                    $longcomment->save();
-                }
-                break;
-
-                default:
-                echo "应该奖励什么呢？一个bug呀……";
-            endswitch;
-            return 'works';
-        }
-        return 'notwork';
     }
 
     public function threadmanagement(Thread $thread, Request $request)
@@ -343,6 +296,7 @@ class AdminsController extends Controller
 
         return redirect()->back()->with("danger","请选择操作类型（转换板块？）");
     }
+
     public function postmanagement(Post $post, Request $request)
     {
         $this->validate($request, [
@@ -429,42 +383,7 @@ class AdminsController extends Controller
             return redirect()->back()->with("success","已经成功处理该回帖");
         }
     }
-    public function postcommentmanagement(PostComment $postcomment, Request $request)
-    {
-        $this->validate($request, [
-            'reason' => 'required|string',
-        ]);
-        $var = request('controlpostcomment');//
-        if($var=='8'){
-            Administration::create([
-                'user_id' => Auth::id(),
-                'operation' => '8',//:删回帖
-                'item_id' => $postcomment->id,
-                'reason' => request('reason'),
-                'administratee_id' => $postcomment->user_id,
-            ]);
-            $postcomment->delete();
-            return redirect()->back()->with("success","已经成功处理该点评");
-        }
-        if ($var=="31"){//无意义水贴套餐：禁言、折叠、积分清零
-            Administration::create([
-                'user_id' => Auth::id(),
-                'operation' => 31, //30 => 无意义点评套餐：禁言、折叠、积分清零
-                'item_id' => $postcomment->id,
-                'reason' => request('reason'),
-                'administratee_id' => $postcomment->user_id,
-            ]);
-            $postcomment->deleted_at = Carbon::now();
-            $postcomment->save();
-            $user=$postcomment->user;
-            $user->no_posting = Carbon::now()->addDays(1);
-            $user->user_level = 0;
-            $user->jifen = 0;
-            $user->save();
-            return redirect()->back()->with("success","已经成功处理该点评");
-        }
-        return redirect()->back()->with("warning","什么都没做");
-    }
+
     public function statusmanagement(Status $status, Request $request)
     {
         $this->validate($request, [
@@ -483,12 +402,19 @@ class AdminsController extends Controller
         }
         return redirect()->back()->with("warning","什么都没做");
     }
-    public function advancedthreadform(Thread $thread)
+
+    public function threadform(Thread $thread)
     {
         $channels = Channel::all();
         $channels->load('labels');
-        return view('admin.advanced_thread_form', compact('thread','channels'));
+        return view('admin.thread_form', compact('thread','channels'));
     }
+
+    public function statusform(Status $status)
+    {
+        return view('admin.status_form', compact('status'));
+    }
+
     public function usermanagement(User $user, Request $request)
     {
         $this->validate($request, [
@@ -592,6 +518,7 @@ class AdminsController extends Controller
     {
         return view('admin.send_publicnotice');
     }
+
     public function sendpublicnotice(Request $request)
     {
         $this->validate($request, [
@@ -613,6 +540,7 @@ class AdminsController extends Controller
         $tags_tongren_cp = Tag::where('tag_group',20)->get();
         return view('admin.create_tag',compact('labels_tongren','tags_tongren_yuanzhu','tags_tongren_cp'));
     }
+
     public function store_tag(Request $request){
         if($request->tongren_tag_group==='1'){//同人原著tag
             Tag::create([

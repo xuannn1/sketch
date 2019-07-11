@@ -19,7 +19,7 @@ class threadsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->except(['index', 'show', 'showpost', 'channel_index']);
+        $this->middleware('auth')->except(['index', 'show', 'showpost', 'channel_index', 'chapter_index', 'show_profile', 'show']);
     }
 
     public function index(Request $request)
@@ -44,7 +44,7 @@ class threadsController extends Controller
             ->excludeTag($request->excludeTag)
             ->ordered($request->ordered)
             ->paginate(config('preference.threads_per_page'))
-            ->appends($request->only('inChannel','withType','withBianyuan','withTag','excludeTag','ordered'));
+            ->appends($request->only('inChannel','withType','withBianyuan','withTag','excludeTag','ordered','page'));
         });
 
         return view('threads.filter', compact('threads'));
@@ -115,13 +115,15 @@ class threadsController extends Controller
             ->withTag($request->withTag)
             ->ordered($request->ordered)
             ->paginate(config('preference.threads_per_page'))
-            ->appends($request->only('withBianyuan', 'ordered', 'withTag'));
+            ->appends($request->only('withBianyuan', 'ordered', 'withTag','page'));
         });
 
         $simplethreads = ThreadObjects::find_top_threads_in_channel($channel->id);
 
         return view('threads.thread_channel', compact('channel', 'threads', 'simplethreads', 'primary_tags'));
     }
+
+
 
     public function createThreadForm($channel)
     {
@@ -177,10 +179,14 @@ class threadsController extends Controller
     {
         $thread = ThreadObjects::thread($id);
         $posts = ThreadObjects::threadChapterIndex($id);
-
-
         return view('chapters.chapter_index', compact('thread', 'posts'));
+    }
 
+    public function review_index($id)
+    {
+        $thread = ThreadObjects::thread($id);
+        $posts = ThreadObjects::threadReviewIndex($id);
+        return view('reviews.review_index', compact('thread', 'posts'));
     }
 
     public function component_index($id)

@@ -17,7 +17,7 @@ class Review extends Model
 
     public function reviewee()//被评论的文章
     {
-        return $this->belongsTo(Thread::class, 'thread_id');
+        return $this->belongsTo(Thread::class, 'thread_id')->select('id','user_id','channel_id','title','brief','bianyuan','anonymous','public','no_reply');
     }
 
 }
