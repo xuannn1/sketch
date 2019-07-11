@@ -133,7 +133,9 @@ trait CleanUpExtraThingsTraits{
         echo "removed duplicated link accounts\n";
 
         Schema::table('linkaccounts', function($table){
-            $table->unique(['account1','account2']);
+            $table->renameColumn('account1', 'master_account');
+            $table->renameColumn('account2', 'branch_account');
+            $table->unique(['master_account','branch_account']);
         });
         echo "added unique index of linked accounts\n";
     }

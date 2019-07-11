@@ -3,6 +3,7 @@ namespace App\Console\Commands\TemporaryTraits;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 trait ModifyReviewNCollectionTraits{
 
@@ -41,6 +42,7 @@ trait ModifyReviewNCollectionTraits{
             'title' => '往期编推总楼',
             'brief' => '好文共赏',
             'body' => '存放往期推文，如果能找到对应的编辑，那么文章会存放在编辑账户下，否则归在本楼。',
+            'created_at' => Carbon::now()
         ]);
         echo "task 12.2 created main list \n";
         echo "task 12.2 start move review \n";

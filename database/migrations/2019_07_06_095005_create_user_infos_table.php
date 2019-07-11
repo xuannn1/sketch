@@ -24,7 +24,7 @@ class CreateUserInfosTable extends Migration
             $table->integer('follower_count')->unsigned()->default(0);
             $table->integer('following_count')->unsigned()->default(0);
             $table->string('brief_intro', 50)->nullable();// 极简介绍
-            $table->boolean('indentation')->default(false);//上次锁进设置
+            $table->text('introduction')->nullable();// 全部介绍
             $table->integer('views')->unsigned()->default(0);
             $table->string('activation_token', 50)->nullable();//邮箱验证码
             $table->string('invitation_token', 50)->nullable();//邀请码
@@ -45,13 +45,13 @@ class CreateUserInfosTable extends Migration
             $table->integer('public_notices')->unsigned()->default(0); //已经阅读的公共通知数量
             $table->integer('collection_threads_updates')->unsigned()->default(0);
             $table->integer('collection_books_updates')->unsigned()->default(0);
-            $table->integer('collection_statuses_updates')->unsigned()->default(0);
             $table->unsignedInteger('default_list_id')->unsigned()->default(0);
             $table->unsignedInteger('default_box_id')->unsigned()->default(0);
             $table->string('login_ip')->nullable();//上一次访问的ip地址
             $table->dateTime('login_at')->nullable();//上次登录时间
             $table->dateTime('active_at')->nullable();//上次活跃时间
-            $table->dateTime('created_at')->nullable();//禁言时限
+            $table->dateTime('edited_at')->nullable();//简介修改于
+
         });
     }
 

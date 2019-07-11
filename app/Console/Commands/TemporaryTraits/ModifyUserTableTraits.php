@@ -41,17 +41,11 @@ trait ModifyUserTableTraits{
 
         echo "task 01.1 start modifying users one by one\n";
         \App\Models\User::chunk(1000, function ($users) {
-            $insert_intro = [];
             $insert_info = [];
             foreach($users as $user){
-                $user_intro = [
-                    'user_id' => $user->id,
-                    'introduction' => $user->introduction,
-                    'updated_at' => Carbon::now(),
-                ];
-
                 $user_info = [
                     'user_id' => $user->id,
+                    'introduction' => $user->introduction,
                     'shengfan' => $user->shengfan,
                     'xianyu' => $user->xianyu,
                     'jifen' => $user->jifen,
@@ -59,7 +53,6 @@ trait ModifyUserTableTraits{
                     'exp' => $user->experience_points,
                     'upvote_count' => $user->upvoted,
                     'brief_intro' => \App\Helpers\Helper::trimtext($user->introduction, 40),
-                    'indentation' =>$user->indentation,
                     'activation_token' => $user->activation_token,
                     'invitation_token' => $user->invitation_token,
                     'no_posting_until' => $user->no_posting,
@@ -76,17 +69,11 @@ trait ModifyUserTableTraits{
                     'public_notices' => $user->public_notices,
                     'collection_threads_updates' => $user->collection_threads_updated,
                     'collection_books_updates' => $user->collection_books_updated,
-                    'collection_statuses_updates' => $user->collection_statuses_updated,
                     'login_ip' => $user->last_login_ip,
                     'login_at' => $user->last_login,
-                    'created_at' => $user->created_at,
                 ];
                 array_push($insert_info, $user_info);
-                if($user_intro['introduction']){
-                    array_push($insert_intro, $user_intro);
-                }
             }
-            DB::table('user_intros')->insert($insert_intro);
             DB::table('user_infos')->insert($insert_info);
             echo $user->id."|";
         });
@@ -116,7 +103,7 @@ trait ModifyUserTableTraits{
     {
         echo "task 1.2.1 delete extra users table\n";
         Schema::table('users', function($table){
-            $table->dropColumn(['activation_token', 'created_at', 'updated_at', 'shengfan', 'xianyu', 'jifen', 'upvoted', 'downvoted', 'lastresponded_at', 'introduction', 'viewed', 'invitation_token', 'last_login_ip', 'last_login', 'admin', 'superadmin', 'group', 'no_posting', 'no_logging', 'lastrewarded_at', 'sangdian', 'guarden_deadline', 'continued_qiandao', 'post_reminders', 'postcomment_reminders', 'reply_reminders', 'replycomment_reminders', 'message_reminders', 'collection_threads_updated', 'collection_books_updated', 'collection_statuses_updated', 'message_limit', 'receive_messages_from_stranger', 'no_registration', 'upvote_reminders', 'no_upvote_reminders', 'total_char', 'experience_points', 'lastsearched_at', 'maximum_qiandao', 'indentation', 'system_reminders', 'collection_lists_updated', 'collection_list_limit', 'clicks', 'daily_clicks', 'daily_posts', 'daily_chapters', 'daily_characters', 'last_quizzed_at', 'quizzed']);
+            $table->dropColumn(['activation_token', 'updated_at', 'shengfan', 'xianyu', 'jifen', 'upvoted', 'downvoted', 'lastresponded_at', 'introduction', 'viewed', 'invitation_token', 'last_login_ip', 'last_login', 'admin', 'superadmin', 'group', 'no_posting', 'no_logging', 'lastrewarded_at', 'sangdian', 'guarden_deadline', 'continued_qiandao', 'post_reminders', 'postcomment_reminders', 'reply_reminders', 'replycomment_reminders', 'message_reminders', 'collection_threads_updated', 'collection_books_updated', 'collection_statuses_updated', 'message_limit', 'receive_messages_from_stranger', 'no_registration', 'upvote_reminders', 'no_upvote_reminders', 'total_char', 'experience_points', 'lastsearched_at', 'maximum_qiandao', 'system_reminders', 'collection_lists_updated', 'collection_list_limit', 'clicks', 'daily_clicks', 'daily_posts', 'daily_chapters', 'daily_characters', 'last_quizzed_at', 'quizzed']);
             echo "echo deleted extra users columns.\n";
         });
     }

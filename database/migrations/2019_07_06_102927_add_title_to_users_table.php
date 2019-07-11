@@ -17,9 +17,10 @@ class AddTitleToUsersTable extends Migration
             $table->integer('title_id')->unsigned()->default(0);
             $table->string('role',10)->nullable();
             $table->integer('unread_updates')->unsigned()->default(0);
-            $table->dateTime('qiandao_at')->nullable();//上次签到时间
+            $table->dateTime('qiandao_at')->nullable()->index();//上次签到时间
             $table->TinyInteger('quiz_level')->unsigned()->default(0);//最后做题等级
             $table->boolean('no_posting_or_not')->default(false);//是否被禁言
+            $table->index('created_at');
         });
     }
 
