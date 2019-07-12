@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Helpers;
-use App\Models\Tag;
-use App\Models\Title;
 use Cache;
 use DB;
 
@@ -23,6 +21,11 @@ class ConstantObjects
         return [];
     }
 
+    public static function find_channel_by_id($id)
+    {
+
+    }
+
     public static function channelTypes($type='')
     {
         if (in_array($type, self::$channel_types)){
@@ -36,10 +39,27 @@ class ConstantObjects
         return self::allChannels()->where('is_public', true)->pluck('id')->toArray();
     }
 
+    public static function find_primary_tags_in_channel($id)
+    {
+        return Cache::remember('primary_tags_of_channel.'.$id, 30, function () use($id) {
+            $tags = \App\Models\Tag::where('is_primary','=',1)->where('channel_id','=',$id)->get();
+
+            if($id==1){
+                $extraTags = \App\Models\Tag::where('is_primary','=',1)->where('channel_id','=',0)->get();
+                $tags = $tags->merge($extraTags);
+            }
+            if($id<=2){
+                $extraTags = \App\Models\Tag::where('tag_type','=','性向')->get();
+                $tags = $tags->merge($extraTags);
+            }
+            return $tags;
+        });
+    }
+
     public static function allTags()//获得站上所有的tags
     {
         return Cache::remember('allTags', 10, function (){
-            return Tag::all();
+            return \App\Models\Tag::all();
         });
     }
 
@@ -60,7 +80,7 @@ class ConstantObjects
     public static function noTongrenTags()//获得站上非同人的所有的tags
     {
         return Cache::remember('noTongrenTags', 10, function (){
-            return Tag::whereNotIn('tag_type', ['同人原著', '同人CP'])->get();
+            return App\Models\Tag::whereNotIn('tag_type', ['同人原著', '同人CP'])->get();
         });
     }
 
@@ -98,7 +118,7 @@ class ConstantObjects
     public static function titles()//获得站上所有的titles
     {
         return Cache::remember('titles', 10, function (){
-            return Title::all();
+            return App\Models\Title::all();
         });
     }
 

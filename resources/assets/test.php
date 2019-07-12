@@ -181,12 +181,12 @@ foreach($collection_lists as $list){
 $posts = App\Models\Post::whereIn('thread_id',[2145, 2148, 2152, 2153, 2163, 2164, 2160])->where('deleted_at','=',null)->where('body','<>',null)->inRandomOrder()->first();
 
 //测试是否成立
-App\Helpers\Helper::trimSpaces("   wejr askdj 中文是顶峰。　");
+App\Helpers\StringProcess::trimSpaces("   wejr askdj 中文是顶峰。　");
 
 $posts = \App\Models\Post::where('maintext','=',1)->get();
 foreach($posts as $post){
-    if($post->body !== \App\Helpers\Helper::trimSpaces($post->body)){
-        $post->body = \App\Helpers\Helper::trimSpaces($post->body);
+    if($post->body !== \App\Helpers\StringProcess::trimSpaces($post->body)){
+        $post->body = \App\Helpers\StringProcess::trimSpaces($post->body);
         $post->save();
     }
 }
@@ -195,7 +195,7 @@ $lastpost = App\Models\Post::latest()->first();
 for($i=1;$i++;$i< $lastpost->id){
     $post = App\Models\Post::find($i);
     if($post){
-        $post->trim_body = \App\Helpers\Helper::trimtext($post->body, 50);
+        $post->trim_body = \App\Helpers\StringProcess::trimtext($post->body, 50);
         $post->save();
     }
 }

@@ -1,13 +1,13 @@
 <?php
+namespace App\Sosadfun\Traits;
 
-namespace App\Helpers;
-
-use Cache;
 use DB;
+use Cache;
+use ConstantObjects;
 
-class PageObjects
-{
-    public static function quotes()//在首页上显示的最新quotes
+trait PageObjectTraits{
+
+    public function quotes()//在首页上显示的最新quotes
     {
         return Cache::remember('quotes', 1, function () {
             $regular_quotes = \App\Models\Quote::where('approved', true)
@@ -27,7 +27,7 @@ class PageObjects
     }
 
 
-    public static function short_recommendations()
+    public function short_recommendations()
     {
         return Cache::remember('short_recommendations', 1, function () {
             $short_reviews = \App\Models\Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
@@ -43,14 +43,14 @@ class PageObjects
         });
     }
 
-    public static function thread_recommendation()
+    public function thread_recommendation()
     {
         return Cache::remember('thread_recommendation', 1, function () {
             return \App\Models\Thread::find(ConstantObjects::system_variable()->homepage_thread_id);
         });
     }
 
-    public static function channel_threads($channel_id)
+    public function channel_threads($channel_id)
     {
         return Cache::remember('channel_threads_ch'.$channel_id, 1, function () use($channel_id) {
             return \App\Models\Thread::isPublic()
@@ -63,7 +63,7 @@ class PageObjects
         });
     }
 
-    public static function users_online()
+    public function users_online()
     {
         return Cache::remember('users-online-count', config('constants.online_count_interval'), function () {
         $users_online = DB::table('logging_statuses')
@@ -73,7 +73,7 @@ class PageObjects
         });
     }
 
-    public static function web_stat()
+    public function web_stat()
     {
         return Cache::remember('webstat-yesterday', config('constants.online_count_interval'), function () {
             $webstat = \App\Models\WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();

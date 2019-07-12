@@ -9,4 +9,6 @@ return [
    'monthly_email_resets' => 5, //一个月能修改多少次邮箱
    'default_majia' => '匿名咸鱼',
    'quiz_test_number' => 5, //目前每次测试取5道题
+   'box_channel_id' => 14,
+   'list_channel_id' => 13,
 ];

@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Http\Middleware;
-use Illuminate\Support\Facades\DB;
 use Closure;
 use Auth;
-use App\Helpers\Helper;
-use App\Helpers\ThreadObjects;
+use App\Sosadfun\Traits\FindThreadTrait;
 
 class FilterThread
 {
+    use FindThreadTrait;
     /**
     * Handle an incoming request.
     *
@@ -19,7 +18,7 @@ class FilterThread
     public function handle($request, Closure $next)
     {
 
-        $thread = ThreadObjects::thread($request->route('thread'));
+        $thread = $this->findThread($request->route('thread'));
         if(!$thread){ // 假如有东西找不到，那必然不能登陆
             return redirect()->route('error', ['error_code' => '404']);
         }
@@ -50,7 +49,7 @@ class FilterThread
         if($channel->type==='homework'&&Auth::user()->seeHomework()){ //作业区，做作业的人，可以访问
             return $next($request);
         }
-        
+
         return redirect('home');
     }
 }

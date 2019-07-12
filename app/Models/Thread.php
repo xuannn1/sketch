@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Helpers\ConstantObjects;
+use ConstantObjects;
 
 use DB;
 
@@ -280,6 +280,11 @@ class Thread extends Model
         ->latest()
         ->take(10)
         ->get();
+    }
+
+    public function register_homework()
+    {
+        // TODO 检查这名同学参加了作业吗？是的话算他提交了作业
     }
 
 }

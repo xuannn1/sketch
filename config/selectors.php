@@ -11,16 +11,17 @@ return [
             'answer' => '回答',
         ],
         'withComponent' => [
-            'component_only' => '只显示正文',
-            'none_component_only' => '只显示回帖',
+            'component_only' => '显示正文',
+            'none_component_only' => '显示非正文',
         ],
 
         'ordered' => [
-            'latest_created' => '最新回帖',
+            'latest_created' => '最新发布',
             'most_replied' => '最多回复',
             'most_upvoted' => '最高赞',
             'random' => '随机乱序',
-            'latest_responded' => '最后回复',
+            'latest_responded' => '最新被回复',
+            'default' => '时间顺序',
         ],
     ],
     'book_filter' => [

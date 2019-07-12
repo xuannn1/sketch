@@ -1,7 +1,10 @@
 <?php
 namespace App\Models\Traits;
 
+use ConstantObjects;
+
 trait ValidateTagTraits{
+
 
     public function thread_validate_tag($tags)//检查由用户提交的tags组合，是否符合基本要求 $tags is an array [1,2,3]...
     {
@@ -9,7 +12,7 @@ trait ValidateTagTraits{
         $limit_count_tags = [];//tag数量限制
         $only_one_tags = [];//只能选一个的tag
         foreach($tags as $key => $value){
-            $tag = ConstantObjects::allTags()->keyBy('id')->get($value);
+            $tag = ConstantObjects::find_tag_by_id($value);
             if($tag){//首先应该判断这个tag是否存在，否则会报错Trying to get property 'tag_type' of non-object
                 if (array_key_exists($tag->tag_type,config('tag.types'))){//一个正常录入的tag，它的type应该在config中能够找到。
                     $error = '';

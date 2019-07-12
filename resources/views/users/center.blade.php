@@ -17,7 +17,7 @@
                         <a href="{{ route('user.edit_introduction') }}" class="btn btn-info btn-lg sosad-button-control">修改个人介绍</a>
                     </div>
                     <div class="col-xs-4">
-                        <a href="" class="btn btn-info btn-lg sosad-button-control">佩戴头衔</a>
+                        <a href="" class="btn btn-info btn-lg sosad-button-control">佩戴头衔（待做）</a>
                     </div>
                 </div>
                 <br>
@@ -25,45 +25,87 @@
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="h3">
-                    <ul><a href="#">我的书籍</a></ul>
-                    <ul><a href="#">我的讨论帖</a></ul>
-                    <ul><a href="#">我的清单</a></ul>
-                    <ul><a href="#">我的问题箱</a></ul>
-
+            <div class="panel-body">
+                <div class="">
+                    <div class="text-center font-4">
+                        我的发布
+                    </div>
+                    <hr>
+                    <a href="{{route('user.show', $user->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的书籍
+                    </a>
+                    <a href="{{route('user.threads', $user->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的讨论
+                    </a>
+                    <a href="{{route('user.lists', $user->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的清单
+                    </a>
+                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的提问（待做）
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="h3">
-                    <ul><a href="#">我的题头</a></ul>
-                    <ul><a href="#">我的投票</a></ul>
-                    <ul><a href="#">我的打赏</a></ul>
-                    <ul><a href="{{ route('administrationrecords', ['user_id'=> $user->id]) }}">我的管理记录</a></ul>
-                    <ul><a href="{{ route('quiz.taketest') }}">我要答题</a></ul>
+            <div class="panel-body">
+                <div class="">
+                    <div class="text-center font-4">
+                        我的社区
+                    </div>
+                    <hr>
+                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的题头（待做）
+                    </a>
+                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的投票（待做）
+                    </a>
+                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的打赏（待做）
+                    </a>
+                    <a href="{{ route('quiz.taketest') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        答题挑战
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="h3">
-                    <ul><a href="#">隐私设置</a></ul>
-                    <ul><a href="{{ route('users.edit') }}">编辑资料</a></ul>
-                    <ul><a href="{{ route('linkedaccounts.index') }}">管理马甲账户</a></ul>
+            <div class="panel-body">
+                <div class="">
+                    <div class="text-center font-4">
+                        我的设置
+                    </div>
+                    <hr>
+                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                        隐私设置（待做）
+                    </a>
+                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                        编辑资料
+                    </a>
+                    <a href="{{ route('linkedaccounts.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        管理马甲账户
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="h3">
-                    <ul><a href="{{ route('about') }}">关于</a></ul>
-                    <ul><a href="{{ route('help') }}">帮助</a></ul>
-                    <ul><a href="{{ route('contacts') }}">联系我们</a></ul>
+            <div class="panel-body">
+                <div class="">
+                    <div class="text-center font-4">
+                        其他信息
+                    </div>
+                    <hr>
+                    <a href="{{ route('about') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        关于本站/使用规范
+                    </a>
+                    <a href="{{ route('help') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        帮助FAQ
+                    </a>
+                    <a href="{{ route('contacts') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        联系我们
+                    </a>
                 </div>
             </div>
         </div>

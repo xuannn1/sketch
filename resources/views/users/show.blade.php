@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', $user->name.'-的书籍')
+@section('title', $user->name.$user_title)
 
 @section('content')
 <div class="container-fluid">

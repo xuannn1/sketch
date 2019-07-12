@@ -65,11 +65,11 @@ class PostsController extends Controller
     }
     public function show($id)
     {
-        $post = ThreadObjects::postProfile($id);
+        $post = $this->postProfile($id);
         if(!$post){
             abort(404);
         }
-        $thread = ThreadObjects::thread($post->thread_id);
+        $thread = $this->findThread($post->thread_id);
         return view('posts.show',compact('post','thread'));
     }
 

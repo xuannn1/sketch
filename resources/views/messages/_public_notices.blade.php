@@ -13,10 +13,10 @@
                     </span>
                 </div>
                 <div class="main-text">
-                    {!! Helper::wrapParagraphs($public_notice->notice_body) !!}
+                    {!! StringProcess::wrapParagraphs($public_notice->notice_body) !!}
                 </div>
             </span>
-            <span id="abbreviated{{$public_notice->id}}" class="">{!! Helper::trimtext($public_notice->notice_body,60) !!}</span>
+            <span id="abbreviated{{$public_notice->id}}" class="">{!! StringProcess::trimtext($public_notice->notice_body,60) !!}</span>
             <small><a type="button" name="button" id="expand{{$public_notice->id}}" onclick="expandpost('{{$public_notice->id}}')" class="pull-right">展开</a></small>
         </div>
     </div>

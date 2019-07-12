@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-xs-12 h4 brief">
                         <span class="smaller-10">
-                            {!! Helper::wrapParagraphs($status->body) !!}
+                            {!! StringProcess::wrapParagraphs($status->body) !!}
                         </span>
                     </div>
                 </div>

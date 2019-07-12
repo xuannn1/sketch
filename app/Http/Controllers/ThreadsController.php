@@ -6,16 +6,19 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use App\Helpers\ThreadObjects;
-use App\Helpers\ConstantObjects;
+use ConstantObjects;
 use App\Models\Post;
 use App\Models\Thread;
 
 use Auth;
+use App\Sosadfun\Traits\ThreadObjectTraits;
+use App\Sosadfun\Traits\FindThreadTrait;
 
 
 class threadsController extends Controller
 {
+    use ThreadObjectTraits;
+    use FindThreadTrait;
 
     public function __construct()
     {
@@ -62,7 +65,7 @@ class threadsController extends Controller
             ->paginate(config('preference.threads_per_page'))
             ->appends(['page'=>$page]);
         });
-        $simplethreads = ThreadObjects::jinghua_threads();
+        $simplethreads = $this->jinghua_threads();
 
         return view('threads.thread_index', compact('threads','simplethreads'))->with('threads_tab','index');
     }
@@ -97,7 +100,7 @@ class threadsController extends Controller
     public function channel_index($channel, Request $request)
     {
         $channel = collect(config('channel'))->keyby('id')->get($channel);
-        $primary_tags = ThreadObjects::find_primary_tags_in_channel($channel->id);
+        $primary_tags = ConstantObjects::find_primary_tags_in_channel($channel->id);
 
         $queryid = 'channel-index'
         .url('/')
@@ -118,7 +121,7 @@ class threadsController extends Controller
             ->appends($request->only('withBianyuan', 'ordered', 'withTag','page'));
         });
 
-        $simplethreads = ThreadObjects::find_top_threads_in_channel($channel->id);
+        $simplethreads = $this->find_top_threads_in_channel($channel->id);
 
         return view('threads.thread_channel', compact('channel', 'threads', 'simplethreads', 'primary_tags'));
     }
@@ -135,13 +138,13 @@ class threadsController extends Controller
         return view('threads.create', compact('labels', 'channel'));
     }
 
-    public function store(StoreThread $form, $channel)
+    public function store(StoreThread $form, $channel_id)
     {
-        $channel = Channel::find($channel);
+        $channel = collect(config('channel'))->keyby('id')->get($id);
         $thread = $form->generateThread($channel->id);
         $thread->user->reward("regular_thread");
-        if($thread->label_id == 50){
-            $thread->registerhomework();
+        if($channel->type==='homework'){
+            $thread->register_homework();
         }
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
     }
@@ -177,15 +180,15 @@ class threadsController extends Controller
 
     public function chapter_index($id)
     {
-        $thread = ThreadObjects::thread($id);
-        $posts = ThreadObjects::threadChapterIndex($id);
+        $thread = $this->findThread($id);
+        $posts = $this->threadChapterIndex($id);
         return view('chapters.chapter_index', compact('thread', 'posts'));
     }
 
     public function review_index($id)
     {
-        $thread = ThreadObjects::thread($id);
-        $posts = ThreadObjects::threadReviewIndex($id);
+        $thread = $this->findThread($id);
+        $posts = $this->threadReviewIndex($id);
         return view('reviews.review_index', compact('thread', 'posts'));
     }
 
@@ -196,8 +199,8 @@ class threadsController extends Controller
 
     public function show_profile($id, Request $request)
     {
-        $thread = ThreadObjects::threadProfile($id);
-        $posts = ThreadObjects::threadProfilePosts($id);
+        $thread = $this->threadProfile($id);
+        $posts = $this->threadProfilePosts($id);
         return view('threads.show_profile', compact('thread', 'posts'));
     }
 
@@ -211,9 +214,9 @@ class threadsController extends Controller
         }
 
         if($show_profile){
-            $thread = ThreadObjects::threadProfile($id);
+            $thread = $this->threadProfile($id);
         }else{
-            $thread = ThreadObjects::thread($id);
+            $thread = $this->thread($id);
         }
 
         $posts = \App\Models\Post::where('thread_id',$id)

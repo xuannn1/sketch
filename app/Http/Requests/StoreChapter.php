@@ -43,8 +43,8 @@ class StoreChapter extends FormRequest
         $thread = $book->thread;
         //post data
         $post_data=$this->only('body');
-        $post_data['body']=Helper::trimSpaces($post_data['body']);
-        $post_data['trim_body']=Helper::trimtext($post_data['body'], 50);
+        $post_data['body']=StringProcess::trimSpaces($post_data['body']);
+        $post_data['trim_body']=StringProcess::trimtext($post_data['body'], 50);
         $post_data['title']=$this->brief;
         $post_data['user_ip']=request()->getClientIp();
         $post_data['user_id']=$thread->user_id;
@@ -58,7 +58,7 @@ class StoreChapter extends FormRequest
         // chapter data
         $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post_data['body']);
         $chapter_data = $this->only('title','annotation');
-        $chapter_data['annotation']=Helper::trimSpaces($chapter_data['annotation']);
+        $chapter_data['annotation']=StringProcess::trimSpaces($chapter_data['annotation']);
         while(Helper::convert_to_title($chapter_data['title'])!=$chapter_data['title']){
            $chapter_data['title'] = Helper::convert_to_title($chapter_data['title']);
         }
@@ -132,8 +132,8 @@ class StoreChapter extends FormRequest
         $thread = $book->thread;
         //post data
         $post_data=$this->only('body');
-        $post_data['body']=Helper::trimSpaces($post_data['body']);
-        $post_data['trim_body']=Helper::trimtext($post_data['body'], 50);
+        $post_data['body']=StringProcess::trimSpaces($post_data['body']);
+        $post_data['trim_body']=StringProcess::trimtext($post_data['body'], 50);
         $post_data['title']=$this->brief;
         $post_data['user_ip']=request()->getClientIp();
         $post_data['markdown']=$this->markdown? true: false;
@@ -143,7 +143,7 @@ class StoreChapter extends FormRequest
         // chapter data
         $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post_data['body']);
         $chapter_data = $this->only('title','annotation');
-        $chapter_data['annotation']=Helper::trimSpaces($chapter_data['annotation']);
+        $chapter_data['annotation']=StringProcess::trimSpaces($chapter_data['annotation']);
         while(Helper::convert_to_title($chapter_data['title'])!=$chapter_data['title']){
            $chapter_data['title'] = Helper::convert_to_title($chapter_data['title']);
         }

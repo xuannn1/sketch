@@ -24,7 +24,7 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'except' => ['followers','followings','index','show','show_threads','show_statuses'],
+            'except' => ['followers','followings','index','show','threads','lists','statuses'],
         ]);
     }
 
@@ -154,7 +154,7 @@ class UsersController extends Controller
         $users = $user->followings()->paginate(config('preference.users_per_page'));
         $users->load('info','title');
 
-        return view('users.show_follow', compact('user', 'info', 'users'))->with(['follow_title'=>'关注的人列表']);
+        return view('users.show_follow', compact('user', 'info', 'users'))->with(['follow_title'=>'关注的人']);
     }
 
     public function followers($id)
@@ -164,7 +164,7 @@ class UsersController extends Controller
         $users = $user->followers()->paginate(config('preference.users_per_page'));
         $users->load('info','title');
         $title = '粉丝';
-        return view('users.show_follow', compact('user', 'info', 'users'))->with(['follow_title'=>'粉丝列表']);
+        return view('users.show_follow', compact('user', 'info', 'users'))->with(['follow_title'=>'粉丝']);
     }
     public function index(Request $request)
     {
@@ -179,10 +179,10 @@ class UsersController extends Controller
             ->appends($request->only('page'));
         });
 
-        return view('statuses.users_index', compact('users'))->with(['status_tab'=>'user']);
+        return view('statuses.user_index', compact('users'))->with(['status_tab'=>'user']);
     }
 
-    public function usercenter()
+    public function center()
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
@@ -223,10 +223,10 @@ class UsersController extends Controller
             });
         }
 
-        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'book']);
+        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'book', 'user_title'=>'书籍']);
     }
 
-    public function show_threads($id, Request $request)
+    public function threads($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);
@@ -258,10 +258,80 @@ class UsersController extends Controller
                 ->appends($request->only('page'));
             });
         }
-        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'thread']);
+        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'thread','user_title'=>'主题']);
     }
 
-    public function show_statuses($id, Request $request)
+    public function lists($id, Request $request)
+    {
+        $user = CacheUser::user($id);
+        $info = CacheUser::info($id);
+        if(!$user){
+            abort(404);
+        }
+
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+            $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
+            ->withUser($id)
+            ->withType('list')
+            ->ordered()
+            ->paginate(config('preference.threads_per_page'));
+        }else{
+            $queryid = 'UserList.'
+            .url('/')
+            .$id
+            .(is_numeric($request->page)? 'P'.$request->page:'P1');
+
+            $threads = Cache::remember($queryid, 10, function () use($request, $id) {
+                return \App\Models\Thread::with('tags','author','last_post','last_component')
+                ->withUser($id)
+                ->withType('list')
+                ->isPublic()
+                ->inPublicChannel()
+                ->withAnonymous('none_anonymous_only')
+                ->ordered()
+                ->paginate(config('preference.threads_per_page'))
+                ->appends($request->only('page'));
+            });
+        }
+        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'list','user_title'=>'清单']);
+    }
+
+    public function boxes($id, Request $request)
+    {
+        $user = CacheUser::user($id);
+        $info = CacheUser::info($id);
+        if(!$user){
+            abort(404);
+        }
+
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+            $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
+            ->withUser($id)
+            ->withType('box')
+            ->ordered()
+            ->paginate(config('preference.threads_per_page'));
+        }else{
+            $queryid = 'UserBox.'
+            .url('/')
+            .$id
+            .(is_numeric($request->page)? 'P'.$request->page:'P1');
+
+            $threads = Cache::remember($queryid, 10, function () use($request, $id) {
+                return \App\Models\Thread::with('tags','author','last_post','last_component')
+                ->withUser($id)
+                ->withType('box')
+                ->isPublic()
+                ->inPublicChannel()
+                ->withAnonymous('none_anonymous_only')
+                ->ordered()
+                ->paginate(config('preference.threads_per_page'))
+                ->appends($request->only('page'));
+            });
+        }
+        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'box','user_title'=>'问题箱']);
+    }
+
+    public function statuses($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);
@@ -289,7 +359,7 @@ class UsersController extends Controller
         return view('users.show_status', compact('user','info','statuses'))->with(['show_user_tab'=>'status']);
     }
 
-    public function show_comments($id, Request $request)
+    public function comments($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);

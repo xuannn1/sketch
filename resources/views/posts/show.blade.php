@@ -20,14 +20,16 @@
             <div class="panel-body text-center">
                 <div class="row">
                     <div class="col-xs-12">
+                        <!-- 标题 -->
+                        @if($post->title)
+                        <div class="text-center">
+                            <strong class="h3">{{ $post->title }}</strong>
+                        </div>
+                        @endif
+                        <!-- 作者名称 -->
                         <div>
-                            <!-- 显示作者名称 -->
                             @if($post->author)
-                                @if($post->type==='chapter')
-                                    <span class="h4">作者</span>
-                                @elseif($post->type==='list'||$post->type==='answer')
-                                    <span class="h4">楼主</span>
-                                @else
+                                @if($post->type==='post'||$post->type==='comment')
                                     @if ($post->anonymous)
                                     <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
                                         @if((Auth::check()&&(Auth::user()->isAdmin())))
@@ -45,8 +47,9 @@
                                 @endif
                             @endif
                         </div>
+
+                        <!-- 发表时间 -->
                         <div class="">
-                            <!-- 发表时间 -->
                             <span class="smaller-20">
                                 发表于 {{ $post->created_at->diffForHumans() }}
                                 @if($post->created_at < $post->edited_at )
@@ -54,18 +57,20 @@
                                 @endif
                             </span>&nbsp;
                         </div>
+                        @if((Auth::check())&&(Auth::user()->isAdmin()))
+                        <!-- 管理专区 -->
                         <div class="">
-                            @if((Auth::check())&&(Auth::user()->isAdmin()))
                             <span>
                                 <a href="#" class="btn btn-md btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
                             </span>
-                            @endif
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
             @if($post->type==="chapter"&&$post->chapter)
                 @include('posts._previous_next_chapter_tab')
+                <br>
             @endif
             <div class="panel-body post-body">
                 @if((($post->bianyuan)||($thread->bianyuan))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
@@ -104,11 +109,6 @@
 
                     <!-- 普通回帖展开 -->
                     <div class="main-text {{ $post->indentation? 'indentation':'' }}">
-                        @if($post->title)
-                        <div class="text-center">
-                            <strong class="h3">{{ $post->title }}</strong>
-                        </div>
-                        @endif
 
                         @if($post->type==="chapter"&&$post->chapter&&$post->chapter->warning)
                         <div class="text-center grayout">
@@ -120,7 +120,7 @@
                         @if($post->markdown)
                         {!! Helper::sosadMarkdown($post->body) !!}
                         @else
-                        {!! Helper::wrapParagraphs($post->body) !!}
+                        {!! StringProcess::wrapParagraphs($post->body) !!}
                         @endif
                         <br>
 
@@ -128,7 +128,14 @@
                     @if($post->type==="chapter"&&$post->chapter&&$post->chapter->annotation)
                     <br>
                     <div class="text-left grayout">
-                        {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
+                        {!! StringProcess::wrapParagraphs($post->chapter->annotation) !!}
+                    </div>
+                    <br>
+                    @endif
+                    @if($post->type==='chapter')
+                    <div class="font-4">
+                        <a href="{{ route('thread.showpost', $post->id) }}" class="pull-left"><em>进入论坛模式</em></a>
+                        <span class = "pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->char_count }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->reply_count }}</em></span>
                     </div>
                     @endif
                 @endif

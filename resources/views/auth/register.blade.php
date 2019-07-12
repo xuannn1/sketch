@@ -15,7 +15,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-xs-10 col-xs-offset-1 "><strong>
-                            {!! Helper::wrapParagraphs(Helper::system_variable()->register_slogan) !!}
+                            {!! StringProcess::wrapParagraphs(Helper::system_variable()->register_slogan) !!}
                         </strong></div>
                     </div>
                 </div>

@@ -111,13 +111,20 @@
                 @if($post->markdown)
                 {!! Helper::sosadMarkdown($post->body) !!}
                 @else
-                {!! Helper::wrapParagraphs($post->body) !!}
+                {!! StringProcess::wrapParagraphs($post->body) !!}
                 @endif
 
                 @if($post->type==="chapter"&&$post->chapter&&$post->chapter->annotation)
                 <br>
                 <div class="text-left grayout">
-                    {!! Helper::sosadMarkdown($post->chapter->annotation) !!}
+                    {!! StringProcess::wrapParagraphs($post->chapter->annotation) !!}
+                </div>
+                <br>
+                @endif
+                @if($post->type==='chapter')
+                <div class="font-4">
+                    <a href="{{ route('post.show', $post->id) }}" class="pull-left"><em>进入阅读模式</em></a>
+                    <span class = "pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->char_count }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->reply_count }}</em></span>
                 </div>
                 @endif
             </div>
@@ -126,9 +133,6 @@
 
     @if(Auth::check())
     <div class="text-right post-vote h5">
-        @if($post->type==='chapter')
-        <a href="#" class="pull-left h5"><em>前往阅读模式</em></a>
-        @endif
         @if(Auth::user()->level >= 1)
             <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
         @endif
@@ -146,8 +150,8 @@
     @if ($post->last_reply)
     <div class="panel-footer">
         <div class="smaller-20" id="postcomment{{$post->last_reply_id}}">
-            <a href="{{ route('thread.showpost', $post->last_reply_id) }}" class="grayout">最新回复：{{ StringProcess::simpletrim($post->last_reply->brief,20) }}</a>
-            <a href="{{ route('thread.show', ['thread' => $post->thread_id, 'withReplyTo' => $post->id]) }}" class="pull-right">>>全部回帖</a>
+            <a href="{{ route('thread.showpost', $post->last_reply_id) }}" class="grayout">最新回复：{{ StringProcess::simpletrim($post->last_reply->brief,20) }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{{ route('thread.show', ['thread' => $post->thread_id, 'withReplyTo' => $post->id]) }}" class="">>>本层全部回帖</a>
         </div>
     </div>
     @endif

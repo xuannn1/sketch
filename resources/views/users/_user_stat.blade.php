@@ -1,9 +1,9 @@
 @include('users._user_name')
 <div class="row h4 text-center stat">
-    <span><a href="{{route('users.followings', $user->id)}}">关注：{{ $info->following_count }}</a></span>
+    <span><a href="{{route('user.followings', $user->id)}}">关注：{{ $info->following_count }}</a></span>
     &nbsp;&nbsp;
     &nbsp;&nbsp;
-    <span><a href="{{route('users.followers', $user->id)}}">粉丝：{{ $info->follower_count }}</a></span>
+    <span><a href="{{route('user.followers', $user->id)}}">粉丝：{{ $info->follower_count }}</a></span>
 </div>
 <div class="stats h4">
     <span>盐度：{{ $info->exp }}</span>&nbsp;&nbsp;

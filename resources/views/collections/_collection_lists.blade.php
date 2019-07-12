@@ -36,7 +36,7 @@
         </div>
         <div class="col-xs-12 h5 ">
             <a href=""><span>{{ $collection_list->brief }}&nbsp;</span>
-            <span class="smaller-10 grayout brief">{!! Helper::trimtext($collection_list->body,60) !!}</a></span>
+            <span class="smaller-10 grayout brief">{!! StringProcess::trimtext($collection_list->body,60) !!}</a></span>
             <span class="pull-right">
                 <!-- 创建时间/更新时间 -->
                 <span class="grayout smaller-10">{{ Carbon\Carbon::parse($collection_list->created_at)->diffForHumans() }}/{{ Carbon\Carbon::parse($collection_list->lastupdated_at)->diffForHumans() }}

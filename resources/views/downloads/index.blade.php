@@ -14,10 +14,18 @@
                     <div class="">
                         页面调整中，暂停服务，请稍后
                     </div>
+                    @else
+                    <div class="">
+                        作者关闭了脱水书籍模式的下载
+                    </div>
                     @endif
                     @if($thread->download_as_thread)
                     <div class="">
                         页面调整中，暂停服务，请稍后
+                    </div>
+                    @else
+                    <div class="">
+                        作者关闭了论坛模式的下载
                     </div>
                     @endif
                 </div>

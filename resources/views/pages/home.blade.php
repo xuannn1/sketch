@@ -42,6 +42,7 @@
                 </div>
             </div>
             @endforeach
+            @if($thread_recom)
             <div class="panel-body">
                 <div class="container-fluid">
                     <div class="recommendation">
@@ -54,6 +55,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">

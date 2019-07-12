@@ -1,13 +1,13 @@
 @include('users._user_name')
 <div class="row h4 text-center stat">
-    <span><a href="{{route('users.followings', $user->id)}}">关注：{{ $info->following_count }}</a></span>
+    <span><a href="{{route('user.followings', $user->id)}}">关注：{{ $info->following_count }}</a></span>
     &nbsp;&nbsp;
     @if ((Auth::check())&&($user->id != Auth::id()))
     <button type="button" class="btn btn-lg btn-primary sosad-button {{'follow'.$user->id}} {{Auth::user()->isFollowing($user->id) ? 'hidden':''}}" onclick="follow({{$user->id}})">关注</button>
     <button type="button" class="btn btn-lg btn-danger sosad-button {{'cancelfollow'.$user->id}} {{Auth::user()->isFollowing($user->id) ? '':'hidden'}}" onclick="cancelfollow({{$user->id}})">取消关注</button>
     @endif
     &nbsp;&nbsp;
-    <span><a href="{{route('users.followers', $user->id)}}">粉丝：{{ $info->follower_count }}</a></span>
+    <span><a href="{{route('user.followers', $user->id)}}">粉丝：{{ $info->follower_count }}</a></span>
 </div>
 <div class="stats h4">
     <span>盐度：{{ $info->exp }}</span>&nbsp;&nbsp;
@@ -19,7 +19,7 @@
 <br>
 @if($info->introduction)
 <div class="h5 text-center">
-    <span>{!! Helper::wrapParagraphs($info->introduction) !!}</span>
+    <span>{!! StringProcess::wrapParagraphs($info->introduction) !!}</span>
 </div>
 @endif
 <br>

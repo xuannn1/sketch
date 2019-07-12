@@ -12023,6 +12023,14 @@ hr {
   margin-top: -1px;
 }
 
+.dropdown-menu {
+  font-size: 18px;
+}
+
+.dropdown-menu li {
+  margin: 5px;
+}
+
 .tag-button-left {
   padding: 0px 2px 0px 5px;
   border-radius: 10px 0px 0px 10px;

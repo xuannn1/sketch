@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreBook;
 use App\Models\Thread;
-use App\Helpers\ConstantObjects;
+use ConstantObjects;
 
 use Auth;
 
@@ -30,27 +30,6 @@ class BooksController extends Controller
         $thread = $form->generateBook();
         $thread->user->reward("regular_book");
         return redirect()->route('book.show', $thread->book_id)->with("success", "您已成功发布文章");
-    }
-    public function edit(Book $book)
-    {
-        if ((Auth::id() == $book->thread->user_id)&&(!$book->thread->locked)){
-            $thread = $book->thread->load('mainpost');
-            $book->load('tongren');
-            $tags = $thread->tags->pluck('id')->toArray();
-            return view('books.edit',compact('book', 'thread','tags'));
-        }else{
-            return redirect()->route('error', ['error_code' => '405']);
-        }
-    }
-    public function update(StoreBook $form, Book $book)
-    {
-        $thread = $book->thread;
-        if ((Auth::id() == $book->thread->user_id)&&(!$thread->locked)){
-            $form->updateBook($thread);
-            return redirect()->route('book.show', $book->id)->with("success", "您已成功修改文章");
-        }else{
-            return redirect()->route('error', ['error_code' => '405']);
-        }
     }
 
     public function show($id, Request $request)

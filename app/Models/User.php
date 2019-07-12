@@ -153,7 +153,7 @@ class User extends Authenticatable
     public function canSeeChannel($id)
     {
         $channel = collect(config('channel'))->keyby('id')->get($id);
-        return $channel->is_public||$this->role==='admin'||($channel->type==='homework'&&$this->role==='editor')||($channel->type==='homework'&&$this->role==='senior');
+        return $channel->is_public||$this->role==='admin'||($channel->type==='homework'&&$this->role==='editor')||($channel->type==='homework'&&$this->role==='senior')||($channel->type==='homework'&&$this->role==='homeworker');
     }
 
     public function checklevelup()

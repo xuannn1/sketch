@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Helpers\PageObjects;
-use App\Helpers\ConstantObjects;
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
+use DB;
+use Cache;
 use Auth;
-use Carbon\Carbon;
-use App\Helpers\CacheUser;
+use ConstantObjects;
+use Carbon;
+use CacheUser;
 
 use App\Sosadfun\Traits\AdministrationTraits;
+use App\Sosadfun\Traits\PageObjectTraits;
 
 class PagesController extends Controller
 {
     use AdministrationTraits;
+    use PageObjectTraits;
 
     public function __construct()
     {
@@ -28,16 +28,16 @@ class PagesController extends Controller
 
     public function home()
     {
-        $quotes = PageObjects::quotes();
-        $short_recom = PageObjects::short_recommendations();
-        $thread_recom = PageObjects::thread_recommendation();
+        $quotes = $this->quotes();
+        $short_recom = $this->short_recommendations();
+        $thread_recom = $this->thread_recommendation();
         $channels = ConstantObjects::allChannels();
         $channel_threads = [];
         foreach($channels as $channel){
-            if($channel->is_public){
+            if($channel->is_public||(Auth::check()&&Auth::user()->canSeeChannel($channel->id))){
                 $channel_threads[$channel->id] = [
                     'channel' => $channel,
-                    'threads' => PageObjects::channel_threads($channel->id)
+                    'threads' => $this->channel_threads($channel->id)
                 ];
             }
         }
@@ -50,8 +50,8 @@ class PagesController extends Controller
 
     public function help()
     {
-        $users_online = PageObjects::users_online();
-        $webstat = PageObjects::web_stat();
+        $users_online = $this->users_online();
+        $webstat = $this->web_stat();
         return view('pages/help',compact('webstat','users_online'));
     }
 

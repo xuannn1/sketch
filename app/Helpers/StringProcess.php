@@ -1,23 +1,12 @@
 <?php
 
 namespace App\Helpers;
+
+use GrahamCampbell\Markdown\Facades\Markdown;
 use Genert\BBCode\BBCode;
+
 class StringProcess
 {
-    public static function trimtext($text=null, int $len)//截取一个特定长度的字串
-    {
-        $bbCode = new BBCode();
-        $bbCode = self::addCustomParserBBCode($bbCode);
-
-        $text = self::trimSpaces($text);//去除字串中多余的空行，html-tag，每一段开头的空格
-        $text = $bbCode->stripBBCodeTags((string) $text);
-        $text = preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text);
-        $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
-        if(iconv_strlen($text) > iconv_strlen($substr)){
-            $substr.='…';
-        }
-        return $substr;
-    }
 
     public static function simpletrim($text=null, int $len)//截取一个特定长度的字串
     {
@@ -47,31 +36,30 @@ class StringProcess
         return $text;
     }
 
-    // public static function select_from_postion($text=null, int $position)//从很多段回答中，截取一段句子
-    // {
-    //     $bbCode = new BBCode();
-    //     $bbCode = self::addCustomParserBBCode($bbCode);
-    //
-    //     $text = self::trimSpaces($text);//去除字串中多余的空行，html-tag，每一段开头的空格
-    //     $text = $bbCode->stripBBCodeTags((string) $text);
-    //     $text = preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text);
-    //     $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
-    //     if(iconv_strlen($text) > iconv_strlen($substr)){
-    //         $substr.='…';
-    //     }
-    //     return $substr;
-    // }
-    //
-    // public static function htmltotext($post= null)
-    // {
-    //     $post = str_replace("</p>", "\n", $post);
-    //     $post = str_replace("<br>", "\n", $post);
-    //     while(strip_tags($post)!=$post){
-    //         $post = strip_tags($post);
-    //     }
-    //     return $post;
-    // }
-    //
+    public static function trimtext($text=null, int $len)//截取一个特定长度的字串,去除内部的bbcode和htmltag
+    {
+        $bbCode = new BBCode();
+        $bbCode = self::addCustomParserBBCode($bbCode);
+        $text = self::trimSpaces($text);//去除字串中多余的空行，html-tag，每一段开头的空格
+        $text = $bbCode->stripBBCodeTags((string) $text);
+        $text = preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text);
+        $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
+        if(iconv_strlen($text) > iconv_strlen($substr)){
+            $substr.='…';
+        }
+        return $substr;
+    }
+
+    public static function htmltotext($post= null) //下载专用的转格式
+    {
+        $post = str_replace("</p>", "\n", $post);
+        $post = str_replace("<br>", "\n", $post);
+        while(strip_tags($post)!=$post){
+            $post = strip_tags($post);
+        }
+        return $post;
+    }
+
     public static function addCustomParserBBCode($bbCode){
         $bbCode->addParser(
             'blockquote',
@@ -147,32 +135,33 @@ class StringProcess
         );
         return $bbCode;
     }
-    //
-    // public static function sosadMarkdown($post= null)
-    // {
-    //     $post = Markdown::convertToHtml($post);
-    //     $post = str_replace("</p>\n", "</p>", $post);
-    //     $post = str_replace("\n", "</p><p>", $post);
-    //     return $post;
-    // }
-    // //test bbcodeparser
-    // public static function wrapParagraphs($post= null)
-    // {
-    //     $post = self::trimSpaces($post);
-    //     $bbCode = new BBCode();
-    //     $bbCode = self::addCustomParserBBCode($bbCode);
-    //     $post = $bbCode->convertToHtml($post);
-    //     $post = str_replace("<br>", "</p><br><p>", $post);
-    //     $post = preg_replace('/\n{1,}/', "</p><p>", $post);
-    //     $post = "<p>{$post}</p>";
-    //     return $post;
-    // }
-    //
-    // public static function convertBBCodetoMarkdown($string){//其实反过来的。。
-    //     $string = Markdown::convertFromHtml($string);
-    //     $string = BBCode::convertToHtml($string);
-    //     return $string;
-    // }
+
+
+    public static function sosadMarkdown($post= null)
+    {
+        $post = Markdown::convertToHtml($post);
+        $post = str_replace("</p>\n", "</p>", $post);
+        $post = str_replace("\n", "</p><p>", $post);
+        return $post;
+    }
+
+    public static function wrapParagraphs($post= null)
+    {
+        $post = self::trimSpaces($post);
+        $bbCode = new BBCode();
+        $bbCode = self::addCustomParserBBCode($bbCode);
+        $post = $bbCode->convertToHtml($post);
+        $post = str_replace("<br>", "</p><br><p>", $post);
+        $post = preg_replace('/\n{1,}/', "</p><p>", $post);
+        $post = "<p>{$post}</p>";
+        return $post;
+    }
+
+    public static function convertBBCodetoMarkdown($string){//其实反过来的。。
+        $string = Markdown::convertFromHtml($string);
+        $string = BBCode::convertToHtml($string);
+        return $string;
+    }
 
     public static function convert_to_public($string= null)
     {
@@ -194,5 +183,30 @@ class StringProcess
         }else{
             return self::convert_to_title($newstring);
         }
+    }
+
+    public static function mergeWithTag($id, $string='')
+    {
+        if($string){
+            return $string.'-'.(string)$id;
+        }
+        return (string)$id;
+    }
+
+    public static function splitWithTag($id, $string='')
+    {
+        $endtag = '';
+        if($string){
+            $tags = explode('-',$string);
+            foreach($tags as $i=>$tag){
+                if($tag!=$id){
+                    $endtag .='-'.$tag;
+                }
+            }
+            if($endtag){
+                $endtag = substr($endtag,1);
+            }
+        }
+        return $endtag;
     }
 }

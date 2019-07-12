@@ -7,11 +7,13 @@ use App\Models\Quiz;
 use App\Models\QuizOption;
 use DB;
 use Auth;
-use App\Helpers\Helper;
+use App\Sosadfun\Traits\QuizObjectTraits;
 use Carbon\Carbon;
 
 class QuizController extends Controller
 {
+    use QuizObjectTraits;
+
     public function __construct()
     {
         $this->middleware('admin')->except('taketest','submittest');
@@ -112,7 +114,7 @@ class QuizController extends Controller
     {
         $user = Auth::user();
         $level = (int)$request->quiz_level ?? 0;
-        $quizzes = Helper::random_quizzes($level);
+        $quizzes = $this->random_quizzes($level);
         return view('quiz.taketest',compact('level', 'quizzes', 'user'));
     }
     public function submittest(Request $request)
@@ -126,7 +128,7 @@ class QuizController extends Controller
                 array_push($wrong_quiz, [
                     'submitted_answers' => $submitted_answers,
                     'correct_answers' => $correct_answers,
-                    'quiz' => Helper::find_quiz_set((int)$quiz_answer['quiz_id']),
+                    'quiz' => $this->find_quiz_set((int)$quiz_answer['quiz_id']),
                 ]);
             }
         }
@@ -146,7 +148,7 @@ class QuizController extends Controller
 
     private function find_quiz_answers($quiz_id)
     {
-        return $quiz_option = Helper::all_quiz_answers()->filter(function($item) use ($quiz_id) {
+        return $quiz_option = $this->all_quiz_answers()->filter(function($item) use ($quiz_id) {
             return $item->quiz_id == $quiz_id && $item->is_correct;
         })->sortBy('id')->pluck('id')->toArray();
     }

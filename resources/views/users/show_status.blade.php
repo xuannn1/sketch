@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', $user->name.'-的主题')
+@section('title', $user->name.'-的动态')
 
 @section('content')
 <div class="container-fluid">

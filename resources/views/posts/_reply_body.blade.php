@@ -50,7 +50,7 @@
             <!-- 回复他人帖子的相关信息 -->
             @if($reply->reply_to_id!=0)
                 <div class="post-reply grayout">
-                    回复&nbsp;<a href="{{ route('thread.showpost', $reply->reply_to_id) }}">{{ $reply->reply_to_brief }}</a>
+                    回复&nbsp;<a href="{{ route('thread.showpost', $reply->reply_to_id) }}">{{ StringProcess::simpletrim($reply->reply_to_brief, 20) }}</a>
                 </div>
             @endif
 
@@ -64,7 +64,7 @@
                 @if($reply->markdown)
                 {!! Helper::sosadMarkdown($reply->body) !!}
                 @else
-                {!! Helper::wrapParagraphs($reply->body) !!}
+                {!! StringProcess::wrapParagraphs($reply->body) !!}
                 @endif
             </div>
         @endif

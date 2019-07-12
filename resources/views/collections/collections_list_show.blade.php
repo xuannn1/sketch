@@ -26,7 +26,7 @@
                     @endif
                 </p>
                 <div class="text-center main-text">
-                    {!! Helper::wrapParagraphs($collection_list->body) !!}
+                    {!! StringProcess::wrapParagraphs($collection_list->body) !!}
                 </div>
                 <!-- 原作者可以修改这个收藏单的描述 -->
                 @if(Auth::id()==$collection_list->user_id)

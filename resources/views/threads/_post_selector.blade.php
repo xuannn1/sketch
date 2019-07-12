@@ -25,7 +25,6 @@
                 @foreach(config('selectors.post_filter.ordered') as $ordered => $explanation)
                     <li><a class="" href="{{ route('thread.show', array_merge(['thread'=>$thread->id, 'ordered' => $ordered], request()->only('withType', 'withComponent', 'userOnly', 'withReplyTo'))) }}">{{$explanation}}</a></li>
                 @endforeach
-                <li><a class="" href="{{ route('thread.show', array_merge(['thread'=>$thread->id], request()->only('withType', 'withComponent', 'userOnly', 'withReplyTo'))) }}">时间顺序</a></li>
             </ul>
         </span>
     </div>

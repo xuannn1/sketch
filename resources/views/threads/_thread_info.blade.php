@@ -81,7 +81,7 @@
         @if($thread->markdown)
         {!! Helper::sosadMarkdown($thread->body) !!}
         @else
-        {!! Helper::wrapParagraphs($thread->body) !!}
+        {!! StringProcess::wrapParagraphs($thread->body) !!}
         @endif
         @endif
     </div>

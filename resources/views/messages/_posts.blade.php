@@ -31,13 +31,13 @@
                         @if($post->markdown)
                         {!! Helper::sosadMarkdown($post->body) !!}
                         @else
-                        {!! Helper::wrapParagraphs($post->body) !!}
+                        {!! StringProcess::wrapParagraphs($post->body) !!}
                         @endif
                     </div>
                     @include('posts._post_simplevote')
 
                 </span>
-                <span id="abbreviated{{$post->id}}" class=""><strong>{{ $post->title }}</strong>{{ $post->title ? ' ': ''}} {!! Helper::trimtext($post->body,60) !!}</span>
+                <span id="abbreviated{{$post->id}}" class=""><strong>{{ $post->title }}</strong>{{ $post->title ? ' ': ''}} {!! StringProcess::trimtext($post->body,60) !!}</span>
                 <small><a type="button" name="button" id="expand{{$post->id}}" onclick="expandpost('{{$post->id}}')" class="pull-right">展开</a></small>
             </div>
         </div>

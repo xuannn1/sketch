@@ -2,7 +2,7 @@
 namespace App\Sosadfun\Traits;
 
 use Cache;
-use Carbon\Carbon;
+use Carbon;
 
 trait SwitchableMailerTraits{
     public function select_server()

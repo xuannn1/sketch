@@ -1,8 +1,6 @@
 <?php
 namespace App\Sosadfun\Traits;
 
-use Illuminate\Support\Facades\DB;
-
 trait AdministrationTraits{
     public function findAdminRecords($id, $page=1)
     {

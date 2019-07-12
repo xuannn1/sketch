@@ -42,8 +42,8 @@ class StoreThread extends FormRequest
     {
         $thread_data = $this->only('title','brief');
         $post_data = $this->only('body');
-        $post_data['body'] = Helper::trimSpaces($post_data['body']);
-        $post_data['trim_body']=Helper::trimtext($post_data['body'], 50);
+        $post_data['body'] = StringProcess::trimSpaces($post_data['body']);
+        $post_data['trim_body']=StringProcess::trimtext($post_data['body'], 50);
         $post_data['user_ip'] = request()->getClientIp();
 
         $thread_data['channel_id']=$channel_id;
@@ -99,8 +99,8 @@ class StoreThread extends FormRequest
     {
         $thread_data = $this->only('title','brief');
         $post_data = $this->only('body');
-        $post_data['body'] = Helper::trimSpaces($post_data['body']);
-        $post_data['trim_body']=Helper::trimtext($post_data['body'], 50);
+        $post_data['body'] = StringProcess::trimSpaces($post_data['body']);
+        $post_data['trim_body']=StringProcess::trimtext($post_data['body'], 50);
         $thread_data['label_id']=(int)$this->label;
         //查看标签是否符合权限
         if(\App\Models\Label::find($thread_data['label_id'])->channel_id!=$thread->channel_id){
