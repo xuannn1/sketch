@@ -7,25 +7,25 @@
     <div class="col-sm-offset-3 col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3>修改 {{ $user->name }} 的个人简介</h3>
+                <h2>修改「{{ $user->name }}」的个人介绍</h2>
             </div>
             <div class="panel-body">
-                <h4>修改个人简介</h4>
                 @include('shared.errors')
                 <form method="POST" action="{{ route('user.update_introduction') }}">
                         {{ csrf_field() }}
                     <div class="form-group">
                         <label for="brief_intro">短介绍：</label>
                         <input type="text" name="brief_intro" class="form-control" value="{{ $info->brief_intro }}">
+                        <h6>（短介绍45字内）</h6>
                     </div>
 
                     <div class="form-group">
-                        <label for="introduction"><h5>个人简介：</h5></label>
-                        <textarea name="introduction" id="introduction" data-provide="markdown" rows="5" class="form-control" placeholder="改一下吧">{{ $info->introduction }}</textarea>
+                        <label for="introduction">个人介绍：</label>
+                        <textarea name="introduction" id="introduction" data-provide="markdown" rows="5" class="form-control" placeholder="在这里输入个人介绍文字哦！支持BBCode格式！可以插图插链接～">{{ $info->introduction }}</textarea>
                         <button type="button" onclick="retrievecache('introduction')" class="sosad-button-control addon-button">恢复数据</button>
                     </div>
 
-                    <button type="submit" class="btn btn-danger sosad-button">更新个人简介</button>
+                    <button type="submit" class="btn btn-lg btn-primary sosad-button">更新个人介绍</button>
                 </form>
             </div>
         </div>

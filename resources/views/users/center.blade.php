@@ -80,7 +80,7 @@
                     <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
                         隐私设置（待做）
                     </a>
-                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{ route('user.edit', $user->id) }}" class="btn btn-lg btn-info btn-block sosad-button">
                         编辑资料
                     </a>
                     <a href="{{ route('linkedaccounts.index') }}" class="btn btn-lg btn-info btn-block sosad-button">

@@ -90,7 +90,7 @@
 { // 以下是用户个人信息自己更改
     Route::get('/usercenter', 'UsersController@center')->name('user.center');//展示某用户的个人中心 19.7.11
 
-    Route::get('/user/edit', 'UsersController@edit')->name('users.edit');//修改用户的个人信息整体界面 19.7.9
+    Route::get('/user/edit', 'UsersController@edit')->name('user.edit');//修改用户的个人信息整体界面 19.7.9
 
     Route::get('/user/send_email_confirmation', 'Auth\RegisterController@resend_email_confirmation')->name('email_confirmation.send'); // 重新发送当前用户的注册邮箱激活
 

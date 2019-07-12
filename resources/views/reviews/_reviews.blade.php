@@ -1,9 +1,8 @@
 @foreach($posts as $post)
 
 <div class="panel panel-default {{ $post->is_folded ? 'collapse':'' }} " id = "post{{ $post->id }}">
-    <div class="panel-heading">
+    <div class="panel-body">
         <span>
-
             @if($post->review->reviewee)
             <a href="{{ route('thread.show_profile', $post->review->thread_id) }}">《{{ $post->review->reviewee->title }}》</a>
             @endif
@@ -33,7 +32,9 @@
     </div>
     <div class="panel-body post-body">
         <div class="">
-            <a href="{{ route('post.show', $post->id) }}">{{ StringProcess::trimtext($post->body, 50) }}</a>
+            <a href="{{ route('post.show', $post->id) }}">
+                {{ StringProcess::trimtext($post->body, 50) }}
+            </a>
         </div>
     </div>
     <div class="text-right post-vote">

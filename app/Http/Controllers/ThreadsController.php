@@ -12,13 +12,10 @@ use App\Models\Thread;
 
 use Auth;
 use App\Sosadfun\Traits\ThreadObjectTraits;
-use App\Sosadfun\Traits\FindThreadTrait;
-
 
 class threadsController extends Controller
 {
     use ThreadObjectTraits;
-    use FindThreadTrait;
 
     public function __construct()
     {
@@ -216,7 +213,7 @@ class threadsController extends Controller
         if($show_profile){
             $thread = $this->threadProfile($id);
         }else{
-            $thread = $this->thread($id);
+            $thread = $this->findThread($id);
         }
 
         $posts = \App\Models\Post::where('thread_id',$id)

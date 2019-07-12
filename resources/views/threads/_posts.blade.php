@@ -13,9 +13,11 @@
                     <!-- 显示作者名称 -->
                     @if($post->author)
                         @if ($post->type==="chapter")
-                            <span>作者</span>
-                        @elseif ($post->type==="review"||$post->type==="answer")
-                            <span>作者</span>
+                            <span class="font-6 bianyuan-tag badge-tag">作者</span>
+                        @elseif ($post->type==="review")
+                            <span class="font-6  bianyuan-tag badge-tag">单主</span>
+                        @elseif ($post->type==="answer")
+                            <span class="font-6  bianyuan-tag badge-tag">答主</span>
                         @else
                             @if ($post->anonymous)
                                 <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
@@ -34,7 +36,7 @@
                         @endif
                     @endif
 
-                    @if(($post->user_id>0)&&(!$post->anonymous)&&((!$thread->anonymous)||(!$post->maintext)))
+                    @if(($post->user_id>0)&&(!$post->anonymous)&&((!$thread->anonymous)||(($post->type==='post')||($post->type==='comment'))))
                         <span class="grayout smaller-20"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'userOnly'=>$post->user_id]) }}">只看该用户</a></span>
                     @endif
                     <!-- 发表时间 -->

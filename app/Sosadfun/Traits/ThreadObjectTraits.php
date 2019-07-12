@@ -7,8 +7,6 @@ use ConstantObjects;
 
 trait ThreadObjectTraits{
 
-    use FIndThreadTrait;
-
     public function threadProfile($id)
     {
         return Cache::remember('threadProfile.'.$id, 15, function () use($id){

@@ -54,7 +54,7 @@
             <span class="pull-right smaller-10">
                 @foreach($thread->tags as $tag)
                 @if($tag->tag_type!='编推')
-                <a href="{{ route('books.index', array_merge(['withTag' => Helper::mergeWithTag($tag->id, request()->withTag)],request()->only('excludeTag','inChannel','withBianyuan','ordered'))) }}">{{ $tag->tag_name }}</a>
+                <a href="{{ route('books.index', array_merge(['withTag' => StringProcess::mergeWithTag($tag->id, request()->withTag)],request()->only('excludeTag','inChannel','withBianyuan','ordered'))) }}">{{ $tag->tag_name }}</a>
                 @endif
                 @endforeach
             </span>

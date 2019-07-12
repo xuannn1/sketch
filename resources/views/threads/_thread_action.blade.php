@@ -26,6 +26,7 @@
         </div>
         @endswitch
     </div>
+    <hr>
     @endif
     @if($thread->channel()->type !='thread')
     <!-- 点击阅读  书籍/收藏单/问题箱   -->
@@ -37,16 +38,15 @@
         <div class="col-xs-6">
             <a href="{{ route('thread.chapter_index', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">章节目录</a>
         </div>
-        @endif
-        @if($thread->channel()->type==='list')
+        @elseif($thread->channel()->type==='list')
         <div class="col-xs-12 pull-right">
             <a href="{{ route('thread.review_index', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">评论列表</a>
         </div>
         @endif
     </div>
     @endif
-    <br>
     @if(Auth::check())
+    <hr>
     <!-- 操作按钮：收藏，回复，写独立评论，打赏 -->
     <div class="row">
         <div class="col-xs-3">

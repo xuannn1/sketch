@@ -21,11 +21,6 @@ class ConstantObjects
         return [];
     }
 
-    public static function find_channel_by_id($id)
-    {
-
-    }
-
     public static function channelTypes($type='')
     {
         if (in_array($type, self::$channel_types)){
@@ -41,7 +36,7 @@ class ConstantObjects
 
     public static function find_primary_tags_in_channel($id)
     {
-        return Cache::remember('primary_tags_of_channel.'.$id, 30, function () use($id) {
+        return Cache::remember('primary_tags_of_channel.'.$id, 10, function () use($id) {
             $tags = \App\Models\Tag::where('is_primary','=',1)->where('channel_id','=',$id)->get();
 
             if($id==1){
@@ -80,45 +75,29 @@ class ConstantObjects
     public static function noTongrenTags()//获得站上非同人的所有的tags
     {
         return Cache::remember('noTongrenTags', 10, function (){
-            return App\Models\Tag::whereNotIn('tag_type', ['同人原著', '同人CP'])->get();
+            return \App\Models\Tag::whereNotIn('tag_type', ['同人原著', '同人CP'])->get();
         });
     }
 
     public static function find_tag_by_name($tagname)
     {
-        return Cache::remember('tagname-'.$tagname, 20, function() use($tagname) {
+        return Cache::remember('tagname-'.$tagname, 10, function() use($tagname) {
             return $tag = self::alltags()->keyBy('tag_name')->get($tagname);
         });
     }
 
     public static function find_tag_by_id($tagid)
     {
-        return Cache::remember('tagid-'.$tagid, 20, function() use($tagid) {
+        return Cache::remember('tagid-'.$tagid, 10, function() use($tagid) {
             return self::alltags()->keyBy('id')->get($tagid);
         });
     }
 
-    public static function decodeSelectedTags($tags='')
-    {
-        $located_tags = [];
-        if($tags){
-            $tag_ids = json_decode($tags);
-            foreach($tag_ids as $id){
-                if($id){
-                    $tag = self::find_tag_by_id($id);
-                    if($tag){
-                        array_push($located_tags, $tag);
-                    }
-                }
-            }
-        }
-        return $located_tags;
-    }
 
     public static function titles()//获得站上所有的titles
     {
         return Cache::remember('titles', 10, function (){
-            return App\Models\Title::all();
+            return \App\Models\Title::all();
         });
     }
 

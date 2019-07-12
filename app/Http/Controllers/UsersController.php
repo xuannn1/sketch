@@ -98,7 +98,7 @@ class UsersController extends Controller
     public function update_introduction(Request $request)
     {
         $this->validate($request, [
-            'brief_intro' => 'required|string|max:50',
+            'brief_intro' => 'required|string|max:45',
             'introduction' => 'required|string|max:2000',
         ]);
         $user = CacheUser::Auser();

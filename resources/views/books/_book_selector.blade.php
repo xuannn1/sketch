@@ -13,7 +13,7 @@
             <button type="button" class="btn btn-default btn-lg dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">篇幅<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach($tags['book_length_tags'] as $tag)
-                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => Helper::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
+                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => StringProcess::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
                 @endforeach
             </ul>
         </span>
@@ -22,7 +22,7 @@
             <button type="button" class="btn btn-default btn-lg dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">进度<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach($tags['book_status_tags'] as $tag)
-                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => Helper::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
+                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => StringProcess::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
                 @endforeach
             </ul>
         </span>
@@ -31,7 +31,7 @@
             <button type="button" class="btn btn-default btn-lg dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">性向<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach($tags['sexual_orientation_tags'] as $tag)
-                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => Helper::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
+                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => StringProcess::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
                 @endforeach
             </ul>
         </span>
@@ -40,7 +40,7 @@
             <button type="button" class="btn btn-default btn-lg dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">编推<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach($tags['editor_tags'] as $tag)
-                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => Helper::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
+                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => StringProcess::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
                 @endforeach
             </ul>
         </span>

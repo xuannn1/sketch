@@ -8,7 +8,7 @@
     @foreach(explode('-',request()->withTag) as $tag_id)
     @if(is_numeric($tag_id)&&$tag_id>0)
     <a class="btn btn-info btn-lg sosad-button-control" href="{{ route('books.index',
-    array_merge(['withTag'=>Helper::splitWithTag($tag_id, request()->withTag)], request()->only('inChannel', 'excludeTag','withBianyuan')))
+    array_merge(['withTag'=>StringProcess::splitWithTag($tag_id, request()->withTag)], request()->only('inChannel', 'excludeTag','withBianyuan')))
      }}" role="button">{{ ConstantObjects::find_tag_by_id($tag_id)->tag_name }}<span class="glyphicon glyphicon-remove"></span></a>
     @endif
     @endforeach

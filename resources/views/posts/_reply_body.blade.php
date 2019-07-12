@@ -47,8 +47,8 @@
             <h6 class="display-4 grayout"><a href="{{ route('login') }}">本内容为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></h6>
         </div>
         @else
-            <!-- 回复他人帖子的相关信息 -->
-            @if($reply->reply_to_id!=0)
+            <!-- 添加这个帖子回复他人帖子的相关信息 -->
+            @if($reply->reply_to_id>0)
                 <div class="post-reply grayout">
                     回复&nbsp;<a href="{{ route('thread.showpost', $reply->reply_to_id) }}">{{ StringProcess::simpletrim($reply->reply_to_brief, 20) }}</a>
                 </div>
