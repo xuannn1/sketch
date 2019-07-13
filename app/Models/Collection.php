@@ -9,7 +9,7 @@ class Collection extends Model
     protected $guarded = [];
     public $timestamps = false;
 
-    public function owner()//谁收藏的
+    public function collector()//谁收藏的
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id');
     }

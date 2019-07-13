@@ -112,7 +112,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Homework::class, 'homework_registrations', 'homework_id', 'user_id');
     }
 
-
+    public function collections($group=0)
+    {
+        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->wherePivot('group', $group);
+    }
 
     public function follow($user_ids)
     {

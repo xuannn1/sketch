@@ -287,4 +287,8 @@ class Thread extends Model
         // TODO 检查这名同学参加了作业吗？是的话算他提交了作业
     }
 
+    public function isCollectedBy($user_id)
+    {
+        return $this->collectors->contains($user_id);
+    }
 }
