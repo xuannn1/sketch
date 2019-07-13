@@ -21,6 +21,7 @@ class RebuildDatabase extends Command
     use TemporaryTraits\CleanUpExtraThingsTraits;
     use TemporaryTraits\ShrinkColumnLengthTraits;
     use TemporaryTraits\AddTablesTraits;
+    use TemporaryTraits\RenameFinalTableTraits;
     /**
     * The name and signature of the console command.
     *
@@ -61,6 +62,7 @@ class RebuildDatabase extends Command
         $this->cleanUpExtraThings();
         $this->shrinkColumnLength();
         $this->addTables();
+        $this->renameFinalTable();
     }
 
 }

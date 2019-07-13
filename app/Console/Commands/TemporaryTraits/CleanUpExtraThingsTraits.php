@@ -13,6 +13,7 @@ trait CleanUpExtraThingsTraits{
         $this->simplifyChapters();
         $this->simplifyThreads();
         $this->simplifyPosts();
+        $this->simplifyViewHistories();
         $this->simplifyVolumns();
         $this->duplicateLinkedAccounts();
         $this->simplifyActivity();
@@ -83,13 +84,13 @@ trait CleanUpExtraThingsTraits{
 
     public function simplifyViewHistories()
     {
-        if (Schema::hasColumn('view_histories', 'updated_at')){
+        if (Schema::hasColumn('view_histories', 'post_id')){
             DB::table('view_histories')
             ->where('post_id','>',0)
             ->delete();
             Schema::table('view_histories', function($table){
                 $table->dropColumn(['updated_at','post_id']);
-                echo "simplified books table.\n";
+                echo "simplified view histories table.\n";
             });
         }
     }

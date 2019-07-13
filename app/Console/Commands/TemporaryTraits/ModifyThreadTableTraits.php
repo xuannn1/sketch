@@ -472,7 +472,7 @@ trait ModifyThreadTableTraits{
         echo "start task2.5 modifyTongrenTable\n";
         if(!Schema::hasColumn('tongrens', 'thread_id')){
             Schema::table('tongrens', function($table){
-                $table->unsignedInteger('thread_id')->index();
+                $table->unsignedInteger('thread_id')->primary();
             });
             echo "added thread_id column to tongrens\n";
         }
@@ -498,7 +498,7 @@ trait ModifyThreadTableTraits{
 
         if(Schema::hasColumn('tongrens', 'book_id')){
             Schema::table('tongrens', function($table){
-                $table->dropColumn(['book_id','tongren_CP_tag_id', 'tongren_yuanzhu_tag_id', 'deleted_at','created_at','updated_at']);
+                $table->dropColumn(['id', 'book_id','tongren_CP_tag_id', 'tongren_yuanzhu_tag_id', 'deleted_at','created_at','updated_at']);
             });
             echo "dropped tongrens table extra columns\n";
         }
