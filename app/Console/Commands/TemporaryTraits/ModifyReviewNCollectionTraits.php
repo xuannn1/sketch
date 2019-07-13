@@ -205,6 +205,7 @@ trait ModifyReviewNCollectionTraits{
 
         if(Schema::hasColumn('collections', 'item_id')){
             Schema::table('collections', function($table){
+                $table->unsignedInteger('group')->default(0)->index();
                 $table->renameColumn('item_id', 'thread_id');
                 echo "echo renamed collections column.\n";
             });

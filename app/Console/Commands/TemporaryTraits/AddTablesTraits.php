@@ -64,7 +64,7 @@ trait AddTablesTraits{
             $table->unsignedInteger('homepage_thread_id')->default(0);
         });
 
-        Schema::create('collection_gruops', function ($table) {
+        Schema::create('collection_groups', function ($table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->index();
             $table->string('name',10)->nullable();
