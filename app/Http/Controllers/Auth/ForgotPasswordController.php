@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use DB;
-use Carbon\Carbon;
+use Carbon;
 
 class ForgotPasswordController extends Controller
 {

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Carbon\Carbon;
+use Carbon;
 use DB;
 
 class ReCalculateData extends Command

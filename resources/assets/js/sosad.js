@@ -127,46 +127,16 @@ function thread_xianyu(thread_id){
     });
 };
 
-// function thread_add_to_collection(thread_id){
-//     $.ajaxSetup({
-//         headers: {
-//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//         }
-//     });
-//     $.ajax({
-//         type: 'GET',
-//         url: web_base_url + '/threads/' + thread_id + '/collection',
-//         data: {
-//         },
-//         success: function(data) {
-//             console.log(data);
-//             var message = ["success","info","warning","danger"];
-//             $.each(data, function( key, value ){
-//                 if ($.inArray(key,message)>-1){
-//                     console.log(key,value);
-//                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
-//                 }
-//             });
-//             if(!(data['collection'] === undefined)){
-//                 $( '#threadcollection'+thread_id ).html('收藏'+data['collection']);
-//             }
-//         }
-//     });
-// };
-
-function item_add_to_collection(item_id, item_type, collection_list_id){
+function thread_add_to_collection(thread_id){
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
     $.ajax({
-        type: 'POST',
-        url: web_base_url + '/collections/store',
+        type: 'GET',
+        url: web_base_url + '/threads/' + thread_id + '/collect',
         data: {
-            'item_id':item_id,
-            'item_type':item_type,
-            'collection_list_id':collection_list_id,
         },
         success: function(data) {
             console.log(data);
@@ -178,7 +148,7 @@ function item_add_to_collection(item_id, item_type, collection_list_id){
                 }
             });
             if(!(data['collection'] === undefined)){
-                $( '#itemcollection'+item_id ).html('收藏'+data['collection']);
+                $( '#threadcollection'+thread_id ).html('收藏'+data['collection']);
             }
         }
     });

@@ -9,38 +9,56 @@ use Carbon;
 use DB;
 use Auth;
 use CacheUser;
+use App\Sosadfun\Traits\CollectionObjectTraits;
+use App\Sosadfun\Traits\FindThreadTrait;
 
 class CollectionsController extends Controller
 {
-
+    use CollectionObjectTraits;
+    use FindThreadTrait;
 
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
+
+        $group = (int)$request->group??0;
+        $collections = Collection::where('user_id', $user->id)
+        ->where('group',$request->group)
+        ->with('thread.author','thread.tags')
+        ->paginate(config('preference.threads_per_page'));
+
+        $groups = $this->findCollectionGroups($user->id);
+
+        return view('collections.index',compact('user','info','threads'))->with(['show_collection_tab'=>$request->group??'default']);
     }
 
 
-    public function store(Request $request)
+    public function store()
     {
         // default input: [
-            // 'thread_id' => xxx,
+            // 'thread' => xxx,
             // 'group' => xxx,
         //];
-        $thread = $this->findThread(request('thread_id'));
-            // TODO: test if user can see this thread
-        if(!$thread->isCollectedBy(Auth::id())){
-            Collection::create([
-                'thread_id' => request('thread_id'),
+
+        if($this->chechCollectedOrNot(Auth::id(), request('thread'))){
+            $collection = Collection::create([
+                'thread_id' => request('thread'),
                 'group' => request('group')??0,
             ]);
+            return [
+                'success' => '您已成功收藏本文!',
+                'collection'=> $collection,
+            ];
         }
-
+        return [
+            'info' => '您已收藏过本文,请勿重复收藏!',
+        ];
 
     }
 

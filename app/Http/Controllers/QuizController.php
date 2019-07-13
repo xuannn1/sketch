@@ -8,7 +8,7 @@ use App\Models\QuizOption;
 use DB;
 use Auth;
 use App\Sosadfun\Traits\QuizObjectTraits;
-use Carbon\Carbon;
+use Carbon;
 
 class QuizController extends Controller
 {

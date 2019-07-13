@@ -14,10 +14,10 @@ class AddUpvoteTimeToVotePostsTable extends Migration
     public function up()
     {
         Schema::table('vote_posts', function (Blueprint $table) {
-            $table->dateTime('upvoted_at')->default(Carbon\Carbon::now());//直到xx截止日期;
-            $table->dateTime('downvoted_at')->default(Carbon\Carbon::now());//直到xx截止日期;
-            $table->dateTime('funny_at')->default(Carbon\Carbon::now());//直到xx截止日期;
-            $table->dateTime('better_to_fold_at')->default(Carbon\Carbon::now());//直到xx截止日期;
+            $table->dateTime('upvoted_at')->default(Carbon::now());//直到xx截止日期;
+            $table->dateTime('downvoted_at')->default(Carbon::now());//直到xx截止日期;
+            $table->dateTime('funny_at')->default(Carbon::now());//直到xx截止日期;
+            $table->dateTime('better_to_fold_at')->default(Carbon::now());//直到xx截止日期;
         });
     }
 

@@ -25,7 +25,7 @@ class CreatePollsTable extends Migration
             $table->integer('reward_jifen_distribution')->default(0);//奖励均分给几个人，0为随机分发奖励
             $table->integer('reward_sangdian');//奖励多少丧点
             $table->integer('reward_sangdian_distribution')->default(0);//奖励均分给几个人，0为随机分发奖励
-            $table->dateTime('end_time')->default(Carbon\Carbon::now())->index();//投票截止日期
+            $table->dateTime('end_time')->default(Carbon::now())->index();//投票截止日期
             $table->softDeletes();
             $table->timestamps();
         });

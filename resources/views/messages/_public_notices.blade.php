@@ -9,7 +9,7 @@
                         <a href="{{ route('user.show', $public_notice->user_id) }}">{{ $public_notice->name }}</a>
                     </span>
                     <span class="grayout">
-                        发表于 {{ Carbon\Carbon::parse($public_notice->created_at)->diffForHumans() }}
+                        发表于 {{ Carbon::parse($public_notice->created_at)->diffForHumans() }}
                     </span>
                 </div>
                 <div class="main-text">

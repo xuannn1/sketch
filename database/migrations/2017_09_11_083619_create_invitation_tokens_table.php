@@ -19,7 +19,7 @@ class CreateInvitationTokensTable extends Migration
             $table->string('token');
             $table->integer('invited')->unsigned()->default(0);//激活人数
             $table->integer('invitation_times')->unsigned()->default(1);//能激活几次
-            $table->dateTime('invite_until')->default(Carbon\Carbon::now());//直到xx截止日期
+            $table->dateTime('invite_until')->default(Carbon::now());//直到xx截止日期
             $table->softDeletes();
             $table->timestamps();
         });

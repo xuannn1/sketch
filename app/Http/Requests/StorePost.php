@@ -7,7 +7,7 @@ use App\Helpers\Helper;
 use App\Models\Chapter;
 use App\Models\Thread;
 use App\Models\Post;
-use Carbon\Carbon;
+use Carbon;
 use DB;
 
 class StorePost extends FormRequest

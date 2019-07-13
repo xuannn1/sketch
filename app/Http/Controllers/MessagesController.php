@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
 use Auth;
-use Carbon\Carbon;
+use Carbon;
 use App\Models\Message;
 use App\Models\User;
 use App\Helpers\Helper;

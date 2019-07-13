@@ -4,7 +4,7 @@ use Closure;
 use Auth;
 use CU;
 use Illuminate\Support\Facades\Cache;
-use Carbon\Carbon;
+use Carbon;
 
 class NoLogControl
 {

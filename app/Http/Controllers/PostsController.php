@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Events\NewPost;
-use Carbon\Carbon;
+use Carbon;
 use Auth;
 use App\Models\Chapter;
 use App\Models\Activity;

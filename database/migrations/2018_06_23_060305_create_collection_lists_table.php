@@ -27,7 +27,7 @@ class CreateCollectionListsTable extends Migration
             $table->integer('collected')->unsigned()->default(0);//收藏夹被收藏数
             $table->integer('viewed')->unsigned()->default(0);//收藏夹被收藏数
             $table->integer('last_item_id')->unsigned()->default(0);//最后更新的条目是
-            $table->dateTime('lastupdated_at')->default(Carbon\Carbon::now());//最后一次更新在什么时间
+            $table->dateTime('lastupdated_at')->default(Carbon::now());//最后一次更新在什么时间
             $table->softDeletes();
             $table->timestamps();
         });

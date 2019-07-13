@@ -14,7 +14,7 @@ class AddNoRegistrationToUserTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dateTime('no_registration')->default(Carbon\Carbon::now());
+            $table->dateTime('no_registration')->default(Carbon::now());
         });
     }
 

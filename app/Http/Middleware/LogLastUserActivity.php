@@ -3,7 +3,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 use Cache;
-use Carbon\Carbon;
+use Carbon;
 use App\Models\LoggingStatus;
 use CacheUser;
 class LogLastUserActivity

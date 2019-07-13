@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xs-12">
             <span id="system_reminder{{$system_reminder->id}}">
-                {{ Carbon\Carbon::parse($system_reminder->created_at)->diffForHumans() }}提问：<a href="{{ route('questions.index', Auth::id()) }}">{!! StringProcess::trimtext($system_reminder->question_body,40) !!}</a>
+                {{ Carbon::parse($system_reminder->created_at)->diffForHumans() }}提问：<a href="{{ route('questions.index', Auth::id()) }}">{!! StringProcess::trimtext($system_reminder->question_body,40) !!}</a>
             </span>
         </div>
     </div>

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 use App\Models\Thread;
 use App\Models\Post;
-use Carbon\Carbon;
+use Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Helper;
 

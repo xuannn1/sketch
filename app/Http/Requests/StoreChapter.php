@@ -10,7 +10,7 @@ use App\Models\Thread;
 use App\Models\Chapter;
 use App\Models\Post;
 use App\Models\Status;
-use Carbon\Carbon;
+use Carbon;
 
 class StoreChapter extends FormRequest
 {

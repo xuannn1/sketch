@@ -73,7 +73,7 @@
                     </div>
                     @endif
 
-                    @if($thread->jinghua < Carbon\Carbon::now())
+                    @if($thread->jinghua < Carbon::now())
                     <div class="radio">
                         <label><input type="radio" name="controlthread" value="44">添加精华</label>
                         <label><input type="text" style="width: 40px" name="jinghua-days" value="0">精华时间（天）</label>

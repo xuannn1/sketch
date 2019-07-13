@@ -102,6 +102,16 @@ class Thread extends Model
 
     //以下是scopes
 
+    public function scopeInfo($query)
+    {
+        return $query->select('id', 'user_id', 'channel_id', 'title', 'brief');
+    }
+
+    public function scopeBrief($query)
+    {
+        return $query->select('id', 'user_id', 'channel_id', 'title', 'brief', 'is_locked', 'is_public', 'is_bianyuan', 'is_anonymous', 'majia', 'view_count', 'reply_count', 'responded_at', 'created_at', 'collection_count', 'no_reply', 'last_post_id', 'last_component_id', 'weighted_jifen', 'total_char');
+    }
+
     public function scopeInChannel($query, $withChannels)
     {
         if($withChannels){
@@ -287,8 +297,4 @@ class Thread extends Model
         // TODO 检查这名同学参加了作业吗？是的话算他提交了作业
     }
 
-    public function isCollectedBy($user_id)
-    {
-        return $this->collectors->contains($user_id);
-    }
 }

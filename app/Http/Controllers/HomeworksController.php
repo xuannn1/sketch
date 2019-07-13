@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Carbon;
 use App\Models\Thread;
 use App\Models\Channel;
 use Auth;

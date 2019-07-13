@@ -8,7 +8,7 @@ use App\Sosadfun\Traits\AdministrationTraits;
 use Auth;
 use Hash;
 use App\Models\User;
-use Carbon\Carbon;
+use Carbon;
 use App\Models\EmailModifyHistory;
 use App\Models\PasswordReset;
 use Mail;

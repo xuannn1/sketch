@@ -17,7 +17,7 @@ class CreateTagsTable extends Migration
            $table->increments('id');
            $table->string('tagname', 10);//标签名称
            $table->tinyInteger('tag_group')->default(0);
-           $table->dateTime('lastresponded_at')->default(Carbon\Carbon::now())->index();
+           $table->dateTime('lastresponded_at')->default(Carbon::now())->index();
            $table->timestamps();
       });
     }

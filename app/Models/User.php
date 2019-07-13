@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Notifications\ResetPasswordNotification;
 use DB;
-use Carbon\Carbon;
+use Carbon;
 use Cache;
 use Helper;
 
@@ -92,11 +92,6 @@ class User extends Authenticatable
         return $this->hasOne(UserInfo::class, 'user_id');
     }
 
-    public function collectedItems()
-    {
-        return $this->belongsToMany('App\Models\Thread', 'collection_count', 'user_id', 'thread_id');
-    }
-
     public function followers()
     {
         return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
@@ -115,6 +110,11 @@ class User extends Authenticatable
     public function collections($group=0)
     {
         return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->wherePivot('group', $group);
+    }
+
+    public function groups()
+    {
+        return $this->hasMany(CollectionGroup::class, 'user_id');
     }
 
     public function follow($user_ids)

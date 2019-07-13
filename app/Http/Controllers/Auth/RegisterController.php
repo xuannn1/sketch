@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Models\InvitationToken;
-use Carbon\Carbon;
+use Carbon;
 use Mail;
 use Auth;
 use App\Models\PasswordReset;

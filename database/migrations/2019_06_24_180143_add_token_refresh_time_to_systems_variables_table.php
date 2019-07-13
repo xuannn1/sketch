@@ -14,7 +14,7 @@ class AddTokenRefreshTimeToSystemsVariablesTable extends Migration
     public function up()
     {
         Schema::table('system_variables', function (Blueprint $table) {
-            $table->dateTime('token_refreshed_at')->default(Carbon\Carbon::now());//最近刷新过token的时间
+            $table->dateTime('token_refreshed_at')->default(Carbon::now());//最近刷新过token的时间
         });
     }
 

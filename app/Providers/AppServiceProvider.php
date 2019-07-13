@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Carbon\Carbon;
+use Carbon;
 use App\Models\User;
 use App\Models\UserInfo;
 use App\Observers\UserObserver;

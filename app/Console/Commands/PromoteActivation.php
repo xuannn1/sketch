@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use DB;
-use Carbon\Carbon;
+use Carbon;
 use Cache;
 use App\Models\User;
 

@@ -35,8 +35,8 @@
                 <th>{{ $post->view_count }}</th>
                 <th>{{ $post->upvote_count }}</th>
                 <th>{{ $post->reply_count }}</th>
-                <th>{{ Carbon\Carbon::parse($post->created_at)->setTimezone('Asia/Shanghai') }}</th>
-                <th>{{ Carbon\Carbon::parse($post->edited_at)->setTimezone('Asia/Shanghai')}}</th>
+                <th>{{ Carbon::parse($post->created_at)->setTimezone('Asia/Shanghai') }}</th>
+                <th>{{ Carbon::parse($post->edited_at)->setTimezone('Asia/Shanghai')}}</th>
 
             </tr>
             @endforeach

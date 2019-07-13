@@ -14,7 +14,7 @@ class AddTimestampsToCollectionsTable extends Migration
     public function up()
     {
         Schema::table('collections', function (Blueprint $table) {
-            $table->dateTime('lastupdated_at')->default(Carbon\Carbon::now());//直到xx截止日期;
+            $table->dateTime('lastupdated_at')->default(Carbon::now());//直到xx截止日期;
         });
     }
 

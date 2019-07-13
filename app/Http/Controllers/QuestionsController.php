@@ -7,7 +7,7 @@ use App\Models\Question;
 use App\Models\Answer;
 use App\Models\User;
 use App\Models\Activity;
-use Carbon\Carbon;
+use Carbon;
 use Auth;
 
 class QuestionsController extends Controller

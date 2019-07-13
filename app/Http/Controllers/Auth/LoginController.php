@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use App\Models\User;
-use Carbon\Carbon;
+use Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 

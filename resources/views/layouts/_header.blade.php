@@ -10,7 +10,7 @@
                     @if($Auser->isAdmin())
                     <li><a href="{{ route('admin.index') }}" class="admin-symbol">管理员</a></li>
                     @endif
-                    @if ($Auser->qiandao_at <= Carbon\Carbon::today()->subHours(2))
+                    @if ($Auser->qiandao_at <= Carbon::today()->subHours(2))
                         <li><a href="{{ route('qiandao') }}" style="color:#d66666">我要签到</a></li>
                     @else
                         @if($Auser->quiz_level==0)
@@ -20,7 +20,7 @@
                     <li><a href="{{ route('statuses.collections') }}">动态</a></li>
                     <li><a href="{{ route('books.index') }}">文库</a></li>
                     <li><a href="{{ route('threads.thread_index') }}">论坛</a></li>
-                    <li><a href="{{ route('collections.books') }}">收藏<span class="badge">{{ $Auser->unread_updates!=0? $Auser->unread_updates :''}}</span></a></li>
+                    <li><a href="{{ route('collection.index') }}">收藏<span class="badge">{{ $Auser->unread_updates!=0? $Auser->unread_updates :''}}</span></a></li>
 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{Auth::user()->unread_reminders>0? 'blink_me reminder-sign':''}}">

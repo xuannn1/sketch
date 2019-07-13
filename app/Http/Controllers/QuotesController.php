@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Quote;
 use Auth;
-use Carbon\Carbon;
+use Carbon;
 
 class QuotesController extends Controller
 {

@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xs-12">
             <span id="simple{{$post->id}}"><em><a href="{{ route('thread.showpost', $post->id) }}">
-                {{ $post->is_anonymous ? ($post->majia ?? '匿名咸鱼'): $post->name }}&nbsp;{{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}回复了您的主题&nbsp;{{ $post->thread_title }}</a></em></span>
+                {{ $post->is_anonymous ? ($post->majia ?? '匿名咸鱼'): $post->name }}&nbsp;{{ Carbon::parse($post->created_at)->diffForHumans() }}回复了您的主题&nbsp;{{ $post->thread_title }}</a></em></span>
             </div>
             <div class="col-xs-12">
                 <span id="full{{$post->id}}" class="hidden">
@@ -21,9 +21,9 @@
                             @endif
                         </span>
                         <span class="grayout">
-                            发表于 {{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}
+                            发表于 {{ Carbon::parse($post->created_at)->diffForHumans() }}
                             @if($post->created_at < $post->edited_at )
-                            修改于 {{ Carbon\Carbon::parse($post->edited_at)->diffForHumans() }}
+                            修改于 {{ Carbon::parse($post->edited_at)->diffForHumans() }}
                             @endif
                         </span>
                     </div>

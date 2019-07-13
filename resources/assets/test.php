@@ -62,12 +62,12 @@ $tags_feibianyuan->load('threadscount');
 $stat_days = [];
 for($i=1;$i<20;$i++){
     $data=[];
-    $data['qiandaos']=DB::table('users')->where('lastrewarded_at','>',Carbon\Carbon::now()->subday($i)->toDateTimeString())->where('lastrewarded_at','<',Carbon\Carbon::now()->subday($i-1)->toDateTimeString())->count();
-    $data['posts']=DB::table('posts')->where('created_at','>',Carbon\Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon\Carbon::now()->subday($i-1)->toDateTimeString())->count();
-    $data['posts_maintext']=DB::table('posts')->where('created_at','>',Carbon\Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon\Carbon::now()->subday($i-1)->toDateTimeString())->where('maintext','=','1')->count();
-    $data['posts_reply']=DB::table('posts')->where('created_at','>',Carbon\Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon\Carbon::now()->subday($i-1)->toDateTimeString())->where('maintext','=','0')->count();
-    $data['post_comments']=DB::table('post_comments')->where('created_at','>',Carbon\Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon\Carbon::now()->subday($i-1)->toDateTimeString())->count();
-    $data['new_users']=DB::table('users')->where('created_at','>',Carbon\Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon\Carbon::now()->subday($i-1)->toDateTimeString())->count();
+    $data['qiandaos']=DB::table('users')->where('lastrewarded_at','>',Carbon::now()->subday($i)->toDateTimeString())->where('lastrewarded_at','<',Carbon::now()->subday($i-1)->toDateTimeString())->count();
+    $data['posts']=DB::table('posts')->where('created_at','>',Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon::now()->subday($i-1)->toDateTimeString())->count();
+    $data['posts_maintext']=DB::table('posts')->where('created_at','>',Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon::now()->subday($i-1)->toDateTimeString())->where('maintext','=','1')->count();
+    $data['posts_reply']=DB::table('posts')->where('created_at','>',Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon::now()->subday($i-1)->toDateTimeString())->where('maintext','=','0')->count();
+    $data['post_comments']=DB::table('post_comments')->where('created_at','>',Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon::now()->subday($i-1)->toDateTimeString())->count();
+    $data['new_users']=DB::table('users')->where('created_at','>',Carbon::now()->subday($i)->toDateTimeString())->where('created_at','<',Carbon::now()->subday($i-1)->toDateTimeString())->count();
     $stat_days[$i]=$data;
 }
 print_r($stat_days);
@@ -110,8 +110,8 @@ foreach($posts as $post){
 $users = \App\Models\User::where('lastrewarded_at','>','2018-04-25 00:00:00')->get();
 foreach($users as $user){
     if($user->maximum_qiandao == $user->continued_qiandao){
-        $date1=Carbon\Carbon::parse($user->lastrewarded_at);
-        $date2=Carbon\Carbon::parse($user->created_at);
+        $date1=Carbon::parse($user->lastrewarded_at);
+        $date2=Carbon::parse($user->created_at);
         $days = $date1->diffInDays($date2);
         if($days+5<$user->continued_qiandao){
             $added_reward_base =0;
@@ -284,7 +284,7 @@ foreach ($quotes as $quote){
 // 20190613 批量清理零级小号水区回帖
 $post_ids = DB::table('posts')->join('threads','threads.id','=','posts.thread_id')->join('users','users.id','=','posts.user_id')->where('posts.created_at','>','2019-06-12 21:50:00')->where('posts.created_at','<','2019-06-13 01:00:00')->where('users.user_level','=',0)->where('posts.fold_state','=',0)->where('posts.deleted_at','=',null)->where('threads.bianyuan','=',1)->whereRaw('posts.body REGEXP "等级|看不见|看不了|看不到|升级|后悔|我错了|不能看|是0级"')->select('posts.id','posts.user_id')->get();
 foreach ($post_ids as $record){
-    DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'30', 'item_id' => $record->id, 'reason' => '批处理零级小号文区水贴，误伤请版务区申诉', 'administratee_id' => $record->user_id, 'created_at' => Carbon\Carbon::now()->toDateTimeString(), 'updated_at' => Carbon\Carbon::now()->toDateTimeString()]);
+    DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'30', 'item_id' => $record->id, 'reason' => '批处理零级小号文区水贴，误伤请版务区申诉', 'administratee_id' => $record->user_id, 'created_at' => Carbon::now()->toDateTimeString(), 'updated_at' => Carbon::now()->toDateTimeString()]);
     DB::table('users')->where('id','=',$record->user_id)->update(['no_posting' => '2019-06-14 23:59:59','jifen' => 0,]);
     DB::table('posts')->where('id','=',$record->id)->update(['fold_state' => 1]);
 }
@@ -299,8 +299,8 @@ group By administratee_id
 $abused = DB::table('administrations')->join('users','users.id','=','administrations.administratee_id')->where('administrations.operation','=',30)->where('users.user_level','=',0)->groupBy('administratee_id')->select(DB::raw('count(*) as count, administratee_id as uid'))->get();
 foreach($abused as $user){
     if($user->count>3){
-        DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'13', 'item_id' => $user->uid, 'reason' => '连续水贴'.$user->count.'条，每条禁言1天', 'administratee_id' => $user->uid, 'created_at' => Carbon\Carbon::now()->toDateTimeString(), 'updated_at' => Carbon\Carbon::now()->toDateTimeString()]);
-        DB::table('users')->where('id','=',$user->uid)->update(['no_posting' => Carbon\Carbon::now()->addDays($user->count)->toDateTimeString()]);
+        DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'13', 'item_id' => $user->uid, 'reason' => '连续水贴'.$user->count.'条，每条禁言1天', 'administratee_id' => $user->uid, 'created_at' => Carbon::now()->toDateTimeString(), 'updated_at' => Carbon::now()->toDateTimeString()]);
+        DB::table('users')->where('id','=',$user->uid)->update(['no_posting' => Carbon::now()->addDays($user->count)->toDateTimeString()]);
     }
 }
 
@@ -311,9 +311,9 @@ $remove_from_list = [52535,53354,53389,53460,53948,54032];
 $filtered_ids = $postcomment_ids->filter(function ($value, $key) use($remove_from_list){return !in_array($value->id, $remove_from_list);});
 
 foreach ($filtered_ids as $record){
-    DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'31', 'item_id' => $record->id, 'reason' => '批处理零级小号文区点评，误伤请版务区申诉', 'administratee_id' => $record->user_id, 'created_at' => Carbon\Carbon::now()->toDateTimeString(), 'updated_at' => Carbon\Carbon::now()->toDateTimeString()]);
+    DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'31', 'item_id' => $record->id, 'reason' => '批处理零级小号文区点评，误伤请版务区申诉', 'administratee_id' => $record->user_id, 'created_at' => Carbon::now()->toDateTimeString(), 'updated_at' => Carbon::now()->toDateTimeString()]);
     DB::table('users')->where('id','=',$record->user_id)->update(['no_posting' => '2019-06-14 23:59:59','jifen' => 0,]);
-    DB::table('post_comments')->where('id','=',$record->id)->update(['deleted_at' => Carbon\Carbon::now()->toDateTimeString()]);
+    DB::table('post_comments')->where('id','=',$record->id)->update(['deleted_at' => Carbon::now()->toDateTimeString()]);
 }
 
 //20190622 统计批处理点评违禁最多的号，禁止登陆一周
@@ -326,8 +326,8 @@ group By administratee_id
 $abused = DB::table('administrations')->join('users','users.id','=','administrations.administratee_id')->where('administrations.operation','=',31)->groupBy('administratee_id')->select(DB::raw('count(*) as count, administratee_id as uid, users.name as uname'))->get();
 foreach($abused as $user){
     if($user->count>3){
-        DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'13', 'item_id' => $user->uid, 'reason' => '连续水点评'.$user->count.'条，每条禁言1天', 'administratee_id' => $user->uid, 'created_at' => Carbon\Carbon::now()->toDateTimeString(), 'updated_at' => Carbon\Carbon::now()->toDateTimeString()]);
-        DB::table('users')->where('id','=',$user->uid)->update(['no_posting' => Carbon\Carbon::now()->addDays($user->count)->toDateTimeString()]);
+        DB::table('administrations')->insert(['user_id' => 1, 'operation' =>'13', 'item_id' => $user->uid, 'reason' => '连续水点评'.$user->count.'条，每条禁言1天', 'administratee_id' => $user->uid, 'created_at' => Carbon::now()->toDateTimeString(), 'updated_at' => Carbon::now()->toDateTimeString()]);
+        DB::table('users')->where('id','=',$user->uid)->update(['no_posting' => Carbon::now()->addDays($user->count)->toDateTimeString()]);
     }
 }
 

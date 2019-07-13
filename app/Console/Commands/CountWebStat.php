@@ -2,7 +2,7 @@
 namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Carbon;
 use App\Models\WebStat;
 class CountWebStat extends Command
 {

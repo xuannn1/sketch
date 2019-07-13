@@ -29,7 +29,7 @@ class CreateThreadsTable extends Migration
             $table->integer('xianyu')->unsigned()->default(0);//咸鱼
             $table->integer('viewed')->unsigned()->default(0);//浏览
             $table->integer('responded')->unsigned()->default(0);//回应数
-            $table->dateTime('lastresponded_at')->default(Carbon\Carbon::now())->index();
+            $table->dateTime('lastresponded_at')->default(Carbon::now())->index();
             $table->tinyInteger('channel_id')->unsigned()->default(0);//channel，板块
             $table->integer('label_id')->unsigned()->default(0);
             $table->softDeletes();

@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-xs-12">
             <span id="simple{{$reply->id}}"><em><a href="{{ route('thread.showpost', $reply->id) }}">
-                {{ $reply->anonymous ? ($reply->majia ?? '匿名咸鱼'): $reply->name }}&nbsp;{{ Carbon\Carbon::parse($reply->created_at)->diffForHumans() }}回复了您的帖子&nbsp; {!! StringProcess::trimtext($reply->original_body,10) !!}</a></em></span>
+                {{ $reply->anonymous ? ($reply->majia ?? '匿名咸鱼'): $reply->name }}&nbsp;{{ Carbon::parse($reply->created_at)->diffForHumans() }}回复了您的帖子&nbsp; {!! StringProcess::trimtext($reply->original_body,10) !!}</a></em></span>
         </div>
         <div class="col-xs-12">
             <span id="full{{$reply->id}}" class="hidden">
@@ -18,9 +18,9 @@
                         @endif
                     </span>
                     <span class="grayout">
-                        发表于 {{ Carbon\Carbon::parse($reply->created_at)->diffForHumans() }}
+                        发表于 {{ Carbon::parse($reply->created_at)->diffForHumans() }}
                         @if($reply->created_at < $reply->edited_at )
-                        修改于 {{ Carbon\Carbon::parse($reply->edited_at)->diffForHumans() }}
+                        修改于 {{ Carbon::parse($reply->edited_at)->diffForHumans() }}
                         @endif
                     </span>
                 </div>

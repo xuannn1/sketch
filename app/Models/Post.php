@@ -83,7 +83,7 @@ class Post extends Model
 
     public function scopeBrief($query)
     {
-        return $query->select('id','user_id','title','type','brief','created_at', 'edited_at', 'is_bianyuan','upvote_count','reply_count','char_count','view_count');
+        return $query->select('id', 'user_id', 'title', 'type', 'brief', 'created_at',  'edited_at',  'is_bianyuan', 'upvote_count', 'reply_count', 'char_count', 'view_count');
     }
 
     public function scopeUserOnly($query, $userOnly)
