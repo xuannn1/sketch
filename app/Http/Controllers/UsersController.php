@@ -377,7 +377,7 @@ class UsersController extends Controller
             ->where('threads.deleted_at','=',null)
             ->where('posts.user_id','=',$id)
             ->orderBy('posts.created_at','desc')
-            ->select('posts.id','users.name','posts.anonymous','posts.majia','posts.brief','threads.title','posts.created_at')
+            ->select('posts.id','users.name','posts.is_anonymous','posts.majia','posts.brief','threads.title','posts.created_at')
             ->paginate(config('preference.posts_per_page'));
         }else{
             $queryid = 'UserComment.'
@@ -392,10 +392,10 @@ class UsersController extends Controller
                 ->where('posts.deleted_at','=',null)
                 ->where('threads.deleted_at','=',null)
                 ->whereIn('threads.channel_id',ConstantObjects::public_channels())
-                ->where('posts.anonymous','=',0)
+                ->where('posts.is_anonymous','=',0)
                 ->where('posts.user_id','=',$id)
                 ->orderBy('posts.created_at','desc')
-                ->select('posts.id','users.name','posts.anonymous','posts.majia','posts.brief','threads.title','posts.created_at')
+                ->select('posts.id','users.name','posts.is_anonymous','posts.majia','posts.brief','threads.title','posts.created_at')
                 ->paginate(config('preference.posts_per_page'))
                 ->appends($request->only('page'));
             });

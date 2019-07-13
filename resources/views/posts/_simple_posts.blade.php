@@ -2,7 +2,7 @@
 @foreach($posts as $key=>$post)
 <article id="post{{ $post->id }}">
     <a href="{{ route('thread.showpost', $post->id) }}">
-        @if($post->anonymous)
+        @if($post->is_anonymous)
         {{ $post->majia ?? '匿名咸鱼' }}
         @else
         {{ $post->name }}

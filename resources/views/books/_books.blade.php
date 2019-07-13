@@ -6,17 +6,17 @@
                 <span class="badge newchapter-badge badge-tag">{{ $thread->channel()->channel_name }}</span>
                 <a href="{{ route('thread.show_profile',$thread->id) }} " class="bigger-10">{{ $thread->title }}</a>
                 <small>
-                    @if( !$thread->public )
+                    @if( !$thread->is_public )
                     <span class="glyphicon glyphicon-eye-close"></span>
                     @endif
-                    @if( $thread->locked )
+                    @if( $thread->is_locked )
                     <span class="glyphicon glyphicon-lock"></span>
                     @endif
                     @if( $thread->no_reply )
                     <span class="glyphicon glyphicon-warning-sign"></span>
                     @endif
                 </small>
-                @if( $thread->bianyuan == 1)
+                @if( $thread->is_bianyuan == 1)
                 <span class="badge bianyuan-tag badge-tag">限</span>
                 @endif
                 @if( $thread->tags->contains('tag_type', '编推') )

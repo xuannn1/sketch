@@ -19,7 +19,7 @@
                         @elseif ($post->type==="answer")
                             <span class="font-6  bianyuan-tag badge-tag">答主</span>
                         @else
-                            @if ($post->anonymous)
+                            @if ($post->is_anonymous)
                                 <span>{{ $post->majia ?? '匿名咸鱼'}}</span>
                                 @if((Auth::check()&&(Auth::user()->isAdmin())))
                                 <span class="admin-anonymous"><a href="{{ route('user.show', $post->user_id) }}">{{ $post->author->name }}</a></span>
@@ -36,7 +36,7 @@
                         @endif
                     @endif
 
-                    @if(($post->user_id>0)&&(!$post->anonymous)&&((!$thread->anonymous)||(($post->type==='post')||($post->type==='comment'))))
+                    @if(($post->user_id>0)&&(!$post->is_anonymous)&&((!$thread->anonymous)||(($post->type==='post')||($post->type==='comment'))))
                         <span class="grayout smaller-20"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'userOnly'=>$post->user_id]) }}">只看该用户</a></span>
                     @endif
                     <!-- 发表时间 -->
@@ -61,7 +61,7 @@
         </div>
     </div>
     <div class="panel-body post-body">
-        @if((($post->bianyuan)||($thread->bianyuan))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
+        @if((($post->is_bianyuan)||($thread->is_bianyuan))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
         <div class="text-center">
             <h6 class="display-4 grayout"><a href="{{ route('login') }}">本内容为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></h6>
         </div>
@@ -96,7 +96,7 @@
             @endif
 
             <!-- 普通回帖展开 -->
-            <div class="main-text {{ $post->indentation? 'indentation':'' }}">
+            <div class="main-text {{ $post->use_indentation? 'indentation':'' }}">
                 @if($post->title)
                 <div class="text-center">
                     <strong><a href="{{ route('post.show', $post->id) }}">{{ $post->title }}</a></strong>
@@ -110,7 +110,7 @@
                 <br>
                 @endif
 
-                @if($post->markdown)
+                @if($post->use_markdown)
                 {!! Helper::sosadMarkdown($post->body) !!}
                 @else
                 {!! StringProcess::wrapParagraphs($post->body) !!}
@@ -138,11 +138,11 @@
         @if(Auth::user()->level >= 1)
             <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
         @endif
-        @if((!$thread->locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$post->is_folded)&&(Auth::user()->level >= 2))
+        @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$post->is_folded)&&(Auth::user()->level >= 2))
             <span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
         @endif
 
-        @if(($post->user_id===Auth::id())&&(!$thread->locked)&&(!$post->is_folded)&&($thread->channel()->allow_edit))
+        @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&(!$post->is_folded)&&($thread->channel()->allow_edit))
             <span><a class="btn btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
         @endif
 

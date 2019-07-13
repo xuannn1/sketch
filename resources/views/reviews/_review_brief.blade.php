@@ -15,13 +15,13 @@
               </span>
 
                 <small>
-                    @if( $post->review->reviewee->bianyuan == 1)
+                    @if( $post->review->reviewee->is_bianyuan == 1)
                     <span class="badge bianyuan-tag badge-tag">限</span>
                     @endif
-                    @if(!$post->review->reviewee->public)
+                    @if(!$post->review->reviewee->is_public)
                     <span class="glyphicon glyphicon-eye-close"></span>
                     @endif
-                    @if($post->review->reviewee->locked)
+                    @if($post->review->reviewee->is_locked)
                     <span class="glyphicon glyphicon-lock"></span>
                     @endif
                     @if($post->review->reviewee->no_reply)

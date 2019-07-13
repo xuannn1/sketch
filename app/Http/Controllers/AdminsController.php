@@ -71,8 +71,8 @@ class AdminsController extends Controller
         ]);
         $var = request('controlthread');
         if ($var=="1"){//锁帖
-            if(!$thread->locked){
-                $thread->locked = true;
+            if(!$thread->is_locked){
+                $thread->is_locked = true;
                 $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
@@ -86,8 +86,8 @@ class AdminsController extends Controller
         }
 
         if ($var=="2"){//解锁
-            if($thread->locked){
-                $thread->locked = false;
+            if($thread->is_locked){
+                $thread->is_locked = false;
                 $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
@@ -101,8 +101,8 @@ class AdminsController extends Controller
         }
 
         if ($var=="3"){//转私密
-            if($thread->public){
-                $thread->public = false;
+            if($thread->is_public){
+                $thread->is_public = false;
                 $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
@@ -116,8 +116,8 @@ class AdminsController extends Controller
         }
 
         if ($var=="4"){//转公开
-            if(!$thread->public){
-                $thread->public = true;
+            if(!$thread->is_public){
+                $thread->is_public = true;
                 $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
@@ -187,8 +187,8 @@ class AdminsController extends Controller
         }
 
         if ($var=="15"){//打边缘限制
-            if(!$thread->bianyuan){
-                $thread->bianyuan = true;
+            if(!$thread->is_bianyuan){
+                $thread->is_bianyuan = true;
                 $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
@@ -202,8 +202,8 @@ class AdminsController extends Controller
         }
 
         if ($var=="16"){//取消边缘限制
-            if($thread->bianyuan){
-                $thread->bianyuan = false;
+            if($thread->is_bianyuan){
+                $thread->is_bianyuan = false;
                 $thread->save();
                 Administration::create([
                     'user_id' => Auth::id(),
@@ -320,11 +320,11 @@ class AdminsController extends Controller
         }
         if ($var=="10"){//修改马甲
             if (request('anonymous')=="1"){
-                $post->anonymous = true;
+                $post->is_anonymous = true;
                 $post->majia = request('majia');
             }
             if (request('anonymous')=="2"){
-                $post->anonymous = false;
+                $post->is_anonymous = false;
             }
             $post->save();
             Administration::create([

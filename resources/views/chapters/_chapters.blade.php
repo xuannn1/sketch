@@ -1,7 +1,7 @@
 <div class="hidden-sm hidden-md hidden-lg overflow-hidden text-center">
     @foreach($posts as $post)
     <a href="{{ route('post.show', $post->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
-        @if($post->bianyuan)
+        @if($post->is_bianyuan)
             <span class="glyphicon glyphicon-info-sign"></span>
         @endif
         {{ $post->title.'：'.StringProcess::simpletrim($post->brief, 10) }}</a>
@@ -26,7 +26,7 @@
             @foreach($posts as $post)
             <tr>
                 <th><a href="{{ route('post.show', $post->id) }}" class = "">
-                    @if($post->bianyuan)
+                    @if($post->is_bianyuan)
                         <span class="glyphicon glyphicon-info-sign"></span>
                     @endif
                     {{ $post->title }}</a></th>

@@ -52,9 +52,9 @@ class StoreChapter extends FormRequest
         $post_data['maintext']=true;
         $post_data['anonymous']=$thread->anonymous;
         $post_data['majia']=$thread->majia;
-        $post_data['markdown']=$this->markdown? true: false;
-        $post_data['indentation']=$this->indentation ? true:false;
-        $post_data['bianyuan']=$this->bianyuan? true: false;
+        $post_data['markdown']=$this->use_markdown? true: false;
+        $post_data['indentation']=$this->use_indentation ? true:false;
+        $post_data['bianyuan']=$this->is_bianyuan? true: false;
         // chapter data
         $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post_data['body']);
         $chapter_data = $this->only('title','annotation');
@@ -136,9 +136,9 @@ class StoreChapter extends FormRequest
         $post_data['trim_body']=StringProcess::trimtext($post_data['body'], 50);
         $post_data['title']=$this->brief;
         $post_data['user_ip']=request()->getClientIp();
-        $post_data['markdown']=$this->markdown? true: false;
-        $post_data['indentation']=$this->indentation ? true:false;
-        $post_data['bianyuan']=$this->bianyuan? true: false;
+        $post_data['markdown']=$this->use_markdown? true: false;
+        $post_data['indentation']=$this->use_indentation ? true:false;
+        $post_data['bianyuan']=$this->is_bianyuan? true: false;
         $post_data['edited_at'] = Carbon::now();
         // chapter data
         $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$post_data['body']);

@@ -27,7 +27,7 @@ class PostsController extends Controller
 
     public function store(StorePost $form, Thread $thread)
     {
-        if ((Auth::user()->isAdmin())||((!$thread->locked)&&(($thread->public)||($thread->user_id==Auth::id())))){
+        if ((Auth::user()->isAdmin())||((!$thread->is_locked)&&(($thread->is_public)||($thread->user_id==Auth::id())))){
             $post = $form->generatePost($thread);
             $post->checklongcomment();
             event(new NewPost($post));
@@ -46,7 +46,7 @@ class PostsController extends Controller
     {
         $thread=$post->thread;
         $channel=$thread->channel();
-        if((Auth::user()->isAdmin())||((Auth::id() === $post->user_id)&&(!$thread->locked)&&($thread->channel()->allow_edit))){
+        if((Auth::user()->isAdmin())||((Auth::id() === $post->user_id)&&(!$thread->is_locked)&&($thread->channel()->allow_edit))){
             return view('posts.post_edit', compact('post'));
         }else{
             return redirect()->route('error', ['error_code' => '403']);
@@ -56,7 +56,7 @@ class PostsController extends Controller
     public function update(StorePost $form, Post $post)
     {
         $thread=$post->thread;
-        if ((Auth::user()->isAdmin())||((Auth::id() == $post->user_id)&&(!$thread->locked)&&($thread->channel()->allow_edit))){
+        if ((Auth::user()->isAdmin())||((Auth::id() == $post->user_id)&&(!$thread->is_locked)&&($thread->channel()->allow_edit))){
             $form->updatePost($post);
             return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
         }else{
@@ -76,7 +76,7 @@ class PostsController extends Controller
     public function destroy($id){
         $post = Post::findOrFail($id);
         $thread=$post->thread;
-        if((!$thread->locked)&&(Auth::id()==$post->user_id)){
+        if((!$thread->is_locked)&&(Auth::id()==$post->user_id)){
             if(($post->maintext)&&($post->chapter_id !=0)){
                 $chapter = $post->chapter;
                 if($chapter->post_id == $post->id){

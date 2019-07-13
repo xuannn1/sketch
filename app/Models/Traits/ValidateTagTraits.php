@@ -17,7 +17,7 @@ trait ValidateTagTraits{
                 if (array_key_exists($tag->tag_type,config('tag.types'))){//一个正常录入的tag，它的type应该在config中能够找到。
                     $error = '';
                     //检查是否为非边缘文章提交了边缘标签
-                    if((!$this->bianyuan) && $tag->is_bianyuan){
+                    if((!$this->is_bianyuan) && $tag->is_bianyuan){
                         $error = 'bianyuan violation';
                     }
                     //如不属于某channel却选择了专属于某channel的tag,如为非同人thread选择了同人channel的tag

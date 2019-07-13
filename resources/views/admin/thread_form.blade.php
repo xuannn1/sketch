@@ -16,7 +16,7 @@
                     <div class="admin-symbol">
                         <h1>管理员权限专区</h1>
                     </div>
-                    @if(!$thread->locked)
+                    @if(!$thread->is_locked)
                     <div class="radio">
                         <label><input type="radio" name="controlthread" value="1">锁帖</label>
                     </div>
@@ -26,7 +26,7 @@
                     </div>
                     @endif
 
-                    @if($thread->public)
+                    @if($thread->is_public)
                     <div class="radio">
                         <label><input type="radio" name="controlthread" value="3">转私密</label>
                     </div>
@@ -36,7 +36,7 @@
                     </div>
                     @endif
 
-                    @if(!$thread->bianyuan)
+                    @if(!$thread->is_bianyuan)
                     <div class="radio">
                         <label><input type="radio" name="controlthread" value="15">转边缘</label>
                     </div>

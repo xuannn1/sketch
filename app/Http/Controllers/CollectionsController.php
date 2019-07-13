@@ -309,7 +309,7 @@ class CollectionsController extends Controller
             return $this->join_thread_tables()
             ->join('collections','collections.item_id','=','threads.id')
             ->where([['collections.user_id','=',$user_id],['collections.collection_list_id','=',$collection_list_id], ['threads.deleted_at', '=', null],['threads.book_id','=',0]])
-            ->select('threads.id', 'threads.id as thread_id', 'threads.user_id','threads.book_id', 'threads.title', 'threads.brief', 'threads.locked', 'threads.public', 'threads.bianyuan', 'threads.anonymous', 'threads.majia', 'threads.noreply', 'threads.viewed', 'threads.responded', 'threads.lastresponded_at', 'threads.channel_id', 'threads.label_id', 'threads.deleted_at', 'threads.created_at',  'threads.edited_at', 'threads.homework_id', 'threads.post_id', 'threads.last_post_id', 'threads.show_homework_profile', 'threads.downloaded', 'threads.recommended', 'threads.jinghua',
+            ->select('threads.id', 'threads.id as thread_id', 'threads.user_id','threads.book_id', 'threads.title', 'threads.brief', 'threads.locked', 'threads.public', 'threads.bianyuan', 'threads.is_anonymous', 'threads.majia', 'threads.noreply', 'threads.viewed', 'threads.responded', 'threads.lastresponded_at', 'threads.channel_id', 'threads.label_id', 'threads.deleted_at', 'threads.created_at',  'threads.edited_at', 'threads.homework_id', 'threads.post_id', 'threads.last_post_id', 'threads.show_homework_profile', 'threads.downloaded', 'threads.recommended', 'threads.jinghua',
             'users.name', 'labels.labelname', 'channels.channelname', 'posts.body as last_post_body', 'collections.updated as updated', 'collections.id as collection_id',  'collections.keep_updated as keep_updated', 'collections.body as collection_body')
             ->orderBy('threads.lastresponded_at','desc')
             ->paginate(config('constants.items_per_page'));
@@ -326,7 +326,7 @@ class CollectionsController extends Controller
                 ->where([['collections.user_id', '=', $user_id],['collections.collection_list_id','=',$collection_list_id]])
                 ->select(
                     'collections.id', 'collections.id as collection_id','collections.updated as updated',   'collections.keep_updated as keep_updated', 'collections.body as collection_body',
-                    'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.anonymous', 'collection_lists.majia',
+                    'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.is_anonymous', 'collection_lists.majia',
                     'collection_lists.type', 'collection_lists.item_number','collection_lists.last_item_id', 'threads.title as last_thread_title',
                     'collection_lists.viewed', 'collection_lists.collected', 'collection_lists.xianyu', 'collection_lists.shengfan', 'collection_lists.created_at', 'collection_lists.lastupdated_at'
                 )
@@ -343,7 +343,7 @@ class CollectionsController extends Controller
                     $join->on('collection_lists.last_item_id','=','threads.id');
                 })
                 ->where([['collection_lists.user_id', '=', $user_id],['collection_lists.type', '<>', 4]])
-                ->select('collection_lists.id', 'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.anonymous', 'collection_lists.majia',
+                ->select('collection_lists.id', 'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.is_anonymous', 'collection_lists.majia',
                     'collection_lists.type', 'collection_lists.item_number', 'collection_lists.last_item_id', 'threads.title as last_thread_title',
                     'collection_lists.viewed', 'collection_lists.collected', 'collection_lists.xianyu', 'collection_lists.shengfan', 'collection_lists.created_at', 'collection_lists.lastupdated_at'
                 )
@@ -360,7 +360,7 @@ class CollectionsController extends Controller
                     $join->on('collection_lists.last_item_id','=','threads.id');
                 })
                 ->where('collection_lists.type', '<>', 4)
-                ->select('collection_lists.id', 'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.anonymous', 'collection_lists.majia',
+                ->select('collection_lists.id', 'collection_lists.id as collection_list_id', 'collection_lists.private', 'collection_lists.title', 'collection_lists.brief', 'collection_lists.body', 'collection_lists.user_id', 'users.name', 'collection_lists.is_anonymous', 'collection_lists.majia',
                     'collection_lists.type', 'collection_lists.item_number', 'collection_lists.last_item_id', 'threads.title as last_thread_title',
                     'collection_lists.viewed', 'collection_lists.collected', 'collection_lists.xianyu', 'collection_lists.shengfan', 'collection_lists.created_at', 'collection_lists.lastupdated_at'
                 )

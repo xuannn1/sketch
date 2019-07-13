@@ -22,8 +22,8 @@
                         <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
                     </div>
                     <div class="checkbox">
-                        <label><input type="checkbox" name="anonymous" {{ $post->anonymous ? 'checked' : '' }}>马甲？</label>&nbsp;
-                        <label><input type="checkbox" name="indentation" {{ $post->indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
+                        <label><input type="checkbox" name="anonymous" {{ $post->is_anonymous ? 'checked' : '' }}>马甲？</label>&nbsp;
+                        <label><input type="checkbox" name="indentation" {{ $post->use_indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
                         <div class="form-group text-right grayout" id="majia" style="display:block">
                             <input type="text" name="majia" class="form-control" value="{{ $post->majia ?? '匿名咸鱼'}}" disabled>
                             <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>

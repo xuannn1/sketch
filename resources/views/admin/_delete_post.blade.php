@@ -19,8 +19,8 @@
                 <div class="radio">
                     <label><input type="radio" name="controlpost" value="10" onclick="document.getElementById('majiaforpost{{$post->id}}').style.display = 'block'">修改马甲？</label>
                     <div class="form-group text-right" id="majiaforpost{{$post->id}}" style="display:none">
-                        <label><input type="radio" name="anonymous" value="1" {{ $post->anonymous ? 'checked':'' }}>披上马甲</label>
-                        <label><input type="radio" name="anonymous" value="2" {{ $post->anonymous ? '':'checked' }}>揭下马甲</label>
+                        <label><input type="radio" name="anonymous" value="1" {{ $post->is_anonymous ? 'checked':'' }}>披上马甲</label>
+                        <label><input type="radio" name="anonymous" value="2" {{ $post->is_anonymous ? '':'checked' }}>揭下马甲</label>
                         <input type="text" name="majia" class="form-control" value="{{$post->majia ?:'匿名咸鱼'}}">
                     </div>
                 </div>

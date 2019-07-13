@@ -56,12 +56,12 @@ class DownloadsController extends Controller
     //     }
     //     $txt .= "\n";
     //     $txt .= "图书信息：".$book_info['channel_info'][$thread->channel_id].'-'.$book_info['book_length_info'][$book->book_length].'-'.$book_info['book_status_info'][$book->book_status].'-'.$book_info['sexual_orientation_info'][$book->sexual_orientation];
-    //     if($thread->bianyuan){$txt .= "|边缘限制";}
+    //     if($thread->is_bianyuan){$txt .= "|边缘限制";}
     //     $txt .= '|'.$thread->label->labelname;
     //     foreach ($thread->tags as $tag){
     //         $txt .= '-'.$tag->tagname;
     //     }
-    //     $txt .="\n文案：\n".$this->process_text($thread->mainpost->body,$thread->mainpost->markdown,$thread->mainpost->indentation)."\n";
+    //     $txt .="\n文案：\n".$this->process_text($thread->mainpost->body,$thread->mainpost->use_markdown,$thread->mainpost->use_indentation)."\n";
     //     return $txt;
     // }
     //
@@ -75,7 +75,7 @@ class DownloadsController extends Controller
     //     if($thread->created_at < $thread->edited_at){
     //         $txt.= "/".Carbon::parse($thread->edited_at)->setTimezone('Asia/Shanghai');
     //     }
-    //     $txt .="\n正文：\n".$this->process_text($thread->mainpost->body,$thread->mainpost->markdown,$thread->mainpost->indentation);
+    //     $txt .="\n正文：\n".$this->process_text($thread->mainpost->body,$thread->mainpost->use_markdown,$thread->mainpost->use_indentation);
     //     return $txt;
     // }
     // public function reply_to_sth($post)
@@ -137,7 +137,7 @@ class DownloadsController extends Controller
     //         if($post->maintext){
     //             if($thread->anonymous){$txt.=($thread->majia ?? "匿名咸鱼");}else{$txt.=$thread->creator->name;}
     //         }else{
-    //             if($post->anonymous){$txt.=($post->majia ?? "匿名咸鱼");}else{$txt.=$post->owner->name;}
+    //             if($post->is_anonymous){$txt.=($post->majia ?? "匿名咸鱼");}else{$txt.=$post->owner->name;}
     //         }
     //         $txt .= " ".Carbon::parse($post->created_at)->setTimezone('Asia/Shanghai');
     //         if($post->created_at < $post->edited_at){
@@ -147,7 +147,7 @@ class DownloadsController extends Controller
     //         $txt .= $this->reply_to_sth($post);
     //         if($post->maintext){$txt .= $post->chapter->title."\n";}
     //         if($post->title){$txt .= $post->title."\n";}
-    //         $txt .= $this->process_text($post->body,$post->markdown,$post->indentation);
+    //         $txt .= $this->process_text($post->body,$post->use_markdown,$post->use_indentation);
     //         if($post->chapter->annotation){$txt .= "备注".$this->process_text($post->chapter->annotation,0,0);}
     //
     //         foreach($post->comments as $k => $postcomment){
@@ -179,7 +179,7 @@ class DownloadsController extends Controller
     //         }
     //         $txt .= "\n";
     //         if($chapter->mainpost->title){$txt .= $chapter->mainpost->title."\n";}
-    //         if($chapter->mainpost->body){$txt .= $this->process_text($chapter->mainpost->body,$chapter->mainpost->markdown,$chapter->mainpost->indentation)."\n";}
+    //         if($chapter->mainpost->body){$txt .= $this->process_text($chapter->mainpost->body,$chapter->mainpost->use_markdown,$chapter->mainpost->use_indentation)."\n";}
     //         if($chapter->annotation){$txt .= "备注：".$this->process_text($chapter->mainpost->annotation,0,0);}
     //         $txt .="\n";
     //     }

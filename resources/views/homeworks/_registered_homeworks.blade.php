@@ -19,7 +19,7 @@
     <span><a href="{{ route('thread.showpost', $post->id) }}">{{ $post->owner->name }}{{'('.$post->up_voted.')'}}</a></span>，
     @else
     <span><a href="{{ route('thread.showpost', $post->id) }}">
-        @if($post->anonymous)
+        @if($post->is_anonymous)
         {{$post->majia ?? '匿名咸鱼'}}
         @else
         {{$post->owner->name}}

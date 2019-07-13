@@ -19,7 +19,7 @@ class threadsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->except(['index', 'show', 'showpost', 'channel_index', 'chapter_index', 'show_profile', 'show']);
+        $this->middleware('auth')->only('create','store','edit','update');
     }
 
     public function index(Request $request)
@@ -125,7 +125,7 @@ class threadsController extends Controller
 
 
 
-    public function createThreadForm($channel)
+    public function create($channel)
     {
         $channel = collect(config('channel'))->keyby('id')->get($this->channel_id);
         // $labels = $channel->labels();
@@ -148,7 +148,7 @@ class threadsController extends Controller
 
     public function edit(Thread $thread)
     {
-        if ((Auth::user()->admin)||($thread->user_id == Auth::id()&&(!$thread->locked)&&($thread->channel->channel_state!=2))){
+        if ((Auth::user()->admin)||($thread->user_id == Auth::id()&&(!$thread->is_locked)&&($thread->channel->channel_state!=2))){
             return view('threads.edit', compact('thread'));
         }else{
             return redirect()->back()->with("danger","本版面无法编辑内容");
@@ -158,7 +158,7 @@ class threadsController extends Controller
 
     public function update(StoreThread $form, Thread $thread)
     {
-        if ((Auth::id() == $thread->user_id)&&((!$thread->locked)||(Auth::user()->admin))){
+        if ((Auth::id() == $thread->user_id)&&((!$thread->is_locked)||(Auth::user()->admin))){
             $form->updateThread($thread);
             return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
         }else{

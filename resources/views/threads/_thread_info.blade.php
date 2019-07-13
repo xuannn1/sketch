@@ -8,17 +8,17 @@
                 <a href="{{ route('thread.show',$thread->id) }}" class="font-1">{{ $thread->title }}</a>
             @endif
             <small>
-                @if( !$thread->public )
+                @if( !$thread->is_public )
                 <span class="glyphicon glyphicon-eye-close"></span>
                 @endif
-                @if( $thread->locked )
+                @if( $thread->is_locked )
                 <span class="glyphicon glyphicon-lock"></span>
                 @endif
                 @if( $thread->no_reply )
                 <span class="glyphicon glyphicon-warning-sign"></span>
                 @endif
             </small>
-            @if( $thread->bianyuan == 1)
+            @if( $thread->is_bianyuan == 1)
             <span class="badge bianyuan-tag badge-tag">限</span>
             @endif
         </div>
@@ -72,13 +72,13 @@
     </div>
     <br>
     <!-- 首楼正文 -->
-    <div class="main-text {{ $thread->channel()->type==='thread'&&$thread->indentation ? 'indentation':'' }}">
-        @if(($thread->bianyuan)&&(!Auth::check()))
+    <div class="main-text {{ $thread->channel()->type==='thread'&&$thread->use_indentation ? 'indentation':'' }}">
+        @if(($thread->is_bianyuan)&&(!Auth::check()))
         <div class="text-center">
             <h6 class="display-4 grayout"><a href="{{ route('login') }}">主楼隐藏，请登录后查看</a></h6>
         </div>
         @else
-        @if($thread->markdown)
+        @if($thread->use_markdown)
         {!! Helper::sosadMarkdown($thread->body) !!}
         @else
         {!! StringProcess::wrapParagraphs($thread->body) !!}

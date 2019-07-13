@@ -67,8 +67,8 @@ class StoreThread extends FormRequest
            $thread_data['brief'] = Helper::convert_to_public($thread_data['brief']);
         }
         $thread_data['noreply']=$this->noreply ? true:false;
-        $post_data['markdown']=$this->markdown ? true:false;
-        $post_data['indentation']=$this->indentation ? true:false;
+        $post_data['markdown']=$this->use_markdown ? true:false;
+        $post_data['indentation']=$this->use_indentation ? true:false;
         $thread_data['lastresponded_at']=Carbon::now();
         $thread_data['user_id'] = auth()->id();
         $post_data['user_id'] = auth()->id();
@@ -117,8 +117,8 @@ class StoreThread extends FormRequest
         $thread_data['anonymous']=$this->anonymous ? true:false;
         $thread_data['noreply']=$this->noreply ? true:false;
         $thread_data['edited_at']=Carbon::now();
-        $post_data['markdown']=$this->markdown ? true:false;
-        $post_data['indentation']=$this->indentation ? true:false;
+        $post_data['markdown']=$this->use_markdown ? true:false;
+        $post_data['indentation']=$this->use_indentation ? true:false;
         $thread->update($thread_data);
         $post = $thread->mainpost;
         $post->update($post_data);

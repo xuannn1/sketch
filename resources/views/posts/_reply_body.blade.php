@@ -42,7 +42,7 @@
         </div>
     </div>
     <div class="panel-body post-body">
-        @if((($reply->bianyuan)||($thread->bianyuan))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
+        @if((($reply->is_bianyuan)||($thread->is_bianyuan))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
         <div class="text-center">
             <h6 class="display-4 grayout"><a href="{{ route('login') }}">本内容为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></h6>
         </div>
@@ -55,13 +55,13 @@
             @endif
 
             <!-- 回帖本体 -->
-            <div class="main-text {{ $reply->indentation? 'indentation':'' }}">
+            <div class="main-text {{ $reply->use_indentation? 'indentation':'' }}">
                 @if($reply->title)
                 <div class="text-center">
                     <strong>{{ $reply->title }}</strong>
                 </div>
                 @endif
-                @if($reply->markdown)
+                @if($reply->use_markdown)
                 {!! Helper::sosadMarkdown($reply->body) !!}
                 @else
                 {!! StringProcess::wrapParagraphs($reply->body) !!}
@@ -78,12 +78,12 @@
         @endif
 
         <!-- 回复 -->
-        @if((!$thread->locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$reply->is_folded)&&(Auth::user()->level >= 2))
+        @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$reply->is_folded)&&(Auth::user()->level >= 2))
             <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $reply->id }}, '{{ StringProcess::trimtext($reply->title.$reply->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $reply->reply_count }}</span></a></span>
         @endif
 
         <!-- 编辑 -->
-        @if(($reply->user_id===Auth::id())&&(!$thread->locked)&&(!$reply->is_folded)&&($thread->channel()->allow_edit))
+        @if(($reply->user_id===Auth::id())&&(!$thread->is_locked)&&(!$reply->is_folded)&&($thread->channel()->allow_edit))
             <span><a class="btn btn-danger sosad-button btn-xs" href="{{ route('post.edit', $reply->id) }}">编辑</a></span>
         @endif
 

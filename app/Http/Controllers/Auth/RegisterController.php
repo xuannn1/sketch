@@ -110,7 +110,7 @@ class RegisterController extends Controller
                 'user_id' => $user->id
             ],[
                 'invitation_token' => $data['invitation_token'],
-                'activation_token' => str_random(45);
+                'activation_token' => str_random(45),
             ]);
             $invitation_token = InvitationToken::where('token', $data['invitation_token'])->first();
             $invitation_token->inactive_once();

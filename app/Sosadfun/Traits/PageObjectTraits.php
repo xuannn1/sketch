@@ -46,7 +46,10 @@ trait PageObjectTraits{
     public function thread_recommendation()
     {
         return Cache::remember('thread_recommendation', 1, function () {
-            return \App\Models\Thread::find(ConstantObjects::system_variable()->homepage_thread_id);
+            $id = ConstantObjects::system_variable()->homepage_thread_id;
+            if($id>0){
+                return \App\Models\Thread::find($id);
+            }
         });
     }
 

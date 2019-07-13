@@ -43,7 +43,7 @@
                 <ul class="nav navbar-nav navbar-right text-right">
                     <li><a href="{{ route('statuses.index') }}">动态</a></li>
                     <li><a href="{{ route('books.index') }}">文库</a></li>
-                    <li><a href="{{ route('threads.index') }}">论坛</a></li>
+                    <li><a href="{{ route('threads.thread_index') }}">论坛</a></li>
                     <li><a href="{{ route('register') }}">注册</a></li>
                     <li><a href="{{ route('login') }}">登录</a></li>
                 </ul>

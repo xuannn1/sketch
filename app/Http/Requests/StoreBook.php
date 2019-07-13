@@ -42,7 +42,7 @@ class StoreBook extends FormRequest
             'book_status' => 'required|numeric|min:1|max:3',
             'book_length' => 'required|numeric|min:1|max:4',
             'sexual_orientation' => 'required|numeric|min:1|max:7',
-            'bianyuan' =>'required',
+            'is_bianyuan' =>'required',
             'majia' => 'string|max:10',
         ];
     }
@@ -76,7 +76,7 @@ class StoreBook extends FormRequest
     public function generateBook()
     {
         $book_data = $this->only('book_status','book_length','sexual_orientation');
-        $book_data['indentation']=$this->indentation ? true:false;
+        $book_data['indentation']=$this->use_indentation ? true:false;
         $thread_data = $this->only('channel_id','label_id','title','brief');
         if ($this->anonymous){
             $thread_data['anonymous']=1;
@@ -93,8 +93,8 @@ class StoreBook extends FormRequest
         }
         $thread_data['lastresponded_at']=Carbon::now();
         $thread_data['user_id'] = auth()->id();
-        $thread_data['bianyuan'] = $this->bianyuan=='1'? 1:0;
-        $thread_data['public']=$this->public ? true:false;
+        $thread_data['bianyuan'] = $this->is_bianyuan=='1'? 1:0;
+        $thread_data['public']=$this->is_public ? true:false;
         $thread_data['noreply']=$this->noreply ? true:false;
         $thread_data['download_as_book']=$this->download_as_book ? true:false;
         $thread_data['download_as_thread']=$this->download_as_thread ? true:false;
@@ -105,8 +105,8 @@ class StoreBook extends FormRequest
         $post_data['trim_body']=StringProcess::trimtext($post_data['body'], 50);
         $post_data['user_ip'] = request()->getClientIp();
         $post_data['user_id'] = auth()->id();
-        $post_data['markdown']=$this->markdown ? true:false;
-        $post_data['indentation']=$this->indentation ? true:false;
+        $post_data['markdown']=$this->use_markdown ? true:false;
+        $post_data['indentation']=$this->use_indentation ? true:false;
         //tags_data
         $tags_data = $this->tags;
         //tongren_data
@@ -173,7 +173,7 @@ class StoreBook extends FormRequest
         $book = $thread->book;
         //book_data
         $book_data = $this->only('book_status','book_length','sexual_orientation');
-        $book_data['indentation']=$this->indentation ? true:false;
+        $book_data['indentation']=$this->use_indentation ? true:false;
         //thread_data
         $thread_data = $this->only('label_id','title','brief');
         while(Helper::convert_to_title($thread_data['title'])!=$thread_data['title']){
@@ -184,8 +184,8 @@ class StoreBook extends FormRequest
         }
         $thread_data['anonymous'] = $this->anonymous? 1:0;
         $thread_data['edited_at']=Carbon::now();
-        $thread_data['bianyuan'] = $this->bianyuan=='1'? true:false;
-        $thread_data['public']=$this->public ? true:false;
+        $thread_data['bianyuan'] = $this->is_bianyuan=='1'? true:false;
+        $thread_data['public']=$this->is_public ? true:false;
         $thread_data['noreply']=$this->noreply ? true:false;
         $thread_data['download_as_book']=$this->download_as_book ? true:false;
         $thread_data['download_as_thread']=$this->download_as_thread ? true:false;
@@ -193,8 +193,8 @@ class StoreBook extends FormRequest
         //post_data
         $post_data['body']=StringProcess::trimSpaces($this->wenan);
         $post_data['trim_body']=StringProcess::trimtext($post_data['body'], 50);
-        $post_data['markdown']=$this->markdown ? true:false;
-        $post_data['indentation']=$this->indentation ? true:false;
+        $post_data['markdown']=$this->use_markdown ? true:false;
+        $post_data['indentation']=$this->use_indentation ? true:false;
         //tags_data
         $tags_data = $this->tags;
         //tongren_data

@@ -53,8 +53,8 @@ class StorePost extends FormRequest
         }else{
             $data['anonymous']=0;
         }
-        $data['markdown']=$this->markdown ? true:false;
-        $data['indentation']=$this->indentation ? true:false;
+        $data['markdown']=$this->use_markdown ? true:false;
+        $data['indentation']=$this->use_indentation ? true:false;
         if($this->reply_to_id>0){
             $reply = Post::find($this->reply_to_id);
             if($reply){
@@ -103,8 +103,8 @@ class StorePost extends FormRequest
         $data['char_count'] = iconv_strlen($data['body'], 'utf-8');
         $data['brief']=StringProcess::trimtext($data['body'], 45);
         $data['anonymous']=$this->anonymous&&$post->thread->channel()->allow_anonymous ? 1:0;
-        $data['markdown']=$this->markdown ? true:false;
-        $data['indentation']=$this->indentation ? true:false;
+        $data['markdown']=$this->use_markdown ? true:false;
+        $data['indentation']=$this->use_indentation ? true:false;
         auth()->user()->info->update(['indentation'=>$data['indentation']]);
         $data['edited_at']=Carbon::now();
         $post->update($data);

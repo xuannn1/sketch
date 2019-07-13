@@ -10,7 +10,7 @@
                 <div class="admin-symbol">
                     <h2>管理员权限专区：警告！请勿进行私人用户操作！</h2>
                 </div>
-                @if(!$thread->locked)
+                @if(!$thread->is_locked)
                 <div class="radio">
                     <label><input type="radio" name="controlthread" value="1">锁帖</label>
                 </div>
@@ -20,7 +20,7 @@
                 </div>
                 @endif
 
-                @if($thread->public)
+                @if($thread->is_public)
                 <div class="radio">
                     <label><input type="radio" name="controlthread" value="3">转私密</label>
                 </div>
@@ -30,7 +30,7 @@
                 </div>
                 @endif
 
-                @if(!$thread->bianyuan)
+                @if(!$thread->is_bianyuan)
                 <div class="radio">
                     <label><input type="radio" name="controlthread" value="15">转边缘</label>
                 </div>
@@ -58,7 +58,7 @@
                     <label for="reason"></label>
                     <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)，以及处理参数（如禁言时间，精华时间）。"></textarea>
                 </div>
-                
+
                 <div class="">
                     <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>
                 </div>

@@ -83,13 +83,13 @@ class Post extends Model
 
     public function scopeBrief($query)
     {
-        return $query->select('id','user_id','title','type','brief','created_at', 'edited_at', 'bianyuan','upvote_count','reply_count','char_count','view_count');
+        return $query->select('id','user_id','title','type','brief','created_at', 'edited_at', 'is_bianyuan','upvote_count','reply_count','char_count','view_count');
     }
 
     public function scopeUserOnly($query, $userOnly)
     {
         if($userOnly){
-            return $query->where('user_id', $userOnly)->where('anonymous', false);
+            return $query->where('user_id', $userOnly)->where('is_anonymous', false);
         }
         return $query;
     }
@@ -232,7 +232,7 @@ class Post extends Model
 
     public function scopePostInfo($query)
     {
-        return $query->select('id', 'type', 'user_id', 'thread_id', 'title', 'brief', 'created_at', 'bianyuan', 'char_count', 'view_count', 'reply_count', 'upvote_count');
+        return $query->select('id', 'type', 'user_id', 'thread_id', 'title', 'brief', 'created_at', 'is_bianyuan', 'char_count', 'view_count', 'reply_count', 'upvote_count');
     }
 
 

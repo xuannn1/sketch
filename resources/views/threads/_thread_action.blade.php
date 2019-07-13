@@ -1,6 +1,6 @@
 <!-- 对帖子进行打赏，投票，阅读等各种操作 -->
 <div class="container-fluid thread-vote">
-    @if($thread->user_id===Auth::id()&&!$thread->locked)
+    @if($thread->user_id===Auth::id()&&!$thread->is_locked)
     <!-- 作者专区，编辑首楼和文案-->
     <div class="row text-left">
         @switch($thread->channel()->type)
@@ -53,7 +53,7 @@
             <button class="btn btn-lg btn-success btn-block sosad-button" id="itemcollection{{$thread->id}}" onclick="item_add_to_collection({{$thread->id}},1,0)">收藏{{ $thread->collection_count }}</button>
         </div>
         <div class="col-xs-3">
-            @if((!$thread->noreply)&&(!$thread->locked)&&(($thread->public)||($thread->user_id===Auth::id())))
+            @if((!$thread->noreply)&&(!$thread->is_locked)&&(($thread->is_public)||($thread->user_id===Auth::id())))
             <a class="btn btn-lg btn-primary btn-block sosad-button" href="#replyToThread">回复</a>
             @endif
         </div>

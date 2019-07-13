@@ -34,7 +34,7 @@ class ChaptersController extends Controller
 
     public function store(StoreChapter $form, Book $book)
     {
-        if ((Auth::id()==$book->thread->creator->id)&&(!$book->thread->locked)) {
+        if ((Auth::id()==$book->thread->creator->id)&&(!$book->thread->is_locked)) {
             $chapter = $form->generateChapter($book);
             return redirect()->route('book.show', $book)->with("success", "您已成功增添章节");
         }
@@ -104,7 +104,7 @@ class ChaptersController extends Controller
         $thread = $book->thread;
         if($thread->id){
             $mainpost = $chapter->mainpost;
-            if($thread->locked){
+            if($thread->is_locked){
                 return redirect()->back()->with("danger","本文已被锁定，不能修改");
             }else{
                 return view('chapters.chapteredit', compact('chapter', 'thread', 'book', 'mainpost'));

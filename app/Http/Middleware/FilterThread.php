@@ -27,11 +27,11 @@ class FilterThread
             return redirect()->route('error', ['error_code' => '404']);
         }
 
-        if($channel->is_public&&$thread->public&&!$thread->bianyuan){// 公共非边
+        if($channel->is_public&&$thread->is_public&&!$thread->is_bianyuan){// 公共非边
             return $next($request);
         }
 
-        if($channel->is_public&&$thread->public&&$thread->bianyuan){// 公共边
+        if($channel->is_public&&$thread->is_public&&$thread->is_bianyuan){// 公共边
             if(Auth::check()&&!Auth::user()->activated){
                 return redirect()->route('users.edit', Auth::id())->with("warning", "您的邮箱尚未激活，请激活后再访问该版面");
             }

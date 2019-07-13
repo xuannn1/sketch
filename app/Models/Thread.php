@@ -127,9 +127,9 @@ class Thread extends Model
             return $query;
         }
         if($withBianyuan==='bianyuan_only'){
-            return $query->where('bianyuan', true);
+            return $query->where('is_bianyuan', true);
         }
-        return $query->where('bianyuan', false);
+        return $query->where('is_bianyuan', false);
     }
 
     public function scopeWithTag($query, $withTags="")
@@ -155,10 +155,10 @@ class Thread extends Model
     public function scopeWithAnonymous($query, $withAnonymous='')
     {
         if($withAnonymous==='anonymous_only'){
-            return $query->where('anonymous','=',1);
+            return $query->where('is_anonymous','=',1);
         }
         if($withAnonymous==='none_anonymous_only'){
-            return $query->where('anonymous','=',0);
+            return $query->where('is_anonymous','=',0);
         }
         return $query;
 
@@ -190,7 +190,7 @@ class Thread extends Model
 
     public function scopeIsPublic($query)//只看作者决定公开的
     {
-        return $query->where('public', true);
+        return $query->where('is_public', true);
     }
 
     public function scopeOrdered($query, $ordered="")
