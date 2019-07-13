@@ -1,5 +1,6 @@
-@foreach($threads as $thread)
-<article class="{{ 'item2id'.$thread->thread_id }}">
+@foreach($collections as $collection)
+<?php $thread = $collection->thread ?>
+<article class="{{ 'thread'.$thread->id }}">
     <div class="row">
         <div class="col-xs-12 h5">
             <!-- thread title -->

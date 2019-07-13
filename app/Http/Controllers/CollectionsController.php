@@ -28,14 +28,16 @@ class CollectionsController extends Controller
         $info = CacheUser::Ainfo();
 
         $group = (int)$request->group??0;
-        $collections = Collection::where('user_id', $user->id)
-        ->where('group',$request->group)
-        ->with('thread.author','thread.tags')
+
+        $collections = Collection::with('thread.author')
+        ->where('user_id', $user->id)
+        ->where('group',$group)
         ->paginate(config('preference.threads_per_page'));
+        dd($collections);
 
         $groups = $this->findCollectionGroups($user->id);
 
-        return view('collections.index',compact('user','info','threads'))->with(['show_collection_tab'=>$request->group??'default']);
+        return view('collections.index',compact('user','info','collections','groups','collections'))->with(['show_collection_tab'=>$request->group??'default']);
     }
 
 

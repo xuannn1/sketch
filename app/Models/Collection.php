@@ -21,6 +21,6 @@ class Collection extends Model
 
     public function thread()//收藏的对象
     {
-        return $this->belongsTo(Thread::class, 'thread_id');
+        return $this->belongsTo(Thread::class);
     }
 }

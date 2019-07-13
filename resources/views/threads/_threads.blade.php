@@ -1,5 +1,5 @@
 @foreach($threads as $thread)
-<article class="{{ 'item2id'.$thread->thread_id }}">
+<article class="{{ 'threadid'.$thread->id }}">
     <div class="row">
         <div class="col-xs-12 h5">
             <!-- thread title -->

@@ -12,9 +12,9 @@
                 </ul>
             </div>
             <div class="panel-body">
-                {{ $threads->links() }}
+                {{ $collections->links() }}
                 @include('collections._threads')
-                {{ $threads->links() }}
+                {{ $collections->links() }}
             </div>
         </div>
     </div>
