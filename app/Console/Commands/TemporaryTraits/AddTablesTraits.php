@@ -63,5 +63,12 @@ trait AddTablesTraits{
         Schema::table('system_variables', function($table){
             $table->unsignedInteger('homepage_thread_id')->default(0);
         });
+
+        Schema::create('collection_gruops', function ($table) {
+            $table->increments('id');
+            $table->unsignedInteger('user_id')->index();
+            $table->string('name',10)->nullable();
+            $table->unsignedInteger('update_count')->default(0);
+        });
     }
 }
