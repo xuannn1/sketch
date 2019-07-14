@@ -43,8 +43,7 @@ class CreateUserInfosTable extends Migration
             $table->integer('message_reminders')->unsigned()->default(0);
             $table->integer('reward_reminders')->unsigned()->default(0);
             $table->integer('public_notices')->unsigned()->default(0); //已经阅读的公共通知数量
-            $table->integer('collection_threads_updates')->unsigned()->default(0);
-            $table->integer('collection_books_updates')->unsigned()->default(0);
+            $table->integer('collection_updates')->unsigned()->default(0);
             $table->unsignedInteger('default_list_id')->unsigned()->default(0);
             $table->unsignedInteger('default_box_id')->unsigned()->default(0);
             $table->unsignedInteger('default_collection_group_id')->unsigned()->default(0);

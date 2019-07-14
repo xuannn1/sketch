@@ -69,6 +69,7 @@ trait AddTablesTraits{
             $table->unsignedInteger('user_id')->index();
             $table->string('name',10)->nullable();
             $table->unsignedInteger('update_count')->default(0);
+            $table->tinyInteger('order_by')->default(0);
         });
     }
 }

@@ -67,8 +67,7 @@ trait ModifyUserTableTraits{
                     'upvote_reminders' => $user->upvote_reminders,
                     'message_reminders' => $user->message_reminders,
                     'public_notices' => $user->public_notices,
-                    'collection_threads_updates' => $user->collection_threads_updated,
-                    'collection_books_updates' => $user->collection_books_updated,
+                    'collection_updates' => $user->collection_threads_updated + $user->collection_books_updated,
                     'login_ip' => $user->last_login_ip,
                     'login_at' => $user->last_login,
                 ];
