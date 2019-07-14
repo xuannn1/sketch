@@ -120,10 +120,11 @@ return [
    'activities' => [
       '1' => '回复主题',
       '2' => '回复帖子',
-      '3' => '点评帖子',
-      '4' => '点评点评',
+      '3' => '点评帖子', //已作废
+      '4' => '点评点评', //已作废
       '5' => '喜欢帖子',
       '6' => '有人提问',
+      '7' => '打赏',
    ],
    //1:post to one's thread 2: post to one's post 3: comment to one's post 4: comment to one's comment; 5:upvote to one's post
    'level_up' => [

@@ -145,7 +145,7 @@ trait CleanUpExtraThingsTraits{
         echo "start simplify activity\n";
         if(Schema::hasColumn('activities', 'type')){
             Schema::table('activities', function($table){
-                $table->dropColumn(['type']);
+                $table->renameColumn('type', 'kind');
             });
             echo "dropped old columns of activities table\n";
         }

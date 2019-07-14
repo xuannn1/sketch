@@ -19,7 +19,6 @@ trait modifyActivityTableTraits{
         ->whereIn('activities.type',[1,2])
         ->update([
             'activities.item_type' => 'post',
-            'activities.type' => 0,
         ]);
         echo "echo updated reply activities.\n";
 
@@ -29,7 +28,7 @@ trait modifyActivityTableTraits{
         ->update([
             'activities.item_type' => 'post',
             'activities.item_id' => DB::raw('posts.id'),
-            'activities.type' => 0,
+            'activities.type' => 2,
         ]);
         echo "echo updated previously postcomment activities.\n";
 
@@ -39,7 +38,6 @@ trait modifyActivityTableTraits{
         ->update([
             'activities.item_type' => 'vote',
             'activities.item_id' => DB::raw('votes.id'),
-            'activities.type' => 0,
         ]);
         echo "echo updated upvote activities.\n";
 
@@ -49,13 +47,8 @@ trait modifyActivityTableTraits{
         ->update([
             'activities.item_type' => 'post',
             'activities.item_id' => DB::raw('questions.post_id'),
-            'activities.type' => 0,
+            'activities.type' => 1,
         ]);
         echo "echo updated previously question activities.\n";
-
-        DB::table('activities')
-        ->where('type','>',0)
-        ->delete();
-        echo "removed unnecessary activities.\n";
     }
 }
