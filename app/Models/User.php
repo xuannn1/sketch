@@ -24,7 +24,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password', 'title_id'
+        'name', 'email', 'password', 'title_id', 'unread_updates', 'unread_reminders'
     ];
 
     /**
@@ -107,9 +107,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Homework::class, 'homework_registrations', 'homework_id', 'user_id');
     }
 
-    public function collections($group=0)
+    public function collections()
     {
-        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id')->wherePivot('group', $group);
+        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id');
     }
 
     public function groups()

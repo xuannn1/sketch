@@ -37,7 +37,6 @@
                                         @endif
                                     @else
                                         <a href="{{ route('user.show', $post->user_id) }}">
-                                            <span>lv.{{ $post->author->level }}</span>
                                             @if($post->author->title&&$post->author->title->name)
                                             <span>{{ $post->author->title->name }}</span>
                                             @endif

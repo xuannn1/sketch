@@ -23,7 +23,8 @@ trait ThreadObjectTraits{
     public function threadProfilePosts($id)
     {
         return Cache::remember('threadProfilePosts.'.$id, 15, function () use($id){
-            return \App\Models\Post::withType('post')
+            return \App\Models\Post::with('author.title','last_reply')
+            ->withType('post')
             ->where('thread_id','=',$id)
             ->ordered('most_upvoted')
             ->take(5)

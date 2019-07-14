@@ -212,15 +212,20 @@
 }
 
 {//收藏模块
-    Route::get('/collections', 'CollectionsController@index')->name('collection.index');// 收藏夹目录
+
+    Route::resource('collection', 'CollectionsController', ['only' => [
+        'index', 'update', 'destroy'
+    ]]); //
+
+    Route::get('/collection_clearupdates', 'CollectionsController@clearupdates')->name('collection.clearupdates');//清零更新提醒
 
     Route::post('/threads/{thread}/collect', 'CollectionsController@store')->name('collection.store')->middleware('filter_thread');//收藏某个主题帖
 
-    Route::post('/collections/cancel', 'CollectionsController@cancel')->name('collection.cancel');//取消收藏某个主题帖
 
-    Route::post('/collections/togglekeepupdate', 'CollectionsController@togglekeepupdate')->name('collection.togglekeepupdate');//是否订阅更新提醒
+    Route::resource('collection_group', 'CollectionGroupController', ['only' => [
+        'create', 'store', 'edit', 'update', 'destroy'
+    ]]); //
 
-    Route::post('/collections/clearupdates', 'CollectionsController@clearupdates')->name('collection.clearupdates');//清零更新提醒
 }
 
 {//消息提醒模块

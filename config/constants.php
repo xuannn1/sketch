@@ -11,4 +11,5 @@ return [
    'quiz_test_number' => 5, //目前每次测试取5道题
    'box_channel_id' => 14,
    'list_channel_id' => 13,
+
 ];

@@ -50,7 +50,7 @@
     <!-- 操作按钮：收藏，回复，写独立评论，打赏 -->
     <div class="row">
         <div class="col-xs-3">
-            <button class="btn btn-lg btn-success btn-block sosad-button" id="itemcollection{{$thread->id}}" onclick="item_add_to_collection({{$thread->id}},1,0)">收藏{{ $thread->collection_count }}</button>
+            <button class="btn btn-lg btn-success btn-block sosad-button" id="itemcollection{{$thread->id}}" onclick="add_to_collection({{$thread->id}})">收藏{{ $thread->collection_count }}</button>
         </div>
         <div class="col-xs-3">
             @if((!$thread->noreply)&&(!$thread->is_locked)&&(($thread->is_public)||($thread->user_id===Auth::id())))

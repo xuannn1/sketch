@@ -54,12 +54,14 @@ class StorePost extends FormRequest
             $data['anonymous']=0;
         }
         $data['markdown']=$this->use_markdown ? true:false;
+        $data['is_bianyuan']=$thread->is_bianyuan ? true:false;
         $data['indentation']=$this->use_indentation ? true:false;
         if($this->reply_to_id>0){
             $reply = Post::find($this->reply_to_id);
             if($reply){
                 $data['reply_to_id'] = $reply->id;
                 $data['reply_to_brief'] = $reply->brief;
+                $data['is_bianyuan']=$data['is_bianyuan']||$reply->is_bianyuan;
                 if($reply->type==='post'||$reply->type==='comment'){
                     $data['in_component_id'] = $reply->in_component_id;
                     $data['type'] = 'comment';
@@ -82,8 +84,6 @@ class StorePost extends FormRequest
             }
             return $post;
         });
-
-
 
         return $post;
     }

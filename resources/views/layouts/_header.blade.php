@@ -20,7 +20,7 @@
                     <li><a href="{{ route('statuses.collections') }}">动态</a></li>
                     <li><a href="{{ route('books.index') }}">文库</a></li>
                     <li><a href="{{ route('threads.thread_index') }}">论坛</a></li>
-                    <li><a href="{{ route('collection.index') }}">收藏<span class="badge">{{ $Auser->unread_updates!=0? $Auser->unread_updates :''}}</span></a></li>
+                    <li><a href="{{ route('collection.index') }}">收藏<span class="badge">{{ $Auser->unread_updates>0? $Auser->unread_updates :''}}</span></a></li>
 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{Auth::user()->unread_reminders>0? 'blink_me reminder-sign':''}}">

@@ -12,9 +12,15 @@ trait CollectionObjectTraits{
         });
     }
 
+    public function refreshCollectionGroups($id)
+    {
+        return Cache::pull('collectionGroups.'.$id);
+    }
+
     public function chechCollectedOrNot($user_id, $thread_id)
     {
-        return Collection::where('user_id',$user_id)->where('thread_id',$thread_id)
-        ->first()? true:false;
+        $collection = \App\Models\Collection::where('user_id',$user_id)->where('thread_id',$thread_id)
+        ->first();
+        return $collection? true:false;
     }
 }

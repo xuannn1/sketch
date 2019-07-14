@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Collection;
+use App\Models\CollectionGroup;
 use App\Models\Thread;
 use Carbon;
 use DB;
@@ -26,31 +27,42 @@ class CollectionsController extends Controller
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
-
-        $group = (int)$request->group??0;
-
-        $collections = Collection::with('thread.author')
-        ->where('user_id', $user->id)
-        ->where('group',$group)
-        ->paginate(config('preference.threads_per_page'));
-        dd($collections);
+        $collection_updates = $info->collection_updates;
 
         $groups = $this->findCollectionGroups($user->id);
+        $orderby = 0;
+        if($request->group){
+            $group = $groups->keyby('id')->get($request->group);
+            $orderby = $group->order_by;
+            if($group->update_count>0){
+                $group->update(['update_count' => 0]);
+                $this->refreshCollectionGroups($user->id);
+            }
+        }
+        if($user->unread_updates>0){
+            $user->update(['unread_updates'=>0]);
+        }
+        if($info->collection_updates>0){
+            $info->update(['collection_updates'=>0]);
+        }
+        $collections = Collection::join('threads', 'threads.id', '=', 'collections.thread_id')
+        ->where('collections.user_id', $user->id)
+        ->where('collections.group',(int)$request->group??0)
+        ->threadOrdered($orderby)
+        ->paginate(config('preference.threads_per_page'));
 
-        return view('collections.index',compact('user','info','collections','groups','collections'))->with(['show_collection_tab'=>$request->group??'default']);
+        $collections->load('thread.author','thread.tags','thread.last_post','thread.last_component');
+
+        return view('collections.index',compact('user','info','collections','groups','collections','collection_updates'))->with(['show_collection_tab'=>$request->group??'default']);
     }
 
 
-    public function store()
+    public function store($thread)
     {
-        // default input: [
-            // 'thread' => xxx,
-            // 'group' => xxx,
-        //];
-
-        if($this->chechCollectedOrNot(Auth::id(), request('thread'))){
+        if(!$this->chechCollectedOrNot(Auth::id(), (int)request('thread'))){
             $collection = Collection::create([
                 'thread_id' => request('thread'),
+                'user_id' => Auth::id(),
                 'group' => request('group')??0,
             ]);
             return [
@@ -64,32 +76,64 @@ class CollectionsController extends Controller
 
     }
 
-    public function cancel(Request $request)
+    public function update(Collection $collection, Request $request)
     {
+        if(!$collection||$collection->user_id!=Auth::id()){
+            return 'notwork';
+        }
+        if(request()->keep_updated){
+            $updated = (int)request()->keep_updated;
+            if($updated===0||$updated===1){
+                $collection->update([
+                    'keep_updated' => $updated,
+                ]);
 
+            }
+        }
+
+        if(request()->group){
+            $group = (int)request()->group;
+            if($group>0){
+                $collection_group = CollectionGroup::find(request()->group);
+                if(!$collection_group||$collection_group->user_id!=Auth::id()){
+                    return 'not your collection group! cannot update';
+                }
+            }
+            $collection->update([
+                'group' => $group,
+            ]);
+        }
+
+        return [
+            'success' => 'collection updated',
+            'collection' => $collection,
+        ];
     }
-    public function togglekeepupdate(Request $request)
+
+    public function destroy(Collection $collection, Request $request)
     {
-        $thread = Thread::find(request('thread_id'));
-        $collection = $thread->collection(Auth::id());
-        if($collection){
-            $collection->keep_updated = !$collection->keep_updated;
-            $collection->save();
-            return $collection;
-        }else{
-            return "notwork";
+        if($collection->user_id===Auth::id()){
+            $thread_id = $collection->thread_id;
+            $collection->delete();
+            return [
+                'success'=> '已经成功删除收藏',
+                'thread_id' => $thread_id,
+            ];
         }
     }
+
 
     public function clearupdates()
     {
         $user = Auth::user();
+        $info = CacheUser::Ainfo();
         Collection::where('user_id','=',$user->id)->update(['updated'=> false]);
-        Follower::where('follower_id','=',$user->id)->update(['updated'=> false]);
-        return 'worked';
+        CollectionGroup::where('user_id','=',$user->id)->update(['update_count'=> 0]);
+        $this->refreshCollectionGroups($user->id);
+        $user->update(['unread_updates'=>0]);
+        $info->update(['collection_updates'=>0]);
+        return redirect()->back()->with('success','已将所有更新标记为已读');
     }
-
-
 
 
 }

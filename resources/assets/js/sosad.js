@@ -127,19 +127,19 @@ function thread_xianyu(thread_id){
     });
 };
 
-function thread_add_to_collection(thread_id){
+function add_to_collection(thread_id){
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: web_base_url + '/threads/' + thread_id + '/collect',
         data: {
         },
         success: function(data) {
-            console.log(data);
+            // console.log(data);
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
@@ -148,7 +148,87 @@ function thread_add_to_collection(thread_id){
                 }
             });
             if(!(data['collection'] === undefined)){
-                $( '#threadcollection'+thread_id ).html('收藏'+data['collection']);
+                $( '#itemcollection'+thread_id ).html('已收藏');
+            }
+        }
+    });
+};
+
+function cancel_collection(collection_id){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: web_base_url + '/collection/' + collection_id,
+        data: {
+            '_method': "DELETE",
+        },
+        success: function(data) {
+            console.log(data);
+            if(!(data['thread_id'] === undefined)){
+                $( '.thread'+ data['thread_id'] ).addClass('hidden');
+            }
+        }
+    });
+};
+
+
+function collection_toggle_keep_update(collection_id,keep_updated){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: web_base_url + '/collection/' + collection_id,
+        data: {
+            '_method': "PATCH",
+            'keep_updated' : keep_updated,
+        },
+        success: function(data) {
+            if (data != "notwork"){
+                // console.log(data);
+                if(!(data['collection'] === undefined)){
+                    if(data['collection']['keep_updated']){
+                        $( '#keepupdate'+collection_id ).addClass('hidden');
+                        $( '#nomoreupdate'+collection_id ).removeClass('hidden');
+                    }else{
+                        $( '#keepupdate'+collection_id ).removeClass('hidden');
+                        $( '#nomoreupdate'+collection_id ).addClass('hidden');
+                    }
+                }
+
+            }
+        }
+    });
+};
+
+function collection_change_group(collection_id,group_id){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: web_base_url + '/collection/' + collection_id,
+        data: {
+            '_method': "PATCH",
+            'group' : group_id,
+        },
+        success: function(data) {
+            if (data != "notwork"){
+                console.log(data);
+                if(!(data['collection'] === undefined)){
+                    if(data['collection']['group']){
+                        $( '.thread'+ data['collection']['thread_id'] ).addClass('hidden');
+                    }
+                }
+
             }
         }
     });
@@ -236,97 +316,33 @@ function expandpost(id){
     }
 };
 
-function toggleCancelButtons(){
-    $( ".cancel-button" ).toggleClass('hidden');
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'POST',
-        url: web_base_url + '/collections/clearupdates',
-        data: {
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                console.log('cleared updates');
-            }
-        }
-    });
-};
 
-function cancelCollectionItem(item_id, item_type, collection_list_id){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'POST',
-        url: web_base_url + '/collections/cancel',
-        data: {
-            'item_id':item_id,
-            'item_type':item_type,
-            'collection_list_id':collection_list_id,
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                $( '.item'+item_type+'id'+item_id ).addClass('hidden');
-            }
-        }
-    });
-};
-function ToggleKeepUpdateThread(thread_id){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'POST',
-        url: web_base_url + '/collections/togglekeepupdate',
-        data: {
-            'thread_id': thread_id
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                //console.log(data);
-                if (data.keep_updated){
-                    $( '#togglekeepupdatethread'+thread_id ).html("不再提醒");
-                }else{
-                    $( '#togglekeepupdatethread'+thread_id ).html("接收提醒");
-                }
 
-            }
-        }
-    });
-};
-function ToggleKeepUpdateUser(user_id){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'POST',
-        url: web_base_url + '/followers/togglekeepupdate',
-        data: {
-            'user_id': user_id
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                console.log(data);
-                if (data.keep_updated){
-                    $( '.togglekeepupdateuser'+user_id ).html("不再提醒");
-                }else{
-                    $( '.togglekeepupdateuser'+user_id ).html("接收提醒");
-                }
-
-            }
-        }
-    });
-}
+// function ToggleKeepUpdateUser(user_id){
+//     $.ajaxSetup({
+//         headers: {
+//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//         }
+//     });
+//     $.ajax({
+//         type: 'POST',
+//         url: web_base_url + '/followers/togglekeepupdate',
+//         data: {
+//             'user_id': user_id
+//         },
+//         success: function(data) {
+//             if (data != "notwork"){
+//                 console.log(data);
+//                 if (data.keep_updated){
+//                     $( '.togglekeepupdateuser'+user_id ).html("不再提醒");
+//                 }else{
+//                     $( '.togglekeepupdateuser'+user_id ).html("接收提醒");
+//                 }
+//
+//             }
+//         }
+//     });
+// }
 
 function cancelfollow(user_id){
     $.ajaxSetup({

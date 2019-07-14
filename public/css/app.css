@@ -12148,7 +12148,7 @@ img {
 
 .recommend-icon {
   color: #f5c842;
-  font-size: 2em;
+  font-size: 1.7em;
   left: -0.2em;
   top: -15%;
   position: absolute;
@@ -12157,10 +12157,10 @@ img {
 .recommend-text {
   color: #f5c842;
   font-size: 1em;
-  font-weight: 600;
+  font-weight: 300;
   position: absolute;
-  top: 5%;
-  left: 1.3em;
+  top: -5%;
+  left: 1.1em;
 }
 
 .jinghua-label {
@@ -12191,5 +12191,11 @@ textarea {
 
 .md-editor > textarea {
   font-size: 1em;
+}
+
+.dropdown-cog {
+  margin: 0;
+  border: 0;
+  background-color: inherit;
 }
 
