@@ -11,13 +11,13 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <div class="col-xs-12 h4">
+                    <div class="h4">
                         <span>
                             <a href="{{ route('user.show', $status->user_id) }}">{{ $status->author->name }}</a>&nbsp;
                             {{ $status->created_at->diffForHumans() }}
                         </span>
                     </div>
-                    <div class="col-xs-12 h4 brief">
+                    <div class="h4 brief">
                         <span class="smaller-10">
                             {!! StringProcess::wrapParagraphs($status->body) !!}
                         </span>

@@ -38,16 +38,16 @@ class VoteController extends Controller
 
     public function index(Request $request)
     {
-        // TODO： 有待完成管理员可以看见各种投票内容的部分（怎样将管理员数据传递到resource内部去，需要研究一下）
-        $voted_model=$this->findVotableModel($request->all());
-        if(empty($voted_model)){abort(404);}
-
-        $votes=$voted_model->votes()->paginate(config('constants.votes_per_page'));
-
-        return response()->success([
-            'votes' => VoteResource::collection($votes->load('author')),
-            'paginate' => new PaginateResource($votes),
-        ]);
+        // // TODO： 有待完成管理员可以看见各种投票内容的部分（怎样将管理员数据传递到resource内部去，需要研究一下）
+        // $voted_model=$this->findVotableModel($request->all());
+        // if(empty($voted_model)){abort(404);}
+        //
+        // $votes=$voted_model->votes()->paginate(config('constants.votes_per_page'));
+        //
+        // return response()->success([
+        //     'votes' => VoteResource::collection($votes->load('author')),
+        //     'paginate' => new PaginateResource($votes),
+        // ]);
     }
 
     public function store(StoreVote $form)

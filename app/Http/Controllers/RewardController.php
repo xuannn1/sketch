@@ -34,13 +34,13 @@ class RewardController extends Controller
     public function index(Request $request)
     {
 
-        $rewarded_model=$this->findRewardableModel($request->all());
-        if(empty($rewarded_model)){abort(404);}
-
-        $rewards=$rewarded_model->rewards;
-        return response()->success([
-            'rewards' => RewardResource::collection($rewards),
-        ]);
+        // $rewarded_model=$this->findRewardableModel($request->all());
+        // if(empty($rewarded_model)){abort(404);}
+        //
+        // $rewards=$rewarded_model->rewards;
+        // return response()->success([
+        //     'rewards' => RewardResource::collection($rewards),
+        // ]);
     }
 
     public function store(StoreReward $form)

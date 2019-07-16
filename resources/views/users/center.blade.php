@@ -57,11 +57,11 @@
                     <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
                         我的题头（待做）
                     </a>
-                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
-                        我的投票（待做）
+                    <a href="{{ route('vote.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的评票
                     </a>
-                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
-                        我的打赏（待做）
+                    <a href="{{ route('reward.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的打赏
                     </a>
                     <a href="{{ route('quiz.taketest') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         答题挑战

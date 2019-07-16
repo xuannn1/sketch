@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', '公共通知')
+@section('title', $user->name.'的站内信箱')
 
 @section('content')
 <div class="container-fluid">
@@ -10,14 +10,17 @@
             &nbsp;/&nbsp;
             <a href="{{ route('message.index') }}">站内信箱</a>
             &nbsp;/&nbsp;
-            往期站内公共信息
+            <a href="{{ route('message.sent') }}">发件箱</a>
         </div>
         <div class="panel panel-default">
             <div class="panel-body text-center">
-                <h1>往期站内公共信息</h1>
+                <h1>{{$user->name}}发送的站内信</h1>
+                @include('messages._message_tab')
             </div>
             <div class="panel-body">
-                @include('messages._public_notices')
+                {{ $messages->links() }}
+                @include('messages._messages')
+                {{ $messages->links() }}
             </div>
         </div>
     </div>

@@ -12,4 +12,14 @@ class Activity extends Model
     public function item(){
     	return $this->morphTo();
     }
+
+    public function scopeWithType($query,$type='')
+    {
+        return $query->where('item_type',$type);
+    }
+    public function scopeWithUser($query,$id=0)
+    {
+        return $query->where('user_id',$id);
+    }
+
 }

@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', '公共通知')
+@section('title', $user->name.'的消息中心')
 
 @section('content')
 <div class="container-fluid">
@@ -7,17 +7,20 @@
         <!-- 导航 -->
         <div class="">
             <a href="{{ route('activity.index') }}">消息中心</a>
-            &nbsp;/&nbsp;
-            <a href="{{ route('message.index') }}">站内信箱</a>
-            &nbsp;/&nbsp;
-            往期站内公共信息
         </div>
         <div class="panel panel-default">
             <div class="panel-body text-center">
-                <h1>往期站内公共信息</h1>
+                <h1>{{$user->name}}的消息中心</h1>
+                总计{{$unread_reminders}}条未读回复
+                @include('messages._new_upvotes')
+                @include('messages._new_rewards')
+                <br>
+                @include('messages._message_tab')
             </div>
             <div class="panel-body">
-                @include('messages._public_notices')
+                {{ $activities->links() }}
+                @include('messages._simple_posts')
+                {{ $activities->links() }}
             </div>
         </div>
     </div>

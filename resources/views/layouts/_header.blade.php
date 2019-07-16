@@ -23,12 +23,12 @@
                     <li><a href="{{ route('collection.index') }}">收藏<span class="badge">{{ $Auser->unread_updates>0? $Auser->unread_updates :''}}</span></a></li>
 
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{Auth::user()->unread_reminders>0? 'blink_me reminder-sign':''}}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{Auth::user()->unread_reminder_count()>0? 'blink_me reminder-sign':''}}">
                             <span class="glyphicon glyphicon-bell {{Auth::user()->unread_reminders>0? :'hidden'}}"></span>{{ Auth::user()->name }} <b class="caret"></b></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ route('user.center') }}">个人中心</a></li>
-                            <li><a href="{{ route('messages.unread') }}">消息中心<span class="badge">{{ Auth::user()->unread_reminders>0 ? Auth::user()->unread_reminders:''}}</span></a></li>
+                            <li><a href="{{ route('activity.index') }}">消息中心<span class="badge">{{ Auth::user()->unread_reminder_count()? Auth::user()->unread_reminder_count():''}}</span></a></li>
                             <li><a href="{{ route('linkedaccounts.index') }}">切换账户</a></li>
                             <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">退出</a>

@@ -9,7 +9,8 @@ use App\Notifications\ResetPasswordNotification;
 use DB;
 use Carbon;
 use Cache;
-use Helper;
+use CacheUser;
+use ConstantObjects;
 
 class User extends Authenticatable
 {
@@ -24,7 +25,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password', 'title_id', 'unread_updates', 'unread_reminders'
+        'name', 'email', 'password', 'title_id', 'unread_updates', 'unread_reminders','public_notice_id'
     ];
 
     /**
@@ -77,9 +78,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Title::class, 'title_user', 'user_id', 'title_id')->withPivot('is_public');
     }
 
-    public function linkedaccounts()
+    public function branchaccounts()
     {
         return $this->belongsToMany(User::class, 'linkaccounts', 'master_account', 'branch_account');
+    }
+
+    public function masteraccounts()
+    {
+        return $this->belongsToMany(User::class, 'linkaccounts', 'branch_account', 'master_account');
     }
 
     public function statuses()
@@ -195,6 +201,68 @@ class User extends Authenticatable
     public function active_now($ip)
     {
         $this->info->active_now($ip);
+    }
+
+
+    public function clear_column($column_name='')
+    {
+        switch ($column_name) {
+            case 'unread_reminders':
+                if($this->unread_reminders>0){
+                    $this->update(['unread_reminders'=>0]);
+                }
+            return true;
+            break;
+
+            case 'unread_updates':
+                if($this->unread_updates>0){
+                    $this->update(['unread_updates'=>0]);
+                }
+            return true;
+            break;
+
+            case 'public_notice_id':
+                if($this->public_notice_id<ConstantObjects::system_variable()->latest_public_notice_id){
+                    $this->update(['public_notice_id'=>ConstantObjects::system_variable()->latest_public_notice_id]);
+                }
+            return true;
+            break;
+
+            default:
+            return false;
+        }
+    }
+
+    public function unread_reminder_count()
+    {
+        return $this->unread_reminders+ConstantObjects::system_variable()->latest_public_notice_id-$this->public_notice_id;
+    }
+
+    public function linked($user_id)
+    {
+        return $this->branchaccounts->contains($user_id);
+    }
+
+    public function remind($reminder='')
+    {
+        $info = CacheUser::info($this->id);
+        switch ($reminder) {
+            case 'new_message':
+                $this->unread_reminders +=1;
+                $info->message_reminders += 1;
+            break;
+
+            case 'new_reply':
+                $this->unread_reminders +=1;
+                $info->reply_reminders +=1;
+            break;
+
+            default:
+            return false;
+        }
+        $info->save();
+        $this->save();
+        return true;
     }
 
 

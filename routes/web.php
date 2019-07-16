@@ -25,11 +25,10 @@
 { // 关联马甲
 
     Route::get('/linkedaccounts','LinkedAccountsController@index')->name('linkedaccounts.index');
-    // TODO 下面这些管理系列都还需要做
     Route::get('/linkedaccounts/create','LinkedAccountsController@create')->name('linkedaccounts.create');
     Route::post('/linkedaccounts/store','LinkedAccountsController@store')->name('linkedaccounts.store');
     Route::get('/linkedaccounts/switch/{id}','LinkedAccountsController@switch')->name('linkedaccounts.switch');
-    Route::delete('/linkedaccounts/destroy/{id}','LinkedAccountsController@destroy')->name('linkedaccounts.destroy');
+    Route::delete('/linkedaccounts/destroy','LinkedAccountsController@destroy')->name('linkedaccounts.destroy');
 }
 
 {//以下是静态页面模块
@@ -139,10 +138,12 @@
 
 { // 打赏
     Route::get('reward/create','RewardController@create')->name('reward.create');//新增打赏，还没具体做
+    Route::get('reward','RewardController@index')->name('reward.index');//我的打赏中心
 }
 
 { // 评票
     Route::get('vote/create','VoteController@create')->name('vote.create');//新增评票，还没具体做
+    Route::get('vote','VoteController@index')->name('vote.index');//我的评票中心
 }
 
 {//作业模块 TODO 全部需要重做
@@ -229,19 +230,21 @@
 }
 
 {//消息提醒模块
-   Route::get('/messages/unread','MessagesController@unread')->name('messages.unread');
-   Route::get('/messages/index','MessagesController@index')->name('messages.index');
-   Route::get('/messages/messagebox','MessagesController@messagebox')->name('messages.messagebox');
-   Route::get('/messages/messages','MessagesController@messages')->name('messages.messages');
-   Route::get('/messages/messages_sent','MessagesController@messages_sent')->name('messages.messages_sent');
-   Route::get('/messages/posts','MessagesController@posts')->name('messages.posts');
-   Route::get('/messages/upvotes','MessagesController@upvotes')->name('messages.upvotes');
-   Route::get('/messages/public_notices','MessagesController@public_notices')->name('messages.public_notices');
-   Route::get('/messages/replies','MessagesController@replies')->name('messages.replies');
-   Route::get('/messages/clear','MessagesController@clear')->name('messages.clear');
-   Route::get('/messages/create/{user}','MessagesController@create')->name('messages.create');
-   Route::get('/messages/conversation/{user}/{is_group_messaging}','MessagesController@conversation')->name('messages.conversation');
-   Route::post('/messages/store/{user}','MessagesController@store')->name('messages.store');
+
+    Route::get('/activity','ActivityController@index')->name('activity.index');//显示站内提醒列表
+
+    Route::get('/message','MessageController@index')->name('message.index');//显示信箱
+
+    Route::get('/message/sent','MessageController@sent')->name('message.sent');//显示已发送信件
+
+    Route::get('/message/public_notice','MessageController@public_notice')->name('message.public_notice');//显示全部往期公共通知
+
+    Route::get('/message/dialogue/{speaker}','MessageController@dialogue')->name('message.dialogue');//显示所有对话
+
+    Route::get('/message/clearupdates','MessageController@clearupdates')->name('message.clearupdates');//清空所有提醒，都标记为已读
+
+    Route::post('/message','MessageController@store')->name('message.store');
+
 }
 //动态微博模块
 {

@@ -28,12 +28,14 @@
                 <a href="{{route('recommend_records')}}">编辑推荐</a>
             </div>
             @foreach($short_recom as $int => $post)
+            @if($post->review->reviewee)
             <div class="panel-body">
                 <div class="container-fluid">
                     <div class="recommendation">
                         <div class="row">
                             <div class="col-xs-12">
-                                <a href="{{ route('thread.show', ['thread' => $post->review->thread_id, 'recommendation' => $post->review->id]) }}" class="bigger-10">《{{ $post->review->reviewee->title }}》
+                                <a href="{{ route('thread.show', ['thread' => $post->review->thread_id, 'recommendation' => $post->review->id]) }}" class="bigger-10">
+                                    《{{ $post->review->reviewee->title }}》
                                 <span class="grayout smaller-15">{{ $post->body }}</span>
                                 </a>
                             </div>
@@ -41,6 +43,7 @@
                     </div>
                 </div>
             </div>
+            @endif
             @endforeach
             @if($thread_recom)
             <div class="panel-body">

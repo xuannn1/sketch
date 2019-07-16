@@ -17183,7 +17183,7 @@ function removespace(itemname){
     $('#'+itemname).val(string);
 };
 
-function expandpost(id){
+function expanditem(id){
     var x = document.getElementById('full'+id);
     var y = document.getElementById('abbreviated'+id);
     var z = document.getElementById('expand'+id);
@@ -17412,7 +17412,7 @@ $(document).ready(function(){
     });
 });
 
-function cancellink(user_id){
+function cancellink(master_account, branch_account){
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -17420,14 +17420,22 @@ function cancellink(user_id){
     });
     $.ajax({
         type: "POST",
-        url: web_base_url + '/linkedaccounts/destroy/' +user_id,
+        url: web_base_url + '/linkedaccounts/destroy',
         data: {
             '_method': "DELETE",
-            'id': user_id,
+            'master_account': master_account,
+            'branch_account': branch_account
         },
         success: function(data) {
-            if (data != "notwork"){
-                $( '.linkedaccount'+user_id ).addClass('hidden');
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                }
+            });
+            if(!(data['success'] === undefined)){
+                $( '.linkedaccount'+master_account+'-'+branch_account ).addClass('hidden');
             }
         }
     });

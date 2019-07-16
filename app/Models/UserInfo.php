@@ -97,4 +97,45 @@ class UserInfo extends Model
     }
 
 
+    public function clear_column($column_name='')
+    {
+        switch ($column_name) {
+            case 'default_collection_updates':
+                if($this->default_collection_updates>0){
+                    $this->update(['default_collection_updates'=>0]);
+                }
+            return true;
+            case 'message_reminders':
+                if($this->message_reminders>0){
+                    $this->update(['message_reminders'=>0]);
+                }
+            return true;
+            break;
+
+            case 'upvote_reminders':
+                if($this->upvote_reminders>0){
+                    $this->update(['upvote_reminders'=>0]);
+                }
+            return true;
+            break;
+
+            case 'reward_reminders':
+                if($this->reward_reminders>0){
+                    $this->update(['reward_reminders'=>0]);
+                }
+            return true;
+            break;
+
+            case 'administration_reminders':
+                if($this->administration_reminders>0){
+                    $this->update(['administration_reminders'=>0]);
+                }
+            return true;
+            break;
+
+            default:
+            return false;
+        }
+    }
+
 }

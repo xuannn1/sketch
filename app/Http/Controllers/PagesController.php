@@ -86,6 +86,7 @@ class PagesController extends Controller
         }
 
         if($user_id>0){
+            CacheUser::Ainfo()->clear_column('administration_reminders');
             $records = $this->findAdminRecords($user_id, $page);
             $user_name = CacheUser::user($user_id)->name;
         }else{

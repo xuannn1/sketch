@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3>论坛</h3>
-                @include('threads._threads_tabs')
+                @include('threads._thread_tab')
             </div>
             <div class="panel-body">
                 {{ $threads->links() }}

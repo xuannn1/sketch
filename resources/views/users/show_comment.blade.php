@@ -13,7 +13,7 @@
 
         <div class="panel panel-default">
             <div class="panel-body text-center">
-                @include('users._user_tabs')
+                @include('users._user_tab')
             </div>
             <div class="panel-body">
                 {{ $posts->links() }}

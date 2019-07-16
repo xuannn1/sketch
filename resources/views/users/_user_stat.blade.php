@@ -11,8 +11,9 @@
     <span>剩饭：{{ $info->shengfan }}</span>&nbsp;&nbsp;
     <span>咸鱼：{{ $info->xianyu }}</span>&nbsp;&nbsp;
     <span>丧点：{{ $info->sangdian }}</span>&nbsp;&nbsp;<br>
-    <span>连续签到：{{ $info->continued_qiandao }}天</span>&nbsp;&nbsp;
-    <span>最多签到：{{ $info->max_qiandao }}天</span>&nbsp;&nbsp;<br>
+    <span>连续签到：{{ $info->qiandao_contitued }}天</span>&nbsp;&nbsp;
+    <span>最多连续签到：{{ $info->qiandao_max }}天</span>&nbsp;&nbsp;<br>
+    <span>总签到：{{ $info->qiandao_all }}天</span>&nbsp;&nbsp;
     <span>最后签到时间：{{ $user->qiandao_at->diffForHumans() }}</span>
 </div>
 <br>

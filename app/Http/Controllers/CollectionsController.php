@@ -27,24 +27,18 @@ class CollectionsController extends Controller
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
-        $collection_updates = $info->collection_updates;
+        $default_collection_updates = $info->default_collection_updates;
 
         $groups = $this->findCollectionGroups($user->id);
         $orderby = 0;
         if($request->group){
             $group = $groups->keyby('id')->get($request->group);
             $orderby = $group->order_by;
-            if($group->update_count>0){
-                $group->update(['update_count' => 0]);
-                $this->refreshCollectionGroups($user->id);
-            }
+            $group->update_count();
         }
-        if($user->unread_updates>0){
-            $user->update(['unread_updates'=>0]);
-        }
-        if($info->collection_updates>0){
-            $info->update(['collection_updates'=>0]);
-        }
+        $user->clear_column('unread_updates');
+        $info->clear_column('default_collection_updates');
+
         $collections = Collection::join('threads', 'threads.id', '=', 'collections.thread_id')
         ->where('collections.user_id', $user->id)
         ->where('collections.group',(int)$request->group??0)
@@ -53,7 +47,7 @@ class CollectionsController extends Controller
 
         $collections->load('thread.author','thread.tags','thread.last_post','thread.last_component');
 
-        return view('collections.index',compact('user','info','collections','groups','collections','collection_updates'))->with(['show_collection_tab'=>$request->group??'default']);
+        return view('collections.index',compact('user','info','collections','groups','collections','default_collection_updates'))->with(['show_collection_tab'=>$request->group??'default']);
     }
 
 
@@ -127,11 +121,11 @@ class CollectionsController extends Controller
     {
         $user = Auth::user();
         $info = CacheUser::Ainfo();
-        Collection::where('user_id','=',$user->id)->update(['updated'=> false]);
+        Collection::where('user_id','=',$user->id)->update(['updated'=> 0]);
         CollectionGroup::where('user_id','=',$user->id)->update(['update_count'=> 0]);
         $this->refreshCollectionGroups($user->id);
-        $user->update(['unread_updates'=>0]);
-        $info->update(['collection_updates'=>0]);
+        $user->clear_column('unread_updates');
+        $info->clear_column('default_collection_updates');
         return redirect()->back()->with('success','已将所有更新标记为已读');
     }
 

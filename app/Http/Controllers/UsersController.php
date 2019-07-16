@@ -117,11 +117,11 @@ class UsersController extends Controller
         if ($user->qiandao_at <= Carbon::today()->subHours(2)->toDateTimeString())
         {
             $message = DB::transaction(function () use($user, $info){
-                if ($user->qiandao_at > Carbon::now()->subdays(2)->toDateTimeString()) {
-                    $info->continued_qiandao+=1;
-                    if($info->continued_qiandao>$info->max_qiandao){$info->max_qiandao = $info->continued_qiandao;}
+                if ($user->qiandao_at > Carbon::now()->subdays(2)) {
+                    $info->qiandao_continued+=1;
+                    if($info->qiandao_continued>$info->qiandao_max){$info->qiandao_max = $info->qiandao_continued;}
                 }else{
-                    $info->continued_qiandao=1;
+                    $info->qiandao_continued=1;
                 }
                 $user->qiandao_at = Carbon::now();
                 $message = "您已成功签到！连续签到".$info->continued_qiandao."天！";
@@ -132,8 +132,8 @@ class UsersController extends Controller
                     $message .="您获得了特殊奖励！";
                 }
                 $info->rewardData(5*$reward_base, 5*$reward_base, 5*$reward_base, 1*$reward_base, 0);
-                $info->message_limit = $user->level;
-                $info->list_limit = $user->level;
+                $info->message_limit = $user->level-4;
+                $info->list_limit = $user->level-4;
                 $info->save();
                 $user->save();
                 if($user->checklevelup()){
