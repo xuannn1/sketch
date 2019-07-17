@@ -71,5 +71,24 @@ trait AddTablesTraits{
             $table->unsignedInteger('update_count')->default(0);
             $table->tinyInteger('order_by')->default(0);
         });
+
+        Schema::table('public_notices', function($table){
+            $table->dateTime('deleted_at')->nullable();//删除时间
+            $table->renameColumn('notice_body', 'body');
+        });
+        Schema::table('message_bodies', function($table){
+            $table->renameColumn('content', 'body');
+            $table->renameColumn('group_messaging', 'bulk');
+        });
+        Schema::table('messages', function($table){
+            $table->renameColumn('message_body', 'body_id');
+            $table->dropColumn('updated_at');
+            $table->index('created_at');
+        });
+
+        Schema::table('email_modify_histories', function($table){
+            $table->dropColumn('updated_at');
+            $table->dateTime('old_email_verified_at')->nullable();//老邮件何时验证的
+        });
     }
 }

@@ -18,6 +18,7 @@ trait RenameFinalTableTraits{
     {
         Schema::table('users', function($table){
             $table->renameColumn('indentation', 'use_indentation');
+            $table->renameColumn('public_notices', 'public_notice_id');
             echo "echo updated users table.\n";
         });
     }
@@ -26,7 +27,6 @@ trait RenameFinalTableTraits{
     {
         Schema::table('user_infos', function($table){
             $table->renameColumn('clicks', 'total_clicks');
-            $table->renameColumn('public_notices', 'reviewed_public_notices');
             $table->renameColumn('views', 'view_counts');
             echo "echo updated user_infos table.\n";
         });

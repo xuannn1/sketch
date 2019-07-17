@@ -14,8 +14,8 @@ class CreateUserInfosTable extends Migration
     public function up()
     {
         Schema::create('user_infos', function (Blueprint $table) {
-            $table->integer('user_id')->unsigned()->primary();
-            $table->integer('shengfan')->unsigned()->default(0);
+            $table->unsignedInteger('user_id')->primary();
+            $table->boolean('has_intro')->default(false);
             $table->integer('xianyu')->unsigned()->default(0);
             $table->integer('jifen')->unsigned()->default(0);
             $table->integer('sangdian')->unsigned()->default(0);
@@ -30,8 +30,9 @@ class CreateUserInfosTable extends Migration
             $table->string('invitation_token', 50)->nullable();//邀请码
             $table->dateTime('no_posting_until')->nullable();//禁言时限
             $table->dateTime('no_logging_until')->nullable();//禁止登陆时限
-            $table->integer('continued_qiandao')->unsigned()->default(0);
-            $table->integer('max_qiandao')->unsigned()->default(0);
+            $table->integer('qiandao_continued')->unsigned()->default(0);
+            $table->integer('qiandao_all')->unsigned()->default(0);
+            $table->integer('qiandao_max')->unsigned()->default(0);
             $table->integer('message_limit')->unsigned()->default(0);
             $table->integer('list_limit')->unsigned()->default(0);
             $table->boolean('no_stranger_msg')->default(false);//是否接受来自陌生人的私信
@@ -42,15 +43,16 @@ class CreateUserInfosTable extends Migration
             $table->integer('upvote_reminders')->unsigned()->default(0);
             $table->integer('message_reminders')->unsigned()->default(0);
             $table->integer('reward_reminders')->unsigned()->default(0);
-            $table->integer('public_notices')->unsigned()->default(0); //已经阅读的公共通知数量
-            $table->integer('collection_updates')->unsigned()->default(0);
+            $table->integer('administration_reminders')->unsigned()->default(0);
+            $table->integer('default_collection_updates')->unsigned()->default(0);
             $table->unsignedInteger('default_list_id')->unsigned()->default(0);
             $table->unsignedInteger('default_box_id')->unsigned()->default(0);
             $table->unsignedInteger('default_collection_group_id')->unsigned()->default(0);
             $table->string('login_ip')->nullable();//上一次访问的ip地址
             $table->dateTime('login_at')->nullable();//上次登录时间
             $table->dateTime('active_at')->nullable();//上次活跃时间
-            $table->dateTime('edited_at')->nullable();//简介修改于
+            // $table->dateTime('edited_at')->nullable();//简介修改于
+            $table->dateTime('email_verified_at')->nullable();//邮箱何时验证
 
         });
     }

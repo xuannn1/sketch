@@ -66,7 +66,14 @@ trait CleanUpExtraThingsTraits{
         if (Schema::hasColumn('threads', 'label_id')){
             Schema::table('threads', function($table){
                 $table->index('reply_count');
-                $table->dropColumn(['book_id','label_id','updated_at','homework_id','post_id','show_homework_profile','top','jinghua','recommended', 'old_list_id']);
+                $table->index('view_count');
+                $table->index('collection_count');
+                $table->index('total_char');
+                $table->index('weighted_jifen');
+                $table->index('jifen');
+                $table->index('add_component_at');
+                // $table->renameColumn('recommended','recommend');
+                $table->dropColumn(['book_id','label_id','updated_at','homework_id','post_id','show_homework_profile','top','jinghua', 'old_list_id']);
                 echo "simplified threads table.\n";
             });
         }

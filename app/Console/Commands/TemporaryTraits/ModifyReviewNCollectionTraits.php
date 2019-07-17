@@ -115,6 +115,7 @@ trait ModifyReviewNCollectionTraits{
                 'brief' => $collectionlist->brief,
                 'body' => $collectionlist->body,
                 'view_count' => $collectionlist->viewed,
+                'bianyuan' => true,
                 'edited_at' => $collectionlist->lastupdated_at,
                 'collection_count' => $collectionlist->collected,
                 'created_at' => $collectionlist->created_at,

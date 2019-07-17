@@ -20,7 +20,6 @@ class AddTitleToUsersTable extends Migration
             $table->dateTime('qiandao_at')->nullable()->index();//上次签到时间
             $table->TinyInteger('quiz_level')->unsigned()->default(0);//最后做题等级
             $table->boolean('no_posting_or_not')->default(false);//是否被禁言
-            $table->index('created_at');
         });
     }
 
@@ -34,7 +33,6 @@ class AddTitleToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropcolumn('title_id');
             $table->dropcolumn('role');
-            $table->dropcolumn('unread_reminders');
             $table->dropcolumn('unread_updates');
             $table->dropcolumn('qiandao_at');
             $table->dropcolumn('quiz_level');

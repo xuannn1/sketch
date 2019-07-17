@@ -21,6 +21,7 @@ trait ModifyRewardNVoteTableTraits{
                 $table->unsignedInteger('user_id')->index();
                 $table->string('rewardable_type',10)->nullable()->index();
                 $table->unsignedInteger('rewardable_id')->default(0)->index();
+                $table->unsignedInteger('receiver_id')->default(0)->index();//谁收到了打赏
                 $table->string('reward_type',10)->nullable()->index();
                 $table->integer('reward_value')->default(0);//也有可能是负数
                 $table->dateTime('created_at')->nullable();
@@ -28,15 +29,17 @@ trait ModifyRewardNVoteTableTraits{
             echo "created rewards table\n";
         }
         echo "started storing shengfans to rewards\n";
-        \App\Models\Shengfan::with('post')->chunk(5000, function ($shengfans) {
+        \App\Models\Shengfan::with('post.simpleThread')->chunk(5000, function ($shengfans) {
             $insert_shengfan = [];
             foreach($shengfans as $shengfan){
                 $post = $shengfan->post;
-                if($post&&$post->id>0&&$post->thread_id>0){
+                $thread = $post->simpleThread;
+                if($post&&$post->id>0&&$post->thread_id>0&&$thread){
                     $shengfan_data = [
                         'user_id' => $shengfan->user_id,
                         'rewardable_type' => 'thread',
                         'rewardable_id' => $post->thread_id,
+                        'receiver_id' => $post->user_id,
                         'reward_type' => 'shengfan',
                         'reward_value' => $shengfan->shengfan_num,
                         'created_at' =>$shengfan->created_at,
@@ -49,14 +52,16 @@ trait ModifyRewardNVoteTableTraits{
         });
         echo "finished storing shengfans\n";
         echo "start storing xianyus\n";
-        \App\Models\Xianyu::chunk(5000, function ($xianyus) {
+        \App\Models\Xianyu::with('thread')->chunk(5000, function ($xianyus) {
             $insert_xianyu = [];
             foreach($xianyus as $xianyu){
-                if($xianyu->thread_id>0){
+                $thread = $xianyu->thread;
+                if($thread){
                     $xianyu_data = [
                         'user_id' => $xianyu->user_id,
                         'rewardable_type' => 'thread',
                         'rewardable_id' => $xianyu->thread_id,
+                        'receiver_id' => $thread->user_id,
                         'reward_type' => 'xianyu',
                         'reward_value' => 1,
                         'created_at' =>$xianyu->created_at,
@@ -80,16 +85,18 @@ trait ModifyRewardNVoteTableTraits{
                 $table->string('votable_type',10)->nullable()->index();
                 $table->unsignedInteger('votable_id')->default(0)->index();
                 $table->unsignedInteger('record_id')->default(0)->index();// 原来的记录地址
+                $table->unsignedInteger('receiver_id')->default(0)->index();//谁收到了打赏
                 $table->string('attitude_type',10)->nullable()->index();
                 $table->dateTime('created_at')->nullable();
             });
             echo "created votes table\n";
         }
         echo "started inserting votes to table\n";
-        \App\Models\VotePosts::chunk(5000, function ($votes) {
+        \App\Models\VotePosts::with('post')->chunk(5000, function ($votes) {
             $insert_votes = [];
             foreach($votes as $vote){
-                if($vote->upvoted){
+                $post = $vote->post;
+                if(($vote->upvoted)&&($post)){
                     $vote_data=[
                         'user_id' => $vote->user_id,
                         'votable_type' => 'post',
@@ -97,6 +104,7 @@ trait ModifyRewardNVoteTableTraits{
                         'created_at' => $vote->upvoted_at,
                         'record_id' => $vote->id,
                         'votable_id' => $vote->post_id,
+                        'receiver_id' => $vote->post->user_id,
                     ];
                     array_push($insert_votes,$vote_data);
                 }

@@ -431,10 +431,10 @@ trait ModifyThreadTableTraits{
                     $tag = $this->findTagByName('精华');
                     if($tag){array_push($insert_tags,['tag_id'=>$tag->id,'thread_id'=>$thread->id]);}
                 }
-                if($thread->recommended){
-                    $tag = $this->findTagByName('当前编推');
-                    if($tag){array_push($insert_tags,['tag_id'=>$tag->id,'thread_id'=>$thread->id]);}
-                }
+                // if($thread->recommended){
+                //     $tag = $this->findTagByName('往期编推');
+                //     if($tag){array_push($insert_tags,['tag_id'=>$tag->id,'thread_id'=>$thread->id]);}
+                // }
                 $label_tag = $this->findTagByLabelId($thread->label_id);
                 if($label_tag){
                     array_push($insert_tags,['tag_id'=>$label_tag->id,'thread_id'=>$thread->id]);
@@ -472,7 +472,7 @@ trait ModifyThreadTableTraits{
         echo "start task2.5 modifyTongrenTable\n";
         if(!Schema::hasColumn('tongrens', 'thread_id')){
             Schema::table('tongrens', function($table){
-                $table->unsignedInteger('thread_id')->primary();
+                $table->unsignedInteger('thread_id')->index();
             });
             echo "added thread_id column to tongrens\n";
         }

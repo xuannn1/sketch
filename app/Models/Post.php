@@ -31,6 +31,11 @@ class Post extends Model
         return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
     }
 
+    public function simpleThread()
+    {
+        return $this->belongsTo(Thread::class, 'thread_id')->select('id','user_id');
+    }
+
     public function replies()
     {
         return $this->hasMany(Post::class, 'reply_to_id','id');

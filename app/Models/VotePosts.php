@@ -15,6 +15,6 @@ class VotePosts extends Model
     }
     public function post()
     {
-        return $this->belongsTo(User::class, 'post_id')->withDefault();
+        return $this->belongsTo(Post::class, 'post_id')->select('id','user_id');
     }
 }

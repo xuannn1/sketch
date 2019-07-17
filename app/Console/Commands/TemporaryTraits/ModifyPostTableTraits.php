@@ -50,6 +50,13 @@ trait ModifyPostTableTraits{
                 echo "renamed post columns.\n";
             });
         }
+
+        if(!Schema::hasColumn('posts', 'fold_state')){
+            Schema::table('posts', function($table){
+                $table->tinyInteger('fold_state')->defalt(0);
+                echo "added fold_state column.\n";
+            });
+        }
     }
 
     public function modifyChapterTableColumns()
@@ -100,6 +107,10 @@ trait ModifyPostTableTraits{
         DB::table('posts')
         ->where('maintext','=',0)
         ->update(['type'=>'post']);
+
+        DB::table('posts')
+        ->where('is_folded','=',1)
+        ->update(['fold_state'=>1]);
 
         DB::table('posts')
         ->where('maintext','=',0)
