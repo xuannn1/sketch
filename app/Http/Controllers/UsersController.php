@@ -358,7 +358,7 @@ class UsersController extends Controller
         .$id
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
-        $statuses = Cache::remember($queryid, 2, function () use($request, $id) {
+        $statuses = Cache::remember($queryid, 10, function () use($request, $id) {
             return DB::table('statuses')
             ->join('users','users.id','=','statuses.user_id')
             ->leftjoin('titles','titles.id','=','users.title_id')
@@ -396,7 +396,7 @@ class UsersController extends Controller
             .$id
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
-            $posts = Cache::remember($queryid, 2, function () use($request, $id) {
+            $posts = Cache::remember($queryid, 10, function () use($request, $id) {
                 return DB::table('posts')
                 ->join('threads','threads.id','=','posts.thread_id')
                 ->join('users','users.id','=','posts.user_id')

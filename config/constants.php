@@ -20,6 +20,12 @@ return [
        'fish' => '咸鱼',
        'ham' => '火腿',
    ],
+   'votes' => [
+       'upvote' => '赞',
+       'downvote' => '踩',
+       'funnyvote' => '搞笑',
+       'foldvote' => '折叠',
+   ],
    'activities' => [
       '1' => '回复主题',
       '2' => '回复帖子', //已作废

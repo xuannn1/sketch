@@ -13,7 +13,7 @@ class UserInfo extends Model
     protected $primaryKey = 'user_id';
     const UPDATED_AT = null;
     protected $dates = ['created_at','no_posting_until','no_logging_until','login_at','active_at'];
-    protected $reward_types = array('salt','fish','ham');
+    protected $count_types = array('salt','fish','ham','upvote_count','follower_count', 'following_count');
 
     public function user()
     {

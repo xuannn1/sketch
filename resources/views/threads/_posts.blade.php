@@ -1,11 +1,13 @@
 <!-- 展示该主题下每一个帖子 -->
 @foreach($posts as $key=>$post)
-@if($post->is_folded)
+@if($post->fold_state==1)
 <div class="text-center">
-    <a type="button" data-toggle="collapse" data-target="#post{{ $post->id }}" style="cursor: pointer;" class="h6">该回帖被折叠，点击展开</a>
+    <a type="button" data-toggle="collapse" data-target="#post{{ $post->id }}" style="cursor: pointer;" class="h6">该回帖被管理员折叠，点击展开</a>
 </div>
+@elseif($post->fold_state==2)
+    <a type="button" data-toggle="collapse" data-target="#post{{ $post->id }}" style="cursor: pointer;" class="h6">该回帖被作者折叠，点击展开</a>
 @endif
-<div class="panel panel-default {{ $post->is_folded ? 'collapse':'' }} " id = "post{{ $post->id }}">
+<div class="panel panel-default {{ $post->fold_state>0? 'collapse':'' }} " id = "post{{ $post->id }}">
     <div class="panel-heading">
         <div class="row">
             <div class="col-xs-12">
@@ -54,7 +56,7 @@
 
                 </span>
                 <span class="pull-right smaller-20">
-                    <a href="{{ route('thread.showpost', $post) }}">No.{{ $post->id }}</a>
+                    <a href="{{ route('post.show', $post->id) }}">No.{{ $post->id }}</a>
                 </span>
             </div>
         </div>
@@ -135,13 +137,13 @@
     @if(Auth::check())
     <div class="text-right post-vote h5">
         @if(Auth::user()->level >= 1)
-            <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
+            <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}" onclick="vote('post', {{$post->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart"></span><span id="post{{$post->id}}upvote">{{ $post->upvote_count }}</span></button></span>
         @endif
-        @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$post->is_folded)&&(Auth::user()->level >= 2))
+        @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
             <span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
         @endif
 
-        @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&(!$post->is_folded)&&($thread->channel()->allow_edit))
+        @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
             <span><a class="btn btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
         @endif
 

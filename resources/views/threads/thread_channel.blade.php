@@ -25,9 +25,20 @@
             <div class="panel-body">
                 @include('threads._simple_threads')
                 <hr>
+                <div class="">
+                    <a href="{{ route('threads.create',['channel_id'=>$channel->id]) }}" class="btn btn-lg btn-info sosad-button">
+                        创建讨论
+                    </a>
+                </div>
+
                 {{ $threads->links() }}
                 @include('threads._threads')
                 {{ $threads->links() }}
+                <div class="">
+                    <a href="{{ route('threads.create',['channel_id'=>$channel->id]) }}" class="btn btn-lg btn-info sosad-button">
+                        创建讨论
+                    </a>
+                </div>
             </div>
         </div>
     </div>

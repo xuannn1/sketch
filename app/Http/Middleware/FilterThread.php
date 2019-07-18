@@ -20,11 +20,11 @@ class FilterThread
 
         $thread = $this->findThread($request->route('thread'));
         if(!$thread){ // 假如有东西找不到，那必然不能登陆
-            return redirect()->route('error', ['error_code' => '404']);
+            abort(403);
         }
         $channel= $thread->channel();
         if(!$channel){ // 假如有东西找不到，那必然不能登陆
-            return redirect()->route('error', ['error_code' => '404']);
+            abort(403);
         }
 
         if($channel->is_public&&$thread->is_public&&!$thread->is_bianyuan){// 公共非边

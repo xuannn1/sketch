@@ -14,7 +14,7 @@ class Post extends Model
 
     protected $guarded = [];
     protected $post_types = array('chapter', 'question', 'answer', 'request', 'post', 'comment', 'review'); // post的分类类别
-    protected $reward_types = [];
+    protected $count_types = ['upvote_count'];
 
     const UPDATED_AT = null;
 
@@ -257,7 +257,14 @@ class Post extends Model
     public function checklongcomment()
     {
         if($this->char_count>config('constants.longcomment_length')){
-            $this->user->reward('long_post');
+            return true;
+        }
+        return false;
+    }
+
+    public function checkfirstpost()
+    {
+        if($this->parent&&$this->parent->type==="chapter"&&$this->parent->reply_count<2){
             return true;
         }
         return false;
@@ -268,6 +275,17 @@ class Post extends Model
         return \App\Models\Reward::with('author')
         ->withType('post')
         ->withId($this->id)
+        ->orderBy('created_at','desc')
+        ->take(10)
+        ->get();
+    }
+
+    public function latest_upvotes()
+    {
+        return \App\Models\Vote::with('author')
+        ->withType('post')
+        ->withId($this->id)
+        ->withAttitude('upvote')
         ->orderBy('created_at','desc')
         ->take(10)
         ->get();

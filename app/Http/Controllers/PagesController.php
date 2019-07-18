@@ -22,7 +22,7 @@ class PagesController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'only' => ['search', 'self_adminnistrationrecords'],
+            'only' => ['search', 'self_adminnistrationrecords','create_thread_entry'],
         ]);
     }
 
@@ -162,5 +162,13 @@ class PagesController extends Controller
             return $short_reviews;
         });
         return view('reviews.index',compact('short_reviews'));
+    }
+
+    public function create_thread_entry()
+    {
+        $user = CacheUser::Auser();
+
+        return view('pages.create_thread_entry', compact('user'));
+
     }
 }

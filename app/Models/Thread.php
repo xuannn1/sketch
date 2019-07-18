@@ -22,7 +22,7 @@ class Thread extends Model
     ];
     protected $dates = ['deleted_at','created_at','responded_at', 'edited_at', 'add_component_at'];
 
-    protected $reward_types = array('salt','fish','ham');
+    protected $count_types = array('salt','fish','ham');
 
     const UPDATED_AT = null;
 

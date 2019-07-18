@@ -17,7 +17,7 @@
                         <li><a href="{{ route('quiz.taketest') }}" style="color:#e3a300">我要答题</a></li>
                         @endif
                     @endif
-                    <li><a href="{{ route('statuses.collections') }}">动态</a></li>
+                    <li><a href="{{ route('status.collection') }}">动态</a></li>
                     <li><a href="{{ route('books.index') }}">文库</a></li>
                     <li><a href="{{ route('threads.thread_index') }}">论坛</a></li>
                     <li><a href="{{ route('collection.index') }}">收藏<span class="badge">{{ $Auser->unread_updates>0? $Auser->unread_updates :''}}</span></a></li>
@@ -29,6 +29,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="{{ route('user.center') }}">个人中心</a></li>
                             <li><a href="{{ route('activity.index') }}">消息中心<span class="badge">{{ Auth::user()->unread_reminder_count()? Auth::user()->unread_reminder_count():''}}</span></a></li>
+                            <li><a href="{{ route('create_thread_entry') }}">发文发帖</a></li>
                             <li><a href="{{ route('linkedaccounts.index') }}">切换账户</a></li>
                             <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">退出</a>

@@ -21,30 +21,6 @@ function show_only_this_cp_tags(mother_tag_id){
     $('.tongren_cp_tag').addClass('hidden');
     $('.tongren_yuanzhu_'+mother_tag_id).removeClass('hidden');
 }
-function vote_post(post_id, method){ //method = upvote,downvote,fold,funny
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'GET',
-        url: web_base_url + '/posts/' + post_id + '/' + method,
-        data: {
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                if (method == 'funny'){
-                    data ='搞笑'+data;
-                }
-                if (method == 'fold'){
-                    data = '折叠'+data;
-                }
-                $('#'+post_id+method).html(data);
-            }
-        }
-    });
-};
 
 function toggle_review_quote(quote_id, method){
     $.ajaxSetup({
@@ -214,7 +190,7 @@ function collection_change_group(collection_id,group_id){
     });
 };
 
-function reward(rewardable_type, rewardable_id, reward_type, reward_id){
+function reward(rewardable_type, rewardable_id, reward_type, reward_value){
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -222,12 +198,12 @@ function reward(rewardable_type, rewardable_id, reward_type, reward_id){
     });
     $.ajax({
         type: 'POST',
-        url: web_base_url + '/collection/' + collection_id,
+        url: web_base_url + '/reward/',
         data: {
             'rewardable_type': rewardable_type,
             'rewardable_id': rewardable_id,
             'reward_type': reward_type,
-            'reward_id': reward_id,
+            'reward_value': reward_value,
         },
         success: function(data) {
             var message = ["success","info","warning","danger"];
@@ -264,6 +240,65 @@ function delete_reward(reward_id){
             });
             if(!(data['reward_id'] === undefined)){
                 $( '.reward'+ data['reward_id'] ).addClass('hidden');
+            }
+        }
+    });
+};
+
+function vote(votable_type, votable_id, attitude_type){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: web_base_url + '/vote/',
+        data: {
+            'votable_type': votable_type,
+            'votable_id': votable_id,
+            'attitude_type': attitude_type,
+        },
+        success: function(data) {
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                }
+            });
+            if(!(data['success'] === undefined)){
+                var value= parseInt($('#'+votable_type+votable_id+attitude_type).text(), 10)+1;
+                $('#'+votable_type+votable_id+attitude_type).html(value);
+            }
+
+        }
+    });
+};
+
+function delete_vote(vote_id){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: web_base_url + '/vote/' + vote_id,
+        data: {
+            '_method': "DELETE",
+        },
+        success: function(data) {
+            // console.log(data);
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                }
+            });
+            if(!(data['vote_id'] === undefined)){
+                $( '.vote'+ data['vote_id'] ).addClass('hidden');
             }
         }
     });
@@ -398,26 +433,6 @@ function deletepostcomment(postcomment_id){
     });
 }
 
-function destroystatus(status_id){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: "POST",
-        url: web_base_url + '/statuses/' +status_id,
-        data: {
-            '_method': "DELETE",
-            'id': status_id,
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                $( '.status'+status_id ).addClass('hidden');
-            }
-        }
-    });
-};
 function initcache(){
     console.log('goingto initiate cache');
     $.ajaxSetup({

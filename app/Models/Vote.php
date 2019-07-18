@@ -20,4 +20,18 @@ class Vote extends Model
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id','level');
     }
+    public function scopeWithType($query, $type='')
+    {
+    	return $query->where('votable_type', '=', $type);
+    }
+
+    public function scopeWithId($query, $id=0)
+    {
+    	return $query->where('votable_id', '=', $id);
+    }
+
+    public function scopeWithAttitude($query, $attitude_type='')
+    {
+    	return $query->where('attitude_type', '=', $attitude_type);
+    }
 }

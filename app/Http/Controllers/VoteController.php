@@ -1,23 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Vote;
-use App\Models\Post;
-use App\Models\Quote;
-use App\Models\Status;
-use App\Models\UserInfo;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVote;
-use App\Http\Resources\VoteResource;
 use App\Sosadfun\Traits\FindModelTrait;
-use App\Http\Resources\PaginateResource;
-
+use CacheUser;
+use Cache;
 
 class VoteController extends Controller
 {
     use FindModelTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -32,45 +28,96 @@ class VoteController extends Controller
         return $this->findModel(
             $request['votable_type'],
             $request['votable_id'],
-            array('Post','Quote','Status','Thread')
+            array('post','quote','status','thread')
         );
     }
 
     public function index(Request $request)
     {
-        // // TODO： 有待完成管理员可以看见各种投票内容的部分（怎样将管理员数据传递到resource内部去，需要研究一下）
-        // $voted_model=$this->findVotableModel($request->all());
-        // if(empty($voted_model)){abort(404);}
-        //
-        // $votes=$voted_model->votes()->paginate(config('constants.votes_per_page'));
-        //
-        // return response()->success([
-        //     'votes' => VoteResource::collection($votes->load('author')),
-        //     'paginate' => new PaginateResource($votes),
-        // ]);
+        $type = $request->votable_type;
+        $model=$this->findVotableModel($request->all());
+        if(empty($model)){abort(404);}
+
+        $page = is_numeric($request->page)? 'P'.$request->page:'P1';
+        $votes = Cache::remember('upvoteindex.'.$request->votable_type.$request->votable_id.$page, 15, function () use($request){
+            $votes = Vote::with('author')
+            ->withType($request->votable_type)
+            ->withId($request->votable_id)
+            ->withAttitude('upvote')
+            ->orderBy('created_at','desc')
+            ->paginate(config('preference.votes_per_page'))
+            ->appends($request->only(['votable_type','votable_id']));
+            return $votes;
+        });
+
+        return view('votes.index', compact('type', 'model', 'votes'));
+    }
+
+    public function received(Request $request)
+    {
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        $info->clear_column('upvote_reminders');
+        $votes = Vote::with('votable','author')
+        ->where('receiver_id',$user->id)
+        ->withAttitude('upvote')
+        ->orderBy('created_at','desc')
+        ->paginate(config('preference.votes_per_page'));
+        return view('votes.index_received', compact('user', 'info', 'votes'))->with('show_vote_tab','received');
+
+    }
+
+    public function sent(Request $request)
+    {
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        $votes = Vote::with('votable','author')
+        ->where('user_id',$user->id)
+        ->orderBy('created_at','desc')
+        ->paginate(config('preference.votes_per_page'));
+        return view('votes.index_sent', compact('user', 'info', 'votes'))->with('show_vote_tab','sent');
     }
 
     public function store(StoreVote $form)
     {
         $voted_model=$this->findVotableModel($form->all());
-        if(empty($voted_model)){abort(404);} //检查被投票的对象是否存在
+        if(empty($voted_model)){
+            return [
+                'danger' => '内容已删除或不存在',
+            ];
+        }
 
         $vote = $form->generateVote($voted_model);
-        // TODO：有待补充递增被投票用户的票数（分值系统一起做），同时应该给投票人以奖励
-        return response()->success(new VoteResource($vote->load('author')));
+
+        return [
+            'success' => '已成功评票'
+        ];
     }
 
 
     public function destroy(Vote $vote)
     {
+
         if(!$vote){
-            abort(404);
+            return [
+                'danger' => '内容已删除或不存在'
+            ];
         }
-        if($vote->user_id!=auth('api')->id()){
-            abort(403);
+        $vote_id = $vote->id;
+        if($vote->user_id!=auth()->id()){
+            return [
+                'danger' => "不能删除他人的打赏"
+            ];
+        }
+        $model=$vote->votable;
+        if($model){
+            $model->type_value_change($vote->attitude_type.'_count', -1);
         }
         $vote->delete();
-        // TODO：有待补充递减被投票用户的票数（分值系统一起做），同时应该给投票人以惩罚
-        return response()->success('deleted');
+
+        return [
+            'success' => "成功删除已有打赏",
+            'vote_id' => $vote_id,
+        ];
     }
 }

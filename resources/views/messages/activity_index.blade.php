@@ -13,7 +13,7 @@
                 <h1>{{$user->name}}的消息中心</h1>
                 您有{{$info->reply_reminders}}条未读回帖
                 <div class="">
-                    <a href="#" class="font-5">
+                    <a href="{{ route('vote.received') }}" class="font-5">
                         {{$info->upvote_reminders}}条新的赞&nbsp;&nbsp;>>评票中心
                     </a>
                 </div>

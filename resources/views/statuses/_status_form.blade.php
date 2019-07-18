@@ -10,7 +10,7 @@
 @else
 <div class="panel-heading">
     @include('shared.errors')
-    <form action="{{ route('statuses.store') }}" method="POST">
+    <form action="{{ route('status.store') }}" method="POST">
         {{ csrf_field() }}
         <div class="container-fluid">
             <div class="row">

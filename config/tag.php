@@ -49,6 +49,7 @@ return [
             '床戏性质' => true,
         ],
         'sum_limit' => [
+            '大类' => true,
             '故事气氛' => true,
             '整体时代' => true,
             '故事观感' => true,

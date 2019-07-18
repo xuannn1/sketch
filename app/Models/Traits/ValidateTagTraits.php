@@ -6,7 +6,7 @@ use ConstantObjects;
 trait ValidateTagTraits{
 
 
-    public function thread_validate_tag($tags)//检查由用户提交的tags组合，是否符合基本要求 $tags is an array [1,2,3]...
+    public function tags_validate($tags)//检查由用户提交的tags组合，是否符合基本要求 $tags is an array [1,2,3]...
     {
         $valid_tags = [];//通过检查的tag
         $limit_count_tags = [];//tag数量限制

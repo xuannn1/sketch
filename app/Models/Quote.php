@@ -13,7 +13,7 @@ class Quote extends Model
     protected $guarded = [];
     const UPDATED_AT = null;
     protected $dates = ['created_at'];
-    protected $reward_types = array('fish');
+    protected $count_types = array('fish');
 
     public function user()
     {

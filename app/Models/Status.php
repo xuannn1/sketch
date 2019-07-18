@@ -17,7 +17,7 @@ class Status extends Model
 
     protected $dates = ['deleted_at','created_at'];
     protected $guarded = [];
-    protected $reward_types = [];
+    protected $count_types = ['upvote_count','forward_count','reply_count'];
 
     public function user()
     {
@@ -51,5 +51,26 @@ class Status extends Model
             $query->where('followers.follower_id', '=', $id);
         });
         return $query;
+    }
+
+    public function latest_rewards()
+    {
+        return \App\Models\Reward::with('author')
+        ->withType('status')
+        ->withId($this->id)
+        ->orderBy('created_at','desc')
+        ->take(10)
+        ->get();
+    }
+
+    public function latest_upvotes()
+    {
+        return \App\Models\Vote::with('author')
+        ->withType('status')
+        ->withId($this->id)
+        ->withAttitude('upvote')
+        ->orderBy('created_at','desc')
+        ->take(10)
+        ->get();
     }
 }

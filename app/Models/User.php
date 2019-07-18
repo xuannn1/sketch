@@ -264,6 +264,11 @@ class User extends Authenticatable
                 $info->reward_reminders +=1;
             break;
 
+            case 'new_upvote':
+                $this->unread_reminders +=1;
+                $info->upvote_reminders +=1;
+            break;
+
             default:
             return false;
         }

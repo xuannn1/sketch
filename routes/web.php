@@ -35,6 +35,7 @@
 
     Route::get('/', 'PagesController@home')->name('home');
     Route::get('about', 'PagesController@about')->name('about');
+
     // TODO Help写成FAQ形式，允许筛选和搜索
     Route::get('help', 'PagesController@help')->name('help');
 
@@ -50,6 +51,8 @@
     Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
     Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
     Route::get('/recommend_records', 'PagesController@recommend_records')->name('recommend_records');//普通用户查看推荐书籍历史
+
+    Route::get('/create_thread_entry', 'PagesController@create_thread_entry')->name('create_thread_entry');//绝对复杂筛选所有thread？？
 }
 
 {//题头部分
@@ -57,7 +60,7 @@
         'index', 'create', 'store', 'show'
     ]]); //
     Route::get('/quote_mine', 'QuoteController@mine')->name('quote.mine');//我提交的题头
-    
+
     // TODO
     Route::get('/quotes/review', 'AdminsController@quotesreview')->name('quotes.review');//审核题头
     // TODO
@@ -116,7 +119,10 @@
 
 
 {//以下是论坛主题目录模块
-   Route::get('/threads', 'ThreadsController@index')->name('threads.index');//绝对复杂筛选所有thread？？
+
+    Route::resource('threads', 'ThreadsController', ['only' => [
+        'index', 'create', 'update', 'store', 'destroy'
+    ]]); //
 
    Route::get('/thread_index', 'ThreadsController@thread_index')->name('threads.thread_index');//论坛全部帖子 19.7.9
 
@@ -142,21 +148,23 @@
 
 { // 打赏
     Route::resource('reward', 'RewardController', ['only' => [
-        'index', 'create', 'store', 'destroy'
+        'index', 'store', 'destroy'
     ]]); //
 
     Route::get('/reward_sent','RewardController@sent')->name('reward.sent');//我给出的打赏
     Route::get('/reward_received','RewardController@received')->name('reward.received');//我给出的打赏
 }
 
-{ // 评票
-    Route::get('vote/create','VoteController@create')->name('vote.create');//新增评票，还没具体做
-    Route::get('vote','VoteController@index')->name('vote.index');//我的评票中心
 
-    Route::delete('/vote/{vote}','VoteController@destroy')->name('vote.destroy');//删除评票
-    Route::get('/vote','VoteController@index')->name('vote.index');//我收到的评票
+{ // 打赏
+    Route::resource('vote', 'VoteController', ['only' => [
+        'index', 'store', 'destroy'
+    ]]); //
+
     Route::get('/vote_sent','VoteController@sent')->name('vote.sent');//我给出的评票
+    Route::get('/vote_received','VoteController@received')->name('vote.received');//我收到的评票
 }
+
 
 {//作业模块 TODO 全部需要重做
    Route::get('/homework/create', 'HomeworksController@create')->name('homework.create')->middleware('admin');//创建新作业活动
@@ -263,7 +271,7 @@
    Route::resource('status', 'StatusController', ['only' => [
        'index', 'show', 'store', 'destroy'
    ]]); //
-   Route::get('/status_collection', 'StatusesController@collections')->name('statuses.collections');//显示关注对象的所有动态
+   Route::get('/status_collection', 'StatusController@collection')->name('status.collection');//显示关注对象的所有动态
 
 }
 

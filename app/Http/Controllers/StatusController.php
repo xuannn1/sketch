@@ -10,9 +10,12 @@ use Auth;
 use Carbon;
 use Cache;
 use StringProcess;
+use CacheUser;
+use App\Sosadfun\Traits\StatusObjectTraits;
 
 class StatusController extends Controller
 {
+    use StatusObjectTraits;
     public function __construct()
     {
         $this->middleware('auth')->except('index');
@@ -29,35 +32,38 @@ class StatusController extends Controller
         ->first();
         if (!empty($last_status) && strcmp($last_status->body, $status_body) === 0){
             return redirect()->back()->with('warning','您已成功提交状态，请不要重复提交哦！');
-        }else{
-            if(($last_status)&&(Carbon::now()->subMinutes(15)->toDateTimeString() < $last_status->created_at )){
-                return redirect()->back()->with('warning','15分钟内只能提交一条状态，请等待缓存后提交下一条状态');
-            }else{
-                DB::transaction(function() use($status_body){
-                    Auth::user()->statuses()->create([
-                        'body' => $status_body,
-                        'brief' => StringProcess::trimtext($status_body, 45)
-                    ]);
-                });
-                Cache::pull('key');
-            }
         }
-        return redirect(route('user.statuses'));
+
+        if(($last_status)&&(Carbon::now()->subMinutes(15)->toDateTimeString() < $last_status->created_at )){
+            return redirect()->back()->with('warning','15分钟内只能提交一条状态，请等待缓存后提交下一条状态');
+        }
+        $status = Status::create([
+            'user_id' => Auth::id(),
+            'body' => $status_body,
+            'brief' => StringProcess::trimtext($status_body, 45)
+        ]);
+
+        return redirect()->route('status.show', $status->id);
     }
 
     public function destroy(Status $status)
     {
-        if($status->user_id == Auth::id()){
-            $status->delete();
-            return redirect()->route('user.show',Auth::id())->with('success', '动态已被成功删除！');
-        }else{
-            return redirect()->route('error', ['error_code' => '403']);
+        if(!$status->user_id == Auth::id()){
+            return redirect('/')->with('danger', '动态不存在，请静待缓存更新，无需重复删除！');
         }
+        $status->delete();
+        return redirect('/')->with('success', '动态已被成功删除！');
     }
 
-    public function show(Status $status)
+    public function show($id)
     {
-        
+        $status = $this->statusProfile($id);
+        if(!$status){
+            abort(404);
+        }
+        $user = Auth::check()? CacheUser::Auser():'';
+        $info = Auth::check()? CacheUser::Ainfo():'';
+        return view('statuses.show',compact('status','user','info'));
     }
 
     public function index(Request $request)
@@ -79,7 +85,7 @@ class StatusController extends Controller
         return view('statuses.index', compact('statuses'))->with(['status_tab'=>'all']);
     }
 
-    public function collections()
+    public function collection()
     {
         $statuses = DB::table('statuses')
         ->join('followers','followers.user_id','=','statuses.user_id')

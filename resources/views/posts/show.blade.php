@@ -131,12 +131,14 @@
                     </div>
                     <br>
                     @endif
-                    @if($post->type==='chapter')
+
                     <div class="font-4">
                         <a href="{{ route('thread.showpost', $post->id) }}" class="pull-left"><em>进入论坛模式</em></a>
-                        <span class = "pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->char_count }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->reply_count }}</em></span>
+                        <span class = "pull-right smaller-20"><em>
+                            <span class="glyphicon glyphicon-pencil"></span>{{ $post->char_count }}/
+                            <span class="glyphicon glyphicon-eye-open"></span>{{ $post->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->reply_count }}
+                        </em></span>
                     </div>
-                    @endif
 
                 @endif
             </div>
@@ -155,49 +157,32 @@
                 &nbsp;&nbsp;<a href="{{route('reward.index', ['rewardable_type'=>'post', 'rewardable_id'=>$post->id])}}">&nbsp;&nbsp;>>全部打赏列表</a>
             </div>
             @endif
+            @if(!empty($post->recent_upvotes)&&count($post->recent_upvotes)>0)
+            <!-- 打赏列表  -->
+            <div class="grayout h5 text-left">
+                新鲜点赞：
+                @foreach($post->recent_upvotes as $vote)
+                @if($vote->author)
+                <a href="{{ route('user.show', $vote->user_id) }}">{{ $vote->author->name }},&nbsp;</a>
+                @endif
+                @endforeach
+                &nbsp;&nbsp;<a href="{{route('vote.index', ['votable_type'=>'post', 'votable_id'=>$post->id])}}">&nbsp;&nbsp;>>全部评票列表</a>
+            </div>
+            @endif
             @if(Auth::check())
             <div class="text-right post-vote">
                 @if(Auth::user()->level >= 1)
                     <span class="voteposts"><button class="btn btn-default btn-lg" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
                 @endif
-                @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$post->is_folded)&&(Auth::user()->level >= 2))
+                @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
                     &nbsp;&nbsp;<span ><a href = "#replyToThread" class="btn btn-default btn-lg" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
                 @endif
                 &nbsp;&nbsp;<span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostReward{{ $post->id }}" class="btn btn-default btn-lg">打赏</a></span>
-                @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&(!$post->is_folded)&&($thread->channel()->allow_edit))
+                @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
                     &nbsp;&nbsp;<span><a class="btn btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
                 @endif
             </div>
-            <div class="modal fade" id="TriggerPostReward{{ $post->id }}" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form action="{{ route('reward.store')}}" method="POST">
-                            {{ csrf_field() }}
-                            <div class="form-group">
-                                <div class="">
-                                    <label><input type="radio" name="reward_type" value="salt">盐粒(余额{{$info->salt}})</label>
-                                </div>
-                                <div class="">
-                                    <label><input type="radio" name="reward_type" value="fish" checked>咸鱼(余额{{$info->fish}})</label>
-                                </div>
-                                <div class="">
-                                    <label><input type="radio" name="reward_type" value="ham">火腿(余额{{$info->ham}})</label>
-                                </div>
-                                <hr>
-                                <div class="">
-                                    <label><input type="text" style="width: 40px" name="reward_value" value="1">数额(1-100)</label>
-                                </div>
-                                <hr>
-                                <label><input name="rewardable_type" value="post" class="hidden"></label>
-                                <label><input name="rewardable_id" value="{{$post->id}}" class="hidden"></label>
-                                <div class="text-right">
-                                    <button type="submit" class="btn btn-lg btn-primary sosad-button">打赏</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            @include('posts._reward_form')
             @endif
 
         </div>

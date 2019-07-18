@@ -56,7 +56,7 @@
                     <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
                         我的题头（待做）
                     </a>
-                    <a href="{{ route('vote.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{ route('vote.received') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的评票
                     </a>
                     <a href="{{ route('reward.received') }}" class="btn btn-lg btn-info btn-block sosad-button">

@@ -7,11 +7,7 @@
                 {{ Carbon::parse($status->created_at)->diffForHumans() }}
             </span>
             <span class="pull-right">
-                @if((Auth::check())&&(Auth::id()==$status->user_id))
-                <button type="button" name="button" class="sosad-button btn btn-md btn-danger" onclick="destroystatus({{$status->id}})">删除动态</button>
-                @elseif((Auth::check())&&(Auth::user()->isAdmin()))
-                <a href="{{ route('admin.statusform', $status->id) }}" class="btn btn-md btn-danger admin-button">管理动态</a>
-                @endif
+                <a href="{{ route('status.show', $status->id) }}">>>详情</a>
             </span>
 
         </div>

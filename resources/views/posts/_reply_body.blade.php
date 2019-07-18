@@ -78,12 +78,12 @@
         @endif
 
         <!-- 回复 -->
-        @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&(!$reply->is_folded)&&(Auth::user()->level >= 2))
+        @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($reply->fold_state==0)&&(Auth::user()->level >= 2))
             <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $reply->id }}, '{{ StringProcess::trimtext($reply->title.$reply->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $reply->reply_count }}</span></a></span>
         @endif
 
         <!-- 编辑 -->
-        @if(($reply->user_id===Auth::id())&&(!$thread->is_locked)&&(!$reply->is_folded)&&($thread->channel()->allow_edit))
+        @if(($reply->user_id===Auth::id())&&(!$thread->is_locked)&&($reply->fold_state==0)&&($thread->channel()->allow_edit))
             <span><a class="btn btn-danger sosad-button btn-xs" href="{{ route('post.edit', $reply->id) }}">编辑</a></span>
         @endif
 

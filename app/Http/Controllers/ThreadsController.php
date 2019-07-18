@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
+use DB;
+use Cache;
 use ConstantObjects;
 use App\Models\Post;
 use App\Models\Thread;
 use CacheUser;
+use App\Http\Requests\StoreThread;
 
 use Auth;
 use App\Sosadfun\Traits\ThreadObjectTraits;
@@ -126,24 +127,41 @@ class threadsController extends Controller
 
 
 
-    public function create($channel)
+    public function create(Request $request)
     {
-        $channel = collect(config('channel'))->keyby('id')->get($this->channel_id);
-        // $labels = $channel->labels();
+        $user = CacheUser::Auser();
+
+        $channel = collect(config('channel'))->keyby('id')->get($request->channel_id);
+        $tags = ConstantObjects::find_primary_tags_in_channel($channel->id);
+
         if ($channel->id<=2){
+            if($user->level<1||$user->quiz_level<1){
+                return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立书籍');
+            }
             return view('books.create');
         }
-        return view('threads.create', compact('labels', 'channel'));
+        if($user->level<5){
+            return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立讨论帖');
+        }
+        return view('threads.create', compact('channel','tags'));
     }
 
-    public function store(StoreThread $form, $channel_id)
+    public function store(StoreThread $form)
     {
-        $channel = collect(config('channel'))->keyby('id')->get($id);
-        $thread = $form->generateThread($channel->id);
-        $thread->user->reward("regular_thread");
-        if($channel->type==='homework'){
-            $thread->register_homework();
+        $channel = collect(config('channel'))->keyby('id')->get($form->channel_id);
+        $user = CacheUser::Auser();
+        if($channel->id<=2||$user->level<5){
+            abort(403, '等级不足');
         }
+
+        $thread = $form->generateThread($channel);
+
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
+
+        $thread->user->reward("regular_thread");
+        // if($channel->type==='homework'){
+        //     $thread->register_homework();
+        // }
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
     }
 
@@ -163,7 +181,7 @@ class threadsController extends Controller
             $form->updateThread($thread);
             return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
         }else{
-            return redirect()->route('error', ['error_code' => '403']);
+            abort(403);
         }
     }
     public function showpost(Post $post)

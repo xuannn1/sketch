@@ -1,6 +1,6 @@
 @foreach($posts as $post)
 
-<div class="panel panel-default {{ $post->is_folded ? 'collapse':'' }} " id = "post{{ $post->id }}">
+<div class="panel panel-default {{ $post->fold_state>0 ? 'collapse':'' }} " id = "post{{ $post->id }}">
     <div class="panel-body">
         <span>
             @if($post->review->reviewee)

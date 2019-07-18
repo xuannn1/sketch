@@ -17,6 +17,7 @@ use App\Sosadfun\Traits\FindThreadTrait;
 use App\Sosadfun\Traits\PostObjectTraits;
 
 
+
 class PostsController extends Controller
 {
     use PostObjectTraits;
@@ -29,20 +30,27 @@ class PostsController extends Controller
 
     public function store(StorePost $form, Thread $thread)
     {
-        if ((Auth::user()->isAdmin())||((!$thread->is_locked)&&(($thread->is_public)||($thread->user_id==Auth::id())))){
-            $post = $form->generatePost($thread);
-            $post->checklongcomment();
-            event(new NewPost($post));
-            if($post->parent&&$post->parent->type==="chapter"&&$post->parent->reply_count){
-                $post->user->reward("first_post");
-                return back()->with('success', '您得到了新章节率先回帖的特殊奖励');
-            }else{
-                $post->user->reward("regular_post");
-            }
-            return back()->with('success', '您已成功回帖');
-        }else{
+        if ((!Auth::user()->isAdmin())&&($thread->is_locked||((!$thread->is_public)&&($thread->user_id!=Auth::id())))){
             return back()->with('danger', '抱歉，本主题锁定或设为隐私，不能回帖');
         }
+
+        $post = $form->storePost($thread);
+
+        event(new NewPost($post));
+
+        if($post->checklongcomment()){
+            $this->user->reward('long_post');
+            return back()->with('success', '您得到了长评奖励');
+        }
+
+        if($post->checkfirstpost()){
+            $post->user->reward("first_post");
+            return back()->with('success', '您得到了新章节率先回帖的奖励');
+
+        }
+        $post->user->reward("regular_post");
+        return back()->with('success', '您已成功回帖');
+
     }
     public function edit(Post $post)
     {
@@ -51,18 +59,18 @@ class PostsController extends Controller
         if((Auth::user()->isAdmin())||((Auth::id() === $post->user_id)&&(!$thread->is_locked)&&($thread->channel()->allow_edit))){
             return view('posts.post_edit', compact('post'));
         }else{
-            return redirect()->route('error', ['error_code' => '403']);
+            abort(403);
         }
     }
 
     public function update(StorePost $form, Post $post)
     {
         $thread=$post->thread;
-        if ((Auth::user()->isAdmin())||((Auth::id() == $post->user_id)&&(!$thread->is_locked)&&($thread->channel()->allow_edit))){
+        if ((Auth::user()->isAdmin())||((Auth::id() == $post->user_id)&&(!$thread->is_locked)&&($thread->channel()->allow_edit)&&($post->fold_state<=0))){
             $form->updatePost($post);
             return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
         }else{
-            return redirect()->route('error', ['error_code' => '403']);
+            abort(403);
         }
     }
     public function show($id)
@@ -90,7 +98,7 @@ class PostsController extends Controller
             $post->delete();
             return redirect()->route('home')->with("success","已经删帖");
         }else{
-            return redirect()->route('error', ['error_code' => '403']);
+            abort(403);
         }
     }
 }
