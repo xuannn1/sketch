@@ -6,11 +6,9 @@
     <span><a href="{{route('user.followers', $user->id)}}">粉丝：{{ $info->follower_count }}</a></span>
 </div>
 <div class="stats h4">
-    <span>盐度：{{ $info->exp }}</span>&nbsp;&nbsp;
-    <span>积分：{{ $info->jifen }}</span>&nbsp;&nbsp;<br>
-    <span>剩饭：{{ $info->shengfan }}</span>&nbsp;&nbsp;
-    <span>咸鱼：{{ $info->xianyu }}</span>&nbsp;&nbsp;
-    <span>丧点：{{ $info->sangdian }}</span>&nbsp;&nbsp;<br>
+    <span>盐粒：{{ $info->salt }}</span>&nbsp;&nbsp;<br>
+    <span>咸鱼：{{ $info->fish }}</span>&nbsp;&nbsp;
+    <span>火腿：{{ $info->ham }}</span>&nbsp;&nbsp;<br>
     <span>连续签到：{{ $info->qiandao_contitued }}天</span>&nbsp;&nbsp;
     <span>最多连续签到：{{ $info->qiandao_max }}天</span>&nbsp;&nbsp;<br>
     <span>总签到：{{ $info->qiandao_all }}天</span>&nbsp;&nbsp;

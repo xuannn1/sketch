@@ -6,7 +6,7 @@
 
             <!-- Wrapper for slides -->
             <div class="carousel-inner">
-                @include('pages._quote')
+                @include('pages._quotes')
             </div>
 
             <!-- Left and right controls -->
@@ -78,7 +78,7 @@
                             </span>
                             <span class = "pull-right">
                                 @if($thread->author)
-                                    @if($thread->anonymous)
+                                    @if($thread->is_anonymous)
                                     <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
                                         @if((Auth::check()&&(Auth::user()->admin)))
                                         <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a></span>

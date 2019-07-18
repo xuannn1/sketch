@@ -78,54 +78,34 @@ function toggle_re_review_buttons(item_id,approve_status){//approve_status = 0:n
     $( '.togglebutton' +  item_id).addClass('hidden');
 }
 
-function toggle_review_longcomment(post_id, method){ //method = approve; disapprove
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'GET',
-        url: web_base_url + '/posts/' + post_id + '/toggle_review/' + method,
-        data: {
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                console.log(data);
-                $( '.longcommentbutton'+post_id ).addClass('hidden');
-            }else{
-                console.log('having error approving/disaproving quote');
-            }
-        }
-    });
-};
 
-function thread_xianyu(thread_id){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'GET',
-        url: web_base_url + '/threads/' + thread_id + '/xianyu',
-        data: {
-        },
-        success: function(data) {
-            console.log(data);
-            var message = ["success","info","warning","danger"];
-            $.each(data, function( key, value ){
-                if ($.inArray(key,message)>-1){
-                    console.log(key,value);
-                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
-                }
-            });
-            if(!(data['xianyu'] === undefined)){
-                $( '#threadxianyu'+thread_id ).html('咸鱼'+data['xianyu']);
-            }
-        }
-    });
-};
+
+// function thread_xianyu(thread_id){
+//     $.ajaxSetup({
+//         headers: {
+//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//         }
+//     });
+//     $.ajax({
+//         type: 'GET',
+//         url: web_base_url + '/threads/' + thread_id + '/xianyu',
+//         data: {
+//         },
+//         success: function(data) {
+//             console.log(data);
+//             var message = ["success","info","warning","danger"];
+//             $.each(data, function( key, value ){
+//                 if ($.inArray(key,message)>-1){
+//                     console.log(key,value);
+//                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+//                 }
+//             });
+//             if(!(data['xianyu'] === undefined)){
+//                 $( '#threadxianyu'+thread_id ).html('咸鱼'+data['xianyu']);
+//             }
+//         }
+//     });
+// };
 
 function add_to_collection(thread_id){
     $.ajaxSetup({
@@ -234,41 +214,61 @@ function collection_change_group(collection_id,group_id){
     });
 };
 
-
-function post_shengfan(post_id){
-    if ($.isNumeric($('#post'+post_id+'shengfan').val())){
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-            type: 'GET',
-            url: web_base_url + '/posts/' + post_id + '/shengfan?num=' + $('#post'+post_id+'shengfan').val(),
-            data: {
-            },
-            success: function(data) {
-                console.log(data);
-                $('.shengfan-modal').modal('hide');
-                var message = ["success","info","warning","danger"];
-                $.each(data, function( key, value ){
-                    if ($.inArray(key,message)>-1){
-                        console.log(key,value);
-                        $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
-                    }
-                });
-                if(!(data['shengfan'] === undefined)){
-                    $( '#postshengfan'+post_id ).html('剩饭'+data['shengfan']);
+function reward(rewardable_type, rewardable_id, reward_type, reward_id){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: web_base_url + '/collection/' + collection_id,
+        data: {
+            'rewardable_type': rewardable_type,
+            'rewardable_id': rewardable_id,
+            'reward_type': reward_type,
+            'reward_id': reward_id,
+        },
+        success: function(data) {
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
                 }
-            }
-        });
-    }else{
-        $('.shengfan-modal').modal('hide');
-        console.log($('#post'+post_id+'shengfan').val());
-        console.log('error that is not a number');
-        $( '#ajax-message' ).html('抱歉，您输入的不是数字。').addClass('alert-danger').removeClass('hidden');
-    }
+            });
+        }
+    });
 };
+
+function delete_reward(reward_id){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: web_base_url + '/reward/' + reward_id,
+        data: {
+            '_method': "DELETE",
+        },
+        success: function(data) {
+            // console.log(data);
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                }
+            });
+            if(!(data['reward_id'] === undefined)){
+                $( '.reward'+ data['reward_id'] ).addClass('hidden');
+            }
+        }
+    });
+};
+
 
 function replytopost(post_id, post_trim){
     document.getElementById("reply_to_id").value = post_id;
@@ -286,16 +286,16 @@ function wordscount(item){
     var str = post.replace(/[\[\]\*\#\_\-\s\n\t\r]/g,"");
     alert("字数统计：" + str.length);
 };
-function removespace(itemname){
-    var post = $('#'+itemname).val();
-    var res = post.split("\n");
-    var string = "";
-    $.each(res, function(key,value){
-        string += $.trim(value) + "\n"
-    });
-    console.log('cleared spaces');
-    $('#'+itemname).val(string);
-};
+// function removespace(itemname){
+//     var post = $('#'+itemname).val();
+//     var res = post.split("\n");
+//     var string = "";
+//     $.each(res, function(key,value){
+//         string += $.trim(value) + "\n"
+//     });
+//     console.log('cleared spaces');
+//     $('#'+itemname).val(string);
+// };
 
 function expanditem(id){
     var x = document.getElementById('full'+id);
@@ -316,33 +316,6 @@ function expanditem(id){
     }
 };
 
-
-
-// function ToggleKeepUpdateUser(user_id){
-//     $.ajaxSetup({
-//         headers: {
-//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//         }
-//     });
-//     $.ajax({
-//         type: 'POST',
-//         url: web_base_url + '/followers/togglekeepupdate',
-//         data: {
-//             'user_id': user_id
-//         },
-//         success: function(data) {
-//             if (data != "notwork"){
-//                 console.log(data);
-//                 if (data.keep_updated){
-//                     $( '.togglekeepupdateuser'+user_id ).html("不再提醒");
-//                 }else{
-//                     $( '.togglekeepupdateuser'+user_id ).html("接收提醒");
-//                 }
-//
-//             }
-//         }
-//     });
-// }
 
 function cancelfollow(user_id){
     $.ajaxSetup({
@@ -720,18 +693,18 @@ $( ".daily-quote" ).each(function( quote ) {
     }
 });
 
-function show_book_selector(){
-    $('.detailed-selector').removeClass('hidden');
-    $('.detailed-selector input').attr('disabled', false);
-    $('.brief-selector').addClass('hidden');
-    $('.brief-selector input').attr('disabled', true);
-}
-function fold_book_selector(){
-    $('.brief-selector').removeClass('hidden');
-    $('.brief-selector input').attr('disabled', false);
-    $('.detailed-selector').addClass('hidden');
-    $('.detailed-selector input').attr('disabled', true);
-}
+// function show_book_selector(){
+//     $('.detailed-selector').removeClass('hidden');
+//     $('.detailed-selector input').attr('disabled', false);
+//     $('.brief-selector').addClass('hidden');
+//     $('.brief-selector input').attr('disabled', true);
+// }
+// function fold_book_selector(){
+//     $('.brief-selector').removeClass('hidden');
+//     $('.brief-selector input').attr('disabled', false);
+//     $('.detailed-selector').addClass('hidden');
+//     $('.detailed-selector input').attr('disabled', true);
+// }
 function toggle_tags_tongren_yuanzhu(){
     $('.tongren_yuanzhu').toggleClass('hidden');
 }

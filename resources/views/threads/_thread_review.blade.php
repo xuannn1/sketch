@@ -10,7 +10,7 @@
                 @endif
                 <span>
                     @if($review->post->author)
-                    @if($review->post->anonymous)
+                    @if($review->post->is_anonymous)
                     <span>{{ $review->post->majia ?? '匿名咸鱼'}}</span>
                     @else
                     <a href="{{ route('user.show', $review->post->user_id) }}">{{ $review->post->author->name }}</a>

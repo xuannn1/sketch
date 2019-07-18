@@ -15,7 +15,7 @@ trait ThreadObjectTraits{
             if($thread->channel()->type==="list"&&$thread->last_component_id>0&&$thread->last_component){
                 $thread->last_component->load('review.reviewee');
             }
-            $thread->setAttribute('temp_rewards', $thread->latest_rewards());
+            $thread->setAttribute('recent_rewards', $thread->latest_rewards());
             return $thread;
         });
     }

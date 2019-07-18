@@ -7,11 +7,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Status extends Model
 {
-    use Traits\VoteTrait;
     use SoftDeletes;
+
+    use Traits\VoteTrait;
+    use Traits\RewardTrait;
+    use Traits\TypeValueChangeTrait;
+
+    const UPDATED_AT = null;
+
     protected $dates = ['deleted_at','created_at'];
     protected $guarded = [];
-    const UPDATED_AT = null;
+    protected $reward_types = [];
 
     public function user()
     {

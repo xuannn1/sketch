@@ -32,6 +32,7 @@ class MessageController extends Controller
         $message_reminders = $info->message_reminders;
 
         $info->clear_column('message_reminders');
+        $user->clear_column('unread_reminders');
 
         $messages = Message::with('message_body','receiver','poster')
         ->withReceiver($user->id)
@@ -40,7 +41,7 @@ class MessageController extends Controller
 
         $public_notices = $this->findPulicNotices($user->public_notice_id);
 
-        return view('messages.message_index', compact('user','info','messages','unread_reminders','messagebox_reminders','message_reminders','public_notices'))
+        return view('messages.message_index', compact('user','info','messages','activity_reminders','messagebox_reminders','message_reminders','public_notices'))
         ->with(['show_message_tab'=>'messages'])
         ->with(['show_dialogue_entry'=>true]);//展示“显示对话”这个标志
 
@@ -59,7 +60,7 @@ class MessageController extends Controller
         ->orderBy('created_at', 'desc')
         ->paginate(config('preference.messages_per_page'));
 
-        return view('messages.message_sent', compact('user','info','messages','unread_reminders','messagebox_reminders'))
+        return view('messages.message_sent', compact('user','info','messages','activity_reminders','messagebox_reminders'))
         ->with(['show_message_tab'=>'sent'])
         ->with(['show_dialogue_entry'=>true]);//展示“显示对话”这个标志
 
@@ -117,6 +118,8 @@ class MessageController extends Controller
         $info->clear_column('upvote_reminders');
         $info->clear_column('reply_reminders');
         $user->clear_column('public_notice_id');
+        $user->clear_column('unread_reminders');
+        $user->clear_column('unread_updates');
 
         return redirect()->back();
     }

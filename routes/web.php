@@ -52,12 +52,16 @@
     Route::get('/recommend_records', 'PagesController@recommend_records')->name('recommend_records');//普通用户查看推荐书籍历史
 }
 
-{//提头部分 TODO 待做
-   Route::get('/quote/create', 'QuotesController@create')->name('quote.create');//贡献题头
-   Route::post('/quote/create', 'QuotesController@store')->name('quote.store');//贡献题头
-   Route::get('/quotes/review', 'AdminsController@quotesreview')->name('quotes.review');//审核题头
-   Route::get('/quotes/{quote}/toggle_review/{quote_method}','AdminsController@toggle_review_quote')->name('quote.toggle_review');//通过题头
-   Route::get('/quotes/{quote}/xianyu','QuotesController@xianyu')->name('quote.vote');//给题头投喂咸鱼
+{//题头部分
+    Route::resource('quote', 'QuoteController', ['only' => [
+        'index', 'create', 'store', 'show'
+    ]]); //
+    Route::get('/quote_mine', 'QuoteController@mine')->name('quote.mine');//我提交的题头
+    
+    // TODO
+    Route::get('/quotes/review', 'AdminsController@quotesreview')->name('quotes.review');//审核题头
+    // TODO
+    Route::get('/quotes/{quote}/toggle_review/{quote_method}','AdminsController@toggle_review_quote')->name('quote.toggle_review');//通过题头
 }
 
 {//以下是用户信息展示模块
@@ -137,13 +141,21 @@
 
 
 { // 打赏
-    Route::get('reward/create','RewardController@create')->name('reward.create');//新增打赏，还没具体做
-    Route::get('reward','RewardController@index')->name('reward.index');//我的打赏中心
+    Route::resource('reward', 'RewardController', ['only' => [
+        'index', 'create', 'store', 'destroy'
+    ]]); //
+
+    Route::get('/reward_sent','RewardController@sent')->name('reward.sent');//我给出的打赏
+    Route::get('/reward_received','RewardController@received')->name('reward.received');//我给出的打赏
 }
 
 { // 评票
     Route::get('vote/create','VoteController@create')->name('vote.create');//新增评票，还没具体做
     Route::get('vote','VoteController@index')->name('vote.index');//我的评票中心
+
+    Route::delete('/vote/{vote}','VoteController@destroy')->name('vote.destroy');//删除评票
+    Route::get('/vote','VoteController@index')->name('vote.index');//我收到的评票
+    Route::get('/vote_sent','VoteController@sent')->name('vote.sent');//我给出的评票
 }
 
 {//作业模块 TODO 全部需要重做
@@ -248,10 +260,10 @@
 }
 //动态微博模块
 {
-   Route::resource('statuses', 'StatusesController', ['only' => [
-       'index', 'store', 'destroy'
+   Route::resource('status', 'StatusController', ['only' => [
+       'index', 'show', 'store', 'destroy'
    ]]); //
-   Route::get('/statuses/collections', 'StatusesController@collections')->name('statuses.collections');//显示关注对象的所有动态
+   Route::get('/status_collection', 'StatusesController@collections')->name('statuses.collections');//显示关注对象的所有动态
 
 }
 

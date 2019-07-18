@@ -52,7 +52,7 @@
             <!-- 作者信息，发表时间 -->
             <div class="">
                 @if($thread->author)
-                @if ($thread->anonymous)
+                @if ($thread->is_anonymous)
                 <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
                 @if((Auth::check()&&(Auth::user()->isAdmin())))
                 <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a></span>

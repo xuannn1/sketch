@@ -30,6 +30,7 @@ class ActivityController extends Controller
         $messagebox_reminders = $this->count_messagebox_reminders($user,$info);
 
         $user->clear_column('unread_reminders');
+        $info->clear_column('reply_reminders');
 
         $activities = Activity::with('item')
         ->withType('post')

@@ -10,9 +10,11 @@ class Post extends Model
     use SoftDeletes;
     use Traits\VoteTrait;
     use Traits\RewardTrait;
+    use Traits\TypeValueChangeTrait;
 
     protected $guarded = [];
     protected $post_types = array('chapter', 'question', 'answer', 'request', 'post', 'comment', 'review'); // post的分类类别
+    protected $reward_types = [];
 
     const UPDATED_AT = null;
 
@@ -259,6 +261,16 @@ class Post extends Model
             return true;
         }
         return false;
+    }
+
+    public function latest_rewards()
+    {
+        return \App\Models\Reward::with('author')
+        ->withType('post')
+        ->withId($this->id)
+        ->orderBy('created_at','desc')
+        ->take(10)
+        ->get();
     }
 
 }

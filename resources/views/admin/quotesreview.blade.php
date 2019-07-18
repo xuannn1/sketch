@@ -19,7 +19,7 @@
                     <small>
                         <div class="col-xs-2">
                             <p><a href="#">{{ $quote->creator->name }}</a></p>
-                            @if ($quote->anonymous)
+                            @if ($quote->is_anonymous)
                             <p>马甲：{{ $quote->majia ?? '匿名咸鱼'}}</p>
                             @endif
                             @if ($quote->notsad)

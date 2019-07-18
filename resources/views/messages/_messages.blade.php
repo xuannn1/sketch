@@ -2,7 +2,7 @@
 @foreach($messages as $message)
 <article id="message{{ $message->id }}">
     <div class="h5">
-        <span class="badge {{$message->message_body->group_messaging?'':'hidden'}}">群发</span>
+        <span class="badge {{$message->message_body->bulk?'':'hidden'}}">群发</span>
         @if($message->poster)
         <a href="{{route('user.show', $message->poster->id)}}">{{$message->poster->name}}</a>
         @endif
@@ -14,7 +14,7 @@
             {{ $message->created_at->diffForHumans() }}
         </span>
         <span id="abbreviated{{$message->id}}">
-            {!! StringProcess::trimtext($message->message_body->content,70) !!}
+            {!! StringProcess::trimtext($message->message_body->body,70) !!}
         </span>
         @if($show_dialogue_entry===true)
         <span class="pull-right">
@@ -24,7 +24,7 @@
         </span>
         @endif
         <span id="full{{$message->id}}" class="hidden main-text">
-            {!! StringProcess::wrapParagraphs($message->message_body->content) !!}
+            {!! StringProcess::wrapParagraphs($message->message_body->body) !!}
         </span>
         <a type="button" name="button" id="expand{{$message->id}}" onclick="expanditem('{{$message->id}}')">展开</a>
     </div>

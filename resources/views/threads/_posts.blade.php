@@ -35,7 +35,7 @@
                         @endif
                     @endif
 
-                    @if(($post->user_id>0)&&(!$post->is_anonymous)&&((!$thread->anonymous)||(($post->type==='post')||($post->type==='comment'))))
+                    @if(($post->user_id>0)&&(!$post->is_anonymous)&&((!$thread->is_anonymous)||(($post->type==='post')||($post->type==='comment'))))
                         <span class="grayout smaller-20"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'userOnly'=>$post->user_id]) }}">只看该用户</a></span>
                     @endif
                     <!-- 发表时间 -->

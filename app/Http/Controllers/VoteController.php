@@ -20,7 +20,7 @@ class VoteController extends Controller
     use FindModelTrait;
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth');
     }
 
     private function findVotableModel($request)

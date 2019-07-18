@@ -8,7 +8,7 @@
                         @if ($reply->type==='chapter')
                             <span>作者</span>
                         @else
-                            @if ($reply->anonymous)
+                            @if ($reply->is_anonymous)
                             <span>{{ $reply->majia ?? '匿名咸鱼'}}</span>
                                 @if((Auth::check()&&(Auth::user()->isAdmin())))
                                 <span class="admin-anonymous"><a href="{{ route('user.show', $reply->user_id) }}">{{ $reply->author->name }}</a></span>

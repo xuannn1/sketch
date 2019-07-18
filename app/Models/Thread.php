@@ -14,12 +14,15 @@ class Thread extends Model
     use Traits\VoteTrait;
     use Traits\RewardTrait;
     use Traits\ValidateTagTraits;
+    use Traits\TypeValueChangeTrait;
 
     protected $guarded = [];
     protected $hidden = [
         'creation_ip',
     ];
     protected $dates = ['deleted_at','created_at','responded_at', 'edited_at', 'add_component_at'];
+
+    protected $reward_types = array('salt','fish','ham');
 
     const UPDATED_AT = null;
 
@@ -296,5 +299,4 @@ class Thread extends Model
     {
         // TODO 检查这名同学参加了作业吗？是的话算他提交了作业
     }
-
 }

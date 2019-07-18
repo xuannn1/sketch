@@ -92,7 +92,9 @@ class UsersController extends Controller
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
-        return view('users.edit_introduction', compact('user','info'));
+        if(!$user||!$info){abort(404);}
+        $intro = $info->has_intro? CacheUser::Aintro():null;
+        return view('users.edit_introduction', compact('user','info','intro'));
     }
 
     public function update_introduction(Request $request)
@@ -103,10 +105,24 @@ class UsersController extends Controller
         ]);
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
+        if(!$user||!$info){abort(404);}
+        $intro = $info->has_intro? CacheUser::Aintro():null;
+
         $info->update([
             'brief_intro'=>$request->brief_intro,
-            'introduction'=>$request->introduction,
         ]);
+        if($intro){
+            $intro->update([
+                'body'=>$request->introduction,
+                'edited_at' => Carbon::now(),
+            ]);
+        }else{
+            App\Models\UserIntro::create([
+                'user_id' => $user->id,
+                'body'=>$request->introduction,
+                'edited_at' => Carbon::now(),
+            ]);
+        }
         return redirect()->route('user.show', $user->id);
     }
 
@@ -149,22 +165,24 @@ class UsersController extends Controller
 
     public function followings($id)
     {
-        $user = CacheUser::user($id);
-        $info = CacheUser::info($id);
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        $intro = $info->has_intro? CacheUser::Aintro():null;
         $users = $user->followings()->paginate(config('preference.users_per_page'));
         $users->load('info','title');
 
-        return view('users.show_follow', compact('user', 'info', 'users'))->with(['follow_title'=>'关注的人']);
+        return view('users.show_follow', compact('user', 'info', 'intro', 'users'))->with(['follow_title'=>'关注的人']);
     }
 
     public function followers($id)
     {
-        $user = CacheUser::user($id);
-        $info = CacheUser::info($id);
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        $intro = $info->has_intro? CacheUser::Aintro():null;
         $users = $user->followers()->paginate(config('preference.users_per_page'));
         $users->load('info','title');
         $title = '粉丝';
-        return view('users.show_follow', compact('user', 'info', 'users'))->with(['follow_title'=>'粉丝']);
+        return view('users.show_follow', compact('user', 'info', 'intro', 'users'))->with(['follow_title'=>'粉丝']);
     }
     public function index(Request $request)
     {
@@ -186,19 +204,19 @@ class UsersController extends Controller
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
+        $intro = $info->has_intro? CacheUser::Aintro():null;
 
-        return view('users.center', compact('user','info'));
+        return view('users.center', compact('user','info','intro'));
     }
 
     public function show($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);
-        if(!$user){
-            abort(404);
-        }
+        if(!$user||!$info){abort(404);}
+        $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
             $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
             ->withUser($id)
             ->withType('book')
@@ -223,18 +241,17 @@ class UsersController extends Controller
             });
         }
 
-        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'book', 'user_title'=>'书籍']);
+        return view('users.show', compact('user','info','intro','threads'))->with(['show_user_tab'=>'book', 'user_title'=>'书籍']);
     }
 
     public function threads($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);
-        if(!$user){
-            abort(404);
-        }
+        if(!$user||!$info){abort(404);}
+        $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
             $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
             ->withUser($id)
             ->withType('thread')
@@ -258,18 +275,17 @@ class UsersController extends Controller
                 ->appends($request->only('page'));
             });
         }
-        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'thread','user_title'=>'主题']);
+        return view('users.show', compact('user','info','intro','threads'))->with(['show_user_tab'=>'thread','user_title'=>'主题']);
     }
 
     public function lists($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);
-        if(!$user){
-            abort(404);
-        }
+        if(!$user||!$info){abort(404);}
+        $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
             $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
             ->withUser($id)
             ->withType('list')
@@ -293,18 +309,17 @@ class UsersController extends Controller
                 ->appends($request->only('page'));
             });
         }
-        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'list','user_title'=>'清单']);
+        return view('users.show', compact('user','info','intro','threads'))->with(['show_user_tab'=>'list','user_title'=>'清单']);
     }
 
     public function boxes($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);
-        if(!$user){
-            abort(404);
-        }
+        if(!$user||!$info){abort(404);}
+        $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
             $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
             ->withUser($id)
             ->withType('box')
@@ -328,17 +343,15 @@ class UsersController extends Controller
                 ->appends($request->only('page'));
             });
         }
-        return view('users.show', compact('user','info','threads'))->with(['show_user_tab'=>'box','user_title'=>'问题箱']);
+        return view('users.show', compact('user','info','intro','threads'))->with(['show_user_tab'=>'box','user_title'=>'问题箱']);
     }
 
     public function statuses($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);
-
-        if(!$user){
-            abort(404);
-        }
+        if(!$user||!$info){abort(404);}
+        $intro = $info->has_intro? CacheUser::intro($id):null;
 
         $queryid = 'UserStatus.'
         .url('/')
@@ -356,19 +369,17 @@ class UsersController extends Controller
             ->appends($request->only('page'));
         });
 
-        return view('users.show_status', compact('user','info','statuses'))->with(['show_user_tab'=>'status']);
+        return view('users.show_status', compact('user','info','intro','statuses'))->with(['show_user_tab'=>'status']);
     }
 
     public function comments($id, Request $request)
     {
         $user = CacheUser::user($id);
         $info = CacheUser::info($id);
+        if(!$user||!$info){abort(404);}
+        $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        if(!$user){
-            abort(404);
-        }
-
-        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
             // 如果是本人，显示属于自己的所有帖
             $posts = DB::table('posts')
             ->join('threads','threads.id','=','posts.thread_id')
@@ -401,7 +412,7 @@ class UsersController extends Controller
             });
         }
 
-        return view('users.show_comment', compact('user','info','posts'))->with(['show_user_tab'=>'comment']);
+        return view('users.show_comment', compact('user','info','intro', 'posts'))->with(['show_user_tab'=>'comment']);
     }
 
 }

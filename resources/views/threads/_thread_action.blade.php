@@ -63,21 +63,53 @@
         </div>
 
         <div class="col-xs-3">
-            <a class="btn btn-lg btn-danger btn-block sosad-button" href="{{ route('reward.create', ['rewardable_type'=>'thread','rewardable_id'=>$thread->id]) }}">打赏</a>
+            <a href="#" data-id="{{$thread->id}}" data-toggle="modal" data-target="#TriggerThreadReward{{ $thread->id }}" class="btn btn-lg btn-primary btn-block sosad-button">打赏</a>
+        </div>
+        <div class="modal fade" id="TriggerThreadReward{{ $thread->id }}" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('reward.store')}}" method="POST">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <h3>打赏专区</h3>
+                            <h6>(对同一帖一天内只能打赏一次哦！)</h6>
+                            <div class="">
+                                <label><input type="radio" name="reward_type" value="salt">盐粒(余额{{$info->salt}})</label>
+                            </div>
+                            <div class="">
+                                <label><input type="radio" name="reward_type" value="fish" checked>咸鱼(余额{{$info->fish}})</label>
+                            </div>
+                            <div class="">
+                                <label><input type="radio" name="reward_type" value="ham">火腿(余额{{$info->ham}})</label>
+                            </div>
+                            <hr>
+                            <div class="">
+                                <label><input type="text" style="width: 40px" name="reward_value" value="1">数额（1～100）</label>
+                            </div>
+                            <hr>
+                            <label><input name="rewardable_type" value="thread" class="hidden"></label>
+                            <label><input name="rewardable_id" value="{{$thread->id}}" class="hidden"></label>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-lg btn-primary sosad-button">打赏</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <br>
     @endif
-    @if(!empty($thread->temp_rewards)&&count($thread->temp_rewards)>0)
+    @if(!empty($thread->recent_rewards)&&count($thread->recent_rewards)>0)
     <!-- 打赏列表  -->
     <div class="grayout h5 text-left">
         新鲜打赏：
-        @foreach($thread->temp_rewards as $reward)
+        @foreach($thread->recent_rewards as $reward)
         @if($reward->author)
         <a href="{{ route('user.show', $reward->user_id) }}">{{ $reward->author->name }},&nbsp;</a>
         @endif
         @endforeach
-        &nbsp;&nbsp;总计:咸鱼{{ $thread->xianyu }},&nbsp;剩饭{{ $thread->shengfan }}
+        &nbsp;&nbsp;总计：盐粒{{ $thread->salt }}，咸鱼{{ $thread->fish }}，火腿{{ $thread->ham }} <a href="{{route('reward.index', ['rewardable_type'=>'thread', 'rewardable_id'=>$thread->id])}}">&nbsp;&nbsp;>>全部打赏列表</a>
     </div>
     @endif
 </div>

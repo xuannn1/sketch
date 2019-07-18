@@ -53,7 +53,7 @@ class NewPostListener
             //不是给自己的主题顶帖，那么送出跟帖提醒
             if ($post->user_id!=$thread->user_id){
                 $post_activity = Activity::create([
-                    'type' => 1,
+                    'kind' => 1,
                     'item_type' => 'post',
                     'item_id' => $post->id,
                     'user_id' => $thread->user_id,
@@ -88,13 +88,17 @@ class NewPostListener
             //回帖了，不是给自己的帖子回帖，回帖对象也不是楼主，那么送出回帖提醒
             if(($post->reply_to_id>0)&&($post->user_id!=$post->parent->user_id)&&($post->parent->user_id!=$thread->user_id)){
                 $reply_activity = Activity::create([
-                    'type' => 1,
+                    'kind' => 1,
                     'item_type' => 'post',
                     'item_id' => $post->id,
                     'user_id' => $post->parent->user_id,
                 ]);
                 $post->parent->user->remind('new_reply');
             }
+
+            // 修改惯用马甲，惯用indentation，递增character(以后再做)等信息
+            $post->user->created_new_post($post);
+
         });
 
     }

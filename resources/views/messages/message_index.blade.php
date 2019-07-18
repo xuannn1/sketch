@@ -14,8 +14,16 @@
             <div class="panel-body text-center">
                 <h1>{{$user->name}}的站内信箱</h1>
                 总计{{$message_reminders}}条未读信息
-                @include('messages._new_public_notices')
-                @include('messages._new_administrations')
+                <div class="">
+                    <a href="{{route('message.public_notice')}}" class="font-5">
+                        {{ConstantObjects::system_variable()->latest_public_notice_id-$user->public_notice_id}}条新的公共通知&nbsp;&nbsp;>>全部公共通知
+                    </a>
+                </div>
+                <div class="">
+                    <a href="{{route('administrationrecords', ['user_id'=>$user->id])}}" class="font-5">
+                        {{$info->administration_reminders}}条新的管理信息&nbsp;&nbsp;>>我的管理记录
+                    </a>
+                </div>
                 <br>
                 @include('messages._message_tab')
             </div>

@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reward extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = [];
     const UPDATED_AT = null;
-    protected $dates = ['created_at'];
+    protected $dates = ['created_at','deleted_at'];
 
     public function rewardable(){
     	return $this->morphTo();

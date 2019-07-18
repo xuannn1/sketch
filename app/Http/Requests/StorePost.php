@@ -9,6 +9,7 @@ use App\Models\Thread;
 use App\Models\Post;
 use Carbon;
 use DB;
+use StringProcess;
 
 class StorePost extends FormRequest
 {
@@ -47,15 +48,15 @@ class StorePost extends FormRequest
         $data['brief']=StringProcess::trimtext($data['body'], 45);
         $data['creation_ip'] = request()->ip();
         $data['char_count'] = iconv_strlen($data['body'], 'utf-8');
-        if ($this->anonymous&&$thread->channel()->allow_anonymous){
-            $data['anonymous']=1;
+        if ($this->is_anonymous&&$thread->channel()->allow_anonymous){
+            $data['is_anonymous']=1;
             $data['majia']=$this->majia;
         }else{
-            $data['anonymous']=0;
+            $data['is_anonymous']=0;
         }
-        $data['markdown']=$this->use_markdown ? true:false;
+        // $data['use_markdown']=$this->use_markdown ? true:false;
         $data['is_bianyuan']=$thread->is_bianyuan ? true:false;
-        $data['indentation']=$this->use_indentation ? true:false;
+        $data['use_indentation']=$this->use_indentation ? true:false;
         if($this->reply_to_id>0){
             $reply = Post::find($this->reply_to_id);
             if($reply){
@@ -73,17 +74,8 @@ class StorePost extends FormRequest
         }
         $data['user_id']=$user->id;
         $data['thread_id']= $thread->id;
-        $post = DB::transaction(function () use($user, $data){
-            $post = Post::create($data);
-            $user->info->update(['indentation'=>$data['indentation']]);
-            if($data['anonymous']){
-                $user->update([
-                    'majia'=>$data['majia'],
-                    'indentation' => $data['indentation']
-                ]);
-            }
-            return $post;
-        });
+
+        $post = Post::create($data);
 
         return $post;
     }
@@ -102,10 +94,10 @@ class StorePost extends FormRequest
         $data['body'] = StringProcess::trimSpaces($data['body']);
         $data['char_count'] = iconv_strlen($data['body'], 'utf-8');
         $data['brief']=StringProcess::trimtext($data['body'], 45);
-        $data['anonymous']=$this->anonymous&&$post->thread->channel()->allow_anonymous ? 1:0;
-        $data['markdown']=$this->use_markdown ? true:false;
-        $data['indentation']=$this->use_indentation ? true:false;
-        auth()->user()->info->update(['indentation'=>$data['indentation']]);
+        $data['is_anonymous']=$this->is_anonymous&&$post->thread->channel()->allow_anonymous ? 1:0;
+        // $data['use_markdown']=$this->use_markdown ? true:false;
+        $data['use_indentation']=$this->use_indentation ? true:false;
+        auth()->user()->info->update(['use_indentation'=>$data['use_indentation']]);
         $data['edited_at']=Carbon::now();
         $post->update($data);
         return $post;

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use ConstantObjects;
 use App\Models\Post;
 use App\Models\Thread;
+use CacheUser;
 
 use Auth;
 use App\Sosadfun\Traits\ThreadObjectTraits;
@@ -198,7 +199,9 @@ class threadsController extends Controller
     {
         $thread = $this->threadProfile($id);
         $posts = $this->threadProfilePosts($id);
-        return view('threads.show_profile', compact('thread', 'posts'));
+        $user = Auth::check()? CacheUser::Auser():'';
+        $info = Auth::check()? CacheUser::Ainfo():'';
+        return view('threads.show_profile', compact('thread', 'posts','user','info'));
     }
 
     public function show($id, Request $request)
@@ -233,7 +236,9 @@ class threadsController extends Controller
         if($channel->type==='list'){
             $posts->load('review.reviewee');
         }
+        $user = Auth::check()? CacheUser::Auser():'';
+        $info = Auth::check()? CacheUser::Ainfo():'';
 
-        return view('threads.show', compact('show_profile', 'thread', 'posts'));
+        return view('threads.show', compact('show_profile', 'thread', 'posts', 'user', 'info'));
     }
 }

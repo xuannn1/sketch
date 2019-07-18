@@ -7,23 +7,22 @@
         <div class="panel panel-default">
             <div class="panel-body text-center">
                 @include('users._user_stat')
-            </div>
-            <div class="">
-                <div class="row text-center">
-                    <div class="col-xs-4">
-                        <a href="{{ route('user.show', $user->id) }}" class="btn btn-info btn-lg sosad-button-control">查看个人主页</a>
+                <div class="container-fluid">
+                    <div class="row text-center">
+                        <div class="col-xs-4">
+                            <a href="{{ route('user.show', $user->id) }}" class="btn btn-info btn-lg sosad-button-control">查看个人主页</a>
+                        </div>
+                        <div class="col-xs-4">
+                            <a href="{{ route('user.edit_introduction') }}" class="btn btn-info btn-lg sosad-button-control">修改个人介绍</a>
+                        </div>
+                        <div class="col-xs-4">
+                            <a href="" class="btn btn-info btn-lg sosad-button-control">佩戴个人头衔</a>
+                        </div>
                     </div>
-                    <div class="col-xs-4">
-                        <a href="{{ route('user.edit_introduction') }}" class="btn btn-info btn-lg sosad-button-control">修改个人介绍</a>
-                    </div>
-                    <div class="col-xs-4">
-                        <a href="" class="btn btn-info btn-lg sosad-button-control">佩戴头衔（待做）</a>
-                    </div>
+                    <br>
                 </div>
-                <br>
             </div>
         </div>
-
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="">
@@ -60,7 +59,7 @@
                     <a href="{{ route('vote.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的评票
                     </a>
-                    <a href="{{ route('reward.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{ route('reward.received') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的打赏
                     </a>
                     <a href="{{ route('quiz.taketest') }}" class="btn btn-lg btn-info btn-block sosad-button">

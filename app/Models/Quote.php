@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Quote extends Model
 {
     use Traits\VoteTrait;
+    use Traits\RewardTrait;
+    use Traits\TypeValueChangeTrait;
 
     protected $guarded = [];
     const UPDATED_AT = null;
+    protected $dates = ['created_at'];
+    protected $reward_types = array('fish');
 
     public function user()
     {

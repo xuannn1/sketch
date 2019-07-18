@@ -11,7 +11,7 @@ use Carbon;
 use Cache;
 use StringProcess;
 
-class StatusesController extends Controller
+class StatusController extends Controller
 {
     public function __construct()
     {
@@ -54,6 +54,12 @@ class StatusesController extends Controller
             return redirect()->route('error', ['error_code' => '403']);
         }
     }
+
+    public function show(Status $status)
+    {
+        
+    }
+
     public function index(Request $request)
     {
         $queryid = 'statusesIndex.'

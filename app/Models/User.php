@@ -25,7 +25,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password', 'title_id', 'unread_updates', 'unread_reminders','public_notice_id'
+        'name', 'email', 'password', 'title_id', 'unread_updates', 'unread_reminders', 'public_notice_id'
     ];
 
     /**
@@ -235,7 +235,9 @@ class User extends Authenticatable
 
     public function unread_reminder_count()
     {
-        return $this->unread_reminders+ConstantObjects::system_variable()->latest_public_notice_id-$this->public_notice_id;
+        return $this->unread_reminders
+        + ConstantObjects::system_variable()->latest_public_notice_id
+        - $this->public_notice_id;
     }
 
     public function linked($user_id)
@@ -257,12 +259,31 @@ class User extends Authenticatable
                 $info->reply_reminders +=1;
             break;
 
+            case 'new_reward':
+                $this->unread_reminders +=1;
+                $info->reward_reminders +=1;
+            break;
+
             default:
             return false;
         }
         $info->save();
         $this->save();
         return true;
+    }
+
+    public function created_new_post($post)
+    {
+        if(!$post){return;}
+
+        if($this->use_indentation!=$this->use_indentation){
+            $this->use_indentation=$this->use_indentation;
+        }
+        if($post->is_anonymous&& $this->majia!=$post->majia){
+            $this->majia=$post->majia;
+        }
+
+        $this->save();
     }
 
 

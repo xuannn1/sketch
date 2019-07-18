@@ -179,6 +179,10 @@ return [
         'quiz-hint'             => '答题提示',
         'quiz-level'            => '题目等级',
         'quiz-option'           => '题目选项',
+        'reward_value'          => '奖赏数额',
+        'reward_type'           => '奖赏类型',
+        'rewardable_type'       => '奖赏对象类型',
+        'rewardable_id'         => '奖赏对象ID',
     ],
 
 ];

@@ -24,7 +24,7 @@
 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="{{Auth::user()->unread_reminder_count()>0? 'blink_me reminder-sign':''}}">
-                            <span class="glyphicon glyphicon-bell {{Auth::user()->unread_reminders>0? :'hidden'}}"></span>{{ Auth::user()->name }} <b class="caret"></b></span>
+                            <span class="glyphicon glyphicon-bell {{Auth::user()->unread_reminder_count()>0? :'hidden'}}"></span>{{ Auth::user()->name }} <b class="caret"></b></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ route('user.center') }}">个人中心</a></li>
@@ -41,7 +41,7 @@
                 </ul>
                 @else
                 <ul class="nav navbar-nav navbar-right text-right">
-                    <li><a href="{{ route('statuses.index') }}">动态</a></li>
+                    <li><a href="{{ route('status.index') }}">动态</a></li>
                     <li><a href="{{ route('books.index') }}">文库</a></li>
                     <li><a href="{{ route('threads.thread_index') }}">论坛</a></li>
                     <li><a href="{{ route('register') }}">注册</a></li>

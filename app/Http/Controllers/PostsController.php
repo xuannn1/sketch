@@ -11,14 +11,16 @@ use App\Models\Post;
 use App\Events\NewPost;
 use Carbon;
 use Auth;
-use App\Models\Chapter;
-use App\Models\Activity;
-use App\Models\Collection;
-use App\Helpers\ThreadObjects;
+use CacheUser;
+
+use App\Sosadfun\Traits\FindThreadTrait;
+use App\Sosadfun\Traits\PostObjectTraits;
 
 
 class PostsController extends Controller
 {
+    use PostObjectTraits;
+    use FindThreadTrait;
 
     public function __construct()
     {
@@ -69,8 +71,10 @@ class PostsController extends Controller
         if(!$post){
             abort(404);
         }
+        $user = Auth::check()? CacheUser::Auser():'';
+        $info = Auth::check()? CacheUser::Ainfo():'';
         $thread = $this->findThread($post->thread_id);
-        return view('posts.show',compact('post','thread'));
+        return view('posts.show',compact('post','thread','user','info'));
     }
 
     public function destroy($id){
