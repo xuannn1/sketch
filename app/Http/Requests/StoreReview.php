@@ -6,12 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 use DB;
 use StringProcess;
 use App\Models\Thread;
-use App\Models\Chapter;
+use App\Models\Review;
 use App\Models\Post;
 use Carbon;
 use App\Sosadfun\Traits\GeneratePostDataTraits;
 
-class StoreChapter extends FormRequest
+class StoreReview extends FormRequest
 {
     use GeneratePostDataTraits;
     /**
@@ -35,14 +35,14 @@ class StoreChapter extends FormRequest
             'title' => 'required|string|max:25',
             'brief' => 'max:40',
             'body' => 'required|string|min:15|max:20000',
-            'annotation' => 'max:2000',
-            'warning' => 'max:500',
+            'rating' => 'required|numeric|min:0|max:10',
+            'thread_id' => 'required|numeric|min:0',
         ];
     }
 
-    public function generateChapter($thread){
+    public function generateReview($thread){
         $post_data = $this->generatePostData($thread);
-        $post_data['type'] = 'chapter';
+        $post_data['type'] = 'review';
         $post_data['brief'] = $this->brief;
         $post_data['is_anonymous']=$thread->is_anonymous;
         $post_data['majia']=$thread->majia;
@@ -51,35 +51,32 @@ class StoreChapter extends FormRequest
         }
 
         // chapter data
-        $chapter_data = $this->only('warning','annotation');
-        $chapter_data['annotation']=StringProcess::trimSpaces($chapter_data['annotation']);
-        $chapter_data['warning']=StringProcess::trimSpaces($chapter_data['warning']);
-        $max_order_by = $thread->max_chapter_order();
-        $chapter_data['order_by'] = $max_order_by ? $max_order_by+1 : 1;
-        $post = DB::transaction(function()use($post_data, $chapter_data){
+        $review_data = $this->only('rating','thread_id');
+        $review_data['recommend'] = $this->recommend? true:false;
+
+        $post = DB::transaction(function()use($post_data, $review_data){
             $post = Post::create($post_data);
-            $chapter_data['post_id']=$post->id;
-            $chapter = Chapter::create($chapter_data);
+            $review_data['post_id']=$post->id;
+            $review = Review::create($review_data);
             return $post;
         });
         return $post;
     }
 
-    public function updateChapter($post, $thread)
+    public function updateReview($post, $thread)
     {
-        $chapter = $post->chapter;
+        $review = $post->review;
         $post_data = $this->generateUpdatePostData($post);
         $post_data['brief'] = $this->brief;
         $post_data['is_anonymous']=$thread->is_anonymous;
         if($this->is_bianyuan){
             $post_data['is_bianyuan']=true;
         }
-        $chapter_data = $this->only('warning','annotation');
-        $chapter_data['annotation']=StringProcess::trimSpaces($chapter_data['annotation']);
-        $chapter_data['warning']=StringProcess::trimSpaces($chapter_data['warning']);
+        $review_data = $this->only('rating','thread_id');
+        $review_data['recommend'] = $this->recommend? true:false;
 
         $post->update($post_data);
-        $chapter->update($chapter_data);
+        $review->update($review_data);
 
         return $post;
 

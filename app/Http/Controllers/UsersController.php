@@ -106,10 +106,11 @@ class UsersController extends Controller
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
         if(!$user||!$info){abort(404);}
-        $intro = $info->has_intro? CacheUser::Aintro():null;
+        $intro = $user->intro;
 
         $info->update([
             'brief_intro'=>$request->brief_intro,
+            'has_intro'=>1,
         ]);
         if($intro){
             $intro->update([
@@ -117,7 +118,7 @@ class UsersController extends Controller
                 'edited_at' => Carbon::now(),
             ]);
         }else{
-            App\Models\UserIntro::create([
+            \App\Models\UserIntro::create([
                 'user_id' => $user->id,
                 'body'=>$request->introduction,
                 'edited_at' => Carbon::now(),
@@ -130,37 +131,11 @@ class UsersController extends Controller
     {
         $user = Auth::user();
         $info = $user->info;
-        if ($user->qiandao_at <= Carbon::today()->subHours(2)->toDateTimeString())
-        {
-            $message = DB::transaction(function () use($user, $info){
-                if ($user->qiandao_at > Carbon::now()->subdays(2)) {
-                    $info->qiandao_continued+=1;
-                    if($info->qiandao_continued>$info->qiandao_max){$info->qiandao_max = $info->qiandao_continued;}
-                }else{
-                    $info->qiandao_continued=1;
-                }
-                $user->qiandao_at = Carbon::now();
-                $message = "您已成功签到！连续签到".$info->continued_qiandao."天！";
-                $reward_base = 1;
-                if(($info->continued_qiandao>=5)&&($info->continued_qiandao%5==0)){
-                    $reward_base = intval($info->continued_qiandao/10)+2;
-                    if($reward_base > 10){$reward_base = 10;}
-                    $message .="您获得了特殊奖励！";
-                }
-                $info->rewardData(5*$reward_base, 5*$reward_base, 5*$reward_base, 1*$reward_base, 0);
-                $info->message_limit = $user->level-4;
-                $info->list_limit = $user->level-4;
-                $info->save();
-                $user->save();
-                if($user->checklevelup()){
-                    $message .="您的个人等级已提高!";
-                }
-                return $message;
-            });
-            return back()->with("success", $message);
-        }else{
+        if($user->qiandao_at > Carbon::today()->subHours(2)->toDateTimeString()){
             return back()->with("info", "您已领取奖励，请勿重复签到");
         }
+        $message = $user->qiandao();
+        return back()->with("success", $message);
     }
 
     public function followings($id)

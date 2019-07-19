@@ -151,7 +151,7 @@
                         <label><input type="checkbox" name="is_public" checked>是否公开可见？</label>&nbsp;
                         <label><input type="checkbox" name="no_reply">是否禁止回帖？</label>&nbsp;
                         <br>
-                        <label><input type="checkbox" name="use_markdown" >使用Markdown语法？</label>
+                        <label><input type="checkbox" name="use_markdown" >是否使用Markdown语法（不推荐）？</label>
                         <label><input type="checkbox" name="download_as_thread">开放讨论帖形式的书评下载？（正文+全部评论，按回帖时间顺序排列）</label>&nbsp;
                         <label><input type="checkbox" name="download_as_book" >开放脱水书籍下载？（不含回帖的正文章节）</label>
                     </div>

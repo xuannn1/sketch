@@ -15,6 +15,7 @@ use ConstantObjects;
 class User extends Authenticatable
 {
     use Notifiable;
+    use Traits\QiandaoTrait;
 
     protected $dates = ['deleted_at', 'qiandao_at'];
     public $timestamps = false;
@@ -98,6 +99,11 @@ class User extends Authenticatable
         return $this->hasOne(UserInfo::class, 'user_id');
     }
 
+    public function intro()
+    {
+        return $this->hasOne(UserIntro::class, 'user_id');
+    }
+
     public function followers()
     {
         return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
@@ -171,9 +177,11 @@ class User extends Authenticatable
         $info = $this->info;
         foreach($level_ups as $level=>$requirement){
             if (($this->level < $level)
-            &&(!(array_key_exists('jifen',$requirement))||($requirement['jifen']<=$info->jifen))
-            &&(!(array_key_exists('xianyu',$requirement))||($requirement['xianyu']<=$info->xianyu))
-            &&(!(array_key_exists('sangdian',$requirement))||($requirement['sangdian']<=$info->sangdian))){
+            &&(!(array_key_exists('salt',$requirement))||($requirement['salt']<=$info->jifen))
+            &&(!(array_key_exists('fish',$requirement))||($requirement['fish']<=$info->xianyu))
+            &&(!(array_key_exists('ham',$requirement))||($requirement['ham']<=$info->sangdian))
+            &&(!(array_key_exists('qiandao_all',$requirement))||($requirement['qiandao_all']<=$info->qiandao_all))
+            &&(!(array_key_exists('quiz_level',$requirement))||($requirement['quiz_level']<=$user->quiz_level))){
                 $this->level = $level;
                 $this->save();
                 return true;

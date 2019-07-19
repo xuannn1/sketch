@@ -22,6 +22,9 @@
                 <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
                 <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
             </div>
+            @if(!$thread->is_bianyuan)
+            <h6 style="color:#d66666">(本帖并非“边限”、公开可见，请不要引入“边限内容”的讨论。)</h6>
+            @endif
             <div class="checkbox">
                 <label><input type="checkbox" name="is_anonymous" onclick="document.getElementById('majiareplythread{{$thread->id}}').style.display = 'block'">马甲？</label>&nbsp;
                 <label><input type="checkbox" name="editor" onclick="$('#markdowneditor').markdown({language:'zh'})">显示编辑器？</label>

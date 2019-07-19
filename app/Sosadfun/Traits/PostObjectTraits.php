@@ -7,7 +7,7 @@ trait PostObjectTraits{
 
     public function postProfile($id)
     {
-        return Cache::remember('post.'.$id, 15, function () use($id) {
+        return Cache::remember('postProfile.'.$id, 15, function () use($id) {
             $post = \App\Models\Post::find($id);
             if(!$post){
                 return;
@@ -32,6 +32,11 @@ trait PostObjectTraits{
 
             return $post;
         });
+    }
+
+    public function clearPostProfile($id)
+    {
+        Cache::pull('postProfile.'.$id);
     }
 
 }

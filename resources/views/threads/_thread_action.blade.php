@@ -14,10 +14,10 @@
         @break
         @case('list')
         <div class="col-xs-6">
-            <a href="#" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑首楼</a>
+            <a href="{{ route('threads.edit', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑首楼</a>
         </div>
         <div class="col-xs-6">
-            <a href="#" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">写新书评</a>
+            <a href="{{ route('review.create', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">写新书评</a>
         </div>
         @break
         @default

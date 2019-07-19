@@ -147,6 +147,14 @@
     Route::post('/threads/{thread}/posts', 'PostsController@store')->name('post.store');//在某个主题发表回帖
 }
 
+//书评相关
+{
+    Route::get('/threads/{thread}/review/create', 'ReviewController@create')->name('review.create');
+    Route::post('/threads/{thread}/review', 'ReviewController@store')->name('review.store');//存储书评
+    Route::patch('/review/{review}', 'ReviewController@update')->name('review.update');//更新书评
+    Route::get('/post/{post}/turn_to_review', 'ReviewController@turn_to_review')->name('post.turn_to_review');
+}
+
 
 { // 打赏
     Route::resource('reward', 'RewardController', ['only' => [
@@ -203,9 +211,7 @@
 
     Route::post('books/{book}/edit_tongren', 'BooksController@update_tongren')->name('books.update_tongren');
 
-    Route::resource('chapter', 'ChapterController', ['only' => [
-        'edit', 'update'
-    ]]); //
+    Route::patch('chapter/{chapter}', 'ChapterController@update')->name('chapter.update');
 
     Route::resource('/thread/{thread}/chapter', 'ChapterController', ['only' => [
          'create', 'store'
@@ -219,6 +225,8 @@
    Route::get('/thread-posts/{post}', 'ThreadsController@showpost')->name('thread.showpost');//展示某个主题贴下的特定回帖
 
    Route::get('/posts/{post}/edit', 'PostsController@edit')->name('post.edit');//更改已回复post，必须有权限
+
+   Route::get('/posts/{post}/turn_to_post', 'PostsController@turn_to_post')->name('post.turn_to_post');//更改post成普通回帖
 
    Route::post('/posts/{post}/update', 'PostsController@update')->name('post.update');//更改帖子，必须有权限
 

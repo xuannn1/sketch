@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreChapter;
-use DB;
 use Auth;
 use CacheUser;
 use App\Models\Thread;
 use App\Events\NewPost;
+use App\Models\Post;
 use App\Sosadfun\Traits\ThreadObjectTraits;
+use App\Sosadfun\Traits\PostObjectTraits;
 
 class ChapterController extends Controller
 {
     use ThreadObjectTraits;
+    use PostObjectTraits;
 
     public function create($id)
     {
@@ -48,32 +50,20 @@ class ChapterController extends Controller
     }
 
 
-    public function edit($id)
+    public function update($id, StoreChapter $form)
     {
-        $chapter = Chapter::find($id);
-        $post = $chapter->mainpost;
+        $post = Post::find($id);
+        $chapter = $post->chapter;
         $thread = $post->thread;
-        $channel = $thread->channel();
-        if(!$channel||!$thread||$channel->type!='book'||$thread->is_locked){
-            abort(403);
-        }
-        return view('chapters.edit', compact('chapter','post','thread'));
 
-    }
-    public function update($id)
-    {
-        $chapter = Chapter::find($id);
-        $post = $chapter->mainpost;
-        $thread = $post->thread;
-        $channel = $thread->channel();
-        if(!$channel||!$thread||$channel->type!='book'||$thread->is_locked){
+        if(!$post||!$thread||!$chapter||($thread->is_locked&&!Auth::user()->isAdmin())){
             abort(403);
         }
 
         $post = $form->updateChapter($post, $thread);
-
-        $this->clearThreadProfile($thread->id);
-        $this->clearThreadChapterIndex($thread->id);
+        $thread->recalculate_characters();
+        $this->clearPostProfile($id);
+        $this->clearThreadChapterIndex($id);
 
         return redirect()->route('post.show', $id)->with('success','已经成功更新章节');
 

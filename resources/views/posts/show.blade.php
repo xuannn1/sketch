@@ -72,9 +72,21 @@
                 <br>
             @endif
             <div class="panel-body post-body">
-                @if((($post->is_bianyuan)||($thread->is_bianyuan))&&(!Auth::check()||(Auth::check()&&(Auth::user()->level < 1))))
+                @if( (($thread->is_bianyuan)||($post->is_bianyuan))&&(!Auth::check()) )
                 <div class="text-center">
-                    <h6 class="display-4 grayout"><a href="{{ route('login') }}">本内容为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></h6>
+                    <h6 class="display-4 grayout"><a href="route('login')">本内容只对注册用户开放，请登陆后查看</a></h6>
+                </div>
+                @elseif( (!$thread->recommended)&&($thread->channel()->type==='book')&&($thread->is_bianyuan)&&($post->type==='chapter')&&(Auth::check())&&(Auth::user()->level < 3) )
+                <div class="text-center">
+                    <h6 class="display-4 grayout">本内容为非编推的边限文的正文章节，只对3级以上注册用户开放，请升级后查看</a></h6>
+                </div>
+                @elseif( (!$thread->recommended)&&($thread->channel()->type==='book')&&(!$thread->is_bianyuan)&&($post->is_bianyuan)&&($post->type==='chapter')&&(Auth::check())&&(Auth::user()->level < 2) )
+                <div class="text-center">
+                    <h6 class="display-4 grayout">本内容为非编推的非边限文的单章限制章节，只对2级以上注册用户开放，请升级后查看</a></h6>
+                </div>
+                @elseif( (!$thread->recommended)&&($thread->channel()->type!='book')&&($thread->is_bianyuan||$post->is_bianyuan)&&(Auth::check())&&(Auth::user()->level < 1) )
+                <div class="text-center">
+                    <h6 class="display-4 grayout">本内容为限制讨论，只对1级以上注册用户开放，请升级后查看</a></h6>
                 </div>
                 @else
                     <!-- 回复他人帖子的相关信息 -->
@@ -175,11 +187,16 @@
                     <span class="voteposts"><button class="btn btn-default btn-lg" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
                 @endif
                 @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
-                    &nbsp;&nbsp;<span ><a href = "#replyToThread" class="btn btn-default btn-lg" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
+                    &nbsp;<span ><a href = "#replyToThread" class="btn btn-default btn-lg" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
                 @endif
-                &nbsp;&nbsp;<span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostReward{{ $post->id }}" class="btn btn-default btn-lg">打赏</a></span>
+                &nbsp;<span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostReward{{ $post->id }}" class="btn btn-default btn-lg">打赏</a></span>
                 @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
-                    &nbsp;&nbsp;<span><a class="btn btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
+                    &nbsp;<span><a class="btn btn-lg btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
+                @endif
+                @if($thread->user_id===Auth::id())
+                &nbsp;
+                <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerAdvancedManaging{{ $post->id }}" class="btn btn-default btn-lg"><i class="fa fa-cog " aria-hidden="true"></i></a>
+                @include('posts._management_form')
                 @endif
             </div>
             @include('posts._reward_form')

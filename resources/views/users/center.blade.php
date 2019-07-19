@@ -53,8 +53,8 @@
                         我的社区
                     </div>
                     <hr>
-                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
-                        我的题头（待做）
+                    <a href="{{ route('quote.mine') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        我的题头
                     </a>
                     <a href="{{ route('vote.received') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的评票

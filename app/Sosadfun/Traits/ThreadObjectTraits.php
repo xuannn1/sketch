@@ -87,7 +87,7 @@ trait ThreadObjectTraits{
             ->get();
         });
     }
-    public function clearThreadChapterIndex(($id)
+    public function clearThreadChapterIndex($id)
     {
         Cache::pull('threadChapterIndex.'.$id);
     }
@@ -101,4 +101,9 @@ trait ThreadObjectTraits{
             ->get();
         });
     }
+    public function clearThreadReviewIndex($id)
+    {
+        Cache::pull('threadReviewIndex.'.$id);
+    }
+
 }
