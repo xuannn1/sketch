@@ -9,7 +9,7 @@ use Auth;
 use Hash;
 use App\Models\User;
 use Carbon;
-use App\Models\EmailModifyHistory;
+use App\Models\HistoricalEmailModification;
 use App\Models\PasswordReset;
 use CacheUser;
 use Cache;
@@ -42,7 +42,7 @@ class UsersController extends Controller
     public function edit_email()
     {
         $user = Auth::user();
-        $previous_history_counts = EmailModifyHistory::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
+        $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
         return view('users.edit_email', compact('user','previous_history_counts'));
     }
 
@@ -60,11 +60,11 @@ class UsersController extends Controller
                 return redirect()->back()->with('warning','已经修改为这个邮箱，无需重复修改。');
             }
 
-            $previous_history_counts = EmailModifyHistory::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
+            $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
             if ($previous_history_counts>=config('constants.monthly_email_resets')){
                 return redirect()->back()->with('warning','一个月内只能修改'.config('constants.monthly_email_resets').'次邮箱。');
             }
-            $record = EmailModifyHistory::create([
+            $record = HistoricalEmailModification::create([
                 'old_email' => $old_email,
                 'new_email' => request('email'),
                 'user_id' => Auth::id(),
@@ -77,6 +77,7 @@ class UsersController extends Controller
 
             $user->email = $request->email;
             $info->activation_token = str_random(30);
+            $user->activated = 0;
             $user->save();
             $info->save();
             return redirect()->route('user.edit', Auth::id())->with("success", "您已成功修改个人资料");

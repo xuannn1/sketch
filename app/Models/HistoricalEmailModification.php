@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-class EmailModifyHistory extends Model
+class HistoricalEmailModification extends Model
 {
     const UPDATED_AT = null;
     protected $guarded = [];
