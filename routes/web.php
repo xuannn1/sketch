@@ -45,8 +45,7 @@
     // TODO 搜索重做
     Route::get('/search','PagesController@search')->name('search');
 
-    // TODO 检查这个route是不是没有必要（是否只要使用abort就可以了？）
-    // Route::get('error/{error_code}', 'PagesController@error')->name('error');
+
 
     Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
     Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
