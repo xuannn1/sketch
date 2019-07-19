@@ -14,12 +14,9 @@ use App\Models\Chapter;
 use App\Models\Post;
 use App\Models\Status;
 use App\Models\User;
-use App\Models\PostComment;
-use App\Models\LongComment;
 use App\Models\PublicNotice;
 use App\Models\Administration;
 use App\Models\Book;
-use App\Models\Message;
 use Auth;
 use Carbon;
 
@@ -525,13 +522,11 @@ class AdminsController extends Controller
             'body' => 'required|string|max:20000|min:10',
          ]);
          $public_notice = PublicNotice::create([
-             'notice_body'=>$request->body,
+             'body'=>$request->body,
              'user_id'=>Auth::id(),
          ]);
-         DB::table('users')->increment('unread_reminders');
          DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
          return redirect()->back()->with('success','您已成功发布公共通知');
-
     }
 
     public function create_tag_form(){

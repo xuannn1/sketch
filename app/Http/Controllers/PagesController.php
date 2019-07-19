@@ -50,9 +50,8 @@ class PagesController extends Controller
 
     public function help()
     {
-        $users_online = $this->users_online();
-        $webstat = $this->web_stat();
-        return view('pages/help',compact('webstat','users_online'));
+        $faqs = $this->find_helpfaqs();
+        return view('pages.help', compact('faqs'));
     }
 
     public function test()
@@ -141,6 +140,6 @@ class PagesController extends Controller
 
     public function search()
     {
-        
+
     }
 }

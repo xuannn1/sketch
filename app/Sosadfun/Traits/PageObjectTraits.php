@@ -84,4 +84,28 @@ trait PageObjectTraits{
         });
     }
 
+    public function all_helpfaqs()
+    {
+        return Cache::remember('all_helpfaqs', 60, function () {
+            return DB::table('helpfaqs')->get();
+        });
+    }
+
+    public function find_helpfaqs()
+    {
+        return Cache::remember('find_helpfaqs', 60, function () {
+            $total_faq =[];
+            foreach(config('help') as $key1=>$value1)
+            {
+                foreach($value1['children'] as $key2 => $value2)
+                {
+                    $combokey = $key1.'-'.$key2;
+                    $faqs = self::all_helpfaqs()->where('key',$combokey);
+                    $total_faq[$combokey]=$faqs;
+                }
+            }
+            return $total_faq;
+        });
+    }
+
 }

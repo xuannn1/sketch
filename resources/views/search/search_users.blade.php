@@ -7,7 +7,7 @@
             <div class="panel-heading lead">搜索用户</div>
             <div class="panel-body">
                 @if($users->count()>0)
-                    @include('users._users')
+                    @include('search._users')
                     {{ $users->links() }}
                 @else
                     <h2>抱歉，未能搜索到对应的条目</h2>

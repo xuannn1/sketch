@@ -10,6 +10,9 @@
             </div>
             <div class="panel-body">
                 @include('threads._simple_threads')
+                <hr>
+            </div>
+            <div class="panel-body">
                 {{ $threads->links() }}
                 @include('threads._threads')
                 {{ $threads->links() }}

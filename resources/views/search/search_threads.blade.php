@@ -6,9 +6,9 @@
         <div class="panel panel-default">
             <div class="panel-heading lead">搜索主题</div>
             <div class="panel-body">
-                @if($simplethreads->count()>0)
-                    @include('threads._simple_threads')
-                    {{ $simplethreads->links() }}
+                @if($threads->count()>0)
+                    @include('search._threads')
+                    {{ $threads->links() }}
                 @else
                     <h2>抱歉，未能搜索到对应的条目</h2>
                 @endif

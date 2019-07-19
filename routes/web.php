@@ -43,7 +43,11 @@
     Route::get('contacts', 'PagesController@contacts')->name('contacts');
 
     // TODO 搜索重做
-    Route::get('/search','PagesController@search')->name('search');
+    Route::get('/search','SearchController@search')->name('search');
+
+    Route::get('/search_user','SearchController@search_user')->name('search.search_user');
+    Route::get('/search_thread','SearchController@search_thread')->name('search.search_thread');
+    Route::get('/search_tag','SearchController@search_tag')->name('search.search_tag');
 
 
 
@@ -245,7 +249,7 @@
    Route::get('/admin/threadform/{thread}','AdminsController@threadform')->name('admin.threadform');//进入管理主题贴页面
    Route::get('/admin/statusform/{status}','AdminsController@statusform')->name('admin.statusform');//进入管理动态页面
 
-   Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform')->middleware('admin');//发送提醒通知表格
+   Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform');//发送提醒通知表格
    Route::post('/admin/sendpublicnotice', 'AdminsController@sendpublicnotice')->name('admin.sendpublicnotice')->middleware('admin');//发送提醒通知
    Route::get('/admin/createtag', 'AdminsController@create_tag_form')->name('admin.createtag')->middleware('admin');//显示新建tag表格
    Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//发送提醒通知
