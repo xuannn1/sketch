@@ -6,10 +6,10 @@
         @switch($thread->channel()->type)
         @case('book')
         <div class="col-xs-6">
-            <a href="#" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑书籍</a>
+            <a href="{{ route('books.edit', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑书籍</a>
         </div>
         <div class="col-xs-6">
-            <a href="#" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">写新章节</a>
+            <a href="{{ route('chapter.create', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">写新章节</a>
         </div>
         @break
         @case('list')
@@ -22,7 +22,7 @@
         @break
         @default
         <div class="col-xs-6">
-            <a href="#" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑首楼</a>
+            <a href="{{ route('threads.edit', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑首楼</a>
         </div>
         @endswitch
     </div>
@@ -33,7 +33,12 @@
     <div class="row">
         @if($thread->channel()->type==='book')
         <div class="col-xs-6">
-            <a href="{{ route('post.show', $thread->first_component_id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">开始阅读</a>
+            @if($thread->first_component_id===0)
+                <a href="#" class="btn btn-lg btn-danger btn-block sosad-button-control disabled">尚无正文</a>
+            @else
+                <a href="{{ route('post.show', $thread->first_component_id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">开始阅读</a>
+            @endif
+
         </div>
         <div class="col-xs-6">
             <a href="{{ route('thread.chapter_index', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">章节目录</a>

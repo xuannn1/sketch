@@ -165,7 +165,7 @@ class StringProcess
 
     public static function convert_to_public($string= null)
     {
-        $badstring = config('constants.word_filter.not_in_public');
+        $badstring = config('forbiddenwords.not_in_public');
         $newstring = preg_replace("/$badstring/i",'',$string);
         if (strcmp($newstring, $string) === 0){
             return $newstring;
@@ -176,7 +176,7 @@ class StringProcess
 
     public static function convert_to_title($string= null)
     {
-        $badstring = config('constants.word_filter.not_in_title');
+        $badstring = config('forbiddenwords.not_in_title');
         $newstring = preg_replace("/$badstring/i",'', self::convert_to_public($string));
         if (strcmp($newstring, $string) === 0){
             return $newstring;
@@ -209,4 +209,16 @@ class StringProcess
         }
         return $endtag;
     }
+
+    public static function wrapSpan($post= null)
+    {
+        $post = self::trimSpaces($post);
+        $bbCode = new BBCode();
+        $bbCode = self::addCustomParserBBCode($bbCode);
+        $post = $bbCode->convertToHtml($post);
+        $post = preg_replace('/\n{1,}/', "<br>", $post);
+        $post = "{$post}";
+        return $post;
+    }
+
 }

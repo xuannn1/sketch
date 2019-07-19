@@ -86,20 +86,10 @@ class threadsController extends Controller
         return view('threads.thread_jinghua', compact('threads'))->with('threads_tab','jinghua');
     }
 
-    public function thread_list(Request $request)
-    {
-
-    }
-
-    public function thread_box(Request $request)
-    {
-
-    }
-
     public function channel_index($channel, Request $request)
     {
         $channel = collect(config('channel'))->keyby('id')->get($channel);
-        $primary_tags = ConstantObjects::find_primary_tags_in_channel($channel->id);
+        $primary_tags = ConstantObjects::extra_primary_tags_in_channel($channel->id);
 
         $queryid = 'channel-index'
         .url('/')
@@ -130,19 +120,36 @@ class threadsController extends Controller
     public function create(Request $request)
     {
         $user = CacheUser::Auser();
-
         $channel = collect(config('channel'))->keyby('id')->get($request->channel_id);
-        $tags = ConstantObjects::find_primary_tags_in_channel($channel->id);
 
-        if ($channel->id<=2){
+        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+
+        $tags = ConstantObjects::primary_tags_in_channel($channel->id);
+
+        if($channel->type==='list'){
+            $list_count = Thread::where('user_id', $user->id)->withType('list')->count();
+            if($list_count > $user->level-4){
+                return redirect()->back()->with('warning','您的收藏单数量已达上线，不能再建立');
+            }
+        }
+        if($channel->type==='box'){
+            $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
+            if($box_count >=1){
+                return redirect()->back()->with('warning','每个人只能建立一个问题箱，您已经建立了问题箱');
+            }
+        }
+
+        if($channel->type==='book'){
             if($user->level<1||$user->quiz_level<1){
                 return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立书籍');
             }
             return view('books.create');
         }
-        if($user->level<5){
+
+        if($user->level<5||$user->quiz_level<1){
             return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立讨论帖');
         }
+
         return view('threads.create', compact('channel','tags'));
     }
 
@@ -150,9 +157,27 @@ class threadsController extends Controller
     {
         $channel = collect(config('channel'))->keyby('id')->get($form->channel_id);
         $user = CacheUser::Auser();
-        if($channel->id<=2||$user->level<5){
-            abort(403, '等级不足');
+
+        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+
+        if($channel->type==='list'){
+            $list_count = Thread::where('user_id', $user->id)->withType('list')->count();
+            if($list_count > $user->level-4){abort(403);}
         }
+
+        if($channel->type==='box'){
+            $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
+            if($box_count >=1){abort(403);}
+        }
+
+        if($channel->type==='book'){
+            abort(403);
+        }
+
+        if($user->level<5){
+            abort(403);
+        }
+
 
         $thread = $form->generateThread($channel);
 
@@ -167,8 +192,18 @@ class threadsController extends Controller
 
     public function edit(Thread $thread)
     {
-        if ((Auth::user()->admin)||($thread->user_id == Auth::id()&&(!$thread->is_locked)&&($thread->channel->channel_state!=2))){
-            return view('threads.edit', compact('thread'));
+        $user = CacheUser::Auser();
+        $channel = $thread->channel();
+
+        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+
+        if ((Auth::user()->isAdmin())||($thread->user_id == Auth::id()&&(!$thread->is_locked)&&($thread->channel()->allow_edit))){
+
+            $selected_tags = $thread->tags;
+
+            $tags = ConstantObjects::primary_tags_in_channel($channel->id);
+
+            return view('threads.edit', compact('channel', 'thread','user','tags','selected_tags'));
         }else{
             return redirect()->back()->with("danger","本版面无法编辑内容");
         }
@@ -177,8 +212,15 @@ class threadsController extends Controller
 
     public function update(StoreThread $form, Thread $thread)
     {
-        if ((Auth::id() == $thread->user_id)&&((!$thread->is_locked)||(Auth::user()->admin))){
+        if ((Auth::id() == $thread->user_id)&&((!$thread->is_locked)||(Auth::user()->isAdmin()))){
+
             $form->updateThread($thread);
+
+            $thread->keep_only_admin_tags();
+            $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
+
+            $this->clearThreadProfile($thread->id);
+            $this->clearThread($thread->id);
             return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
         }else{
             abort(403);
@@ -206,11 +248,6 @@ class threadsController extends Controller
         $thread = $this->findThread($id);
         $posts = $this->threadReviewIndex($id);
         return view('reviews.review_index', compact('thread', 'posts'));
-    }
-
-    public function component_index($id)
-    {
-
     }
 
     public function show_profile($id, Request $request)

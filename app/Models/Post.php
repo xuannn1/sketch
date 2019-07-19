@@ -262,6 +262,14 @@ class Post extends Model
         return false;
     }
 
+    public function checklongchapter()
+    {
+        if($this->char_count>config('constants.update_min')){
+            return true;
+        }
+        return false;
+    }
+
     public function checkfirstpost()
     {
         if($this->parent&&$this->parent->type==="chapter"&&$this->parent->reply_count<2){

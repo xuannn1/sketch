@@ -37,12 +37,27 @@ class NewPostListener
         $thread = $post->thread;
 
         DB::transaction(function() use($thread, $post){
-            //考虑不是回帖的情况
-            $thread->update([
-                'last_post_id'=>$post->id,
-                'reply_count'=> $thread->reply_count+1,
-                'responded_at' => $post->created_at,
-            ]);
+            // 更新原楼里的信息更改
+            $thread->last_post_id = $post->id;
+            $thread->responded_at = $post->created_at;
+
+            if(!$post->type=='post'&&!$post->type=='comment'){
+                $thread->last_component_id = $post->id;
+                if($thread->first_component_id===0){
+                    $thread->first_component_id = $post->id;
+                }
+                if($post->checklongchapter()){
+                    $thread->add_component_at = $post->created_at;
+                }
+                $thread->recalculate_characters();
+                if($post->type==='chapter'){
+                    $thread->reorder_chapters();
+                }
+            }else{
+                $thread->reply_count+=1;
+            }
+
+            // 更新被回复对象
             if($post->parent){
                 $post->parent->update([
                     'reply_count'=> $post->parent->reply_count+1,
@@ -96,7 +111,7 @@ class NewPostListener
                 $post->parent->user->remind('new_reply');
             }
 
-            // 修改惯用马甲，惯用indentation，递增character(以后再做)等信息
+            // 修改惯用马甲，惯用indentation
             $post->user->created_new_post($post);
 
         });

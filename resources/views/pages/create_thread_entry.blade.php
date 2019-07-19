@@ -16,6 +16,7 @@
                     <span class="grayout">
                         至少答过1级题才能发文。
                     </span>
+                    <h5><span style="color:#d66666">发文发帖前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a><br>关于网站使用的常规问题：<a href="{{ route('help') }}">《<u>使用帮助</u>》</a></span></h5>
                 </div>
             </div>
         </div>
@@ -26,10 +27,10 @@
                         发布文章
                     </div>
                     <hr>
-                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{ route('books.create') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         原创小说
                     </a>
-                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{ route('books.create') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         同人小说
                     </a>
                 </div>

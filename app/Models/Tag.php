@@ -26,8 +26,8 @@ class Tag extends Model
     {
         return $this->hasMany(Tag::class, 'parent_id');
     }
-    public function user_not_manageable()//判断这个tag是否可以被用户自己控制
+    public function admin_only()//判断这个tag是否可以被用户自己控制
     {
-        return config('tag.limits.user_not_manageable')[$this->tag_type]?? false;
+        return in_array($this->tag_type, config('tag.limits.admin_only'));
     }
 }

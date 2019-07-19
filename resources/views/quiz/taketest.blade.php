@@ -19,14 +19,14 @@
                         <input type="text" name="quiz-answer[{{ $quiz->id }}][quiz_id]" class="hidden form-control" value="{{ $quiz->id }} ">
                     </div>
                     <div class="h4">
-                        {!! Helper::wrapSpan($quiz->body) !!}
+                        {!! StringProcess::wrapSpan($quiz->body) !!}
                     </div>
                     @if($quiz->hint)
                     <div class="text-center">
                         <a type="button" data-toggle="collapse" data-target="#quiz-hint{{ $quiz->id }}" style="cursor: pointer;" class="h6">点击查看答题提示</a>
                     </div>
                     <div class="collapse grayout h6" id = "quiz-hint{{ $quiz->id }}">
-                        {!! Helper::wrapSpan($quiz->hint) !!}
+                        {!! StringProcess::wrapSpan($quiz->hint) !!}
                     </div>
                     @endif
                     <!-- 各色选项 -->
@@ -34,7 +34,7 @@
                         @foreach($quiz->random_options as $option_key=>$quiz_option)
                         <!-- 选项本体 -->
                         <div class="">
-                            <label><input type="checkbox" name="quiz-answer[{{ $quiz->id }}][{{ $quiz_option->id }}]"><span>选项{{ $option_key+1 }}：</span><span>{!! Helper::wrapSpan($quiz_option->body) !!}</span></label>
+                            <label><input type="checkbox" name="quiz-answer[{{ $quiz->id }}][{{ $quiz_option->id }}]"><span>选项{{ $option_key+1 }}：</span><span>{!! StringProcess::wrapSpan($quiz_option->body) !!}</span></label>
                         </div>
                         @endforeach
                     </div>

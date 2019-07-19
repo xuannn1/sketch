@@ -9,35 +9,146 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreBook;
 use App\Models\Thread;
 use ConstantObjects;
-
+use CacheUser;
 use Auth;
+use App\Sosadfun\Traits\ThreadObjectTraits;
 
 class BooksController extends Controller
 {
+    use ThreadObjectTraits;
 
     public function __construct()
     {
-        $this->middleware('auth')->only('create', 'store', 'update','edit');
+        $this->middleware('auth')->except('show','index');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('books.create');
+        $tag_range = ConstantObjects::organizeBookCreationTags();
+        $user = CacheUser::Auser();
+        if($user->level<1||$user->quiz_level<1){
+            return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立书籍');
+        }
+        return view('books.create', compact('tag_range'));
     }
 
     public function store(StoreBook $form)
     {
-        $thread = $form->generateBook();
+        $user = CacheUser::Auser();
+        $channel = collect(config('channel'))->keyby('id')->get($form->channel_id);
+        if(!$channel||$channel->type<>'book'||$user->level<1||$user->quiz_level<1){
+            abort(403);
+        }
+
+        $thread = $form->generateBook($channel);
+        $thread->tongren_data_sync($form->all());
+
+        $tags = array_merge($thread->tags->pluck('id')->toArray(),$form->all_tags());
+
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate($tags));
+
         $thread->user->reward("regular_book");
-        return redirect()->route('book.show', $thread->book_id)->with("success", "您已成功发布文章");
+        return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布文章");
     }
 
-    public function show($id, Request $request)
+    public function edit($id)
+    {
+        $thread = Thread::find($id);
+        if(!$thread){
+            return redirect()->back()->with('danger','找不到文章');
+        }
+        $channel = $thread->channel();
+        if(!$channel||$channel->type!='book'){
+            return redirect()->back()->with('danger','不是文章，无法编辑');
+        }
+        if($thread->user_id!=Auth::id()){
+            return redirect()->back()->with('danger','不能修改不是自己的文章');
+        }
+        if($thread->is_locked){
+            return redirect()->back()->with('danger','不能修改已经锁定的文章');
+        }
+        return view('books.edit', compact('thread'));
+    }
+
+    public function edit_profile($id)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+        return view('books.edit_profile', compact('thread'));
+    }
+
+    public function update_profile($id, StoreBook $form)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+        $thread = $form->updateBookProfile($thread);
+        $valid_tags = $thread->tags_validate($thread->tags);
+        $thread->keep_only_admin_tags();
+        $thread->tags()->syncWithoutDetaching($valid_tags);
+        $this->clearThreadProfile($thread->id);
+        $this->clearThread($thread->id);
+        return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍文案设置信息');
+    }
+
+    public function edit_tag($id)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+        $selected_tags = $thread->tags;
+        $tag_range = ConstantObjects::organizeBasicBookTags();
+
+        return view('books.edit_tag', compact('selected_tags','thread','tag_range'));
+    }
+
+    public function update_tag($id, Request $request)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+
+        $input_tags = array_merge(array($request->sexual_orientation_tag, $request->book_length_tag, $request->book_status_tag),$request->tags);
+        $tags = array_merge($thread->tags->pluck('id')->toArray(), $input_tags);
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate($tags));
+
+        $this->clearThreadProfile($thread->id);
+
+        return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍标签信息');
+    }
+
+    public function edit_tongren($id)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
+
+        $tongren = \App\Models\Tongren::find($id);
+
+        $selected_tags = $thread->tags()->whereIn('tag_type',['同人原著','同人CP'])->get();
+
+        $tag_range = ConstantObjects::organizeBookCreationTags();
+
+        return view('books.edit_tongren', compact('selected_tags','thread','tag_range','tongren'));
+
+    }
+
+    public function update_tongren($id, Request $request)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
+
+        $thread->tongren_data_sync($request->all());
+        $this->clearThreadProfile($thread->id);
+        return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍同人信息');
+    }
+
+    public function show($id)
     {   $book = DB::table('books')->where('id','=',$id)->first();
-        redirect()->route('thread.show_profile', $book->thread_id);
+        return redirect()->route('thread.show_profile', $book->thread_id);
     }
-
-
 
     public function index(Request $request)
     {
@@ -67,9 +178,4 @@ class BooksController extends Controller
         return view('books.index', compact('threads','tags'));
     }
 
-    public function tags()
-    {
-        return view('books.tags');
-    }
-    
 }

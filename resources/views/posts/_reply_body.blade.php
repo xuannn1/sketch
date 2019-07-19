@@ -62,7 +62,7 @@
                 </div>
                 @endif
                 @if($reply->use_markdown)
-                {!! Helper::sosadMarkdown($reply->body) !!}
+                {!! StringProcess::sosadMarkdown($reply->body) !!}
                 @else
                 {!! StringProcess::wrapParagraphs($reply->body) !!}
                 @endif

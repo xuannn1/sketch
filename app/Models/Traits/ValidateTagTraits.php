@@ -14,7 +14,7 @@ trait ValidateTagTraits{
         foreach($tags as $key => $value){
             $tag = ConstantObjects::find_tag_by_id($value);
             if($tag){//首先应该判断这个tag是否存在，否则会报错Trying to get property 'tag_type' of non-object
-                if (array_key_exists($tag->tag_type,config('tag.types'))){//一个正常录入的tag，它的type应该在config中能够找到。
+                if (in_array($tag->tag_type,config('tag.types'))){//一个正常录入的tag，它的type应该在config中能够找到。
                     $error = '';
                     //检查是否为非边缘文章提交了边缘标签
                     if((!$this->is_bianyuan) && $tag->is_bianyuan){
@@ -26,7 +26,7 @@ trait ValidateTagTraits{
                     }
 
                     //检查是否满足某些类tag只能选一个的限制情况，
-                    if (array_key_exists($tag->tag_type, config('tag.limits.only_one'))){
+                    if (in_array($tag->tag_type, config('tag.limits.only_one'))){
                         if(array_key_exists($tag->tag_type, $only_one_tags)){
                             $error = 'only one tag violation';
                         }else{
@@ -35,16 +35,16 @@ trait ValidateTagTraits{
                     }
 
                     //检查数目限制的那些是否满足要求， sum_limit < sum_limit_count
-                    if (array_key_exists($tag->tag_type,config('tag.limits.sum_limit'))){
-                        if(!empty($limit_count_tags)&&(count($limit_count_tags)>config('tag.sum_limit_count'))){
+                    if (in_array($tag->tag_type,config('tag.limits.sum_limit'))){
+                        if(!empty($limit_count_tags)&&(count($limit_count_tags)>=config('tag.sum_limit_count'))){
                             $error = 'too many tags in total';
                         }else{
                             array_push($limit_count_tags,$tag->id);
                         }
                     }
 
-                    //如果这个tag没有犯上面的任何错误，而且不属于只有编辑才能添加的tag，那么通过检验
-                    if((!$tag->user_not_manageable())&&($error==='')){
+                    //如果这个tag没有犯上面的任何错误，而且不属于只有管理才能添加的tag，那么通过检验
+                    if((!$tag->admin_only())&&($error==='')){
                         array_push($valid_tags, $tag->id);
                     }else{
                         echo($error.', invalid tag id='.$tag->id."\n");//这个信息应该前端保证它不要出现
@@ -53,5 +53,47 @@ trait ValidateTagTraits{
             }
         }//循环结束
         return $valid_tags;
+    }
+
+    public function drop_tongren_tags() //去掉'同人原著'和"同人CP"这两种tag
+    {
+        $detach_tags = [];
+        foreach($this->tags as $tag){
+            if(in_array($tag->tag_type, ['同人原著','同人CP'])){
+                array_push($detach_tags,$tag->id);
+            }
+        }
+        if(!empty($detach_tags)){
+            $this->tags()->detach($detach_tags);
+        }
+        return count($detach_tags);
+    }
+
+    public function drop_custom_tags() //去掉非'同人原著'和"同人CP"的用户自主普通标签
+    {
+        $detach_tags = [];
+        foreach($this->tags as $tag){
+            if(in_array($tag->tag_type, config('tag.custom_tag_types'))){
+                array_push($detach_tags,$tag->id);
+            }
+        }
+        if(!empty($detach_tags)){
+            $this->tags()->detach($detach_tags);
+        }
+        return count($detach_tags);
+    }
+
+    public function keep_only_admin_tags()//去掉所有用户自己提交的tag,返回成功去掉的
+    {
+        $detach_tags = [];
+        foreach($this->tags as $tag){
+            if(!in_array($tag->tag_type, config('tag.limits.admin_only'))){
+                array_push($detach_tags,$tag->id);
+            }
+        }
+        if(!empty($detach_tags)){
+            $this->tags()->detach($detach_tags);
+        }
+        return count($detach_tags);
     }
 }

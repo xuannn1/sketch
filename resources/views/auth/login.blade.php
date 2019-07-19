@@ -24,8 +24,8 @@
                     <div class="checkbox">
                         <label><input type="checkbox" name="remember">记住我</label>
                     </div>
-                    <button type="submit" class="btn btn-danger sosad-button">登录</button>
-                    <a href="{{ route('register') }}" class="btn btn-success sosad-button">我要注册</a>
+                    <button type="submit" class="btn btn-danger btn-lg sosad-button">登录</button>
+                    <a href="{{ route('register') }}" class="btn btn-lg btn-success sosad-button">我要注册</a>
                 </form>
                 <br>
                 <div class="">

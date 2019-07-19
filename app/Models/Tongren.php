@@ -9,6 +9,7 @@ class Tongren extends Model
 {
     protected $guarded = [];
     public $timestamps = false;
+    protected $primaryKey = 'thread_id';
 
     public function thread()
     {

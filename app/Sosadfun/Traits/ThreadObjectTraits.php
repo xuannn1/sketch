@@ -15,9 +15,16 @@ trait ThreadObjectTraits{
             if($thread->channel()->type==="list"&&$thread->last_component_id>0&&$thread->last_component){
                 $thread->last_component->load('review.reviewee');
             }
+            $tongren = \App\Models\Tongren::find($thread->id);
+            $thread->setAttribute('tongren', $tongren);
             $thread->setAttribute('recent_rewards', $thread->latest_rewards());
             return $thread;
         });
+    }
+
+    public function clearThreadProfile($id)
+    {
+        Cache::pull('threadProfile.'.$id);
     }
 
     public function threadProfilePosts($id)
@@ -37,6 +44,11 @@ trait ThreadObjectTraits{
         return Cache::remember('thread.'.$id, 15, function () use($id){
             return \App\Models\Thread::find($id);
         });
+    }
+
+    public function clearThread($id)
+    {
+        Cache::pull('thread.'.$id);
     }
 
     public function jinghua_threads()
@@ -70,10 +82,16 @@ trait ThreadObjectTraits{
             ->join('chapters', 'chapters.post_id','=','posts.id')
             ->where('posts.thread_id',$id)
             ->where('posts.type', '=', 'chapter')
+            ->orderBy('chapters.order_by','asc')
             ->select('posts.id', 'posts.user_id', 'posts.thread_id', 'posts.title', 'posts.brief', 'posts.created_at', 'posts.edited_at','posts.is_bianyuan', 'posts.char_count', 'posts.view_count', 'posts.reply_count', 'posts.upvote_count', 'chapters.order_by', 'chapters.volumn_id')
             ->get();
         });
     }
+    public function clearThreadChapterIndex(($id)
+    {
+        Cache::pull('threadChapterIndex.'.$id);
+    }
+
     public function threadReviewIndex($id)
     {
         return Cache::remember('threadReviewIndex.'.$id, 15, function () use($id) {

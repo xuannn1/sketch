@@ -53,6 +53,8 @@
     Route::get('/recommend_records', 'PagesController@recommend_records')->name('recommend_records');//普通用户查看推荐书籍历史
 
     Route::get('/create_thread_entry', 'PagesController@create_thread_entry')->name('create_thread_entry');//绝对复杂筛选所有thread？？
+
+    Route::get('/tags', 'PagesController@all_tags')->name('all.tags');//全站标签列表
 }
 
 {//题头部分
@@ -121,7 +123,7 @@
 {//以下是论坛主题目录模块
 
     Route::resource('threads', 'ThreadsController', ['only' => [
-        'index', 'create', 'update', 'store', 'destroy'
+        'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]]); //
 
    Route::get('/thread_index', 'ThreadsController@thread_index')->name('threads.thread_index');//论坛全部帖子 19.7.9
@@ -184,16 +186,33 @@
 }
 
 {//以下是图书／文章模块
-   Route::get('/book/create', 'BooksController@create')->name('book.create');//发表新的文章
-   Route::post('/book/create', 'BooksController@store')->name('book.store');//发表新的文章
-   Route::get('/books/{book}/edit', 'BooksController@edit')->name('book.edit');//修改文章
-   Route::post('/books/{book}/update', 'BooksController@update')->name('book.update');//更新文章修改
 
-   Route::get('/books/{book}', 'BooksController@show')->name('book.show');//查看某本书的目录 这个主要是用来做
+    Route::resource('books', 'BooksController', ['only' => [
+        'index', 'create', 'store', 'edit', 'update', 'show'
+    ]]); //
 
-   Route::get('/books', 'BooksController@index')->name('books.index');//看全部书 20190711
+    Route::get('books/{book}/edit_tag', 'BooksController@edit_tag')->name('books.edit_tag');
 
-   Route::get('/tags', 'PagesController@tags')->name('all.tags');//全站标签列表 还没做
+    Route::post('books/{book}/edit_tag', 'BooksController@update_tag')->name('books.update_tag');
+
+    Route::get('books/{book}/edit_profile', 'BooksController@edit_profile')->name('books.edit_profile');
+
+    Route::post('books/{book}/edit_profile', 'BooksController@update_profile')->name('books.update_profile');
+
+    Route::get('books/{book}/edit_tongren', 'BooksController@edit_tongren')->name('books.edit_tongren');
+
+    Route::post('books/{book}/edit_tongren', 'BooksController@update_tongren')->name('books.update_tongren');
+
+    Route::resource('chapter', 'ChapterController', ['only' => [
+        'edit', 'update'
+    ]]); //
+
+    Route::resource('/thread/{thread}/chapter', 'ChapterController', ['only' => [
+         'create', 'store'
+    ]]); //
+
+
+
 }
 
 {//以下是回帖模块

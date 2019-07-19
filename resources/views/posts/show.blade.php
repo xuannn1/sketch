@@ -117,7 +117,7 @@
                         @endif
 
                         @if($post->use_markdown)
-                        {!! Helper::sosadMarkdown($post->body) !!}
+                        {!! StringProcess::sosadMarkdown($post->body) !!}
                         @else
                         {!! StringProcess::wrapParagraphs($post->body) !!}
                         @endif

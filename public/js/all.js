@@ -16893,19 +16893,48 @@ $('input.tags').on('change', function(evt) {
     }
 });
 
+$('input.alltags').on('change', function(evt) {
+    if($('input.alltags:checked').length > 5) {
+        this.checked = false;
+        alert("您只能选择 "+5+" 个标签");
+    }
+});
+
 function uncheckAll(divid) {
     $('#' + divid + ' :checkbox').prop('checked', false);
 }
 function checkAll(divid) {
     $('#' + divid + ' :checkbox').prop('checked', true);
 }
-function show_only_this_label_tongren(label_id){
-    $('.tongren_yuanzhu_tag').addClass('hidden');
-    $('.label_'+label_id).removeClass('hidden');
+
+function yuanchuang_checked(){
+    $('.tongren' + ' :checkbox').prop('checked', false);
+    $('.yuanchuang_block').removeClass('hidden');
+    $('.tongren_block').addClass('hidden');
 }
-function show_only_this_cp_tags(mother_tag_id){
-    $('.tongren_cp_tag').addClass('hidden');
-    $('.tongren_yuanzhu_'+mother_tag_id).removeClass('hidden');
+
+function tongren_checked(){
+    $('.yuanchuang' + ' :checkbox').prop('checked', false);
+    $('.tongren_block').removeClass('hidden');
+    $('.yuanchuang_block').addClass('hidden');
+}
+
+function non_bianyuan_checked(){
+    $('.bianyuan' + ':checkbox').prop('checked', false);
+    $('.bianyuan_block').addClass('hidden');
+}
+
+function bianyuan_checked(){
+    $('.bianyuan_block').removeClass('hidden');
+}
+
+function show_only_children_yuanzhu(id){
+    $('.tongren_yuanzhu').addClass('hidden');
+    $('.parent'+id).removeClass('hidden');
+}
+function show_only_children_CP(id){
+    $('.tongren_CP').addClass('hidden');
+    $('.parent'+id).removeClass('hidden');
 }
 
 function toggle_review_quote(quote_id, method){

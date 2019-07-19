@@ -41,21 +41,14 @@ class StorePost extends FormRequest
     public function storePost($thread)
     {
         $data = $this->generatePostData($thread);
-        $data = $this->addReplyData($data);
+        $data = $this->addReplyData($data, $thread);
         $post = Post::create($data);
         return $post;
     }
 
     public function updatePost(Post $post)
     {
-        $data = $this->only('body','title');
-        $data['body'] = StringProcess::trimSpaces($data['body']);
-        $data['char_count'] = iconv_strlen($data['body'], 'utf-8');
-        $data['brief']=StringProcess::trimtext($data['body'], 45);
-        $data['is_anonymous']=$this->is_anonymous&&$post->thread->channel()->allow_anonymous ? 1:0;
-        $data['use_markdown']=$this->use_markdown ? true:false;
-        $data['use_indentation']=$this->use_indentation ? true:false;
-        $data['edited_at']=Carbon::now();
+        $data = $this->generateUpdatePostData($post);
         $post->update($data);
         return $post;
     }

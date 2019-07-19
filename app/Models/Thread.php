@@ -15,6 +15,7 @@ class Thread extends Model
     use Traits\RewardTrait;
     use Traits\ValidateTagTraits;
     use Traits\TypeValueChangeTrait;
+    use Traits\ThreadTongrenTraits;
 
     protected $guarded = [];
     protected $hidden = [
@@ -239,23 +240,6 @@ class Thread extends Model
     }
     // 以下是其他function
 
-
-    public function remove_custom_tags()//去掉所有用户自己提交的tag,返回成功去掉的
-    {
-        $detach_tags = [];
-        foreach($this->tags as $tag){
-            if(!array_key_exists($tag->tag_type, config('tag.limits.user_not_manageable'))){
-                array_push($detach_tags,$tag->id);
-            }
-        }
-        if(!empty($detach_tags)){
-            $this->tags()->detach($detach_tags);
-            return count($detach_tags);
-        }else{
-            return 0;
-        }
-    }
-
     public function count_char()//计算本thread内所有chapter的characters总和
     {
         return  DB::table('posts')
@@ -298,5 +282,56 @@ class Thread extends Model
     public function register_homework()
     {
         // TODO 检查这名同学参加了作业吗？是的话算他提交了作业
+    }
+
+    public function max_chapter_order()
+    {
+        return DB::table('posts')
+        ->join('chapters','chapters.post_id','=','posts.id')
+        ->where('posts.thread_id','=',$this->id)
+        ->select('chapters.order_by')
+        ->max('chapters.order_by');
+    }
+
+    public function recalculate_characters()
+    {
+        $sum_char = Post::where('thread_id',$this->id)
+        ->withComponent('component_only')
+        ->sum('char_count');
+        $this->update(['total_char'=>$sum_char]);
+        return $sum_char;
+    }
+
+    public function reorder_characters()
+    {
+        $posts = Post::with('chapter')
+        ->join('chapters', 'posts.id', '=', 'chapters.post_id')
+        ->where('posts.thread_id',$this->id)
+        ->where('posts.type','chapter')
+        ->orderBy('chapters.order_by', 'asc')
+        ->select('posts.id')
+        ->get();
+        $previous = null;
+        $first = null;
+        foreach($posts as $post){
+            if(!$first){
+                $first = $post;
+            }
+            if($previous){
+                if($post->chapter->previous_id<>$previous->id){
+                    $post->chapter->update(['previous_id' => $previous->id]);
+                }
+                if($previous->chapter->next_id<>$post->id){
+                    $previous->chapter->update(['next_id' => $post->id]);
+                }
+            }
+            $previous = $post;
+        }
+        if($first){
+            if($this->first_component_id<>$first->id){
+                $this->update(['first_component_id' => $first->id]);
+            }
+        }
+        return;
     }
 }

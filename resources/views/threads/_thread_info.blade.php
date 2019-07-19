@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="font-3">
-        @if( $thread->tags->contains('tag_type', '编推') )
+        @if( $thread->recommended)
         <span class="recommend-label">
             <span class="glyphicon glyphicon-grain recommend-icon"></span>
             <span class="recommend-text">推</span>
@@ -68,6 +68,35 @@
                 修改于{{ $thread->edited_at->diffForHumans() }}
                 @endif
             </p>
+            @if($thread->channel()->type==='book')
+            @if($thread->channel_id==2)
+                <div class="">
+                    @if($tag=$thread->tags->where('tag_type','同人原著')->first())
+                    <a href="{{route('books.index', ['withTag'=>$tag->id])}}">{{$tag->tag_name}}({{$tag->tag_explanation}})</a>
+                    @else
+                    {{ $thread->tongren->tongren_yuanzhu }}
+                    @endif
+                    -
+                    @if($tag=$thread->tags->where('tag_type','同人CP')->first())
+                    <a href="{{route('books.index', ['withTag'=>$tag->id])}}">{{$tag->tag_name}}({{$tag->tag_explanation}})</a>
+                    @else
+                    {{ $thread->tongren->tongren_CP }}
+                    @endif
+                </div>
+                <br>
+            @endif
+            <div class="">
+                <a href="{{route('books.index', ['inChannel' => $thread->channel_id])}}">{{$thread->channel()->channel_name}}</a>
+                @foreach($thread->tags->whereNotIn('tag_type', ['同人原著', '同人CP']) as $key => $tag)
+                @if($key%4==3)
+                <br>
+                @else
+                -
+                @endif
+                <a href="{{route('books.index', ['withTag'=>$tag->id])}}">{{$tag->tag_name}}</a>
+                @endforeach
+            </div>
+            @endif
         </div>
     </div>
     <br>
@@ -79,7 +108,7 @@
         </div>
         @else
         @if($thread->use_markdown)
-        {!! Helper::sosadMarkdown($thread->body) !!}
+        {!! StringProcess::sosadMarkdown($thread->body) !!}
         @else
         {!! StringProcess::wrapParagraphs($thread->body) !!}
         @endif
