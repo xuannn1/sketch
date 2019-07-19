@@ -25,6 +25,7 @@ trait ModifyRewardNVoteTableTraits{
                 $table->string('reward_type',10)->nullable()->index();
                 $table->integer('reward_value')->default(0);//也有可能是负数
                 $table->dateTime('created_at')->nullable();
+                $table->dateTime('deleted_at')->nullable();
             });
             echo "created rewards table\n";
         }

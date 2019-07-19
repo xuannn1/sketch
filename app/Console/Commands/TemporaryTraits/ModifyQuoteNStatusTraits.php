@@ -19,6 +19,7 @@ trait ModifyQuoteNStatusTraits{
         if (Schema::hasColumn('quotes', 'quote')){
             Schema::table('quotes', function($table){
                 $table->renameColumn('quote', 'body');
+                $table->renameColumn('anonymous', 'is_anonymous');
                 $table->unsignedInteger('reviewer_id')->default(0);
                 $table->dropColumn(['updated_at']);
                 echo "echo updated quotes table.\n";

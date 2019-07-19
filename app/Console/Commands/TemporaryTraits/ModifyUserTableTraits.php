@@ -9,10 +9,26 @@ trait ModifyUserTableTraits{
 
     public function modifyUserTable()//task 01
     {
+        $this->removeDuplicateFollower();
         $this->updateUserInfoNIntro();// task 01.1
         $this->recalculateFollowers();
         $this->deleteExtraUserColumns();// task 01.2
-        $this->renameExtraUserColumns();// task 01.2
+        $this->renameExtraUserColumns();// task 01.
+    }
+
+    public function removeDuplicateFollower()
+    {
+        DB::statement('
+            DELETE f1 FROM followers f1
+            INNER JOIN
+            follower f2
+            WHERE
+            f1.id < f2.id AND f1.user_id = f2.user_id and f1.follower_id = f2.follower_id;
+        ');
+        echo "removed duplicated followers table\n";
+        Schema::table('followers', function($table){
+            $table->unique(['user_id','follower_id']);
+        });
     }
 
     public function updateUserInfoNIntro()//task 01.1

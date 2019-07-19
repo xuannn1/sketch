@@ -65,6 +65,7 @@ trait CleanUpExtraThingsTraits{
     {
         if (Schema::hasColumn('threads', 'label_id')){
             Schema::table('threads', function($table){
+                $table->unsignedInteger('ham')->default(0);
                 $table->index('reply_count');
                 $table->index('view_count');
                 $table->index('collection_count');
