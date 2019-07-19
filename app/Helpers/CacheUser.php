@@ -34,6 +34,10 @@ class CacheUser{ //cache-user class
         });
     }
 
+    public static function clear_intro($id){
+        Cache::pull('cachedUserIntro.'.$id);
+    }
+
     public static function AUser(){
         return self::user(auth()->check()?auth()->id():0);
     }

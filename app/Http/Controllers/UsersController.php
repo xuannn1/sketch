@@ -126,6 +126,7 @@ class UsersController extends Controller
                 'body'=>$request->introduction,
                 'edited_at' => Carbon::now(),
             ]);
+            CacheUser::clear_intro($user->id);
         }else{
             \App\Models\UserIntro::create([
                 'user_id' => $user->id,

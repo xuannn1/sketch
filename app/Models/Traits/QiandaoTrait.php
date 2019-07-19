@@ -19,12 +19,12 @@ trait QiandaoTrait
 
 		// 更新签到天数
 		$this->qiandao_at = Carbon::now();
-		$message = "您已成功签到！连续签到".$info->continued_qiandao."天！";
+		$message = "您已成功签到！连续签到".$info->qiandao_continued."天！";
 
 		//根据连续签到时间发放奖励
 		$reward_base = 1;
-		if(($info->continued_qiandao>=5)&&($info->continued_qiandao%5==0)){
-			$reward_base = intval($info->continued_qiandao/10)+2;
+		if(($info->qiandao_continued>=5)&&($info->qiandao_continued%5==0)){
+			$reward_base = intval($info->qiandao_continued/10)+2;
 			if($reward_base > 10){$reward_base = 10;}
 			$message .="您获得了特殊奖励！";
 		}

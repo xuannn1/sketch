@@ -128,6 +128,10 @@ class QuizController extends Controller
     {
         $user = Auth::user();
         $wrong_quiz = [];
+        //dd($request->all());
+        $this->validate($request, [
+            'quiz-answer' => 'required',
+        ]);
         foreach($request['quiz-answer'] as $quiz_answer){
             $submitted_answers = $this->select_submitted_answers($quiz_answer);
             $correct_answers = $this->find_quiz_answers((int)$quiz_answer['quiz_id']);
@@ -151,7 +155,8 @@ class QuizController extends Controller
                 return redirect('/')->with('success', '恭喜，已经完成了测试！多次答对题目的奖励已经发放！');
             }
         }else{
-            return view('quiz.analyzequiz', compact('wrong_quiz','user'));
+            $level = (int)$request->level ?? 0;
+            return view('quiz.analyzequiz', compact('wrong_quiz','user','level'));
         }
     }
 

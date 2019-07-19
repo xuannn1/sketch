@@ -11,8 +11,8 @@
                     <h4>您的用户等级是{{$user->level}}级</h4>
                     <span class="grayout">
                         用户等级1级以上才可发文，4级以上才可发讨论帖。
-                    </span>
-                    <h4>您最高答过{{$user->quiz_level}}级题</h4>
+                    </span><br>
+                    <span class="font-4">您最高答过{{$user->quiz_level}}级题</span>&nbsp;&nbsp; <a href="{{ route('quiz.quiz_entry') }}">>>前去答题</a><br>
                     <span class="grayout">
                         至少答过1级题才能发文。
                     </span>

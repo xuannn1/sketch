@@ -17,8 +17,8 @@ return [
     'statuses_per_page' => 10, //每页展示20个statuses
     'users_per_page' => 25, //每页展示25个user
     'messages_per_page' => 10, //每页展示10个message
-    'rewards_per_page' => 10, //每页展示10个打赏
-    'votes_per_page' => 10, //每页展示10个赞赏
+    'rewards_per_page' => 20, //每页展示10个打赏
+    'votes_per_page' => 20, //每页展示10个赞赏
     'quotes_per_page'=> 10,
 
     'register_promise' => '我保证在废文好好做鱼，认真读版规，不扒马不骂人不盗文，自觉维护站内和谐风气',
