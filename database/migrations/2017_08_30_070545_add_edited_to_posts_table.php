@@ -14,7 +14,7 @@ class AddEditedToPostsTable extends Migration
     public function up()
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->dateTime('edited_at')->default(Carbon\Carbon::now());
+            $table->dateTime('edited_at')->default(Carbon::now());
         });
     }
 

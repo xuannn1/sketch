@@ -14,7 +14,7 @@ class AddSearchToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dateTime('lastsearched_at')->default(Carbon\Carbon::now());
+            $table->dateTime('lastsearched_at')->default(Carbon::now());
         });
     }
 

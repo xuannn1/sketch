@@ -16,7 +16,7 @@ class CreateLongCommentsTable extends Migration
         Schema::create('long_comments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('post_id')->unsigned();
-            $table->dateTime('recommended_till')->default(Carbon\Carbon::now())->index();
+            $table->dateTime('recommended_till')->default(Carbon::now())->index();
             $table->integer('recommender_id')->unsigned()->default(0);
             $table->timestamps();
         });

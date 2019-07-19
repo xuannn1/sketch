@@ -2,23 +2,42 @@
 @section('title', '关联用户')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="col-sm-offset-3 col-sm-6">
+        @if($branchaccounts->count()>0)
         <div class="panel panel-default">
-            <div class="panel-heading lead">已关联用户</div>
+            <div class="panel-heading font-2">
+                本账户已关联账户
+            </div>
             <div class="panel-body">
-                <div class="h5">
-                    <?php $linkedaccounts = Auth::user()->linkedaccounts(); ?>
-                    @foreach($linkedaccounts as $account)
-                    <div class="linkedaccount{{$account->id}}">
-                        <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;<button type="button" name="button" class="btn btn-danger btn-xs sosad-button-control" onclick="cancellink({{$account->id}})">取消关联</button></li>
-                    </div>
-                    @endforeach
+                @foreach($branchaccounts as $account)
+                <div class="linkedaccount{{$user->id}}-{{$account->id}}">
+                    <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-lg sosad-button-control" onclick="cancellink({{$user->id}}, {{$account->id}})">取消关联{{$account->name}}</button></li>
                 </div>
+                @endforeach
             </div>
         </div>
+        @endif
+        @if($masteraccounts->count()>0)
         <div class="panel panel-default">
-            <div class="panel-heading lead">关联其他用户</div>
+            <div class="panel-heading font-2">
+                本账户被以下账户关联
+            </div>
+            <div class="panel-body">
+                @foreach($masteraccounts as $account)
+                <div class="linkedaccount{{$account->id}}-{{$user->id}}">
+                    <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-lg sosad-button-control" onclick="cancellink({{$account->id}}, {{$user->id}})">取消{{$account->name}}对我的关联</button></li>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        @if($branchaccounts->count() < $user->level-3)
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>关联其他用户</h2>
+            </div>
             <div class="panel-body">
                 @include('shared.errors')
                 <form method="POST" action="{{route('linkedaccounts.store')}}">
@@ -35,6 +54,9 @@
                 </form>
             </div>
         </div>
+        @else
+        <h4>您的等级不足，不能增添新的关联账户</h4>
+        @endif
     </div>
 </div>
 @stop

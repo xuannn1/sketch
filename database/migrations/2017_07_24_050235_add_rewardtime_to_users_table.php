@@ -14,7 +14,7 @@ class AddRewardtimeToUsersTable extends Migration
     public function up()
     {
       Schema::table('users', function (Blueprint $table) {
-          $table->dateTime('lastrewarded_at')->default(Carbon\Carbon::now()->subdays(2));
+          $table->dateTime('lastrewarded_at')->default(Carbon::now()->subdays(2));
       });
     }
 

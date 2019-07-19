@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\InvitationToken;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
+use Carbon;
 use Auth;
 
 

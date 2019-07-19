@@ -66,15 +66,10 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
-            // 'driver' => 'cache-user',
+            'driver' => 'cache-user',
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*

@@ -1,11 +1,9 @@
 <?php
 
 namespace App\Http\Middleware;
-
+use Illuminate\Support\Facades\DB;
 use Closure;
 use Auth;
-use App\Models\Channel;
-use App\Helpers\Helper;
 
 class FilterChannel
 {
@@ -18,20 +16,16 @@ class FilterChannel
     */
     public function handle($request, Closure $next)
     {
-        $channel = Helper::allChannels()->keyBy('id')->get($request->route('channel'));
-        if($channel){
-            if ($channel->channel_state>=10){
-                if (Auth::check()){
-                    if ($request->user()->group > $channel->channel_state){
-                        return $next($request);
-                    }
-                    return redirect()->route('error', ['error_code' => '403']);
-                }
-                return redirect('login');
-            }
-            return $next($request);
-        }else{
-            return redirect('home');
+        $channel = collect(config('channel'))->keyby('id')->get($request->route('channel'));
+        if(!$channel){
+            abort(404,'未找到频道');
         }
+        if(!$channel->is_public&&!Auth::check()){
+            return redirect('login')->with("warning", "请登陆后再访问该版面");
+        }
+        if(!$channel->is_public&&Auth::check()&&!Auth::user()->canSeeChannel($channel->id)){
+            abort(403,'您的权限不足，无法访问该界面');
+        }
+        return $next($request);
     }
 }

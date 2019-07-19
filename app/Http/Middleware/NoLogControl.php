@@ -2,8 +2,10 @@
 namespace App\Http\Middleware;
 use Closure;
 use Auth;
+use CU;
 use Illuminate\Support\Facades\Cache;
-use Carbon\Carbon;
+use Carbon;
+
 class NoLogControl
 {
     /**
@@ -16,7 +18,7 @@ class NoLogControl
     public function handle($request, Closure $next)
     {
         if(Auth::check()) {
-            if(Auth::user()->no_logging_or_not){
+            if(Auth::user()->no_logging){
                 Auth::logout();
                 return $next($request);
             }

@@ -7,7 +7,7 @@
             <div class="panel-heading">
                 <h3>全站动态</h3>
                 <ul class="nav nav-tabs">
-                    @include('statuses._statuses_stats')
+                    @include('statuses._status_tab')
                 </ul>
             </div>
             @if(Auth::check())

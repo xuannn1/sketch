@@ -3,32 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Sosadfun\Traits\ColumnTrait;
 
 class Chapter extends Model
 {
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
-    protected $guarded = [];
+    //use ColumnTrait;
 
-    public function book()
-    {
-        return $this->belongsTo(Book::class, 'book_id')->withDefault();
-    }
-    public function posts()
-    {
-        return Post::where('chapter_id','=',$this->id)->get();
-    }
+    protected $primaryKey = 'post_id';
+    protected $guarded = [];
+    public $timestamps = false;
+
     public function mainpost()
     {
-        return $this->belongsTo(Post::class, 'post_id')->withDefault();
+        return $this->belongsTo(Post::class, 'post_id');
     }
-    public function mainpost_info()
+
+    public function post_brief()
     {
-        return $this->belongsTo(Post::class, 'post_id')->select('id','title','bianyuan')->withDefault();
+        return $this->belongsTo(Post::class, 'post_id')->select($this->postbrief_columns);
     }
+
     public function volumn()
     {
-        return $this->belongsTo(Volumn::class, 'volumn_id')->withDefault();
+        return $this->belongsTo(Volumn::class, 'volumn_id');
     }
 }

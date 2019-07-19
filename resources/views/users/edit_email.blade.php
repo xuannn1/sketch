@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', '修改邮箱资料')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <style media="screen">
     </style>
     <div class="col-sm-offset-3 col-sm-6">
@@ -21,7 +21,7 @@
                     <h4>修改邮箱</h4>
                     <h6>（您本月已修改{{ $previous_history_counts }}次邮箱，最多只能修改{{ config('constants.monthly_email_resets') }}次）</h6>
                 @include('shared.errors')
-                <form method="POST" action="{{ route('users.update_email') }}">
+                <form method="POST" action="{{ route('user.update_email') }}">
                         {{ csrf_field() }}
                     <div class="form-group">
                         <label for="old-password">旧密码 (必填，用于身份验证)：</label>
@@ -41,7 +41,7 @@
                         <h6>由于邮件业务存在跨国跨墙情况，有时会出现运营商截停/延误邮件的情况，请给邮箱预留一小时以上的空余时间接收，不要连续重复发件。<br>如果确认邮箱正确仍不能收到邮件，请酌情更换自己常用、可用的其他邮箱。</h6>
                     </div>
 
-                    <button type="submit" class="btn btn-danger sosad-button">更新邮箱</button>
+                    <button type="submit" class="btn btn-lg btn-danger sosad-button">更新邮箱</button>
                 </form>
             </div>
         </div>

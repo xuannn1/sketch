@@ -15,11 +15,11 @@
             <div class="panel-heading">
                 <!-- 题干   -->
                 <div class="h5">
-                    <strong>题库qid{{ $quiz->id }}</strong>：{!! Helper::wrapSpan($quiz->body) !!}
+                    <strong>题库qid{{ $quiz->id }}</strong>：{!! StringProcess::wrapSpan($quiz->body) !!}
                 </div>
                 <!-- 提示 -->
                 <div class="greyout h6">
-                    {!! Helper::wrapSpan($quiz->hint) !!}
+                    {!! StringProcess::wrapSpan($quiz->hint) !!}
                 </div>
                 <div class="">
                     正确选项：
@@ -42,10 +42,10 @@
                     <div class="">
                         <span class="glyphicon {{ $quiz_option->is_correct? 'glyphicon-ok correct-option':'incorrect-option glyphicon-remove' }}">选项</span>
                         <span class="grayout h6">qoid{{ $quiz_option->id }}</span>
-                        <span>{!! Helper::wrapSpan($quiz_option->body) !!}</span>
+                        <span>{!! StringProcess::wrapSpan($quiz_option->body) !!}</span>
                     </div>
                     <div class="grayout h6">
-                        <span>{!! Helper::wrapSpan($quiz_option->explanation) !!}</span>
+                        <span>{!! StringProcess::wrapSpan($quiz_option->explanation) !!}</span>
                     </div>
                     @endforeach
                 </div>
@@ -53,7 +53,7 @@
         </div>
         @endforeach
         <div class="text-center">
-            <a href="{{ route('quiz.taketest') }}" class="btn btn-primary sosad-button ">重来一遍</a>
+            <a href="{{ route('quiz.taketest', ['level'=>$level]) }}" class="btn btn-lg btn-primary sosad-button ">重来一遍</a>
         </div>
 
     </div>

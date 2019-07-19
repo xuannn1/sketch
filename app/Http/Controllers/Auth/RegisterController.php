@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Models\InvitationToken;
-use Carbon\Carbon;
+use Carbon;
 use Mail;
 use Auth;
 use App\Models\PasswordReset;
@@ -104,12 +104,16 @@ class RegisterController extends Controller
             ],[
                 'name' => $data['name'],
                 'password' => bcrypt($data['password']),
-                'invitation_token' => $data['invitation_token'],
                 'activated' => false,
             ]);
-            $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
-            $invitation_token->decrement('invitation_times');
-            $invitation_token->increment('invited');
+            $info = User::firstOrCreate([
+                'user_id' => $user->id
+            ],[
+                'invitation_token' => $data['invitation_token'],
+                'activation_token' => str_random(45),
+            ]);
+            $invitation_token = InvitationToken::where('token', $data['invitation_token'])->first();
+            $invitation_token->inactive_once();
             return $user;
         });
     }
@@ -126,7 +130,7 @@ class RegisterController extends Controller
             $this->sendEmailConfirmationTo($user);
             session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
         }else{
-            session()->flash('danger', '您的IP一小时内已经成功注册，请尝试直接登陆您已注册的账户。');
+            session()->flash('danger', '您的IP于1小时内已经成功注册，请尝试直接登陆您已注册的账户。');
         }
         return redirect('/');
     }
@@ -135,37 +139,17 @@ class RegisterController extends Controller
     {
         $view = 'auth.confirm';
         $data = compact('user');
-        $from = env('MAIL_USERNAME','null');
-        $name = env('MAIL_NAME','null');
         $to = $user->email;
         $subject = $user->name."您好，感谢注册废文网！请确认你的邮箱。";
 
-        $mail_setting = $this->select_server();
-
-        // Setup your gmail mailer
-        $transport = new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls');
-        $transport->setUsername(env($mail_setting['username']));
-        $transport->setPassword(env($mail_setting['password']));
-        // Any other mailer configuration stuff needed...
-
-        $gmail = new Swift_Mailer($transport);
-
-        // Set the mailer as gmail
-        Mail::setSwiftMailer($gmail);
-
-        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
-            $message->from($from, $name)->to($to)->subject($subject);
-        });
-
+        $this->send_email_to_select_server($view, $data, $to, $subject);
     }
 
     public function confirmEmail($token)
     {
-        $user = User::where('activation_token', $token)->firstOrFail();
+        $user_info = UserInfo::where('activation_token', $token)->firstOrFail();
+        $user_info->activate();
 
-        $user->activated = true;
-        $user->activation_token = null;
-        $user->save();
         session()->flash('success', '恭喜你，激活成功！');
         return redirect('/');
     }
@@ -190,7 +174,7 @@ class RegisterController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
-        return redirect()->route('users.edit');
+        return redirect()->route('user.edit');
 
     }
 

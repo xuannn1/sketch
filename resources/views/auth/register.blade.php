@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', '注册')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <style media="screen">
     </style>
     <div class="col-sm-offset-3 col-sm-6">
@@ -15,7 +15,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-xs-10 col-xs-offset-1 "><strong>
-                            {!! Helper::wrapParagraphs(Helper::system_variable()->register_slogan) !!}
+                            {!! StringProcess::wrapParagraphs(ConstantObjects::system_variable()->register_slogan) !!}
                         </strong></div>
                     </div>
                 </div>

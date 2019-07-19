@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Http\Middleware;
-
 use Closure;
 use Auth;
-
 class CheckAdmin
 {
     /**
@@ -16,10 +13,9 @@ class CheckAdmin
      */
     public function handle($request, Closure $next)
     {
-        if((!Auth::check())||(!Auth::user()->admin)){
+        if((!Auth::check())||(!Auth::user()->isAdmin())){
             return redirect('/');
         }
         return $next($request);
     }
-
 }

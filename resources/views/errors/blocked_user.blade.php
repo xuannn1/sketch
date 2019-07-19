@@ -5,7 +5,7 @@
     </head>
 
     <body class="firewall-page">
-        <div class="container">
+        <div class="container-fluid">
             <div class="content text-center">
                 <div class="title">
                     <h2>本IP：{{Firewall::getIp()}}，被屏蔽访问，如有疑问，请联系管理员。</h2>

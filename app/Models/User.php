@@ -4,21 +4,23 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Notifications\ResetPasswordNotification;
 use DB;
-use Auth;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
-use App\Helpers\Helper;
+use Carbon;
+use Cache;
+use CacheUser;
+use ConstantObjects;
+use App\Sosadfun\Traits\FindThreadTrait;
 
 class User extends Authenticatable
 {
     use Notifiable;
-    // use SoftDeletes;
-    use Traits\RegularTraits;
-    // protected $dates = ['deleted_at'];
+    use Traits\QiandaoTrait;
+    use FindThreadTrait;
+
+    protected $dates = ['deleted_at', 'qiandao_at'];
+    public $timestamps = false;
 
     /**
     * The attributes that are mass assignable.
@@ -26,7 +28,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password', 'lastresponded_at', 'introduction', 'invitation_token', 'majia', 'maximum_qiandao' , 'unread_messages', 'indentation', 'last_quizzed_at',
+        'name', 'email', 'password', 'title_id', 'unread_updates', 'unread_reminders', 'public_notice_id'
     ];
 
     /**
@@ -35,15 +37,12 @@ class User extends Authenticatable
     * @var array
     */
     protected $hidden = [
-        'password', 'email', 'remember_token','invitation_token',
+        'password', 'email', 'remember_token',
     ];
 
     public static function boot()
     {
         parent::boot();
-        static::creating(function ($user) {
-            $user->activation_token = str_random(30);
-        });
     }
     /**
     * Send the password reset notification.
@@ -62,9 +61,34 @@ class User extends Authenticatable
         return $this->hasMany(Thread::class);
     }
 
-    public function questions()
+    public function posts()
     {
-        return $this->hasMany(Question::class);
+        return $this->hasMany(Post::class);
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
+
+    public function title()
+    {
+        return $this->belongsTo(Title::class, 'title_id');
+    }
+
+    public function titles()
+    {
+        return $this->belongsToMany(Title::class, 'title_user', 'user_id', 'title_id')->withPivot('is_public');
+    }
+
+    public function branchaccounts()
+    {
+        return $this->belongsToMany(User::class, 'linkaccounts', 'master_account', 'branch_account');
+    }
+
+    public function masteraccounts()
+    {
+        return $this->belongsToMany(User::class, 'linkaccounts', 'branch_account', 'master_account');
     }
 
     public function statuses()
@@ -72,69 +96,15 @@ class User extends Authenticatable
         return $this->hasMany(Status::class);
     }
 
-    public function collected_books()//update
+    public function info()
     {
-        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'item_id')->wherePivot('collection_list_id', 0)->where('book_id', '>', 0)->withPivot('updated', 'keep_updated');
+        return $this->hasOne(UserInfo::class, 'user_id');
     }
 
-    public function collected_threads()
+    public function intro()
     {
-        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'item_id')->wherePivot('collection_list_id', 0)->where('book_id', '=', 0)->withPivot('updated', 'keep_updated');
+        return $this->hasOne(UserIntro::class, 'user_id');
     }
-
-    public function own_collection_lists()//自己的收藏单
-    {
-        return $this->hasMany(CollectionList::class,'user_id')->where('type','<>',4);
-    }
-
-    public function own_collection_book_lists()//自己的书籍收藏单
-    {
-        return $this->hasMany(CollectionList::class,'user_id')->where('type','=',1);
-    }
-
-    public function own_collection_thread_lists()//自己的讨论帖收藏单
-    {
-        return $this->hasMany(CollectionList::class,'user_id')->where('type','=',2);
-    }
-
-    public function collected_list()//收藏的，别人的收藏单
-    {
-        return CollectionList::where('type','=',4)->where('user_id', '=', $this->id)->first();
-    }
-
-    public function findrecord($post_id)
-    {
-        return VotePosts::where('user_id', '=', $this->id)->where('post_id', '=', $post_id)->first();
-    }
-    public function upvotedpost($post_id)
-    {
-        $record = $this->findrecord($post_id);
-        return (($record) && ($record->upvoted));
-    }
-    public function downvotedpost($post_id)
-    {
-        $record = $this->findrecord($post_id);
-        return (($record) && ($record->downvoted));
-    }
-    public function funnypost($post_id)
-    {
-        $record = $this->findrecord($post_id);
-        return (($record) && ($record->funny));
-    }
-    public function foldpost($post_id)
-    {
-        $record = $this->findrecord($post_id);
-        return (($record) && ($record->better_to_fold));
-    }
-
-    // public function feed()
-    //   {
-    //     $user_ids = Auth::user()->followings->pluck('id')->toArray();
-    //     array_push($user_ids, Auth::user()->id);
-    //     return Status::whereIn('user_id', $user_ids)
-    //                             ->with('user')
-    //                             ->orderBy('created_at', 'desc');
-    //   }
 
     public function followers()
     {
@@ -144,6 +114,21 @@ class User extends Authenticatable
     public function followings()
     {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
+    }
+
+    public function homeworks()
+    {
+        return $this->belongsToMany(Homework::class, 'homework_registrations', 'homework_id', 'user_id');
+    }
+
+    public function collections()
+    {
+        return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id');
+    }
+
+    public function groups()
+    {
+        return $this->hasMany(CollectionGroup::class, 'user_id');
     }
 
     public function follow($user_ids)
@@ -165,159 +150,71 @@ class User extends Authenticatable
     {
         return $this->followings->contains($user_id);
     }
+
+
+    public function isAdmin()
+    {
+        return $this->role==='admin';
+    }
+
+    public function isEditor()
+    {
+        return $this->role==='editor';
+    }
+
+    public function seeHomework()
+    {
+        return $this->role==='admin'||$this->role==='editor'||$this->role==='senior';
+    }
+
+    public function canSeeChannel($id)
+    {
+        $channel = collect(config('channel'))->keyby('id')->get($id);
+        return $channel->is_public||$this->role==='admin'||($channel->type==='homework'&&$this->role==='editor')||($channel->type==='homework'&&$this->role==='senior')||($channel->type==='homework'&&$this->role==='homeworker');
+    }
+
+    public function canSeePost($post)
+    {
+        if($post->user_id === $this->id){
+            return true;
+        }
+        $thread = $this->findThread($post->thread_id);
+        if($this->canSeeThread($thread)){
+            return true;
+        }
+    }
+
+    public function canSeeThread($thread)
+    {
+        if($thread->user_id===$this->id||$this->isAdmin()){
+            return true;
+        }
+        if($thread->is_public&&$this->canSeeChannel($thread->channel_id)){
+            return true;
+        }
+    }
+
     public function checklevelup()
     {
-        $level_ups = config('constants.level_up');
+        $level_ups = config('level.level_up');
+        $info = $this->info;
         foreach($level_ups as $level=>$requirement){
-            if (($this->user_level < $level)
-            &&(!(array_key_exists('continued_qiandao',$requirement))||($requirement['continued_qiandao']<=$this->continued_qiandao))
-            &&(!(array_key_exists('experience_points',$requirement))||($requirement['experience_points']<=$this->jifen))
-            &&(!(array_key_exists('xianyu',$requirement))||($requirement['xianyu']<=$this->xianyu))
-            &&(!(array_key_exists('sangdian',$requirement))||($requirement['sangdian']<=$this->sangdian))){
-                $this->user_level = $level;
+            if (($this->level < $level)
+            &&(!(array_key_exists('salt',$requirement))||($requirement['salt']<=$info->jifen))
+            &&(!(array_key_exists('fish',$requirement))||($requirement['fish']<=$info->xianyu))
+            &&(!(array_key_exists('ham',$requirement))||($requirement['ham']<=$info->sangdian))
+            &&(!(array_key_exists('qiandao_all',$requirement))||($requirement['qiandao_all']<=$info->qiandao_all))
+            &&(!(array_key_exists('quiz_level',$requirement))||($requirement['quiz_level']<=$user->quiz_level))){
+                $this->level = $level;
                 $this->save();
                 return true;
             }
         }
         return false;
     }
-    public function linked($id){
-        $link1 = Linkaccount::where([['account1','=',$id],['account2','=',$this->id]])->first();
-        $link2 = Linkaccount::where([['account2','=',$id],['account1','=',$this->id]])->first();
-        return ($link1||$link2);
-    }
-
-    public function postreminders()
-    {
-        return Activity::where('user_id',$this->id)->where('type',1)->where('seen',0)->count();
-    }
-
-    public function totalreminders()
-    {
-        return Activity::where('user_id',$this->id)->where('seen',0)->count();
-    }
 
     public function reward($kind, $base = 0){
-        switch ($kind):
-            case "regular_status"://普通状态奖励
-            $this->increment('experience_points',1);
-            $this->increment('jifen',1);
-            $this->increment('shengfan',1);
-            break;
-            case "regular_post"://普通回帖奖励
-            $this->increment('experience_points',2);
-            $this->increment('jifen',2);
-            $this->increment('xianyu',1);
-            break;
-            case "first_post"://抢到新章节首杀
-            $this->increment('experience_points',4);
-            $this->increment('jifen',4);
-            $this->increment('xianyu',2);
-            break;
-            case "regular_thread"://普通主题奖励
-            $this->increment('experience_points',5);
-            $this->increment('jifen',5);
-            $this->increment('xianyu',3);
-            break;
-            case "regular_book"://普通书本奖励
-            $this->increment('experience_points',20);
-            $this->increment('jifen',10);
-            $this->increment('xianyu',5);
-            $this->increment('sangdian',2);
-            break;
-            case "short_chapter"://短小章节奖励
-            $this->increment('experience_points',3);
-            $this->increment('jifen',3);
-            $this->increment('xianyu',1);
-            break;
-            case "standard_chapter"://标准章节奖励
-            $this->increment('experience_points',5);
-            $this->increment('jifen',5);
-            $this->increment('xianyu',1);
-            $this->increment('sangdian',1);
-            break;
-            case "regular_post_comment":
-            $this->increment('experience_points',1);
-            $this->increment('jifen',1);
-            break;
-            case "upvoted_by_many":
-            $this->increment('experience_points',5);
-            $this->increment('jifen',5);
-            $this->increment('xianyu',1);
-            $this->increment('sangdian',1);
-            break;
-            case "book_downloaded_as_thread":
-            $this->increment('experience_points',5);
-            $this->increment('jifen',5);
-            $this->increment('shengfan',1);
-            break;
-            case "book_downloaded_as_book":
-            $this->increment('experience_points',10);
-            $this->increment('jifen',10);
-            $this->increment('shengfan',2);
-            break;
-            case "longcomment":
-            $this->increment('experience_points',5);
-            $this->increment('jifen',5);
-            $this->increment('xianyu',3);
-            $this->increment('sangdian',1);
-            break;
-            case "homework_excellent":
-            $this->increment('jifen', 100);
-            $this->increment('experience_points', 100);
-            $this->increment('shengfan', 100);
-            $this->increment('xianyu', 50);
-            $this->increment('sangdian', $base*3);
-            break;
-            case "homework_regular":
-            $this->increment('jifen', 50);
-            $this->increment('experience_points', 50);
-            $this->increment('shengfan', 50);
-            $this->increment('xianyu', 20);
-            $this->increment('sangdian', $base*2);
-            break;
-            case "online_reward"://保持登陆奖励
-            $this->increment('experience_points',1);
-            break;
-            case "first_quiz":// 首次答题奖励
-            $this->increment('experience_points',10);
-            $this->increment('jifen',10);
-            $this->increment('xianyu',2);
-            break;
-            case "more_quiz":// 重复答题奖励
-            $this->increment('experience_points',5);
-            $this->increment('shengfan',5);
-            break;
-            default:
-            echo "应该奖励什么呢？一个bug呀……";
-        endswitch;
-    }
-
-    public function unreadmessages()
-    {
-        $unreadmessages = $this->message_reminders
-        +$this->post_reminders
-        +$this->reply_reminders
-        +$this->postcomment_reminders
-        +$this->upvote_reminders
-        +$this->system_reminders
-        +$this->unread_public_notices();
-        return $unreadmessages;
-    }
-    public function unread_public_notices()
-    {
-        $system_variable = Helper::system_variable();
-        $unread_public_notices = $system_variable->latest_public_notice_id - $this->public_notices;
-        return $unread_public_notices;
-    }
-
-    public function unreadupdates()
-    {
-        $unreadupdates = $this->collection_books_updated
-        + $this->collection_threads_updated
-        + $this->collection_statuses_updated
-        + $this->collection_lists_updated;
-        return $unreadupdates;
+        return $this->info->reward($kind, $base);
     }
 
     public function isOnline()
@@ -325,22 +222,108 @@ class User extends Authenticatable
         return Cache::has('usr-on-' . $this->id);
     }
 
-    public function linkedaccounts()
+    public function wearTitle($title_id)
     {
-        $links = array_merge(
-            DB::table('linkaccounts')->where('account2','=',$this->id)->pluck('account1')->toArray(),
-            DB::table('linkaccounts')->where('account1','=',$this->id)->pluck('account2')->toArray()
-        );
-        return DB::table('users')->whereIn('id',$links)->select('id','name')->get();
+        $this->update([
+            'title_id' => $title_id,
+        ]);
     }
 
-    public function recent_previous_message()
+    public function active_now($ip)
     {
-        if(!Auth::check()){return false;}
-        $previous_message = Message::where('poster_id','=',$this->id)
-        ->where('receiver_id','=', Auth::id())
-        ->latest()
-        ->first();
-        return $previous_message&&$previous_message->created_at>Carbon::now()->subdays(2)->toDateTimeString();
+        $this->info->active_now($ip);
     }
+
+
+    public function clear_column($column_name='')
+    {
+        switch ($column_name) {
+            case 'unread_reminders':
+                if($this->unread_reminders>0){
+                    $this->update(['unread_reminders'=>0]);
+                }
+            return true;
+            break;
+
+            case 'unread_updates':
+                if($this->unread_updates>0){
+                    $this->update(['unread_updates'=>0]);
+                }
+            return true;
+            break;
+
+            case 'public_notice_id':
+                if($this->public_notice_id<ConstantObjects::system_variable()->latest_public_notice_id){
+                    $this->update(['public_notice_id'=>ConstantObjects::system_variable()->latest_public_notice_id]);
+                }
+            return true;
+            break;
+
+            default:
+            return false;
+        }
+    }
+
+    public function unread_reminder_count()
+    {
+        return $this->unread_reminders
+        + ConstantObjects::system_variable()->latest_public_notice_id
+        - $this->public_notice_id;
+    }
+
+    public function linked($user_id)
+    {
+        return $this->branchaccounts->contains($user_id);
+    }
+
+    public function remind($reminder='')
+    {
+        $info = CacheUser::info($this->id);
+        switch ($reminder) {
+            case 'new_message':
+                $this->unread_reminders +=1;
+                $info->message_reminders += 1;
+            break;
+
+            case 'new_reply':
+                $this->unread_reminders +=1;
+                $info->reply_reminders +=1;
+            break;
+
+            case 'new_reward':
+                $this->unread_reminders +=1;
+                $info->reward_reminders +=1;
+            break;
+
+            case 'new_upvote':
+                $this->unread_reminders +=1;
+                $info->upvote_reminders +=1;
+            break;
+
+            default:
+            return false;
+        }
+        $info->save();
+        $this->save();
+        return true;
+    }
+
+    public function created_new_post($post)
+    {
+        if(!$post){return;}
+
+        if($this->use_indentation!=$this->use_indentation){
+            $this->use_indentation=$this->use_indentation;
+        }
+        if($post->is_anonymous&& $this->majia!=$post->majia){
+            $this->majia=$post->majia;
+        }
+
+        $this->save();
+    }
+
+
+
+
+
 }

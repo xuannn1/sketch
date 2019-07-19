@@ -168,7 +168,6 @@ return [
          */
         Laravel\Tinker\TinkerServiceProvider::class,
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
-        //PragmaRX\Firewall\Vendor\Laravel\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -229,11 +228,11 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Carbon' => Carbon\Carbon::class,
 
-        'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
-        'Helper' => App\Helpers\Helper::class,
-        'BBCode' => \Genert\BBCode\Facades\BBCode::class,
-        //'Firewall' => PragmaRX\Firewall\Vendor\Laravel\Facade::class,
+        'ConstantObjects' => App\Helpers\ConstantObjects::class,
+        'StringProcess' => App\Helpers\StringProcess::class,
+        'CacheUser' => App\Helpers\CacheUser::class,
 
     ],
 

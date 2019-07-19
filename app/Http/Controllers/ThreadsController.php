@@ -4,147 +4,206 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-
-use App\Http\Requests\StoreThread;
-use App\Sosadfun\Traits\ThreadTraits;
-use App\Sosadfun\Traits\RecordViewHistoryTraits;
-use App\Models\Thread;
+use DB;
+use Cache;
+use ConstantObjects;
 use App\Models\Post;
-use App\Models\Tag;
-use App\Models\Channel;
-use App\Models\RecommendBook;
-use Carbon\Carbon;
+use App\Models\Thread;
+use CacheUser;
+use App\Http\Requests\StoreThread;
+
 use Auth;
-use App\Models\User;
-use App\Helpers\Helper;
-// use App\RegisterHomework;
+use App\Sosadfun\Traits\ThreadObjectTraits;
 
 class threadsController extends Controller
 {
-    use ThreadTraits;
-    use RecordViewHistoryTraits;
+    use ThreadObjectTraits;
 
     public function __construct()
     {
-        $this->middleware('auth')->except(['index', 'show', 'showpost','jinghua_index']);
+        $this->middleware('auth')->only('create','store','edit','update');
     }
 
     public function index(Request $request)
     {
-        $group = 10;
-        $logged = Auth::check()? true:false;
-        if(Auth::check()){$group = Auth::user()->group;}
-        $threadqueryid = 'threadQuery'
+        $queryid = 'threadQ'
         .url('/')
-        .$group
-        .($logged?'Lgd':'nLg')
-        .($request->label? 'L'.$request->label:'')
-        .($request->channel? 'Ch'.$request->channel:'')
+        .'-inChannel'.$request->inChannel
+        .'-withType'.$request->withType
+        .'-withBianyuan'.$request->withBianyuan
+        .'-withTag'.$request->withTag
+        .'-excludeTag'.$request->excludeTag
+        .'-ordered'.$request->ordered
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $threads = Cache::remember($threadqueryid, 2, function () use($group, $request, $logged) {
-            $query = $this->join_no_book_thread_tables()
-            ->where([['threads.book_id','=',0],['threads.deleted_at', '=', null],['channels.channel_state','<',$group],['threads.public','=',1]]);
-            if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
-            if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
-            if(!$logged){$query = $query->where('threads.bianyuan','=',0);}
-            $threads = $this->return_no_book_thread_fields($query)
-            ->orderBy('threads.lastresponded_at', 'desc')
-            ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page','label','channel'));
-            return $threads;
+        $threads = Cache::remember($queryid, 5, function () use($request) {
+            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->inChannel($request->inChannel)
+            ->isPublic()
+            ->inPublicChannel()
+            ->withType($request->withType)
+            ->withBianyuan($request->withBianyuan)
+            ->withTag($request->withTag)
+            ->excludeTag($request->excludeTag)
+            ->ordered($request->ordered)
+            ->paginate(config('preference.threads_per_page'))
+            ->appends($request->only('inChannel','withType','withBianyuan','withTag','excludeTag','ordered','page'));
         });
 
-        $simplethreads = Cache::remember('jinghua-threads', 2, function (){
-            return Thread::where('jinghua','>',Carbon::now())
-            ->inRandomOrder()
-            ->take(3)
-            ->get();
-        });
-        return view('threads.index', compact('threads','simplethreads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',1);
+        return view('threads.filter', compact('threads'));
     }
 
-    public function jinghua_index(Request $request)
+    public function thread_index(Request $request)
     {
-        $threadqueryid = 'jinghua_index_Query'
-        .url('/')
-        .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $threads = Cache::remember($threadqueryid, 2, function () use($request) {
-            $query = $this->join_no_book_thread_tables()
-            ->where([['threads.book_id','=',0],['threads.deleted_at', '=', null],['channels.channel_state','<',10],['threads.public','=',1],['threads.jinghua','>',0]]);
-            $threads = $this->return_no_book_thread_fields($query)
-            ->orderBy('threads.jinghua', 'desc')
-            ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page'));
-            return $threads;
+        $page = is_numeric($request->page)? $request->page:'1';
+        $threads = Cache::remember('thread_index_P'.$page, 5, function () use($page) {
+            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->isPublic()
+            ->inPublicChannel()
+            ->withType('thread')
+            ->ordered()
+            ->paginate(config('preference.threads_per_page'))
+            ->appends(['page'=>$page]);
         });
-        return view('threads.index_jinghua', compact('threads'))->with('show_as_collections', false)->with('show_channel',true)->with('active',3);
+        $simplethreads = $this->jinghua_threads();
+
+        return view('threads.thread_index', compact('threads','simplethreads'))->with('threads_tab','index');
     }
 
-    public function show(Thread $thread, Request $request)
+    public function thread_jinghua(Request $request)
     {
-        if (request('recommendation')){
-            $recommendation = RecommendBook::find(request('recommendation'));
-            if($recommendation){
-                $recommendation->increment('clicks');
+        $page = is_numeric($request->page)? $request->page:'1';
+        $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
+        $threads = Cache::remember('thread_jinghua_P'.$page, 5, function () use($page, $jinghua_tag) {
+            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->isPublic()//复杂的筛选
+            ->inPublicChannel()
+            ->withTag($jinghua_tag->id)
+            ->ordered()
+            ->paginate(config('preference.threads_per_page'))
+            ->appends(['page'=>$page]);
+        });
+
+        return view('threads.thread_jinghua', compact('threads'))->with('threads_tab','jinghua');
+    }
+
+    public function channel_index($channel, Request $request)
+    {
+        $channel = collect(config('channel'))->keyby('id')->get($channel);
+        $primary_tags = ConstantObjects::extra_primary_tags_in_channel($channel->id);
+
+        $queryid = 'channel-index'
+        .url('/')
+        .'-ch'.$channel->id
+        .'-withBianyuan'.$request->withBianyuan
+        .'-withTag'.$request->withTag
+        .'-ordered'.$request->ordered
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+
+        $threads = Cache::remember($queryid, 5, function () use($request, $channel) {
+            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->isPublic()
+            ->inChannel($channel->id)
+            ->withBianyuan($request->withBianyuan)
+            ->withTag($request->withTag)
+            ->ordered($request->ordered)
+            ->paginate(config('preference.threads_per_page'))
+            ->appends($request->only('withBianyuan', 'ordered', 'withTag','page'));
+        });
+
+        $simplethreads = $this->find_top_threads_in_channel($channel->id);
+
+        return view('threads.thread_channel', compact('channel', 'threads', 'simplethreads', 'primary_tags'));
+    }
+
+
+
+    public function create(Request $request)
+    {
+        $user = CacheUser::Auser();
+        $channel = collect(config('channel'))->keyby('id')->get($request->channel_id);
+
+        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+
+        $tags = ConstantObjects::primary_tags_in_channel($channel->id);
+
+        if($channel->type==='list'){
+            $list_count = Thread::where('user_id', $user->id)->withType('list')->count();
+            if($list_count > $user->level-4){
+                return redirect()->back()->with('warning','您的收藏单数量已达上线，不能再建立');
             }
         }
-        $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
-        $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
-        $posts = Post::allPosts($thread->id,$thread->post_id)
-        ->userOnly(request('useronly'))
-        ->withOrder('oldest')
-        ->with('owner','reply_to_post','comments.owner', 'chapter')
-        ->paginate(config('constants.items_per_page'))
-        ->appends($request->only('useronly','page'));
-        $thread->load(['creator', 'tags', 'mainpost']);
-        if(Auth::check()){
-            $view_history=$this->recordViewHistory(request()->ip(),Auth::id(),$thread->id,0);
-            if(Auth::id()!=$thread->user_id){
-                $thread->increment('viewed');
+        if($channel->type==='box'){
+            $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
+            if($box_count >=1){
+                return redirect()->back()->with('warning','每个人只能建立一个问题箱，您已经建立了问题箱');
             }
         }
-        $book = [];
-        if($thread->book_id>0){
-            $book = $thread->book;
-        }
-        if($request->page>1){
-            $xianyus = [];
-        }else{
-            $xianyus = Helper::xianyus($thread->id);
-        }
-        return view('threads.show', compact('thread', 'posts','book', 'channel', 'label', 'xianyus'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',false);
-    }
 
-    public function createThreadForm($channel)
-    {
-        $channel = Helper::allChannels()->keyBy('id')->get($channel);
-        $labels = $channel->labels();
-        if ($channel->id<=2){
+        if($channel->type==='book'){
+            if($user->level<1||$user->quiz_level<1){
+                return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立书籍');
+            }
             return view('books.create');
         }
-        return view('threads.create', compact('labels', 'channel'));
+
+        if($user->level<5||$user->quiz_level<1){
+            return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立讨论帖');
+        }
+
+        return view('threads.create', compact('channel','tags'));
     }
 
-    public function store(StoreThread $form, $channel)
+    public function store(StoreThread $form)
     {
-        $channel = Channel::find($channel);
-        $thread = $form->generateThread($channel->id);
-        $thread->user->reward("regular_thread");
-        if($thread->label_id == 50){
-            $thread->registerhomework();
+        $channel = collect(config('channel'))->keyby('id')->get($form->channel_id);
+        $user = CacheUser::Auser();
+
+        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+
+        if($channel->type==='list'){
+            $list_count = Thread::where('user_id', $user->id)->withType('list')->count();
+            if($list_count > $user->level-4){abort(403);}
         }
+
+        if($channel->type==='box'){
+            $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
+            if($box_count >=1){abort(403);}
+        }
+
+        if($channel->type==='book'){
+            abort(403);
+        }
+
+        if($user->level<5){
+            abort(403);
+        }
+
+
+        $thread = $form->generateThread($channel);
+
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
+
+        $thread->user->reward("regular_thread");
+        // if($channel->type==='homework'){
+        //     $thread->register_homework();
+        // }
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
     }
 
     public function edit(Thread $thread)
     {
-        if ((Auth::user()->admin)||($thread->user_id == Auth::id()&&(!$thread->locked)&&($thread->channel->channel_state!=2))){
-            return view('threads.edit', compact('thread'));
+        $user = CacheUser::Auser();
+        $channel = $thread->channel();
+
+        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+
+        if ((Auth::user()->isAdmin())||($thread->user_id == Auth::id()&&(!$thread->is_locked)&&($thread->channel()->allow_edit))){
+
+            $selected_tags = $thread->tags;
+
+            $tags = ConstantObjects::primary_tags_in_channel($channel->id);
+
+            return view('threads.edit', compact('channel', 'thread','user','tags','selected_tags'));
         }else{
             return redirect()->back()->with("danger","本版面无法编辑内容");
         }
@@ -152,21 +211,92 @@ class threadsController extends Controller
 
     public function update(StoreThread $form, Thread $thread)
     {
-        if ((Auth::id() == $thread->user_id)&&((!$thread->locked)||(Auth::user()->admin))){
+        if ((Auth::id() == $thread->user_id)&&((!$thread->is_locked)||(Auth::user()->isAdmin()))){
+
             $form->updateThread($thread);
+
+            $thread->keep_only_admin_tags();
+            $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
+
+            $this->clearThreadProfile($thread->id);
+            $this->clearThread($thread->id);
             return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
         }else{
-            return redirect()->route('error', ['error_code' => '403']);
+            abort(403);
         }
     }
-    public function showpost(Post $post, Request $request)
+    public function showpost(Post $post)
     {
-        $thread = $post->thread;
-        $totalposts = Post::allPosts($thread->id,$thread->post_id)
+        $previousposts = Post::where('thread_id',$post->thread_id)
         ->where('created_at', '<', $post->created_at)
         ->count();
-        $page = intdiv($totalposts, config('constants.items_per_page'))+1;
-        $url = 'threads/'.$thread->id.'?page='.$page.'#post'.$post->id;
+        $page = intdiv($previousposts, config('preference.posts_per_page'))+1;
+        $url = 'threads/'.$post->thread_id.'?page='.$page.'#post'.$post->id;
         return redirect($url);
+    }
+
+    public function chapter_index($id)
+    {
+        $thread = $this->findThread($id);
+        $posts = $this->threadChapterIndex($id);
+        return view('chapters.chapter_index', compact('thread', 'posts'));
+    }
+
+    public function review_index($id)
+    {
+        $thread = $this->findThread($id);
+        $posts = $this->threadReviewIndex($id);
+        return view('reviews.review_index', compact('thread', 'posts'));
+    }
+
+    public function show_profile($id, Request $request)
+    {
+        $thread = $this->threadProfile($id);
+        $posts = $this->threadProfilePosts($id);
+        $user = Auth::check()? CacheUser::Auser():'';
+        $info = Auth::check()? CacheUser::Ainfo():'';
+        $thread->recordViewCount();
+        $thread->recordViewHistory();
+        return view('threads.show_profile', compact('thread', 'posts','user','info'));
+    }
+
+    public function show($id, Request $request)
+    {
+        $show_profile = true;
+        $page = (int)(is_numeric($request->page)? $request->page:'1');
+
+        if($page>1||$request->withType||$request->withComponent||$request->userOnly||$request->withReplyTo||$request->ordered){
+            $show_profile = false;
+        }
+
+        if($show_profile){
+            $thread = $this->threadProfile($id);
+        }else{
+            $thread = $this->findThread($id);
+        }
+        $thread->recordViewCount();
+        $thread->recordViewHistory();
+
+        $posts = \App\Models\Post::where('thread_id',$id)
+        ->with('author.title','tags','last_reply')
+        ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
+        ->withComponent($request->withComponent)//可以选择是只看component，还是不看component
+        ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
+        ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
+        ->ordered($request->ordered)//排序方式
+        ->paginate(config('preference.posts_per_page'))
+        ->appends($request->only('withType', 'withComponent', 'userOnly', 'withReplyTo', 'ordered', 'page'));
+
+        $channel = $thread->channel();
+        if($channel->type==='book'){
+            $posts->load('chapter');
+        }
+        if($channel->type==='list'){
+            $posts->load('review.reviewee');
+        }
+        $user = Auth::check()? CacheUser::Auser():'';
+        $info = Auth::check()? CacheUser::Ainfo():'';
+
+        return view('threads.show', compact('show_profile', 'thread', 'posts', 'user', 'info'));
     }
 }

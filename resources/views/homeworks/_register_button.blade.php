@@ -2,15 +2,15 @@
     @if($thread->homework->registration_on)
         本次作业报名所需丧点为：{{ $thread->homework->hold_sangdian }}<br>
         @if($thread->homework->register_number>0)
-            第一波报名开始：{{ Carbon\Carbon::parse($thread->homework->register_at)->diffForHumans() }}<br>
+            第一波报名开始：{{ Carbon::parse($thread->homework->register_at)->diffForHumans() }}<br>
             第一波报名名额剩余：{{ $thread->homework->register_number }}<br>
         @endif
         @if($thread->homework->register_number_b>0)
-            第二波报名开始：{{ Carbon\Carbon::parse($thread->homework->register_at_b)->diffForHumans() }}<br>
+            第二波报名开始：{{ Carbon::parse($thread->homework->register_at_b)->diffForHumans() }}<br>
             第二波报名名额剩余：{{ $thread->homework->register_number_b }}<br>
         @endif
         @if(Auth::check())
-            @if((($thread->homework->register_at < Carbon\Carbon::now())&&($thread->homework->register_number>0))||(($thread->homework->register_at_b < Carbon\Carbon::now())&&($thread->homework->register_number_b>0)))
+            @if((($thread->homework->register_at < Carbon::now())&&($thread->homework->register_number>0))||(($thread->homework->register_at_b < Carbon::now())&&($thread->homework->register_number_b>0)))
             <div class="text-center">
                 <a href="#" data-toggle="modal" data-target="#TriggerRegister" class="btn btn-md btn-info sosad-button">我要报名</a>
             </div>

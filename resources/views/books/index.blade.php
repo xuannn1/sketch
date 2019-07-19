@@ -7,9 +7,9 @@
             <div class="panel-body">
                 @include('books._book_selector')
                 @include('books._book_selected')
-                {{ $books->links() }}
+                {{ $threads->links() }}
                 @include('books._books')
-                {{ $books->links() }}
+                {{ $threads->links() }}
             </div>
         </div>
     </div>

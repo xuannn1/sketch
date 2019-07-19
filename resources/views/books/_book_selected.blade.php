@@ -1,46 +1,27 @@
 <div class="">
-    @if(request()->channel)
-    <a class="btn btn-info sosad-button-control" href="{{ route('books.index',
-    request()->only('showbianyuan', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby')) }}" role="button">{{ Helper::allChannels()->keyBy('id')->get(request()->channel)->channelname }}<span class="glyphicon glyphicon-remove"></span></a>
+    @if(request()->inChannel)
+    <a class="btn btn-info btn-lg sosad-button-control" href="{{ route('books.index',
+    request()->only('withTag','excludeTag','withBianyuan','ordered')) }}" role="button">{{ config('selectors.book_filter.inChannel')[request()->inChannel] }}<span class="glyphicon glyphicon-remove"></span></a>
     @endif
 
-    @if(request()->label)
-    <a class="btn btn-info sosad-button-control" href="{{ route('books.index',
-    request()->only('showbianyuan', 'channel', 'book_length', 'book_status', 'sexual_orientation', 'book_tag', 'orderby')) }}" role="button">{{ Helper::allLabels()->keyBy('id')->get(request()->label)->labelname }}<span class="glyphicon glyphicon-remove"></span></a>
+    @if(request()->withTag)
+    @foreach(explode('-',request()->withTag) as $tag_id)
+    @if(is_numeric($tag_id)&&$tag_id>0)
+    <a class="btn btn-info btn-lg sosad-button-control" href="{{ route('books.index',
+    array_merge(['withTag'=>StringProcess::splitWithTag($tag_id, request()->withTag)], request()->only('inChannel', 'excludeTag','withBianyuan')))
+     }}" role="button">{{ ConstantObjects::find_tag_by_id($tag_id)->tag_name }}<span class="glyphicon glyphicon-remove"></span></a>
+    @endif
+    @endforeach
     @endif
 
-    @if(request()->book_length)
-    <a class="btn btn-info sosad-button-control" href="{{ route('books.index',
-    request()->only('showbianyuan', 'channel', 'label', 'book_status', 'sexual_orientation', 'book_tag', 'orderby')) }}" role="button">{{ config('constants.book_info.book_length_info')[request()->book_length] }}<span class="glyphicon glyphicon-remove"></span></a>
+    @if(request()->ordered)
+    <a class="btn btn-info btn-lg sosad-button-control" href="{{ route('books.index',
+    request()->only('inChannel', 'withTag','excludeTag','withBianyuan')) }}" role="button">{{ config('selectors.book_filter.ordered')[request()->ordered] }}<span class="glyphicon glyphicon-remove"></span></a>
     @endif
 
-    @if(request()->book_status)
-    <a class="btn btn-info sosad-button-control" href="{{ route('books.index',
-    request()->only('showbianyuan', 'channel', 'label', 'book_length', 'sexual_orientation', 'book_tag', 'orderby')) }}" role="button">{{ config('constants.book_info.book_status_info')[request()->book_status] }}<span class="glyphicon glyphicon-remove"></span></a>
+    @if(Auth::check()&&(Auth::user()->level>2))
+    <a class="btn btn-primary btn-lg sosad-button pull-right" href="{{ route('books.index',
+    array_merge(['withBianyuan' => request()->withBianyuan?'':'include_bianyuan'], request()->only('inChannel', 'withTag','excludeTag','ordered'))) }}" role="button">显示边限<span class="{{ request()->withBianyuan?'glyphicon glyphicon-remove':''}}"></span></a>
     @endif
 
-    @if(request()->sexual_orientation)
-    <a class="btn btn-info sosad-button-control" href="{{ route('books.index',
-    request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'book_tag', 'orderby')) }}" role="button">{{ config('constants.book_info.sexual_orientation_info')[request()->sexual_orientation] }}<span class="glyphicon glyphicon-remove"></span></a>
-    @endif
-
-    @if(request()->book_tag)
-    <a class="btn btn-info sosad-button-control" href="{{ route('books.index',
-    request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'orderby')) }}" role="button">{{ Helper::allTags()->keyBy('id')->get(request()->book_tag)->tagname }}<span class="glyphicon glyphicon-remove"></span></a>
-    @endif
-
-    @if(request()->orderby)
-    <a class="btn btn-info sosad-button-control" href="{{ route('books.index',
-    request()->only('showbianyuan', 'channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag')) }}" role="button">{{ config('constants.book_info.orderby_info')[request()->orderby] }}<span class="glyphicon glyphicon-remove"></span></a>
-    @endif
-
-
-    @if(Auth::check()&&(Auth::user()->user_level>2)&&$show_bianyuan_tab)
-    <span class="pull-right">
-        &nbsp;
-        <a class="btn btn-primary sosad-button" href="{{ route('books.index',
-        array_merge(['showbianyuan' => request()->showbianyuan?'':'1'], request()->only('channel', 'label', 'book_length', 'book_status', 'sexual_orientation', 'book_tag' ))) }}" role="button">显示边限<span class="{{ request()->showbianyuan?'glyphicon glyphicon-remove':''}}"></span></a>
-        &nbsp;&nbsp;&nbsp;
-    </span>
-    @endif
 </div>

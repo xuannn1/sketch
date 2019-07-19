@@ -28,11 +28,6 @@ class Kernel extends ConsoleKernel
         ->name('webstat:count')
         ->daily()
         ->onOneServer();
-        $schedule->command('data:recalculation')
-        ->name('data:recalculation')
-        ->hourly()
-        ->onOneServer();
-        //->everyFiveMinutes();
         $schedule->command('cache:clear')
         ->name('cache:clear')
         ->timezone('Asia/Shanghai')

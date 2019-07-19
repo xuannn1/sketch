@@ -15,11 +15,11 @@
                 </div>
                 <!-- 题干   -->
                 <div class="">
-                    {!! Helper::wrapSpan($quiz->body) !!}
+                    {!! StringProcess::wrapSpan($quiz->body) !!}
                 </div>
                 <!-- 提示 -->
                 <div class="greyout h6">
-                    {!! Helper::wrapSpan($quiz->hint) !!}
+                    {!! StringProcess::wrapSpan($quiz->hint) !!}
                 </div>
                 <br>
                 <!-- 各色选项 -->
@@ -29,10 +29,10 @@
                     <div class="">
                         <span class="glyphicon {{ $quiz_option->is_correct? 'glyphicon-ok correct-option':'incorrect-option glyphicon-remove' }}">选项</span>
                         <span class="grayout h6">qoid{{ $quiz_option->id }}</span>
-                        <span>{!! Helper::wrapSpan($quiz_option->body) !!}</span>
+                        <span>{!! StringProcess::wrapSpan($quiz_option->body) !!}</span>
                     </div>
                     <div class="grayout h6">
-                        <span>{!! Helper::wrapSpan($quiz_option->explanation) !!}</span>
+                        <span>{!! StringProcess::wrapSpan($quiz_option->explanation) !!}</span>
                     </div>
                     @endforeach
 

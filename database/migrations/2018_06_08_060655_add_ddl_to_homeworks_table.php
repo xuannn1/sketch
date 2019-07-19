@@ -15,9 +15,9 @@ class AddDdlToHomeworksTable extends Migration
     {
         Schema::table('homeworks', function (Blueprint $table) {
             $table->integer('hold_sangdian')->unsigned()->default(0);//报名克扣丧点
-            $table->dateTime('register_at')->default(Carbon\Carbon::now());//第一次报名开始时间
+            $table->dateTime('register_at')->default(Carbon::now());//第一次报名开始时间
             $table->integer('register_number')->unsigned()->default(0);//第一次报名限制人数
-            $table->dateTime('register_at_b')->default(Carbon\Carbon::now());//第二次报名开始时间
+            $table->dateTime('register_at_b')->default(Carbon::now());//第二次报名开始时间
             $table->integer('register_number_b')->unsigned()->default(0);//第二次报名限制人数
         });
     }

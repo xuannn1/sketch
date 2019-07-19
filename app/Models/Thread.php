@@ -4,130 +4,335 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\App;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Auth;
+use ConstantObjects;
+
+use DB;
 
 class Thread extends Model
 {
-    use Traits\ThreadFilterable;
-    use Traits\RegularTraits;
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    use Traits\VoteTrait;
+    use Traits\RewardTrait;
+    use Traits\ValidateTagTraits;
+    use Traits\TypeValueChangeTrait;
+    use Traits\ThreadTongrenTraits;
+    use Traits\RecordViewThreadTrait;
 
     protected $guarded = [];
+    protected $hidden = [
+        'creation_ip',
+    ];
+    protected $dates = ['deleted_at','created_at','responded_at', 'edited_at', 'add_component_at'];
 
-    public function path()
-    {
-        return '/threads/' . $this->id;
-    }
-    public function posts()
-    {
-        return $this->hasMany(Post::class, 'thread_id')->where('id','<>',$this->post_id);
-    }
+    protected $count_types = array('salt','fish','ham');
 
-    public function mainpost()
-    {
-        return $this->belongsTo(Post::class, 'post_id')->withDefault();
-    }
+    const UPDATED_AT = null;
 
-
-    public function last_post()
-    {
-        return $this->belongsTo(Post::class, 'last_post_id')->withDefault();
-    }
-
-    public function lastpost()
-    {
-        return $this->hasOne(Post::class, 'thread_id','id')->latest();
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
-    }
-
+    //以下是relationship关系
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->withDefault();
-    }
-
-    public function addPost($post)
-    {
-        $this->posts()->create($post);
+        return $this->belongsTo(User::class);
     }
 
     public function channel()
     {
-        return $this->belongsTo(Channel::class, 'channel_id')->withDefault();
+        return collect(config('channel'))->keyby('id')->get($this->channel_id);
     }
 
-    public function responded()
+    public function author()
     {
-        $this->update(['lastresponded_at' => Carbon::now()]);
-        $this->increment('responded');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name', 'title_id','level');
     }
 
-    public function label()
+    public function posts()
     {
-        return $this->belongsTo(Label::class, 'label_id')->withDefault();
+        return $this->hasMany(Post::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class,'thread_id');
+    }
+
+    public function editor_recommends()
+    {
+        return $this->hasMany(Review::class,'thread_id')->where('editor_recommend','=',1);
+    }
+
+    public function user_recommends()
+    {
+        return $this->hasMany(Review::class,'thread_id')->where('editor_recommend','=',0);
     }
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'tagging_threads', 'thread_id', 'tag_id');
+        return $this->belongsToMany(Tag::class);
     }
 
-    public function book()
+    public function votes()
     {
-        return $this->belongsTo(Book::class, 'book_id')->withDefault();
+        return $this->morphMany(Vote::class, 'votable');
     }
-    public function xianyu_voted(User $user, $ip)
+
+    public function last_component()
     {
-        $xianyus = $this->recentXianyus();
-        $id = $user->id;
-        if (($xianyus->where('user_id', $id)->first())||($xianyus->where('user_ip', $ip)->first())) {
-            return true;
+        return $this->belongsTo(Post::class, 'last_component_id')->select('id','type', 'user_id','title','brief','created_at');
+    }
+
+    public function last_chapter()
+    {
+        return $this->belongsTo(Post::class, 'last_component_id');
+    }
+
+    public function first_component()
+    {
+        return $this->belongsTo(Post::class, 'first_component_id')->select('id','type','user_id','title','brief','created_at');
+    }
+
+    public function rewards()
+    {
+        return $this->morphMany(Reward::class, 'rewardable');
+    }
+
+    public function last_post()
+    {
+        return $this->belongsTo(Post::class, 'last_post_id')->select('id','type','user_id','title','brief','created_at');
+    }
+
+    public function collectors()
+    {
+        return $this->belongsToMany(User::class, 'collections', 'thread_id', 'user_id')->select(['id','name']);
+    }
+
+
+    //以下是scopes
+
+    public function scopeInfo($query)
+    {
+        return $query->select('id', 'user_id', 'channel_id', 'title', 'brief');
+    }
+
+    public function scopeBrief($query)
+    {
+        return $query->select('id', 'user_id', 'channel_id', 'title', 'brief', 'is_locked', 'is_public', 'is_bianyuan', 'is_anonymous', 'majia', 'view_count', 'reply_count', 'responded_at', 'created_at', 'collection_count', 'no_reply', 'last_post_id', 'last_component_id', 'weighted_jifen', 'total_char');
+    }
+
+    public function scopeInChannel($query, $withChannels)
+    {
+        if($withChannels){
+            $channels=(array)json_decode($withChannels);
+            if(!empty($channels)){
+                return $query->whereIn('channel_id', $channels);
+            }
         }
-        return false;
+        return $query;
     }
 
-    public function xianyus(){
-        return $this->hasMany(Xianyu::class, 'thread_id');
-    }
-
-    public function recentXianyus(){
-        $timelimit = Carbon::now()->subDays(7);//目前设置，一周内只能投一次咸鱼。
-        $recent_xianyus = $this->xianyus()->where('created_at', '>', '$timelimit');
-        return ($recent_xianyus);
-    }
-
-    public function collection($user_id, $collection_list_id=0)
+    public function scopeWithType($query, $withType="")
     {
-        if($collection_list_id==0){
-            return Collection::where('item_id', $this->id)->where('user_id', $user_id)->first();
-        }else{
-            return Collection::where('item_id', $this->id)->where('collection_list_id', $collection_list_id)->first();
+        if($withType){
+            return $query->whereIn('channel_id', ConstantObjects::publicChannelTypes($withType));
         }
-
+        return $query;
     }
 
-    public function homework()
+    public function scopeWithBianyuan($query, $withBianyuan="")
     {
-        return $this->belongsTo(Homework::class, 'homework_id')->withDefault();
+        if($withBianyuan==='include_bianyuan'){
+            return $query;
+        }
+        if($withBianyuan==='bianyuan_only'){
+            return $query->where('is_bianyuan', true);
+        }
+        return $query->where('is_bianyuan', false);
     }
 
-    public function original()
+    public function scopeWithTag($query, $withTags="")
     {
-        return (int)(2-$this->channel_id);
+        if ($withTags){
+            $tags = explode('-',$withTags);
+            foreach($tags as $tag){
+                if(is_numeric($tag)&&$tag>0){
+                    $query = $query->whereHas('tags', function ($query) use ($tag){
+                        $query->where('tags.id', '=', $tag);
+                    });
+                }
+            }
+        }
+        return $query;
     }
-    public function registerhomework(){
-        DB::table('register_homeworks')
-        ->join('homeworks','homeworks.id','=','register_homeworks.homework_id')
-        ->where('register_homeworks.user_id','=',Auth::id())
-        ->where('homeworks.active','=',true)
-        ->update(['register_homeworks.thread_id' => $this->id]);
+
+    public function scopeWithUser($query, $id)
+    {
+        return $query->where('user_id','=',$id);
+    }
+
+    public function scopeWithAnonymous($query, $withAnonymous='')
+    {
+        if($withAnonymous==='anonymous_only'){
+            return $query->where('is_anonymous','=',1);
+        }
+        if($withAnonymous==='none_anonymous_only'){
+            return $query->where('is_anonymous','=',0);
+        }
+        return $query;
+
+    }
+
+    public function scopeExcludeTag($query, $excludeTag="")
+    {
+        if ($excludeTag){
+            $tags = explode('-',$withTags);
+            $exclude_tag = [];
+            foreach($tags as $tag){
+                if(is_numeric($tag)&&$tag>0){
+                    array_push($exclude_tag, $tag);
+                }
+            }
+            if($exclude_tag){
+                return $query->whereDoesntHave('tags', function ($query) use ($exclude_tag){
+                    $query->whereIn('tags.id', $exclude_tag);
+                });
+            }
+        }
+        return $query;
+    }
+
+    public function scopeInPublicChannel($query)//只看公共channel内的
+    {
+        return $query->whereIn('channel_id', ConstantObjects::public_channels());
+    }
+
+    public function scopeIsPublic($query)//只看作者决定公开的
+    {
+        return $query->where('is_public', true);
+    }
+
+    public function scopeOrdered($query, $ordered="")
+    {
+        switch ($ordered) {
+            case 'latest_add_component'://最新更新
+            return $query->orderBy('add_component_at', 'desc');
+            break;
+            case 'jifen'://总积分
+            return $query->orderBy('jifen', 'desc');
+            break;
+            case 'weighted_jifen'://字数平衡积分
+            return $query->orderBy('weighted_jifen', 'desc');
+            break;
+            case 'latest_created'://创建时间
+            return $query->orderBy('created_at', 'desc');
+            break;
+            case 'id'://创建顺序
+            return $query->orderBy('id', 'asc');
+            break;
+            case 'collection_count'://收藏数
+            return $query->orderBy('collection_count', 'desc');
+            break;
+            case 'random'://随机排序
+            return $query->inRandomOrder();
+            break;
+            case 'total_char'://总字数
+            return $query->orderBy('total_char', 'desc');
+            break;
+            default://默认按最后回复排序
+            return $query->orderBy('responded_at', 'desc');
+        }
+    }
+    // 以下是其他function
+
+    public function count_char()//计算本thread内所有chapter的characters总和
+    {
+        return  DB::table('posts')
+        ->where('deleted_at', '=', null)
+        ->whereNotIn('type',['post','comment'])
+        ->where('thread_id', '=', $this->id)
+        ->sum('char_count');
+    }
+
+    public function most_upvoted()//这个thread里面，普通的post中，最多赞的评论
+    {
+        return Post::postInfo()
+        ->where('thread_id', $this->id)
+        ->where('type', '=', 'post')
+        ->orderBy('upvote_count', 'desc')
+        ->first();
+    }
+
+    public function top_review()//对这个thread的review里最热门的一个
+    {
+        return Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
+        ->where('reviews.thread_id', $this->id)
+        ->where('reviews.recommend', true)
+        ->where('reviews.author_disapprove', false)
+        ->orderby('reviews.redirects', 'desc')
+        ->select('posts.*')
+        ->first();
+    }
+
+    public function latest_rewards()
+    {
+        return Reward::with('author')
+        ->withType('thread')
+        ->withId($this->id)
+        ->latest()
+        ->take(10)
+        ->get();
+    }
+
+    public function register_homework()
+    {
+        // TODO 检查这名同学参加了作业吗？是的话算他提交了作业
+    }
+
+    public function max_chapter_order()
+    {
+        return DB::table('posts')
+        ->join('chapters','chapters.post_id','=','posts.id')
+        ->where('posts.thread_id','=',$this->id)
+        ->select('chapters.order_by')
+        ->max('chapters.order_by');
+    }
+
+    public function recalculate_characters()
+    {
+        $sum_char = Post::where('thread_id',$this->id)
+        ->withComponent('component_only')
+        ->sum('char_count');
+        $this->update(['total_char'=>$sum_char]);
+        return $sum_char;
+    }
+
+    public function reorder_chapters()
+    {
+        $posts = Post::with('chapter')
+        ->join('chapters', 'posts.id', '=', 'chapters.post_id')
+        ->where('posts.thread_id',$this->id)
+        ->where('posts.type','chapter')
+        ->orderBy('chapters.order_by', 'asc')
+        ->select('posts.id')
+        ->get();
+        $previous = null;
+        $first = null;
+        foreach($posts as $post){
+            if(!$first){
+                $first = $post;
+            }
+            if($previous){
+                if($post->chapter->previous_id<>$previous->id){
+                    $post->chapter->update(['previous_id' => $previous->id]);
+                }
+                if($previous->chapter->next_id<>$post->id){
+                    $previous->chapter->update(['next_id' => $post->id]);
+                }
+            }
+            $previous = $post;
+        }
+        if($first){
+            if($this->first_component_id<>$first->id){
+                $this->update(['first_component_id' => $first->id]);
+            }
+        }
+        return;
     }
 }

@@ -5,19 +5,29 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading lead">
-                @include('threads._thread_title')
+                <a href="{{ route('thread.show_profile',$thread->id) }}" class="h1">{{ $thread->title }}</a>
             </div>
             <div class="panel-body">
                 <h2>可选下载项：</h2>
                 <div class="h4">
-                    @if($thread->book_id>0)
+                    @if($thread->download_as_book)
                     <div class="">
-                        <a href=" {{ route('download.book_noreview_text', $thread->id) }} ">下载脱水书籍（不含评论的正文，按章节顺序排列）</a>
+                        页面调整中，暂停服务，请稍后
+                    </div>
+                    @else
+                    <div class="">
+                        作者关闭了脱水书籍模式的下载
                     </div>
                     @endif
+                    @if($thread->download_as_thread)
                     <div class="">
-                        <a href=" {{ route('download.thread_txt', $thread->id) }} ">下载txt讨论贴（正文加评论，按时间顺序排列）</a>
+                        页面调整中，暂停服务，请稍后
                     </div>
+                    @else
+                    <div class="">
+                        作者关闭了论坛模式的下载
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -35,7 +35,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\LogLastUserActivity::class,
+            \App\Http\Middleware\LogUserActivity::class,
             \App\Http\Middleware\NoLogControl::class,
         ],
 
@@ -60,14 +60,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'filter_thread' => \App\Http\Middleware\FilterThread::class,
-        'filter_post' => \App\Http\Middleware\FilterPost::class,
-        'filter_book' => \App\Http\Middleware\FilterBook::class,
         'filter_channel' => \App\Http\Middleware\FilterChannel::class,
-        'filter_label' => \App\Http\Middleware\FilterLabel::class,
-        'filter_chapter' => \App\Http\Middleware\FilterChapter::class,
         'admin' => \App\Http\Middleware\CheckAdmin::class,
-        'fw-only-whitelisted' => \PragmaRX\Firewall\Middleware\FirewallWhitelist::class,
-        'fw-block-blacklisted' => \PragmaRX\Firewall\Middleware\FirewallBlacklist::class,
-        'fw-block-attacks' => \PragmaRX\Firewall\Middleware\BlockAttacks::class,
     ];
 }

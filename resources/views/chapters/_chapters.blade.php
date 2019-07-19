@@ -1,13 +1,11 @@
-<div class="hidden-sm hidden-md hidden-lg overflow-hidden">
-    @foreach($book->chapters as $chapter)
-    <a href="{{ route('book.showchapter', $chapter->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
-        @if($chapter->mainpost_info->bianyuan)
+<div class="hidden-sm hidden-md hidden-lg overflow-hidden text-center">
+    @foreach($posts as $post)
+    <a href="{{ route('post.show', $post->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
+        @if($post->is_bianyuan&&!$thread->is_bianyuan)
             <span class="glyphicon glyphicon-info-sign"></span>
         @endif
-        {{ $chapter->title }}：{{ $chapter->mainpost_info->title }}</a>
-    @if(Auth::id()==$thread->user_id)
-    <a href="{{ route('book.editchapter', $chapter->id) }}" class="text-center btn-block">编辑{{ $chapter->title }}</a>
-    @endif
+        {{ $post->title.'：'.StringProcess::simpletrim($post->brief, 10) }}</a>
+
     @endforeach
 </div>
 <div class="hidden-xs table-hover">
@@ -16,28 +14,30 @@
             <tr>
                 <th>章节名</th>
                 <th>概要</th>
-                <th><span class="glyphicon glyphicon-pencil"></span></th>
-                <th><span class="glyphicon glyphicon-eye-open"></span></th>
-                <th><span class="glyphicon glyphicon-comment"></span></th>
+                <th><i class="fa fa-pencil" aria-hidden="true"></i></th>
+                <th><i class="fa fa-eye" aria-hidden="true"></i></th>
+                <th><i class="fa fa-heart-o" aria-hidden="true"></i></th>
+                <th><i class="fa fa-commenting" aria-hidden="true"></i></th>
                 <th>发布时间</th>
                 <th>最后修改</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($book->chapters as $chapter)
+            @foreach($posts as $post)
             <tr>
-                <th><a href="{{ route('book.showchapter', $chapter->id) }}" class = "">
-                    @if($chapter->mainpost_info->bianyuan)
+                <th><a href="{{ route('post.show', $post->id) }}" class = "">
+                    @if($post->is_bianyuan&&!$thread->is_bianyuan)
                         <span class="glyphicon glyphicon-info-sign"></span>
                     @endif
-                    {{ $chapter->title }}</a></th>
-                <th>{{ $chapter->mainpost_info->title }}</th>
-                <th>{{ $chapter->characters }}</th>
-                <th>{{ $chapter->viewed }}</th>
-                <th>{{ $chapter->responded }}</th>
-                <th>{{ Carbon\Carbon::parse($chapter->created_at)->setTimezone('Asia/Shanghai') }}</th>
-                <th>{{ Carbon\Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai')
-                     }}</th>
+                    {{ $post->title }}</a></th>
+                <th><a href="{{ route('post.show', $post->id) }}" class = "">{{ $post->brief }}</a></th>
+                <th>{{ $post->char_count }}</th>
+                <th>{{ $post->view_count }}</th>
+                <th>{{ $post->upvote_count }}</th>
+                <th>{{ $post->reply_count }}</th>
+                <th>{{ Carbon::parse($post->created_at)->setTimezone('Asia/Shanghai') }}</th>
+                <th>{{ Carbon::parse($post->edited_at)->setTimezone('Asia/Shanghai')}}</th>
+
             </tr>
             @endforeach
         </tbody>

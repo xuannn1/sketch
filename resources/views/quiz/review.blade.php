@@ -10,7 +10,7 @@
             <div class="panel-body">
                 @foreach ($quizzes as $quiz)
                 <span><strong>题目id{{$quiz->id}}</strong>|{{ $quiz->quiz_level }}级</span>
-                {!! Helper::wrapSpan($quiz->body) !!}
+                {!! StringProcess::wrapSpan($quiz->body) !!}
                 <a href="{{ route('quiz.show', $quiz->id) }}" class="btn btn-danger sosad-button btn-sm pull-right">显示详情</a>
                 <!-- 各色选项 -->
                 <div class="">
@@ -19,7 +19,7 @@
                     <div class="">
                         <span>选项{{ $key+1 }}：</span>
                         <span class="glyphicon {{ $quiz_option->is_correct? 'glyphicon-ok correct-option':'incorrect-option glyphicon-remove' }}">
-                        <span>{!! Helper::wrapSpan($quiz_option->body) !!}</span>
+                        <span>{!! StringProcess::wrapSpan($quiz_option->body) !!}</span>
                     </div>
                     @endforeach
                 </div>

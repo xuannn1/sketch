@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\DB;
-//use Illuminate\Support\Facades\Cache;
 use App\Models\TemporaryDataSave;
 use Auth;
 class CachesController extends Controller
@@ -39,18 +37,6 @@ class CachesController extends Controller
         }else{
             return "notwork";
         }
-        // $oldkey = Auth::id().'old';
-        // $newkey = Auth::id().'new';
-        // if(Cache::has($oldkey)){
-        //     $value = Cache::get($oldkey);
-        //     if (Cache::has($newkey)){
-        //         Cache::put($oldkey, Cache::get($newkey),1440);
-        //         Cache::put($newkey, $value, 1440);
-        //     }
-        //     return $value;
-        // }else{
-        //     return "notwork";
-        // }
     }
     public static function initcache()
     {
@@ -60,10 +46,6 @@ class CachesController extends Controller
             $record->new = null;
             $record->save();
         }
-        // if(Cache::has(Auth::id() . 'new')){
-        //     Cache::put(Auth::id() . 'old', Cache::get(Auth::id() . 'new'),1440);
-        //     // Cache::forget(Auth::id() . 'new');
-        // }
         return "initiated";
     }
 }

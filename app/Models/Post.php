@@ -4,86 +4,299 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use GrahamCampbell\Markdown\Facades\Markdown;
 
 class Post extends Model
 {
     use SoftDeletes;
-    use Traits\PostFilterable;
-    use Traits\RegularTraits;
-
-    protected $dates = ['deleted_at'];
+    use Traits\VoteTrait;
+    use Traits\RewardTrait;
+    use Traits\TypeValueChangeTrait;
 
     protected $guarded = [];
+    protected $post_types = array('chapter', 'question', 'answer', 'request', 'post', 'comment', 'review'); // post的分类类别
+    protected $count_types = ['upvote_count'];
 
-    public function owner()
+    const UPDATED_AT = null;
+
+    protected $hidden = [
+        'creation_ip',
+    ];
+
+    protected $dates = ['deleted_at', 'edited_at', 'created_at', 'responded_at'];
+
+    public function thread()
     {
-        return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
+        return $this->belongsTo(Thread::class);
+    }
+
+    public function simpleThread()
+    {
+        return $this->belongsTo(Thread::class, 'thread_id')->select('id','channel_id','title','brief');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->withDefault();
+        return $this->belongsTo(User::class);
     }
 
-    public function thread()
+    public function last_reply()
     {
-        return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
+        return $this->belongsTo(Post::class, 'last_reply_id')->select(['id','brief']);
     }
 
-    public function comments()
+    public function replies()
     {
-        return $this->hasMany(PostComment::class)->orderBy('created_at','desc');
+        return $this->hasMany(Post::class, 'reply_to_id');
     }
-    public function allcomments()
+
+    public function answers()
     {
-        return $this->hasMany(PostComment::class)->orderBy('created_at','desc');
+        return $this->hasMany(Post::class, 'reply_to_id')->where('type','=','answer');
     }
-    public function shengfans()
+
+    public function question()
     {
-        return $this->hasMany(Shengfan::class)->orderBy('created_at','asc');
+        return $this->belongsTo(Post::class, 'reply_to_id')->where('type','=','question');
     }
-    public function shengfan_voted(User $user)
+
+    public function parent()
     {
-        return Shengfan::where('post_id', $this->id)->where('user_id', $user->id)->first();
+        return $this->belongsTo(Post::class, 'reply_to_id');
     }
-    public function reply_to_post()
+
+    public function author()
     {
-        return $this->belongsTo(Post::class, 'reply_to_post_id')->withDefault();
+        return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id','level');
     }
+
     public function chapter()
     {
-        return $this->belongsTo(Chapter::class, 'chapter_id')->withDefault();
+        return $this->hasOne(Chapter::class, 'post_id');
     }
-
-
-    // public function trim($str, $len)
-    // {
-    //    $body = preg_replace('/[[:punct:]\s\n\t\r]/','',$str);
-    //    $body = trim($body);
-    //    if (strlen($body)>$len){
-    //       return $this->sub_str($body, $len, true);
-    //    }else{
-    //       return $body;
-    //    }
-    // }
-    public function checklongcomment()//新建章节之后，检查是否属于长评范畴，如果属于，加入推荐队列
+    public function review()
     {
-        if (!$this->maintext){//必须不能是某章节正文
-            $string = preg_replace('/[[:punct:]\s\n\t\r]/','',$this->body);
-            $length = iconv_strlen($string, 'utf-8');
-            if($length>=config('constants.longcomment_length')){
-                $longcomment = LongComment::firstOrCreate(['post_id' => $this->id,]);
-                $this->update(['long_comment'=>1,'long_comment_id'=>$longcomment->id]);
-                $this->user->reward('longcomment');
-            }else{
-                $longcomment = LongComment::where('post_id',$this->id)->first();
-                if($longcomment){
-                    $longcomment->delete();
-                }
-                $this->update(['long_comment'=>0,'long_comment_id'=>0]);
-            }
-        }
-        return;
+        return $this->hasOne(Review::class, 'post_id');
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany('App\Models\Tag', 'tag_post', 'post_id', 'tag_id');
+    }
+
+    public function scopeBrief($query)
+    {
+        return $query->select('id', 'user_id', 'title', 'type', 'brief', 'created_at',  'edited_at',  'is_bianyuan', 'upvote_count', 'reply_count', 'char_count', 'view_count');
+    }
+
+    public function scopeUserOnly($query, $userOnly)
+    {
+        if($userOnly){
+            return $query->where('user_id', $userOnly)->where('is_anonymous', false);
+        }
+        return $query;
+    }
+
+    public function scopeWithType($query, $withType)
+    {
+        if(in_array($withType, $this->post_types)){
+            return $query->where('type', $withType);
+        }
+        return $query;
+    }
+
+    public function scopeWithComponent($query, $withComponent)
+    {
+        if($withComponent==='component_only'){
+            return $query->whereIn('type', array_diff( $this->post_types, ['post','comment']));
+        }
+        if($withComponent==='none_component_only'){
+            return $query->whereIn('type',['post','comment']);
+        }
+        return $query;
+    }
+
+    public function scopeWithReplyTo($query, $withReplyTo)
+    {
+        if($withReplyTo){
+            return $query->where('reply_to_id', $withReplyTo);
+        }
+        return $query;
+    }
+
+    public function scopeOrdered($query, $ordered='')
+    {
+        switch ($ordered) {
+            case 'latest_created'://最新
+            return $query->orderBy('created_at', 'desc');
+            break;
+            case 'most_replied'://按回应数量倒序
+            return $query->orderBy('reply_count', 'desc');
+            break;
+            case 'most_upvoted'://按赞数倒序
+            return $query->orderBy('upvote_count', 'desc');
+            break;
+            case 'random'://随机排序
+            return $query->inRandomOrder();
+            break;
+            case 'latest_responded'://按最新被回应时间倒序
+            return $query->orderBy('responded_at', 'desc');
+            break;
+            default://默认按时间顺序排列，最早的在前面
+            return $query->orderBy('created_at', 'asc');
+        }
+    }
+    public function scopeReviewThread($query, $thread_id)
+    {
+        if($thread_id){
+            $query = $query->where('reviews.thread_id', $thread_id);
+        }else{
+            return $query;
+        }
+    }
+
+    public function scopeReviewRecommend($query, $withRecommend)
+    {
+        if($withRecommend==='recommend_only'){
+            return $query->where('reviews.recommend', true);
+        }
+        if($withRecommend==='none_recommend_only'){
+            return $query->where('reviews.recommend', false);
+        }
+        return $query;
+    }
+
+    public function scopeReviewEditor($query, $withEditor)
+    {
+        if($withEditor==='editor_only'){
+            return $query->where('reviews.editor_recommend', true);
+        }
+        if($withEditor==='none_editor_only'){
+            return $query->where('reviews.editor_recommend', false);
+        }
+        return $query;
+    }
+
+    public function scopeReviewMaxRating($query, $withMaxRating)
+    {
+        if($withMaxRating){
+            return $query->where('reviews.rating', '<=', $withMaxRating);
+        }else{
+            return $query;
+        }
+    }
+
+    public function scopeReviewMinRating($query, $withMinRating)
+    {
+        if($withMinRating){
+            return $query->where('reviews.rating', '>=', $withMinRating);
+        }else{
+            return $query;
+        }
+    }
+
+    public function scopeReviewLong($query, $withLong)
+    {
+        if($withLong==='long_only'){
+            return $query->where('reviews.long', true);
+        }
+        if($withLong==='short_only'){
+            return $query->where('reviews.long', false);
+        }
+        return $query;
+    }
+
+    public function scopeReviewOrdered($query, $ordered)
+    {
+        switch ($ordered) {
+            case 'latest_created'://最新
+            return $query->orderBy('posts.created_at', 'desc');
+            break;
+            case 'most_replied'://按回应数量倒序
+            return $query->orderBy('posts.reply_count', 'desc');
+            break;
+            case 'most_upvoted'://按赞数倒序
+            return $query->orderBy('posts.upvotes', 'desc');
+            break;
+            case 'latest_responded'://按最新被回应时间倒序
+            return $query->orderBy('posts.responded_at', 'desc');
+            break;
+            case 'random'://随机排序
+            return $query->inRandomOrder();
+            break;
+            case 'oldest_created'://按最新被回应时间倒序
+            return $query->orderBy('posts.created_at', 'asc');
+            break;
+            default:
+            return $query->orderBy('reviews.redirects', 'desc');
+            break;
+        }
+    }
+
+    public function scopePostInfo($query)
+    {
+        return $query->select('id', 'type', 'user_id', 'thread_id', 'title', 'brief', 'created_at', 'is_bianyuan', 'char_count', 'view_count', 'reply_count', 'upvote_count');
+    }
+
+
+    public function favorite_reply()//这个post里面，回复它的postcomment中，最多赞的
+    {
+        return Post::where('reply_to_id', $this->id)
+        ->with('author.title')
+        ->orderBy('upvote_count', 'desc')
+        ->first();
+    }
+
+    public function newest_reply()//这个post里面，回复它的postcomment中，最新的一个，全部内容
+    {
+        return Post::where('reply_to_id', $this->id)
+        ->with('author.title')
+        ->orderBy('created_at', 'desc')
+        ->first();
+    }
+
+    public function checklongcomment()
+    {
+        if($this->char_count>config('constants.longcomment_length')){
+            return true;
+        }
+        return false;
+    }
+
+    public function checklongchapter()
+    {
+        if($this->char_count>config('constants.update_min')){
+            return true;
+        }
+        return false;
+    }
+
+    public function checkfirstpost()
+    {
+        if($this->parent&&$this->parent->type==="chapter"&&$this->parent->reply_count<2){
+            return true;
+        }
+        return false;
+    }
+
+    public function latest_rewards()
+    {
+        return \App\Models\Reward::with('author')
+        ->withType('post')
+        ->withId($this->id)
+        ->orderBy('created_at','desc')
+        ->take(10)
+        ->get();
+    }
+
+    public function latest_upvotes()
+    {
+        return \App\Models\Vote::with('author')
+        ->withType('post')
+        ->withId($this->id)
+        ->withAttitude('upvote')
+        ->orderBy('created_at','desc')
+        ->take(10)
+        ->get();
+    }
+
 }

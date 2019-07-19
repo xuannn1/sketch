@@ -1,8 +1,8 @@
 <?php
 namespace App\Console\Commands;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use DB;
+use Carbon;
 use App\Models\WebStat;
 class CountWebStat extends Command
 {
@@ -35,13 +35,12 @@ class CountWebStat extends Command
     public function handle()
     {
         $data=[];
-        $data['qiandaos']=DB::table('users')->where('lastrewarded_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
+        $data['qiandaos']=DB::table('users')->where('qiandao_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
         $data['posts']=DB::table('posts')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
-        $data['posts_maintext']=DB::table('posts')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->where('maintext','=','1')->count();
-        $data['posts_reply']=DB::table('posts')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->where('maintext','=','0')->count();
-        $data['post_comments']=DB::table('post_comments')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
+        $data['chapters']=DB::table('posts')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->where('type','=','chapter')->count();
+        $data['reviews']=DB::table('posts')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->where('type','=','review')->count();
         $data['new_users']=DB::table('users')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
-        $clicks_data_collection = DB::table('users')->where('daily_clicks','>',0)->select(['id as user_id','daily_clicks','daily_posts','daily_chapters','daily_characters'])->get();
+        $clicks_data_collection = DB::table('user_infos')->where('daily_clicks','>',0)->select(['id as user_id','daily_clicks'])->get();
         $data['daily_clicks']=$clicks_data_collection->sum('daily_clicks');
         $data['daily_clicked_users']=$clicks_data_collection->count();
         $data['daily_clicks_average']=$clicks_data_collection->average('daily_clicks');
@@ -55,6 +54,6 @@ class CountWebStat extends Command
             DB::table('historical_users_data')->insert($t);
         }
         WebStat::create($data);
-        DB::table('users')->update(['clicks'=>DB::raw('daily_clicks + clicks'), 'daily_clicks'=>0]);
+        DB::table('user_infos')->update(['total_clicks'=>DB::raw('daily_clicks + total_clicks'), 'daily_clicks'=>0]);
     }
 }

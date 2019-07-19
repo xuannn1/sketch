@@ -8,4 +8,5 @@ class PasswordReset extends Model
 {
     const UPDATED_AT = null;
     protected $guarded = [];
+    protected $dates = ['created_at'];
 }

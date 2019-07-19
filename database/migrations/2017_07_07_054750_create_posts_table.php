@@ -25,7 +25,7 @@ class CreatePostsTable extends Migration
             $table->boolean('anonymous')->default(false);//匿名
             $table->string('majia', 10)->nullable();//马甲
             $table->text('body')->nullable();//正文
-            $table->dateTime('lastresponded_at')->default(Carbon\Carbon::now())->index();
+            $table->dateTime('lastresponded_at')->default(Carbon::now())->index();
             $table->softDeletes();
             $table->timestamps();
         });

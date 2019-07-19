@@ -16,7 +16,6 @@
                     <p><b>用户名：</b>{{$user->name}}</p>
                     <p><b>email：</b>{{$user->email}}</p>
                     <p><b>创建时间：</b>{{$user->created_at}}</p>
-                    <p><b>最后登陆时间：</b>{{$user->last_login}}</p>
                 </div>
                 @endforeach
                 {{$users->links()}}

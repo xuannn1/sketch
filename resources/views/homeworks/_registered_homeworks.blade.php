@@ -6,7 +6,7 @@
     <span><a href="{{ route('user.show', $registration->user_id) }}">{{ $registration->student->name }}</a></span>：<span><a href="{{ route('thread.show', $registration->thread->id) }}">{{ $registration->thread->title }}</a></span>：
     @else
     <span>
-        @if($registration->thread->anonymous)
+        @if($registration->thread->is_anonymous)
         {{ $registration->thread->majia ?? '匿名咸鱼' }}
         @else
         {{ $registration->thread->creator->name }}
@@ -19,7 +19,7 @@
     <span><a href="{{ route('thread.showpost', $post->id) }}">{{ $post->owner->name }}{{'('.$post->up_voted.')'}}</a></span>，
     @else
     <span><a href="{{ route('thread.showpost', $post->id) }}">
-        @if($post->anonymous)
+        @if($post->is_anonymous)
         {{$post->majia ?? '匿名咸鱼'}}
         @else
         {{$post->owner->name}}

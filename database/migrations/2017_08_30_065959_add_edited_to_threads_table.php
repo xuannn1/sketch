@@ -14,7 +14,7 @@ class AddEditedToThreadsTable extends Migration
     public function up()
     {
         Schema::table('threads', function (Blueprint $table) {
-            $table->dateTime('edited_at')->default(Carbon\Carbon::now());
+            $table->dateTime('edited_at')->default(Carbon::now());
         });
     }
 

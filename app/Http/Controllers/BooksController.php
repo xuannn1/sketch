@@ -4,313 +4,178 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreBook;
-use App\Sosadfun\Traits\BookTraits;
-use App\Sosadfun\Traits\RecordViewHistoryTraits;
-use Carbon\Carbon;
-use App\Models\Post;
-use App\Models\Book;
-use App\Models\Tag;
-use App\Helpers\Helper;
+use App\Models\Thread;
+use ConstantObjects;
+use CacheUser;
 use Auth;
+use App\Sosadfun\Traits\ThreadObjectTraits;
 
 class BooksController extends Controller
 {
-    use BookTraits;
-    use RecordViewHistoryTraits;
+    use ThreadObjectTraits;
 
     public function __construct()
     {
-        $this->middleware('auth')->only('create', 'store', 'update','edit');
+        $this->middleware('auth')->except('show','index');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('books.create');
+        $tag_range = ConstantObjects::organizeBookCreationTags();
+        $user = CacheUser::Auser();
+        if($user->level<1||$user->quiz_level<1){
+            return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立书籍');
+        }
+        return view('books.create', compact('tag_range'));
     }
 
     public function store(StoreBook $form)
     {
-        $thread = $form->generateBook();
+        $user = CacheUser::Auser();
+        $channel = collect(config('channel'))->keyby('id')->get($form->channel_id);
+        if(!$channel||$channel->type<>'book'||$user->level<1||$user->quiz_level<1){
+            abort(403);
+        }
+
+        $thread = $form->generateBook($channel);
+        $thread->tongren_data_sync($form->all());
+
+        $tags = array_merge($thread->tags->pluck('id')->toArray(),$form->all_tags());
+
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate($tags));
+
         $thread->user->reward("regular_book");
-        return redirect()->route('book.show', $thread->book_id)->with("success", "您已成功发布文章");
+        return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布文章");
     }
-    public function edit(Book $book)
+
+    public function edit($id)
     {
-        if ((Auth::id() == $book->thread->user_id)&&(!$book->thread->locked)){
-            $thread = $book->thread->load('mainpost');
-            $book->load('tongren');
-            $tags = $thread->tags->pluck('id')->toArray();
-            return view('books.edit',compact('book', 'thread','tags'));
-        }else{
-            return redirect()->route('error', ['error_code' => '405']);
+        $thread = Thread::find($id);
+        if(!$thread){
+            return redirect()->back()->with('danger','找不到文章');
         }
+        $channel = $thread->channel();
+        if(!$channel||$channel->type!='book'){
+            return redirect()->back()->with('danger','不是文章，无法编辑');
+        }
+        if($thread->user_id!=Auth::id()){
+            return redirect()->back()->with('danger','不能修改不是自己的文章');
+        }
+        if($thread->is_locked){
+            return redirect()->back()->with('danger','不能修改已经锁定的文章');
+        }
+        return view('books.edit', compact('thread'));
     }
-    public function update(StoreBook $form, Book $book)
+
+    public function edit_profile($id)
     {
-        $thread = $book->thread;
-        if ((Auth::id() == $book->thread->user_id)&&(!$thread->locked)){
-            $form->updateBook($thread);
-            return redirect()->route('book.show', $book->id)->with("success", "您已成功修改文章");
-        }else{
-            return redirect()->route('error', ['error_code' => '405']);
-        }
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+        return view('books.edit_profile', compact('thread'));
     }
 
-    public function show(Book $book, Request $request)
+    public function update_profile($id, StoreBook $form)
     {
-        $thread = $book->thread;
-        if($thread->id>0){
-            if(Auth::check()){
-                $view_history=$this->recordViewHistory(request()->ip(),Auth::id(),$thread->id,0);
-                if(Auth::id()!=$thread->user_id){
-                    $thread->increment('viewed');
-                }
-            }
-            $book->load('chapters.mainpost_info','tongren');
-            $channel = Helper::allChannels()->keyBy('id')->get($thread->channel_id);
-            $label = Helper::allLabels()->keyBy('id')->get($thread->label_id);
-            $thread->load(['creator', 'tags', 'mainpost']);
-            $posts = Post::allPosts($thread->id,$thread->post_id)
-            ->noMaintext()
-            ->userOnly(request('useronly'))
-            ->latest()
-            ->with('owner','reply_to_post','comments.owner')
-            ->paginate(config('constants.items_per_page'));
-            if($request->page>1){
-                $xianyus = [];
-            }else{
-                $xianyus = Helper::xianyus($thread->id);
-            }
-            return view('books.show', compact('book','thread', 'posts', 'channel','label', 'xianyus'))->with('defaultchapter',0)->with('chapter_replied',true)->with('show_as_book',true);
-        }else{
-            return redirect()->route('error', ['error_code' => '404']);
-        }
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+        $thread = $form->updateBookProfile($thread);
+        $valid_tags = $thread->tags_validate($thread->tags);
+        $thread->keep_only_admin_tags();
+        $thread->tags()->syncWithoutDetaching($valid_tags);
+        $this->clearThreadProfile($thread->id);
+        $this->clearThread($thread->id);
+        return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍文案设置信息');
+    }
+
+    public function edit_tag($id)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+        $selected_tags = $thread->tags;
+        $tag_range = ConstantObjects::organizeBasicBookTags();
+
+        return view('books.edit_tag', compact('selected_tags','thread','tag_range'));
+    }
+
+    public function update_tag($id, Request $request)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+
+        $input_tags = array_merge(array($request->sexual_orientation_tag, $request->book_length_tag, $request->book_status_tag),$request->tags);
+        $tags = array_merge($thread->tags->pluck('id')->toArray(), $input_tags);
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate($tags));
+
+        $this->clearThreadProfile($thread->id);
+
+        return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍标签信息');
+    }
+
+    public function edit_tongren($id)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
+
+        $tongren = \App\Models\Tongren::find($id);
+
+        $selected_tags = $thread->tags()->whereIn('tag_type',['同人原著','同人CP'])->get();
+
+        $tag_range = ConstantObjects::organizeBookCreationTags();
+
+        return view('books.edit_tongren', compact('selected_tags','thread','tag_range','tongren'));
 
     }
 
+    public function update_tongren($id, Request $request)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
 
+        $thread->tongren_data_sync($request->all());
+        $this->clearThreadProfile($thread->id);
+        return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍同人信息');
+    }
+
+    public function show($id)
+    {   $book = DB::table('books')->where('id','=',$id)->first();
+        return redirect()->route('thread.show_profile', $book->thread_id);
+    }
 
     public function index(Request $request)
     {
-        $logged = Auth::check()? true:false;
-        $page = is_numeric($request->page)? $request->page:1;
-        $bookqueryid = 'booksQuery'
+        $tags = ConstantObjects::organizeBookTags();
+
+        $queryid = 'bookQ'
         .url('/')
-        .($logged? '-Loggedd':'-notLogged')//logged or not
-        .($request->showbianyuan? '-ShowBianyuan':'')
-        .($request->label? '-Label'.$request->label:'')
-        .($request->channel? '-Channel'.$request->channel:'')
-        .($request->book_length? '-Booklength'.$request->book_length:'')
-        .($request->book_status? '-Bookstatus'.$request->book_status:'')
-        .($request->sexual_orientation? '-SexualOrientation'.$request->sexual_orientation:'')
-        .($request->book_tag? '-Tag'.$request->book_tag:'-noTag')//book-tag
-        .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
+        .'-inChannel'.$request->inChannel
+        .'-withBianyuan'.$request->withBianyuan
+        .'-withTag'.$request->withTag
+        .'-excludeTag'.$request->excludeTag
+        .'-ordered'.$request->ordered
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $books = Cache::remember($bookqueryid, 5, function () use($request, $page, $logged) {
-            $query = $this->join_book_tables();
-            if((!$logged)||(!$request->showbianyuan)){$query = $query->where('bianyuan','=',0);}
-            if($request->label){$query = $query->where('threads.label_id','=',$request->label);}
-            if($request->channel){$query = $query->where('threads.channel_id','=',$request->channel);}
-            if($request->book_length){$query = $query->where('books.book_length','=',$request->book_length);}
-            if($request->book_status){$query = $query->where('books.book_status','=',$request->book_status);}
-            if($request->sexual_orientation){$query = $query->where('books.sexual_orientation','=',$request->sexual_orientation);}
-            if($request->book_tag){
-                $query = $this->filter_tag($query, $request->book_tag);
-            }
-            $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-            $query = $this->return_book_fields($query);
-            $books = $this->bookOrderBy($query, $request->orderby)
-            ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page','label','channel','book_length','book_status','sexual_orientation','orderby','showbianyuan','book_tag'));
-            return $books;
+        $threads = Cache::remember($queryid, 5, function () use($request) {
+            return Thread::with('author', 'tags', 'last_component', 'last_post')
+            ->inChannel($request->inChannel)
+            ->isPublic()
+            ->withType('book')
+            ->withBianyuan($request->withBianyuan)
+            ->withTag($request->withTag)
+            ->excludeTag($request->excludeTag)
+            ->ordered($request->ordered)
+            ->paginate(config('preference.threads_per_page'))
+            ->appends($request->only('inChannel','withBianyuan','withTag','excludeTag','ordered'));
         });
-        return view('books.index', compact('books'))->with('show_as_collections', false)->with('show_bianyuan_tab', true);
+
+        return view('books.index', compact('threads','tags'));
     }
 
-    public function selector($bookquery_original, Request $request)
-    {
-        $book_info = config('constants.book_info');
-        $bookquery=explode('-',$bookquery_original);
-        $bookinfo=[];
-        foreach($bookquery as $info){
-            array_push($bookinfo,array_map('intval',explode('_',$info)));
-        }
-        $logged = Auth::check()? true:false;
-        $page = is_numeric($request->page) ? $request->page:1;
-        $bookselectorid = 'booksSelector'
-        .url('/')
-        .($logged? '-Loggedd':'-notLogged')//logged or not
-        .$bookquery_original
-        .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $books = Cache::remember($bookselectorid, 10, function () use($bookinfo, $page, $logged, $book_info, $request) {
-            if((!empty($bookinfo[5]))&&($bookinfo[5][0]>0)){//用户是否提交了标签(tag)筛选要求？
-                $query = $this->join_complex_book_tables();//包含标签筛选
-            }else{
-                $query = $this->join_book_tables();//不包含标签筛选
-            }
-            $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-            if(!$logged){$query = $query->where('bianyuan','=',0);}//未登陆用户不能进一步看限制文
-            if(!empty($bookinfo[0])&&count($bookinfo[0])==1){//原创性筛选
-                $query->where('threads.channel_id','=', $bookinfo[0][0]);
-            }
-            if((!empty($bookinfo[1]))&&count($bookinfo[1])<count($book_info['book_length_info'])){//书籍长度筛选
-                $query->whereIn('books.book_length',$bookinfo[1]);
-            }
-            if((!empty($bookinfo[2]))&&count($bookinfo[2])<count($book_info['book_status_info'])){//书籍进度筛选
-                $query->whereIn('books.book_status',$bookinfo[2]);
-            }
-            if((!empty($bookinfo[3]))&&count($bookinfo[3])<count($book_info['sexual_orientation_info'])){//书籍性向筛选
-                $query->whereIn('books.sexual_orientation',$bookinfo[3]);
-            }
-            if((!empty($bookinfo[4]))&&count($bookinfo[4])<count($book_info['rating_info'])){//书籍限制性筛选
-                $query->where('threads.bianyuan','=',$bookinfo[4][0]-1);
-            }
-            if((!empty($bookinfo[5]))&&($bookinfo[5][0]>0)){//标签筛选
-                $query->whereIn('tagging_threads.tag_id',$bookinfo[5]);
-            }
-            if(!empty($bookinfo[6])){//排序方式筛选
-                $query = $this->bookOrderBy($query, $bookinfo[6][0]);
-            }
-            $books = $this->return_book_fields($query)
-            ->distinct()
-            ->paginate(config('constants.index_per_page'))
-            ->appends($request->only('page'));
-            return $books;
-        });
-        return view('books.index', compact('books'))->with('show_as_collections', false)->with('show_bianyuan_tab', false);
-    }
-
-    public function booktag(Tag $booktag, Request $request){
-        // $logged = Auth::check()? true:false;
-        // $tagqueryid = 'tagQuery'
-        // .url('/')
-        // .($logged? '-Loggedd':'-notLogged')//logged or not
-        // .($request->showbianyuan? '-ShowBianyuan':'')
-        // .$booktag->id
-        // .($request->orderby? '-Orderby'.$request->orderby:'-defaultOrderBy')
-        // .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        // $books = Cache::remember($tagqueryid, 2, function () use($request, $booktag, $logged) {
-        //     $query = $this->join_book_tables();
-        //     $query = $this->filter_tag($query, $booktag);
-        //     $query->where([['threads.deleted_at', '=', null],['threads.public','=',1]]);
-        //     if((!$logged)||(!$request->showbianyuan)){$query = $query->where('bianyuan','=',0);}
-        //     $query = $this->return_book_fields($query);
-        //     $books = $this->bookOrderBy($query, $request->orderby)
-        //     ->paginate(config('constants.index_per_page'))
-        //     ->appends($request->only('page','showbianyuan'));
-        //     return $books;
-        // });
-        // return view('books.index', compact('books'))->with('show_as_collections', false)->with('show_bianyuan_tab', true);
-    }
-    public function filter_tag($query, $tag_id)
-    {
-        $tag = Cache::remember('book-tag'.$tag_id, 30, function () use($tag_id) {
-            return Tag::find($tag_id);
-        });
-        if($tag->tag_group===10){
-            return $query->where('tongren_yuanzhu_tags.id','=',$tag->id);
-        }
-        if($tag->tag_group===20){
-            return $query->where('tongren_cp_tags.id','=',$tag->id);
-        }
-        return $query->join('tagging_threads','threads.id','=','tagging_threads.thread_id')
-        ->where('tagging_threads.tag_id','=',$tag->id);
-    }
-
-    public function filter(Request $request){
-        $bookquery='';
-        //[0]原创性
-        if(request('original')){
-            foreach(request('original') as $i=>$query){
-                if($i>0){
-                    $bookquery.='_';
-                }
-                $bookquery.=$query;
-            }
-        }else{
-            $bookquery.=0;
-        }
-        //[1]篇幅
-        $bookquery.='-';
-        if(request('length')){
-            foreach(request('length') as $i=>$query){
-                if($i>0){
-                    $bookquery.='_';
-                }
-                $bookquery.=$query;
-            }
-        }else{
-            $bookquery.=0;
-        }
-        //[2]进度
-        $bookquery.='-';
-        if(request('status')){
-            foreach(request('status') as $i=>$query){
-                if($i>0){
-                    $bookquery.='_';
-                }
-                $bookquery.=$query;
-            }
-        }else{
-            $bookquery.=0;
-        }
-        //[3]性向
-        $bookquery.='-';
-        if(request('sexual_orientation')){
-            foreach(request('sexual_orientation') as $i=>$query){
-                if($i>0){
-                    $bookquery.='_';
-                }
-                $bookquery.=$query;
-            }
-        }else{
-            $bookquery.=0;
-        }
-        //[4]边缘限制性
-        $bookquery.='-';
-        if(request('rating')){
-            foreach(request('rating') as $i=>$query){
-                if($i>0){
-                    $bookquery.='_';
-                }
-                $bookquery.=$query;
-            }
-        }else{
-            $bookquery.=0;
-        }
-        //[5]标签
-        $bookquery.='-';
-        if(request('tag')){
-            foreach(request('tag') as $i=>$query){
-                if($i>0){
-                    $bookquery.='_';
-                }
-                $bookquery.=$query;
-            }
-        }else{
-            $bookquery.=0;
-        }
-        //[6]排序方式
-        $bookquery.='-';
-        if(request('orderby')){
-            $bookquery.=request('orderby');
-        }else{
-            $bookquery.=1;
-        }
-        return redirect()->route('books.selector',$bookquery);
-    }
-
-    public function tags()
-    {
-        return view('books.tags');
-    }
-
-    public function bookselector()
-    {
-        return view('books.selector');
-    }
 }

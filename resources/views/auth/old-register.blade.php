@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', '注册')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <style media="screen">
     </style>
     <div class="col-sm-offset-3 col-sm-6">
@@ -45,7 +45,7 @@
                         <label for="invitation_token">邀请码：</label>
                         <h6 class="grayout">（ 邀请码详情查看微博号“废文网大内总管”，或查看站内 <a href="{{ route('thread.show', 2615) }}">公用邀请码楼</a> ）</h6>
                         <h6 class="grayout">（ 公共邀请码最近一次“刷新”大约发生在
-                            {!! Carbon\Carbon::parse(Helper::system_variable()->token_refreshed_at)->diffForHumans() !!} ）
+                            {!! Carbon::parse(StringProcess::system_variable()->token_refreshed_at)->diffForHumans() !!} ）
                         </h6>
                         <input type="text" name="invitation_token" class="form-control" value="{{ old('invitation_token') }}">
                     </div>

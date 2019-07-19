@@ -7,15 +7,17 @@ use App\Models\Quiz;
 use App\Models\QuizOption;
 use DB;
 use Auth;
-use App\Helpers\Helper;
-use Carbon\Carbon;
+use App\Sosadfun\Traits\QuizObjectTraits;
+use Carbon;
 
 class QuizController extends Controller
 {
+    use QuizObjectTraits;
+
     public function __construct()
     {
-        $this->middleware('admin')->except('taketest','submittest');
-        $this->middleware('auth')->only('taketest','submittest');
+        $this->middleware('admin')->except('taketest','submittest','quiz_entry');
+        $this->middleware('auth')->only('taketest','submittest','quiz_entry');
     }
 
     public function review()
@@ -111,14 +113,25 @@ class QuizController extends Controller
     public function taketest(Request $request)
     {
         $user = Auth::user();
-        $level = (int)$request->quiz_level ?? 0;
-        $quizzes = Helper::random_quizzes($level);
+        $level = (int)$request->level ?? 0;
+        $quizzes = $this->random_quizzes($level);
         return view('quiz.taketest',compact('level', 'quizzes', 'user'));
     }
+
+    public function quiz_entry()
+    {
+        $user = Auth::user();
+        return view('quiz.quiz_entry', compact('user'));
+    }
+
     public function submittest(Request $request)
     {
         $user = Auth::user();
         $wrong_quiz = [];
+        //dd($request->all());
+        $this->validate($request, [
+            'quiz-answer' => 'required',
+        ]);
         foreach($request['quiz-answer'] as $quiz_answer){
             $submitted_answers = $this->select_submitted_answers($quiz_answer);
             $correct_answers = $this->find_quiz_answers((int)$quiz_answer['quiz_id']);
@@ -126,27 +139,30 @@ class QuizController extends Controller
                 array_push($wrong_quiz, [
                     'submitted_answers' => $submitted_answers,
                     'correct_answers' => $correct_answers,
-                    'quiz' => Helper::find_quiz_set((int)$quiz_answer['quiz_id']),
+                    'quiz' => $this->find_quiz_set((int)$quiz_answer['quiz_id']),
                 ]);
             }
         }
         if(empty($wrong_quiz)){
-            if(!$user->last_quizzed_at){
-                $user->reward('first_quiz');
-                $user->last_quizzed_at = Carbon::now();
+            if($user->quiz_level<=$request->level){
+                $user->reward('first_quiz', $request->level+1);
+                $user->quiz_level = $request->level+1;
+                if($user->level<1){$user->level=1;}
                 $user->save();
+                return redirect('/')->with('success', '恭喜，初次答对本组题目的奖励已经发放！');
             }else{
                 $user->reward('more_quiz');
+                return redirect('/')->with('success', '恭喜，已经完成了测试！多次答对题目的奖励已经发放！');
             }
-            return redirect('/')->with('success', '恭喜，已经完成了测试！正确答题的奖励已经发放！');
         }else{
-            return view('quiz.analyzequiz', compact('wrong_quiz','user'));
+            $level = (int)$request->level ?? 0;
+            return view('quiz.analyzequiz', compact('wrong_quiz','user','level'));
         }
     }
 
     private function find_quiz_answers($quiz_id)
     {
-        return $quiz_option = Helper::all_quiz_answers()->filter(function($item) use ($quiz_id) {
+        return $quiz_option = $this->all_quiz_answers()->filter(function($item) use ($quiz_id) {
             return $item->quiz_id == $quiz_id && $item->is_correct;
         })->sortBy('id')->pluck('id')->toArray();
     }

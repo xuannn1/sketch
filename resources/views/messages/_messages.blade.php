@@ -1,13 +1,34 @@
+<!-- 简单展示一串私信，右侧标注显示对话-->
 @foreach($messages as $message)
-<article class="messages">
-    <hr>
-    <div class="row">
-        <div class="col-xs-12">
-            <span class="badge">{{$message->group_messaging ? '群发消息' : ''}}</span>&nbsp;<span id="simple{{$message->id}}"><a href="{{ route('user.show', $message->poster_id) }}">{{ $message->poster_name }}</a>&nbsp;{{ Carbon\Carbon::parse($message->created_at)->diffForHumans() }}：
-            </span>
-            <span class="pull-right"><a href="{{ route('messages.conversation', ['user' => $message->poster_id, 'is_group_messaging' => 0]) }}">查看对话</a></span>
-        </div>
-        @include('messages._message_profile')
+<article id="message{{ $message->id }}">
+    <div class="h5">
+        <span class="badge {{$message->message_body->bulk?'':'hidden'}}">群发</span>
+        @if($message->poster)
+        <a href="{{route('user.show', $message->poster->id)}}">{{$message->poster->name}}</a>
+        @endif
+        To
+        @if($message->receiver)
+        <a href="{{route('user.show', $message->receiver->id)}}">{{$message->receiver->name}}</a>
+        @endif
+        <span class="grayout smaller-10">
+            {{ $message->created_at->diffForHumans() }}
+        </span>
+        <span id="abbreviated{{$message->id}}">
+            {!! StringProcess::trimtext($message->message_body->body,70) !!}
+        </span>
+        @if($show_dialogue_entry===true)
+        <span class="pull-right">
+            <a href="{{ route('message.dialogue', $message->poster_id==$user->id?$message->receiver_id:$message->poster_id) }}">
+                &nbsp;&nbsp;>>展示对话
+            </a>
+        </span>
+        @endif
+        <span id="full{{$message->id}}" class="hidden main-text">
+            {!! StringProcess::wrapParagraphs($message->message_body->body) !!}
+        </span>
+        <a type="button" name="button" id="expand{{$message->id}}" onclick="expanditem('{{$message->id}}')">展开</a>
     </div>
+    <hr>
 </article>
+
 @endforeach

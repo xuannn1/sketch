@@ -4,6 +4,7 @@ use App\Models\User;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Support\Facades\Cache;
+use CacheUser;
 /**
  * Class CacheUserProvider
  * @package App\Auth
@@ -24,8 +25,19 @@ class CacheUserProvider extends EloquentUserProvider
      */
     public function retrieveById($identifier)
     {
-        return Cache::remember('user-auth.' . $identifier, 60, function () use ($identifier) {
-            return parent::retrieveById($identifier);
-        });
+        return CacheUser::user($identifier);
+    }
+
+    public function retrieveByToken($identifier, $token)
+    {
+        $model = CacheUser::user($identifier);
+
+        if (! $model) {
+            return null;
+        }
+
+        $rememberToken = $model->getRememberToken();
+
+        return $rememberToken && hash_equals($rememberToken, $token) ? $model : null;
     }
 }
