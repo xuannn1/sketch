@@ -4,9 +4,10 @@ use Closure;
 use Auth;
 use Cache;
 use Carbon;
-use App\Models\LoggingStatus;
+use App\Models\OnlineStatus;
+use App\Models\HistoricalUsersActivity;
 use CacheUser;
-class LogLastUserActivity
+class LogUserActivity
 {
     /**
     * Handle an incoming request.
@@ -19,15 +20,17 @@ class LogLastUserActivity
     {
         if(Auth::check()) {
             if(!Cache::has('usr-on-' . Auth::id())){//假如距离上次cache的时间已经超过了默认时间
-                $record = LoggingStatus::updateOrCreate([
+                $online_status = OnlineStatus::updateOrCreate([
                     'user_id' => Auth::id(),
                 ],[
-                    'logged_on' => time(),
-                    'ip' => request()->ip(),
+                    'online_at' => Carbon::now(),
                 ]);
+                // $user_activity = HistoricalUsersActivity::create([
+                //     'user_id' =>Auth::id(),
+                //     'ip' => request()->ip(),
+                // ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_interval'));
                 Cache::put('usr-on-' . Auth::id(), true, $expiresAt);
-                CacheUser::Ainfo()->active_now(request()->ip());
             }
         }
         return $next($request);

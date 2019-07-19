@@ -88,11 +88,6 @@ class UserInfo extends Model
         $this->save();
     }
 
-    public function active_now($ip=null){
-        $this->active_at = Carbon::now();
-        $this->save();
-    }
-
     public function clear_column($column_name='')
     {
         switch ($column_name) {

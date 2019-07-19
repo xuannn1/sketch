@@ -66,10 +66,9 @@
     ]]); //
     Route::get('/quote_mine', 'QuoteController@mine')->name('quote.mine');//我提交的题头
 
-    // TODO
-    Route::get('/quotes/review', 'AdminsController@quotesreview')->name('quotes.review');//审核题头
-    // TODO
-    Route::get('/quotes/{quote}/toggle_review/{quote_method}','AdminsController@toggle_review_quote')->name('quote.toggle_review');//通过题头
+    Route::get('/quote_review', 'QuoteController@review_index')->name('quote.review_index');//批量审核题头
+
+    Route::PATCH('/quote/{quote}/review','QuoteController@review')->name('quote.review');//审核单独题头
 }
 
 {//以下是用户信息展示模块

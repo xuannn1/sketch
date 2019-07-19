@@ -256,6 +256,8 @@ class threadsController extends Controller
         $posts = $this->threadProfilePosts($id);
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
+        $thread->recordViewCount();
+        $thread->recordViewHistory();
         return view('threads.show_profile', compact('thread', 'posts','user','info'));
     }
 
@@ -273,6 +275,8 @@ class threadsController extends Controller
         }else{
             $thread = $this->findThread($id);
         }
+        $thread->recordViewCount();
+        $thread->recordViewHistory();
 
         $posts = \App\Models\Post::where('thread_id',$id)
         ->with('author.title','tags','last_reply')

@@ -91,13 +91,31 @@ class PostsController extends Controller
     public function show($id)
     {
         $post = $this->postProfile($id);
-        if(!$post){
+        $thread = $this->findThread($post->thread_id);
+
+        if(!$post||!$thread){
             abort(404);
         }
+
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
-        $thread = $this->findThread($post->thread_id);
+
+        if(!$thread->is_public||!$thread->channel()->is_public){
+            if(!$user){
+                return redirect()->route('login');
+            }else{
+                if(!$user->canSeePost($post)){
+                    return redirect()->back()->with('warning', '不能看这个帖');
+                }
+            }
+        }
+
         return view('posts.show',compact('post','thread','user','info'));
+    }
+
+    private function canSeePost($post, $thread)
+    {
+
     }
 
     public function destroy($id){

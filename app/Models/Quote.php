@@ -34,4 +34,11 @@ class Quote extends Model
     {
         return $query->where('notsad','=',true);
     }
+    public function scopeWithReviewState($query, $state = '')
+    {
+        if($state==='notYetReviewed'){
+            $query = $query->where('reviewed','=',0);
+        }
+        return $query;
+    }
 }

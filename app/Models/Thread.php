@@ -16,6 +16,7 @@ class Thread extends Model
     use Traits\ValidateTagTraits;
     use Traits\TypeValueChangeTrait;
     use Traits\ThreadTongrenTraits;
+    use Traits\RecordViewThreadTrait;
 
     protected $guarded = [];
     protected $hidden = [

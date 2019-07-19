@@ -16,7 +16,9 @@ class QuoteController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->only('create', 'store', 'mine');
+        $this->middleware('admin')->only('review_index', 'review');
     }
+
     public function store(Request $request)
     {
         $last_quote = Quote::where('user_id', Auth::id())->orderBy('created_at','desc')->first();
@@ -80,6 +82,47 @@ class QuoteController extends Controller
         ->orderBy('created_at','desc')
         ->paginate(config('preference.quotes_per_page'));
         return view('quotes.index', compact('quotes'))->with('show_quote_tab','mine');
+    }
+
+    public function review_index(Request $request)
+    {
+        $state = $request->withReviewState?? 'all';
+        $quotes = \App\Models\Quote::with('author','reviewer')
+        ->withReviewState($state)
+        ->orderBy('created_at', 'desc')
+        ->paginate(config('preference.quotes_per_page'))
+        ->appends(['withReviewState'=>$state]);
+
+        return view('quotes.review_index', compact('quotes'))->with('quote_review_tab', $state);
+    }
+
+    public function review(Quote $quote, Request $request)
+    {
+        $attitude = $request->attitude;
+        switch ($attitude):
+            case "approve"://通过题头
+            if(!$quote->approved){
+                $quote->approved = 1;
+                $quote->reviewed = 1;
+                $quote->reviewer_id = Auth::id();
+                $quote->save();
+            }
+            break;
+            case "disapprove"://不通过题头(已经通过了的，不允许通过；或没有评价过的，不允许通过)
+            if((!$quote->reviewed)||($quote->approved)){
+                $quote->approved = 0;
+                $quote->reviewed = 1;
+                $quote->reviewer_id = Auth::id();
+                $quote->save();
+            }
+            break;
+            default:
+            echo "应该奖励什么呢？一个bug呀……";
+        endswitch;
+        return [
+            'success' => "成功审核题头",
+            'quote' => $quote,
+        ];
     }
 
 }

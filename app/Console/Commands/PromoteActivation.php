@@ -41,9 +41,20 @@ class PromoteActivation extends Command
      */
     public function handle()
     {
-        User::where('activation_token','<>', null)
+        $info = DB::table('user_infos')
+        ->join('users','users.id','=','user_infos.user_id')
+        ->where('user_infos.email_verified_at','=',null)
+        ->where('users.activated','=',1)
+        ->orderBy('users.id','desc')
+        ->select('users.id')
+        ->take(200)
+        ->pluck('id')
+        ->toArray();
+
+        User::whereIn('id', $info)
         ->where('activated','=',1)
-        ->orderBy('created_at','desc')
-        ->limit(100)->update(['activated' => 0]);
+        ->update(['activated'=>0]);
+        echo "deactivated some users.\n";
+
     }
 }

@@ -51,35 +51,46 @@ function show_only_children_CP(id){
     $('.parent'+id).removeClass('hidden');
 }
 
-function toggle_review_quote(quote_id, method){
+function review_quote(quote_id, attitude){
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
     $.ajax({
-        type: 'GET',
-        url: web_base_url + '/quotes/' + quote_id + '/toggle_review/' + method,
+        type: 'POST',
+        url: web_base_url + '/quote/' + quote_id + '/review/',
         data: {
+            '_method': "PATCH",
+            'attitude' : attitude,
         },
         success: function(data) {
-            if (data != "notwork"){
-                console.log(data.approved);
+            // console.log(data);
+            var message = ["success","info","warning","danger"];
+            $.each(data, function( key, value ){
+                if ($.inArray(key,message)>-1){
+                    console.log(key,value);
+                    $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
+                }
+            });
+            if(!(data['quote'] === undefined)){
+                console.log(data['quote']);
                 $( '.quotebutton'+quote_id ).addClass('hidden');
-                $( '.quotereviewstatus'+quote_id ).html(data.approved);
-            }else{
-                console.log('having error approving/disaproving quote');
+                $( '.not_reviewed_'+quote_id ).addClass('hidden');
+                if(data['quote'].approved==0){
+                    $( '.quotereviewstatus'+quote_id ).html('不对外显示');
+                }else{
+                    $( '.quotereviewstatus'+quote_id ).html('对外显示');
+                }
+
             }
         }
     });
 };
 
-function toggle_re_review_buttons(item_id,approve_status){//approve_status = 0:not approved; 1:approved
-    if (approve_status === 1){
-        $( '.disapprovebutton' +  item_id).removeClass('hidden');
-    }else{
-        $( '.approvebutton' +  item_id).removeClass('hidden');
-    }
+function reset_review_button(item_id,approve_status){//approve_status = 0:not approved; 1:approved
+    $( '.disapprovebutton' +  item_id).removeClass('hidden');
+    $( '.approvebutton' +  item_id).removeClass('hidden');
     $( '.togglebutton' +  item_id).addClass('hidden');
 }
 

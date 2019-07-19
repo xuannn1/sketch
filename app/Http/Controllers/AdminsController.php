@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use DB;
-use App\Models\Quote;
 use App\Models\Tag;
 use App\Models\Thread;
 use App\Models\Post;
@@ -29,34 +28,7 @@ class AdminsController extends Controller
     {
         return view('admin.index');
     }
-    public function quotesreview()
-    {
-        $quotes = Quote::orderBy('created_at', 'desc')->paginate(config('constants.index_per_page'));
-        return view('admin.quotesreview', compact('quotes'));
-    }
-
-    public function toggle_review_quote(Quote $quote, $quote_method)
-    {
-        switch ($quote_method):
-            case "approve"://通过题头
-            if(!$quote->approved){
-                $quote->approved = 1;
-                $quote->reviewed = 1;
-                $quote->save();
-            }
-            break;
-            case "disapprove"://不通过题头(已经通过了的，不允许通过；或没有评价过的，不允许通过)
-            if((!$quote->reviewed)||($quote->approved)){
-                $quote->approved = 0;
-                $quote->reviewed = 1;
-                $quote->save();
-            }
-            break;
-            default:
-            echo "应该奖励什么呢？一个bug呀……";
-        endswitch;
-        return $quote;
-    }
+    
     public function thread_admin_record($thread, $request, $operation = 0)
     {
         return Administration::create([

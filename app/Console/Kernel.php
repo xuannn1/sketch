@@ -24,25 +24,20 @@ class Kernel extends ConsoleKernel
     */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('webstat:count')
-        // ->name('webstat:count')
-        // ->daily()
-        // ->onOneServer();
-        // $schedule->command('data:recalculation')
-        // ->name('data:recalculation')
-        // ->hourly()
-        // ->onOneServer();
-        //->everyFiveMinutes();
-        // $schedule->command('cache:clear')
-        // ->name('cache:clear')
-        // ->timezone('Asia/Shanghai')
-        // ->dailyAt('4:00')
-        // ->withoutOverlapping(10)
-        // ->onOneServer();
-        // $schedule->command('testlog:send')
-        // ->name('testlog:send')
-        // ->hourly()
-        // ->onOneServer();
+        $schedule->command('webstat:count')
+        ->name('webstat:count')
+        ->daily()
+        ->onOneServer();
+        $schedule->command('cache:clear')
+        ->name('cache:clear')
+        ->timezone('Asia/Shanghai')
+        ->dailyAt('4:00')
+        ->withoutOverlapping(10)
+        ->onOneServer();
+        $schedule->command('testlog:send')
+        ->name('testlog:send')
+        ->hourly()
+        ->onOneServer();
         // $schedule->command('activation:promote')
         // ->name('token:refresh')
         // ->timezone('Asia/Shanghai')

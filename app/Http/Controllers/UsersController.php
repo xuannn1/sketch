@@ -11,15 +11,16 @@ use App\Models\User;
 use Carbon;
 use App\Models\EmailModifyHistory;
 use App\Models\PasswordReset;
-use Mail;
 use CacheUser;
 use Cache;
 use ConstantObjects;
+use App\Sosadfun\Traits\SwitchableMailerTraits;
 
 class UsersController extends Controller
 {
 
     use AdministrationTraits;
+    use SwitchableMailerTraits;
 
     public function __construct()
     {
@@ -63,13 +64,17 @@ class UsersController extends Controller
             if ($previous_history_counts>=config('constants.monthly_email_resets')){
                 return redirect()->back()->with('warning','一个月内只能修改'.config('constants.monthly_email_resets').'次邮箱。');
             }
-            EmailModifyHistory::create([
-                'old-email' => $old_email,
-                'new-email' => request('email'),
+            $record = EmailModifyHistory::create([
+                'old_email' => $old_email,
+                'new_email' => request('email'),
                 'user_id' => Auth::id(),
                 'ip_address' => request()->ip(),
                 'old_email_verified_at' => $info->email_verified_at,
+                'token' => str_random(30),
             ]);
+
+            $this->sendChangeEmailRecordTo($user, $record);
+
             $user->email = $request->email;
             $info->activation_token = str_random(30);
             $user->save();
@@ -398,6 +403,16 @@ class UsersController extends Controller
         }
 
         return view('users.show_comment', compact('user','info','intro', 'posts'))->with(['show_user_tab'=>'comment']);
+    }
+
+    protected function sendChangeEmailRecordTo($user, $record)
+    {
+        $view = 'auth.change_email';
+        $data = compact('user', 'record');
+        $to = $user->email;
+        $subject = $user->name."的废文网邮箱更改提醒！";
+
+        $this->send_email_to_select_server($view, $data, $to, $subject);
     }
 
 }

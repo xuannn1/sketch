@@ -139,28 +139,10 @@ class RegisterController extends Controller
     {
         $view = 'auth.confirm';
         $data = compact('user');
-        $from = env('MAIL_USERNAME','null');
-        $name = env('MAIL_NAME','null');
         $to = $user->email;
         $subject = $user->name."您好，感谢注册废文网！请确认你的邮箱。";
 
-        $mail_setting = $this->select_server();
-
-        // Setup your gmail mailer
-        $transport = new Swift_SmtpTransport('smtp.gmail.com', 587, 'tls');
-        $transport->setUsername(env($mail_setting['username']));
-        $transport->setPassword(env($mail_setting['password']));
-        // Any other mailer configuration stuff needed...
-
-        $gmail = new Swift_Mailer($transport);
-
-        // Set the mailer as gmail
-        Mail::setSwiftMailer($gmail);
-
-        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
-            $message->from($from, $name)->to($to)->subject($subject);
-        });
-
+        $this->send_email_to_select_server($view, $data, $to, $subject);
     }
 
     public function confirmEmail($token)

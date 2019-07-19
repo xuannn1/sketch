@@ -11,11 +11,13 @@ use Carbon;
 use Cache;
 use CacheUser;
 use ConstantObjects;
+use App\Sosadfun\Traits\FindThreadTrait;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use Traits\QiandaoTrait;
+    use FindThreadTrait;
 
     protected $dates = ['deleted_at', 'qiandao_at'];
     public $timestamps = false;
@@ -171,6 +173,27 @@ class User extends Authenticatable
         return $channel->is_public||$this->role==='admin'||($channel->type==='homework'&&$this->role==='editor')||($channel->type==='homework'&&$this->role==='senior')||($channel->type==='homework'&&$this->role==='homeworker');
     }
 
+    public function canSeePost($post)
+    {
+        if($post->user_id === $this->id){
+            return true;
+        }
+        $thread = $this->findThread($post->thread_id);
+        if($this->canSeeThread($thread)){
+            return true;
+        }
+    }
+
+    public function canSeeThread($thread)
+    {
+        if($thread->user_id===$this->id||$this->isAdmin()){
+            return true;
+        }
+        if($thread->is_public&&$this->canSeeChannel($thread->channel_id)){
+            return true;
+        }
+    }
+
     public function checklevelup()
     {
         $level_ups = config('level.level_up');
@@ -298,6 +321,8 @@ class User extends Authenticatable
 
         $this->save();
     }
+
+
 
 
 

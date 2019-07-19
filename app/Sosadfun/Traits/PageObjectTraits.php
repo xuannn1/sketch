@@ -69,8 +69,8 @@ trait PageObjectTraits{
     public function users_online()
     {
         return Cache::remember('users-online-count', config('constants.online_count_interval'), function () {
-        $users_online = DB::table('logging_statuses')
-        ->where('logged_on', '>', time()-60*30)
+        $users_online = DB::table('online_statuses')
+        ->where('online_at', '>', Carbon::now()->subMinutes(config('constants.online_count_interval'))->toDateTimeString())
         ->count();
         return $users_online;
         });
