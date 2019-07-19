@@ -112,12 +112,15 @@ class PostsController extends Controller
             $chapter = $post->chapter;
             if($chapter){
                 $chapter->delete();
+                $thread->reorder_chapters();
+                $this->clearThreadChapterIndex($id);
             }
         }
         if($post->type==='review'){
             $review = $post->review;
             if($review){
                 $review->delete();
+                $this->clearThreadReviewIndex($id);
             }
         }
 
@@ -134,12 +137,15 @@ class PostsController extends Controller
             $chapter = $post->chapter;
             if($chapter){
                 $chapter->delete();
+                $thread->reorder_chapters();
+                $this->clearThreadChapterIndex($id);
             }
         }
         if($post->type==='review'){
             $review = $post->review;
             if($review){
                 $review->delete();
+                $this->clearThreadReviewIndex($id);
             }
         }
         $post->type='post';

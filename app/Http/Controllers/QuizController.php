@@ -16,8 +16,8 @@ class QuizController extends Controller
 
     public function __construct()
     {
-        $this->middleware('admin')->except('taketest','submittest');
-        $this->middleware('auth')->only('taketest','submittest');
+        $this->middleware('admin')->except('taketest','submittest','quiz_entry');
+        $this->middleware('auth')->only('taketest','submittest','quiz_entry');
     }
 
     public function review()
@@ -113,10 +113,17 @@ class QuizController extends Controller
     public function taketest(Request $request)
     {
         $user = Auth::user();
-        $level = (int)$request->quiz_level ?? 0;
+        $level = (int)$request->level ?? 0;
         $quizzes = $this->random_quizzes($level);
         return view('quiz.taketest',compact('level', 'quizzes', 'user'));
     }
+
+    public function quiz_entry()
+    {
+        $user = Auth::user();
+        return view('quiz.quiz_entry', compact('user'));
+    }
+
     public function submittest(Request $request)
     {
         $user = Auth::user();
@@ -133,14 +140,16 @@ class QuizController extends Controller
             }
         }
         if(empty($wrong_quiz)){
-            if(!$user->last_quizzed_at){
-                $user->reward('first_quiz');
-                $user->last_quizzed_at = Carbon::now();
+            if($user->quiz_level<=$request->level){
+                $user->reward('first_quiz', $request->level+1);
+                $user->quiz_level = $request->level+1;
+                if($user->level<1){$user->level=1;}
                 $user->save();
+                return redirect('/')->with('success', '恭喜，初次答对本组题目的奖励已经发放！');
             }else{
                 $user->reward('more_quiz');
+                return redirect('/')->with('success', '恭喜，已经完成了测试！多次答对题目的奖励已经发放！');
             }
-            return redirect('/')->with('success', '恭喜，已经完成了测试！正确答题的奖励已经发放！');
         }else{
             return view('quiz.analyzequiz', compact('wrong_quiz','user'));
         }

@@ -5,14 +5,15 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3>废文使用测试题</h3>
+                <h1>废文使用测试题</h1>
                 <h4>{{ $user->name }} 您好！欢迎您参与废文使用测试！在这里您将彻底学习如何做条好鱼。每位咸鱼初次答对全部题目时，还会获得<code>升级</code>必备的分值<code>奖励</code>，还等什么呢，快来尝试一下吧！</h4>
+                <h3>当前题目等级：{{$level+1}}级</h3>
             </div>
             <div class="panel-body">
                 @include('shared.errors')
                 <form method="POST" action="{{ route('quiz.submittest') }}">
                     {{ csrf_field() }}
-
+                    <input name="level" value="{{$level}}" class="hidden">
                     @foreach ($quizzes as $quiz_key=> $quiz)
                     <div class="h4">
                         <span><strong>第{{ $quiz_key+1 }}题：</strong></span>

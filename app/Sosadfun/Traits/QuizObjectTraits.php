@@ -3,6 +3,8 @@ namespace App\Sosadfun\Traits;
 
 use DB;
 use Cache;
+use App\Models\Quiz;
+use App\Models\QuizOption;
 
 trait QuizObjectTraits{
 

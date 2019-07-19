@@ -302,7 +302,7 @@ class Thread extends Model
         return $sum_char;
     }
 
-    public function reorder_characters()
+    public function reorder_chapters()
     {
         $posts = Post::with('chapter')
         ->join('chapters', 'posts.id', '=', 'chapters.post_id')

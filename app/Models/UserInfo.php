@@ -69,10 +69,10 @@ class UserInfo extends Model
             $this->rewardData(50,20,$base*2);
             break;
             case "first_quiz":// 首次答题奖励
-            $this->rewardData(20,5,0);
+            $this->rewardData(20*$base,5*$base,0);
             break;
             case "more_quiz":// 重复答题奖励
-            $this->rewardData(2,0,0);
+            $this->rewardData(2*$base,0,0);
             break;
             default:
             echo "应该奖励什么呢？一个bug呀……";

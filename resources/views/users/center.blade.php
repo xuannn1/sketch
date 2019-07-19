@@ -62,7 +62,7 @@
                     <a href="{{ route('reward.received') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的打赏
                     </a>
-                    <a href="{{ route('quiz.taketest') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{ route('quiz.quiz_entry') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         答题挑战
                     </a>
                 </div>

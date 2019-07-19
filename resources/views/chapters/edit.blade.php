@@ -67,6 +67,10 @@
                     @endif
                     <button type="submit" class="btn btn-lg btn-primary sosad-button">确认修改章节</button>
                 </form>
+                <br>
+                <div class="font-5 text-right">
+                    （想删除章节？为免误删，请先把章节转化成普通回帖——在章节正文右下角找到齿轮符号）
+                </div>
             </div>
         </div>
     </div>

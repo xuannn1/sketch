@@ -323,6 +323,7 @@
     Route::get('admin/quiz/{quiz}/edit','QuizController@edit')->name('quiz.edit');//管理员修改某题目
     Route::get('admin/quiz/{quiz}','QuizController@show')->name('quiz.show');//管理员修改某题目
     Route::post('admin/quiz/{quiz}/update','QuizController@update')->name('quiz.update');//管理员更新某题目
+    Route::get('quiz/quiz_entry','QuizController@quiz_entry')->name('quiz.quiz_entry');//测试入口
     Route::get('quiz/taketest','QuizController@taketest')->name('quiz.taketest');//测试
     Route::post('quiz/submittest','QuizController@submittest')->name('quiz.submittest');//测试
 }
