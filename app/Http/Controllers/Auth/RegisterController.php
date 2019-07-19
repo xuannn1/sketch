@@ -192,7 +192,7 @@ class RegisterController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
-        return redirect()->route('users.edit');
+        return redirect()->route('user.edit');
 
     }
 

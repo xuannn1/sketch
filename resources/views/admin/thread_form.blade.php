@@ -7,14 +7,15 @@
         @include('shared.errors')
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4>高级管理</h4>
-                <a href="{{route('thread.show',$thread->id)}}">{{ $thread->title }}</a>
+                <h2>管理讨论帖/书籍</h2>
+                <h2><a href="{{route('thread.show',$thread->id)}}">{{ $thread->title }}</a></h2>
+
             </div>
             <div class="panel-body">
                 <form action="{{ route('admin.threadmanagement',$thread->id)}}" method="POST">
                     {{ csrf_field() }}
                     <div class="admin-symbol">
-                        <h1>管理员权限专区</h1>
+                        <h3>管理员权限专区</h3>
                     </div>
                     @if(!$thread->is_locked)
                     <div class="radio">
@@ -56,6 +57,16 @@
                     </div>
                     @endif
 
+                    @if(!$thread->no_reply)
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="21">禁止回复</label>
+                    </div>
+                    @else
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="22">允许回复</label>
+                    </div>
+                    @endif
+
                     <div class="radio">
                         <label><input type="radio" name="controlthread" value="40">帖子上浮（顶帖）</label>
                     </div>
@@ -73,10 +84,9 @@
                     </div>
                     @endif
 
-                    @if($thread->jinghua < Carbon::now())
+                    @if($thread->tags->contains('tag_name', '精华'))
                     <div class="radio">
                         <label><input type="radio" name="controlthread" value="44">添加精华</label>
-                        <label><input type="text" style="width: 40px" name="jinghua-days" value="0">精华时间（天）</label>
                     </div>
                     @else
                     <div class="radio">
@@ -85,15 +95,9 @@
                     @endif
 
                     <label><input type="radio" name="controlthread" value="9">转换板块（注意，如果点选了下面其他选项，记得回头把这个选一下）</label>
-                    @foreach($channels as $channel)
+                    @foreach(collect(config('channel')) as $channel)
                     <div class="">
-                        <label class="radio-inline"><input type="radio" name="channel" value="{{$channel->id}}" onclick="document.getElementById('{{$channel->channelname}}').style.display = 'block'">{{$channel->channelname}}</label>
-                        <div id="{{$channel->channelname}}" style="display:none">
-                            <p>请选择主题对应类型</p>
-                            @foreach ($channel->labels as $index => $label)
-                            <label class="radio-inline"><input type="radio" name="label" value="{{ $label->id }}">{{ $label->labelname }}</label>
-                            @endforeach
-                        </div>
+                        <label class="radio-inline"><input type="radio" name="channel" value="{{$channel->id}}">{{$channel->channel_name}}</label>
                     </div>
                     @endforeach
                     <div class="form-group">

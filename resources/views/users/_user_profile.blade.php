@@ -24,7 +24,7 @@
 @if((Auth::check())&&(Auth::user()->isAdmin()))
 <div class="text-center row">
     <div class="col col-xs-6">
-        <a href="#"class="btn btn-lg btn-danger sosad-button admin-button">管理该用户</a>
+        <a href="{{route('admin.userform', $user->id)}}"class="btn btn-lg btn-danger sosad-button admin-button">管理该用户</a>
     </div>
     <div class="col col-xs-6">
         <a href="{{route('administrationrecords', ['user_id'=>$user->id])}}"class="btn btn-lg btn-danger sosad-button admin-button">看{{$user->name}}的管理记录</a>

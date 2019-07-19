@@ -50,7 +50,7 @@
 
                     @if((Auth::check())&&(Auth::user()->isAdmin()))
                     <span>
-                        <a href="#" class="btn btn-xs btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
+                        <a href="{{route('admin.postform', $post->id)}}" class="btn btn-xs btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
                     </span>
                     @endif
 

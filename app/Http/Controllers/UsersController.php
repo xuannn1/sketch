@@ -32,7 +32,8 @@ class UsersController extends Controller
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
-        $last_email_sent = PasswordReset::where('email','=',$user->email)->latest()->first()->created_at;
+        $record = PasswordReset::where('email','=',$user->email)->latest()->first();
+        $last_email_sent = $record? $record->created_at:'';
         $email_confirmed = $info->activation_token ? false:true;
         return view('users.edit', compact('user', 'info','last_email_sent','email_confirmed'));
     }
@@ -41,17 +42,23 @@ class UsersController extends Controller
     {
         $user = Auth::user();
         $previous_history_counts = EmailModifyHistory::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
-        return view('user.edit_email', compact('user','previous_history_counts'));
+        return view('users.edit_email', compact('user','previous_history_counts'));
     }
 
     public function update_email(Request $request)
     {
         $user = Auth::user();
+        $info = $user->info;
         if(Hash::check(request('old-password'), $user->password)) {
             $this->validate($request, [
                 'email' => 'required|string|email|max:255|unique:users|confirmed',
             ]);
             $old_email = $user->email;
+
+            if($old_email==$request->email){
+                return redirect()->back()->with('warning','已经修改为这个邮箱，无需重复修改。');
+            }
+
             $previous_history_counts = EmailModifyHistory::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
             if ($previous_history_counts>=config('constants.monthly_email_resets')){
                 return redirect()->back()->with('warning','一个月内只能修改'.config('constants.monthly_email_resets').'次邮箱。');
@@ -61,11 +68,13 @@ class UsersController extends Controller
                 'new-email' => request('email'),
                 'user_id' => Auth::id(),
                 'ip_address' => request()->ip(),
+                'old_email_verified_at' => $info->email_verified_at,
             ]);
-            $user->email = request('email');
-            $user->activation_token = str_random(30);
+            $user->email = $request->email;
+            $info->activation_token = str_random(30);
             $user->save();
-            return redirect()->route('users.edit', Auth::id())->with("success", "您已成功修改个人资料");
+            $info->save();
+            return redirect()->route('user.edit', Auth::id())->with("success", "您已成功修改个人资料");
         }
         return back()->with("danger", "您的旧密码输入错误");
     }

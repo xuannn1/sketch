@@ -60,7 +60,7 @@
                         <!-- 管理专区 -->
                         <div class="">
                             <span>
-                                <a href="#" class="btn btn-md btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
+                                <a href="{{route('admin.postform', $post->id)}}" class="btn btn-md btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
                             </span>
                         </div>
                         @endif

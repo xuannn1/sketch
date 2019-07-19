@@ -247,6 +247,8 @@
    Route::post('/admin/statusmanagement/{status}','AdminsController@statusmanagement')->name('admin.statusmanagement');//管理员管理动态
 
    Route::get('/admin/threadform/{thread}','AdminsController@threadform')->name('admin.threadform');//进入管理主题贴页面
+   Route::get('/admin/userform/{user}','AdminsController@userform')->name('admin.userform');//进入管理用户页面
+   Route::get('/admin/postform/{post}','AdminsController@postform')->name('admin.postform');//进入管理帖子页面
    Route::get('/admin/statusform/{status}','AdminsController@statusform')->name('admin.statusform');//进入管理动态页面
 
    Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform');//发送提醒通知表格
