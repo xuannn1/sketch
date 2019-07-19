@@ -21,7 +21,7 @@ trait ModifyUserTableTraits{
         DB::statement('
             DELETE f1 FROM followers f1
             INNER JOIN
-            follower f2
+            followers f2
             WHERE
             f1.id < f2.id AND f1.user_id = f2.user_id and f1.follower_id = f2.follower_id;
         ');

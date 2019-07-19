@@ -152,7 +152,7 @@ trait ModifyReviewNCollectionTraits{
         ->get();
 
         $insert_posts = [];
-        foreach ( $collection_reviews as $collection_review ){
+        foreach ( $collection_reviews as $key => $collection_review ){
             $post_data = [
                 'thread_id'=> $collection_review->list_id,
                 'user_id'=> $collection_review->user_id,
@@ -165,6 +165,11 @@ trait ModifyReviewNCollectionTraits{
                 'collection_thread_id' => $collection_review->collection_thread_id,
             ];
             array_push($insert_posts, $post_data);
+            if($key%1000===999){
+                DB::table('posts')->insert($insert_posts);
+                echo $key.'|';
+                $insert_posts = [];
+            }
         }
         DB::table('posts')->insert($insert_posts);
         echo "added collections into posts as reviews.\n";
