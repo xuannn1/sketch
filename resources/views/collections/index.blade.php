@@ -17,7 +17,7 @@
                 {{ $collections->links() }}
                 @if($show_collection_tab!='default')
                 <div class="text-center">
-                    <a href="{{ route('collection_group.edit', $show_collection_tab) }}" class="btn btn-info btn-lg sosad-button">修改当前收藏页</a>
+                    <a href="{{ route('collection_group.edit', $show_collection_tab) }}" class="btn btn-info btn-md sosad-button">修改当前收藏页</a>
                 </div>
                 @endif
             </div>

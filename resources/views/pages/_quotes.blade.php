@@ -2,8 +2,8 @@
 <div class="jumbotron item {{$int==0? 'active':''}}" >
     <article>
         <div class="container-fluid">
-            <h2 class="daily-quote display-1">
-                <a href="{{ route('quote.show', $quote->id) }}">
+            <h2 class="display-1">
+                <a href="{{ route('quote.show', $quote->id) }}" class="daily-quote">
                 {{ $quote->body }}
                 </a>
             </h2>
@@ -16,7 +16,6 @@
                         ——<a href="#">{{ $quote->author->name }}</a>
                         @endif
                     @endif
-                    <br>
                 </div>
             </div>
             <br>
@@ -37,7 +36,7 @@
                 </form>
             @else
                 <div class="text-center">
-                    <a class="btn btn-lg btn-success sosad-button" href="{{ route('register') }}" role="button">一起来丧</a>
+                    <a class="btn btn-md btn-success sosad-button" href="{{ route('register') }}" role="button">一起来丧</a>
                 </div>
             @endif
             </div>

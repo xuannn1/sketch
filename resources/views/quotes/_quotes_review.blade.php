@@ -11,14 +11,14 @@
             <div class="row">
                 <div class="row quotebutton{{$quote->id}}">
                     <div class="col-xs-4 text-right">
-                        <button class="btn btn-lg btn-success cancel-button approvebutton{{$quote->id}} {{$quote->reviewed? 'hidden':''}}"  type="button" name="button" onClick="review_quote({{$quote->id}},'approve')">对外显示<i class="fa fa-check" aria-hidden="true"></i></button>
+                        <button class="btn btn-md btn-success cancel-button approvebutton{{$quote->id}} {{$quote->reviewed? 'hidden':''}}"  type="button" name="button" onClick="review_quote({{$quote->id}},'approve')">对外显示<i class="fa fa-check" aria-hidden="true"></i></button>
                     </div>
                     <div class="col-xs-4 text-center">
-                        <button class="btn btn-lg btn-info cancel-button togglebutton{{$quote->id}} {{$quote->reviewed? '':'hidden'}}"  type="button" name="button" onClick="reset_review_button({{$quote->id}})">重新审核</button>
+                        <button class="btn btn-md btn-info cancel-button togglebutton{{$quote->id}} {{$quote->reviewed? '':'hidden'}}"  type="button" name="button" onClick="reset_review_button({{$quote->id}})">重新审核</button>
 
                     </div>
                     <div class="col-xs-4 text-left">
-                        <button class="btn btn-lg  btn-danger cancel-button disapprovebutton{{$quote->id}} {{$quote->reviewed? 'hidden':''}}"  type="button" name="button" onClick="review_quote({{$quote->id}},'disapprove')">不显示<i class="fa fa-times" aria-hidden="true"></i></button>
+                        <button class="btn btn-md  btn-danger cancel-button disapprovebutton{{$quote->id}} {{$quote->reviewed? 'hidden':''}}"  type="button" name="button" onClick="review_quote({{$quote->id}},'disapprove')">不显示<i class="fa fa-times" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </div>

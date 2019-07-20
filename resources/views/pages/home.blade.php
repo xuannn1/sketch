@@ -34,9 +34,9 @@
                     <div class="recommendation">
                         <div class="row">
                             <div class="col-xs-12">
-                                <a href="{{ route('thread.show', ['thread' => $post->review->thread_id, 'recommendation' => $post->review->id]) }}" class="bigger-10">
+                                <a href="{{ route('thread.show', ['thread' => $post->review->thread_id, 'recommendation' => $post->review->id]) }}" class="">
                                     《{{ $post->review->reviewee->title }}》
-                                <span class="grayout smaller-15">{{ $post->body }}</span>
+                                <span class="grayout smaller-5">{{ $post->body }}</span>
                                 </a>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                     <div class="recommendation">
                         <div class="row">
                             <div class="col-xs-12">
-                                <a href="{{ route('thread.show', $thread_recom->id) }}" class="bigger-10">{{ $thread_recom->title }}：<span class="grayout smaller-15">{{ $thread_recom->brief }}</span>
+                                <a href="{{ route('thread.show', $thread_recom->id) }}" class="">{{ $thread_recom->title }}：<span class="grayout smaller-25">{{ $thread_recom->brief }}</span>
                                 </a>
                             </div>
                         </div>
@@ -74,9 +74,9 @@
                     <div class="row">
                         <div class="col-xs-12 h5 brief">
                             <span>
-                                <a href="{{ route('thread.show', $thread->id) }}" class="bigger-10">{{ $thread->title }}</a>
+                                <a href="{{ route('thread.show', $thread->id) }}" class="bigger-5">{{ $thread->title }}</a>
                             </span>
-                            <span class = "pull-right">
+                            <span class = "pull-right smaller-5">
                                 @if($thread->author)
                                     @if($thread->is_anonymous)
                                     <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
@@ -90,8 +90,8 @@
                             </span>
                         </div>
                         <div class="col-xs-12 h5 brief">
-                            <span class="grayout smaller-15">{{ $thread->brief }}</span>
-                            <span class="pull-right smaller-15">{{ $thread->created_at->diffForHumans() }}／{{ $thread->responded_at->diffForHumans() }}</span>
+                            <span class="grayout smaller-20">{{  StringProcess::simpletrim($thread->brief, 17)}}</span>
+                            <span class="pull-right smaller-25">{{ $thread->created_at->diffForHumans() }}／{{ $thread->responded_at->diffForHumans() }}</span>
                         </div>
                     </div>
                 </article>

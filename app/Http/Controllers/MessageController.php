@@ -117,9 +117,11 @@ class MessageController extends Controller
         $info->clear_column('reward_reminders');
         $info->clear_column('upvote_reminders');
         $info->clear_column('reply_reminders');
+        $info->clear_column('administration_reminders');
         $user->clear_column('public_notice_id');
         $user->clear_column('unread_reminders');
         $user->clear_column('unread_updates');
+
 
         return redirect()->back();
     }

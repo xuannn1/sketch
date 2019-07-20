@@ -53,7 +53,7 @@
         </div>
         @endforeach
         <div class="text-center">
-            <a href="{{ route('quiz.taketest', ['level'=>$level]) }}" class="btn btn-lg btn-primary sosad-button ">重来一遍</a>
+            <a href="{{ route('quiz.taketest', ['level'=>$level]) }}" class="btn btn-md btn-primary sosad-button ">重来一遍</a>
         </div>
 
     </div>

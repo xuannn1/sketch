@@ -58,6 +58,10 @@ a {
    font-weight:bold;
 }
 
+.nav >li >a{
+    padding:5px 10px;
+}
+
 .navbar{
    margin-bottom: 5px;
 }
@@ -65,7 +69,7 @@ a {
 #logo {
   float: left;
   margin-right: 10px;
-  font-size: 2.8em;
+  font-size: 2.0em;
   color: #fff;
   text-decoration: none;
   letter-spacing: -5px;
@@ -121,6 +125,7 @@ footer {
 .jumbotron{
   text-align: center;
   margin-bottom: 5px;
+  padding:10px;
 }
 
 .img {
@@ -167,19 +172,19 @@ h4, .h4, h5, .h5, h6, .h6 , .font-4, .font-5, .font-6{
 }
 
 h1, .h1, .font-1{
-    font-size:48px;
-}
-
-h2, .h2, .font-2{
-    font-size:36px;
-}
-
-h3, .h3, .font-3{
     font-size:30px;
 }
 
-h4, .h4, .font-4{
+h2, .h2, .font-2{
+    font-size:26px;
+}
+
+h3, .h3, .font-3{
     font-size:22px;
+}
+
+h4, .h4, .font-4{
+    font-size:18px;
 }
 h5, .h5, .font-5{
     font-size:16px;
@@ -198,14 +203,21 @@ h6, .h6, .font-6{
 .panel-body{
    padding-top: 0;
    padding-bottom:5px;
+   padding-left:5px;
+   padding-right:5px;
 }
 .panel-heading{
    margin-top:0px;
    margin-bottom:0px;
-   padding-left:15px;
-   padding-top:5px;
-   padding-right:15px;
-   padding-bottom:5px;
+   padding:5px;
+}
+.row{
+    margin:0px;
+    padding-left:0px;
+    padding-right:0px;
+}
+.col-xs-12, .col-xs-11, .col-xs-10, .col-xs-9, .col-xs-8, .col-xs-7, .col-xs-6, .col-xs-5, .col-xs-4, .col-xs-3, .col-xs-2, .col-xs-1{
+    margin:0px;
 }
 
 hr {
@@ -223,25 +235,31 @@ hr {
   display: block!important;
 }
 
+.navbar-nav.nav{
+    padding:0px;
+}
+
 .navbar-nav>li, .navbar-nav {
   float: left !important;
   a{
-      padding-top:20px;
+      padding-top:10px;
+      padding-left:8px;
+      padding-right:8px;
       font-weight:400;
-      font-size:1.4em;
+      font-size:1.2em;
    }
    .dropdown{
        li{
-           padding-top:10px;
-           padding-bottom:10px;
-           font-size:1.2em;
+           padding-top:5px;
+           padding-bottom:5px;
+           font-size:1.0em;
            letter-spacing: 2px;
        }
    }
 }
 
 .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
-     padding-top:20px;
+     padding-top:10px;
 }
 
 .navbar-nav.navbar-right:last-child {
@@ -345,8 +363,8 @@ hr {
    padding-right:15px;
 }
 .panel-vote{
-   padding-left:15px;
-   padding-right:15px;
+   padding-left:5px;
+   padding-right:5px;
 }
 .post-reply{
    padding-left:32px;
@@ -413,12 +431,21 @@ hr {
 .lead{
    font-weight:inherit !important;
 }
+.bigger-30{
+   font-size: 130%;
+}
 
 .bigger-20{
    font-size: 120%;
 }
 .bigger-10{
    font-size: 110%;
+}
+.bigger-5{
+   font-size: 105%;
+}
+.smaller-5{
+   font-size: 95%;
 }
 .smaller-10{
    font-size: 90%;
@@ -435,6 +462,10 @@ hr {
 .smaller-25{
    font-size:75%;
 }
+.smaller-30{
+   font-size:70%;
+}
+
 .brief{
    margin-top:0px;
    margin-bottom:0px;
@@ -580,7 +611,7 @@ img{
 }
 
 .daily-quote{
-    height:180px;
+    height:160px;
     line-height: 1.6;
     vertical-align: middle;
 }

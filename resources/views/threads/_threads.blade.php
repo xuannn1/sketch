@@ -1,11 +1,11 @@
 @foreach($threads as $thread)
 <article class="{{ 'threadid'.$thread->id }}">
     <div class="row">
-        <div class="col-xs-12 h5">
+        <div class=" h5">
             <!-- thread title -->
             <span>
                 <span class="badge newchapter-badge badge-tag">{{ $thread->channel()->channel_name }}</span>
-                <a href="{{ route('thread.show',$thread->id) }}" class="bigger-10">{{ $thread->title }}</a>
+                <a href="{{ route('thread.show',$thread->id) }}" class="bigger-5">{{ $thread->title }}</a>
                 <small>
                     @if( !$thread->is_public )
                     <span class="glyphicon glyphicon-eye-close"></span>
@@ -34,7 +34,7 @@
             </span>
             <!-- thread title end   -->
             <!-- author  -->
-            <span class = "pull-right">
+            <span class = "pull-right smaller-5">
                 @if($thread->author)
                     @if($thread->is_anonymous)
                         <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
@@ -48,13 +48,13 @@
             </span>
             <!-- author end -->
         </div>
-        <div class="col-xs-12 h5 ">
-            <span>{{ $thread->brief }}</span>
-            <span class="pull-right smaller-10"><em><span class="glyphicon glyphicon-eye-open"></span>{{ $thread->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->reply_count }}</em></span>
+        <div class=" h5 ">
+            <span class="smaller-5">{{ StringProcess::simpletrim($thread->brief, 15)  }}</span>
+            <span class="pull-right smaller-30"><em><span class="glyphicon glyphicon-eye-open"></span>{{ $thread->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->reply_count }}</em></span>
         </div>
-        <div class="col-xs-12 h5 grayout brief smaller-10">
-            <span class="smaller-10"><a href="{{ route('thread.showpost', $thread->last_post_id) }}">{{ $thread->last_post? StringProcess::simpletrim($thread->last_post->brief, 25):' ' }}</a></span>
-            <span class="pull-right smaller-10">{{ $thread->created_at->diffForHumans() }}/{{ $thread->responded_at->diffForHumans() }}</span>
+        <div class=" h5 grayout brief">
+            <span class="smaller-20"><a href="{{ route('thread.showpost', $thread->last_post_id) }}">{{ $thread->last_post? StringProcess::simpletrim($thread->last_post->brief, 15):' ' }}</a></span>
+            <span class="pull-right smaller-20">{{ $thread->created_at->diffForHumans() }}/{{ $thread->responded_at->diffForHumans() }}</span>
         </div>
     </div>
 </article>

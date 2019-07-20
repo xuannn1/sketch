@@ -5,7 +5,7 @@
     &nbsp;&nbsp;
     <span><a href="{{route('user.followers', $user->id)}}">粉丝：{{ $info->follower_count }}</a></span>
 </div>
-<div class="stats h4">
+<div class="stats h5">
     <span>盐粒：{{ $info->salt }}</span>&nbsp;&nbsp;<br>
     <span>咸鱼：{{ $info->fish }}</span>&nbsp;&nbsp;
     <span>火腿：{{ $info->ham }}</span>&nbsp;&nbsp;<br>

@@ -1,7 +1,7 @@
 <!-- 简单展示一串帖子 -->
 @foreach($activities as $key=>$activity)
 @if($activity->item)
-<article id="post{{ $activity->item_id }}">
+<article id="post{{ $activity->item_id }}" class="h5">
     <span class="badge newchapter-badge badge-tag {{$activity->seen?'hidden':''}}">新</span>
     <a href="{{ route('thread.showpost', $activity->item_id) }}">
         @if($activity->item->is_anonymous)

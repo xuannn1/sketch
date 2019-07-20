@@ -16,19 +16,19 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="">
-                    <a href="{{route('quiz.taketest',['level'=>0])}}" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{route('quiz.taketest',['level'=>0])}}" class="btn btn-md btn-info btn-block sosad-button">
                         1级题（{{$user->quiz_level>=1?'已回答':'未回答'}}）
                     </a>
                 </div>
                 <hr>
                 <div class="">
-                    <a href="{{route('quiz.taketest',['level'=>1])}}" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{route('quiz.taketest',['level'=>1])}}" class="btn btn-md btn-info btn-block sosad-button">
                         2级题（{{$user->quiz_level>=2?'已回答':'未回答'}}）
                     </a>
                 </div>
                 <hr>
                 <div class="">
-                    <a href="{{route('quiz.taketest',['level'=>2])}}" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{route('quiz.taketest',['level'=>2])}}" class="btn btn-md btn-info btn-block sosad-button">
                         3级题（{{$user->quiz_level>=3?'已回答':'未回答'}}）
                     </a>
                 </div>

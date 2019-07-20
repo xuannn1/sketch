@@ -12,7 +12,7 @@
             <div class="panel-body">
                 @foreach($branchaccounts as $account)
                 <div class="linkedaccount{{$user->id}}-{{$account->id}}">
-                    <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-lg sosad-button-control" onclick="cancellink({{$user->id}}, {{$account->id}})">取消关联{{$account->name}}</button></li>
+                    <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-md sosad-button-control" onclick="cancellink({{$user->id}}, {{$account->id}})">取消关联{{$account->name}}</button></li>
                 </div>
                 @endforeach
             </div>
@@ -26,7 +26,7 @@
             <div class="panel-body">
                 @foreach($masteraccounts as $account)
                 <div class="linkedaccount{{$account->id}}-{{$user->id}}">
-                    <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-lg sosad-button-control" onclick="cancellink({{$account->id}}, {{$user->id}})">取消{{$account->name}}对我的关联</button></li>
+                    <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-md sosad-button-control" onclick="cancellink({{$account->id}}, {{$user->id}})">取消{{$account->name}}对我的关联</button></li>
                 </div>
                 @endforeach
             </div>

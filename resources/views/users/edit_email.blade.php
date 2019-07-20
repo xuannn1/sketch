@@ -41,7 +41,7 @@
                         <h6>由于邮件业务存在跨国跨墙情况，有时会出现运营商截停/延误邮件的情况，请给邮箱预留一小时以上的空余时间接收，不要连续重复发件。<br>如果确认邮箱正确仍不能收到邮件，请酌情更换自己常用、可用的其他邮箱。</h6>
                     </div>
 
-                    <button type="submit" class="btn btn-lg btn-danger sosad-button">更新邮箱</button>
+                    <button type="submit" class="btn btn-md btn-danger sosad-button">更新邮箱</button>
                 </form>
             </div>
         </div>

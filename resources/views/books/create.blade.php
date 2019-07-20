@@ -157,7 +157,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-lg btn-danger sosad-button">发布</button>
+                <button type="submit" class="btn btn-md btn-danger sosad-button">发布</button>
             </form>
         </div>
     </div>

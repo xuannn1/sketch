@@ -4,7 +4,7 @@
         @if($post->is_bianyuan&&!$thread->is_bianyuan)
             <span class="glyphicon glyphicon-info-sign"></span>
         @endif
-        {{ $post->title.'：'.StringProcess::simpletrim($post->brief, 10) }}</a>
+        {{ $post->title }}</a>
 
     @endforeach
 </div>

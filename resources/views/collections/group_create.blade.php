@@ -38,7 +38,7 @@
                     </div>
                     <br>
                     <div class="text-left">
-                        <button type="submit" class="btn btn-lg btn-primary sosad-button">确认添加收藏页</button>
+                        <button type="submit" class="btn btn-md btn-primary sosad-button">确认添加收藏页</button>
                     </div>
                 </form>
             </div>

@@ -21,7 +21,7 @@
                     <label><input name="rewardable_type" value="status" class="hidden"></label>
                     <label><input name="rewardable_id" value="{{$status->id}}" class="hidden"></label>
                     <div class="text-right">
-                        <button type="submit" class="btn btn-lg btn-primary sosad-button">打赏</button>
+                        <button type="submit" class="btn btn-md btn-primary sosad-button">打赏</button>
                     </div>
                 </div>
             </form>

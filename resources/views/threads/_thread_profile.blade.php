@@ -1,5 +1,5 @@
 <div class="panel panel-default">
-    <div class="panel-body {{ $thread->channel()->type == 'thread' ? '':'text-center' }}">
+    <div class="panel-body">
         <!-- 标题简介数据打赏信息 -->
         @include('threads._thread_info')
     </div>

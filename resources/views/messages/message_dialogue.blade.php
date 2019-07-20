@@ -7,9 +7,9 @@
         <!-- 导航 -->
         <div class="">
             <a href="{{ route('activity.index') }}">消息中心</a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('message.index') }}">站内信箱</a>
-            &nbsp;/&nbsp;
+            /
             和{{$speaker->name}}的对话
         </div>
         @include('shared.errors')

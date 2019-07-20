@@ -7,9 +7,9 @@
         <!-- 首页／版块／导航 -->
         <div class="">
             <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('status.index') }}">全站动态</a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('status.show', $status->id) }}">第{{$status->id}}号动态</a>
         </div>
 
@@ -31,7 +31,7 @@
                         {{ $status->created_at }}
                     </span>
                     @if((Auth::check())&&(Auth::user()->isAdmin()))
-                    <a href="{{ route('admin.statusform', $status->id) }}" class="btn btn-lg btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理动态</a>
+                    <a href="{{ route('admin.statusform', $status->id) }}" class="btn btn-md btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理动态</a>
                     @endif
                 </div>
 
@@ -68,12 +68,12 @@
                 @if(Auth::check())
                 <div class="text-right post-vote">
                     @if(Auth::user()->level >= 1)
-                        <span class="voteposts"><button class="btn btn-default btn-lg" data-id="{{$status->id}}" onclick="vote('status', {{$status->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart"></span><span id="status{{$status->id}}upvote">{{ $status->upvote_count }}</span></button></span>
+                        <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$status->id}}" onclick="vote('status', {{$status->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart"></span><span id="status{{$status->id}}upvote">{{ $status->upvote_count }}</span></button></span>
                     @endif
-                    &nbsp;<span><a href="#" data-id="{{$status->id}}" data-toggle="modal" data-target="#TriggerStatusReward{{ $status->id }}" class="btn btn-default btn-lg">打赏</a></span>
+                    &nbsp;<span><a href="#" data-id="{{$status->id}}" data-toggle="modal" data-target="#TriggerStatusReward{{ $status->id }}" class="btn btn-default btn-md">打赏</a></span>
                     @include('statuses._reward_form')
                     @if((Auth::check())&&(Auth::id()==$status->user_id))
-                        &nbsp;<a href="{{ route('status.destroy', $status->id) }}" class="btn btn-lg btn-danger sosad-button" onclick="event.preventDefault(); document.getElementById('status-destroy-form').submit();">删除动态</a>
+                        &nbsp;<a href="{{ route('status.destroy', $status->id) }}" class="btn btn-md btn-danger sosad-button" onclick="event.preventDefault(); document.getElementById('status-destroy-form').submit();">删除动态</a>
                         <form id="status-destroy-form" action="{{ route('status.destroy', $status->id) }}" method="POST" style="display: none;">
                             {{ csrf_field() }}
                             @method('DELETE')

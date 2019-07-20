@@ -7,7 +7,7 @@
         <!-- 导航 -->
         <div class="">
             <a href="{{ route('user.center') }}">个人中心</a>
-            &nbsp;/&nbsp;我的评票
+            /我的评票
         </div>
         <div class="panel panel-default">
             <div class="panel-body text-center">

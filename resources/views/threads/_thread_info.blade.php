@@ -38,17 +38,18 @@
     </div>
     <div class="">
         @if((Auth::check())&&(Auth::user()->isAdmin()))
-        <a href="{{ route('admin.threadform', $thread) }}" class="btn btn-lg btn-danger admin-button">管理主题</a>
+        <a href="{{ route('admin.threadform', $thread) }}" class="btn btn-md btn-danger admin-button">管理主题</a>
         @endif
     </div>
+    <!-- 一句话简介 -->
+    <div class="h5">{{ $thread->brief }}</div>
 </div>
 <!-- 简介 -->
-<div class="article-body h4">
+<div class="article-body">
     <!-- 简介信息 -->
     <div class="">
-        <!-- 一句话简介 -->
-        <div class="h4">{{ $thread->brief }}</div>
-        <div class="text-center">
+
+        <div class="text-center h5">
             <!-- 作者信息，发表时间 -->
             <div class="">
                 @if($thread->author)
@@ -101,7 +102,7 @@
     </div>
     <br>
     <!-- 首楼正文 -->
-    <div class="main-text {{ $thread->channel()->type==='thread'&&$thread->use_indentation ? 'indentation':'' }}">
+    <div class="main-text {{ $thread->channel()->type==='thread'&&$thread->use_indentation ? 'indentation':'' }} {{ $thread->channel()->type==='book' ? 'text-center':'' }} ">
         @if(($thread->is_bianyuan)&&(!Auth::check()))
         <div class="text-center">
             <h6 class="display-4 grayout"><a href="{{ route('login') }}">主楼隐藏，请登录后查看</a></h6>
@@ -117,16 +118,16 @@
     <br>
 
     <!-- 信息汇总：总字数，阅读数，回应数，下载数 （以及如果允许下载，出现下载按钮）-->
-    <div class="text-right">
+    <div class="">
         @if($thread->last_component&&$thread->last_component->type==='chapter')
-        <span class="pull-left">
+        <span class="smaller-20 ">
             <span>
                 <a href="{{ route('post.show', $thread->last_component_id) }}">最新章节《{{$thread->last_component->title}}》</a>
             </span>
         </span>
         @endif
-        <span class="smaller-20">
-            <em>
+        <span class="smaller-20 pull-right">
+            <em class="smaller-20">
                 @if($thread->total_char>0)
                 <span class="glyphicon glyphicon-pencil"></span>{{ $thread->total_char }}/
                 @endif

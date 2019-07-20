@@ -6,12 +6,12 @@
         <!-- 首页／版块／导航 -->
         <div class="">
             <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
-            &nbsp;/&nbsp;
-            <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>&nbsp;/&nbsp;
+            /
+            <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>/
             <a href="{{ route('post.show',$post->id) }}">{{ $post->title }}</a>
-            &nbsp;/&nbsp;
+            /
             修改章节
         </div>
         <div class="panel panel-default">
@@ -65,7 +65,7 @@
                         <label><input type="checkbox" name="is_bianyuan" {{ $post->is_bianyuan?'checked':'' }}>是否单章限制阅读？（非边缘限制文，但本章节含有<code>任意篇幅的性描写</code>或其他敏感内容的，请自觉勾选此项，本章将只对注册用户开放，避免搜索引擎抓取。应打边限而不打的删文封禁处理）</label>
                     </div>
                     @endif
-                    <button type="submit" class="btn btn-lg btn-primary sosad-button">确认修改章节</button>
+                    <button type="submit" class="btn btn-md btn-primary sosad-button">确认修改章节</button>
                 </form>
                 <br>
                 <div class="font-5 text-right">

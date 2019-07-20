@@ -6,12 +6,12 @@
     <!-- 首页／版块／导航 -->
     <div class="">
         <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
-        &nbsp;/&nbsp;
+        /
         <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
-        &nbsp;/&nbsp;
-        <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>&nbsp;/&nbsp;
+        /
+        <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>/
         <a href="{{ route('books.edit', $thread->id) }}">编辑书籍</a>
-        &nbsp;/&nbsp;编辑标签
+        /编辑标签
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -58,7 +58,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-lg btn-danger sosad-button">确认修改同人信息</button>
+                <button type="submit" class="btn btn-md btn-danger sosad-button">确认修改同人信息</button>
             </form>
         </div>
     </div>

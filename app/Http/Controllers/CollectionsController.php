@@ -30,7 +30,7 @@ class CollectionsController extends Controller
         $default_collection_updates = $info->default_collection_updates;
 
         $groups = $this->findCollectionGroups($user->id);
-        $orderby = 0;
+        $orderby = 2;
         if($request->group){
             $group = $groups->keyby('id')->get($request->group);
             $orderby = $group->order_by;
@@ -43,6 +43,7 @@ class CollectionsController extends Controller
         ->where('collections.user_id', $user->id)
         ->where('collections.group',(int)$request->group??0)
         ->threadOrdered($orderby)
+        ->select('collections.*')
         ->paginate(config('preference.threads_per_page'));
 
         $collections->load('thread.author','thread.tags','thread.last_post','thread.last_component');
@@ -76,12 +77,15 @@ class CollectionsController extends Controller
             return 'notwork';
         }
         if(request()->keep_updated){
-            $updated = (int)request()->keep_updated;
-            if($updated===0||$updated===1){
+            if(request()->keep_updated==='nomoreupdate'){
                 $collection->update([
-                    'keep_updated' => $updated,
+                    'keep_updated' => 0,
                 ]);
-
+            }
+            if(request()->keep_updated=='keepupdate'){
+                $collection->update([
+                    'keep_updated' => 1,
+                ]);
             }
         }
 

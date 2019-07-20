@@ -39,8 +39,8 @@
                     <br>
 
                     <div class="text-left">
-                        <button type="submit" class="btn btn-lg btn-danger sosad-button">确认修改收藏页</button>
-                        <a href="{{ route('collection_group.destroy', $collection_group->id) }}" class="btn btn-lg btn-danger sosad-button-control pull-right">删除本收藏页</a>
+                        <button type="submit" class="btn btn-md btn-danger sosad-button">确认修改收藏页</button>
+                        <a href="{{ route('collection_group.destroy', $collection_group->id) }}" class="btn btn-md btn-danger sosad-button-control pull-right">删除本收藏页</a>
                     </div>
                 </form>
             </div>

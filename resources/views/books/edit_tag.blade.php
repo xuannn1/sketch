@@ -6,12 +6,12 @@
     <!-- 首页／版块／导航 -->
     <div class="">
         <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
-        &nbsp;/&nbsp;
+        /
         <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
-        &nbsp;/&nbsp;
-        <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>&nbsp;/&nbsp;
+        /
+        <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>/
         <a href="{{ route('books.edit', $thread->id) }}">编辑书籍</a>
-        &nbsp;/&nbsp;编辑标签
+        /编辑标签
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -67,7 +67,7 @@
                     <h5>（请注意，所有选择中不合常理的tag，比如说同时是“短篇”和“长篇”，又是“清水”又是“高H”，这样不符合实际情况的tag会被从tag列表中去除。）</h5>
                 </div>
 
-                <button type="submit" class="btn btn-lg btn-danger sosad-button">确认修改标签</button>
+                <button type="submit" class="btn btn-md btn-danger sosad-button">确认修改标签</button>
             </form>
         </div>
     </div>

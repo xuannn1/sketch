@@ -6,23 +6,23 @@
         @switch($thread->channel()->type)
         @case('book')
         <div class="col-xs-6">
-            <a href="{{ route('books.edit', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑书籍</a>
+            <a href="{{ route('books.edit', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control">编辑书籍</a>
         </div>
         <div class="col-xs-6">
-            <a href="{{ route('chapter.create', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">写新章节</a>
+            <a href="{{ route('chapter.create', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control pull-right">写新章节</a>
         </div>
         @break
         @case('list')
         <div class="col-xs-6">
-            <a href="{{ route('threads.edit', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑首楼</a>
+            <a href="{{ route('threads.edit', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control">编辑首楼</a>
         </div>
         <div class="col-xs-6">
-            <a href="{{ route('review.create', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">写新书评</a>
+            <a href="{{ route('review.create', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control pull-right">写新书评</a>
         </div>
         @break
         @default
         <div class="col-xs-6">
-            <a href="{{ route('threads.edit', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">编辑首楼</a>
+            <a href="{{ route('threads.edit', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control">编辑首楼</a>
         </div>
         @endswitch
     </div>
@@ -34,18 +34,18 @@
         @if($thread->channel()->type==='book')
         <div class="col-xs-6">
             @if($thread->first_component_id===0)
-                <a href="#" class="btn btn-lg btn-danger btn-block sosad-button-control disabled">尚无正文</a>
+                <a href="#" class="btn btn-md btn-danger btn-block sosad-button-control disabled">尚无正文</a>
             @else
-                <a href="{{ route('post.show', $thread->first_component_id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control">开始阅读</a>
+                <a href="{{ route('post.show', $thread->first_component_id) }}" class="btn btn-md btn-danger btn-block sosad-button-control">开始阅读</a>
             @endif
 
         </div>
         <div class="col-xs-6">
-            <a href="{{ route('thread.chapter_index', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">章节目录</a>
+            <a href="{{ route('thread.chapter_index', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control pull-right">章节目录</a>
         </div>
         @elseif($thread->channel()->type==='list')
         <div class="col-xs-12 pull-right">
-            <a href="{{ route('thread.review_index', $thread->id) }}" class="btn btn-lg btn-danger btn-block sosad-button-control pull-right">评论列表</a>
+            <a href="{{ route('thread.review_index', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control pull-right">评论列表</a>
         </div>
         @endif
     </div>
@@ -55,20 +55,20 @@
     <!-- 操作按钮：收藏，回复，写独立评论，打赏 -->
     <div class="row">
         <div class="col-xs-3">
-            <button class="btn btn-lg btn-success btn-block sosad-button" id="itemcollection{{$thread->id}}" onclick="add_to_collection({{$thread->id}})">收藏{{ $thread->collection_count }}</button>
+            <button class="btn btn-md btn-success btn-block sosad-button" id="itemcollection{{$thread->id}}" onclick="add_to_collection({{$thread->id}})">收藏{{ $thread->collection_count }}</button>
         </div>
         <div class="col-xs-3">
             @if((!$thread->noreply)&&(!$thread->is_locked)&&(($thread->is_public)||($thread->user_id===Auth::id())))
-            <a class="btn btn-lg btn-primary btn-block sosad-button" href="#replyToThread">回复</a>
+            <a class="btn btn-md btn-primary btn-block sosad-button" href="#replyToThread">回复{{$thread->reply_count}}</a>
             @endif
         </div>
 
         <div class="col-xs-3">
-            <a class="btn btn-lg btn-danger btn-block sosad-button" href="#">写评</a>
+            <a class="btn btn-md btn-danger btn-block sosad-button" href="#">写评</a>
         </div>
 
         <div class="col-xs-3">
-            <a href="#" data-id="{{$thread->id}}" data-toggle="modal" data-target="#TriggerThreadReward{{ $thread->id }}" class="btn btn-lg btn-primary btn-block sosad-button">打赏</a>
+            <a href="#" data-id="{{$thread->id}}" data-toggle="modal" data-target="#TriggerThreadReward{{ $thread->id }}" class="btn btn-md btn-primary btn-block sosad-button">打赏</a>
         </div>
         <div class="modal fade" id="TriggerThreadReward{{ $thread->id }}" role="dialog">
             <div class="modal-dialog">
@@ -95,7 +95,7 @@
                             <label><input name="rewardable_type" value="thread" class="hidden"></label>
                             <label><input name="rewardable_id" value="{{$thread->id}}" class="hidden"></label>
                             <div class="text-right">
-                                <button type="submit" class="btn btn-lg btn-primary sosad-button">打赏</button>
+                                <button type="submit" class="btn btn-md btn-primary sosad-button">打赏</button>
                             </div>
                         </div>
                     </form>
@@ -103,11 +103,10 @@
             </div>
         </div>
     </div>
-    <br>
     @endif
     @if(!empty($thread->recent_rewards)&&count($thread->recent_rewards)>0)
     <!-- 打赏列表  -->
-    <div class="grayout h5 text-left">
+    <div class="grayout h5 text-left smaller-20">
         新鲜打赏：
         @foreach($thread->recent_rewards as $reward)
         @if($reward->author)

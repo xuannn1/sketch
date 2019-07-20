@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-lg btn-danger sosad-button">一键注册</button>
+                        <button type="submit" class="btn btn-md btn-danger sosad-button">一键注册</button>
                     </div>
                 </form>
             </div>

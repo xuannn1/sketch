@@ -55,7 +55,7 @@
                         <?php $previous_tag_type = $tag->tag_type ?>
                         @endforeach
                     </div>
-                    <button type="button" name="button" onclick="tongren_checked()" class="btn btn-lg btn-primary sosad-button">同人原著标签</button>
+                    <button type="button" name="button" onclick="tongren_checked()" class="btn btn-md btn-primary sosad-button">同人原著标签</button>
                     <div class="tongren_block hidden">
                         <h4>同人原著标签：</h4>
                         @foreach ($tag_range['tongren_yuanzhu_tags'] as $tag)

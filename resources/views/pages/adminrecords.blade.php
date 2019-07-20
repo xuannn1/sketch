@@ -8,11 +8,11 @@
                 <div class="panel-heading">
                     @if($user_name)
                     <h1>和{{ $user_name }}有关的管理记录列表</h1>
-                    <a href="{{route('administrationrecords')}}" class="btn btn-lg btn-danger sosad-button-control">看全站管理记录</a>
+                    <a href="{{route('administrationrecords')}}" class="btn btn-md btn-danger sosad-button-control">看全站管理记录</a>
                     @else
                     <h1>全站管理记录列表</h1>
                     @if(Auth::check())
-                    <a href="{{route('administrationrecords', ['user_id'=>Auth::id()])}}" class="btn btn-lg btn-danger sosad-button-control">看和我有关的管理记录</a>
+                    <a href="{{route('administrationrecords', ['user_id'=>Auth::id()])}}" class="btn btn-md btn-danger sosad-button-control">看和我有关的管理记录</a>
                     @else
                     <a href="{{route('login')}}">登陆看和我有关的管理记录</a>
                     @endif

@@ -22,8 +22,8 @@
                         <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
                     </div>
                     <div class="checkbox">
-                        <label><input type="checkbox" name="anonymous" {{ $post->is_anonymous ? 'checked' : '' }}>马甲？</label>&nbsp;
-                        <label><input type="checkbox" name="indentation" {{ $post->use_indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
+                        <label><input type="checkbox" name="is_anonymous" {{ $post->is_anonymous ? 'checked' : '' }}>马甲？</label>&nbsp;
+                        <label><input type="checkbox" name="use_indentation" {{ $post->use_indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
                         <div class="form-group text-right grayout" id="majia" style="display:block">
                             <input type="text" name="majia" class="form-control" value="{{ $post->majia ?? '匿名咸鱼'}}" disabled>
                             <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>
@@ -32,13 +32,13 @@
                             <h6>提示：站内会自动去除段落间多余空行，请使用[br]换行。</h6>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-lg btn-primary sosad-button">确认修改</button>
+                    <button type="submit" class="btn btn-md btn-primary sosad-button">确认修改</button>
                 </form>
 
                 <form method="POST" action="{{ route('post.destroy', $post->id) }}">
                     {{ csrf_field() }}
                     {{ method_field('DELETE') }}
-                    <button type="submit" class="pull-right btn btn-lg btn-danger sosad-button-control">删除帖子</button>
+                    <button type="submit" class="pull-right btn btn-md btn-danger sosad-button-control">删除帖子</button>
                 </form>
             </div>
         </div>

@@ -135,7 +135,7 @@ function add_to_collection(thread_id){
         data: {
         },
         success: function(data) {
-            // console.log(data);
+            console.log(data);
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
@@ -163,7 +163,7 @@ function cancel_collection(collection_id){
             '_method': "DELETE",
         },
         success: function(data) {
-            console.log(data);
+            // console.log(data);
             if(!(data['thread_id'] === undefined)){
                 $( '.thread'+ data['thread_id'] ).addClass('hidden');
             }
@@ -172,7 +172,7 @@ function cancel_collection(collection_id){
 };
 
 
-function collection_toggle_keep_update(collection_id,keep_updated){
+function collection_toggle_keep_update(collection_id,update_status){
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -183,11 +183,11 @@ function collection_toggle_keep_update(collection_id,keep_updated){
         url: web_base_url + '/collection/' + collection_id,
         data: {
             '_method': "PATCH",
-            'keep_updated' : keep_updated,
+            'keep_updated' :update_status,
         },
         success: function(data) {
             if (data != "notwork"){
-                // console.log(data);
+                console.log(data);
                 if(!(data['collection'] === undefined)){
                     if(data['collection']['keep_updated']){
                         $( '#keepupdate'+collection_id ).addClass('hidden');
@@ -688,63 +688,42 @@ function toggle_tags(){
     $('.extra-tag').toggleClass('hidden');
 }
 
-// $(function() {
-//
-//     var $quote = $("#daily-quote");
-//     console.log($quote);
-//     var $numWords = $quote.text().length;
-//     console.log($numWords);
-//
-//     if (($numWords >= 1) && ($numWords < 10)) {
-//         $quote.css("font-size", "36px");
-//     }
-//     else if (($numWords >= 10) && ($numWords < 20)) {
-//         $quote.css("font-size", "32px");
-//     }
-//     else if (($numWords >= 20) && ($numWords < 30)) {
-//         $quote.css("font-size", "28px");
-//     }
-//     else if (($numWords >= 30) && ($numWords < 40)) {
-//         $quote.css("font-size", "24px");
-//     }
-//     else {
-//         $quote.css("font-size", "20px");
-//     }
-//
-// });
-
 $( ".daily-quote" ).each(function( quote ) {
 
     var $quote = $( this );
     var $quotestring = $quote.text();
+    $quotestring = $quotestring.replace(/\s/g, '');
     var $numWords = $quotestring.length;
     var $len = 0;
     for (var i=0; i<$numWords; i++) {
-        if ($quotestring.charCodeAt(i)>127 || $quotestring.charCodeAt(i)==94) {
-            $len += 2;
-        } else {
-            $len ++;
+        console.log($quotestring.charCodeAt(i)+'.'+$len+'|');
+        if($quotestring.charCodeAt(i)!=32){ // 似乎32是个总是放在string边上的字符
+            if ($quotestring.charCodeAt(i)>127 || $quotestring.charCodeAt(i)==94) {
+                $len += 2;
+            } else {
+                $len ++;
+            }
         }
     }
-    //console.log(quote + ": " + $quotestring + ": " +$len);
+    console.log(quote + ": " + $quotestring + ": " +$len + ": " +$numWords);
 
     if (($len >= 1) && ($len < 10)) {
-        $quote.css("font-size", "3.5em");
-    }
-    else if (($len >= 10) && ($len < 20)) {
-        $quote.css("font-size", "3.0em");
-    }
-    else if (($len >= 20) && ($len < 40)) {//ok
-        $quote.css("font-size", "2.5em");
-    }
-    else if (($len >= 40) && ($len < 80)) {
         $quote.css("font-size", "2.0em");
     }
+    else if (($len >= 10) && ($len < 20)) {
+        $quote.css("font-size", "1.8em");
+    }
+    else if (($len >= 20) && ($len < 40)) {//ok
+        $quote.css("font-size", "1.6em");
+    }
+    else if (($len >= 40) && ($len < 80)) {
+        $quote.css("font-size", "1.4em");
+    }
     else if (($len >= 80) && ($len < 160)) {
-        $quote.css("font-size", "1.5em");
+        $quote.css("font-size", "1.2em");
     }
     else {
-        $quote.css("font-size", "1em");
+        $quote.css("font-size", "1.0em");
     }
 });
 

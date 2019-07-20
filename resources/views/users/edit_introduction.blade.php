@@ -25,7 +25,7 @@
                         <button type="button" onclick="retrievecache('introduction')" class="sosad-button-control addon-button">恢复数据</button>
                     </div>
 
-                    <button type="submit" class="btn btn-lg btn-primary sosad-button">更新个人介绍</button>
+                    <button type="submit" class="btn btn-md btn-primary sosad-button">更新个人介绍</button>
                 </form>
             </div>
         </div>

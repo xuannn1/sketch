@@ -6,10 +6,10 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="">
             <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
-            &nbsp;/&nbsp;
-            <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>&nbsp;/&nbsp;
+            /
+            <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>/
             <a href="{{ route('thread.review_index',$thread->id) }}">评论列表</a>
         </div>
         <div class="panel panel-default">

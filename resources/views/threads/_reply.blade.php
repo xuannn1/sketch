@@ -23,7 +23,7 @@
                 <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
             </div>
             @if(!$thread->is_bianyuan)
-            <h6 style="color:#d66666">(本帖并非“边限”、公开可见，请不要引入“边限内容”的讨论。)</h6>
+            <h6 style="color:#d66666">(本帖非边限对外公开，请不要引入“边限”讨论。)</h6>
             @endif
             <div class="checkbox">
                 <label><input type="checkbox" name="is_anonymous" onclick="document.getElementById('majiareplythread{{$thread->id}}').style.display = 'block'">马甲？</label>&nbsp;
@@ -34,7 +34,7 @@
                     <label for="majia"><small>(马甲仅勾选“匿名”时有效)</small></label>
                 </div>
             </div>
-            <button type="submit" name="store_button" value="Store" class="btn btn-lg btn-primary sosad-button">回复</button>
+            <button type="submit" name="store_button" value="Store" class="btn btn-md btn-primary sosad-button">回复</button>
         </form>
     </div>
     @endif

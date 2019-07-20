@@ -7,9 +7,9 @@
         <!-- 导航 -->
         <div class="">
             <a href="{{ route('activity.index') }}">消息中心</a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('message.index') }}">站内信箱</a>
-            &nbsp;/&nbsp;
+            /
             往期站内公共信息
         </div>
         <div class="panel panel-default">

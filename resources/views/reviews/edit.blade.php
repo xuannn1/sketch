@@ -6,11 +6,11 @@
         <!-- 首页／版块／导航 -->
         <div class="">
             <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
-            &nbsp;/&nbsp;
-            <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>&nbsp;/&nbsp;
-            <a href="{{ route('post.show',$post->id) }}">{{ $post->title }}</a>&nbsp;/&nbsp;/&nbsp;修改书评
+            /
+            <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>/
+            <a href="{{ route('post.show',$post->id) }}">{{ $post->title }}</a>//&nbsp;修改书评
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -67,7 +67,7 @@
                         <label><input type="checkbox" name="is_bianyuan" {{ $post->is_bianyuan? 'checked':'' }}>是否边限书评？</label>
                     </div>
                     @endif
-                    <button type="submit" class="btn btn-lg btn-primary sosad-button">确认修改书评</button>
+                    <button type="submit" class="btn btn-md btn-primary sosad-button">确认修改书评</button>
                 </form>
             </div>
         </div>

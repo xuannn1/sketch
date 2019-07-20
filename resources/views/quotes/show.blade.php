@@ -7,9 +7,9 @@
         <!-- 首页／版块／导航 -->
         <div class="">
             <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('quote.index') }}">全站题头</a>
-            &nbsp;/&nbsp;
+            /
             <a href="{{ route('quote.show', $quote->id) }}">第{{$quote->id}}号题头</a>
         </div>
 
@@ -52,7 +52,7 @@
                 <!-- 管理专区 -->
                 <br>
                 <div class="text-center">
-                    <a href="#" class="btn btn-lg btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理题头</a>
+                    <a href="#" class="btn btn-md btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理题头</a>
                 </div>
                 <br>
                 @endif
@@ -60,7 +60,7 @@
                 @if(Auth::check())
                 <!-- 打赏、评票行为 -->
                 <div class="text-center">
-                    <span><a href="#" data-id="{{$quote->id}}" data-toggle="modal" data-target="#TriggerQuoteReward{{ $quote->id }}" class="btn btn-default  btn-lg btn-block">打赏</a></span>
+                    <span><a href="#" data-id="{{$quote->id}}" data-toggle="modal" data-target="#TriggerQuoteReward{{ $quote->id }}" class="btn btn-default  btn-md btn-block">打赏</a></span>
                 </div>
                 <div class="modal fade" id="TriggerQuoteReward{{ $quote->id }}" role="dialog">
                     <div class="modal-dialog">
@@ -85,7 +85,7 @@
                                     <label><input name="rewardable_type" value="quote" class="hidden"></label>
                                     <label><input name="rewardable_id" value="{{$quote->id}}" class="hidden"></label>
                                     <div class="text-right">
-                                        <button type="submit" class="btn btn-lg btn-primary sosad-button">打赏</button>
+                                        <button type="submit" class="btn btn-md btn-primary sosad-button">打赏</button>
                                     </div>
                                 </div>
                             </form>

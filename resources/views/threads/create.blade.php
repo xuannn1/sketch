@@ -50,7 +50,7 @@
                     <label><input type="checkbox" name="use_indentation" checked>段首缩进（自动空两格）？</label><br>
                     <label><input type="checkbox" name="use_markdown">是否使用Markdown语法（不推荐）？</label>
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg">发布</button>
+                <button type="submit" class="btn btn-primary btn-md">发布</button>
             </form>
         </div>
     </div>

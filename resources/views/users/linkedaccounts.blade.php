@@ -29,7 +29,7 @@
         </div>
         @endif
         @if($user->level>=3)
-        <a href="{{ route('linkedaccounts.create') }}" class="btn btn-lg btn-info sosad-button ">管理关联账户</a>
+        <a href="{{ route('linkedaccounts.create') }}" class="btn btn-md btn-info sosad-button ">管理关联账户</a>
         @else
         <h4>您的等级不够，暂时不能关联马甲账户</h4>
         @endif

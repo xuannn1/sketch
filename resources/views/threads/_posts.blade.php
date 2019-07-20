@@ -38,13 +38,13 @@
                     @endif
 
                     @if(($post->user_id>0)&&(!$post->is_anonymous)&&((!$thread->is_anonymous)||(($post->type==='post')||($post->type==='comment'))))
-                        <span class="grayout smaller-20"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'userOnly'=>$post->user_id]) }}">只看该用户</a></span>
+                        <span class="grayout smaller-25"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'userOnly'=>$post->user_id]) }}">只看该用户</a></span>
                     @endif
                     <!-- 发表时间 -->
-                    <span class="smaller-20">
-                        发表于 {{ $post->created_at->diffForHumans() }}
+                    <span class="smaller-25">
+                        {{ $post->created_at->diffForHumans() }}
                         @if($post->created_at < $post->edited_at )
-                        修改于 {{ $post->edited_at->diffForHumans() }}
+                        /{{ $post->edited_at->diffForHumans() }}
                         @endif
                     </span>&nbsp;
 
@@ -66,15 +66,15 @@
         <div class="text-center">
             <h6 class="display-4 grayout"><a href="route('login')">本内容只对注册用户开放，请登陆后查看</a></h6>
         </div>
-        @elseif( (!$thread->recommended)&&($thread->channel()->type==='book')&&($thread->is_bianyuan)&&($post->type==='chapter')&&(Auth::check())&&(Auth::user()->level < 3) )
+        @elseif( (!$thread->recommended)&&($thread->channel()->type==='book')&&($thread->is_bianyuan)&&($post->type==='chapter')&&(Auth::check())&&(Auth::user()->level < 3)&&(Auth::id()!=$post->user_id) )
         <div class="text-center">
             <h6 class="display-4 grayout">本内容为非编推的边限文的正文章节，只对3级以上注册用户开放，请升级后查看</a></h6>
         </div>
-        @elseif( (!$thread->recommended)&&($thread->channel()->type==='book')&&(!$thread->is_bianyuan)&&($post->is_bianyuan)&&($post->type==='chapter')&&(Auth::check())&&(Auth::user()->level < 2) )
+        @elseif( (!$thread->recommended)&&($thread->channel()->type==='book')&&(!$thread->is_bianyuan)&&($post->is_bianyuan)&&($post->type==='chapter')&&(Auth::check())&&(Auth::user()->level < 2)&&(Auth::id()!=$post->user_id) )
         <div class="text-center">
             <h6 class="display-4 grayout">本内容为非编推的非边限文的单章限制章节，只对2级以上注册用户开放，请升级后查看</a></h6>
         </div>
-        @elseif( (!$thread->recommended)&&($thread->channel()->type!='book')&&($thread->is_bianyuan||$post->is_bianyuan)&&(Auth::check())&&(Auth::user()->level < 1) )
+        @elseif( (!$thread->recommended)&&($thread->channel()->type!='book')&&($thread->is_bianyuan||$post->is_bianyuan)&&(Auth::check())&&(Auth::user()->level < 1)&&(Auth::id()!=$post->user_id) )
         <div class="text-center">
             <h6 class="display-4 grayout">本内容为限制讨论，只对1级以上注册用户开放，请升级后查看</a></h6>
         </div>
@@ -137,9 +137,9 @@
                 <br>
                 @endif
                 @if($post->type==='chapter')
-                <div class="font-4">
+                <div class="font-5">
                     <a href="{{ route('post.show', $post->id) }}" class="pull-left"><em>进入阅读模式</em></a>
-                    <span class = "pull-right smaller-20"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->char_count }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->reply_count }}</em></span>
+                    <span class = "pull-right smaller-25"><em><span class="glyphicon glyphicon-pencil"></span>{{ $post->char_count }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $post->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->reply_count }}</em></span>
                 </div>
                 @endif
             </div>
@@ -148,9 +148,7 @@
 
     @if(Auth::check())
     <div class="text-right post-vote h5">
-        @if(Auth::user()->level >= 1)
-            <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}" onclick="vote('post', {{$post->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart"></span><span id="post{{$post->id}}upvote">{{ $post->upvote_count }}</span></button></span>
-        @endif
+        <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}" onclick="vote('post', {{$post->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart"></span><span id="post{{$post->id}}upvote">{{ $post->upvote_count }}</span></button></span>
         @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
             <span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
         @endif
