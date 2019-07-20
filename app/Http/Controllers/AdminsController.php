@@ -28,7 +28,7 @@ class AdminsController extends Controller
     {
         return view('admin.index');
     }
-    
+
     public function thread_admin_record($thread, $request, $operation = 0)
     {
         return Administration::create([
@@ -206,7 +206,7 @@ class AdminsController extends Controller
                 $chapter->delete();
             }
             $post->delete();
-            return redirect()->back()->with("success","已经成功处理该贴");
+            return redirect('/')->back()->with("success","已经成功处理该贴");
         }
         if ($var=="10"){//修改马甲
             if (request('is_anonymous')=="1"){
@@ -271,7 +271,7 @@ class AdminsController extends Controller
             ]);
             $status->delete();
 
-            return redirect()->back()->with("success","已经成功处理该动态");
+            return redirect('/')->with("success","已经成功处理该动态");
         }
         return redirect()->back()->with("warning","什么都没做");
     }

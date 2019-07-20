@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\User;
+use App\Models\UserInfo;
 use App\Http\Controllers\Controller;
 use App\Models\InvitationToken;
 use Carbon;

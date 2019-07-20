@@ -73,13 +73,13 @@
                 <div class="">
                     @if($tag=$thread->tags->where('tag_type','同人原著')->first())
                     <a href="{{route('books.index', ['withTag'=>$tag->id])}}">{{$tag->tag_name}}({{$tag->tag_explanation}})</a>
-                    @else
+                    @elseif($thread->tongren)
                     {{ $thread->tongren->tongren_yuanzhu }}
                     @endif
                     -
                     @if($tag=$thread->tags->where('tag_type','同人CP')->first())
                     <a href="{{route('books.index', ['withTag'=>$tag->id])}}">{{$tag->tag_name}}({{$tag->tag_explanation}})</a>
-                    @else
+                    @elseif($thread->tongren)
                     {{ $thread->tongren->tongren_CP }}
                     @endif
                 </div>

@@ -156,8 +156,9 @@ class UsersController extends Controller
 
     public function followings($id)
     {
-        $user = CacheUser::Auser();
-        $info = CacheUser::Ainfo();
+        $user = CacheUser::user($id);
+        $info = CacheUser::info($id);
+        if(!$info||!$user){abort(404);}
         $intro = $info->has_intro? CacheUser::Aintro():null;
         $users = $user->followings()->paginate(config('preference.users_per_page'));
         $users->load('info','title');
@@ -167,8 +168,9 @@ class UsersController extends Controller
 
     public function followers($id)
     {
-        $user = CacheUser::Auser();
-        $info = CacheUser::Ainfo();
+        $user = CacheUser::user($id);
+        $info = CacheUser::info($id);
+        if(!$info||!$user){abort(404);}
         $intro = $info->has_intro? CacheUser::Aintro():null;
         $users = $user->followers()->paginate(config('preference.users_per_page'));
         $users->load('info','title');

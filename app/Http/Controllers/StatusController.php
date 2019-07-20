@@ -48,11 +48,11 @@ class StatusController extends Controller
 
     public function destroy(Status $status)
     {
-        if(!$status->user_id == Auth::id()){
+        if($status->user_id != Auth::id()){
             return redirect('/')->with('danger', '动态不存在，请静待缓存更新，无需重复删除！');
         }
         $status->delete();
-        return redirect('/')->with('success', '动态已被成功删除！');
+        return redirect('/')->with('success', '动态已被成功删除！请静待缓存更新');
     }
 
     public function show($id)

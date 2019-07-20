@@ -31,7 +31,7 @@
                         {{ $status->created_at }}
                     </span>
                     @if((Auth::check())&&(Auth::user()->isAdmin()))
-                    <a href="#" class="btn btn-lg btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理动态</a>
+                    <a href="{{ route('admin.statusform', $status->id) }}" class="btn btn-lg btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理动态</a>
                     @endif
                 </div>
 

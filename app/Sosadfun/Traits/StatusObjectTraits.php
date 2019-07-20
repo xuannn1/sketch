@@ -7,7 +7,7 @@ trait StatusObjectTraits{
 
     public function statusProfile($id)
     {
-        return Cache::remember('status.'.$id, 15, function () use($id) {
+        return Cache::remember('statusProfile.'.$id, 15, function () use($id) {
             $status = \App\Models\Status::find($id);
             if(!$status){
                 return;
@@ -19,6 +19,10 @@ trait StatusObjectTraits{
 
             return $status;
         });
+    }
+    public function clearStatusProfile($id)
+    {
+        return Cache::pull('statusProfile.'.$id);
     }
 
 }
