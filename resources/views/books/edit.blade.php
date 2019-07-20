@@ -19,25 +19,25 @@
                 <h4>{{$thread->brief}}</h4>
             </div>
             <div class="panel-body text-center">
-                <a href="{{route('books.edit_profile', $thread->id)}}" class="btn btn-md btn-info btn-block sosad-button">
+                <a href="{{route('books.edit_profile', $thread->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
                     编辑文案/设置
-                    <h5>（修改标题/简介/文案/显示设置/下载设置）</h5>
+                    <div class="smaller-10">（标题/简介/文案/显示/下载…设置）</div>
                 </a>
                 <hr>
-                <a href="{{route('books.edit_tag', $thread->id)}}" class="btn btn-md btn-info btn-block sosad-button">
+                <a href="{{route('books.edit_tag', $thread->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
                     编辑标签
-                <h5>（修改进度/篇幅/时代等信息）</h5>
+                <div class="smaller-10">（进度/篇幅/时代等信息）</div>
                 </a>
                 @if($thread->channel_id==2)
                 <hr>
-                <a href="{{route('books.edit_tongren', $thread->id)}}" class="btn btn-md btn-info btn-block sosad-button">
+                <a href="{{route('books.edit_tongren', $thread->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
                     编辑同人信息
-                <h5>（修改同人原著/同人CP）</h5>
+                <div class="smaller-10">（修改同人原著/同人CP）</div>
                 </a>
                 @endif
                 <hr>
-                <a href="#" class="btn btn-md btn-info btn-block sosad-button">
-                    调整章节顺序（待做）
+                <a href="{{route('books.edit_chapter_index', $thread->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
+                    调整章节顺序
                 </a>
             </div>
         </div>

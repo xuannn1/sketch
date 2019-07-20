@@ -13,6 +13,7 @@
                 @include('shared.errors')
                 <form method="POST" action="{{ route('user.update_introduction') }}">
                         {{ csrf_field() }}
+                        @method('PATCH')
                     <div class="form-group">
                         <label for="brief_intro">短介绍：</label>
                         <input type="text" name="brief_intro" class="form-control" value="{{ $info->brief_intro }}">

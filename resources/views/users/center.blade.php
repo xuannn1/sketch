@@ -30,16 +30,16 @@
                         我的发布
                     </div>
                     <hr>
-                    <a href="{{route('user.show', $user->id)}}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{route('user.show', $user->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的书籍
                     </a>
-                    <a href="{{route('user.threads', $user->id)}}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{route('user.threads', $user->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的讨论
                     </a>
-                    <a href="{{route('user.lists', $user->id)}}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{route('user.lists', $user->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的清单
                     </a>
-                    <a href="#" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
                         我的提问（待做）
                     </a>
                 </div>
@@ -53,16 +53,16 @@
                         我的社区
                     </div>
                     <hr>
-                    <a href="{{ route('quote.mine') }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('quote.mine') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的题头
                     </a>
-                    <a href="{{ route('vote.received') }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('vote.received') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的评票
                     </a>
-                    <a href="{{ route('reward.received') }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('reward.received') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的打赏
                     </a>
-                    <a href="{{ route('quiz.quiz_entry') }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('quiz.quiz_entry') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         答题挑战
                     </a>
                 </div>
@@ -76,13 +76,13 @@
                         我的设置
                     </div>
                     <hr>
-                    <a href="#" class="btn btn-md btn-info btn-block sosad-button">
-                        隐私设置（待做）
+                    <a href="{{ route('user.edit_preference') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        偏好及隐私设置
                     </a>
-                    <a href="{{ route('user.edit', $user->id) }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('user.edit', $user->id) }}" class="btn btn-lg btn-info btn-block sosad-button">
                         编辑资料
                     </a>
-                    <a href="{{ route('linkedaccounts.index') }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('linkedaccounts.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         管理马甲账户
                     </a>
                 </div>
@@ -96,13 +96,13 @@
                         其他信息
                     </div>
                     <hr>
-                    <a href="{{ route('about') }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('about') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         关于本站/使用规范
                     </a>
-                    <a href="{{ route('help') }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('help') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         帮助FAQ
                     </a>
-                    <a href="{{ route('contacts') }}" class="btn btn-md btn-info btn-block sosad-button">
+                    <a href="{{ route('contacts') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         联系我们
                     </a>
                 </div>

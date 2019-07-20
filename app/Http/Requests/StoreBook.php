@@ -34,13 +34,13 @@ class StoreBook extends FormRequest
         return [
             'title' => 'required|string|max:20',
             'brief' => 'required|string|max:25',
-            'body' => 'string|nullable|max:25',
+            'body' => 'string|nullable|max:2000',
             'channel_id' => 'required|numeric|min:1|max:2',
             'primary_tag' => 'numeric|min:1',
             'book_status_tag' => 'numeric|min:1',
             'book_length_tag' => 'numeric|min:1',
             'sexual_orientation_tag' => 'numeric|min:1',
-            'is_bianyuan' =>'required',
+            'is_bianyuan' =>'required|string',
             'majia' => 'string|max:10',
             'tongren_yuanzhu' => 'string|nullable|max:60',
             'tongren_CP' => 'string|nullable|max:60',
@@ -53,6 +53,7 @@ class StoreBook extends FormRequest
 
         $thread_data['download_as_book']=$this->download_as_book ? true:false;
         $thread_data['download_as_thread']=$this->download_as_thread ? true:false;
+        $thread_data['is_bianyuan']=$this->is_bianyuan==='is'? true:false;
 
         $thread = Thread::create($thread_data);
 
@@ -62,7 +63,7 @@ class StoreBook extends FormRequest
     public function updateBookProfile($thread)
     {
         $thread_data = $this->generateUpdateThreadData($thread);
-        $thread_data['is_bianyuan']=$this->is_bianyuan==1? true:false;
+        $thread_data['is_bianyuan']=$this->is_bianyuan==='is'? true:false;
 
         $thread->update($thread_data);
         return $thread;

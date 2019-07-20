@@ -14,6 +14,7 @@
                 @include('shared.errors')
                 <form method="POST" action="{{ route('user.update_password') }}">
                         {{ csrf_field() }}
+                        @method('PATCH')
                     <div class="form-group">
                         <label for="old-password">旧密码 (必填，用于身份验证)：</label>
                         <input type="password" name="old-password" class="form-control">

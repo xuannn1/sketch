@@ -18,12 +18,19 @@ class CacheUser{ //cache-user class
             return $user;
         });
     }
+
     public static function info($id){
         if(!$id||$id<=0){return;}
 
         return Cache::remember('cachedUserInfo.'.$id, 10, function() use($id) {
             return UserInfo::find($id);
         });
+    }
+
+    public static function clearuser($id)
+    {
+        Cache::pull('cachedUser.'.$id);
+        Cache::pull('cachedUserInfo.'.$id);
     }
 
     public static function intro($id){

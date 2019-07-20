@@ -113,11 +113,6 @@ class PostsController extends Controller
         return view('posts.show',compact('post','thread','user','info'));
     }
 
-    private function canSeePost($post, $thread)
-    {
-
-    }
-
     public function destroy($id){
         $post = Post::findOrFail($id);
         $thread=$post->thread;
@@ -131,6 +126,7 @@ class PostsController extends Controller
             if($chapter){
                 $chapter->delete();
                 $thread->reorder_chapters();
+                $this->clearThreadProfile($thread->id);
                 $this->clearThreadChapterIndex($id);
             }
         }
@@ -138,6 +134,7 @@ class PostsController extends Controller
             $review = $post->review;
             if($review){
                 $review->delete();
+                $this->clearThreadProfile($thread->id);
                 $this->clearThreadReviewIndex($id);
             }
         }

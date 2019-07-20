@@ -15,12 +15,14 @@ use CacheUser;
 use Cache;
 use ConstantObjects;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
+use App\Sosadfun\Traits\CollectionObjectTraits;
 
 class UsersController extends Controller
 {
 
     use AdministrationTraits;
     use SwitchableMailerTraits;
+    use CollectionObjectTraits;
 
     public function __construct()
     {
@@ -88,7 +90,7 @@ class UsersController extends Controller
 
     public function edit_password(){
         $user = Auth::user();
-        return view('user.edit_password', compact('user'));
+        return view('users.edit_password', compact('user'));
     }
 
     public function update_password(Request $request){
@@ -98,7 +100,7 @@ class UsersController extends Controller
                 'password' => 'required|min:8|max:16|confirmed',
             ]);
             $user->update(['password' => bcrypt(request('password'))]);
-            return redirect()->route('users.edit', Auth::id())->with("success", "您已成功修改个人密码");
+            return redirect()->route('user.edit', Auth::id())->with("success", "您已成功修改个人密码");
         }
         return back()->with("danger", "您的旧密码输入错误");
     }
@@ -141,6 +143,46 @@ class UsersController extends Controller
             ]);
         }
         return redirect()->route('user.show', $user->id);
+    }
+
+    public function edit_preference()
+    {
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        if(!$user||!$info){abort(404);}
+        $groups = $this->findCollectionGroups($user->id);
+        $lists = \App\Models\Thread::withUser($user->id)->WithType('list')->select('id','title')->get();
+        return view('users.edit_preference', compact('user','info','groups','lists'));
+    }
+
+    public function update_preference(Request $request)
+    {
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        if(!$user||!$info){abort(404);}
+
+        $data = [];
+        $data['no_upvote_reminders'] = $request->no_upvote_reminders? true:false;
+        $data['no_reward_reminders'] = $request->no_reward_reminders? true:false;
+        $data['no_stranger_msg'] = $request->no_stranger_msg? true:false;
+
+        if($request->default_list_id){
+            $list_id = (int)$request->default_list_id;
+            $list_ids = \App\Models\Thread::withUser($user->id)->WithType('list')->select('id','title')->get()->pluck('id')->toArray();
+            if(in_array($list_id, $list_ids)){
+                $data['default_list_id']=$list_id;
+            }
+        }
+
+        if($request->default_collection_group_id){
+            $group_id = (int)$request->default_collection_group_id;
+            $group_ids = $this->findCollectionGroups($user->id)->pluck('id')->toArray();
+            if(in_array($group_id, $group_ids)){
+                $data['default_collection_group_id']=$group_id;
+            }
+        }
+        $info->update($data);
+        return redirect()->route('user.center', Auth::id())->with("success", "您已成功修改偏好设置");
     }
 
     public function qiandao()

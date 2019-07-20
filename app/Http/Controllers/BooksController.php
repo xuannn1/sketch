@@ -145,6 +145,45 @@ class BooksController extends Controller
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍同人信息');
     }
 
+    public function edit_chapter_index($id)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+
+        return view('books.edit_chapter_index', compact('thread','posts'));
+    }
+
+    public function update_chapter_index($id, Request $request)
+    {
+        $thread = Thread::find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+
+        $posts = \App\Models\Post::with('chapter')
+        ->where('thread_id',$id)
+        ->withType('chapter')
+        ->get();
+
+        foreach($request->order_by as $key=>$order_by){
+            if(is_numeric($order_by)){
+                $post = $posts->firstWhere('id', $key);
+                $post->chapter->update(['order_by' => $order_by]);
+            }
+        }
+        $first = $request->first_component_id;
+        if($first&&is_numeric($first)){
+            $post = $posts->firstWhere('id', $first);
+            if($post&&$post->user_id===$user->id&&$post->type==='chapter'){
+                $thread->update(['first_component_id'=>$first]);
+            }
+        }
+
+        $this->clearThreadProfile($thread->id);
+        $this->clearThreadChapterIndex($thread->id);
+        return redirect()->route('thread.show_profile', $thread->id);
+    }
+
     public function show($id)
     {   $book = DB::table('books')->where('id','=',$id)->first();
         return redirect()->route('thread.show_profile', $book->thread_id);
@@ -152,7 +191,7 @@ class BooksController extends Controller
 
     public function index(Request $request)
     {
-        $tags = ConstantObjects::organizeBookTags();
+        $tags = ConstantObjects::organizeBasicBookTags();
 
         $queryid = 'bookQ'
         .url('/')

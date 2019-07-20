@@ -86,8 +86,8 @@
                         文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含NP、人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转……等边缘限制敏感题材，或估计不适合未成年人观看的，请务必勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。<span style="color:#d66666">边缘题材未勾选边缘限制即发文的，严肃处理。</span>
                     </div>
                     <div>
-                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="0" onclick="non_bianyuan_checked()" {{ old('bianyuan')=='0'?'checked':''}}>非边缘限制敏感</label>
-                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="1" onclick="bianyuan_checked()" {{ old('bianyuan')=='1'?'checked':''}}>边缘限制敏感</label>
+                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="isnot" onclick="non_bianyuan_checked()" {{ old('bianyuan')==='isnot'?'checked':''}}>非边缘限制敏感</label>
+                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="is" onclick="bianyuan_checked()" {{ old('bianyuan')=='is'?'checked':''}}>边缘限制敏感</label>
                     </div>
                 </div>
                 <br>
@@ -128,8 +128,8 @@
                             @if($previous_tag_type===0||$previous_tag_type!=$tag->tag_type)
                             <br><code>{{ $tag->tag_type }}:</code>
                             @endif
-                            <label class="{{ $tag->is_bianyuan?'bianyuan':'' }} {{ $tag->channel_id==1? 'yuanchuang_block':'' }} {{ $tag->channel_id==2? 'tongren_block':'' }}">
-                                <input type="checkbox" class="tags  {{ $tag->channel_id==1? 'yuanchuang':'' }} {{ $tag->channel_id==2? 'tongren':'' }} {{ $tag->parent_id>0?'parent'.$tag->parent_id:'' }}" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tag_name }}&nbsp;&nbsp;
+                            <label class="{{ $tag->is_bianyuan?'bianyuan':'' }} {{ $tag->channel_id==1? 'yuanchuang_block':'' }} {{ $tag->channel_id==2? 'tongren_block':'' }} {{ $tag->is_bianyuan?'bianyuan_block':'' }}">
+                                <input type="checkbox" class="tags  {{ $tag->channel_id==1? 'yuanchuang':'' }} {{ $tag->channel_id==2? 'tongren':'' }} {{ $tag->is_bianyuan? 'bianyuan':'' }}" name="tags[]" value="{{ $tag->id }}" {{ (is_array(old('tags')))&&(in_array($tag->id, old('tags')))? 'checked':'' }}>{{ $tag->tag_name }}&nbsp;&nbsp;
                             </label>
                             <?php $previous_tag_type = $tag->tag_type ?>
                             @endforeach
@@ -157,7 +157,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-md btn-danger sosad-button">发布</button>
+                <button type="submit" class="btn btn-lg btn-danger sosad-button">发布</button>
             </form>
         </div>
     </div>

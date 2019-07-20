@@ -24,7 +24,7 @@
 
             <form method="POST" action="{{ route('books.update_tag', $thread->id) }}" name="edit_book_tag">
                 {{ csrf_field() }}
-
+                @method('PATCH')
 
                 <input name="channel_id" value="{{$thread->channel_id}}" class="hidden">
 

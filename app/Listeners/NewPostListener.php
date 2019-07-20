@@ -41,7 +41,7 @@ class NewPostListener
             $thread->last_post_id = $post->id;
             $thread->responded_at = $post->created_at;
 
-            if(!$post->type=='post'&&!$post->type=='comment'){
+            if($post->type!='post'&&$post->type!='comment'){
                 $thread->last_component_id = $post->id;
                 if($thread->first_component_id===0){
                     $thread->first_component_id = $post->id;
@@ -50,8 +50,11 @@ class NewPostListener
                     $thread->add_component_at = $post->created_at;
                 }
                 $thread->recalculate_characters();
+                $this->clearThreadProfile($thread->id);
+
                 if($post->type==='chapter'){
                     $thread->reorder_chapters();
+                    $this->clearThreadChapterIndex($id);
                 }
             }else{
                 $thread->reply_count+=1;

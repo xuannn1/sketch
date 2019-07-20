@@ -17,7 +17,7 @@ trait CollectionObjectTraits{
         return Cache::pull('collectionGroups.'.$id);
     }
 
-    public function chechCollectedOrNot($user_id, $thread_id)
+    public function checkCollectedOrNot($user_id, $thread_id)
     {
         $collection = \App\Models\Collection::where('user_id',$user_id)->where('thread_id',$thread_id)
         ->first();

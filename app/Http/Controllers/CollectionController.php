@@ -13,7 +13,7 @@ use CacheUser;
 use App\Sosadfun\Traits\CollectionObjectTraits;
 use App\Sosadfun\Traits\FindThreadTrait;
 
-class CollectionsController extends Controller
+class CollectionController extends Controller
 {
     use CollectionObjectTraits;
     use FindThreadTrait;
@@ -52,14 +52,17 @@ class CollectionsController extends Controller
     }
 
 
-    public function store($thread)
+    public function store($id)
     {
-        if(!$this->chechCollectedOrNot(Auth::id(), (int)request('thread'))){
+        if(!$this->checkCollectedOrNot(Auth::id(), (int)request('thread'))){
+            $thread = $this->findThread($id);
             $collection = Collection::create([
-                'thread_id' => request('thread'),
+                'thread_id' => $id,
                 'user_id' => Auth::id(),
                 'group' => request('group')??0,
             ]);
+            $thread->increment('collection_count');
+
             return [
                 'success' => '您已成功收藏本文!',
                 'collection'=> $collection,
@@ -108,10 +111,17 @@ class CollectionsController extends Controller
         ];
     }
 
-    public function destroy(Collection $collection, Request $request)
+    public function destroy(Collection $collection)
     {
         if($collection->user_id===Auth::id()){
+
             $thread_id = $collection->thread_id;
+
+            $thread = $this->findThread($thread_id);
+            if($thread){
+                $thread->decrement('collection_count');
+            }
+
             $collection->delete();
             return [
                 'success'=> '已经成功删除收藏',

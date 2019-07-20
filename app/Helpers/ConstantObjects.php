@@ -129,34 +129,20 @@ class ConstantObjects
             $book_length_tags = self::noTongrenTags()->where('tag_type','=','篇幅');
             $book_status_tags = self::noTongrenTags()->where('tag_type','=','进度');
             $sexual_orientation_tags = self::noTongrenTags()->where('tag_type','=','性向');
+            $editor_tags = self::noTongrenTags()->where('tag_type','=','编推');
             $book_custom_Tags = self::book_custom_tags()->sortByDesc('tag_type');
             return [
                 'tongren_yuanzhu_tags' => $tongren_yuanzhu_tags,
                 'book_length_tags' => $book_length_tags,
                 'book_status_tags' => $book_status_tags,
                 'sexual_orientation_tags' => $sexual_orientation_tags,
+                'editor_tags' => $editor_tags,
                 'book_custom_Tags' => $book_custom_Tags,
             ];
         });
 
     }
 
-
-    public static function organizeBookTags()//获得书籍filter必备的tag列表
-    {
-        return Cache::remember('organizeBookTags', 10, function (){
-            $book_length_tags = self::noTongrenTags()->where('tag_type','=','篇幅');
-            $book_status_tags = self::noTongrenTags()->where('tag_type','=','进度');
-            $sexual_orientation_tags = self::noTongrenTags()->where('tag_type','=','性向');
-            $editor_tags = self::noTongrenTags()->where('tag_type','=','编推');
-            return [
-                'book_length_tags' => $book_length_tags,
-                'book_status_tags' => $book_status_tags,
-                'sexual_orientation_tags' => $sexual_orientation_tags,
-                'editor_tags' => $editor_tags,
-            ];
-        });
-    }
 
     public static function find_tag_by_name($tagname)
     {

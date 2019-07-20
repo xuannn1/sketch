@@ -24,6 +24,7 @@
 
             <form method="POST" action="{{ route('books.update_profile', $thread->id) }}" name="edit_book_profile">
                 {{ csrf_field() }}
+                @method('PATCH')
                 <div>
                     <h5><span style="color:#d66666">发文发帖前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a><br>关于网站使用的常规问题：<a href="{{ route('help') }}">《<u>使用帮助</u>》</a></span></h5>
                     <br>
@@ -62,8 +63,8 @@
                         <a href="http://sosad.fun/threads/136">详见<u>《版规》</u></a>：文章含肉超过20%，或开头具有较明显的性行为描写，或题材包含NP、人兽、触手、父子、乱伦、生子、产乳、abo、军政、黑道、性转……等边缘限制敏感题材，或估计不适合未成年人观看的，请务必勾选此项。勾选后，本文将不受搜索引擎直接抓取，不被未注册游客观看。<span style="color:#d66666">属于边限题材却未勾选边缘标记即发文的，严肃处理。</span>
                     </div>
                     <div>
-                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="0" {{$thread->is_bianyuan?'':'checked'}}>非边缘限制敏感</label>
-                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="1"  {{$thread->is_bianyuan?'checked':''}}>边缘限制敏感</label>
+                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="isnot" {{$thread->is_bianyuan?'':'checked'}}>非边缘限制敏感</label>
+                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="is"  {{$thread->is_bianyuan?'checked':''}}>边缘限制敏感</label>
                     </div>
                 </div>
 
@@ -76,17 +77,27 @@
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" name="use_indentation" {{ $thread->use_indentation?'checked':''}}>段首缩进（自动空两格）？</label>&nbsp;
-                    <br>
-                    <label><input type="checkbox" name="is_public" {{$thread->is_public?'checked':''}}>是否公开可见？</label>&nbsp;
-                    <label><input type="checkbox" name="no_reply"{{$thread->no_reply?'checked':''}}>是否禁止回帖？</label>&nbsp;
-                    <br>
-                    <label><input type="checkbox" name="use_markdown" {{$thread->user_markdown?'checked':''}}>使用Markdown语法？</label>
-                    <label><input type="checkbox" name="download_as_thread" {{$thread->download_as_thread?'checked':''}}>开放讨论帖形式的书评下载？（正文+全部评论，按回帖时间顺序排列）</label>&nbsp;
-                    <label><input type="checkbox" name="download_as_book"  {{$thread->download_as_book?'checked':''}}>开放脱水书籍下载？（不含回帖的正文章节）</label>
+                    <div class="">
+                        <label><input type="checkbox" name="use_indentation" {{ $thread->use_indentation?'checked':''}}>段首缩进（自动空两格）？</label>
+                    </div>
+                    <div class="">
+                        <label><input type="checkbox" name="is_public" {{$thread->is_public?'checked':''}}>是否公开可见？</label>
+                    </div>
+                    <div class="">
+                        <label><input type="checkbox" name="no_reply"{{$thread->no_reply?'checked':''}}>是否禁止回帖？</label>
+                    </div>
+                    <div class="">
+                        <label><input type="checkbox" name="use_markdown" {{$thread->user_markdown?'checked':''}}>使用Markdown语法？</label>
+                    </div>
+                    <div class="">
+                        <label><input type="checkbox" name="download_as_thread" {{$thread->download_as_thread?'checked':''}}>开放讨论帖形式的书评下载？（正文+全部评论，按回帖时间顺序排列）</label>
+                    </div>
+                    <div class="">
+                        <label><input type="checkbox" name="download_as_book"  {{$thread->download_as_book?'checked':''}}>开放脱水书籍下载？（不含回帖的正文章节）</label>
+                    </div>
 
                 </div>
-                <button type="submit" class="btn btn-md btn-danger sosad-button">确认修改文案</button>
+                <button type="submit" class="btn btn-lg btn-danger sosad-button">确认修改文案</button>
             </form>
         </div>
     </div>

@@ -106,15 +106,19 @@
 
     // 邮箱更新
     Route::get('/user/edit_email', 'UsersController@edit_email')->name('user.edit_email');//更改用户的邮箱信息 19.7.9
-    Route::post('/user/update_email', 'UsersController@update_email')->name('user.update_email');//更新用户的邮箱信息  19.7.9
+    Route::patch('/user/update_email', 'UsersController@update_email')->name('user.update_email');//更新用户的邮箱信息  19.7.9
 
     // 密码更新
     Route::get('/user/edit_password', 'UsersController@edit_password')->name('user.edit_password');//更改用户的密码信息  19.7.9
-    Route::post('/user/update_password', 'UsersController@update_password')->name('user.update_password');//更新用户的密码信息  19.7.9
+    Route::patch('/user/update_password', 'UsersController@update_password')->name('user.update_password');//更新用户的密码信息  19.7.9
 
     // 简介更新
     Route::get('/user/edit_introduction', 'UsersController@edit_introduction')->name('user.edit_introduction');//更改用户的个人简介
-    Route::post('/user/update_introduction', 'UsersController@update_introduction')->name('user.update_introduction');//更改用户的个人简介
+    Route::patch('/user/update_introduction', 'UsersController@update_introduction')->name('user.update_introduction');//更改用户的个人简介
+
+    // 偏好更新
+    Route::get('/user/edit_preference', 'UsersController@edit_preference')->name('user.edit_preference');//更改用户的使用偏好
+    Route::patch('/user/update_preference', 'UsersController@update_preference')->name('user.update_preference');//更改用户的使用偏好
 }
 
 {//以下展示论坛贴按标签（label）与板块（channel）分布的视图
@@ -201,17 +205,21 @@
         'index', 'create', 'store', 'edit', 'update', 'show'
     ]]); //
 
+    //修改书籍标签
     Route::get('books/{book}/edit_tag', 'BooksController@edit_tag')->name('books.edit_tag');
+    Route::patch('books/{book}/edit_tag', 'BooksController@update_tag')->name('books.update_tag');
 
-    Route::post('books/{book}/edit_tag', 'BooksController@update_tag')->name('books.update_tag');
-
+    //修改书籍文案信息
     Route::get('books/{book}/edit_profile', 'BooksController@edit_profile')->name('books.edit_profile');
+    Route::patch('books/{book}/edit_profile', 'BooksController@update_profile')->name('books.update_profile');
 
-    Route::post('books/{book}/edit_profile', 'BooksController@update_profile')->name('books.update_profile');
-
+    //修改书籍同人标记
     Route::get('books/{book}/edit_tongren', 'BooksController@edit_tongren')->name('books.edit_tongren');
+    Route::patch('books/{book}/edit_tongren', 'BooksController@update_tongren')->name('books.update_tongren');
 
-    Route::post('books/{book}/edit_tongren', 'BooksController@update_tongren')->name('books.update_tongren');
+    // 章节重排序
+    Route::get('books/{book}/edit_chapter_index', 'BooksController@edit_chapter_index')->name('books.edit_chapter_index');
+    Route::patch('books/{book}/update_chapter_index', 'BooksController@update_chapter_index')->name('books.update_chapter_index');
 
     Route::patch('chapter/{chapter}', 'ChapterController@update')->name('chapter.update');
 
@@ -265,13 +273,13 @@
 
 {//收藏模块
 
-    Route::resource('collection', 'CollectionsController', ['only' => [
+    Route::resource('collection', 'CollectionController', ['only' => [
         'index', 'update', 'destroy'
     ]]); //
 
-    Route::get('/collection_clearupdates', 'CollectionsController@clearupdates')->name('collection.clearupdates');//清零更新提醒
+    Route::get('/collection_clearupdates', 'CollectionController@clearupdates')->name('collection.clearupdates');//清零更新提醒
 
-    Route::post('/threads/{thread}/collect', 'CollectionsController@store')->name('collection.store')->middleware('filter_thread');//收藏某个主题帖
+    Route::post('/threads/{thread}/collect', 'CollectionController@store')->name('collection.store')->middleware('filter_thread');//收藏某个主题帖
 
 
     Route::resource('collection_group', 'CollectionGroupController', ['only' => [

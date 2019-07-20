@@ -46,6 +46,15 @@
         </span>
 
         <span class="button-group">
+            <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">其他标签<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                @foreach($tags['book_custom_Tags'] as $tag)
+                <li><a class="" href="{{ route('books.index', array_merge(['withTag' => StringProcess::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
+                @endforeach
+            </ul>
+        </span>
+
+        <span class="button-group">
             <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">排序<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach(config('selectors.book_filter.ordered') as $ordered => $explanation)
@@ -53,9 +62,10 @@
                 @endforeach
             </ul>
         </span>
-            <a href="{{ route('all.tags') }}" class="btn btn-default btn-md sosad-button-control">标签列表</a>
-        <span>
 
+        <span class="pull-right">
+            <a href="{{ route('all.tags') }}" class="btn btn-default btn-md sosad-button-control">全站标签</a>
         </span>
+
     </div>
 </div>
