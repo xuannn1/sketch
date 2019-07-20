@@ -182,7 +182,7 @@ class ConstantObjects
 
     public static function titles()//获得站上所有的titles
     {
-        return Cache::remember('titles', 10, function (){
+        return Cache::remember('titles', 20, function (){
             return \App\Models\Title::all();
         });
     }

@@ -86,14 +86,14 @@ trait PageObjectTraits{
 
     public function all_helpfaqs()
     {
-        return Cache::remember('all_helpfaqs', 60, function () {
+        return Cache::remember('all_helpfaqs', 30, function () {
             return DB::table('helpfaqs')->get();
         });
     }
 
     public function find_helpfaqs()
     {
-        return Cache::remember('find_helpfaqs', 60, function () {
+        return Cache::remember('find_helpfaqs', 10, function () {
             $total_faq =[];
             foreach(config('help') as $key1=>$value1)
             {

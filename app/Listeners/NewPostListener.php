@@ -57,6 +57,8 @@ class NewPostListener
                 $thread->reply_count+=1;
             }
 
+            $thread->save();
+
             // 更新被回复对象
             if($post->parent){
                 $post->parent->update([

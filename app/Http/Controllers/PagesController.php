@@ -89,7 +89,7 @@ class PagesController extends Controller
             $records = $this->findAdminRecords($user_id, $page);
             $user_name = CacheUser::user($user_id)->name;
         }else{
-            $records = Cache::remember('adminrecords-p'.$page, config('constants.online_count_interval'), function () use($page) {
+            $records = Cache::remember('adminrecords-p'.$page, 5, function () use($page) {
                 return $this->findAdminRecords(0, $page);
             });
         }
