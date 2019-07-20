@@ -122,7 +122,7 @@ class MessageController extends Controller
         $user->clear_column('unread_reminders');
         $user->clear_column('unread_updates');
 
-        CacheUser::clearuser($id);
+        CacheUser::clearuser($user->id);
 
 
         return redirect()->back();

@@ -218,8 +218,7 @@ class threadsController extends Controller
             $thread->keep_only_admin_tags();
             $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
 
-            $this->clearThreadProfile($thread->id);
-            $this->clearThread($thread->id);
+            $this->clearAllThread($thread->id);
             return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
         }else{
             abort(403);
@@ -262,14 +261,11 @@ class threadsController extends Controller
 
     public function show($id, Request $request)
     {
-        $show_profile = true;
-        $page = (int)(is_numeric($request->page)? $request->page:'1');
 
-        if($page>1||$request->withType||$request->withComponent||$request->userOnly||$request->withReplyTo||$request->ordered){
-            $show_profile = false;
-        }
 
-        if($show_profile){
+        $show_config = $this->decide_thread_show_config($request);
+
+        if($show_config['show_profile']){
             $thread = $this->threadProfile($id);
         }else{
             $thread = $this->findThread($id);
@@ -280,7 +276,7 @@ class threadsController extends Controller
         $posts = \App\Models\Post::where('thread_id',$id)
         ->with('author.title','tags','last_reply')
         ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
-        ->withComponent($request->withComponent)//可以选择是只看component，还是不看component
+        ->withComponent($request->withComponent)//可以选择是只看component，还是不看component只看post，还是全都看
         ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
         ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
         ->ordered($request->ordered)//排序方式
@@ -297,6 +293,8 @@ class threadsController extends Controller
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
 
-        return view('threads.show', compact('show_profile', 'thread', 'posts', 'user', 'info'));
+        $selector = config('selectors')[$channel->type.'_filter'];
+
+        return view('threads.show', compact('show_config', 'thread', 'posts', 'user', 'info', 'selector'));
     }
 }

@@ -60,7 +60,7 @@
                 @if(Auth::check())
                 <!-- 打赏、评票行为 -->
                 <div class="text-center">
-                    <span><a href="#" data-id="{{$quote->id}}" data-toggle="modal" data-target="#TriggerQuoteReward{{ $quote->id }}" class="btn btn-default  btn-md btn-block">打赏</a></span>
+                    <span><a href="#" data-id="{{$quote->id}}" data-toggle="modal" data-target="#TriggerQuoteReward{{ $quote->id }}" class="btn btn-info  btn-lg btn-block sosad-button">打赏</a></span>
                 </div>
                 <div class="modal fade" id="TriggerQuoteReward{{ $quote->id }}" role="dialog">
                     <div class="modal-dialog">

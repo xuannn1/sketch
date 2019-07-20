@@ -46,8 +46,7 @@ class ReviewController extends Controller
 
         event(new NewPost($post));
 
-        $this->clearThreadProfile($thread->id);
-        $this->clearThreadReviewIndex($thread->id);
+        $this->clearAllThread($thread->id);
 
         if($post->checklongcomment()){
             $this->user->reward('long_post');
@@ -70,7 +69,7 @@ class ReviewController extends Controller
         $post = $form->updateReview($post, $thread);
         $thread->recalculate_characters();
         $this->clearPostProfile($id);
-        $this->clearThreadReviewIndex($id);
+        $this->clearAllThread($thread->id);
 
         return redirect()->route('post.show', $id)->with('success','已经成功更新书评');
     }
@@ -86,6 +85,9 @@ class ReviewController extends Controller
 
         $review = Review::create(['post_id'=>$post->id]);
         $post->type = 'review';
+        $post->reply_to_id = 0;
+        $post->reply_to_brief = '';
+        $post->reply_to_position = 0;
         $post->edited_at = Carbon::now();
         $post->save();
 

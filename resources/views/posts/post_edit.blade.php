@@ -24,6 +24,7 @@
                     <div class="checkbox">
                         <label><input type="checkbox" name="is_anonymous" {{ $post->is_anonymous ? 'checked' : '' }}>马甲？</label>&nbsp;
                         <label><input type="checkbox" name="use_indentation" {{ $post->use_indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label>
+                        <label class="{{$post->reply_to_id>0?'':'hidden'}}"><input type="checkbox"  name="is_comment" {{$post->type==="comment"? 'checked':''}}>是点评？</label>
                         <div class="form-group text-right grayout" id="majia" style="display:block">
                             <input type="text" name="majia" class="form-control" value="{{ $post->majia ?? '匿名咸鱼'}}" disabled>
                             <label for="majia"><small>(马甲不可修改，只能脱马或批马)</small></label>

@@ -51,7 +51,7 @@
                     <div class="recommendation">
                         <div class="row">
                             <div class="col-xs-12">
-                                <a href="{{ route('thread.show', $thread_recom->id) }}" class="">{{ $thread_recom->title }}：<span class="grayout smaller-25">{{ $thread_recom->brief }}</span>
+                                <a href="{{ route('thread.show_profile', $thread_recom->id) }}" class="">{{ $thread_recom->title }}：<span class="grayout smaller-25">{{ $thread_recom->brief }}</span>
                                 </a>
                             </div>
                         </div>

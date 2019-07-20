@@ -11,7 +11,7 @@ class UserObserver
 {
     public function updated(User $user)
     {
-        Cache::put("cachedUser.{$user->id}", $user, 30);
+        Cache::put("cachedUser.{$user->id}", $user, 15);
     }
 
 }

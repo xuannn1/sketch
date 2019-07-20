@@ -24,6 +24,7 @@ trait GeneratePostDataTraits{
         $data['thread_id']= $thread->id;
         $data['is_anonymous']=0;
         $data['type']='post';
+        if($this->is_comment&&$this->reply_to_id>0){$data['type']='comment';}
         if ($this->is_anonymous&&$thread->channel()->allow_anonymous){
             $data['is_anonymous']=1;
             $data['majia']=$this->majia;
@@ -50,7 +51,7 @@ trait GeneratePostDataTraits{
                 $data['reply_to_id'] = $reply->id;
                 $data['reply_to_brief'] = $reply->brief;
                 $data['is_bianyuan']=$data['is_bianyuan']||$reply->is_bianyuan;
-                if($reply->type==='post'||$reply->type==='comment'){
+                if(($reply->type==='post'&&$data['char_count']<50)||$reply->type==='comment'){
                     $data['in_component_id'] = $reply->in_component_id;
                     $data['type'] = 'comment';
                 }
@@ -73,6 +74,9 @@ trait GeneratePostDataTraits{
         $data['use_markdown']=$this->use_markdown ? true:false;
         $data['use_indentation']=$this->use_indentation ? true:false;
         $data['edited_at']=Carbon::now();
+        if($post->reply_to_id>0&&($post->type==="comment"||$post->type==="post")){
+            $data['type']=$this->is_comment? 'comment':'post';
+        }
         return $data;
     }
 }

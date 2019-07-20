@@ -131,7 +131,7 @@ function add_to_collection(thread_id){
     });
     $.ajax({
         type: 'POST',
-        url: web_base_url + '/threads/' + thread_id + '/collect',
+        url: web_base_url + '/threads/' + thread_id + '/collect/',
         data: {
         },
         success: function(data) {
@@ -297,7 +297,7 @@ function vote(votable_type, votable_id, attitude_type){
         data: {
             'votable_type': votable_type,
             'votable_id': votable_id,
-            'attitude_type': attitude_type,
+            'attitude_type': attitude_type
         },
         success: function(data) {
             var message = ["success","info","warning","danger"];
@@ -355,6 +355,10 @@ function cancelreplytopost(){
     document.getElementById("reply_to_post").classList.add('hidden');
     document.getElementById("reply_to_post_info").innerHTML = "";
 };
+
+function show_is_comment(){
+    $('#is_comment').removeClass('hidden');
+}
 
 function wordscount(item){
     var post = document.getElementById(item).value;
@@ -451,24 +455,6 @@ function deletepost(post_id){
         success: function(data) {
             console.log(data);
             $( '#post'+post_id ).addClass('hidden');
-        }
-    });
-}
-function deletepostcomment(postcomment_id){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'POST',
-        url: web_base_url + '/postcomments/' +postcomment_id,
-        data: {
-            '_method': "DELETE",
-            'id': postcomment_id
-        },
-        success: function(data) {
-            $( '#postcomment'+postcomment_id ).addClass('hidden');
         }
     });
 }
@@ -583,83 +569,6 @@ function cancellink(master_account, branch_account){
     });
 };
 
-function receivemessagesfromstrangers(){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'GET',
-        url: web_base_url + '/messages/receivemessagesfromstrangers',
-        data: {
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                $( '.receivemessagesfromstrangers').addClass('hidden');
-                $( '.cancelreceivemessagesfromstrangers').removeClass('hidden');
-            }
-        }
-    });
-};
-function cancelreceivemessagesfromstrangers(){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'GET',
-        url: web_base_url + '/messages/cancelreceivemessagesfromstrangers',
-        data: {
-        },
-        success: function(data) {
-            if (data != "notwork"){
-                $( '.receivemessagesfromstrangers').removeClass('hidden');
-                $( '.cancelreceivemessagesfromstrangers').addClass('hidden');
-            }
-        }
-    });
-};
-
-function receiveupvotereminders(){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'GET',
-        url: web_base_url + '/messages/receiveupvotereminders',
-        data: {
-        },
-        success: function(data) {
-            if (data == "works"){
-                $( '.receiveupvotereminders').addClass('hidden');
-                $( '.cancelreceiveupvotereminders').removeClass('hidden');
-            }
-        }
-    });
-};
-function cancelreceiveupvotereminders(){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'GET',
-        url: web_base_url + '/messages/cancelreceiveupvotereminders',
-        data: {
-        },
-        success: function(data) {
-            if (data == "works"){
-                $( '.receiveupvotereminders').removeClass('hidden');
-                $( '.cancelreceiveupvotereminders').addClass('hidden');
-            }
-        }
-    });
-};
 function sosadpretreat(string) {//将正常文本预处理
     string = string.replace(/\[br\]/g,"</p><br><p>");
     string = string.replace(/\r\n/g,"\n");
@@ -672,20 +581,6 @@ function sosadpretreat(string) {//将正常文本预处理
 function doublebreakline(string) {//魔改md，使得单一换行能够显示
     string = string.replace(/\n/g,"<br>");
     return(string);
-}
-
-function addoption(thread_id){//让投票区增加分支选择项
-    var option_number = $('#thread-'+thread_id+'-poll-options > input').length + 1;
-    if (option_number<=10){
-        $('#thread-'+thread_id+'-poll-options').append('<input type="text" name="option-'+option_number+'" class="form-control" id="thread-'+thread_id+'-poll-option-'+ option_number +'" placeholder="请填写选项'+option_number+'">');
-        //console.log(option_number);
-    }else{
-        alert("只能填写十项");
-    }
-}
-
-function toggle_tags(){
-    $('.extra-tag').toggleClass('hidden');
 }
 
 $( ".daily-quote" ).each(function( quote ) {
@@ -726,19 +621,3 @@ $( ".daily-quote" ).each(function( quote ) {
         $quote.css("font-size", "1.0em");
     }
 });
-
-// function show_book_selector(){
-//     $('.detailed-selector').removeClass('hidden');
-//     $('.detailed-selector input').attr('disabled', false);
-//     $('.brief-selector').addClass('hidden');
-//     $('.brief-selector input').attr('disabled', true);
-// }
-// function fold_book_selector(){
-//     $('.brief-selector').removeClass('hidden');
-//     $('.brief-selector input').attr('disabled', false);
-//     $('.detailed-selector').addClass('hidden');
-//     $('.detailed-selector input').attr('disabled', true);
-// }
-function toggle_tags_tongren_yuanzhu(){
-    $('.tongren_yuanzhu').toggleClass('hidden');
-}

@@ -15,7 +15,7 @@ trait MessageObjectTraits{
         });
     }
     public function refreshPulicNotices(){
-        return Cache::pull('publicNotices');
+        return Cache::forget('publicNotices');
     }
     public function findPulicNotices($id){
         // 寻找id大于给定id的public notice

@@ -14,7 +14,7 @@
                 @endif
                 @if($post->user_id==Auth::id()&&$post->type==='post'&&$thread->channel()->type==='list')
                 <div class="">
-                    <a href="{{ route('post.turn_to_review', $post->id) }}" class="btn btn-md btn-block sosad-button-control">转化成书评</a>
+                    <a href="{{ route('post.', $post->id) }}" class="btn btn-md btn-block sosad-button-control">转化成书评</a>
                 </div>
                 @endif
                 @if($post->user_id==Auth::id()&&$post->type==='post'&&$thread->channel()->type==='book')

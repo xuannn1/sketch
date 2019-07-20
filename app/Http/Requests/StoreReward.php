@@ -72,8 +72,9 @@ class StoreReward extends FormRequest
         $this->model_update($rewarded_model,$reward_data['reward_type'], (int)$reward_data['reward_value']);
 
         $reward = $rewarded_model->rewards()->create($reward_data);
-
-        $rewarded_model->user->remind('new_reward');
+        if(($rewarded_model->user)&&($rewarded_model->user->info)&&(!$rewarded_model->user->info->no_reward_reminders)){
+            $rewarded_model->user->remind('new_reward');
+        }
 
         return $reward;
     }

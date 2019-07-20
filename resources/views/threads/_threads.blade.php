@@ -5,7 +5,7 @@
             <!-- thread title -->
             <span>
                 <span class="badge newchapter-badge badge-tag">{{ $thread->channel()->channel_name }}</span>
-                <a href="{{ route('thread.show',$thread->id) }}" class="bigger-5">{{ $thread->title }}</a>
+                <a href="{{ route('thread.show', ['thread'=>$thread->id, 'withComponent'=>'no_comment']) }}" class="bigger-5">{{ $thread->title }}</a>
                 <small>
                     @if( !$thread->is_public )
                     <span class="glyphicon glyphicon-eye-close"></span>

@@ -9,7 +9,7 @@ trait ThreadObjectTraits{
 
     public function threadProfile($id)
     {
-        return Cache::remember('threadProfile.'.$id, 15, function () use($id){
+        return Cache::remember('threadProfile.'.$id, 10, function () use($id){
             $thread = $this->findThread($id);
             $thread->load('tags', 'author.title', 'last_post', 'last_component', 'editor_recommends.post.author');
             if($thread->channel()->type==="list"&&$thread->last_component_id>0&&$thread->last_component){
@@ -24,12 +24,12 @@ trait ThreadObjectTraits{
 
     public function clearThreadProfile($id)
     {
-        Cache::pull('threadProfile.'.$id);
+        Cache::forget('threadProfile.'.$id);
     }
 
     public function threadProfilePosts($id)
     {
-        return Cache::remember('threadProfilePosts.'.$id, 15, function () use($id){
+        return Cache::remember('threadProfilePosts.'.$id, 10, function () use($id){
             return \App\Models\Post::with('author.title','last_reply')
             ->withType('post')
             ->where('thread_id','=',$id)
@@ -41,14 +41,22 @@ trait ThreadObjectTraits{
 
     public function findThread($id)
     {
-        return Cache::remember('thread.'.$id, 15, function () use($id){
+        return Cache::remember('thread.'.$id, 10, function () use($id){
             return \App\Models\Thread::find($id);
         });
     }
 
     public function clearThread($id)
     {
-        Cache::pull('thread.'.$id);
+        Cache::forget('thread.'.$id);
+    }
+
+    public function clearAllThread($id)
+    {
+        $this->clearThread($id);
+        $this->clearThreadProfile($id);
+        $this->clearThreadChapterIndex($id);
+        $this->clearThreadReviewIndex($id);
     }
 
     public function jinghua_threads()
@@ -89,7 +97,7 @@ trait ThreadObjectTraits{
     }
     public function clearThreadChapterIndex($id)
     {
-        Cache::pull('threadChapterIndex.'.$id);
+        Cache::forget('threadChapterIndex.'.$id);
     }
 
     public function threadReviewIndex($id)
@@ -103,7 +111,28 @@ trait ThreadObjectTraits{
     }
     public function clearThreadReviewIndex($id)
     {
-        Cache::pull('threadReviewIndex.'.$id);
+        Cache::forget('threadReviewIndex.'.$id);
+    }
+
+    public function decide_thread_show_config($request)
+    {
+        $show_profile = true;
+        $show_selected = false;
+        $page = (int)(is_numeric($request->page)? $request->page:'1');
+        if($page>1||$request->withType||$request->userOnly||$request->withReplyTo||$request->ordered){
+            $show_profile = false;
+        }
+        if($request->withComponent&&$request->withComponent!='no_comment'){
+            $show_profile = false;
+        }
+
+        if($request->withType||$request->userOnly||$request->withComponent||$request->withReplyTo||$request->ordered){
+            $show_selected = true;
+        }
+        return [
+            'show_profile' => $show_profile,
+            'show_selected' => $show_selected,
+        ];
     }
 
 }

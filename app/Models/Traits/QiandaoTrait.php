@@ -16,6 +16,7 @@ trait QiandaoTrait
 		}else{
 			$info->qiandao_continued=1;
 		}
+		$info->qiandao_all+=1;
 
 		// 更新签到天数
 		$this->qiandao_at = Carbon::now();

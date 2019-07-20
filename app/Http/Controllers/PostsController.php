@@ -39,7 +39,7 @@ class PostsController extends Controller
         event(new NewPost($post));
 
         if($post->checklongcomment()){
-            $this->user->reward('long_post');
+            $post->user->reward('long_post');
             return back()->with('success', '您得到了长评奖励');
         }
 
@@ -91,11 +91,9 @@ class PostsController extends Controller
     public function show($id)
     {
         $post = $this->postProfile($id);
+        if(!$post){abort(404);}
         $thread = $this->findThread($post->thread_id);
-
-        if(!$post||!$thread){
-            abort(404);
-        }
+        if(!$thread){abort(404);}
 
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
@@ -115,6 +113,7 @@ class PostsController extends Controller
 
     public function destroy($id){
         $post = Post::findOrFail($id);
+        if(!$post){abort(404);}
         $thread=$post->thread;
         $channel = $thread->channel();
         if(!$thread||!$post||!$channel){abort(404);}
@@ -126,16 +125,14 @@ class PostsController extends Controller
             if($chapter){
                 $chapter->delete();
                 $thread->reorder_chapters();
-                $this->clearThreadProfile($thread->id);
-                $this->clearThreadChapterIndex($id);
+                $this->clearAllThread($thread->id);
             }
         }
         if($post->type==='review'){
             $review = $post->review;
             if($review){
                 $review->delete();
-                $this->clearThreadProfile($thread->id);
-                $this->clearThreadReviewIndex($id);
+                $this->clearAllThread($thread->id);
             }
         }
 
@@ -153,14 +150,14 @@ class PostsController extends Controller
             if($chapter){
                 $chapter->delete();
                 $thread->reorder_chapters();
-                $this->clearThreadChapterIndex($id);
+                $this->clearAllThread($thread->id);
             }
         }
         if($post->type==='review'){
             $review = $post->review;
             if($review){
                 $review->delete();
-                $this->clearThreadReviewIndex($id);
+                $this->clearAllThread($thread->id);
             }
         }
         $post->type='post';

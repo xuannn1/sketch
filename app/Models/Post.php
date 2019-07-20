@@ -109,8 +109,11 @@ class Post extends Model
         if($withComponent==='component_only'){
             return $query->whereIn('type', array_diff( $this->post_types, ['post','comment']));
         }
-        if($withComponent==='none_component_only'){
+        if($withComponent==='post_N_comment'){
             return $query->whereIn('type',['post','comment']);
+        }
+        if($withComponent==='no_comment'){
+            return $query->where('type', '<>', 'comment');
         }
         return $query;
     }

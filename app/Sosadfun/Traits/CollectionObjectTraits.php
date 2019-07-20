@@ -14,7 +14,7 @@ trait CollectionObjectTraits{
 
     public function refreshCollectionGroups($id)
     {
-        return Cache::pull('collectionGroups.'.$id);
+        return Cache::forget('collectionGroups.'.$id);
     }
 
     public function checkCollectedOrNot($user_id, $thread_id)

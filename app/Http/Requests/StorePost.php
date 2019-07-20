@@ -34,7 +34,7 @@ class StorePost extends FormRequest
             'body' => 'required|string|min:10|max:20000',
             'reply_to_id' => 'numeric',
             'majia' => 'string|max:10',
-            'title' => 'string|nullable|max:25',
+            'title' => 'string|nullable|max:30',
         ];
     }
 

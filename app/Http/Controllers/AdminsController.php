@@ -16,9 +16,14 @@ use Auth;
 use Carbon;
 use ConstantObject;
 use StringProcess;
+use App\Sosadfun\Traits\ThreadObjectTraits;
+use App\Sosadfun\Traits\PostObjectTraits;
 
 class AdminsController extends Controller
 {
+    use ThreadObjectTraits;
+    use PostObjectTraits;
+
     //所有这些都需要用transaction，以后再说
     public function __construct()
     {
@@ -29,166 +34,122 @@ class AdminsController extends Controller
         return view('admin.index');
     }
 
-    public function thread_admin_record($thread, $request, $operation = 0)
+    private function add_admin_record($type='', $item='', $record='', $reason='', $operation = 0)
     {
-        return Administration::create([
+        if(!$item||$operation==0){return;}
+        Administration::create([
             'user_id' => Auth::id(),
             'operation' => $operation,
-            'item_id' => $thread->id,
-            'reason' => $request->reason,
-            'administratee_id' => $thread->user_id,
-            'record' => StringProcess::trimtext($thread->title.$thread->brief, 40),
-            'administratable_type' => 'thread',
-            'administratable_id' => $thread->id,
+            'reason' => $reason,
+            'administratee_id' => $item->user_id,
+            'record' => $record,
+            'administratable_type' => $type,
+            'administratable_id' => $item->id,
         ]);
+        return (int)$operation;
     }
+
     public function threadmanagement(Thread $thread, Request $request)
     {
         $this->validate($request, [
-            'reason' => 'required|string|max:180',
+            'reason' => 'required|string|max:50',
         ]);
         $var = request('controlthread');
-        if ($var=="1"){//锁帖
-            if(!$thread->is_locked){
-                $thread->is_locked = true;
-                $thread->save();
-                $this->thread_admin_record($thread, $request, 1);
-            }
-            return redirect()->back()->with("success","已经成功处理该主题");
+        $operation = 0;
+        $record = StringProcess::trimtext($thread->title.$thread->brief, 30);
+        $reason = $request->reason;
+        $thread_id = $thread->id;
+
+        if ($var=="1"&&!$thread->is_locked){//锁帖
+            $thread->update(['is_locked'=>true]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 1);
         }
 
-        if ($var=="2"){//解锁
-            if($thread->is_locked){
-                $thread->is_locked = false;
-                $thread->save();
-                $this->thread_admin_record($thread, $request, 2);
-            }
-            return redirect()->back()->with("success","已经成功处理该主题");
+        if ($var=="2"&&$thread->is_locked){//解锁
+            $thread->update(['is_locked'=>false]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 2);
         }
 
-        if ($var=="3"){//转私密
-            if($thread->is_public){
-                $thread->is_public = false;
-                $thread->save();
-                $this->thread_admin_record($thread, $request, 3);
-            }
-            return redirect()->back()->with("success","已经成功处理该主题");
+        if ($var=="3"&&$thread->is_public){//转私密
+            $thread->update(['is_public'=>false]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 3);
         }
 
-        if ($var=="4"){//转公开
-            if(!$thread->is_public){
-                $thread->is_public = true;
-                $thread->save();
-                $this->thread_admin_record($thread, $request, 4);
-            }
-            return redirect()->back()->with("success","已经成功处理该主题");
+        if ($var=="4"&&!$thread->is_public){//转公开
+            $thread->update(['is_public'=>true]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 4);
         }
-
 
         if ($var=="5"){
-            $this->thread_admin_record($thread, $request, 5);
+            $operation = $this->add_admin_record($thread, $record, $reason, 5);
             $thread->delete();
-            return redirect('/')->with("success","已经删帖");
         }
+
         if ($var=="9"){//书本/主题贴转移版块
-            $this->thread_admin_record($thread, $request, 9);
+            $old_channel = $thread->channel();
             $channel = collect(config('channel'))->keyby('id')->get($request->channel);
-            $thread->channel_id = $channel->id;
-            $thread->save();
-            return redirect()->route('thread.show', $thread)->with("success","已经转移操作");
+            if(!$channel){abort(409, '找不到这个待转频道');}
+            $thread->update(['channel_id'=>$channel->id]);
+            $record = $old_channel->channel_name."->".$channel->channel_name.'|'.$record
+            $operation = $this->add_admin_record($thread, $record, $reason, 9);
         }
 
-        if ($var=="15"){//打边缘限制
-            if(!$thread->is_bianyuan){
-                $thread->is_bianyuan = true;
-                $thread->save();
-                $this->thread_admin_record($thread, $request, 15);
-            }
-            return redirect()->back()->with("success","已经成功打上边缘标记");
+        if ($var=="15"&&!$thread->is_bianyuan){//打边缘限制
+            $thread->update(['is_bianyuan'=>true]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 15);
         }
 
-        if ($var=="16"){//取消边缘限制
-            if($thread->is_bianyuan){
-                $thread->is_bianyuan = false;
-                $thread->save();
-                $this->thread_admin_record($thread, $request, 16);
-            }
-            return redirect()->back()->with("success","已经成功取消边缘该主题");
+        if ($var=="16"&&$thread->is_bianyuan){//取消边缘限制
+            $thread->update(['is_bianyuan'=>false]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 16);
         }
-        if($var=='21'){// 阻止回复
-            if(!$thread->no_reply){
-                $thread->no_reply = 1;
-                $thread->save();
-                $this->thread_admin_record($thread, $request, 21);
-            }
-            return redirect()->back()->with("success","已经成功阻止回复主题");
+        if($var=='21'&&!$thread->no_reply){// 阻止回复
+            $thread->update(['no_reply'=>true]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 21);
         }
-        if($var=='22'){// 允许回复
-            if($thread->no_reply){
-                $thread->no_reply = 0;
-                $thread->save();
-                $this->thread_admin_record($thread, $request, 22);
-            }
-            return redirect()->back()->with("success","已经成功允许回复主题");
+        if($var=='22'&&$thread->no_reply){// 允许回复
+            $thread->update(['no_reply'=>false]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 22);
         }
         if ($var=="40"){// 上浮
-            $thread->responded_at = Carbon::now();
-            $thread->save();
-            $this->thread_admin_record($thread, $request, 40);
-            return redirect()->back()->with("success","已经成功上浮该主题");
+            $thread->update(['responded_at'=>Carbon::now()]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 40);
         }
 
         if ($var=="41"){// 下沉
-            $thread->responded_at = Carbon::now()->subMonths(6);
-            $thread->save();
-            $this->thread_admin_record($thread, $request, 41);
-            return redirect()->back()->with("success","已经下沉该主题");
+            $thread->update(['responded_at'=>Carbon::now()subMonths(6)]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 41);
         }
 
-        if ($var=="42"){// 添加推荐
-            $thread->responded_at = Carbon::now();
-            $thread->recommended = true;
-            $thread->save();
-            $this->thread_admin_record($thread, $request, 42);
-            return redirect()->back()->with("success","已经成功推荐该主题");
+        if ($var=="42"&&!$thread->recommended){// 添加推荐
+            $thread->update(['responded_at'=>Carbon::now(), 'recommended'=>true]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 42);
         }
 
-        if ($var=="43"){// 取消推荐
-            $thread->recommended = false;
-            $thread->save();
-            $this->thread_admin_record($thread, $request, 43);
-            return redirect()->back()->with("success","已经取消推荐该主题");
+        if ($var=="43"&&$thread->recommended){// 取消推荐
+            $thread->update(['recommended'=>false]);
+            $operation = $this->add_admin_record($thread, $record, $reason, 43);
         }
 
         if ($var=="44"){// 加精华
             $tag = ConstantObjects::find_tag_by_name('精华');
             $thread->tags()->attach($tag->id);
-            $this->thread_admin_record($thread, $request, 44);
-            return redirect()->back()->with("success","已经成功对该主题加精华");
+            $operation = $this->add_admin_record($thread, $record, $reason, 44);
         }
 
         if ($var=="45"){// 取消精华
             $tag = ConstantObjects::find_tag_by_name('精华');
-            $this->tags()->detach($tag->id);
-            $this->thread_admin_record($thread, $request, 45);
-            return redirect()->back()->with("success","已经成功对该主题取消精华");
+            $thread->tags()->detach($tag->id);
+            $operation = $this->add_admin_record($thread, $record, $reason, 45);
         }
 
-        return redirect()->back()->with("danger","请选择操作类型（转换板块？）");
-    }
+        if($operation===0){
+            return redirect()->back()->with("warning","未能处理该主题。是否未选转换板块？");
+        }
 
-    public function post_admin_record($post, $request, $operation = 0)
-    {
-        return Administration::create([
-            'user_id' => Auth::id(),
-            'operation' => $operation,
-            'item_id' => $post->id,
-            'reason' => $request->reason,
-            'administratee_id' => $post->user_id,
-            'record' => StringProcess::trimtext($post->title.$post->brief, 40),
-            'administratable_type' => 'post',
-            'administratable_id' => $post->id,
-        ]);
+        $this->clearAllThread($thread_id);
+        return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该主题');
+
     }
 
     public function postmanagement(Post $post, Request $request)
@@ -197,16 +158,21 @@ class AdminsController extends Controller
             'reason' => 'required|string',
             'majia' => 'required|string|max:10'
         ]);
+        $var = request('controlpost');
+        $operation = 0;
+        $record = StringProcess::trimtext($post->title.$post->body, 30);
+        $reason = $request->reason;
+        $post_id = $post->id;
+
         $var = request('controlpost');//
         if ($var=="7"){//删帖
-            $this->post_admin_record($post, $request, 7);
+            $operation = $this->add_admin_record($post, $record, $reason, 7);
 
             $chapter = $post->chapter;
             if($chapter){
                 $chapter->delete();
             }
             $post->delete();
-            return redirect('/')->back()->with("success","已经成功处理该贴");
         }
         if ($var=="10"){//修改马甲
             if (request('is_anonymous')=="1"){
@@ -251,6 +217,9 @@ class AdminsController extends Controller
             $post->save();
             return redirect()->back()->with("success","已经成功处理该回帖");
         }
+
+        $this->clearPostProfile($post_id);
+        return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该回帖');
     }
 
     public function statusmanagement(Status $status, Request $request)

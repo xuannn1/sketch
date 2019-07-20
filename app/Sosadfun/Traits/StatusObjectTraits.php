@@ -22,7 +22,7 @@ trait StatusObjectTraits{
     }
     public function clearStatusProfile($id)
     {
-        return Cache::pull('statusProfile.'.$id);
+        return Cache::forget('statusProfile.'.$id);
     }
 
 }

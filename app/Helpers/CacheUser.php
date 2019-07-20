@@ -29,8 +29,8 @@ class CacheUser{ //cache-user class
 
     public static function clearuser($id)
     {
-        Cache::pull('cachedUser.'.$id);
-        Cache::pull('cachedUserInfo.'.$id);
+        Cache::forget('cachedUser.'.$id);
+        Cache::forget('cachedUserInfo.'.$id);
     }
 
     public static function intro($id){
@@ -42,7 +42,7 @@ class CacheUser{ //cache-user class
     }
 
     public static function clear_intro($id){
-        Cache::pull('cachedUserIntro.'.$id);
+        Cache::forget('cachedUserIntro.'.$id);
     }
 
     public static function AUser(){

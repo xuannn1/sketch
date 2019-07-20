@@ -87,8 +87,7 @@ class BooksController extends Controller
         $valid_tags = $thread->tags_validate($thread->tags);
         $thread->keep_only_admin_tags();
         $thread->tags()->syncWithoutDetaching($valid_tags);
-        $this->clearThreadProfile($thread->id);
-        $this->clearThread($thread->id);
+        $this->clearAllThread($id);
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍文案设置信息');
     }
 
@@ -113,7 +112,7 @@ class BooksController extends Controller
         $tags = array_merge($thread->tags->pluck('id')->toArray(), $input_tags);
         $thread->tags()->syncWithoutDetaching($thread->tags_validate($tags));
 
-        $this->clearThreadProfile($thread->id);
+        $this->clearAllThread($id);
 
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍标签信息');
     }
@@ -141,7 +140,7 @@ class BooksController extends Controller
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
 
         $thread->tongren_data_sync($request->all());
-        $this->clearThreadProfile($thread->id);
+        $this->clearAllThread($id);
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍同人信息');
     }
 
@@ -149,6 +148,7 @@ class BooksController extends Controller
     {
         $thread = Thread::find($id);
         $user = CacheUser::Auser();
+        $posts = $this->threadChapterIndex($thread->id);
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
 
         return view('books.edit_chapter_index', compact('thread','posts'));
@@ -179,8 +179,7 @@ class BooksController extends Controller
             }
         }
 
-        $this->clearThreadProfile($thread->id);
-        $this->clearThreadChapterIndex($thread->id);
+        $this->clearAllThread($id);
         return redirect()->route('thread.show_profile', $thread->id);
     }
 
@@ -192,6 +191,7 @@ class BooksController extends Controller
     public function index(Request $request)
     {
         $tags = ConstantObjects::organizeBasicBookTags();
+        $ordered = $request->ordered??'latest_add_component';
 
         $queryid = 'bookQ'
         .url('/')
@@ -199,7 +199,7 @@ class BooksController extends Controller
         .'-withBianyuan'.$request->withBianyuan
         .'-withTag'.$request->withTag
         .'-excludeTag'.$request->excludeTag
-        .'-ordered'.$request->ordered
+        .'-ordered'.$ordered
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
         $threads = Cache::remember($queryid, 5, function () use($request) {
             return Thread::with('author', 'tags', 'last_component', 'last_post')
@@ -209,7 +209,7 @@ class BooksController extends Controller
             ->withBianyuan($request->withBianyuan)
             ->withTag($request->withTag)
             ->excludeTag($request->excludeTag)
-            ->ordered($request->ordered)
+            ->ordered($request->ordered??'latest_add_component')
             ->paginate(config('preference.threads_per_page'))
             ->appends($request->only('inChannel','withBianyuan','withTag','excludeTag','ordered'));
         });

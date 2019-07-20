@@ -5,10 +5,10 @@
     array_merge(['withBianyuan' => request()->withBianyuan?'':'include_bianyuan'], request()->only('inChannel', 'withTag','excludeTag','ordered'))) }}" role="button">显示边限<span class="{{ request()->withBianyuan?'glyphicon glyphicon-remove':''}}"></span></a>
     @endif
 
-    
+
     @if(request()->inChannel)
     <a class="btn btn-info btn-md sosad-button-control" href="{{ route('books.index',
-    request()->only('withTag','excludeTag','withBianyuan','ordered')) }}" role="button">{{ config('selectors.book_filter.inChannel')[request()->inChannel] }}<span class="glyphicon glyphicon-remove"></span></a>
+    request()->only('withTag','excludeTag','withBianyuan','ordered')) }}" role="button">{{ config('selectors.book_index_filter.inChannel')[request()->inChannel] }}<span class="glyphicon glyphicon-remove"></span></a>
     @endif
 
     @if(request()->withTag)

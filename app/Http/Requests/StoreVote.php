@@ -57,7 +57,9 @@ class StoreVote extends FormRequest
         $vote = $voted_model->votes()->create($vote_data);
 
         if($vote_data['attitude_type']==='upvote'){
-            $voted_model->user->remind('new_upvote');
+            if(!$voted_model->user->info->no_upvote_reminders){
+                $voted_model->user->remind('new_upvote');
+            }
         }
 
         return $vote;

@@ -92,7 +92,7 @@
                     <!-- 回复他人帖子的相关信息 -->
                     @if($post->reply_to_id!=0)
                         <div class="post-reply grayout">
-                            回复&nbsp;<a href="{{ route('thread.showpost', $post->reply_to_id) }}">{{ $post->reply_to_brief }}</a>
+                            {{$post->type=='comment'?'点评':'回复'}}&nbsp;<a href="{{ route('thread.showpost', $post->reply_to_id) }}">{{ $post->reply_to_brief }}</a>
                         </div>
                     @endif
 

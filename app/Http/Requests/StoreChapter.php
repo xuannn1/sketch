@@ -32,11 +32,11 @@ class StoreChapter extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:25',
+            'title' => 'required|string|max:30',
             'brief' => 'max:40',
             'body' => 'required|string|min:15|max:20000',
             'annotation' => 'max:2000',
-            'warning' => 'max:500',
+            'warning' => 'max:200',
         ];
     }
 

@@ -36,7 +36,7 @@ trait PostObjectTraits{
 
     public function clearPostProfile($id)
     {
-        Cache::pull('postProfile.'.$id);
+        Cache::forget('postProfile.'.$id);
     }
 
 }

@@ -7,11 +7,11 @@
         @include('shared.errors')
         @include('threads._site_map')
         {{ $posts->links() }}
-        @if($show_profile)
+        @if($show_config['show_profile'])
             @include('threads._thread_profile')
         @endif
         @include('threads._post_selector')
-        @if(!$show_profile)
+        @if($show_config['show_selected'])
             @include('threads._post_selected')
         @endif
         <!-- 展示该主题下每一个帖子 -->

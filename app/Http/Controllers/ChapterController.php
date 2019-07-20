@@ -43,8 +43,7 @@ class ChapterController extends Controller
         }else{
             $post->user->reward("short_chapter");
         }
-        $this->clearThreadProfile($thread->id);
-        $this->clearThreadChapterIndex($thread->id);
+        $this->clearAllThread($id);
 
         return redirect()->route('post.show', $post->id)->with('success', '您已成功发布章节');
     }
@@ -53,6 +52,7 @@ class ChapterController extends Controller
     public function update($id, StoreChapter $form)
     {
         $post = Post::find($id);
+        if(!$post){abort(404);}
         $chapter = $post->chapter;
         $thread = $post->thread;
 
@@ -62,8 +62,7 @@ class ChapterController extends Controller
 
         $post = $form->updateChapter($post, $thread);
         $thread->recalculate_characters();
-        $this->clearPostProfile($id);
-        $this->clearThreadChapterIndex($id);
+        $this->clearAllThread($thread->id);
 
         return redirect()->route('post.show', $id)->with('success','已经成功更新章节');
 

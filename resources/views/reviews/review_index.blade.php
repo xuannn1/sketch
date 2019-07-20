@@ -9,7 +9,7 @@
             /
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
             /
-            <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>/
+            <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>/
             <a href="{{ route('thread.review_index',$thread->id) }}">评论列表</a>
         </div>
         <div class="panel panel-default">

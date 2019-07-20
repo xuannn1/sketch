@@ -14,8 +14,10 @@ trait RecordViewThreadTrait
 				// 不存在的话，新建viewThreadCount.$tid，并存入新点击为1，时限1d
 				 Cache::put('viewThreadCount.'.$this->id,1,Carbon::now()->addDay(1));
 			}else{// 存在？的话， 取值，删除，修改thread->view，把这部分点击算进去。
-				$value = Cache::pull('viewThreadCount.'.$this->id);
-				$this->increment('view_count', $value);
+				$value = (int)Cache::forget('viewThreadCount.'.$this->id);
+				if($value>0){
+					$this->increment('view_count', $value);
+				}
 			}
 			Cache::put('viewThreadCacheInterval.'.$this->id,1,Carbon::now()->addHour(1));
 		}else{

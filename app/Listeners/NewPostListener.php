@@ -8,11 +8,13 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use DB;
 use App\Models\Activity;
 use Cache;
+use App\Sosadfun\Traits\ThreadObjectTraits;
 
 class NewPostListener
 //class NewPostListener implements ShouldQueue
 {
 
+    use ThreadObjectTraits;
     //public $queue = 'listeners';
 
     /**
@@ -38,8 +40,10 @@ class NewPostListener
 
         DB::transaction(function() use($thread, $post){
             // 更新原楼里的信息更改
-            $thread->last_post_id = $post->id;
-            $thread->responded_at = $post->created_at;
+            if($post->type!='comment'){
+                $thread->last_post_id = $post->id;
+                $thread->responded_at = $post->created_at;
+            }
 
             if($post->type!='post'&&$post->type!='comment'){
                 $thread->last_component_id = $post->id;
@@ -50,12 +54,12 @@ class NewPostListener
                     $thread->add_component_at = $post->created_at;
                 }
                 $thread->recalculate_characters();
-                $this->clearThreadProfile($thread->id);
 
                 if($post->type==='chapter'){
                     $thread->reorder_chapters();
-                    $this->clearThreadChapterIndex($id);
                 }
+
+                $this->clearAllThread($thread->id);
             }else{
                 $thread->reply_count+=1;
             }
@@ -71,7 +75,7 @@ class NewPostListener
             }
 
             //不是给自己的主题顶帖，那么送出跟帖提醒
-            if ($post->user_id!=$thread->user_id){
+            if($post->user_id!=$thread->user_id){
                 $post_activity = Activity::create([
                     'kind' => 1,
                     'item_type' => 'post',

@@ -47,6 +47,6 @@ class RefreshToken extends Command
         DB::table('system_variables')
         ->update(['token_refreshed_at' => Carbon::now()]);
 
-        Cache::pull('system_variable');
+        Cache::forget('system_variable');
     }
 }
