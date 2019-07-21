@@ -187,6 +187,7 @@ return [
         'rewardable_type'       => '奖赏对象类型',
         'rewardable_id'         => '奖赏对象ID',
         'quiz-answer'           => '回答答案',
+        'search'                => '搜索内容',
     ],
 
 ];

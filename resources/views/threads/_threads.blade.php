@@ -20,13 +20,13 @@
                 @if( $thread->is_bianyuan == 1)
                 <span class="badge bianyuan-tag badge-tag">限</span>
                 @endif
-                @if( $thread->tags->contains('tag_type', '编推') )
+                @if( $thread->recommended )
                 <span class="recommend-label">
                     <span class="glyphicon glyphicon-grain recommend-icon"></span>
                     <span class="recommend-text">推</span>
                 </span>
                 @endif
-                @if( $thread->tags->contains('tag_type', '管理') )
+                @if( $thread->tags->contains('tag_name', '精华') )
                 <span class="jinghua-label">
                     <span class="glyphicon glyphicon-thumbs-up jinghua-icon"></span>
                 </span>

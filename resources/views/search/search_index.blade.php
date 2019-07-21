@@ -10,7 +10,18 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading lead">
-                <h3>标签搜索</h3>
+                <h4>帮助搜索</h4>
+            </div>
+            <div class="panel-body">
+                @include('search._faqs')
+                <div class="text-center">
+                    <a href="{{ route('help') }}">查看更多使用帮助</a>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading lead">
+                <h4>标签搜索</h4>
             </div>
             <div class="panel-body">
                 @include('search._tags')
@@ -23,11 +34,11 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading lead">
-                <h3>书籍搜索</h3>
+                <h4>书籍搜索</h4>
             </div>
             <div class="panel-body">
-                @include('search._threads')
-                @if($threads->hasMorePages())
+                @include('threads._simple_threads')
+                @if($simplethreads->hasMorePages())
                 <div class="text-center">
                     <a href="{{ route('search.search_thread', ['search' => $pattern]) }}">查看更多书籍搜索结果</a>
                 </div>
@@ -36,7 +47,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading lead">
-                <h3>用户搜索</h3>
+                <h4>用户搜索</h4>
             </div>
             <div class="panel-body">
                 @include('search._users')

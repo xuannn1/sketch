@@ -25,7 +25,7 @@
                     <span class="recommend-text">推</span>
                 </span>
                 @endif
-                @if( $thread->tags->contains('tag_type', '管理') )
+                @if( $thread->tags->contains('tag_name', '精华') )
                 <span class="jinghua-label">
                     <span class="glyphicon glyphicon-thumbs-up jinghua-icon"></span>
                 </span>

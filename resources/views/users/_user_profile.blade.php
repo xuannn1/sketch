@@ -14,14 +14,14 @@
 </div>
 <div class="text-center">
     @if ((Auth::check())&&($user->id != Auth::id()))
-    <button type="button" class="btn btn-md btn-primary sosad-button-control {{'follow'.$user->id}} {{Auth::user()->isFollowing($user->id) ? 'hidden':''}}" onclick="follow({{$user->id}})">关注</button>
-    <button type="button" class="btn btn-md btn-danger sosad-button {{'cancelfollow'.$user->id}} {{Auth::user()->isFollowing($user->id) ? '':'hidden'}}" onclick="cancelfollow({{$user->id}})">取消关注</button>
+    <button type="button" class="btn btn-lg btn-primary sosad-button-control {{'follow'.$user->id}} {{Auth::user()->isFollowing($user->id) ? 'hidden':''}}" onclick="follow({{$user->id}})">关注</button>
+    <button type="button" class="btn btn-lg btn-danger sosad-button {{'cancelfollow'.$user->id}} {{Auth::user()->isFollowing($user->id) ? '':'hidden'}}" onclick="cancelfollow({{$user->id}})">取消关注</button>
     @endif
     &nbsp;&nbsp;&nbsp;
-    <a href="{{route('message.dialogue', $user->id)}}" class="btn btn-md btn-primary sosad-button-control">私信</a>
+    <a href="{{route('message.dialogue', $user->id)}}" class="btn btn-lg btn-primary sosad-button-control">私信</a>
     &nbsp;&nbsp;&nbsp;
     @if($info->default_box_id>0)
-    <a href="{{route('thread.show', $info->default_box_id)}}" class="btn btn-md btn-primary sosad-button-control">提问</a>
+    <a href="{{route('thread.show', $info->default_box_id)}}" class="btn btn-lg btn-primary sosad-button-control">提问</a>
     @endif
 </div>
 <br>
@@ -33,10 +33,10 @@
 @if((Auth::check())&&(Auth::user()->isAdmin()))
 <div class="text-center row">
     <div class="col col-xs-6">
-        <a href="{{route('admin.userform', $user->id)}}"class="btn btn-md btn-danger sosad-button admin-button">管理该用户</a>
+        <a href="{{route('admin.userform', $user->id)}}"class="btn btn-lg btn-danger sosad-button admin-button">管理该用户</a>
     </div>
     <div class="col col-xs-6">
-        <a href="{{route('administrationrecords', ['user_id'=>$user->id])}}"class="btn btn-md btn-danger sosad-button admin-button">看{{$user->name}}的管理记录</a>
+        <a href="{{route('administrationrecords', ['user_id'=>$user->id])}}"class="btn btn-lg btn-danger sosad-button admin-button">管理记录</a>
     </div>
 </div>
 <br>
