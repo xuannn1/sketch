@@ -77,7 +77,7 @@ return [
         'channel_name' => '违规举报',
         'channel_explanation' => '违规举报板块从此进入',
         'order_by' => '8',
-        'type' => 'request',
+        'type' => 'thread',
         'allow_anonymous' => true,
         'allow_edit' => false,
         'is_public' => true,

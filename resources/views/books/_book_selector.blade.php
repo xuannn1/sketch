@@ -57,7 +57,7 @@
         <span class="button-group">
             <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">排序<span class="caret"></span></button>
             <ul class="dropdown-menu">
-                @foreach(config('selectors.book_filter.ordered') as $ordered => $explanation)
+                @foreach(config('selectors.book_index_filter.ordered') as $ordered => $explanation)
                     <li><a class="" href="{{ route('books.index', array_merge(['ordered' => $ordered], request()->only('withTag','excludeTag','withBianyuan','inChannel'))) }}">{{$explanation}}</a></li>
                 @endforeach
             </ul>

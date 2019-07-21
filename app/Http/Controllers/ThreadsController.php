@@ -292,7 +292,6 @@ class threadsController extends Controller
         }
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
-
         $selector = config('selectors')[$channel->type.'_filter'];
 
         return view('threads.show', compact('show_config', 'thread', 'posts', 'user', 'info', 'selector'));
