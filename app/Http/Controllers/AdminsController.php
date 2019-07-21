@@ -18,11 +18,14 @@ use StringProcess;
 use CacheUser;
 use App\Sosadfun\Traits\ThreadObjectTraits;
 use App\Sosadfun\Traits\PostObjectTraits;
+use App\Sosadfun\Traits\MessageObjectTraits;
+
 
 class AdminsController extends Controller
 {
     use ThreadObjectTraits;
     use PostObjectTraits;
+    use MessageObjectTraits;
 
     //所有这些都需要用transaction，以后再说
     public function __construct()
@@ -452,6 +455,8 @@ class AdminsController extends Controller
             'user_id'=>Auth::id(),
         ]);
         DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
+        $this->refreshPulicNotices();
+
         return redirect()->back()->with('success','您已成功发布公共通知');
     }
 
