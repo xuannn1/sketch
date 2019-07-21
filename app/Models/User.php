@@ -200,11 +200,11 @@ class User extends Authenticatable
         $info = $this->info;
         foreach($level_ups as $level=>$requirement){
             if (($this->level < $level)
-            &&(!(array_key_exists('salt',$requirement))||($requirement['salt']<=$info->jifen))
-            &&(!(array_key_exists('fish',$requirement))||($requirement['fish']<=$info->xianyu))
-            &&(!(array_key_exists('ham',$requirement))||($requirement['ham']<=$info->sangdian))
+            &&(!(array_key_exists('salt',$requirement))||($requirement['salt']<=$info->salt))
+            &&(!(array_key_exists('fish',$requirement))||($requirement['fish']<=$info->fish))
+            &&(!(array_key_exists('ham',$requirement))||($requirement['ham']<=$info->ham))
             &&(!(array_key_exists('qiandao_all',$requirement))||($requirement['qiandao_all']<=$info->qiandao_all))
-            &&(!(array_key_exists('quiz_level',$requirement))||($requirement['quiz_level']<=$user->quiz_level))){
+            &&(!(array_key_exists('quiz_level',$requirement))||($requirement['quiz_level']<=$this->quiz_level))){
                 $this->level = $level;
                 $this->save();
                 return true;

@@ -149,7 +149,7 @@
 
     @if(Auth::check())
     <div class="text-right post-vote h5">
-        <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}" onclick="vote('post', {{$post->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart"></span><span id="post{{$post->id}}upvote">{{ $post->upvote_count }}</span></button></span>
+        <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}" onclick="voteItem('post', {{$post->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart"></span><span id="post{{$post->id}}upvote">{{ $post->upvote_count }}</span></button></span>
         @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
             <span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40)}}');show_is_comment();"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
         @endif

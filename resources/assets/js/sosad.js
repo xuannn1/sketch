@@ -69,7 +69,7 @@ function review_quote(quote_id, attitude){
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
-                    console.log(key,value);
+                    //console.log(key,value);
                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
                 }
             });
@@ -102,8 +102,8 @@ function add_to_collection(thread_id){
         }
     });
     $.ajax({
-        type: 'POST',
-        url: web_base_url + '/threads/' + thread_id + '/collect/',
+        type: 'GET',
+        url: web_base_url + '/threads/' + thread_id + '/collect',
         data: {
         },
         success: function(data) {
@@ -111,7 +111,7 @@ function add_to_collection(thread_id){
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
-                    console.log(key,value);
+                    //console.log(key,value);
                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
                 }
             });
@@ -159,7 +159,7 @@ function collection_toggle_keep_update(collection_id,update_status){
         },
         success: function(data) {
             if (data != "notwork"){
-                console.log(data);
+                //console.log(data);
                 if(!(data['collection'] === undefined)){
                     if(data['collection']['keep_updated']){
                         $( '#keepupdate'+collection_id ).addClass('hidden');
@@ -190,7 +190,7 @@ function collection_change_group(collection_id,group_id){
         },
         success: function(data) {
             if (data != "notwork"){
-                console.log(data);
+                //console.log(data);
                 if(!(data['collection'] === undefined)){
                     if(data['collection']['group']){
                         $( '.thread'+ data['collection']['thread_id'] ).addClass('hidden');
@@ -221,7 +221,7 @@ function reward(rewardable_type, rewardable_id, reward_type, reward_value){
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
-                    console.log(key,value);
+                    //console.log(key,value);
                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
                 }
             });
@@ -256,26 +256,23 @@ function delete_reward(reward_id){
         }
     });
 };
-function vote(votable_type, votable_id, attitude_type){
+function voteItem(votable_type, votable_id, attitude_type){
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
     $.ajax({
-        type: 'POST',
-        url: web_base_url + '/storevote',
+        type: 'GET',
+        url: web_base_url + '/storevote?votable_type='+votable_type+'&votable_id='+ votable_id+'&attitude_type='+attitude_type,
         data: {
-            'votable_type': votable_type,
-            'votable_id': votable_id,
-            'attitude_type': attitude_type,
         },
         success: function(data) {
             // console.log(data);
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
-                    console.log(key,value);
+                    // console.log(key,value);
                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
                 }
             });
@@ -544,7 +541,7 @@ $( ".daily-quote" ).each(function( quote ) {
     var $numWords = $quotestring.length;
     var $len = 0;
     for (var i=0; i<$numWords; i++) {
-        console.log($quotestring.charCodeAt(i)+'.'+$len+'|');
+        // console.log($quotestring.charCodeAt(i)+'.'+$len+'|');
         if($quotestring.charCodeAt(i)!=32){ // 似乎32是个总是放在string边上的字符
             if ($quotestring.charCodeAt(i)>127 || $quotestring.charCodeAt(i)==94) {
                 $len += 2;
@@ -553,7 +550,7 @@ $( ".daily-quote" ).each(function( quote ) {
             }
         }
     }
-    console.log(quote + ": " + $quotestring + ": " +$len + ": " +$numWords);
+    // console.log(quote + ": " + $quotestring + ": " +$len + ": " +$numWords);
 
     if (($len >= 1) && ($len < 10)) {
         $quote.css("font-size", "2.0em");

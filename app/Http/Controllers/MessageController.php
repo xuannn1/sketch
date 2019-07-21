@@ -183,7 +183,7 @@ class MessageController extends Controller
 
         DB::transaction(function()use($user, $info, $speaker, $body){
             $message_body = \App\Models\MessageBody::create([
-                'content' => $body,
+                'body' => $body,
             ]);
             $message = Message::create([
                 'poster_id' => $user->id,

@@ -176,7 +176,7 @@
     Route::resource('vote', 'VoteController', ['only' => [
         'index', 'destroy'
     ]]); //
-    Route::post('/storevote', 'VoteController@store')->name('vote.store');//存储vote
+    Route::get('storevote', 'VoteController@store')->name('vote.store');
 
     Route::get('/vote_sent','VoteController@sent')->name('vote.sent');//我给出的评票
     Route::get('/vote_received','VoteController@received')->name('vote.received');//我收到的评票
@@ -280,7 +280,7 @@
 
     Route::get('/collection_clearupdates', 'CollectionController@clearupdates')->name('collection.clearupdates');//清零更新提醒
 
-    Route::post('/threads/{thread}/collect', 'CollectionController@store')->name('collection.store')->middleware('filter_thread');//收藏某个主题帖
+    Route::get('/threads/{thread}/collect', 'CollectionController@store')->name('collection.store')->middleware('filter_thread');//收藏某个主题帖
 
 
     Route::resource('collection_group', 'CollectionGroupController', ['only' => [
