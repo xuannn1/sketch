@@ -9,7 +9,7 @@
 
                 @if($status->is_public)
                 <div class="radio">
-                    <label><input type="radio" name="controlpost" value="">动态转私密</label>
+                    <label><input type="radio" name="controlpost" value="61">动态转私密</label>
                     <h6 class="grayout">单条不是百分百确定的边限动态/黄图等</h6>
                 </div>
 

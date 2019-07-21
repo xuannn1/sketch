@@ -41,6 +41,10 @@
         <span class="voteposts"><span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></span></span>
 
         <span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></span>
+
+        @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
+            &nbsp;<span><a class="btn btn-xs btn-danger sosad-button" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
+        @endif
     </div>
 </div>
 @endforeach

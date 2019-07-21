@@ -173,7 +173,7 @@ class MessageController extends Controller
             return redirect()->back()->with('warning','您的陌生人私信额度已用完');
         }
 
-        if($recent_sent_message&&$recent_sent_message->created_at>Carbon::now()->subMinutes(15)){
+        if(!$user->isAdmin()&&!$user->isEditor()&&$recent_sent_message&&$recent_sent_message->created_at>Carbon::now()->subMinutes(15)){
             return redirect()->back()->with('warning','15分钟内只能发送一条私信');
         }
 

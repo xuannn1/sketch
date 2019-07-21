@@ -191,7 +191,7 @@
                 @endif
                 &nbsp;<span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostReward{{ $post->id }}" class="btn btn-default btn-md">打赏</a></span>
                 @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
-                    &nbsp;<span><a class="btn btn-md btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
+                    &nbsp;<span><a class="btn btn-md btn-danger sosad-button" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
                 @endif
                 @if($thread->user_id===Auth::id())
                 &nbsp;

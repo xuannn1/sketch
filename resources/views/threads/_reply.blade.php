@@ -13,8 +13,8 @@
         <form id="replyToThread" action="{{ route('post.store', $thread) }}" method="POST">
             {{ csrf_field() }}
             <div class="hidden" id="reply_to_post" class="form-control">
-                <span class="" id="reply_to_post_info"></span>
-                <i class="fa fa-times" aria-hidden="true" type="button" onclick="cancelreplytopost()"></i>
+                <span class="smaller-10" id="reply_to_post_info"></span>
+                <i class="fa fa-times bigger-10 grayout" aria-hidden="true" type="button" onclick="cancelreplytopost()"></i>
             </div>
             <input type="hidden" name="reply_to_id" id="reply_to_id" class="form-control" value="0"></input>
             <div class="form-group">
