@@ -84,7 +84,7 @@
                     </div>
                     @endif
 
-                    @if($thread->tags->contains('tag_name', '精华'))
+                    @if(!$thread->tags->contains('tag_name', '精华'))
                     <div class="radio">
                         <label><input type="radio" name="controlthread" value="44">添加精华</label>
                     </div>

@@ -176,6 +176,7 @@ function collection_toggle_keep_update(collection_id,update_status){
 };
 
 function collection_change_group(collection_id,group_id){
+    if(group_id==0){group_id='cancel';}
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -189,10 +190,10 @@ function collection_change_group(collection_id,group_id){
             'group' : group_id,
         },
         success: function(data) {
+            // console.log(data);
             if (data != "notwork"){
-                //console.log(data);
                 if(!(data['collection'] === undefined)){
-                    if(data['collection']['group']){
+                    if(data['collection']['thread_id']){
                         $( '.thread'+ data['collection']['thread_id'] ).addClass('hidden');
                     }
                 }

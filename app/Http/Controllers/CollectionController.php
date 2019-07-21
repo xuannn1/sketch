@@ -48,7 +48,7 @@ class CollectionController extends Controller
 
         $collections->load('thread.author','thread.tags','thread.last_post','thread.last_component');
 
-        return view('collections.index',compact('user','info','collections','groups','collections','default_collection_updates'))->with(['show_collection_tab'=>$request->group??'default']);
+        return view('collections.index',compact('user','info','collections','groups','collections','default_collection_updates','order_by'))->with(['show_collection_tab'=>$request->group??'default']);
     }
 
 
@@ -92,17 +92,19 @@ class CollectionController extends Controller
             }
         }
 
-        if(request()->group){
+        if(request()->group==='cancel'){
+            $collection->update([
+                'group' => 0,
+            ]);
+        }elseif(request()->group){
             $group = (int)request()->group;
+            return($group);
             if($group>0){
                 $collection_group = CollectionGroup::find(request()->group);
                 if(!$collection_group||$collection_group->user_id!=Auth::id()){
                     return 'not your collection group! cannot update';
                 }
             }
-            $collection->update([
-                'group' => $group,
-            ]);
         }
 
         return [
