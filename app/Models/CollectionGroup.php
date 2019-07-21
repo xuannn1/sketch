@@ -28,7 +28,7 @@ class CollectionGroup extends Model
     {
         if($this->update_count>0){
             $this->update(['update_count' => 0]);
-            $this->refreshCollectionGroups($user->id);
+            $this->refreshCollectionGroups($this->user_id);
         }
     }
 

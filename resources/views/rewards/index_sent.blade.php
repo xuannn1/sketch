@@ -12,6 +12,7 @@
         <div class="panel panel-default">
             <div class="panel-body text-center">
                 <h1>{{$user->name}}给出的打赏</h1>
+                <h6>（“删除打赏”不会返回虚拟物，只是消除打赏记录）</h6>
                 <br>
                 @include('rewards._reward_tab')
             </div>

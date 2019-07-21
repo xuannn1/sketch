@@ -10,7 +10,7 @@ trait QiandaoTrait
 		$info = $this->info;
 
 		// 计算连续签到天数
-		if ($this->qiandao_at > Carbon::now()->subdays(2)) {
+		if ($this->qiandao_at > Carbon::now()->subDays(2)) {
 			$info->qiandao_continued+=1;
 			if($info->qiandao_continued>$info->qiandao_max){$info->qiandao_max = $info->qiandao_continued;}
 		}else{
