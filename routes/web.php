@@ -68,7 +68,7 @@
 
     Route::get('/quote_review', 'QuoteController@review_index')->name('quote.review_index');//批量审核题头
 
-    Route::PATCH('/quote/{quote}/review','QuoteController@review')->name('quote.review');//审核单独题头
+    Route::get('/quote/{quote}/review','QuoteController@review')->name('quote.review');//审核单独题头
 }
 
 {//以下是用户信息展示模块

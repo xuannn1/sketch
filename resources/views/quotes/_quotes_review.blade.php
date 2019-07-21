@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xs-12">
-                    <h4>{{ $quote->body }}</h4>
+                    <h4><a href="{{ route('quote.show', $quote->id) }}">{{ $quote->body }}</a></h4>
                 </div>
             </div>
             @if(!$quote->notsad)

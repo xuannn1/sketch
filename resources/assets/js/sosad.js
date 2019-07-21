@@ -58,14 +58,12 @@ function review_quote(quote_id, attitude){
         }
     });
     $.ajax({
-        type: 'POST',
-        url: web_base_url + '/quote/' + quote_id + '/review/',
+        type: 'get',
+        url: web_base_url + '/quote/' + quote_id + '/review?attitude='+attitude,
         data: {
-            '_method': "PATCH",
-            'attitude' : attitude,
         },
         success: function(data) {
-            // console.log(data);
+            console.log(data);
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
