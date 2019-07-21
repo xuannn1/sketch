@@ -50,7 +50,8 @@
 
                     @if((Auth::check())&&(Auth::user()->isAdmin()))
                     <span>
-                        <a href="{{route('admin.postform', $post->id)}}" class="btn btn-xs btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
+                        <span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostAdministration{{ $post->id }}" class="btn btn-default btn-sm admin-button">管理本帖</a></span>
+                        @include('admin._post_management_form')
                     </span>
                     @endif
 

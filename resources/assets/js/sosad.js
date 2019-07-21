@@ -95,34 +95,6 @@ function reset_review_button(item_id,approve_status){//approve_status = 0:not ap
 }
 
 
-
-// function thread_xianyu(thread_id){
-//     $.ajaxSetup({
-//         headers: {
-//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//         }
-//     });
-//     $.ajax({
-//         type: 'GET',
-//         url: web_base_url + '/threads/' + thread_id + '/xianyu',
-//         data: {
-//         },
-//         success: function(data) {
-//             console.log(data);
-//             var message = ["success","info","warning","danger"];
-//             $.each(data, function( key, value ){
-//                 if ($.inArray(key,message)>-1){
-//                     console.log(key,value);
-//                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
-//                 }
-//             });
-//             if(!(data['xianyu'] === undefined)){
-//                 $( '#threadxianyu'+thread_id ).html('咸鱼'+data['xianyu']);
-//             }
-//         }
-//     });
-// };
-
 function add_to_collection(thread_id){
     $.ajaxSetup({
         headers: {
@@ -284,7 +256,6 @@ function delete_reward(reward_id){
         }
     });
 };
-
 function vote(votable_type, votable_id, attitude_type){
     $.ajaxSetup({
         headers: {
@@ -293,13 +264,14 @@ function vote(votable_type, votable_id, attitude_type){
     });
     $.ajax({
         type: 'POST',
-        url: web_base_url + '/vote/',
+        url: web_base_url + '/storevote',
         data: {
             'votable_type': votable_type,
             'votable_id': votable_id,
-            'attitude_type': attitude_type
+            'attitude_type': attitude_type,
         },
         success: function(data) {
+            // console.log(data);
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
@@ -308,13 +280,13 @@ function vote(votable_type, votable_id, attitude_type){
                 }
             });
             if(!(data['success'] === undefined)){
-                var value= parseInt($('#'+votable_type+votable_id+attitude_type).text(), 10)+1;
+                var value = parseInt($('#'+votable_type+votable_id+attitude_type).text(), 10)+1
                 $('#'+votable_type+votable_id+attitude_type).html(value);
             }
-
         }
     });
 };
+
 
 function delete_vote(vote_id){
     $.ajaxSetup({
@@ -439,25 +411,6 @@ function follow(user_id){
         }
     });
 };
-function deletepost(post_id){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'POST',
-        url: web_base_url + '/posts/' +post_id,
-        data: {
-            '_method': "DELETE",
-            'id': post_id
-        },
-        success: function(data) {
-            console.log(data);
-            $( '#post'+post_id ).addClass('hidden');
-        }
-    });
-}
 
 function initcache(){
     console.log('goingto initiate cache');

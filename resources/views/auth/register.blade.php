@@ -2,8 +2,6 @@
 @section('title', '注册')
 @section('content')
 <div class="container-fluid">
-    <style media="screen">
-    </style>
     <div class="col-sm-offset-3 col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading lead text-center">

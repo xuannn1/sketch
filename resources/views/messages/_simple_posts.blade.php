@@ -37,7 +37,10 @@
             点评了你
         @endif
     @endif
-    {{ $activity->item->brief }}
+    <span id="abbreviated{{$activity->item_id}}">
+        {{ $activity->item->brief }}
+    </span>
+    
     </a>
     <span id="full{{$activity->item_id}}" class="hidden main-text">
         <div class="main-text">

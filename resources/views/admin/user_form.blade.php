@@ -19,15 +19,13 @@
                     <div class="radio">
                         <label><input type="radio" name="controluser" value="13">设置禁言时间</label>
                         <label><input type="text" style="width: 40px" name="noposting-days" value="0">天</label>
-                        <label><input type="text" style="width: 40px" name="noposting-hours" value="0">小时</label>
                     </div>
                     <div class="radio">
-                        <label><input type="radio" name="controluser" value="14">解禁用户</label>
+                        <label><input type="radio" name="controluser" value="14">解除用户禁言</label>
                     </div>
                     <div class="radio">
                         <label><input type="radio" name="controluser" value="18">设置禁止登陆时间</label>
                         <label><input type="text" style="width: 40px" name="nologging-days" value="0">天</label>
-                        <label><input type="text" style="width: 40px" name="nologging-hours" value="0">小时</label>
                     </div>
                     <div class="radio">
                         <label><input type="radio" name="controluser" value="19">解除禁止登陆用户</label>
@@ -36,7 +34,7 @@
                         <label><input type="radio" name="controluser" value="20">用户等级积分归零</label>
                     </div>
                     <div class="radio">
-                        <label><input type="radio" name="controluser" value="50">分值管理（正加分，负减分，请在<code>管理理由</code>中记录具体分值）</label>
+                        <label><input type="radio" name="controluser" value="50">分值管理（正加分，负减分，系统会自动记录分值）</label>
                         <label><input type="text" style="width: 40px" name="salt" value="0">盐粒</label>
                         <label><input type="text" style="width: 40px" name="fish" value="0">咸鱼</label>
                         <label><input type="text" style="width: 40px" name="ham" value="0">丧点</label>
@@ -44,7 +42,7 @@
                     </div>
                     <div class="form-group">
                         <label for="reason"></label>
-                        <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)，以及处理参数（如禁言时间，精华时间）。"></textarea>
+                        <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由。"></textarea>
                     </div>
                     <div class="">
                         <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>

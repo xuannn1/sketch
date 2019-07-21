@@ -7,22 +7,14 @@
         @include('shared.errors')
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2>管理帖子</h2>
-                <h3><a href="{{route('post.show',$post->id)}}">{{ $post->title }}{{$post->brief}}</a></h3>
+                <span class="admin-symbol">
+                    管理帖子(请不要进行私人操作)
+                </span>
+                <h4><a href="{{route('post.show',$post->id)}}">{{ $post->title }}{{$post->brief}}</a></h4>
             </div>
             <div class="panel-body">
-
                 <form action="{{ route('admin.postmanagement',$post->id)}}" method="POST">
                     {{ csrf_field() }}
-                    <div class="admin-symbol">
-                        <h2>管理员权限专区：警告！请勿进行私人用户操作</h2>
-                    </div>
-                    <div>
-
-                    </div>
-                    <div class="radio">
-                        <label><input type="radio" name="controlpost" value="7">{{ $post->deleted_at ? '解除删除' : '删除帖子' }}</label>
-                    </div>
                     <div class="radio">
                         <label><input type="radio" name="controlpost" value="10" onclick="document.getElementById('majiaforpost{{$post->id}}').style.display = 'block'">修改马甲？</label>
                         <div class="form-group text-right" id="majiaforpost{{$post->id}}" style="display:none">
@@ -32,9 +24,47 @@
                         </div>
                     </div>
 
-                    @if(!$post->fold_state)
+                    @if($post->is_bianyuan)
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="38">回帖转非边缘</label>
+                    </div>
+                    @else
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="37">回帖转边缘</label>
+                    </div>
+                    @endif
+
+                    @if($post->fold_state===0)
                     <div class="radio">
                         <label><input type="radio" name="controlpost" value="11">折叠帖子</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="7">删除帖子</label>
+                    </div>
+
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="32">回帖折+禁（回帖折叠，发帖人禁言+一天）</label>
+                        <h6 class="grayout">比如无意义争执车轱辘、在版务区不看首楼跟帖，在作者问题楼/他人讨论楼里问等级签到问题等情况</h6>
+                    </div>
+
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="32">回帖折+禁+清（回帖折叠，发帖人禁言+1天，积分等级清零）</label>
+                        <h6 class="grayout">一直一直车轱辘、多次在版务区不看首楼跟帖，多次在作者问题楼/他人讨论楼里问等级签到问题等情况</h6>
+                    </div>
+
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="34">回帖折+清+封（回帖删除，等级清零，发言人禁止登陆1天）</label>
+                        <h6 class="grayout">特别屡教不改、置管理于不顾的水区违禁</h6>
+                    </div>
+
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="35">回帖删+清+封（回帖删除，等级清零，发言人禁止登陆7天）</label>
+                        <h6 class="grayout">辱骂作者，人身攻击</h6>
+                    </div>
+
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="36">回帖删+封（回帖折叠，等级清零，发言人永久禁止登陆））</label>
+                        <h6 class="grayout">全部都是脏话粗话特别不堪入目的人身攻击</h6>
                     </div>
                     @else
                     <div class="radio">
@@ -42,17 +72,9 @@
                     </div>
                     @endif
 
-                    <div class="radio">
-                        <label><input type="radio" name="controlpost" value="30">水贴套餐（积分等级清零，回帖折叠，发帖人禁言一天）</label>
-                    </div>
-
-                    <div class="radio">
-                        <label><input type="radio" name="controlpost" value="31">车轱辘套餐（回帖折叠，发帖人禁言累计增加一天）</label>
-                    </div>
-
                     <div class="form-group">
                         <label for="reason"></label>
-                        <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)，以及处理参数（如禁言时间，精华时间）。"></textarea>
+                        <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)。"></textarea>
                     </div>
                     <div class="">
                         <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>

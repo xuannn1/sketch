@@ -30,6 +30,7 @@ class LinkedAccountsController extends Controller
     public function index()
     {
         $user = CacheUser::Auser();
+        if(!$user){abort(404);}
         $masteraccounts = $user->masteraccounts;
         $branchaccounts = $user->branchaccounts;
         return view('users.linkedaccounts', compact('user', 'masteraccounts', 'branchaccounts'));
@@ -68,7 +69,7 @@ class LinkedAccountsController extends Controller
         if(Auth::user()->linked($id)){
             Auth::loginUsingId($id);
             $user = User::findOrFail($id);
-           
+
             $user->save();
             return redirect()->back()->with("success","您已成功切换账号");
         }else{

@@ -26,9 +26,6 @@
                 @include('threads._simple_threads')
                 <hr>
                 <div class="">
-                    <a href="{{ route('threads.create',['channel_id'=>$channel->id]) }}" class="btn btn-md btn-info sosad-button">
-                        创建讨论
-                    </a>
                     @if(Auth::check()&&(Auth::user()->level>2))
                     <a class="btn btn-primary btn-md sosad-button pull-right" href="{{ route('channel.show',
                     array_merge(['withBianyuan' => request()->withBianyuan?'':'include_bianyuan', 'channel'=>$channel->id], request()->only('withTag','ordered'))) }}" role="button">显示边限<span class="{{ request()->withBianyuan?'glyphicon glyphicon-remove':''}}"></span></a>
@@ -38,11 +35,6 @@
                 {{ $threads->links() }}
                 @include('threads._threads')
                 {{ $threads->links() }}
-                <div class="">
-                    <a href="{{ route('threads.create',['channel_id'=>$channel->id]) }}" class="btn btn-md btn-info sosad-button">
-                        创建讨论
-                    </a>
-                </div>
             </div>
         </div>
     </div>

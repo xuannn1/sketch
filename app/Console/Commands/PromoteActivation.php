@@ -52,7 +52,6 @@ class PromoteActivation extends Command
         ->toArray();
 
         User::whereIn('id', $info)
-        ->where('activated','=',1)
         ->update(['activated'=>0]);
         echo "deactivated some users.\n";
 

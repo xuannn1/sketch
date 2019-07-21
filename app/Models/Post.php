@@ -113,7 +113,8 @@ class Post extends Model
             return $query->whereIn('type',['post','comment']);
         }
         if($withComponent==='no_comment'){
-            return $query->where('type', '<>', 'comment');
+            return $query->where('type', '<>', 'comment')
+            ->where('fold_state','=',0);
         }
         return $query;
     }

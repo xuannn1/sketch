@@ -174,8 +174,9 @@
 
 { // 打赏
     Route::resource('vote', 'VoteController', ['only' => [
-        'index', 'store', 'destroy'
+        'index', 'destroy'
     ]]); //
+    Route::post('/storevote', 'VoteController@store')->name('vote.store');//存储vote
 
     Route::get('/vote_sent','VoteController@sent')->name('vote.sent');//我给出的评票
     Route::get('/vote_received','VoteController@received')->name('vote.received');//我收到的评票
@@ -256,7 +257,7 @@
    Route::get('/admin/threadform/{thread}','AdminsController@threadform')->name('admin.threadform');//进入管理主题贴页面
    Route::get('/admin/userform/{user}','AdminsController@userform')->name('admin.userform');//进入管理用户页面
    Route::get('/admin/postform/{post}','AdminsController@postform')->name('admin.postform');//进入管理帖子页面
-   Route::get('/admin/statusform/{status}','AdminsController@statusform')->name('admin.statusform');//进入管理动态页面
+   // Route::get('/admin/statusform/{status}','AdminsController@statusform')->name('admin.statusform');//进入管理动态页面
 
    Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform');//发送提醒通知表格
    Route::post('/admin/sendpublicnotice', 'AdminsController@sendpublicnotice')->name('admin.sendpublicnotice')->middleware('admin');//发送提醒通知

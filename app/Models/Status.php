@@ -44,6 +44,15 @@ class Status extends Model
             return $query->orderBy('created_at', 'desc');
         }
     }
+    public function scopeIsPublic($query)
+    {
+        return $query->where('is_public',1);
+    }
+
+    public function scopeWithUser($query, $id)
+    {
+        return $query->where('user_id',$id);
+    }
 
     public function scopeHasFollower($query, $id)
     {

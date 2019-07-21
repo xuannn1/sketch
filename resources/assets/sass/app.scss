@@ -32,7 +32,7 @@ $hr-border-color:#e8e8e8;
 $new-chapter-badge-color:#ce8383;
 $new-chapter-badge-background-color:#dee0ec;
 $recommend-color: #ffb200;
-
+$jinghua-color: #ba234e;
 
 header {
    .navbar-inverse {
@@ -681,10 +681,10 @@ img{
 }
 
 .jinghua-icon{
-    color:#ba234e;
-    font-size:1.5em;
+    color:$jinghua-color;
+    font-size:1.2em;
     left:0.1em;
-    top:0;
+    top:1px;
     position:absolute;
 }
 
@@ -713,4 +713,7 @@ textarea {
     background-color:$body-color;
     padding:0px;
     margin:0px;
+}
+.unread-reminders{
+    color:$jinghua-color;
 }

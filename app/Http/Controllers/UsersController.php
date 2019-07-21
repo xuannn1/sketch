@@ -8,6 +8,7 @@ use App\Sosadfun\Traits\AdministrationTraits;
 use Auth;
 use Hash;
 use App\Models\User;
+use App\Models\Status;
 use Carbon;
 use App\Models\HistoricalEmailModification;
 use App\Models\PasswordReset;
@@ -164,6 +165,8 @@ class UsersController extends Controller
         $data = [];
         $data['no_upvote_reminders'] = $request->no_upvote_reminders? true:false;
         $data['no_reward_reminders'] = $request->no_reward_reminders? true:false;
+        $data['no_message_reminders'] = $request->no_message_reminders? true:false;
+        $data['no_reply_reminders'] = $request->no_reply_reminders? true:false;
         $data['no_stranger_msg'] = $request->no_stranger_msg? true:false;
 
         if($request->default_list_id){
@@ -388,21 +391,27 @@ class UsersController extends Controller
         if(!$user||!$info){abort(404);}
         $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        $queryid = 'UserStatus.'
-        .url('/')
-        .$id
-        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+            $statuses = Status::with('author.title')
+            ->withUser($id)
+            ->ordered()
+            ->paginate(config('preference.statuses_per_page'));
+        }else{
+            $queryid = 'UserStatus.'
+            .url('/')
+            .$id
+            .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
-        $statuses = Cache::remember($queryid, 10, function () use($request, $id) {
-            return DB::table('statuses')
-            ->join('users','users.id','=','statuses.user_id')
-            ->leftjoin('titles','titles.id','=','users.title_id')
-            ->orderBy('statuses.created_at','desc')
-            ->where('users.id','=',$id)
-            ->select('statuses.*','users.name as user_name','titles.name as title_name','users.title_id')
-            ->paginate(config('preference.statuses_per_page'))
-            ->appends($request->only('page'));
-        });
+            $statuses = Cache::remember($queryid, 10, function () use($request, $id) {
+                return Status::with('author.title')
+                ->withUser($id)
+                ->isPublic()
+                ->ordered()
+                ->paginate(config('preference.statuses_per_page'))
+                ->appends($request->only('page'));
+            });
+
+        }
 
         return view('users.show_status', compact('user','info','intro','statuses'))->with(['show_user_tab'=>'status']);
     }

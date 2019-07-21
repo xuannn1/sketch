@@ -25,12 +25,18 @@ class LogUserActivity
                 ],[
                     'online_at' => Carbon::now(),
                 ]);
-                // $user_activity = HistoricalUsersActivity::create([
-                //     'user_id' =>Auth::id(),
-                //     'ip' => request()->ip(),
-                // ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_interval'));
                 Cache::put('usr-on-' . Auth::id(), true, $expiresAt);
+            }
+        }
+
+        if(Auth::check()) {
+            if(!Cache::has('usr-ip-on-' . Auth::id())){//一天记录一次活动
+                $user_activity = HistoricalUsersActivity::create([
+                    'user_id' =>Auth::id(),
+                    'ip' => request()->ip(),
+                ]);
+                Cache::put('usr-ip-on-' . Auth::id(), true, Carbon::now()->addDay(1));
             }
         }
         return $next($request);

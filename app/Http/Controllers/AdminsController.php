@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use DB;
 use App\Models\Tag;
 use App\Models\Thread;
 use App\Models\Post;
@@ -12,10 +10,12 @@ use App\Models\Status;
 use App\Models\User;
 use App\Models\PublicNotice;
 use App\Models\Administration;
+use DB;
 use Auth;
 use Carbon;
 use ConstantObject;
 use StringProcess;
+use CacheUser;
 use App\Sosadfun\Traits\ThreadObjectTraits;
 use App\Sosadfun\Traits\PostObjectTraits;
 
@@ -41,12 +41,12 @@ class AdminsController extends Controller
             'user_id' => Auth::id(),
             'operation' => $operation,
             'reason' => $reason,
-            'administratee_id' => $item->user_id,
+            'administratee_id' => $type==='user'? $item->id:$item->user_id,
             'record' => $record,
             'administratable_type' => $type,
             'administratable_id' => $item->id,
         ]);
-        return (int)$operation;
+        return $operation;
     }
 
     public function threadmanagement(Thread $thread, Request $request)
@@ -59,29 +59,30 @@ class AdminsController extends Controller
         $record = StringProcess::trimtext($thread->title.$thread->brief, 30);
         $reason = $request->reason;
         $thread_id = $thread->id;
+        $user = $thread->user;
 
         if ($var=="1"&&!$thread->is_locked){//锁帖
             $thread->update(['is_locked'=>true]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 1);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 1);
         }
 
         if ($var=="2"&&$thread->is_locked){//解锁
             $thread->update(['is_locked'=>false]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 2);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 2);
         }
 
         if ($var=="3"&&$thread->is_public){//转私密
             $thread->update(['is_public'=>false]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 3);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 3);
         }
 
         if ($var=="4"&&!$thread->is_public){//转公开
             $thread->update(['is_public'=>true]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 4);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 4);
         }
 
         if ($var=="5"){
-            $operation = $this->add_admin_record($thread, $record, $reason, 5);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 5);
             $thread->delete();
         }
 
@@ -90,57 +91,57 @@ class AdminsController extends Controller
             $channel = collect(config('channel'))->keyby('id')->get($request->channel);
             if(!$channel){abort(409, '找不到这个待转频道');}
             $thread->update(['channel_id'=>$channel->id]);
-            $record = $old_channel->channel_name."->".$channel->channel_name.'|'.$record
-            $operation = $this->add_admin_record($thread, $record, $reason, 9);
+            $record = $old_channel->channel_name."->".$channel->channel_name.'|'.$record;
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 9);
         }
 
         if ($var=="15"&&!$thread->is_bianyuan){//打边缘限制
             $thread->update(['is_bianyuan'=>true]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 15);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 15);
         }
 
         if ($var=="16"&&$thread->is_bianyuan){//取消边缘限制
             $thread->update(['is_bianyuan'=>false]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 16);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 16);
         }
         if($var=='21'&&!$thread->no_reply){// 阻止回复
             $thread->update(['no_reply'=>true]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 21);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 21);
         }
         if($var=='22'&&$thread->no_reply){// 允许回复
             $thread->update(['no_reply'=>false]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 22);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 22);
         }
         if ($var=="40"){// 上浮
             $thread->update(['responded_at'=>Carbon::now()]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 40);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 40);
         }
 
         if ($var=="41"){// 下沉
-            $thread->update(['responded_at'=>Carbon::now()subMonths(6)]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 41);
+            $thread->update(['responded_at'=>Carbon::now()->subMonths(6)]);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 41);
         }
 
         if ($var=="42"&&!$thread->recommended){// 添加推荐
             $thread->update(['responded_at'=>Carbon::now(), 'recommended'=>true]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 42);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 42);
         }
 
         if ($var=="43"&&$thread->recommended){// 取消推荐
             $thread->update(['recommended'=>false]);
-            $operation = $this->add_admin_record($thread, $record, $reason, 43);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 43);
         }
 
         if ($var=="44"){// 加精华
             $tag = ConstantObjects::find_tag_by_name('精华');
             $thread->tags()->attach($tag->id);
-            $operation = $this->add_admin_record($thread, $record, $reason, 44);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 44);
         }
 
         if ($var=="45"){// 取消精华
             $tag = ConstantObjects::find_tag_by_name('精华');
             $thread->tags()->detach($tag->id);
-            $operation = $this->add_admin_record($thread, $record, $reason, 45);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 45);
         }
 
         if($operation===0){
@@ -148,7 +149,11 @@ class AdminsController extends Controller
         }
 
         $this->clearAllThread($thread_id);
-        return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该主题');
+        CacheUser::clearuser($user->id);
+        if($user){
+            $user->remind('new_administration');
+        }
+        return redirect()->back()->with('success', '已经成功处理该主题');
 
     }
 
@@ -156,23 +161,18 @@ class AdminsController extends Controller
     {
         $this->validate($request, [
             'reason' => 'required|string',
-            'majia' => 'required|string|max:10'
+            'majia' => 'string|max:10'
         ]);
         $var = request('controlpost');
         $operation = 0;
         $record = StringProcess::trimtext($post->title.$post->body, 30);
         $reason = $request->reason;
         $post_id = $post->id;
+        $user = $post->user;
 
-        $var = request('controlpost');//
         if ($var=="7"){//删帖
-            $operation = $this->add_admin_record($post, $record, $reason, 7);
-
-            $chapter = $post->chapter;
-            if($chapter){
-                $chapter->delete();
-            }
-            $post->delete();
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 7);
+            $this->delete_post($post);
         }
         if ($var=="10"){//修改马甲
             if (request('is_anonymous')=="1"){
@@ -183,66 +183,159 @@ class AdminsController extends Controller
                 $post->is_anonymous = false;
             }
             $post->save();
-            $this->post_admin_record($post, $request, 10);
-            return redirect()->back()->with("success","已经成功处理该回帖");
-        }
-        if ($var=="11"){//折叠
-            if(!$post->fold_state){
-                $this->post_admin_record($post, $request, 11);
-                $post->fold_state = 1;
-                $post->save();
-            }
-            return redirect()->back()->with("success","已经成功处理该回帖");
-        }
-        if ($var=="12"){//解折叠
-            if($post->fold_state>1){
-                $this->post_admin_record($post, $request, 12);
-                $post->fold_state = 0;
-                $post->save();
-            }
-            return redirect()->back()->with("success","已经成功处理该回帖");
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 10);
         }
 
-        if ($var=="30"){//无意义水贴套餐：禁言、折叠、积分清零
-            $this->post_admin_record($post, $request, 30);
-            $post->fold_state = 1;
-            $user=$post->user;
-            $info =$user->info;
-            $user->no_posting = 1;
-            $info->no_posting_until = Carbon::parse($info->no_posting_until)->addDays(1);
-            $user->level = 0;
-            $user->salt = 0;
-            $user->save();
-            $info->save();
-            $post->save();
-            return redirect()->back()->with("success","已经成功处理该回帖");
+        if ($var=="37"&&!$post->is_bianyuan){//转边缘
+            $post->update(['is_bianyuan'=>true]);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 37);
+        }
+        if ($var=="38"&&$post->is_bianyuan){//转非边缘
+            $post->update(['is_bianyuan'=>false]);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 38);
+        }
+
+        if ($var=="11"&&$post->fold_state===0){//折叠
+            $post->update(['fold_state'=>1]);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 11);
+        }
+        if ($var=="12"&&$post->fold_state>0){//转不折叠
+            $post->update(['fold_state'=>0]);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 12);
+        }
+        if($var=='32'){//32 => '回帖折+禁（回帖折叠，发帖人禁言+一天）',//?车轱辘,版务区水贴，作者楼里水贴
+            $post->update(['fold_state'=>1]);
+            $this->no_post_user($user,1);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 32);
+        }
+
+        if ($var=="30"){// 30 => '回帖折+禁+清（回帖折叠，发帖人禁言+1天，积分等级清零）',//一直一直车轱辘、多次在版务区不看首楼跟帖，多次在作者问题楼/他人讨论楼里问等级签到问题等情况
+            $post->update(['fold_state'=>1]);
+            $this->no_post_user($user,1);
+            $this->clear_user_level($user);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 30);
+        }
+        if ($var=="34"){// 34 => '回帖折+清+封（回帖折叠，等级清零，发言人禁止登陆1天）',//？特么特别驴叫不改的违禁
+            $post->update(['fold_state'=>1]);
+            $this->clear_user_level($user);
+            $this->no_log_user($user,1);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 34);
+        }
+        if ($var=="35"){// 35 => '回帖删+清+封（回帖删除，等级清零，发言人禁止登陆7天）',//？普通辱骂
+            $this->clear_user_level($user);
+            $this->no_log_user($user,7);
+            $post->delete();
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 35);
+        }
+        if ($var=="36"){//36 => '回帖删+封（回帖删除，等级清零，发言人永久禁止登陆）',//？特别厉害的辱骂
+            $this->clear_user_level($user);
+            $this->no_log_user($user,500);
+            $this->delete_post($post);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 36);
+        }
+
+        if($operation===0){
+            return redirect()->back()->with("warning","未能处理该回帖，可能是已经处理了");
         }
 
         $this->clearPostProfile($post_id);
+        CacheUser::clearuser($user->id);
+        if($user){
+            $user->remind('new_administration');
+        }
         return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该回帖');
     }
 
+    private function delete_post($post)
+    {
+        $chapter = $post->chapter;
+        if($chapter){
+            $chapter->delete();
+        }
+        $post->delete();
+    }
+
+    private function no_post_user($user,$days=0)// 将用户禁言增加到这个天数
+    {
+        $user->no_posting = 1;
+        $info = $user->info;
+        $info->no_posting_until = $info->no_posting_until>Carbon::now() ? $info->no_posting_until->addDays($days) : Carbon::now()->addDays($days);
+        $user->save();
+        $info->save();
+    }
+
+    private function no_log_user($user,$days=0)// 将用户禁止登陆增加到这个天数
+    {
+        $user->no_logging = 1;
+        $info = $user->info;
+        $info->no_logging_until = $info->no_logging_until>Carbon::now() ? $info->no_logging_until->addDays($days) : Carbon::now()->addDays($days);
+        $user->save();
+        $info->save();
+    }
+
+    private function clear_user_level($user)// 将用户分数和盐粒清零
+    {
+        $user->level = 0;
+        $info = $user->info;
+        $info->salt = 0;
+        $user->save();
+        $info->save();
+    }
+
     public function statusmanagement(Status $status, Request $request)
+
     {
         $this->validate($request, [
             'reason' => 'required|string',
         ]);
-        if(request("delete")){
-            Administration::create([
-                'user_id' => Auth::id(),
-                'operation' => '17',//:删动态
-                'item_id' => $status->id,
-                'reason' => request('reason'),
-                'administratee_id' => $status->user_id,
-                'record' => StringProcess::trimtext($status->body, 40),
-                'administratable_type' => 'status',
-                'administratable_id' => $status->id,
-            ]);
-            $status->delete();
+        $var = request('controlpost');
+        $operation = 0;
+        $record = StringProcess::trimtext($status->body, 30);
+        $reason = $request->reason;
+        $status_id = $status->id;
+        $user = $status->user;
 
-            return redirect('/')->with("success","已经成功处理该动态");
+        if ($var=="61"&&$post->is_public){//转私密
+            $status->update(['is_public'=>0]);
+            $operation = $this->add_admin_record('status', $status, $record, $reason, 61);
         }
-        return redirect()->back()->with("warning","什么都没做");
+        if ($var=="62"&&!$post->is_public){//转公开
+            $status->update(['is_public'=>1]);
+            $operation = $this->add_admin_record('status', $status, $record, $reason, 62);
+        }
+
+        if($var=='63'){// 63 => '私+禁（动态转私密，发帖人禁言+一天）',//边限动态
+            $post->update(['is_public'=>0]);
+            $this->no_post_user($user,1);
+            $operation = $this->add_admin_record('status', $status, $record, $reason, 63);
+        }
+        if ($var=="64"){// 64 => '私+禁+清（动态转私密，发帖人禁言+1天，积分等级清零）',//多次比较严重的边限/违规动态
+            $post->update(['is_public'=>0]);
+            $this->no_post_user($user,1);
+            $this->clear_user_level($user);
+            $operation = $this->add_admin_record('status', $status, $record, $reason, 64);
+        }
+        if ($var=="65"){// 65 => '删+清+封（动态删除，积分等级清零，发言人禁止登陆1天）',//违反商业性规定/恋童
+            $operation = $this->add_admin_record('status', $status, $record, $reason, 65);
+            $this->clear_user_level($user);
+            $this->no_log_user($user,1);
+            $status->delete();
+        }
+        if ($var=="66"){// 66 => '删+封（动态删除，发言人永久禁止登陆）',//恶意广告
+            $operation = $this->add_admin_record('status', $status, $record, $reason, 66);
+            $this->clear_user_level($user);
+            $this->no_log_user($user,500);
+            $status->delete();
+        }
+        if($operation===0){
+            return redirect()->back()->with("warning","未能处理该动态，可能是已经处理了");
+        }
+
+        CacheUser::clearuser($user->id);
+        if($user){
+            $user->remind('new_administration');
+        }
+        return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该动态');
     }
 
     public function threadform(Thread $thread)
@@ -260,90 +353,70 @@ class AdminsController extends Controller
         return view('admin.post_form', compact('post'));
     }
 
-    public function statusform(Status $status)
-    {
-        return view('admin.status_form', compact('status'));
-    }
 
-    public function user_admin_record($user, $request, $operation = 0)
-    {
-        return Administration::create([
-            'user_id' => Auth::id(),
-            'operation' => $operation,
-            'item_id' => $user->id,
-            'reason' => $request->reason,
-            'administratee_id' => $user->id,
-            'record' => $user->name,
-            'administratable_type' => 'user',
-            'administratable_id' => $user->id,
-        ]);
-    }
     public function usermanagement(User $user, Request $request)
     {
         $this->validate($request, [
             'reason' => 'required|string',
             'noposting-days' => 'required|numeric',
-            'noposting-hours' => 'required|numeric',
             'nologging-days' => 'required|numeric',
-            'nologging-hours' => 'required|numeric',
             'salt' => 'required|numeric',
             'fish' => 'required|numeric',
             'ham' => 'required|numeric',
             'level' => 'required|numeric',
         ]);
-        $var = request('controluser');//
+        $var = request('controluser');
+        $operation = 0;
+        $record = $user->name;
+        $reason = $request->reason;
+
         if ($var=="13"){//设置禁言时间
-            $this->user_admin_record($user, $request, 13);
-
-            $info =$user->info;
-            $user->no_posting = 1;
-            $info->no_posting_until = Carbon::parse($info->no_posting_until)->addDays(1);
-            $user->save();
-            $info->save();
-
-            return redirect()->back()->with("success","已经成功处理该用户");
+            $operation = $this->add_admin_record('user', $user, $record.'|'.request('noposting-days').'天', $reason, 13);
+            $this->no_post_user($user, request('noposting-days'));
         }
         if ($var=="14"){//解除禁言
-            $this->user_admin_record($user, $request, 14);
+            $operation = $this->add_admin_record('user', $user, $record, $reason, 14);
             $info =$user->info;
             $user->no_posting = 0;
             $info->no_posting_until = Carbon::now();
             $user->save();
             $info->save();
-            return redirect()->back()->with("success","已经成功处理该用户");
         }
         if ($var=="18"){//设置禁止登陆时间
-            $this->user_admin_record($user, $request, 18);
-
-            $info =$user->info;
-            $user->no_logging = 1;
-            $info->no_logging_until = Carbon::parse($info->no_logging_until)->addDays(1);
-            $user->remember_token = null;
-            $user->save();
-            $info->save();
-
-            return redirect()->back()->with("success","已经成功处理该用户");
+            $operation = $this->add_admin_record('user', $user, $record.'|'.request('nologging-days').'天', $request, 18);
+            $this->no_log_user($user, request('noposting-days'));
         }
         if ($var=="19"){//解除禁止登陆
-            $this->user_admin_record($user, $request, 19);
+            $operation = $this->add_admin_record('user', $user, $record, $reason, 19);
             $info =$user->info;
             $user->no_logging = 0;
             $info->no_logging_until = Carbon::now();
             $user->save();
             $info->save();
-            return redirect()->back()->with("success","已经成功处理该用户");
         }
         if ($var=="20"){//用户等级积分清零
-            $this->user_admin_record($user, $request, 20);
+            $operation = $this->add_admin_record('user', $user, $record, $reason, 20);
             $info = $user->info;
             $user->level = 0;
-            $user->salt = 0;
+            $info->salt = 0;
             $user->save();
             $info->save();
             return redirect()->back()->with("success","已经成功处理该用户");
         }
         if ($var=="50"){// 分值管理
-            $this->user_admin_record($user, $request, 50);
+            if(request('salt')){
+                $record .='盐粒+'.request('salt');
+            }
+            if(request('fish')){
+                $record .='咸鱼+'.request('fish');
+            }
+            if(request('ham')){
+                $record .='火腿+'.request('ham');
+            }
+            if(request('level')){
+                $record .='等级+'.request('level');
+            }
+            $operation = $this->add_admin_record('user', $user, $record, $reason, 50);
             $info = $user->info;
             $info->salt+=(int)request('salt');
             $info->fish+=(int)request('fish');
@@ -351,10 +424,17 @@ class AdminsController extends Controller
             $user->level+=(int)request('level');
             $user->save();
             $info->save();
-            return redirect()->back()->with("success","已经成功处理该用户");
         }
 
-        return redirect()->back()->with("warning","什么都没做");
+        if($operation===0){
+            return redirect()->back()->with("warning","未能处理用户");
+        }
+
+        CacheUser::clearuser($user->id);
+        if($user){
+            $user->remind('new_administration');
+        }
+        return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 处理用户');
     }
 
     public function sendpublicnoticeform()
@@ -366,13 +446,13 @@ class AdminsController extends Controller
     {
         $this->validate($request, [
             'body' => 'required|string|max:20000|min:10',
-         ]);
-         $public_notice = PublicNotice::create([
-             'body'=>$request->body,
-             'user_id'=>Auth::id(),
-         ]);
-         DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
-         return redirect()->back()->with('success','您已成功发布公共通知');
+        ]);
+        $public_notice = PublicNotice::create([
+            'body'=>$request->body,
+            'user_id'=>Auth::id(),
+        ]);
+        DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
+        return redirect()->back()->with('success','您已成功发布公共通知');
     }
 
     public function create_tag_form(){

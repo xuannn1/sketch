@@ -10,17 +10,22 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body text-center">
-                <h1>{{$user->name}}的消息中心</h1>
-                您有{{$info->reply_reminders}}条未读回帖
-                <div class="">
+                <h1>{{$user->name}}的站内提醒</h1>
+                <div class="font-3">
+                    本页总计{{$activity_reminders}}条未读提醒：
+                </div>
+                <div class="{{$info->upvote_reminders>0? 'unread-reminders':''}}">
                     <a href="{{ route('vote.received') }}" class="font-5">
                         {{$info->upvote_reminders}}条新的赞&nbsp;&nbsp;>>评票中心
                     </a>
                 </div>
-                <div class="">
+                <div class="{{$info->reward_reminders>0? 'unread-reminders':''}}">
                     <a href="{{ route('reward.received') }}" class="font-5">
                         {{$info->reward_reminders}}条新的打赏&nbsp;&nbsp;>>打赏中心
                     </a>
+                </div>
+                <div class="{{$reply_reminders>0? 'unread-reminders':''}}">
+                    {{$reply_reminders}}条新的回帖
                 </div>
                 <br>
                 @include('messages._message_tab')

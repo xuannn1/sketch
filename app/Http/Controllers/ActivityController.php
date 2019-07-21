@@ -29,6 +29,7 @@ class ActivityController extends Controller
         $activity_reminders =  $this->count_activity_reminders($user,$info);
         $messagebox_reminders = $this->count_messagebox_reminders($user,$info);
 
+        $reply_reminders = $info->reply_reminders;
         $user->clear_column('unread_reminders');
         $info->clear_column('reply_reminders');
 
@@ -40,7 +41,7 @@ class ActivityController extends Controller
 
         $activities->load('item.simpleThread','item.author');
 
-        return view('messages.activity_index', compact('user','info','activities','activity_reminders','messagebox_reminders'))->with(['show_message_tab'=>'activities']);
+        return view('messages.activity_index', compact('user','info','activities','reply_reminders', 'activity_reminders','messagebox_reminders'))->with(['show_message_tab'=>'activities']);
     }
 
 }

@@ -40,7 +40,8 @@ class StatusController extends Controller
         $status = Status::create([
             'user_id' => Auth::id(),
             'body' => $status_body,
-            'brief' => StringProcess::trimtext($status_body, 45)
+            'brief' => StringProcess::trimtext($status_body, 45),
+            'is_public' => 1,
         ]);
 
         return redirect()->route('status.show', $status->id);
@@ -73,12 +74,10 @@ class StatusController extends Controller
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
         $statuses = Cache::remember($queryid, 1, function () use($request) {
-            return DB::table('statuses')
-            ->join('users','users.id','=','statuses.user_id')
-            ->leftjoin('titles','titles.id','=','users.title_id')
-            ->orderBy('statuses.created_at','desc')
-            ->select('statuses.*','users.name as user_name','titles.name as title_name','users.title_id')
-            ->simplePaginate(config('preference.statuses_per_page'))
+            return Status::with('author.title')
+            ->isPublic()
+            ->ordered()
+            ->paginate(config('preference.statuses_per_page'))
             ->appends($request->only('page'));
         });
 
@@ -87,14 +86,12 @@ class StatusController extends Controller
 
     public function collection()
     {
-        $statuses = DB::table('statuses')
+        $statuses = Status::with('author.title')
         ->join('followers','followers.user_id','=','statuses.user_id')
-        ->join('users','users.id','=','statuses.user_id')
-        ->leftjoin('titles','titles.id','=','users.title_id')
         ->where('followers.follower_id','=',Auth::id())
-        ->orderBy('statuses.created_at','desc')
-        ->select('statuses.*','users.name as user_name','titles.name as title_name','users.title_id')
-        ->simplePaginate(config('preference.statuses_per_page'));
+        ->isPublic()
+        ->ordered()
+        ->paginate(config('preference.statuses_per_page'));
         return view('statuses.index', compact('statuses'))->with(['status_tab'=>'follow']);
     }
 }

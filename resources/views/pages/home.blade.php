@@ -27,24 +27,20 @@
             <div class="panel-heading h4">
                 <a href="{{route('recommend_records')}}">编辑推荐</a>
             </div>
-            @foreach($short_recom as $int => $post)
-            @if($post->review->reviewee)
             <div class="panel-body">
-                <div class="container-fluid">
-                    <div class="recommendation">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <a href="{{ route('thread.show', ['thread' => $post->review->thread_id, 'recommendation' => $post->review->id]) }}" class="">
-                                    《{{ $post->review->reviewee->title }}》
-                                <span class="grayout smaller-5">{{ $post->body }}</span>
-                                </a>
-                            </div>
+                <div class="row">
+                @foreach($short_recom as $int => $post)
+                @if($post->review->reviewee)
+                        <div class="col-xs-12">
+                            <a href="{{ route('thread.show', ['thread' => $post->review->thread_id, 'recommendation' => $post->review->id]) }}" class="">
+                                《{{ $post->review->reviewee->title }}》
+                            <span class="grayout smaller-5">{{ $post->body }}</span>
+                            </a>
                         </div>
-                    </div>
+                @endif
+                @endforeach
                 </div>
             </div>
-            @endif
-            @endforeach
             @if($thread_recom)
             <div class="panel-body">
                 <div class="container-fluid">

@@ -8,7 +8,7 @@ return [
         ],
 
         'withComponent' => [
-            'no_comment' => '不显示点评',
+            'no_comment' => '不显示点评/已折叠内容',
         ],
 
         'ordered' => [
@@ -29,7 +29,7 @@ return [
         'withComponent' => [
             'component_only' => '只显示正文',
             'post_N_comment' => '回帖和点评',
-            'no_comment' => '不显示点评',
+            'no_comment' => '不显示点评/已折叠内容',
         ],
 
         'ordered' => [
@@ -50,7 +50,7 @@ return [
         'withComponent' => [
             'component_only' => '只显示书评',
             'post_N_comment' => '回帖和点评',
-            'no_comment' => '不显示点评',
+            'no_comment' => '不显示点评/已折叠内容',
         ],
 
         'ordered' => [
@@ -72,7 +72,7 @@ return [
         'withComponent' => [
             'component_only' => '只显示问+答',
             'post_N_comment' => '回帖和点评',
-            'no_comment' => '不显示点评',
+            'no_comment' => '不显示点评/已折叠内容',
         ],
 
         'ordered' => [

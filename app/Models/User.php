@@ -239,23 +239,23 @@ class User extends Authenticatable
     {
         switch ($column_name) {
             case 'unread_reminders':
-                if($this->unread_reminders>0){
-                    $this->update(['unread_reminders'=>0]);
-                }
+            if($this->unread_reminders>0){
+                $this->update(['unread_reminders'=>0]);
+            }
             return true;
             break;
 
             case 'unread_updates':
-                if($this->unread_updates>0){
-                    $this->update(['unread_updates'=>0]);
-                }
+            if($this->unread_updates>0){
+                $this->update(['unread_updates'=>0]);
+            }
             return true;
             break;
 
             case 'public_notice_id':
-                if($this->public_notice_id<ConstantObjects::system_variable()->latest_public_notice_id){
-                    $this->update(['public_notice_id'=>ConstantObjects::system_variable()->latest_public_notice_id]);
-                }
+            if($this->public_notice_id<ConstantObjects::system_variable()->latest_public_notice_id){
+                $this->update(['public_notice_id'=>ConstantObjects::system_variable()->latest_public_notice_id]);
+            }
             return true;
             break;
 
@@ -281,30 +281,52 @@ class User extends Authenticatable
         $info = CacheUser::info($this->id);
         switch ($reminder) {
             case 'new_message':
+            if(!$info->no_message_reminders){
                 $this->unread_reminders +=1;
                 $info->message_reminders += 1;
+                $info->save();
+                $this->save();
+            }
             break;
 
             case 'new_reply':
+            if(!$info->no_reply_reminders){
                 $this->unread_reminders +=1;
                 $info->reply_reminders +=1;
+                $info->save();
+                $this->save();
+            }
             break;
 
             case 'new_reward':
+            if(!$info->no_reward_reminders){
                 $this->unread_reminders +=1;
                 $info->reward_reminders +=1;
+                $info->save();
+                $this->save();
+            }
             break;
 
             case 'new_upvote':
+            if(!$info->no_upvote_reminders){
                 $this->unread_reminders +=1;
                 $info->upvote_reminders +=1;
+                $info->save();
+                $this->save();
+            }
+            break;
+
+            case 'new_administration':
+                $this->unread_reminders +=1;
+                $info->administration_reminders +=1;
+                $info->save();
+                $this->save();
             break;
 
             default:
             return false;
         }
-        $info->save();
-        $this->save();
+
         return true;
     }
 

@@ -28,16 +28,24 @@ class Kernel extends ConsoleKernel
         ->name('webstat:count')
         ->daily()
         ->onOneServer();
+
+        $schedule->command('data:recalculation')
+        ->name('data:recalculation')
+        ->daily()
+        ->onOneServer();
+
         $schedule->command('cache:clear')
         ->name('cache:clear')
         ->timezone('Asia/Shanghai')
         ->dailyAt('4:00')
         ->withoutOverlapping(10)
         ->onOneServer();
+
         $schedule->command('testlog:send')
         ->name('testlog:send')
         ->hourly()
         ->onOneServer();
+        
         // $schedule->command('activation:promote')
         // ->name('token:refresh')
         // ->timezone('Asia/Shanghai')
