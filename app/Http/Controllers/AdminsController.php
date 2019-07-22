@@ -147,6 +147,18 @@ class AdminsController extends Controller
             $operation = $this->add_admin_record('thread',$thread, $record, $reason, 45);
         }
 
+        if ($var=="46"){// 加置顶
+            $tag = ConstantObjects::find_tag_by_name('置顶');
+            $thread->tags()->attach($tag->id);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 46);
+        }
+
+        if ($var=="47"){// 取消置顶
+            $tag = ConstantObjects::find_tag_by_name('置顶');
+            $thread->tags()->detach($tag->id);
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 47);
+        }
+
         if($operation===0){
             return redirect()->back()->with("warning","未能处理该主题。是否未选转换板块？");
         }

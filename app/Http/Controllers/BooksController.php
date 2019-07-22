@@ -178,9 +178,16 @@ class BooksController extends Controller
                 $thread->update(['first_component_id'=>$first]);
             }
         }
+        $last = $request->last_component_id;
+        if($last&&is_numeric($last)){
+            $post = $posts->firstWhere('id', $last);
+            if($post&&$post->user_id===$user->id&&$post->type==='chapter'){
+                $thread->update(['last_component_id'=>$last]);
+            }
+        }
 
         $this->clearAllThread($id);
-        return redirect()->route('thread.show_profile', $thread->id);
+        return redirect()->route('thread.chapter_index', $thread->id);
     }
 
     public function show($id)

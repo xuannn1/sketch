@@ -12,7 +12,6 @@
                 @if($user->title)
                 <h5 class="text-center">
                     当前头衔：
-
                     <span class="maintitle title-{{$user->title->style_id}}">
                         {{$user->title->name}}
                     </span>

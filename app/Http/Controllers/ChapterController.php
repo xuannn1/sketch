@@ -75,15 +75,14 @@ class ChapterController extends Controller
     {
         $post = Post::find($id);
         $thread=$post->thread;
-        $channel=$thread->channel();
         if($post->user_id!=Auth::id()){abort(403);}
+        if($thread->channel()->type!='book'){abort(403);}
         if(($thread->is_locked||!$thread->channel()->allow_edit)&&(!Auth::user()->isAdmin())){abort(403);}
-        if($post->chapter){abort(409);}
-
-        $previous_chapter = $thread->last_component;
-        $order_by = $previous_chapter? ($previous_chapter->chapter->order_by+1):0;
-
-        $chapter = Chapter::create(['post_id'=>$post->id,'order_by'=>$order_by]);
+        if(!$post->chapter){
+            $previous_chapter = $thread->last_component;
+            $order_by = $previous_chapter? ($previous_chapter->chapter->order_by+1):0;
+            $chapter = Chapter::create(['post_id'=>$post->id,'order_by'=>$order_by]);
+        }
         $post->type = 'chapter';
         $post->reply_to_id = 0;
         $post->reply_to_brief = '';
@@ -95,6 +94,7 @@ class ChapterController extends Controller
         $thread->reorder_chapters();
         $this->clearAllThread($thread->id);
         $this->clearPostProfile($post->id);
+        $chapter = $post->chapter;
 
         return view('chapters.edit', compact('chapter','post','thread'));
     }

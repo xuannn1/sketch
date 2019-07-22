@@ -146,7 +146,7 @@ class threadsController extends Controller
             return view('books.create');
         }
 
-        if($user->level<5||$user->quiz_level<1){
+        if($user->level<4||$user->quiz_level<2){
             return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立讨论帖');
         }
 
@@ -174,7 +174,7 @@ class threadsController extends Controller
             abort(403);
         }
 
-        if($user->level<5){
+        if($user->level<4){
             abort(403);
         }
 

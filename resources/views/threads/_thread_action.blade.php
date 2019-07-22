@@ -1,6 +1,6 @@
 <!-- 对帖子进行打赏，投票，阅读等各种操作 -->
 <div class="container-fluid thread-vote">
-    @if($thread->user_id===Auth::id()&&!$thread->is_locked)
+    @if($thread->user_id===Auth::id()&&(!$thread->is_locked||Auth::user()->isAdmin()))
     <!-- 作者专区，编辑首楼和文案-->
     <div class="row text-left">
         @switch($thread->channel()->type)

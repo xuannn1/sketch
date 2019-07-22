@@ -94,6 +94,16 @@
                     </div>
                     @endif
 
+                    @if(!$thread->tags->contains('tag_name', '置顶'))
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="46">添加置顶</label>
+                    </div>
+                    @else
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="47">取消置顶</label>
+                    </div>
+                    @endif
+
                     <label><input type="radio" name="controlthread" value="9">转换板块（注意，如果点选了下面其他选项，记得回头把这个选一下）</label>
                     @foreach(collect(config('channel')) as $channel)
                     <div class="">
@@ -102,7 +112,7 @@
                     @endforeach
                     <div class="form-group">
                         <label for="reason"></label>
-                        <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)，以及处理参数（如禁言时间，精华时间）。"></textarea>
+                        <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由，方便查看管理记录，如“涉及举报，标题简介违规”，“涉及举报，不友善”，“边限标记不合规”。"></textarea>
                     </div>
                     <div class="">
                         <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>

@@ -4,7 +4,7 @@
 <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4>&nbsp;在&nbsp;<a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channel_name }}</a>&nbsp;板块。（转移板块请走<a href="http://sosad.fun/threads/88">《<u>文章帖子删除、转移、编辑等专楼</u> 》</a>）</h4>
+            <h4>&nbsp;在&nbsp;<a href="{{ route('channel.show', $channel->id) }}">{{ $channel->channel_name }}</a>&nbsp;板块。（转移板块请走<a href="http://sosad.fun/threads/88">《<u>主题删转专楼</u> 》</a>）</h4>
         </div>
         <div class="panel-body">
             @include('shared.errors')

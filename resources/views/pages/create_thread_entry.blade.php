@@ -8,15 +8,21 @@
             <div class="">
                 <h1>总发文发帖入口</h1>
                 <div class="">
-                    <h4>您的用户等级是{{$user->level}}级</h4>
-                    <span class="grayout">
+                    <div class="font-4">
+                        您的用户等级是{{$user->level}}级
+                    </div>
+                    <div class="grayout font-6">
                         用户等级1级以上才可发文，4级以上才可发讨论帖。
-                    </span><br>
-                    <span class="font-4">您最高答过{{$user->quiz_level}}级题</span>&nbsp;&nbsp; <a href="{{ route('quiz.quiz_entry') }}">>>前去答题</a><br>
-                    <span class="grayout">
-                        至少答过1级题才能发文。
-                    </span>
-                    <h5><span style="color:#d66666">发文发帖前请务必阅读：<a href="http://sosad.fun/threads/136">《<u>版规的详细说明</u>》</a><br>关于网站使用的常规问题：<a href="{{ route('help') }}">《<u>使用帮助</u>》</a></span></h5>
+                    </div>
+                    <div class="font-4">
+                        <a href="{{ route('quiz.quiz_entry') }}">您最高答过{{$user->quiz_level}}级题&nbsp;&nbsp; >>前去答题</a>
+                    </div>
+                    <div class="grayout font-6">
+                        至少答过1级题才能发书籍，至少答过2级题才能发主题讨论
+                    </div>
+                    <div class="font-4">
+                        <span>发文发帖前请务必阅读：<a href="http://sosad.fun/threads/136">《版规》</a>、<a href="{{ route('help') }}">《帮助》</a></span>
+                    </div>
                 </div>
             </div>
         </div>

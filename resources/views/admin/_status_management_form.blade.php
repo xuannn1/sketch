@@ -44,7 +44,7 @@
 
                 <div class="form-group">
                     <label for="reason"></label>
-                    <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由(理由将会公示)。"></textarea>
+                    <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由，方便查看管理记录，如“涉及举报，标题简介违规”，“涉及举报，不友善”，“边限标记不合规”。"></textarea>
                 </div>
                 <div class="">
                     <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>

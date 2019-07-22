@@ -78,8 +78,8 @@ class ReviewController extends Controller
     {
         $post = Post::find($id);
         $thread=$post->thread;
-        $channel=$thread->channel();
         if($post->user_id!=Auth::id()){abort(403);}
+        if($thread->channel()->type!='list'){abort(403);}
         if(($thread->is_locked||!$thread->channel()->allow_edit)&&(!Auth::user()->isAdmin())){abort(403);}
         if(!$post->review){
             Review::create(['post_id'=>$post->id]);
