@@ -42,7 +42,9 @@ trait ThreadObjectTraits{
     public function findThread($id)
     {
         return Cache::remember('thread.'.$id, 10, function () use($id){
-            return \App\Models\Thread::find($id);
+            $thread = \App\Models\Thread::find($id);
+            $thread->load('author.title');
+            return $thread;
         });
     }
 
@@ -91,7 +93,7 @@ trait ThreadObjectTraits{
             ->where('posts.thread_id',$id)
             ->where('posts.type', '=', 'chapter')
             ->orderBy('chapters.order_by','asc')
-            ->select('posts.id', 'posts.user_id', 'posts.thread_id', 'posts.title', 'posts.brief', 'posts.created_at', 'posts.edited_at','posts.is_bianyuan', 'posts.char_count', 'posts.view_count', 'posts.reply_count', 'posts.upvote_count', 'chapters.order_by', 'chapters.volumn_id')
+            ->select('posts.id', 'chapters.post_id','posts.user_id', 'posts.thread_id', 'posts.title', 'posts.brief', 'posts.created_at', 'posts.edited_at','posts.is_bianyuan', 'posts.char_count', 'posts.view_count', 'posts.reply_count', 'posts.upvote_count', 'chapters.order_by', 'chapters.volumn_id')
             ->get();
         });
     }

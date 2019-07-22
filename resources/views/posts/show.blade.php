@@ -145,13 +145,11 @@
                     @endif
 
                     <div class="font-4">
-                        <a href="{{ route('thread.showpost', $post->id) }}" class="pull-left"><em>进入论坛模式</em></a>
                         <span class = "pull-right smaller-20"><em>
                             <span class="glyphicon glyphicon-pencil"></span>{{ $post->char_count }}/
                             <span class="glyphicon glyphicon-eye-open"></span>{{ $post->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->reply_count }}
                         </em></span>
                     </div>
-
                 @endif
             </div>
             @if($post->type==="chapter"&&$post->chapter)
@@ -201,37 +199,18 @@
             </div>
             @include('posts._reward_form')
             @endif
-
         </div>
         <div class="text-center h3">
-            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id]) }}" class="">>>前往讨论区查看本帖评论</a>
+            @if($post->reply_count>=5)
+            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id]) }}" class="">>>进入论坛模式，查看全部{{$post->reply_count}}条对本帖的评论</a>
+            @else
+            <a href="{{ route('thread.showpost', $post->id) }}" class="">>>进入论坛模式</a>
+            @endif
         </div>
-        <div class="contailer-fluid">
-            <div class="row">
-                <div class="col-xs-6">
-                    <div class="text-center h4">
-                        最新评论
-                    </div>
-                    @if ($post->new_reply)
-                    <?php $reply = $post->new_reply; ?>
-                    @include('posts._reply_body')
-                    @endif
-                </div>
-                <div class="col-xs-6">
-                    <div class="text-center h4">
-                        高赞评论
-                    </div>
-                    @if ($post->top_reply)
-                    <?php $reply = $post->top_reply; ?>
-                    @include('posts._reply_body')
-                    @endif
-                </div>
-            </div>
-        </div>
-
-
+        <?php $replies = $post->new_replies ?>
+        @include('posts._replies')
         @if(Auth::check())
-        @include('threads._reply')
+        @include('posts._reply')
         @endif
     </div>
 </div>

@@ -25,7 +25,6 @@ trait PostObjectTraits{
             if($post&&$post->type==='answer'){
                 $post->load('question');
             }
-            $post->setAttribute('top_reply', $post->favorite_reply());
             $post->setAttribute('new_replies', $post->newest_replies());
             $post->setAttribute('recent_rewards', $post->latest_rewards());
             $post->setAttribute('recent_upvotes', $post->latest_upvotes());
@@ -37,6 +36,15 @@ trait PostObjectTraits{
     public function clearPostProfile($id)
     {
         Cache::forget('postProfile.'.$id);
+    }
+
+    public function findPost($id)
+    {
+        return Cache::remember('post.'.$id, 10, function () use($id){
+             $post = \App\Models\Post::find($id);
+             $post->load('author.title');
+             return $post;
+        });
     }
 
 }

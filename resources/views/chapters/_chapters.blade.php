@@ -1,10 +1,10 @@
 <div class="hidden-sm hidden-md hidden-lg overflow-hidden text-center">
-    @foreach($posts as $post)
-    <a href="{{ route('post.show', $post->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
-        @if($post->is_bianyuan&&!$thread->is_bianyuan)
+    @foreach($chapters as $chapter)
+    <a href="{{ route('post.show', $chapter->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
+        @if($chapter->is_bianyuan&&!$thread->is_bianyuan)
             <span class="glyphicon glyphicon-info-sign"></span>
         @endif
-        {{ $post->title }}</a>
+        {{ $chapter->title }}</a>
 
     @endforeach
 </div>
@@ -23,20 +23,20 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($posts as $post)
+            @foreach($chapters as $chapter)
             <tr>
-                <th><a href="{{ route('post.show', $post->id) }}" class = "">
-                    @if($post->is_bianyuan&&!$thread->is_bianyuan)
+                <th><a href="{{ route('post.show', $chapter->id) }}" class = "">
+                    @if($chapter->is_bianyuan&&!$thread->is_bianyuan)
                         <span class="glyphicon glyphicon-info-sign"></span>
                     @endif
-                    {{ $post->title }}</a></th>
-                <th><a href="{{ route('post.show', $post->id) }}" class = "">{{ $post->brief }}</a></th>
-                <th>{{ $post->char_count }}</th>
-                <th>{{ $post->view_count }}</th>
-                <th>{{ $post->upvote_count }}</th>
-                <th>{{ $post->reply_count }}</th>
-                <th>{{ Carbon::parse($post->created_at)->setTimezone('Asia/Shanghai') }}</th>
-                <th>{{ Carbon::parse($post->edited_at)->setTimezone('Asia/Shanghai')}}</th>
+                    {{ $chapter->title }}</a></th>
+                <th><a href="{{ route('post.show', $chapter->id) }}" class = "">{{ $chapter->brief }}</a></th>
+                <th>{{ $chapter->char_count }}</th>
+                <th>{{ $chapter->view_count }}</th>
+                <th>{{ $chapter->upvote_count }}</th>
+                <th>{{ $chapter->reply_count }}</th>
+                <th>{{ Carbon::parse($chapter->created_at)->setTimezone('Asia/Shanghai') }}</th>
+                <th>{{ Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai')}}</th>
 
             </tr>
             @endforeach

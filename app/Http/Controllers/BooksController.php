@@ -171,6 +171,8 @@ class BooksController extends Controller
                 $post->chapter->update(['order_by' => $order_by]);
             }
         }
+        $thread->reorder_chapters();
+
         $first = $request->first_component_id;
         if($first&&is_numeric($first)){
             $post = $posts->firstWhere('id', $first);

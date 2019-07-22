@@ -104,6 +104,14 @@ class Post extends Model
         return $query;
     }
 
+    public function scopeWithFolded($query, $withFolded)
+    {
+        if($withFolded==='include_folded'){
+            return $query;
+        }
+        return $query->where('fold_state','=',0);
+    }
+
     public function scopeWithBianyuan($query, $withBianyuan='')
     {
         if($withBianyuan==='include_bianyuan'){
@@ -124,8 +132,7 @@ class Post extends Model
             return $query->whereIn('type',['post','comment']);
         }
         if($withComponent==='no_comment'){
-            return $query->where('type', '<>', 'comment')
-            ->where('fold_state','=',0);
+            return $query->where('type', '<>', 'comment');
         }
         return $query;
     }
@@ -283,8 +290,7 @@ class Post extends Model
                 return true;
             }
             case 'first_post'://是否最新回帖 post_check('first_post')
-            $parent = $this->parent;
-            if($parent&&$parent->type==="chapter"&&$parent->reply_count<2){
+            if($this->parent&&$this->parent->type==="chapter"&&$this->parent->reply_count<2){
                 return true;
             }
             default:
@@ -320,6 +326,21 @@ class Post extends Model
         ->orderBy('created_at','desc')
         ->take(10)
         ->get();
+    }
+
+    public function reward_creation()
+    {
+        $msg = '';
+        if($this->post_check('long_comment')){
+            $this->user->reward('long_post');
+            $msg = $msg.', 得到了长评奖励';
+        }
+        if($this->post_check('first_post')){
+            $this->user->reward("first_post");
+            $msg = $msg.', 得到了新章节率先回帖的奖励';
+        }
+        $this->user->reward("regular_post");
+        return '恭喜，您成功回帖'.$msg;
     }
 
 }

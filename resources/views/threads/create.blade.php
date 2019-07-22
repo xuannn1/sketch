@@ -30,6 +30,9 @@
                     <label for="brief">简介：</label>
                     <input type="text" name="brief" class="form-control" value="{{ old('brief') }}" placeholder="请输入不超过50字的主题简介">
                 </div>
+                <div class="font-6">
+                    涉及“边限”的主题讨论，必须勾选边缘限制，且仍需标题简介和谐，在文案适当预警。标题简介禁止任何擦边性描写、性暗示。讨论内容和性描述相关的，简介需以“午夜场之”开头，预警围观咸鱼。
+                </div>
 
                 <div class="form-group">
                     <label for="body">新主题正文：</label>

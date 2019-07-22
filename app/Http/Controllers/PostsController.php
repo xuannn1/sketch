@@ -38,19 +38,11 @@ class PostsController extends Controller
 
         event(new NewPost($post));
 
-        if($post->post_check('long_comment')){
-            $post->user->reward('long_post');
-            return back()->with('success', '您得到了长评奖励');
+        $msg = $post->reward_creation();
+        if($post->parent&&$post->parent->type==='chapter'&&$post->parent->chapter&&$post->parent->chapter->next_id>0){ // 回复章节之后自动前往下一章（如果有的话）
+            return redirect()->route('post.show', $post->parent->chapter->next_id)->with('success', $msg);
         }
-
-        if($post->post_check('first_post')){
-            $post->user->reward("first_post");
-            return back()->with('success', '您得到了新章节率先回帖的奖励');
-
-        }
-        $post->user->reward("regular_post");
-        return back()->with('success', '您已成功回帖');
-
+        return back()->with('success', $msg);
     }
     public function edit(Post $post)
     {

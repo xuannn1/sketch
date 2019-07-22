@@ -7,9 +7,13 @@
         @include('shared.errors')
         @include('threads._site_map')
         @include('threads._thread_profile')
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @include('chapters._chapters')
+            </div>
+        </div>
         <div class="h4 text-center">
-            以下显示高赞评论
-            <a href=" {{ route('thread.show', $thread->id) }} " class="pull-right">>>进入论坛</a>
+            <a href=" {{ route('thread.show', $thread->id) }} ">>>进入论坛查看更多评论</a>
         </div>
         @include('threads._posts')
         @if(Auth::check())

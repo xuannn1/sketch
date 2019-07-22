@@ -10,6 +10,10 @@
         @if($show_config['show_profile'])
             @include('threads._thread_profile')
         @endif
+        @if($withReplyTo)
+        <?php $post = $withReplyTo?>
+        @include('threads._simple_post')
+        @endif
         @include('threads._post_selector')
         @if($show_config['show_selected'])
             @include('threads._post_selected')

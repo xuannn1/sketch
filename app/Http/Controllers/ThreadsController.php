@@ -14,10 +14,12 @@ use App\Http\Requests\StoreThread;
 
 use Auth;
 use App\Sosadfun\Traits\ThreadObjectTraits;
+use App\Sosadfun\Traits\PostObjectTraits;
 
 class threadsController extends Controller
 {
     use ThreadObjectTraits;
+    use PostObjectTraits;
 
     public function __construct()
     {
@@ -226,19 +228,31 @@ class threadsController extends Controller
     }
     public function showpost(Post $post)
     {
+        $withFolded='';
+        $withComponent='no_comment';
+        if($post->fold_state){
+            $withFolded = 'include_folded';
+        }
+        if($post->type==='comment'){
+            $withComponent = '';
+        }
         $previousposts = Post::where('thread_id',$post->thread_id)
+        ->withComponent($withComponent)
+        ->withFolded($withFolded)
         ->where('created_at', '<', $post->created_at)
         ->count();
+
         $page = intdiv($previousposts, config('preference.posts_per_page'))+1;
-        $url = 'threads/'.$post->thread_id.'?page='.$page.'#post'.$post->id;
+        $url = 'threads/'.$post->thread_id.'?page='.$page.'&withFolded='.$withFolded.'&withComponent='.$withComponent.
+        '#post'.$post->id;
         return redirect($url);
     }
 
     public function chapter_index($id)
     {
         $thread = $this->findThread($id);
-        $posts = $this->threadChapterIndex($id);
-        return view('chapters.chapter_index', compact('thread', 'posts'));
+        $chapters = $this->threadChapterIndex($id);
+        return view('chapters.chapter_index', compact('thread', 'chapters'));
     }
 
     public function review_index($id)
@@ -251,18 +265,20 @@ class threadsController extends Controller
     public function show_profile($id, Request $request)
     {
         $thread = $this->threadProfile($id);
+        $chapters = '';
+        if($thread->channel()->type==='book'){
+            $chapters = $this->threadChapterIndex($id);
+        }
         $posts = $this->threadProfilePosts($id);
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
         $thread->recordViewCount();
         $thread->recordViewHistory();
-        return view('threads.show_profile', compact('thread', 'posts','user','info'));
+        return view('threads.show_profile', compact('thread', 'chapters', 'posts','user','info'));
     }
 
     public function show($id, Request $request)
     {
-
-
         $show_config = $this->decide_thread_show_config($request);
 
         if($show_config['show_profile']){
@@ -277,11 +293,19 @@ class threadsController extends Controller
         ->with('author.title','tags','last_reply')
         ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
         ->withComponent($request->withComponent)//可以选择是只看component，还是不看component只看post，还是全都看
+        ->withFolded($request->withFolded)//是否显示已折叠内容
         ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
         ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
         ->ordered($request->ordered)//排序方式
         ->paginate(config('preference.posts_per_page'))
         ->appends($request->only('withType', 'withComponent', 'userOnly', 'withReplyTo', 'ordered', 'page'));
+        $withReplyTo = '';
+        if($request->withReplyTo>0){
+            $withReplyTo = $this->findPost($request->withReplyTo);
+            if($withReplyTo->thread_id!=$thread->id){
+                $withReplyTo = '';
+            }
+        }
 
         $channel = $thread->channel();
         if($channel->type==='book'){
@@ -294,6 +318,6 @@ class threadsController extends Controller
         $info = Auth::check()? CacheUser::Ainfo():'';
         $selector = config('selectors')[$channel->type.'_filter'];
 
-        return view('threads.show', compact('show_config', 'thread', 'posts', 'user', 'info', 'selector'));
+        return view('threads.show', compact('show_config', 'thread', 'posts', 'user', 'info', 'selector', 'withReplyTo'));
     }
 }
