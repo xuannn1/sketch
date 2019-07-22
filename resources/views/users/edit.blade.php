@@ -27,7 +27,7 @@
                     <p><span class="glyphicon glyphicon-remove"></span><span style="color:#d66666">该邮箱尚未验证，请尽快验证。未验证邮箱的账户会限制一部分使用功能。</span></p>
                     <h4>验证邮箱/激活账户</h4>
 
-                    <a href="{{ route('email_confirmation.send') }}" class="btn btn-md btn-danger sosad-button">向该邮箱发送验证邮件</a>
+                    <a href="{{ route('email_confirmation.send') }}" class="btn btn-lg btn-danger sosad-button">向该邮箱发送验证邮件</a>
 
                     @if($last_email_sent)
                     <h6>最新验证邮件发送于 {{ $last_email_sent->diffForHumans() }}</h6>
@@ -38,9 +38,9 @@
                     @endif
                 </div>
 
-                <a href="{{ route('user.edit_email') }}" class="btn btn-md btn-danger sosad-button">修改邮箱</a>&nbsp;&nbsp;
+                <a href="{{ route('user.edit_email') }}" class="btn btn-lg btn-danger sosad-button">修改邮箱</a>&nbsp;&nbsp;
 
-                <a href="{{ route('user.edit_password') }}" class="btn btn-md btn-danger sosad-button">修改密码</a>&nbsp;&nbsp;
+                <a href="{{ route('user.edit_password') }}" class="btn btn-lg btn-danger sosad-button pull-right">修改密码</a>&nbsp;&nbsp;
                 <br>
                 <br>
             </div>

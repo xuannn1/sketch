@@ -63,7 +63,7 @@ function review_quote(quote_id, attitude){
         data: {
         },
         success: function(data) {
-            console.log(data);
+            // console.log(data);
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
@@ -105,7 +105,7 @@ function add_to_collection(thread_id){
         data: {
         },
         success: function(data) {
-            console.log(data);
+            // console.log(data);
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
@@ -245,7 +245,7 @@ function delete_reward(reward_id){
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
-                    console.log(key,value);
+                    // console.log(key,value);
                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
                 }
             });
@@ -301,7 +301,7 @@ function delete_vote(vote_id){
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
-                    console.log(key,value);
+                    // console.log(key,value);
                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
                 }
             });
@@ -507,7 +507,7 @@ function cancellink(master_account, branch_account){
             var message = ["success","info","warning","danger"];
             $.each(data, function( key, value ){
                 if ($.inArray(key,message)>-1){
-                    console.log(key,value);
+                    // console.log(key,value);
                     $( '#ajax-message' ).html(value).addClass('alert-'+key).removeClass('hidden');
                 }
             });

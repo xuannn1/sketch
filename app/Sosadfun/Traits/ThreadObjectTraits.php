@@ -91,6 +91,7 @@ trait ThreadObjectTraits{
             return DB::table('posts')
             ->join('chapters', 'chapters.post_id','=','posts.id')
             ->where('posts.thread_id',$id)
+            ->where('posts.deleted_at','=',null)
             ->where('posts.type', '=', 'chapter')
             ->orderBy('chapters.order_by','asc')
             ->select('posts.id', 'chapters.post_id','posts.user_id', 'posts.thread_id', 'posts.title', 'posts.brief', 'posts.created_at', 'posts.edited_at','posts.is_bianyuan', 'posts.char_count', 'posts.view_count', 'posts.reply_count', 'posts.upvote_count', 'chapters.order_by', 'chapters.volumn_id')
@@ -121,14 +122,11 @@ trait ThreadObjectTraits{
         $show_profile = true;
         $show_selected = false;
         $page = (int)(is_numeric($request->page)? $request->page:'1');
-        if($page>1||$request->withType||$request->userOnly||$request->withReplyTo||$request->ordered){
-            $show_profile = false;
-        }
-        if($request->withComponent&&$request->withComponent!='no_comment'){
+        if($page>1||$request->withType||$request->userOnly||$request->withFolded||$request->withReplyTo||$request->ordered||$request->withComponent){
             $show_profile = false;
         }
 
-        if($request->withType||$request->userOnly||$request->withComponent||$request->withReplyTo||$request->ordered){
+        if($request->withType||$request->userOnly||$request->withFolded||$request->withComponent||$request->withReplyTo||$request->ordered){
             $show_selected = true;
         }
         return [

@@ -12,7 +12,7 @@
         @endif
         @if($withReplyTo)
         <?php $post = $withReplyTo?>
-        @include('threads._simple_post')
+        @include('threads._reply_post')
         @endif
         @include('threads._post_selector')
         @if($show_config['show_selected'])

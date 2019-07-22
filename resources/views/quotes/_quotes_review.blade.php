@@ -7,7 +7,6 @@
                     <h4><a href="{{ route('quote.show', $quote->id) }}">{{ $quote->body }}</a></h4>
                 </div>
             </div>
-            @if(!$quote->notsad)
             <div class="row">
                 <div class="row quotebutton{{$quote->id}}">
                     <div class="col-xs-4 text-right">
@@ -22,7 +21,6 @@
                     </div>
                 </div>
             </div>
-            @endif
         </div>
     </div>
     <small>

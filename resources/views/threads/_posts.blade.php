@@ -179,7 +179,7 @@
         <div class="panel-footer">
             <div class="smaller-20" id="postcomment{{$post->last_reply_id}}">
                 <a href="{{ route('thread.showpost', $post->last_reply_id) }}" class="grayout">最新回复：{{ $post->last_reply->brief }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="{{ route('thread.show', ['thread' => $post->thread_id, 'withReplyTo' => $post->id]) }}" class="">>>本层全部回帖</a>
+                <a href="{{ route('thread.show', ['thread' => $post->thread_id, 'withReplyTo' => $post->id, 'withComponent'=>'include_comment']) }}" class="">>>本层全部回帖</a>
             </div>
         </div>
         @endif

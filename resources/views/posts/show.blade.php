@@ -145,6 +145,7 @@
                     @endif
 
                     <div class="font-4">
+                        <a href="{{ route('thread.showpost', $post->id) }}" class="">>>进入论坛模式</a>
                         <span class = "pull-right smaller-20"><em>
                             <span class="glyphicon glyphicon-pencil"></span>{{ $post->char_count }}/
                             <span class="glyphicon glyphicon-eye-open"></span>{{ $post->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $post->reply_count }}
@@ -201,10 +202,8 @@
             @endif
         </div>
         <div class="text-center h3">
-            @if($post->reply_count>=5)
-            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id]) }}" class="">>>进入论坛模式，查看全部{{$post->reply_count}}条对本帖的评论</a>
-            @else
-            <a href="{{ route('thread.showpost', $post->id) }}" class="">>>进入论坛模式</a>
+            @if($post->reply_count>0)
+            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id, 'withComponent'=>'include_comment']) }}" class="">>>查看全部{{$post->reply_count}}条对本帖的评论</a>
             @endif
         </div>
         <?php $replies = $post->new_replies ?>

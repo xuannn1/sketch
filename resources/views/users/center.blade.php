@@ -67,7 +67,7 @@
                         偏好及隐私设置
                     </a>
                     <a href="{{ route('user.edit', $user->id) }}" class="btn btn-lg btn-info btn-block sosad-button">
-                        编辑资料
+                        修改账户资料
                     </a>
                     <a href="{{ route('linkedaccounts.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         管理马甲账户

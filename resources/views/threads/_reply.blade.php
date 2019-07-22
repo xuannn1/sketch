@@ -29,10 +29,10 @@
             <h6 style="color:#d66666">(严禁提无关问题打扰作者，如“等级”、“签到”相关的日经问题。)</h6>
             @endif
             <div class="checkbox">
+                <label class="hidden" id="is_comment"><input type="checkbox"  name="is_comment">是点评？</label>
                 <label><input type="checkbox" name="is_anonymous" onclick="document.getElementById('majiareplythread{{$thread->id}}').style.display = 'block'">马甲？</label>&nbsp;
                 <label><input type="checkbox" name="editor" onclick="$('#markdowneditor').markdown({language:'zh'})">显示编辑器？</label>
                 <label><input type="checkbox" name="use_indentation"  {{ Auth::user()->use_indentation? 'checked':'' }}>段首缩进（自动空两格）？</label>
-                <label class="hidden" id="is_comment"><input type="checkbox"  name="is_comment">是点评？</label>
                 <div class="form-group text-right" id="majiareplythread{{$thread->id}}" style="display:none">
                     <input type="text" name="majia" class="form-control" value="{{Auth::user()->majia ?:'匿名咸鱼'}}" placeholder="请输入不超过10字的马甲">
                     <label for="majia"><small>(马甲仅勾选“匿名”时有效)</small></label>

@@ -5,6 +5,22 @@
             <h6 class="display-4 grayout"><a href="{{ route('login') }}">本内容为隐藏格式，只对1级以上注册用户开放，请登录或升级后查看</a></h6>
         </div>
         @else
+        <div class="panel-heading">
+            <div class="row">
+                <!-- post的基本信息：作者，时间，post_id -->
+                <div class="col-xs-12">
+                    <span class="font-6 bianyuan-tag badge-tag">
+                        被回复贴
+                    </span>
+                    <!-- post编号 -->
+                    <span class="pull-right smaller-30">
+                        <a href="{{ route('post.show', $post->id) }}">
+                            {{ $post->type==='question'?'Q.':'' }}{{ $post->type==='anwer'?'A.':'' }}{{ $post->type==='review'?'R.':'' }}{{ $post->type==='post'?'P.':'' }}{{ $post->type==='comment'?'C.':'' }}{{ $post->id }}
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
         <!-- 回帖本体 -->
         <div class="main-text {{ $post->use_indentation? 'indentation':'' }}">
             @if($post->title)

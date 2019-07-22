@@ -84,7 +84,7 @@ class BooksController extends Controller
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
         $thread = $form->updateBookProfile($thread);
-        $valid_tags = $thread->tags_validate($thread->tags);
+        $valid_tags = $thread->tags_validate($thread->tags->pluck('id'));
         $thread->keep_only_admin_tags();
         $thread->tags()->syncWithoutDetaching($valid_tags);
         $this->clearAllThread($id);

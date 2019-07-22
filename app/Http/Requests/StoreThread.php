@@ -38,7 +38,7 @@ class StoreThread extends FormRequest
             'title' => 'required|string|max:30',
             'brief' => 'required|string|max:50',
             'body' => 'required|string|min:10|max:20000',
-            'majia' => 'string|max:10',
+            'majia' => 'nullable|string|max:10',
         ];
     }
     public function generateThread($channel)

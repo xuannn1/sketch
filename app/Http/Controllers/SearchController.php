@@ -8,15 +8,17 @@ use CacheUser;
 use Cache;
 use DB;
 use App\Sosadfun\Traits\PageObjectTraits;
+use App\Sosadfun\Traits\FAQObjectTraits;
 
 class SearchController extends Controller
 {
 
     use PageObjectTraits;
+    use FAQObjectTraits;
 
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     public function search(Request $request)
@@ -82,6 +84,7 @@ class SearchController extends Controller
     public function find_threads_with_pattern($pattern = '', $paginate = 5)
     {
         return \App\Models\Thread::with('tags','author')->where('title','like','%'.$pattern.'%')
+        ->orderby('responded_at','desc')
         ->paginate($paginate);
     }
 
@@ -100,7 +103,7 @@ class SearchController extends Controller
 
     public function find_faqs_with_pattern($pattern = '')
     {
-        return $this->all_helpfaqs()->filter(function ($value, $key) use($pattern){
+        return $this->all_faqs()->filter(function ($value, $key) use($pattern){
             return preg_match('/'.$pattern.'/', $value->question);
         });
     }

@@ -3,17 +3,15 @@
 return [
     'thread_filter' => [
         'withType' => [
-            'post' => '回帖',
-            'comment' => '点评',
+            'post' => '只看回帖',
         ],
 
         'withComponent' => [
-            'no_comment' => '不显示点评',
+            'include_comment' => '显示点评',
         ],
 
         'withFolded' => [
             'include_folded' => '显示折叠内容',
-            'default' => '不显示折叠内容',
         ],
 
         'ordered' => [
@@ -27,19 +25,17 @@ return [
     ],
     'book_filter' => [
         'withType' => [
-            'chapter' => '章节',
-            'post' => '回帖',
-            'comment' => '点评',
+            'chapter' => '只看章节',
+            'post' => '只看回帖',
         ],
         'withComponent' => [
             'component_only' => '只显示正文',
-            'post_N_comment' => '回帖和点评',
-            'no_comment' => '不显示点评',
+            'post_N_comment' => '显示回帖和点评',
+            'include_comment' => '显示点评',
         ],
 
         'withFolded' => [
             'include_folded' => '显示折叠内容',
-            'default' => '不显示折叠内容',
         ],
 
         'ordered' => [
@@ -53,19 +49,17 @@ return [
     ],
     'list_filter' => [
         'withType' => [
-            'post' => '回帖',
-            'comment' => '点评',
-            'review' => '书评',
+            'post' => '只看回帖',
+            'review' => '只看书评',
         ],
         'withComponent' => [
             'component_only' => '只显示书评',
-            'post_N_comment' => '回帖和点评',
-            'no_comment' => '不显示点评',
+            'post_N_comment' => '显示回帖和点评',
+            'include_comment' => '显示点评',
         ],
 
         'withFolded' => [
             'include_folded' => '显示折叠内容',
-            'default' => '不显示折叠内容',
         ],
 
         'ordered' => [
@@ -79,24 +73,44 @@ return [
     ],
     'box_filter' => [
         'withType' => [
-            'post' => '回帖',
-            'comment' => '点评',
-            'question' => '提问',
-            'answer' => '回答',
+            'post' => '只看回帖',
+            'question' => '只看提问',
+            'answer' => '只看回答',
         ],
         'withComponent' => [
             'component_only' => '只显示问+答',
-            'post_N_comment' => '回帖和点评',
-            'no_comment' => '不显示点评',
+            'post_N_comment' => '显示回帖和点评',
+            'include_comment' => '显示点评',
         ],
-        
+
         'withFolded' => [
             'include_folded' => '显示折叠内容',
-            'default' => '不显示折叠内容',
         ],
 
         'ordered' => [
             'default' => '时间顺序',
+            'latest_created' => '最新发布',
+            'most_replied' => '最多回复',
+            'most_upvoted' => '最高赞',
+            'random' => '随机乱序',
+            'latest_responded' => '最新被回复',
+        ],
+    ],
+    'homework_filter' => [
+        'withType' => [
+            'post' => '回帖',
+        ],
+
+        'withComponent' => [
+            'include_comment' => '显示点评',
+        ],
+
+        'withFolded' => [
+            'include_folded' => '显示折叠内容',
+        ],
+
+        'ordered' => [
+            'default' => '最早回复',
             'latest_created' => '最新发布',
             'most_replied' => '最多回复',
             'most_upvoted' => '最高赞',

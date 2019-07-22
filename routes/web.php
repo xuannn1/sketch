@@ -36,27 +36,18 @@
     Route::get('/', 'PagesController@home')->name('home');
     Route::get('about', 'PagesController@about')->name('about');
 
-    // TODO Help写成FAQ形式，允许筛选和搜索
-    Route::get('help', 'PagesController@help')->name('help');
-
     // TODO:  Contact写成动态情况，提供当前编辑管理列表和往期人员。这个完全不急，慢慢做。
     Route::get('contacts', 'PagesController@contacts')->name('contacts');
 
-    // TODO 搜索重做
     Route::get('/search','SearchController@search')->name('search');
-
     Route::get('/search_user','SearchController@search_user')->name('search.search_user');
     Route::get('/search_thread','SearchController@search_thread')->name('search.search_thread');
     Route::get('/search_tag','SearchController@search_tag')->name('search.search_tag');
 
-
-
     Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
     Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
     Route::get('/recommend_records', 'PagesController@recommend_records')->name('recommend_records');//普通用户查看推荐书籍历史
-
     Route::get('/create_thread_entry', 'PagesController@create_thread_entry')->name('create_thread_entry');//绝对复杂筛选所有thread？？
-
     Route::get('/tags', 'PagesController@all_tags')->name('all.tags');//全站标签列表
 }
 
@@ -66,7 +57,7 @@
     ]]); //
     Route::get('/quote_mine', 'QuoteController@mine')->name('quote.mine');//我提交的题头
 
-    Route::get('/quote_review', 'QuoteController@review_index')->name('quote.review_index');//批量审核题头
+    Route::get('/admin/quote_review', 'QuoteController@review_index')->name('quote.review_index');//批量审核题头
 
     Route::get('/quote/{quote}/review','QuoteController@review')->name('quote.review');//审核单独题头
 }
@@ -260,28 +251,33 @@
 
 {//以下是admin
    Route::get('/admin', 'AdminsController@index')->name('admin.index');//管理员管理界面
-   Route::post('/admin/threadmanagement/{thread}','AdminsController@threadmanagement')->name('admin.threadmanagement');//管理员管理主题贴
-   Route::post('/admin/postmanagement/{post}','AdminsController@postmanagement')->name('admin.postmanagement');//管理员管理回帖
-   Route::post('/admin/usermanagement/{user}','AdminsController@usermanagement')->name('admin.usermanagement');//管理员管理用户
-   Route::post('/admin/postcommentmanagement/{postcomment}','AdminsController@postcommentmanagement')->name('admin.postcommentmanagement');//管理员管理点评
-   Route::post('/admin/statusmanagement/{status}','AdminsController@statusmanagement')->name('admin.statusmanagement');//管理员管理动态
 
-   Route::get('/admin/threadform/{thread}','AdminsController@threadform')->name('admin.threadform');//进入管理主题贴页面
+   Route::post('/admin/threadmanagement/{thread}','AdminsController@threadmanagement')->name('admin.threadmanagement');//管理员管理主题贴
+    Route::get('/admin/threadform/{thread}','AdminsController@threadform')->name('admin.threadform');//进入管理主题贴页面
+
+   Route::post('/admin/postmanagement/{post}','AdminsController@postmanagement')->name('admin.postmanagement');//管理员管理回帖
+    Route::get('/admin/postform/{post}','AdminsController@postform')->name('admin.postform');//进入管理帖子页面
+
+   Route::post('/admin/usermanagement/{user}','AdminsController@usermanagement')->name('admin.usermanagement');//管理员管理用户
    Route::get('/admin/userform/{user}','AdminsController@userform')->name('admin.userform');//进入管理用户页面
-   Route::get('/admin/postform/{post}','AdminsController@postform')->name('admin.postform');//进入管理帖子页面
-   // Route::get('/admin/statusform/{status}','AdminsController@statusform')->name('admin.statusform');//进入管理动态页面
+
+   Route::post('/admin/statusmanagement/{status}','AdminsController@statusmanagement')->name('admin.statusmanagement');//管理员管理动态
 
    Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform');//发送提醒通知表格
    Route::post('/admin/sendpublicnotice', 'AdminsController@sendpublicnotice')->name('admin.sendpublicnotice')->middleware('admin');//发送提醒通知
+
    Route::get('/admin/createtag', 'AdminsController@create_tag_form')->name('admin.createtag')->middleware('admin');//显示新建tag表格
-   Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//发送提醒通知
-   Route::get('/admin/longcomments', 'AdminsController@longcommentsreview')->name('admin.review_longcomments');//审核是否允许成为长评
+   Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//存储新tag
+
+
    Route::get('/admin/searchusersform', 'AdminsController@searchusersform')->name('admin.searchusersform');//审核是否存在某用户
    Route::get('/admin/searchusers', 'AdminsController@searchusers')->name('admin.searchusers');//审核是否存在某用户
-   Route::get('/admin/invitation_token', 'InvitationTokensController@index')->name('invitation_tokens.index');//管理员查看邀请码列表
-   Route::get('/admin/invitation_token/create', 'InvitationTokensController@create')->name('invitation_token.create');//管理员新建邀请码
-   Route::post('/admin/invitation_token/store', 'InvitationTokensController@store')->name('invitation_token.store');//管理员储存邀请码
+}
 
+{
+    Route::get('/admin/invitation_token', 'InvitationTokensController@index')->name('invitation_tokens.index');//管理员查看邀请码列表
+    Route::get('/admin/invitation_token/create', 'InvitationTokensController@create')->name('invitation_token.create');//管理员新建邀请码
+    Route::post('/admin/invitation_token/store', 'InvitationTokensController@store')->name('invitation_token.store');//管理员储存邀请码
 }
 
 {//收藏模块
@@ -351,4 +347,13 @@
     Route::get('quiz/quiz_entry','QuizController@quiz_entry')->name('quiz.quiz_entry');//测试入口
     Route::get('quiz/taketest','QuizController@taketest')->name('quiz.taketest');//测试
     Route::post('quiz/submittest','QuizController@submittest')->name('quiz.submittest');//测试
+}
+
+{// faq 相关
+    Route::get('help', 'FAQController@index')->name('help');//显示全站帮助(这个路径名字就不改了，涉及版面很多)
+    Route::get('/admin/faq/create', 'FAQController@create')->name('faq.create');//管理员添加faq
+    Route::post('/admin/faq', 'FAQController@store')->name('faq.store');//管理员存储新faq
+    Route::get('/admin/faq/{faq}/edit', 'FAQController@edit')->name('faq.edit');//管理员修改aq
+    Route::patch('/admin/faq/{faq}', 'FAQController@update')->name('faq.update');//管理员保存修改的faq
+
 }

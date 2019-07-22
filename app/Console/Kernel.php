@@ -31,7 +31,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('data:recalculation')
         ->name('data:recalculation')
-        ->daily()
+        ->timezone('Asia/Shanghai')
+        ->dailyAt('4:15')
+        ->withoutOverlapping(10)
         ->onOneServer();
 
         $schedule->command('cache:clear')
@@ -45,7 +47,7 @@ class Kernel extends ConsoleKernel
         ->name('testlog:send')
         ->hourly()
         ->onOneServer();
-        
+
         // $schedule->command('activation:promote')
         // ->name('token:refresh')
         // ->timezone('Asia/Shanghai')

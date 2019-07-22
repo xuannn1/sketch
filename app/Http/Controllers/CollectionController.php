@@ -98,12 +98,10 @@ class CollectionController extends Controller
             ]);
         }elseif(request()->group){
             $group = (int)request()->group;
-            return($group);
             if($group>0){
-                $collection_group = CollectionGroup::find(request()->group);
-                if(!$collection_group||$collection_group->user_id!=Auth::id()){
-                    return 'not your collection group! cannot update';
-                }
+                $collection->update([
+                    'group' => $group,
+                ]);
             }
         }
 

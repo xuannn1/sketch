@@ -229,12 +229,12 @@ class threadsController extends Controller
     public function showpost(Post $post)
     {
         $withFolded='';
-        $withComponent='no_comment';
+        $withComponent='';
         if($post->fold_state){
             $withFolded = 'include_folded';
         }
         if($post->type==='comment'){
-            $withComponent = '';
+            $withComponent = 'include_comment';
         }
         $previousposts = Post::where('thread_id',$post->thread_id)
         ->withComponent($withComponent)

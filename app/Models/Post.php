@@ -88,6 +88,14 @@ class Post extends Model
         return $query->select('id', 'user_id', 'title', 'type', 'brief', 'created_at',  'edited_at',  'is_bianyuan', 'upvote_count', 'reply_count', 'char_count', 'view_count');
     }
 
+    public function scopeThreadOnly($query, $threadOnly)
+    {
+        if($threadOnly){
+            return $query->where('thread_id', $threadOnly);
+        }
+        return $query;
+    }
+
     public function scopeUserOnly($query, $userOnly)
     {
         if($userOnly){
@@ -131,10 +139,10 @@ class Post extends Model
         if($withComponent==='post_N_comment'){
             return $query->whereIn('type',['post','comment']);
         }
-        if($withComponent==='no_comment'){
-            return $query->where('type', '<>', 'comment');
+        if($withComponent==='include_comment'){
+            return $query;
         }
-        return $query;
+        return $query->where('type', '<>', 'comment');
     }
 
     public function scopeWithReplyTo($query, $withReplyTo)

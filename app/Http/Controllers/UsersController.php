@@ -17,6 +17,7 @@ use Cache;
 use ConstantObjects;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
 use App\Sosadfun\Traits\CollectionObjectTraits;
+use App\Sosadfun\Traits\UserObjectTraits;
 
 class UsersController extends Controller
 {
@@ -24,6 +25,7 @@ class UsersController extends Controller
     use AdministrationTraits;
     use SwitchableMailerTraits;
     use CollectionObjectTraits;
+    use UserObjectTraits;
 
     public function __construct()
     {
@@ -143,7 +145,7 @@ class UsersController extends Controller
                 'edited_at' => Carbon::now(),
             ]);
         }
-        return redirect()->route('user.show', $user->id);
+        return redirect()->route('user.center');route('user.center', Auth::id());
     }
 
     public function edit_preference()
@@ -185,7 +187,7 @@ class UsersController extends Controller
             }
         }
         $info->update($data);
-        return redirect()->route('user.center', Auth::id())->with("success", "您已成功修改偏好设置");
+        return redirect()->route('user.center')->with("success", "您已成功修改偏好设置");
     }
 
     public function qiandao()
@@ -423,37 +425,12 @@ class UsersController extends Controller
         if(!$user||!$info){abort(404);}
         $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
-            // 如果是本人，显示属于自己的所有帖
-            $posts = DB::table('posts')
-            ->join('threads','threads.id','=','posts.thread_id')
-            ->join('users','users.id','=','posts.user_id')
-            ->where('posts.deleted_at','=',null)
-            ->where('threads.deleted_at','=',null)
-            ->where('posts.user_id','=',$id)
-            ->orderBy('posts.created_at','desc')
-            ->select('posts.id','users.name','posts.is_anonymous','posts.majia','posts.brief','threads.title','posts.created_at')
-            ->paginate(config('preference.posts_per_page'));
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+            $posts = $this->select_user_comments(1, 1, $id,$request);
+        }elseif(Auth::check()&&Auth::user()->level>0){
+            $posts = $this->select_user_comments(0, 1, $id,$request);
         }else{
-            $queryid = 'UserComment.'
-            .url('/')
-            .$id
-            .(is_numeric($request->page)? 'P'.$request->page:'P1');
-
-            $posts = Cache::remember($queryid, 10, function () use($request, $id) {
-                return DB::table('posts')
-                ->join('threads','threads.id','=','posts.thread_id')
-                ->join('users','users.id','=','posts.user_id')
-                ->where('posts.deleted_at','=',null)
-                ->where('threads.deleted_at','=',null)
-                ->whereIn('threads.channel_id',ConstantObjects::public_channels())
-                ->where('posts.is_anonymous','=',0)
-                ->where('posts.user_id','=',$id)
-                ->orderBy('posts.created_at','desc')
-                ->select('posts.id','users.name','posts.is_anonymous','posts.majia','posts.brief','threads.title','posts.created_at')
-                ->paginate(config('preference.posts_per_page'))
-                ->appends($request->only('page'));
-            });
+            $posts = $this->select_user_comments(0, 0, $id,$request);
         }
 
         return view('users.show_comment', compact('user','info','intro', 'posts'))->with(['show_user_tab'=>'comment']);

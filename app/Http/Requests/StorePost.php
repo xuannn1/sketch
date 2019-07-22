@@ -33,7 +33,7 @@ class StorePost extends FormRequest
         return [
             'body' => 'required|string|min:10|max:20000',
             'reply_to_id' => 'numeric',
-            'majia' => 'string|max:10',
+            'majia' => 'nullable|string|max:10',
             'title' => 'string|nullable|max:30',
         ];
     }

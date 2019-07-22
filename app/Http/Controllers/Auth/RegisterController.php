@@ -165,7 +165,10 @@ class RegisterController extends Controller
             return back()->with('warning', '一小时内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，因此不再重复发送。');
         }
         DB::table('password_resets')->where('email','=',$user->email)->delete();
-
+        if(!$user->info->activation_token){
+            $user->info->activation_token=str_random(40);
+            $user->info->save();
+        }
         $this->sendEmailConfirmationTo($user);
         session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
 

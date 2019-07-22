@@ -41,7 +41,7 @@ class StoreBook extends FormRequest
             'book_length_tag' => 'numeric|min:1',
             'sexual_orientation_tag' => 'numeric|min:1',
             'is_bianyuan' =>'required|string',
-            'majia' => 'string|max:10',
+            'majia' => 'nullable|string|max:10',
             'tongren_yuanzhu' => 'string|nullable|max:60',
             'tongren_CP' => 'string|nullable|max:60',
         ];

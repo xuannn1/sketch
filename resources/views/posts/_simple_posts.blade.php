@@ -8,9 +8,20 @@
         {{ $post->name }}
         @endif
     {{ Carbon::parse($post->created_at)->diffForHumans() }}
-    回复《{{ $post->title }}》
-    {{ $post->brief }}
+    回复
+    @if($post->title)
+    《{{ $post->title }}》
+    @endif
+    <span id="abbreviated{{$post->id}}">
+        {{ $post->brief }}
+    </span>
     </a>
+    <span id="full{{$post->id}}" class="hidden main-text">
+        <div class="main-text">
+            {!! StringProcess::wrapParagraphs($post->body) !!}
+        </div>
+    </span>
+    <a type="button" name="button" id="expand{{$post->id}}" onclick="expanditem('{{$post->id}}')">展开</a>
 </article>
 <hr>
 @endforeach

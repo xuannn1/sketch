@@ -48,12 +48,6 @@ class PagesController extends Controller
         return view('pages/about');
     }
 
-    public function help()
-    {
-        $faqs = $this->find_helpfaqs();
-        return view('pages.help', compact('faqs'));
-    }
-
     public function test()
     {
         return view('pages/test');
