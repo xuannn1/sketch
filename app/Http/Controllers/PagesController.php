@@ -106,14 +106,15 @@ class PagesController extends Controller
     public function recommend_records(Request $request)
     {
         $page = is_numeric($request->page)? $request->page:'1';
-        $short_reviews = Cache::remember('recommendation_indexes'.$page, 1, function () {
+        $short_reviews = Cache::remember('recommendation_indexes'.$page, 1, function () use($request) {
             $short_reviews = \App\Models\Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
             ->reviewRecommend('recommend_only')
             ->reviewEditor('editor_only')
             ->reviewLong('short_only')
             ->reviewOrdered('latest_created')
             ->select('posts.*')
-            ->paginate(config('preference.items_per_page'));
+            ->paginate(config('preference.items_per_page'))
+            ->appends($request->only('page'));
             $short_reviews->load('review.reviewee.author');
             return $short_reviews;
         });

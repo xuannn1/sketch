@@ -22,16 +22,18 @@
     <span><a href="{{route('user.followers', $user->id)}}">粉丝{{ $info->follower_count }}</a></span>
 </div>
 
-@if ((Auth::check())&&($user->id != Auth::id()))
+@if(Auth::check())
 <div class="text-center">
-    @if((Auth::check())&&(Auth::user()->isAdmin()))
+    @if(Auth::user()->isAdmin())
     <a href="{{route('admin.userform', $user->id)}}"class="btn btn-md btn-danger sosad-button admin-button">管理该用户</a>&nbsp;&nbsp;&nbsp;
     @endif
+    @if(Auth::id()!=$user->id)
     <a href="{{route('message.dialogue', $user->id)}}" class="btn btn-md btn-primary sosad-button-control" >私信</a>&nbsp;&nbsp;&nbsp;
     <button type="button" class="btn btn-md btn-primary sosad-button-control {{'follow'.$user->id}} {{Auth::user()->isFollowing($user->id) ? 'hidden':''}}" onclick="follow({{$user->id}})">关注</button>
     <button type="button" class="btn btn-md btn-danger sosad-button {{'cancelfollow'.$user->id}} {{Auth::user()->isFollowing($user->id) ? '':'hidden'}}" onclick="cancelfollow({{$user->id}})">取消关注</button>&nbsp;&nbsp;&nbsp;
-    <a href="{{$info->default_box_id===0?'#':route('thread.show', $info->default_box_id)}}" class="btn btn-md btn-primary sosad-button-control" {{$info->default_box_id===0? 'disabled':''}}>提问</a>
-    @if((Auth::check())&&(Auth::user()->isAdmin()))
+    @endif
+    <a href="{{$info->default_box_id===0?'#':route('thread.show', $info->default_box_id)}}" class="btn btn-md btn-primary sosad-button-control" {{$info->default_box_id===0? 'disabled':''}}>问题箱</a>
+    @if(Auth::user()->isAdmin())
     &nbsp;&nbsp;&nbsp;<a href="{{route('administrationrecords', ['user_id'=>$user->id])}}"class="btn btn-md btn-danger sosad-button admin-button">被管理记录</a>
     @endif
 </div>

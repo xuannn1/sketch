@@ -95,7 +95,9 @@
                 </div>
             @endif
             @if($post->type==='answer')
-
+                <div class="post-reply grayout">
+                    问题：<a href="{{ route('thread.showpost', $post->reply_to_id) }}">{{$post->reply_to_brief}}</a>
+                </div>
             @endif
 
             <!-- 展示推荐书籍内情 -->

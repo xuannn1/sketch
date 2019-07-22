@@ -54,12 +54,12 @@ class PostsController extends Controller
     }
     public function edit(Post $post)
     {
+        if(!$post){abort(404);}
         $thread=$post->thread;
-        $channel=$thread->channel();
-
+        $channel = $thread->channel();
+        if(!$thread||!$post||!$channel){abort(404);}
         if($post->user_id!=Auth::id()){abort(403);}
-
-        if(($thread->is_locked||!$thread->channel()->allow_edit)&&(!Auth::user()->isAdmin())){abort(403);}
+        if(($thread->is_locked||!$thread->channel()->allow_edit||$post->fold_state>0)&&(!Auth::user()->isAdmin())){abort(403);}
 
         if($post->type==='chapter'){
             $chapter = $post->chapter;
@@ -80,14 +80,16 @@ class PostsController extends Controller
     public function update(StorePost $form, Post $post)
     {
         $thread=$post->thread;
-        if ((Auth::user()->isAdmin())||((Auth::id() == $post->user_id)&&(!$thread->is_locked)&&($thread->channel()->allow_edit)&&($post->fold_state<=0))){
-            $form->updatePost($post);
-            $this->clearPostProfile($post->id);
-            return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
-        }else{
-            abort(403);
-        }
+        $channel = $thread->channel();
+        if(!$thread||!$post||!$channel){abort(404);}
+        if($post->user_id!=Auth::id()){abort(403);}
+        if(($thread->is_locked||!$thread->channel()->allow_edit||$post->fold_state>0)&&(!Auth::user()->isAdmin())){abort(403);}
+
+        $form->updatePost($post);
+        $this->clearPostProfile($post->id);
+        return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
     }
+
     public function show($id)
     {
         $post = $this->postProfile($id);
@@ -116,9 +118,9 @@ class PostsController extends Controller
         if(!$post){abort(404);}
         $thread=$post->thread;
         $channel = $thread->channel();
-        if(!$thread||!$post||!$channel){abort(404);}
-        if($post->user_id!=Auth::id()){abort(404);}
-        if(!Auth::user()->isAdmin()&&($thread->is_locked||$post->fold_state>0)){abort(403);}
+        if(!$thread||!$channel){abort(404);}
+        if($post->user_id!=Auth::id()){abort(403);}
+        if(($thread->is_locked||!$thread->channel()->allow_edit||$post->fold_state>0)&&(!Auth::user()->isAdmin())){abort(403);}
 
         if($post->type==='chapter'){
             $chapter = $post->chapter;
@@ -138,12 +140,12 @@ class PostsController extends Controller
 
         $post->delete();
         $this->clearPostProfile($id);
-        return redirect()->route('home')->with("success","已经删帖");
+        return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
     }
     public function turn_to_post(Post $post)
     {
         $thread = $post->thread;
-        if(!$thread||$post->user_id!=Auth::id()||$thread->user_id!=Auth::id()){abort(403);}
+        if(!$thread||$thread->user_id!=Auth::id()){abort(403);}
 
         if($post->type==='chapter'){
             $chapter = $post->chapter;
@@ -165,5 +167,18 @@ class PostsController extends Controller
         $post->save();
         $this->clearPostProfile($post->id);
         return redirect()->route('post.show',$post->id)->with('success','已经成功转化成普通回帖');
+    }
+
+    public function box_owner_delete_post($id)
+    {
+        $post = Post::findOrFail($id);
+        if(!$post){abort(404);}
+        $thread=$post->thread;
+        if(!$thread||!$post){abort(404);}
+        if($thread->channel()->type!='box'||$thread->user_id!=Auth::id()){abort(403);}
+
+        $post->delete();
+        $this->clearPostProfile($id);
+        return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
     }
 }

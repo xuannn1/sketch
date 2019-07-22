@@ -249,6 +249,8 @@
 
    Route::get('/posts/{post}/turn_to_post', 'PostsController@turn_to_post')->name('post.turn_to_post');//更改post成普通回帖
 
+   Route::get('/posts/{post}/box_owner_delete_post', 'PostsController@box_owner_delete_post')->name('post.box_owner_delete_post');
+
    Route::post('/posts/{post}/update', 'PostsController@update')->name('post.update');//更改帖子，必须有权限
 
    Route::delete('/posts/{post}', 'PostsController@destroy')->name('post.destroy');//删除已回复帖子，必须有权限
