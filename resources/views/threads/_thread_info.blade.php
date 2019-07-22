@@ -1,4 +1,5 @@
 <!-- 标题 -->
+<br>
 <div class="article-title {{ $thread->channel()->type == 'thread' ? '':'text-center' }}">
     <div class="font-2">
         <div>
@@ -23,7 +24,7 @@
             @endif
         </div>
     </div>
-    <div class="font-3">
+    <div class="font-4">
         @if( $thread->recommended)
         <span class="recommend-label">
             <span class="glyphicon glyphicon-grain recommend-icon"></span>
@@ -48,7 +49,6 @@
 <div class="article-body">
     <!-- 简介信息 -->
     <div class="">
-
         <div class="text-center h5">
             <!-- 作者信息，发表时间 -->
             <div class="">
@@ -84,7 +84,6 @@
                     {{ $thread->tongren->tongren_CP }}
                     @endif
                 </div>
-                <br>
             @endif
             <div class="">
                 <a href="{{route('books.index', ['inChannel' => $thread->channel_id])}}">{{$thread->channel()->channel_name}}</a>

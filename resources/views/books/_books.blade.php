@@ -60,6 +60,6 @@
             </span>
         </div>
     </div>
-    <hr class="narrow">
+    <hr class="brief-2">
 </article>
 @endforeach

@@ -242,8 +242,8 @@ class UsersController extends Controller
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
+        if(!$user||!$info){abort(404);}
         $intro = $info->has_intro? CacheUser::Aintro():null;
-
         return view('users.center', compact('user','info','intro'));
     }
 

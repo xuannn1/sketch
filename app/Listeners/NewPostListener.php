@@ -50,7 +50,7 @@ class NewPostListener
                 if($thread->first_component_id===0){
                     $thread->first_component_id = $post->id;
                 }
-                if($post->checklongchapter()){
+                if($post->post_check('standard_chapter')){
                     $thread->add_component_at = $post->created_at;
                 }
                 $thread->recalculate_characters();
@@ -58,6 +58,7 @@ class NewPostListener
                 if($post->type==='chapter'){
                     $thread->reorder_chapters();
                 }
+                $thread->check_bianyuan();
 
                 $this->clearAllThread($thread->id);
             }else{

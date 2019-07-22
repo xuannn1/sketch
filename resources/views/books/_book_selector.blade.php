@@ -49,7 +49,9 @@
             <button type="button" class="btn btn-default btn-md dropdown-toggle dropdown-menu-narrow" data-toggle="dropdown">其他标签<span class="caret"></span></button>
             <ul class="dropdown-menu">
                 @foreach($tags['book_custom_Tags'] as $tag)
+                @if($tag->is_bianyuan===0||Auth::check()&&Auth::user()->level>=3)
                 <li><a class="" href="{{ route('books.index', array_merge(['withTag' => StringProcess::mergeWithTag($tag->id, request()->withTag)], request()->only('excludeTag','withBianyuan','ordered','inChannel'))) }}">{{ $tag->tag_name }}</a></li>
+                @endif
                 @endforeach
             </ul>
         </span>

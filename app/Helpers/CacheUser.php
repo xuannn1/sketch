@@ -12,7 +12,7 @@ class CacheUser{ //cache-user class
     public static function user($id){
         if(!$id||$id<=0){return;}
 
-        return Cache::remember('cachedUser.'.$id, 10, function() use($id) {
+        return Cache::remember('cachedUser.'.$id, 30, function() use($id) {
             $user = User::find($id);
             $user->load('title');
             return $user;
@@ -22,7 +22,7 @@ class CacheUser{ //cache-user class
     public static function info($id){
         if(!$id||$id<=0){return;}
 
-        return Cache::remember('cachedUserInfo.'.$id, 10, function() use($id) {
+        return Cache::remember('cachedUserInfo.'.$id, 30, function() use($id) {
             return UserInfo::find($id);
         });
     }

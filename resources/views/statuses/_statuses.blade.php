@@ -4,6 +4,9 @@
         <div class="col-xs-12 h5">
             <span>
                 @if($status->author)
+                @if($status->author->title&&$status->author->title->name)
+                <span class="maintitle title-{{$status->author->title->style_id}}">{{ $status->author->title->name }}</span>
+                @endif
                 <a href="{{ route('user.show', $status->user_id) }}">{{ $status->author->name }}</a>
                 @endif
                 &nbsp;
@@ -30,6 +33,6 @@
             </span>
         </div>
     </div>
-    <hr class="narrow">
+    <hr class="brief-2">
 </article>
 @endforeach

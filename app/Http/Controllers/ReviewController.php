@@ -48,7 +48,7 @@ class ReviewController extends Controller
 
         $this->clearAllThread($thread->id);
 
-        if($post->checklongcomment()){
+        if($post->post_check('long_comment')){
             $this->user->reward('long_post');
             return redirect()->route('post.show', $post->id)->with('success', '您得到了长评奖励');
         }

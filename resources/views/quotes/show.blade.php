@@ -30,7 +30,7 @@
                     @else
                         <a href="{{ route('user.show', $quote->user_id) }}">
                             @if($quote->author->title&&$quote->author->title->name)
-                            <span class="title">{{ $quote->author->title->name }}</span>
+                            <span class="maintitle title-{{$quote->author->title->style_id}}">{{ $quote->author->title->name }}</span>
                             @endif
                             {{ $quote->author->name }}
                         </a>

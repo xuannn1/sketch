@@ -38,7 +38,7 @@
                                     @else
                                         <a href="{{ route('user.show', $post->user_id) }}">
                                             @if($post->author->title&&$post->author->title->name)
-                                            <span>{{ $post->author->title->name }}</span>
+                                            <span class="maintitle title-{{$post->author->title->style_id}}">{{ $post->author->title->name }}</span>
                                             @endif
                                             {{ $post->author->name }}
                                         </a>

@@ -19,7 +19,6 @@ class SearchController extends Controller
         $this->middleware('auth');
     }
 
-
     public function search(Request $request)
     {
         $validatedData = $request->validate([
@@ -28,9 +27,9 @@ class SearchController extends Controller
         $pattern = $request->search;
 
         $search_result = Cache::remember('search_index.'.$pattern,30,function() use($pattern){
-            $threads = $this->find_threads_with_pattern($pattern,10);
-            $users = $this->find_users_with_pattern($pattern,20);
-            $tags = $this->find_tags_with_pattern($pattern,20);
+            $threads = $this->find_threads_with_pattern($pattern,20);
+            $users = $this->find_users_with_pattern($pattern,40);
+            $tags = $this->find_tags_with_pattern($pattern,40);
             $faqs = $this->find_faqs_with_pattern($pattern);
             return [
                 'threads' => $threads,
@@ -53,7 +52,7 @@ class SearchController extends Controller
             'search' => 'required|string|min:1|max:6',
         ]);
         $pattern = $request->search;
-        $users = $this->find_users_with_pattern($pattern, 20);
+        $users = $this->find_users_with_pattern($pattern, 40);
 
         return view('search.search_users', compact('users','pattern'));
     }
@@ -64,7 +63,7 @@ class SearchController extends Controller
             'search' => 'required|string|min:1|max:6',
         ]);
         $pattern = $request->search;
-        $tags = $this->find_tags_with_pattern($pattern, 20);
+        $tags = $this->find_tags_with_pattern($pattern, 40);
 
         return view('search.search_tags', compact('tags','pattern'));
     }
@@ -75,9 +74,9 @@ class SearchController extends Controller
             'search' => 'required|string|min:1|max:6',
         ]);
         $pattern = $request->search;
-        $threads = $this->find_threads_with_pattern($pattern, 20);
+        $simplethreads = $this->find_threads_with_pattern($pattern, 40);
 
-        return view('search.search_threads', compact('threads','pattern'));
+        return view('search.search_threads', compact('simplethreads','pattern'));
     }
 
     public function find_threads_with_pattern($pattern = '', $paginate = 5)

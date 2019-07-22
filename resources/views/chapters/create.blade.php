@@ -21,15 +21,14 @@
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="title"><h4>章节名称(25字内)：</h4></label>
-
                         <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="章节名称">
                     </div>
                     <div class="form-group">
                         <label for="brief"><h4>章节概要（40字内）：</h4></label>
                         <input type="text" name="brief" class="form-control" value="{{ old('brief') }}">
                     </div>
-                    <div id="biaotiguiding" class="h6">
-                        <span style="color:#d66666">（章节名、章节概要中不得具有性描写、性暗示，不得使用直白的脏话、黄暴词和明显涉及边缘的词汇。）<span>
+                    <div id="biaotiguiding" class="h6 text-center grayout">
+                        <span>（章节名、章节概要中不得具有性描写、性暗示，不得使用直白的脏话、黄暴词和明显涉及边缘的词汇，不应出现和文章无关的内容，如qq号、邀请码、注册指路等。）</span>
                     </div>
 
                     <div class="form-group">

@@ -26,7 +26,7 @@ trait PostObjectTraits{
                 $post->load('question');
             }
             $post->setAttribute('top_reply', $post->favorite_reply());
-            $post->setAttribute('new_reply', $post->newest_reply());
+            $post->setAttribute('new_replies', $post->newest_replies());
             $post->setAttribute('recent_rewards', $post->latest_rewards());
             $post->setAttribute('recent_upvotes', $post->latest_upvotes());
 

@@ -104,6 +104,17 @@ class Post extends Model
         return $query;
     }
 
+    public function scopeWithBianyuan($query, $withBianyuan='')
+    {
+        if($withBianyuan==='include_bianyuan'){
+            return $query;
+        }
+        if($withBianyuan==='bianyuan_only'){
+            return $query->where('is_bianyuan', true);
+        }
+        return $query->where('is_bianyuan', false);
+    }
+
     public function scopeWithComponent($query, $withComponent)
     {
         if($withComponent==='component_only'){
@@ -250,26 +261,34 @@ class Post extends Model
         ->first();
     }
 
-    public function newest_reply()//这个post里面，回复它的postcomment中，最新的一个，全部内容
+    public function newest_replies()//这个post里面，回复它的postcomment中，最新的5个，全部内容
     {
-        return Post::where('reply_to_id', $this->id)
-        ->with('author.title')
+        return Post::with('author.title')
+        ->where('reply_to_id', $this->id)
         ->orderBy('created_at', 'desc')
-        ->first();
+        ->take(5)
+        ->get();
     }
 
-    public function checklongcomment()
+    public function post_check($requirement = '')
     {
-        if($this->char_count>config('constants.longcomment_length')){
-            return true;
-        }
-        return false;
-    }
-
-    public function checklongchapter()
-    {
-        if($this->char_count>config('constants.update_min')){
-            return true;
+        switch ($requirement) {
+            case 'long_comment'://长评？ post_check('long_comment')
+            if($this->char_count>config('constants.longcomment_length')){
+                return true;
+            }
+            break;
+            case 'standard_chapter'://章节更新需求 post_check('standard_chapter')
+            if($this->char_count>config('constants.update_min')){
+                return true;
+            }
+            case 'first_post'://是否最新回帖 post_check('first_post')
+            $parent = $this->parent;
+            if($parent&&$parent->type==="chapter"&&$parent->reply_count<2){
+                return true;
+            }
+            default:
+            break;
         }
         return false;
     }

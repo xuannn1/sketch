@@ -87,6 +87,16 @@
    Route::get('/users/{id}/followers', 'UsersController@followers')->name('user.followers'); // 粉丝列表 19.7.11
 
    Route::get('/users', 'UsersController@index')->name('user.index');//展示所有用户，按最后签到时间排序 19.7.11
+
+}
+
+{ // title
+    Route::resource('title', 'TitleController', ['only' => [
+        'index', 'create', 'store', 'edit', 'update', 'destroy'
+    ]]); //
+
+    Route::get('/mytitles', 'TitleController@mytitles')->name('title.mytitles');
+    Route::get('/wearTitle/{title}', 'TitleController@wear')->name('title.wear');
 }
 
 { // ajax修改关注情况
@@ -127,7 +137,6 @@
 
 
 {//以下是论坛主题目录模块
-
     Route::resource('threads', 'ThreadsController', ['only' => [
         'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]]); //

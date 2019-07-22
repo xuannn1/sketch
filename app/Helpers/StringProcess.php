@@ -153,7 +153,9 @@ class StringProcess
         $post = $bbCode->convertToHtml($post);
         $post = str_replace("<br>", "</p><br><p>", $post);
         $post = preg_replace('/\n{1,}/', "</p><p>", $post);
-        $post = "<p>{$post}</p>";
+        if($post){
+            $post = "<p>{$post}</p>";
+        }
         return $post;
     }
 

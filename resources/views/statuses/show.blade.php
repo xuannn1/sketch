@@ -22,7 +22,7 @@
                     @if($status->author)
                     <a href="{{ route('user.show', $status->user_id) }}">
                         @if($status->author->title&&$status->author->title->name)
-                        <span class="title">{{ $status->author->title->name }}</span>
+                        <span class="maintitle title-{{$status->author->title->style_id}}">{{ $status->author->title->name }}</span>
                         @endif
                         {{ $status->author->name }}
                     </a>

@@ -38,12 +38,12 @@ class PostsController extends Controller
 
         event(new NewPost($post));
 
-        if($post->checklongcomment()){
+        if($post->post_check('long_comment')){
             $post->user->reward('long_post');
             return back()->with('success', '您得到了长评奖励');
         }
 
-        if($post->checkfirstpost()){
+        if($post->post_check('first_post')){
             $post->user->reward("first_post");
             return back()->with('success', '您得到了新章节率先回帖的奖励');
 

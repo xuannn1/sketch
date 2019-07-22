@@ -10,8 +10,9 @@
 <div class="panel panel-default {{ $post->fold_state>0? 'collapse':'' }} " id = "post{{ $post->id }}">
     <div class="panel-heading">
         <div class="row">
+            <!-- post的基本信息：作者，时间，post_id -->
             <div class="col-xs-12">
-                <span>
+                <span class="font-5">
                     <!-- 显示作者名称 -->
                     @if($post->author)
                         @if ($post->type==="chapter")
@@ -29,26 +30,30 @@
                             @else
                                 <a href="{{ route('user.show', $post->user_id) }}">
                                     @if($post->author->title&&$post->author->title->name)
-                                    <span>{{ $post->author->title->name }}</span>
+                                    <span class="maintitle title-{{$post->author->title->style_id}}">{{ $post->author->title->name }}</span>
                                     @endif
                                     {{ $post->author->name }}
                                 </a>
                             @endif
                         @endif
                     @endif
-
+                    <!-- 只看该用户 -->
                     @if(($post->user_id>0)&&(!$post->is_anonymous)&&((!$thread->is_anonymous)||(($post->type==='post')||($post->type==='comment'))))
-                        <span class="grayout smaller-25"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'userOnly'=>$post->user_id]) }}">只看该用户</a></span>
+                        <span class="grayout smaller-30"><a href="{{ route('thread.show', ['thread'=>$thread->id, 'userOnly'=>$post->user_id]) }}">只看该用户</a></span>
                     @endif
                     <!-- 发表时间 -->
-                    <span class="smaller-25">
+                    <span class="grayout smaller-30">
                         {{ $post->created_at->diffForHumans() }}
                         @if($post->created_at < $post->edited_at )
                         /{{ $post->edited_at->diffForHumans() }}
                         @endif
                     </span>&nbsp;
 
+
+
+
                     @if((Auth::check())&&(Auth::user()->isAdmin()))
+                    <!-- 管理员标志 -->
                     <span>
                         <span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostAdministration{{ $post->id }}" class="btn btn-default btn-sm admin-button">管理本帖</a></span>
                         @include('admin._post_management_form')
@@ -56,8 +61,11 @@
                     @endif
 
                 </span>
-                <span class="pull-right smaller-20">
-                    <a href="{{ route('post.show', $post->id) }}">No.{{ $post->id }}</a>
+                <!-- post编号 -->
+                <span class="pull-right smaller-30">
+                    <a href="{{ route('post.show', $post->id) }}">
+                        {{ $post->type==='question'?'Q.':'' }}{{ $post->type==='anwer'?'A.':'' }}{{ $post->type==='review'?'R.':'' }}{{ $post->type==='post'?'P.':'' }}{{ $post->type==='comment'?'C.':'' }}{{ $post->id }}
+                    </a>
                 </span>
             </div>
         </div>
@@ -81,10 +89,13 @@
         </div>
         @else
             <!-- 回复他人帖子的相关信息 -->
-            @if($post->reply_to_id!=0)
+            @if($post->type!='answer'&&$post->reply_to_id!=0)
                 <div class="post-reply grayout">
                     {{$post->type=='comment'?'点评':'回复'}}&nbsp;<a href="{{ route('thread.showpost', $post->reply_to_id) }}">{{ StringProcess::simpletrim($post->reply_to_brief, 30) }}</a>
                 </div>
+            @endif
+            @if($post->type==='answer')
+
             @endif
 
             <!-- 展示推荐书籍内情 -->

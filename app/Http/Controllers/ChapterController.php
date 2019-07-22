@@ -38,7 +38,7 @@ class ChapterController extends Controller
 
         event(new NewPost($post));
 
-        if($post->checklongchapter()){
+        if($post->post_check('standard_chapter')){
             $post->user->reward("standard_chapter");
         }else{
             $post->user->reward("short_chapter");

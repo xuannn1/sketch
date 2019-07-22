@@ -26,7 +26,7 @@
         </div>
         @endswitch
     </div>
-    <hr>
+    <hr class="brief-0">
     @endif
     @if($thread->channel()->type !='thread')
     <!-- 点击阅读  书籍/收藏单/问题箱   -->
@@ -55,11 +55,11 @@
     <!-- 操作按钮：收藏，回复，写独立评论，打赏 -->
     <div class="row">
         <div class="col-xs-3">
-            <button class="btn btn-md btn-success btn-block sosad-button" id="itemcollection{{$thread->id}}" onclick="add_to_collection({{$thread->id}})">收藏{{ $thread->collection_count }}</button>
+            <button class="btn btn-md btn-success btn-block sosad-button" id="itemcollection{{$thread->id}}" onclick="add_to_collection({{$thread->id}})">收藏<span class="smaller-10">{{$thread->collection_count}}</span></button>
         </div>
         <div class="col-xs-3">
             @if((!$thread->noreply)&&(!$thread->is_locked)&&(($thread->is_public)||($thread->user_id===Auth::id())))
-            <a class="btn btn-md btn-primary btn-block sosad-button" href="#replyToThread">回复{{$thread->reply_count}}</a>
+            <a class="btn btn-md btn-primary btn-block sosad-button" href="#replyToThread">回复<span class="smaller-10">{{$thread->reply_count}}</span></a>
             @endif
         </div>
 

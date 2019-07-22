@@ -42,7 +42,7 @@
                 <div class="form-group">
                     <label for="brief"><h4>2. 简介：</h4></label>
                     <div id="biaotiguiding" class="h6">
-                        <span style="color:#d66666">简介中不得含有性描写、性暗示成分。<span>简介中请勿放置与文章无关的内容。
+                        <span style="color:#d66666">简介中不得含有性描写、性暗示成分。<span>简介中请勿放置与文章无关的内容，如qq号、注册、升级指路等。
                     </div>
                     <input type="text" name="brief" class="form-control" value="{{$thread->brief}}" placeholder="请输入不超过25字的简介">
                 </div>

@@ -23,7 +23,7 @@
 
     @if(request()->ordered)
     <a class="btn btn-info btn-md sosad-button-control" href="{{ route('books.index',
-    request()->only('inChannel', 'withTag','excludeTag','withBianyuan')) }}" role="button">{{ config('selectors.book_filter.ordered')[request()->ordered] }}<span class="glyphicon glyphicon-remove"></span></a>
+    request()->only('inChannel', 'withTag','excludeTag','withBianyuan')) }}" role="button">{{ config('selectors.book_index_filter.ordered')[request()->ordered] }}<span class="glyphicon glyphicon-remove"></span></a>
     @endif
 
 </div>

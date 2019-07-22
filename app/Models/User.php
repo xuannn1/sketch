@@ -151,6 +151,11 @@ class User extends Authenticatable
         return $this->followings->contains($user_id);
     }
 
+    public function hasTitle($id)
+    {
+        return ($id<=($this->level+1))||($this->titles->contains($id));
+    }
+
 
     public function isAdmin()
     {
@@ -343,6 +348,8 @@ class User extends Authenticatable
 
         $this->save();
     }
+
+
 
 
 

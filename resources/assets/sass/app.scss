@@ -33,6 +33,7 @@ $new-chapter-badge-color:#ce8383;
 $new-chapter-badge-background-color:#dee0ec;
 $recommend-color: #ffb200;
 $jinghua-color: #ba234e;
+$title-background-color:#afafaf;
 
 header {
    .navbar-inverse {
@@ -166,10 +167,21 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .font-1, .font-2, .font-3,
     line-height: 2.0;
     color: inherit;
 }
-h4, .h4, h5, .h5, h6, .h6 , .font-4, .font-5, .font-6{
+h5, .h5, h6, .h6 , .font-5, .font-6{
     margin-top: 5px;
     margin-bottom: 5px;
     line-height:1.5;
+}
+h4, .h4 , h3, .h3,{
+    margin-top: 7px;
+    margin-bottom: 5px;
+    line-height:2.0;
+}
+
+h2, .h2,  h1, .h1, {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    line-height:2.5;
 }
 
 h1, .h1, .font-1{
@@ -417,6 +429,7 @@ hr {
    background-color:$button-color;
    border-color:$button-color;
    font-weight:bold;
+   border-width:2px;
 }
 .sosad-button-control{
    background-color:$background-color !important;
@@ -471,10 +484,23 @@ hr {
 .smaller-30{
    font-size:70%;
 }
+.smaller-30 {
+    &.pull-right{
+        margin-top:6px;
+    }
+}
 
-.brief{
+.brief-0{
    margin-top:0px;
    margin-bottom:0px;
+}
+.brief-2{
+   margin-top:2px;
+   margin-bottom:2px;
+}
+.brief-4{
+   margin-top:4px;
+   margin-bottom:4px;
 }
 .narrow{
    margin-top:7px;
@@ -716,4 +742,44 @@ textarea {
 }
 .unread-reminders{
     color:$jinghua-color;
+}
+.maintitle{
+    border-radius: 3pt;
+    border-width:0;
+    background-color:$title-background-color;
+    color:$background-color;
+    padding-left:4px;
+    padding-right:4px;
+    font-size:90%;
+    font-weight:100;
+}
+.title-1{
+    background-color:#a8c5a8;
+}
+.title-2{
+    background-color:#bfa8c5;
+}
+.title-3{
+    background-color:#c5a8a8;
+}
+.title-4{
+    background-color:#c5c5a8;
+}
+.title-5{
+    background-color:#a8c0c5;
+}
+.title-6{
+    background-color:#a8a9c5;
+}
+.title-7{
+    background-color:#c5a8c0;
+}
+.title-8{
+    background-color:#c5b1a8;
+}
+.title-9{
+    background-color:#a8c5be;
+}
+.title-10{
+    background-color:#93a4cc;
 }

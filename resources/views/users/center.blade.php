@@ -6,21 +6,8 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-body text-center">
-                @include('users._user_stat')
-                <div class="container-fluid">
-                    <div class="row text-center">
-                        <div class="col-xs-4">
-                            <a href="{{ route('user.show', $user->id) }}" class="btn btn-info btn-md sosad-button-control">查看主页</a>
-                        </div>
-                        <div class="col-xs-4">
-                            <a href="{{ route('user.edit_introduction') }}" class="btn btn-info btn-md sosad-button-control">修改介绍</a>
-                        </div>
-                        <div class="col-xs-4">
-                            <a href="" class="btn btn-info btn-md sosad-button-control">佩戴头衔(待)</a>
-                        </div>
-                    </div>
-                    <br>
-                </div>
+                @include('users._user_profile')
+                @include('users._user_center_action')
             </div>
         </div>
         <div class="panel panel-default">
