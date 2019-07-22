@@ -73,7 +73,7 @@
             </span>
         </div>
 
-        <div class="col-xs-12 h5 brief">
+        <div class="col-xs-12 h5 brief-0">
             @if($thread->last_component)
             <span class="grayout smaller-5"><a href="{{route('post.show', $thread->last_component_id)}}">《{{$thread->last_component->title}}》</a></span>
             <span class="grayout smaller-20">{{ $thread->add_component_at->diffForHumans() }}</span>

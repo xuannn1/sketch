@@ -10,7 +10,7 @@
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
             /
             <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>/
-            <a href="{{ route('post.show',$post->id) }}">{{ $post->title }}</a>//&nbsp;修改书评
+            <a href="{{ route('post.show',$post->id) }}">{{ $post->title }}</a>&nbsp;修改书评
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">

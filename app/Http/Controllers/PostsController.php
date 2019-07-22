@@ -13,15 +13,15 @@ use Carbon;
 use Auth;
 use CacheUser;
 
-use App\Sosadfun\Traits\FindThreadTrait;
 use App\Sosadfun\Traits\PostObjectTraits;
+use App\Sosadfun\Traits\ThreadObjectTraits;
 
 
 
 class PostsController extends Controller
 {
     use PostObjectTraits;
-    use FindThreadTrait;
+    use ThreadObjectTraits;
 
     public function __construct()
     {
@@ -163,7 +163,7 @@ class PostsController extends Controller
         $post->type='post';
         $post->edited_at = Carbon::now();
         $post->save();
-        $this->clearPostProfile($id);
+        $this->clearPostProfile($post->id);
         return redirect()->route('post.show',$post->id)->with('success','已经成功转化成普通回帖');
     }
 }

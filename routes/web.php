@@ -167,7 +167,7 @@
     Route::get('/threads/{thread}/review/create', 'ReviewController@create')->name('review.create');
     Route::post('/threads/{thread}/review', 'ReviewController@store')->name('review.store');//存储书评
     Route::patch('/review/{review}', 'ReviewController@update')->name('review.update');//更新书评
-    Route::get('/post/{post}/turn_to_review', 'ReviewController@turn_to_review')->name('post.turn_to_review');
+    Route::get('/posts/{post}/turn_to_review', 'ReviewController@turn_to_review')->name('post.turn_to_review');
 }
 
 
@@ -227,7 +227,7 @@
     Route::get('books/{book}/edit_tongren', 'BooksController@edit_tongren')->name('books.edit_tongren');
     Route::patch('books/{book}/edit_tongren', 'BooksController@update_tongren')->name('books.update_tongren');
 
-    // 章节重排序
+    // 章节
     Route::get('books/{book}/edit_chapter_index', 'BooksController@edit_chapter_index')->name('books.edit_chapter_index');
     Route::patch('books/{book}/update_chapter_index', 'BooksController@update_chapter_index')->name('books.update_chapter_index');
 
@@ -236,6 +236,7 @@
     Route::resource('/thread/{thread}/chapter', 'ChapterController', ['only' => [
          'create', 'store'
     ]]); //
+    Route::get('/posts/{post}/turn_to_chapter', 'ChapterController@turn_to_chapter')->name('post.turn_to_chapter');
 
 
 

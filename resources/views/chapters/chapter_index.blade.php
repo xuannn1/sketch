@@ -14,8 +14,17 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1> <a href="{{ route('thread.show_profile', $thread->id) }}">{{ $thread->title }}</a> </h1>
-                <h4>{{ $thread->brief }}</h4>
+                <div class="font-1">
+                    <a href="{{ route('thread.show_profile', $thread->id) }}">{{ $thread->title }}</a>
+                </div>
+                <div class="">
+                    <span class="font-4">{{ $thread->brief }}</span>
+                    @if(Auth::check()&&Auth::id()===$thread->user_id)
+                    <a href="{{route('books.edit_chapter_index', $thread->id)}}" class="btn btn-md btn-info sosad-button-control pull-right">
+                        调整章节顺序
+                    </a>
+                    @endif
+                </div>
             </div>
         </div>
         <div class="panel panel-default">

@@ -56,8 +56,8 @@
                         </tbody>
                     </table>
                     <div class="h6 text-left">
-                        使用说明：请在每一章的右边填写这个章节的序号，章节会按照序号从小到大排列。<br>
-                        还可以选择其中一章作为“第一章”，在读者点击“开始阅读”时进入那一章开始读。
+                        使用说明：请在每一章的右边填写这个章节的“序号”，章节会按照序号从小到大排列。<br>
+                        还可以选择其中一章作为“第一章”，读者点击“开始阅读”时会直接进入那一章开始读。
                     </div>
                     <button type="submit" class="btn btn-lg btn-danger sosad-button">确认修改</button>
                 </form>

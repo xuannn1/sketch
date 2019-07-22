@@ -9,12 +9,15 @@
                 <h1>
                     「{{$user->name}}」的头衔中心
                 </h1>
+                @if($user->title)
                 <h5 class="text-center">
                     当前头衔：
+
                     <span class="maintitle title-{{$user->title->style_id}}">
                         {{$user->title->name}}
                     </span>
                 </h5>
+                @endif
                 <h6 class="text-center">
                     头衔佩戴更改后，需要几分钟的缓存时间才会显示哦～
                 </h6>

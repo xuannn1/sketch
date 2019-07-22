@@ -40,7 +40,7 @@ class CountWebStat extends Command
         $data['chapters']=DB::table('posts')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->where('type','=','chapter')->count();
         $data['reviews']=DB::table('posts')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->where('type','=','review')->count();
         $data['new_users']=DB::table('users')->where('created_at','>',Carbon::now()->subday(1)->toDateTimeString())->count();
-        $clicks_data_collection = DB::table('user_infos')->where('daily_clicks','>',0)->select(['id as user_id','daily_clicks'])->get();
+        $clicks_data_collection = DB::table('user_infos')->where('daily_clicks','>',0)->select(['user_id','daily_clicks'])->get();
         $data['daily_clicks']=$clicks_data_collection->sum('daily_clicks');
         $data['daily_clicked_users']=$clicks_data_collection->count();
         $data['daily_clicks_average']=$clicks_data_collection->average('daily_clicks');

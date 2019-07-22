@@ -68,7 +68,7 @@
             <div class="panel-body">
                 <article class="{{ 'thread'.$thread->id }}">
                     <div class="row">
-                        <div class="col-xs-12 h5 brief">
+                        <div class="col-xs-12 h5 brief-0">
                             <span>
                                 <a href="{{ route('thread.show', $thread->id) }}" class="bigger-5">{{ $thread->title }}</a>
                             </span>
@@ -85,7 +85,7 @@
                                 @endif
                             </span>
                         </div>
-                        <div class="col-xs-12 h5 brief">
+                        <div class="col-xs-12 h5 brief-0">
                             <span class="grayout smaller-20">{{  StringProcess::simpletrim($thread->brief, 17)}}</span>
                             <span class="pull-right smaller-25">{{ $thread->created_at->diffForHumans() }}／{{ $thread->responded_at->diffForHumans() }}</span>
                         </div>

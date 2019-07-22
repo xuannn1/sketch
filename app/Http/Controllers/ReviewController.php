@@ -81,15 +81,20 @@ class ReviewController extends Controller
         $channel=$thread->channel();
         if($post->user_id!=Auth::id()){abort(403);}
         if(($thread->is_locked||!$thread->channel()->allow_edit)&&(!Auth::user()->isAdmin())){abort(403);}
-        if($post->review){abort(409);}
-
-        $review = Review::create(['post_id'=>$post->id]);
+        if(!$post->review){
+            Review::create(['post_id'=>$post->id]);
+        }
         $post->type = 'review';
         $post->reply_to_id = 0;
         $post->reply_to_brief = '';
         $post->reply_to_position = 0;
         $post->edited_at = Carbon::now();
         $post->save();
+        $review = $post->review;
+
+        $thread->recalculate_characters();
+        $this->clearAllThread($thread->id);
+        $this->clearPostProfile($post->id);
 
         return view('reviews.edit', compact('review','post','thread'));
     }

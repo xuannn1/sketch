@@ -45,7 +45,7 @@
                 @endif
             </span>
         </div>
-        <div class="col-xs-12 h5 brief">
+        <div class="col-xs-12 h5 brief-0">
             <span class="smaller-5">{{ $thread->brief }}</span>
             <span class = "pull-right smaller-30"><em><span class="glyphicon glyphicon-pencil"></span>{{ $thread->total_char }}/<span class="glyphicon glyphicon-eye-open"></span>{{ $thread->view_count }}/<span class="glyphicon glyphicon glyphicon-comment"></span>{{ $thread->reply_count }}</em></span>
         </div>

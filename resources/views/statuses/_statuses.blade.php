@@ -27,7 +27,7 @@
 
 
         </div>
-        <div class="col-xs-12 h5 brief">
+        <div class="col-xs-12 h5 brief-0">
             <span class="smaller-10">
                 {!! StringProcess::wrapParagraphs($status->body) !!}
             </span>

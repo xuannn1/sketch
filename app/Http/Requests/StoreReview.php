@@ -35,8 +35,8 @@ class StoreReview extends FormRequest
             'title' => 'nullable|string|max:30',
             'brief' => 'nullable|string|max:50',
             'body' => 'required|string|min:15|max:20000',
-            'rating' => 'required|numeric|min:0|max:10',
-            'thread_id' => 'required|numeric|min:0',
+            'rating' => 'numeric|min:0|max:10',
+            'thread_id' => 'numeric|min:0',
         ];
     }
 
