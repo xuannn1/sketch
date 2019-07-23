@@ -76,8 +76,8 @@ class NewPostListener
                 ]);
             }
 
-            //不是给自己的主题顶帖，那么送出跟帖提醒
-            if($post->user_id!=$thread->user_id){
+            //不是给自己的主题，也不是点评，那么给楼主送出跟帖提醒
+            if($post->user_id!=$thread->user_id&&$post->type!='comment'){
                 $post_activity = Activity::create([
                     'kind' => 1,
                     'item_type' => 'post',

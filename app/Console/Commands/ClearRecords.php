@@ -39,13 +39,14 @@ class ClearRecords extends Command
     */
     public function handle()
     {
+        $time = Carbon::now()->subDay(1)->toDateTimeString();
         DB::statement('
         DELETE h1
         FROM historical_users_activities h1
         INNER JOIN
         historical_users_activities h2
         WHERE
-        h1.id < h2.id AND h1.user_id = h2.user_id AND h1.ip = h2.ip 
-        ');
+        h1.id < h2.id AND h1.user_id = h2.user_id AND h1.ip = h2.ip AND h1.created_at > '.'"'.$time.'"'
+    );
     }
 }

@@ -44,7 +44,8 @@ class CollectionController extends Controller
         ->where('collections.group',(int)$request->group??0)
         ->threadOrdered($orderby)
         ->select('collections.*')
-        ->paginate(config('preference.threads_per_page'));
+        ->paginate(config('preference.threads_per_page'))
+        ->appends($request->only('group'));
 
         $collections->load('thread.author','thread.tags','thread.last_post','thread.last_component');
 

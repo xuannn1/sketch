@@ -32,15 +32,15 @@
     圈了你
     @else
         @if($activity->item->type=='post')
-            回复了你
+            回复道
         @else
-            点评了你
+            点评道
         @endif
     @endif
     <span id="abbreviated{{$activity->item_id}}">
         {{ $activity->item->brief }}
     </span>
-    
+
     </a>
     <span id="full{{$activity->item_id}}" class="hidden main-text">
         <div class="main-text">
