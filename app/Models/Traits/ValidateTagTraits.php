@@ -69,11 +69,11 @@ trait ValidateTagTraits{
         return count($detach_tags);
     }
 
-    public function drop_none_tongren_tags() //去掉非'同人原著'、"同人CP"的用户自主普通标签
+    public function drop_none_tongren_tags() //去掉非管理，非'同人原著'、"同人CP"的，用户在tag页所有可以选择的自主标签
     {
         $detach_tags = [];
         foreach($this->tags as $tag){
-            if(in_array($tag->tag_type, config('tag.custom_tag_types'))){
+            if(in_array($tag->tag_type, config('tag.custom_none_tongre_tag_types'))){
                 array_push($detach_tags,$tag->id);
             }
         }

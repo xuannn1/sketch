@@ -25,7 +25,7 @@
                     </div>
                     <div class="radio">
                         <label><input type="radio" name="controluser" value="18">设置禁止登陆时间</label>
-                        <label><input type="text" style="width: 40px" name="nologging-days" value="0">天</label>
+                        <label><input type="text" style="width: 100px" name="nologging-days" value="0">天</label>
                     </div>
                     <div class="radio">
                         <label><input type="radio" name="controluser" value="19">解除禁止登陆用户</label>
@@ -35,10 +35,10 @@
                     </div>
                     <div class="radio">
                         <label><input type="radio" name="controluser" value="50">分值管理（正加分，负减分，系统会自动记录分值）</label>
-                        <label><input type="text" style="width: 40px" name="salt" value="0">盐粒</label>
-                        <label><input type="text" style="width: 40px" name="fish" value="0">咸鱼</label>
-                        <label><input type="text" style="width: 40px" name="ham" value="0">丧点</label>
-                        <label><input type="text" style="width: 40px" name="level" value="0">等级</label>
+                        <label><input type="text" style="width: 100px" name="salt" value="0">盐粒</label>
+                        <label><input type="text" style="width: 100px" name="fish" value="0">咸鱼</label>
+                        <label><input type="text" style="width: 100px" name="ham" value="0">丧点</label>
+                        <label><input type="text" style="width: 100px" name="level" value="0">等级</label>
                     </div>
                     <div class="form-group">
                         <label for="reason"></label>

@@ -112,9 +112,9 @@ class BooksController extends Controller
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
 
-        $input_tags = array_merge(array($request->sexual_orientation_tag, $request->book_length_tag, $request->book_status_tag),$request->tags);
-        $thread->drop_none_tongren_tags();
-        $thread->tags()->syncWithoutDetaching($thread->tags_validate($input_tags));
+        $input_tags = array_merge(array($request->sexual_orientation_tag, $request->book_length_tag, $request->book_status_tag),$request->tags);// 所有本次选择的tag（非管理，非同人原作信息）
+        $thread->drop_none_tongren_tags();//去掉所有本次能选的tag的范畴内的tag
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate($input_tags));//并入新tag
 
         $this->clearAllThread($id);
 

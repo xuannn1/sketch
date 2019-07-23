@@ -93,7 +93,7 @@ class ConstantObjects
     public static function book_custom_tags()
     {
         return Cache::remember('bookCustomTags', 10, function (){
-            return \App\Models\Tag::whereIn('tag_type', config('tag.custom_tag_types'))->where('channel_id','<=',2)->get();
+            return \App\Models\Tag::whereIn('tag_type', config('tag.custom_none_tongren_none_book_tag_types'))->where('channel_id','<=',2)->get();
         });
     }
 

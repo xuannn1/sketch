@@ -42,7 +42,10 @@
                 <th>{{ $chapter->upvote_count }}</th>
                 <th>{{ $chapter->reply_count }}</th>
                 <th>{{ Carbon::parse($chapter->created_at)->setTimezone('Asia/Shanghai') }}</th>
-                <th>{{ Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai')}}</th>
+                <th>@if($chapter->edited_at>$chapter->created_at)
+                    {{ Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai')}}
+                    @endif
+                </th>
             </tr>
             @endforeach
         </tbody>

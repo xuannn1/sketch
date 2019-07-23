@@ -91,6 +91,7 @@ class StatusController extends Controller
         ->where('followers.follower_id','=',Auth::id())
         ->isPublic()
         ->ordered()
+        ->select('statuses.*')
         ->paginate(config('preference.statuses_per_page'));
         return view('statuses.index', compact('statuses'))->with(['status_tab'=>'follow']);
     }
