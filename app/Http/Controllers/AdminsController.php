@@ -251,11 +251,11 @@ class AdminsController extends Controller
             $this->clear_user_level($user);
             $operation = $this->add_admin_record('post', $post, $record, $reason, 30);
         }
-        if ($var=="61"){// 30 => '回帖折+禁7+清（回帖折叠，发帖人禁言+7天，积分等级清零）',//攻击性不友善
+        if ($var=="71"){// 71 => '回帖折+禁7+清（回帖折叠，发帖人禁言+7天，积分等级清零）',//攻击性不友善
             $post->update(['fold_state'=>1]);
             $this->no_post_user($user,7);
             $this->clear_user_level($user);
-            $operation = $this->add_admin_record('post', $post, $record, $reason, 61);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 71);
         }
         if ($var=="34"){// 34 => '回帖折+清+封（回帖折叠，等级清零，发言人禁止登陆1天）',//？特么特别驴叫不改的违禁
             $post->update(['fold_state'=>1]);
@@ -325,6 +325,7 @@ class AdminsController extends Controller
             $user->level = 0;
             $info = $user->info;
             $info->salt = 0;
+            $info->fish = 0;
             $user->save();
             $info->save();
         }

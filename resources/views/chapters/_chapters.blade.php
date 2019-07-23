@@ -30,7 +30,13 @@
                         <span class="glyphicon glyphicon-info-sign"></span>
                     @endif
                     {{ $chapter->title }}</a></th>
-                <th><a href="{{ route('post.show', $chapter->id) }}" class = "">{{ $chapter->brief }}</a></th>
+                <th><a href="{{ route('post.show', $chapter->id) }}" class = "">
+                    @if($chapter->is_bianyuan||$thread->is_bianyuan||iconv_strlen($chapter->brief) < 15)
+                    {{ $chapter->brief }}
+                    @else
+                    StringProcess::simpletrim($chapter->brief,15);
+                    @endif
+                </a></th>
                 <th>{{ $chapter->char_count }}</th>
                 <th>{{ $chapter->view_count }}</th>
                 <th>{{ $chapter->upvote_count }}</th>

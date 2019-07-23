@@ -33,7 +33,7 @@ class PostsController extends Controller
         if ((!Auth::user()->isAdmin())&&($thread->is_locked||((!$thread->is_public)&&($thread->user_id!=Auth::id())))){
             return back()->with('danger', '本主题锁定或设为隐私，不能回帖');
         }
-        if($user->no_posting){
+        if(Auth::user()->no_posting){
             return back()->with('danger', '您被禁言中，无法回帖');
         }
 

@@ -30,6 +30,11 @@
                             <strong class="h3">{{ $post->title }}</strong>
                         </div>
                         @endif
+                        @if($post->brief)
+                        <div class="text-center">
+                            <strong class="h5">{{ $post->brief }}</strong>
+                        </div>
+                        @endif
                         <!-- 作者名称 -->
                         <div>
                             @if($post->author)

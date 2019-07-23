@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="radio">
-                    <label><input type="radio" name="controlpost" value="30">回帖折+禁7+清（回帖折叠，发帖人禁言+1天，积分等级清零）</label>
+                    <label><input type="radio" name="controlpost" value="71">回帖折+禁7+清（回帖折叠，发帖人禁言+1天，积分等级清零）</label>
                     <h6 class="grayout">频繁不友善、不看首楼、在作者问题楼里提无关问题</h6>
                 </div>
 

@@ -33,7 +33,7 @@ class StoreChapter extends FormRequest
     {
         return [
             'title' => 'required|string|max:30',
-            'brief' => 'nullable|string|max:40',
+            'brief' => 'required|string|max:40',
             'body' => 'required|string|min:15|max:20000',
             'annotation' => 'max:2000',
             'warning' => 'max:200',
