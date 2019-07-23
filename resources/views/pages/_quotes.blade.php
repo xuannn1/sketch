@@ -21,10 +21,10 @@
             <br>
             <div class="row">
             @if (Auth::check())
-                <div class="col-xs-4 col-xs-offset-2 text-center">
+                <div class="col-xs-6 text-center">
                     <span class="voteposts"><a href="{{ route('quote.create') }}" class="btn btn-default btn-md"><i class="fa fa-plus" aria-hidden="true"></i>贡献题头</a></span>
                 </div>
-                <div class="col-xs-4 text-center">
+                <div class="col-xs-6 text-center">
                     <span class="voteposts"><button href="{{ route('reward.store') }}" class="btn btn-default btn-md" onclick="event.preventDefault(); document.getElementById('vote_quote_form{{$quote->id}}').submit();">{{ $quote->fish }}咸鱼</span></button></span>
                 </div>
                 <form id="vote_quote_form{{$quote->id}}" action="{{ route('reward.store') }}" method="POST" style="display: none;">

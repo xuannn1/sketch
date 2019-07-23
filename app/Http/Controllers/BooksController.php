@@ -26,6 +26,10 @@ class BooksController extends Controller
     {
         $tag_range = ConstantObjects::organizeBookCreationTags();
         $user = CacheUser::Auser();
+        if(!$user){abort(404);}
+        if($user->no_posting){
+            return back()->with('danger','您被禁言中，暂时无法创建书籍');
+        }
         if($user->level<1||$user->quiz_level<1){
             return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立书籍');
         }

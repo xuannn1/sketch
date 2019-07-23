@@ -430,7 +430,7 @@ function initcache(){
 
 $(document).ready(function(){
     $( 'textarea'  ).one( "click", function() {
-        if($(this).attr('rows')>1){
+        if($(this).attr('rows')>3){
             initcache();
         }
     });
@@ -552,19 +552,19 @@ $( ".daily-quote" ).each(function( quote ) {
     // console.log(quote + ": " + $quotestring + ": " +$len + ": " +$numWords);
 
     if (($len >= 1) && ($len < 10)) {
-        $quote.css("font-size", "2.0em");
-    }
-    else if (($len >= 10) && ($len < 20)) {
         $quote.css("font-size", "1.8em");
     }
-    else if (($len >= 20) && ($len < 40)) {//ok
+    else if (($len >= 10) && ($len < 20)) {
         $quote.css("font-size", "1.6em");
     }
-    else if (($len >= 40) && ($len < 80)) {
+    else if (($len >= 20) && ($len < 40)) {//ok
         $quote.css("font-size", "1.4em");
     }
-    else if (($len >= 80) && ($len < 160)) {
+    else if (($len >= 40) && ($len < 80)) {
         $quote.css("font-size", "1.2em");
+    }
+    else if (($len >= 80) && ($len < 160)) {
+        $quote.css("font-size", "1.1em");
     }
     else {
         $quote.css("font-size", "1.0em");

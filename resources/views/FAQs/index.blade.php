@@ -47,7 +47,58 @@
             </div>
         </div>
         @endforeach
-
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="font-2">【当前参数】</span>
+            </div>
+            <div class="panel-body">
+                <div class="">
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-level" style="cursor: pointer;" class="font-4">
+                        1 升级需求：</a>
+                    <div class="collapse" id="help-constants-level">
+                        <div class="">
+                            @foreach(config('level.level_up') as $level=>$level_req)
+                            <h6>{{$level}}级需要：</h6>
+                            <div class="font-6">
+                                @foreach(config('level.values') as $key=>$value)
+                                @if(array_key_exists($key,$level_req))
+                                {{$value}}:{{$level_req[$key]}}，
+                                @endif
+                                @endforeach
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <a type="button" data-toggle="collapse" data-target="#help-constants-setting" style="cursor: pointer;" class="font-4">
+                    2 系统设置：</a>
+                <div class="collapse" id="help-constants-setting">
+                    a)章节更新必须达到这个水平才能进入排名榜:{{config('constants.update_min')}}<br>
+                    b)“长评”必须达到该字数:{{config('constants.update_min')}}<br>
+                    c)一个月能修改多少次邮箱:{{config('constants.monthly_email_resets')}}<br>
+                </div>
+                @if(Auth::check())
+                <div class="">
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-forbiddenwords-public" style="cursor: pointer;" class="font-4">
+                        3 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</a>
+                    <div class="collapse" id="help-constants-forbiddenwords-public">
+                        <div class="">
+                            <img src="/img/forbidden_words.png" alt="forbidden_words">
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-forbiddenwords-title" style="cursor: pointer;" class="font-4">
+                        4 出现在书名中会被隐藏的词汇（用‘|’隔开）：</a>
+                    <div class="collapse" id="help-constants-forbiddenwords-title">
+                        <div class="">
+                            {{ config('forbiddenwords.not_in_title') }}
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
     </div>
 </div>
 @stop

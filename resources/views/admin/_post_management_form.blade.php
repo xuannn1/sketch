@@ -13,23 +13,28 @@
                 </div>
 
                 <div class="radio">
-                    <label><input type="radio" name="controlpost" value="32">回帖折+禁（回帖折叠，发帖人禁言+一天）</label>
-                    <h6 class="grayout">比如无意义争执车轱辘、在版务区不看首楼跟帖，在作者问题楼/他人讨论楼里问等级签到问题等情况</h6>
+                    <label><input type="radio" name="controlpost" value="32">回帖折+禁1（回帖折叠，发帖人禁言+一天）</label>
+                    <h6 class="grayout">普通不友善</h6>
                 </div>
 
                 <div class="radio">
-                    <label><input type="radio" name="controlpost" value="32">回帖折+禁+清（回帖折叠，发帖人禁言+1天，积分等级清零）</label>
-                    <h6 class="grayout">一直一直车轱辘、多次在版务区不看首楼跟帖，多次在作者问题楼/他人讨论楼里问等级签到问题等情况</h6>
+                    <label><input type="radio" name="controlpost" value="39">回帖折+禁3（回帖折叠，发帖人禁言+3天）</label>
+                    <h6 class="grayout">版务区不看首楼，非边限帖中谈论关于边限</h6>
                 </div>
 
                 <div class="radio">
-                    <label><input type="radio" name="controlpost" value="34">回帖折+清+封（回帖折叠，等级清零，发言人禁止登陆1天）</label>
-                    <h6 class="grayout">特别屡教不改、置管理于不顾的水区违禁</h6>
+                    <label><input type="radio" name="controlpost" value="30">回帖折+禁7+清（回帖折叠，发帖人禁言+1天，积分等级清零）</label>
+                    <h6 class="grayout">频繁不友善、不看首楼、在作者问题楼里提无关问题</h6>
                 </div>
 
                 <div class="radio">
-                    <label><input type="radio" name="controlpost" value="35">回帖删+清+封（回帖删除，等级清零，发言人禁止登陆7天）</label>
-                    <h6 class="grayout">辱骂作者，人身攻击</h6>
+                    <label><input type="radio" name="controlpost" value="34">回帖折+清+封1（回帖折叠，等级清零，发言人禁止登陆1天）</label>
+                    <h6 class="grayout">频繁不友善、不看首楼、水区违禁、比较严重的车轱辘（但没有辱骂）</h6>
+                </div>
+
+                <div class="radio">
+                    <label><input type="radio" name="controlpost" value="35">回帖删+清+封7（回帖删除，等级清零，发言人禁止登陆7天）</label>
+                    <h6 class="grayout">辱骂</h6>
                 </div>
 
                 <div class="radio">
@@ -51,8 +56,8 @@
                     <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由，方便查看管理记录，如“涉及举报，标题简介违规”，“涉及举报，不友善”，“边限标记不合规”。"></textarea>
                 </div>
                 <div class="">
-                    <button type="submit" class="btn btn-danger sosad-button btn-md admin-button">确定管理</button>
-                    <a href="{{ route('admin.postform', $post->id) }}" class="btn btn-md btn-danger admin-button pull-right">高级管理</a>
+                    <button type="submit" class="btn btn-danger sosad-button btn-lg sosad-button">确定管理</button>
+                    <a href="{{ route('admin.postform', $post->id) }}" class="btn btn-lg btn-danger admin-button pull-right">其他管理（马甲等）</a>
                 </div>
             </form>
         </div>

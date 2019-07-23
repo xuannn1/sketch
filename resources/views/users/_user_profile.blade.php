@@ -45,8 +45,8 @@
         <span>咸鱼：{{ $info->fish }}</span>
     </div>
     <div class="font-5">
-        <span>火腿：{{ $info->ham }}</span>
-        <span>答题等级：{{ $user->quiz_level }}</span>&nbsp;&nbsp;&nbsp;
+        <span>火腿：{{ $info->ham }}</span>&nbsp;&nbsp;&nbsp;
+        <span>答题等级：{{ $user->quiz_level }}</span>
     </div>
     <div class="font-5">
         <span>最多连续签到：{{ $info->qiandao_max }}天</span>&nbsp;&nbsp;&nbsp;

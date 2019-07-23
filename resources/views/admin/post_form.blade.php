@@ -42,30 +42,6 @@
                         <label><input type="radio" name="controlpost" value="7">删除帖子</label>
                     </div>
 
-                    <div class="radio">
-                        <label><input type="radio" name="controlpost" value="32">回帖折+禁（回帖折叠，发帖人禁言+一天）</label>
-                        <h6 class="grayout">比如无意义争执车轱辘、在版务区不看首楼跟帖，在作者问题楼/他人讨论楼里问等级签到问题等情况</h6>
-                    </div>
-
-                    <div class="radio">
-                        <label><input type="radio" name="controlpost" value="32">回帖折+禁+清（回帖折叠，发帖人禁言+1天，积分等级清零）</label>
-                        <h6 class="grayout">一直一直车轱辘、多次在版务区不看首楼跟帖，多次在作者问题楼/他人讨论楼里问等级签到问题等情况</h6>
-                    </div>
-
-                    <div class="radio">
-                        <label><input type="radio" name="controlpost" value="34">回帖折+清+封（回帖删除，等级清零，发言人禁止登陆1天）</label>
-                        <h6 class="grayout">特别屡教不改、置管理于不顾的水区违禁</h6>
-                    </div>
-
-                    <div class="radio">
-                        <label><input type="radio" name="controlpost" value="35">回帖删+清+封（回帖删除，等级清零，发言人禁止登陆7天）</label>
-                        <h6 class="grayout">辱骂作者，人身攻击</h6>
-                    </div>
-
-                    <div class="radio">
-                        <label><input type="radio" name="controlpost" value="36">回帖删+封（回帖折叠，等级清零，发言人永久禁止登陆））</label>
-                        <h6 class="grayout">全部都是脏话粗话特别不堪入目的人身攻击</h6>
-                    </div>
                     @else
                     <div class="radio">
                         <label><input type="radio" name="controlpost" value="12">取消折叠</label>

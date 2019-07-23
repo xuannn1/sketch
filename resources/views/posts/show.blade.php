@@ -10,7 +10,11 @@
             /
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
             /
+            @if($thread->channel()->type==='book')
             <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>
+            @else
+            <a href="{{ route('thread.show',$thread->id) }}">{{ $thread->title }}</a>
+            @endif
             /
             <a href="{{ route('post.show',$post->id) }}">{{ $post->title }}</a>
         </div>
@@ -182,13 +186,13 @@
             @endif
             @if(Auth::check())
             <div class="text-right post-vote">
+                <span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostReward{{ $post->id }}" class="btn btn-default btn-md">打赏</a></span>
                 @if(Auth::user()->level >= 1)
-                    <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="vote_post({{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
+                    <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="voteItem('post', {{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{$post->upvote_count}}</span></button></span>
                 @endif
                 @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
                     &nbsp;<span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
                 @endif
-                &nbsp;<span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostReward{{ $post->id }}" class="btn btn-default btn-md">打赏</a></span>
                 @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
                     &nbsp;<span><a class="btn btn-md btn-danger sosad-button" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
                 @endif

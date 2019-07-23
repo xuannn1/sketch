@@ -29,7 +29,7 @@
     @if(Auth::check())
     <div class="text-right post-vote">
         @if(Auth::user()->level >= 1)
-        <span class="voteposts"><button class="btn btn-default btn-xs" data-id="{{$review->post->id}}"  id = "{{ $review->post_id.'upvote'}}" onclick="vote_post({{$review->post_id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $review->post->upvote_count }}</span></button></span>
+        <span class="voteposts"><button class="btn btn-default btn-xs" data-id="{{$review->post->id}}"  id = "{{ $review->post_id.'upvote'}}" onclick="voteItem('post', {{$review->post_id}},'upvote')" ><span class="glyphicon glyphicon-heart">{{ $review->post->upvote_count }}</span></button></span>
         @endif
     </div>
     @endif

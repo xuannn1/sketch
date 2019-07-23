@@ -39,7 +39,7 @@
                 </div>
                 <div class="text-center">
                     <span class="smaller-20 grayout">
-                        发表于{{ $quote->created_at }}
+                        发表于{{ $quote->created_at->diffForHumans() }}
                     </span>
                 </div>
                 <div class="text-center">
@@ -69,7 +69,7 @@
                 @if(Auth::check())
                 <!-- 打赏、评票行为 -->
                 <div class="text-center">
-                    <span><a href="#" data-id="{{$quote->id}}" data-toggle="modal" data-target="#TriggerQuoteReward{{ $quote->id }}" class="btn btn-info  btn-lg btn-block sosad-button">打赏</a></span>
+                    <span><a href="#" data-id="{{$quote->id}}" data-toggle="modal" data-target="#TriggerQuoteReward{{ $quote->id }}" class="btn btn-info  btn-lg sosad-button">打赏这个题头</a></span>
                 </div>
                 <div class="modal fade" id="TriggerQuoteReward{{ $quote->id }}" role="dialog">
                     <div class="modal-dialog">

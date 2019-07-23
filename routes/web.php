@@ -166,7 +166,7 @@
     Route::resource('reward', 'RewardController', ['only' => [
         'index', 'store', 'destroy'
     ]]); //
-
+    Route::get('/posts/{post}/reward', 'PostsController@reward')->name('post.reward');
     Route::get('/reward_sent','RewardController@sent')->name('reward.sent');//我给出的打赏
     Route::get('/reward_received','RewardController@received')->name('reward.received');//我给出的打赏
 }

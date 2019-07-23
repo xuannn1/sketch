@@ -47,16 +47,6 @@
                     </div>
                     @endif
 
-                    @if(!$thread->deleted_at)
-                    <div class="radio">
-                        <label><input type="radio" name="controlthread" value="5">删除主题</label>
-                    </div>
-                    @else
-                    <div class="radio">
-                        <label><input type="radio" name="controlthread" value="6">恢复主题</label>
-                    </div>
-                    @endif
-
                     @if(!$thread->no_reply)
                     <div class="radio">
                         <label><input type="radio" name="controlthread" value="21">禁止回复</label>
@@ -110,6 +100,9 @@
                         <label class="radio-inline"><input type="radio" name="channel" value="{{$channel->id}}">{{$channel->channel_name}}</label>
                     </div>
                     @endforeach
+                    <div class="radio">
+                        <label class="pull-right admin-symbol"><input type="radio" name="controlthread" value="5">删除主题</label>
+                    </div>
                     <div class="form-group">
                         <label for="reason"></label>
                         <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由，方便查看管理记录，如“涉及举报，标题简介违规”，“涉及举报，不友善”，“边限标记不合规”。"></textarea>

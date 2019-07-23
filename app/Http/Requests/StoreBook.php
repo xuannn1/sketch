@@ -53,7 +53,13 @@ class StoreBook extends FormRequest
 
         $thread_data['download_as_book']=$this->download_as_book ? true:false;
         $thread_data['download_as_thread']=$this->download_as_thread ? true:false;
-        $thread_data['is_bianyuan']=$this->is_bianyuan==='is'? true:false;
+
+        while(StringProcess::convert_to_title($thread_data['title'])!=$thread_data['title']){
+           $thread_data['title'] = StringProcess::convert_to_title($thread_data['title']);
+        }
+        if(!$thread_data['title']||!$thread_data['brief']){
+            abort('409','标题或简介违规');
+        }
 
         $thread = Thread::create($thread_data);
 
@@ -63,7 +69,13 @@ class StoreBook extends FormRequest
     public function updateBookProfile($thread)
     {
         $thread_data = $this->generateUpdateThreadData($thread);
-        $thread_data['is_bianyuan']=$this->is_bianyuan==='is'? true:false;
+
+        while(StringProcess::convert_to_title($thread_data['title'])!=$thread_data['title']){
+           $thread_data['title'] = StringProcess::convert_to_title($thread_data['title']);
+        }
+        if(!$thread_data['title']||!$thread_data['brief']){
+            abort('409','标题或简介违规');
+        }
 
         $thread->update($thread_data);
         return $thread;

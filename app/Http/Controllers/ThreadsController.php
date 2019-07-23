@@ -124,7 +124,11 @@ class threadsController extends Controller
         $user = CacheUser::Auser();
         $channel = collect(config('channel'))->keyby('id')->get($request->channel_id);
 
-        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+        if(!$user||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+
+        if($user->no_posting){
+            return back()->with('danger','您被禁言中，无法创建主题');
+        }
 
         $tags = ConstantObjects::primary_tags_in_channel($channel->id);
 
@@ -160,7 +164,7 @@ class threadsController extends Controller
         $channel = collect(config('channel'))->keyby('id')->get($form->channel_id);
         $user = CacheUser::Auser();
 
-        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+        if(!$user||$user->no_posting||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
 
         if($channel->type==='list'){
             $list_count = Thread::where('user_id', $user->id)->withType('list')->count();

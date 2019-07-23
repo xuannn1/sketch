@@ -28,8 +28,15 @@
                     <label for="brief">简介：</label>
                     <input type="text" name="brief" class="form-control" value="{{ $thread->brief }}" placeholder="请输入不超过50字的主题简介">
                 </div>
-                <div class="font-6">
-                    涉及“边限”的主题讨论，必须勾选边缘限制，且仍需标题简介和谐，在文案适当预警。标题简介禁止任何擦边性描写、性暗示。讨论内容和性描述相关的，简介需以“午夜场之”开头，预警围观咸鱼。
+                <div>
+                    <label for="brief">是否含有“边缘限制”题材？</label>
+                    <div class="font-6">
+                        涉及“边限”的主题讨论，必须勾选边缘限制，且仍需标题简介和谐，在文案适当预警。标题简介禁止任何擦边性描写、性暗示。讨论内容和性描述相关的，简介需以“午夜场之”开头，预警围观咸鱼。
+                    </div>
+                    <div>
+                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="isnot" {{$thread->is_bianyuan?'':'checked'}}>非边缘限制敏感</label>
+                        <label class="radio-inline"><input type="radio" name="is_bianyuan" value="is"  {{$thread->is_bianyuan?'checked':''}}>边缘限制敏感</label>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -47,7 +54,6 @@
                     </div>
                 </div>
                 <div class="checkbox">
-                    <label><input type="checkbox" name="is_bianyuan" {{ $thread->is_bianyuan ? 'checked' : '' }}>是否边缘限制</label><br>
                     <label><input type="checkbox" name="is_public" {{ $thread->is_public ? 'checked' : '' }}>是否公开可见</label><br>
                     <label><input type="checkbox" name="no_reply" {{ $thread->no_reply ? 'checked' : '' }}>是否禁止回帖</label><br>
                     <label><input type="checkbox" name="use_indentation" {{ $thread->use_indentation ? 'checked' : '' }}>段首缩进（自动空两格）？</label><br>

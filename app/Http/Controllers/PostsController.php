@@ -31,7 +31,10 @@ class PostsController extends Controller
     public function store(StorePost $form, Thread $thread)
     {
         if ((!Auth::user()->isAdmin())&&($thread->is_locked||((!$thread->is_public)&&($thread->user_id!=Auth::id())))){
-            return back()->with('danger', '抱歉，本主题锁定或设为隐私，不能回帖');
+            return back()->with('danger', '本主题锁定或设为隐私，不能回帖');
+        }
+        if($user->no_posting){
+            return back()->with('danger', '您被禁言中，无法回帖');
         }
 
         $post = $form->storePost($thread);
@@ -172,5 +175,15 @@ class PostsController extends Controller
         $post->delete();
         $this->clearPostProfile($id);
         return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
+    }
+
+    public function reward($id)
+    {
+        $post = $this->findPost($id);
+        if(!$post){abort(404);}
+        $thread = $this->findThread($post->thread_id);
+        if(!$thread){abort(404);}
+        $info = CacheUser::Ainfo();
+        return view('posts.reward_form', compact('post','thread','info'));
     }
 }

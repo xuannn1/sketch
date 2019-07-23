@@ -159,6 +159,19 @@ class AdminsController extends Controller
             $operation = $this->add_admin_record('thread',$thread, $record, $reason, 47);
         }
 
+        //60 => '隐+锁+禁7+清（隐藏和锁定主题，用户禁言7天，等级清零）',//恶意发无意义书籍意图升级
+        if ($var=="60"&&!$thread->is_locked){//锁帖
+            $thread->update([
+                'is_locked' => true,
+                'is_public' => false,
+            ]);
+            if($user){
+                $this->no_post_user($user,7);
+                $this->clear_user_level($user);
+            }
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 60);
+        }
+
         if($operation===0){
             return redirect()->back()->with("warning","未能处理该主题。是否未选转换板块？");
         }
@@ -168,7 +181,10 @@ class AdminsController extends Controller
         if($user){
             $user->remind('new_administration');
         }
-        return redirect()->back()->with('success', '已经成功处理该主题');
+        if($operation===5){
+            return redirect('/')->with('success', '已经成功处理该主题');
+        }
+        return back()->with('success', '已经成功处理该主题');
 
     }
 
@@ -184,6 +200,7 @@ class AdminsController extends Controller
         $reason = $request->reason;
         $post_id = $post->id;
         $user = $post->user;
+        $user_id = $user?$user->id:0;
 
         if ($var=="7"){//删帖
             $operation = $this->add_admin_record('post', $post, $record, $reason, 7);
@@ -223,12 +240,22 @@ class AdminsController extends Controller
             $this->no_post_user($user,1);
             $operation = $this->add_admin_record('post', $post, $record, $reason, 32);
         }
-
-        if ($var=="30"){// 30 => '回帖折+禁+清（回帖折叠，发帖人禁言+1天，积分等级清零）',//一直一直车轱辘、多次在版务区不看首楼跟帖，多次在作者问题楼/他人讨论楼里问等级签到问题等情况
+        if($var=='39'){// 39 => '回帖折+禁3（回帖折叠，发帖人禁言+3天）',//?车轱辘,版务区水贴，作者楼里水贴
+            $post->update(['fold_state'=>1]);
+            $this->no_post_user($user,3);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 39);
+        }
+        if ($var=="30"){// 30 => '回帖折+禁+清（回帖折叠，发帖人禁言+1天，积分等级清零）',//在目前的等级系统里，已失效。。
             $post->update(['fold_state'=>1]);
             $this->no_post_user($user,1);
             $this->clear_user_level($user);
             $operation = $this->add_admin_record('post', $post, $record, $reason, 30);
+        }
+        if ($var=="61"){// 30 => '回帖折+禁7+清（回帖折叠，发帖人禁言+7天，积分等级清零）',//攻击性不友善
+            $post->update(['fold_state'=>1]);
+            $this->no_post_user($user,7);
+            $this->clear_user_level($user);
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 61);
         }
         if ($var=="34"){// 34 => '回帖折+清+封（回帖折叠，等级清零，发言人禁止登陆1天）',//？特么特别驴叫不改的违禁
             $post->update(['fold_state'=>1]);
@@ -254,7 +281,7 @@ class AdminsController extends Controller
         }
 
         $this->clearPostProfile($post_id);
-        CacheUser::clearuser($user->id);
+        CacheUser::clearuser($user_id);
         if($user){
             $user->remind('new_administration');
         }
@@ -272,33 +299,38 @@ class AdminsController extends Controller
 
     private function no_post_user($user,$days=0)// 将用户禁言增加到这个天数
     {
-        $user->no_posting = 1;
-        $info = $user->info;
-        $info->no_posting_until = $info->no_posting_until>Carbon::now() ? $info->no_posting_until->addDays($days) : Carbon::now()->addDays($days);
-        $user->save();
-        $info->save();
+        if($user){
+            $user->no_posting = 1;
+            $info = $user->info;
+            $info->no_posting_until = $info->no_posting_until>Carbon::now() ? $info->no_posting_until->addDays($days) : Carbon::now()->addDays($days);
+            $user->save();
+            $info->save();
+        }
     }
 
     private function no_log_user($user,$days=0)// 将用户禁止登陆增加到这个天数
     {
-        $user->no_logging = 1;
-        $info = $user->info;
-        $info->no_logging_until = $info->no_logging_until>Carbon::now() ? $info->no_logging_until->addDays($days) : Carbon::now()->addDays($days);
-        $user->save();
-        $info->save();
+        if($user){
+            $user->no_logging = 1;
+            $info = $user->info;
+            $info->no_logging_until = $info->no_logging_until>Carbon::now() ? $info->no_logging_until->addDays($days) : Carbon::now()->addDays($days);
+            $user->save();
+            $info->save();
+        }
     }
 
     private function clear_user_level($user)// 将用户分数和盐粒清零
     {
-        $user->level = 0;
-        $info = $user->info;
-        $info->salt = 0;
-        $user->save();
-        $info->save();
+        if($user){
+            $user->level = 0;
+            $info = $user->info;
+            $info->salt = 0;
+            $user->save();
+            $info->save();
+        }
     }
 
     public function statusmanagement(Status $status, Request $request)
-
     {
         $this->validate($request, [
             'reason' => 'required|string',
@@ -342,15 +374,20 @@ class AdminsController extends Controller
             $this->no_log_user($user,500);
             $status->delete();
         }
+
+        if ($var=="17"){// 17 删除动态
+            $operation = $this->add_admin_record('status', $status, $record, $reason, 17);
+            $status->delete();
+        }
         if($operation===0){
-            return redirect()->back()->with("warning","未能处理该动态，可能是已经处理了");
+            return back()->with("warning","未能处理该动态，可能是已经处理了");
         }
 
         CacheUser::clearuser($user->id);
         if($user){
             $user->remind('new_administration');
         }
-        return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该动态');
+        return back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该动态');
     }
 
     public function threadform(Thread $thread)

@@ -54,4 +54,11 @@ return [
            'quiz_level' => 3,
        ],
     ],
+    'values' => [
+        'salt' => '盐粒',
+        'fish' => '咸鱼',
+        'ham' => '火腿',
+        'qiandao_all' => '总签到天数',
+        'quiz_level' => '答题等级',
+    ],
 ];
