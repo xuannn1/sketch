@@ -28,7 +28,7 @@
                     </a>
                     @endif
                     <span class="smaller-20 grayout">
-                        {{ $status->created_at }}
+                        {{ $status->created_at->setTimezone('Asia/Shanghai') }}
                     </span>
                     @if((Auth::check())&&(Auth::user()->isAdmin()))
                     <span>

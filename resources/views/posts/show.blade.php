@@ -58,12 +58,12 @@
 
                         <!-- 发表时间 -->
                         <div class="">
-                            <span class="smaller-20">
-                                发表于 {{ $post->created_at->diffForHumans() }}
+                            <span class="smaller-20 brief-0">
+                                <p class="brief-0">{{ $post->created_at->setTimezone('Asia/Shanghai')  }}</p>
                                 @if($post->created_at < $post->edited_at )
-                                修改于 {{ $post->edited_at->diffForHumans() }}
+                                <p class="brief-0">{{ $post->edited_at->setTimezone('Asia/Shanghai')  }}</p>
                                 @endif
-                            </span>&nbsp;
+                            </span>
                         </div>
                         @if((Auth::check())&&(Auth::user()->isAdmin()))
                         <!-- 管理专区 -->
@@ -78,7 +78,6 @@
             </div>
             @if($post->type==="chapter"&&$post->chapter)
                 @include('posts._previous_next_chapter_tab')
-                <br>
             @endif
             <div class="panel-body post-body">
                 @if( (($thread->is_bianyuan)||($post->is_bianyuan))&&(!Auth::check()) )
@@ -193,7 +192,7 @@
             <div class="text-right post-vote">
                 <span><a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerPostReward{{ $post->id }}" class="btn btn-default btn-md">打赏</a></span>
                 @if(Auth::user()->level >= 1)
-                    <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}" onclick="voteItem('post', {{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart"><span id="post{{$post->id}}upvote">{{ $post->upvote_count }}</span></span></button></span>
+                    &nbsp;<span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}" onclick="voteItem('post', {{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart"><span id="post{{$post->id}}upvote">{{ $post->upvote_count }}</span></span></button></span>
                 @endif
                 @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
                     &nbsp;<span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
@@ -202,8 +201,7 @@
                     &nbsp;<span><a class="btn btn-md btn-danger sosad-button" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
                 @endif
                 @if($thread->user_id===Auth::id()&&!Auth::user()->no_posting)
-                &nbsp;
-                <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerAdvancedManaging{{ $post->id }}" class="btn btn-default btn-md"><i class="fa fa-cog " aria-hidden="true"></i></a>
+                &nbsp;<a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerAdvancedManaging{{ $post->id }}" class="btn btn-default btn-md"><i class="fa fa-cog " aria-hidden="true"></i></a>
                 @include('posts._management_form')
                 @endif
             </div>

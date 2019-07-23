@@ -1,6 +1,5 @@
 <div class="panel-body text-center">
     <div class="container-fluid">
-        <br>
         <div class="row">
             <div class="col-xs-4">
                 @if($post->chapter->previous_id<1)
@@ -19,8 +18,7 @@
                 <a href="{{ route('post.show', $post->chapter->next_id) }}" class="btn btn-info btn-block btn-md sosad-button">下一章</a>
                 @endif
             </div>
-            <br>
-            <br>
         </div>
+        <br>
     </div>
 </div>
