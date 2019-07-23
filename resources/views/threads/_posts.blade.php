@@ -6,7 +6,7 @@
         <a type="button" data-toggle="collapse" data-target="#postbody{{ $post->id }}" style="cursor: pointer;" class="h6">该回帖被管理员折叠，点击展开</a>
     </div>
     @elseif($post->fold_state==2)
-        <a type="button" data-toggle="collapse" data-target="#postbody{{ $post->id }}" style="cursor: pointer;" class="h6">该回帖被作者折叠，点击展开</a>
+        <a type="button" data-toggle="collapse" data-target="#postbody{{ $post->id }}" style="cursor: pointer;" class="h6">该回帖被作者/楼主折叠，点击展开</a>
     @endif
     <div class="panel panel-default {{ $post->fold_state>0? 'collapse':'' }} " id = "postbody{{ $post->id }}">
         <div class="panel-heading">

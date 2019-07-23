@@ -201,7 +201,7 @@
                 @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
                     &nbsp;<span><a class="btn btn-md btn-danger sosad-button" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
                 @endif
-                @if($thread->user_id===Auth::id())
+                @if($thread->user_id===Auth::id()&&$!Auth::user()->no_posting)
                 &nbsp;
                 <a href="#" data-id="{{$post->id}}" data-toggle="modal" data-target="#TriggerAdvancedManaging{{ $post->id }}" class="btn btn-default btn-md"><i class="fa fa-cog " aria-hidden="true"></i></a>
                 @include('posts._management_form')

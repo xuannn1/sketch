@@ -240,7 +240,9 @@
 
    Route::get('/posts/{post}/turn_to_post', 'PostsController@turn_to_post')->name('post.turn_to_post');//更改post成普通回帖
 
-   Route::get('/posts/{post}/box_owner_delete_post', 'PostsController@box_owner_delete_post')->name('post.box_owner_delete_post');
+    Route::get('/posts/{post}/fold_by_owner', 'PostsController@fold_by_owner')->name('post.fold_by_owner');//更改post成普通回帖
+
+   Route::get('/posts/{post}/delete_by_owner', 'PostsController@delete_by_owner')->name('post.delete_by_owner');
 
    Route::post('/posts/{post}/update', 'PostsController@update')->name('post.update');//更改帖子，必须有权限
 

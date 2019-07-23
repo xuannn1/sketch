@@ -17,14 +17,14 @@
                     @if($post->user_id==Auth::id()&&$post->type==='post'&&$thread->channel()->type==='book')
                     <a href="{{route('post.turn_to_chapter', $post->id)}}" class="btn btn-lg sosad-button-control">把普通回帖转化成章节</a>&nbsp;
                     @endif
-                    @if($post->user_id!=Auth::id()&&$thread->channel()->type==='book')
-                    <a href="#" class="btn btn-lg sosad-button-control">折叠回帖（待做）</a>&nbsp;
+                    @if($post->user_id!=Auth::id())
+                    <a href="{{route('post.fold_by_owner', $post->id)}}" class="btn btn-lg sosad-button-control">折叠这个回帖</a>&nbsp;
                     @endif
                     @if($post->user_id===Auth::id()&&($post->reply_to_id>0)&&$thread->channel()->type==='box')
                     <a href="#" class="btn btn-lg sosad-button-control">把回复转化成回答（待做）</a>&nbsp;
                     @endif
                     @if($post->user_id!=Auth::id()&&$thread->channel()->type==='box')
-                    <a href="{{route('post.box_owner_delete_post', $post->id)}}" class="btn btn-lg sosad-button-control">删除问题楼里不合适问题</a>
+                    <a href="{{route('post.delete_by_owner', $post->id)}}" class="btn btn-lg sosad-button-control">删除问题楼里不合适问题</a>
                     @endif
                 </div>
 

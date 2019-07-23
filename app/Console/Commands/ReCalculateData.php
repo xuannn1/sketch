@@ -79,6 +79,6 @@ class ReCalculateData extends Command
         ->join('user_infos','user_infos.user_id','=','users.id')
         ->where('user_infos.no_posting_until', '<', Carbon::now()->toDateTimeString())
         ->update(['users.no_posting'=>0]);
-
+        Log::emergency('did recalculate Database');
     }
 }

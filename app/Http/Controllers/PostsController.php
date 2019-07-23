@@ -167,17 +167,34 @@ class PostsController extends Controller
         return redirect()->route('post.show',$post->id)->with('success','已经成功转化成普通回帖');
     }
 
-    public function box_owner_delete_post($id)
+    public function delete_by_owner($id) //仅限问题箱主人可以这样做
     {
         $post = Post::findOrFail($id);
         if(!$post){abort(404);}
         $thread=$post->thread;
         if(!$thread||!$post){abort(404);}
-        if($thread->channel()->type!='box'||$thread->user_id!=Auth::id()){abort(403);}
+        if($thread->is_locked||$thread->channel()->type!='box'||$thread->user_id!=Auth::id()||Auth::user()->no_posting){abort(403);}
 
         $post->delete();
         $this->clearPostProfile($id);
         return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
+    }
+    public function fold_by_owner($id)
+    {
+        $post = Post::findOrFail($id);
+        if(!$post){abort(404);}
+        $thread=$post->thread;
+        if(!$thread||!$post){abort(404);}
+        if($thread->is_locked||$thread->user_id!=Auth::id()||Auth::user()->no_posting){abort(403);}
+        if($post->fold_state>0){return
+            back()->with('warning','已经是折叠的贴，不能再处理');
+        }
+
+        $post->update(['fold_state'=>2]);
+        if($post->reply_to_id>0){
+            $this->clearPostProfile($post->reply_to_id);
+        }
+        return redirect()->route('thread.showpost', $post->id)->with("success","已经折叠该回帖");
     }
 
     public function reward($id)

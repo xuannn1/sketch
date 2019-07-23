@@ -19,6 +19,11 @@ class LogUserActivity
     public function handle($request, Closure $next)
     {
         if(Auth::check()) {
+            if (Cache::has('usr-clicks-'.Auth::id())){
+                Cache::increment('usr-clicks-'.Auth::id());
+            }else{
+                Cache::put('usr-clicks-'.Auth::id(),1,Carbon::now()->addDay(1));
+            }
             if(!Cache::has('usr-on-' . Auth::id())){//假如距离上次cache的时间已经超过了默认时间
                 $online_status = OnlineStatus::updateOrCreate([
                     'user_id' => Auth::id(),
@@ -27,10 +32,8 @@ class LogUserActivity
                 ]);
                 $expiresAt = Carbon::now()->addMinutes(config('constants.online_interval'));
                 Cache::put('usr-on-' . Auth::id(), true, $expiresAt);
+                Auth::user()->info->increment('daily_clicks', (int)Cache::pull('usr-clicks-'.Auth::id()));
             }
-        }
-
-        if(Auth::check()) {
             if(!Cache::has('usr-ip-on-' . Auth::id())){//一天记录一次活动
                 $user_activity = HistoricalUsersActivity::create([
                     'user_id' =>Auth::id(),

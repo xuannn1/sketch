@@ -55,5 +55,6 @@ class PromoteActivation extends Command
         ->update(['activated'=>0]);
         echo "deactivated some users.\n";
 
+        Log::emergency('did promote activation');
     }
 }

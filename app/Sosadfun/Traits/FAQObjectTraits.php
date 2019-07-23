@@ -17,6 +17,7 @@ trait FAQObjectTraits{
     public function clear_all_faqs()
     {
         Cache::forget('all_faqs');
+        Cache::forget('find_faqs');
     }
 
     public function find_faqs()

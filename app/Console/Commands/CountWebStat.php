@@ -55,5 +55,6 @@ class CountWebStat extends Command
         }
         WebStat::create($data);
         DB::table('user_infos')->update(['total_clicks'=>DB::raw('daily_clicks + total_clicks'), 'daily_clicks'=>0]);
+        Log::emergency('did count webstat');
     }
 }

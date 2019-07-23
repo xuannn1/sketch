@@ -31,10 +31,10 @@
                     @endif
                     {{ $chapter->title }}</a></th>
                 <th><a href="{{ route('post.show', $chapter->id) }}" class = "">
-                    @if($chapter->is_bianyuan||$thread->is_bianyuan||iconv_strlen($chapter->brief) < 15)
-                    {{ $chapter->brief }}
+                    @if(($chapter->is_bianyuan||$thread->is_bianyuan)&&iconv_strlen($chapter->brief) > 15)
+                    {{StringProcess::simpletrim($chapter->brief,15)}}
                     @else
-                    StringProcess::simpletrim($chapter->brief,15);
+                    {{ $chapter->brief }}
                     @endif
                 </a></th>
                 <th>{{ $chapter->char_count }}</th>
@@ -43,7 +43,6 @@
                 <th>{{ $chapter->reply_count }}</th>
                 <th>{{ Carbon::parse($chapter->created_at)->setTimezone('Asia/Shanghai') }}</th>
                 <th>{{ Carbon::parse($chapter->edited_at)->setTimezone('Asia/Shanghai')}}</th>
-
             </tr>
             @endforeach
         </tbody>
