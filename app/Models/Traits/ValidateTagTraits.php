@@ -69,19 +69,19 @@ trait ValidateTagTraits{
         return count($detach_tags);
     }
 
-    // public function drop_custom_tags() //去掉非'同人原著'、"同人CP"、篇幅信息等。。。的用户自主普通标签
-    // {
-    //     $detach_tags = [];
-    //     foreach($this->tags as $tag){
-    //         if(in_array($tag->tag_type, config('tag.custom_tag_types'))){
-    //             array_push($detach_tags,$tag->id);
-    //         }
-    //     }
-    //     if(!empty($detach_tags)){
-    //         $this->tags()->detach($detach_tags);
-    //     }
-    //     return count($detach_tags);
-    // }
+    public function drop_none_tongren_tags() //去掉非'同人原著'、"同人CP"的用户自主普通标签
+    {
+        $detach_tags = [];
+        foreach($this->tags as $tag){
+            if(in_array($tag->tag_type, config('tag.custom_tag_types'))){
+                array_push($detach_tags,$tag->id);
+            }
+        }
+        if(!empty($detach_tags)){
+            $this->tags()->detach($detach_tags);
+        }
+        return count($detach_tags);
+    }
 
     public function keep_only_admin_tags()//去掉所有用户自己提交的tag,返回成功去掉的
     {

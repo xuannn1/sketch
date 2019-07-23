@@ -48,8 +48,9 @@ class CollectionController extends Controller
         ->appends($request->only('group'));
 
         $collections->load('thread.author','thread.tags','thread.last_post','thread.last_component');
+        $lists = $user->lists;
 
-        return view('collections.index',compact('user','info','collections','groups','collections','default_collection_updates','order_by'))->with(['show_collection_tab'=>$request->group??'default']);
+        return view('collections.index',compact('user','info','collections','groups','collections','default_collection_updates','order_by','lists'))->with(['show_collection_tab'=>$request->group??'default']);
     }
 
 

@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(Thread::class);
     }
 
+    public function lists()
+    {
+        return $this->hasMany(Thread::class)->whereIn('channel_id', ConstantObjects::publicChannelTypes('list'));
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);

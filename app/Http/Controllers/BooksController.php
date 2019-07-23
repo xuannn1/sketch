@@ -113,8 +113,8 @@ class BooksController extends Controller
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
 
         $input_tags = array_merge(array($request->sexual_orientation_tag, $request->book_length_tag, $request->book_status_tag),$request->tags);
-        $tags = array_merge($thread->tags->pluck('id')->toArray(), $input_tags);
-        $thread->tags()->syncWithoutDetaching($thread->tags_validate($tags));
+        $thread->drop_none_tongren_tags();
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate($input_tags));
 
         $this->clearAllThread($id);
 

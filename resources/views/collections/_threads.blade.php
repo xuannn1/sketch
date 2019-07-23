@@ -68,6 +68,12 @@
                         @if($show_collection_tab!='default')
                         <li><a type="button" name="button" onclick="collection_change_group({{ $collection->id }},0)">转移到默认收藏</a></li>
                         @endif
+                        @foreach($lists as $list)
+                        @if(!$list->is_locked||Auth::user()->isAdmin())
+                        <li><a href="{{route('review.create', ['thread' => $list->id, 'reviewee_id'=>$thread->id])}}">向《{{$list->title}}》清单添加本文书评</a></li>
+                        @endif
+                        @endforeach
+
                     </ul>
                 </span>
             </span>

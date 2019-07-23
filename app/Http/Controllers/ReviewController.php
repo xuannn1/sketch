@@ -25,14 +25,17 @@ class ReviewController extends Controller
         $this->middleware('auth');
     }
 
-    public function create($id)
+    public function create($id, Request $request)
     {
+        if($id==0){
+            return redirect()->back()->with('info','您尚无清单设置，请先创建清单');
+        }
         $thread = Thread::find($id);
-        $channel = $thread->channel();
-        if(!$channel||!$thread||$channel->type!='list'||$thread->is_locked){
+        if(!$thread||$thread->channel()->type!='list'||($thread->is_locked&&!Auth::user()->isAdmin())||$thread->user_id!=Auth::id()){
             abort(403);
         }
-        return view('reviews.create', compact('thread'));
+        $reviewee = Thread::find($request->reviewee_id);
+        return view('reviews.create', compact('thread','reviewee'));
     }
 
     public function store($id, StoreReview $form)

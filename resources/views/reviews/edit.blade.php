@@ -69,6 +69,11 @@
                     @endif
                     <button type="submit" class="btn btn-md btn-primary sosad-button">确认修改书评</button>
                 </form>
+                <form method="POST" action="{{ route('post.destroy', $post->id) }}">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                    <button type="submit" class="pull-right btn btn-md btn-danger sosad-button-control">删除帖子</button>
+                </form>
             </div>
         </div>
     </div>

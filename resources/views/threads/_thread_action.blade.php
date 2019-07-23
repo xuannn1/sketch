@@ -64,7 +64,7 @@
         </div>
 
         <div class="col-xs-3">
-            <a class="btn btn-md btn-danger btn-block sosad-button" href="#">写评</a>
+            <a class="btn btn-md btn-danger btn-block sosad-button" href="{{route('review.create', ['thread' => CacheUser::Ainfo()->default_list_id, 'reviewee_id'=>$thread->id])}}">写评</a>
         </div>
 
         <div class="col-xs-3">

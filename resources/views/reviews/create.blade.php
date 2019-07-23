@@ -13,7 +13,11 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
+                @if($reviewee)
+                <h1><a href="{{route('thread.show', $reviewee->id)}}">评《{{$reviewee->title}}》：</a></h1>
+                @else
                 <h1>新增书评</h1>
+                @endif
             </div>
             <div class="panel-body">
                 @include('shared.errors')
@@ -32,14 +36,18 @@
                     </div>
 
                     <div class="">
+                        @if($reviewee)
+                        <label><input class="hidden" name="thread_id" value="{{ $reviewee->id }}"></label>
+                        @else
                         <label for="thread_id"><h4>书籍ID：</h4></label>
                         <h6>（提示：书籍ID从书籍首页的网页地址里寻找，在网址"https://sosad.fun/thread/12345"中，12345就是书籍ID。）</h6>
-                        <label><input type="text" style="width: 200px" name="thread_id" value="{{ old('thread_id')?? 0 }}"></label>
+                        <label><input type="text" style="width: 200px" name="thread_id" value="{{ old('thread_id') }}"></label>
+                        @endif
                     </div>
 
                     <div class="">
                         <label for="rating"><h4>评分（0-10）：</h4></label>
-                        <label><input type="text" style="width: 40px" name="rating" value="{{ old('rating')?? 0 }}">分</label>
+                        <label><input type="text" style="width: 40px" name="rating" value="{{ old('rating')?? 0 }}">分</label><span>（请填写整数。0分没有星，10分是五星）</span>
                     </div>
 
                     <div class="checkbox">

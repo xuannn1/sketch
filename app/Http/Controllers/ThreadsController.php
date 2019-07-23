@@ -163,6 +163,7 @@ class threadsController extends Controller
     {
         $channel = collect(config('channel'))->keyby('id')->get($form->channel_id);
         $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
 
         if(!$user||$user->no_posting||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
 
@@ -184,7 +185,6 @@ class threadsController extends Controller
             abort(403);
         }
 
-
         $thread = $form->generateThread($channel);
 
         $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
@@ -193,6 +193,9 @@ class threadsController extends Controller
         // if($channel->type==='homework'){
         //     $thread->register_homework();
         // }
+        if($thread->channel()->type==='list'&&$info->default_list_id===0){
+            $info->update(['default_list_id'=>$thread->id]);
+        }
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
     }
 

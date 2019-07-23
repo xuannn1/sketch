@@ -28,7 +28,7 @@ class SearchController extends Controller
         ]);
         $pattern = $request->search;
 
-        $search_result = Cache::remember('search_index.'.$pattern,30,function() use($pattern){
+        $search_result = Cache::remember('search_index.'.url('/').$pattern,30,function() use($pattern){
             $threads = $this->find_threads_with_pattern($pattern,20);
             $users = $this->find_users_with_pattern($pattern,40);
             $tags = $this->find_tags_with_pattern($pattern,40);
