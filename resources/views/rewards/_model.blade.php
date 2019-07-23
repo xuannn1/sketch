@@ -16,7 +16,7 @@
 @break
 
 @case('status')
-Second case...
+<a href="{{ route('status.show', $vote->votable_id) }}">{{$vote->votable->brief}}</a>
 @break
 
 @case('quote')

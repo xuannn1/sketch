@@ -53,16 +53,18 @@
             </div>
             <div class="panel-body">
                 <div class="">
-                    <a type="button" data-toggle="collapse" data-target="#help-constants-level" style="cursor: pointer;" class="font-4">
-                        1 升级需求：</a>
+                    <div class="">
+                        <a type="button" data-toggle="collapse" data-target="#help-constants-level" style="cursor: pointer;" class="font-4">
+                            &nbsp;1 升级需求：</a>
+                    </div>
                     <div class="collapse" id="help-constants-level">
                         <div class="">
                             @foreach(config('level.level_up') as $level=>$level_req)
-                            <h6>{{$level}}级需要：</h6>
-                            <div class="font-6">
+                            <div class="">
+                                <span class="font-6">&nbsp;&nbsp;{{$level}}级需要：</span>
                                 @foreach(config('level.values') as $key=>$value)
                                 @if(array_key_exists($key,$level_req))
-                                {{$value}}:{{$level_req[$key]}}，
+                                <span class="font-6 grayout">{{$value}}:{{$level_req[$key]}}，</span>
                                 @endif
                                 @endforeach
                             </div>
@@ -70,17 +72,19 @@
                         </div>
                     </div>
                 </div>
-                <a type="button" data-toggle="collapse" data-target="#help-constants-setting" style="cursor: pointer;" class="font-4">
-                    2 系统设置：</a>
-                <div class="collapse" id="help-constants-setting">
-                    a)章节更新必须达到这个水平才能进入排名榜:{{config('constants.update_min')}}<br>
-                    b)“长评”必须达到该字数:{{config('constants.update_min')}}<br>
-                    c)一个月能修改多少次邮箱:{{config('constants.monthly_email_resets')}}<br>
+                <div class="">
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-setting" style="cursor: pointer;" class="font-4">
+                        &nbsp;2 系统设置：</a>
+                    <div class="collapse indentation main-text" id="help-constants-setting">
+                        <p>a)章节更新必须达到这个水平才能进入排名榜:{{config('constants.update_min')}}</p>
+                        <p>b)“长评”必须达到该字数:{{config('constants.update_min')}}</p>
+                        <p>c)一个月能修改多少次邮箱:{{config('constants.monthly_email_resets')}}</p>
+                    </div>
                 </div>
                 @if(Auth::check())
                 <div class="">
                     <a type="button" data-toggle="collapse" data-target="#help-constants-forbiddenwords-public" style="cursor: pointer;" class="font-4">
-                        3 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</a>
+                        &nbsp;3 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</a>
                     <div class="collapse" id="help-constants-forbiddenwords-public">
                         <div class="">
                             <img src="/img/forbidden_words.png" alt="forbidden_words">
@@ -89,7 +93,7 @@
                 </div>
                 <div class="">
                     <a type="button" data-toggle="collapse" data-target="#help-constants-forbiddenwords-title" style="cursor: pointer;" class="font-4">
-                        4 出现在书名中会被隐藏的词汇（用‘|’隔开）：</a>
+                        &nbsp;4 出现在书名中会被隐藏的词汇（用‘|’隔开）：</a>
                     <div class="collapse" id="help-constants-forbiddenwords-title">
                         <div class="">
                             {{ config('forbiddenwords.not_in_title') }}

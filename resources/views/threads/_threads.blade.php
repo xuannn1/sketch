@@ -4,7 +4,11 @@
         <div class="col-xs-12 h5">
             <!-- thread title -->
             <span>
-                <span class="badge newchapter-badge badge-tag">{{ $thread->channel()->channel_name }}</span>
+                <span class="badge newchapter-badge badge-tag">
+                    <a href="{{ route('channel.show', $thread->channel()->id) }}">
+                    {{ $thread->channel()->channel_name }}
+                    </a>
+                </span>
                 <a href="{{ route('thread.show',$thread->id) }}" class="bigger-5">{{ $thread->title }}</a>
                 <small>
                     @if( !$thread->is_public )

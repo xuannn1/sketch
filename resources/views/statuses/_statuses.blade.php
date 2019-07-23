@@ -33,6 +33,6 @@
             </span>
         </div>
     </div>
-    <hr class="brief-2">
+
 </article>
 @endforeach
