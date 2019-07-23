@@ -11,6 +11,7 @@ class Post extends Model
     use Traits\VoteTrait;
     use Traits\RewardTrait;
     use Traits\TypeValueChangeTrait;
+    use Traits\RecordViewTrait;
 
     protected $guarded = [];
     protected $post_types = array('chapter', 'question', 'answer', 'request', 'post', 'comment', 'review'); // post的分类类别
