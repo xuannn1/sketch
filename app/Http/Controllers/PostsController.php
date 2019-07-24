@@ -104,9 +104,8 @@ class PostsController extends Controller
                 }
             }
         }
-        if(!Auth::check()||Auth::id()!=$post->user_id){
-            $post->recordViewCount('Post');
-        }
+
+        $post->recordViewCount('Post');
 
         return view('posts.show',compact('post','thread','user','info'));
     }

@@ -138,7 +138,7 @@
         </span>
     </div>
     <div class="text-right grayout smaller-30 brief-0 line-height-1">
-        <em><span class="grayout smaller-30">注：点击是延时统计，30分钟更新一次</span></em>
+        <em><span class="grayout smaller-30">注：点击是延时统计，10分钟更新一次</span></em>
     </div>
 
 </div>

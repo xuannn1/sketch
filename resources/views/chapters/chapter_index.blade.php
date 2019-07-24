@@ -18,7 +18,7 @@
                     <a href="{{ route('thread.show_profile', $thread->id) }}">{{ $thread->title }}</a>
                 </div>
                 <div class="">
-                    <span class="font-4">{{ $thread->brief }}</span>
+                    <span class="font-4">{{ $thread->brief??'暂无简介' }}</span>
                     @if(Auth::check()&&Auth::id()===$thread->user_id)
                     <a href="{{route('books.edit_chapter_index', $thread->id)}}" class="btn btn-md btn-info sosad-button-control pull-right">
                         调整章节顺序

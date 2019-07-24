@@ -70,6 +70,9 @@
                             </div>
                             @endforeach
                         </div>
+                        <div class="font-6">
+                            注：升级检验只发生在每日签到时，每天最多升一级。
+                        </div>
                     </div>
                 </div>
                 <div class="">

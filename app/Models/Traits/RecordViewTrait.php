@@ -19,7 +19,7 @@ trait RecordViewTrait
 					$this->increment('view_count', $value);
 				}
 			}
-			Cache::put('view'.$type.'CacheInterval.'.$this->id,1,Carbon::now()->addMinutes(30));
+			Cache::put('view'.$type.'CacheInterval.'.$this->id,1,Carbon::now()->addMinutes(10));
 		}else{
 			if(!Cache::has('view'.$type.'Count.'.$this->id)){
 				// 不存在的话，新建viewPostCount.$tid，并存入1，时限1d
