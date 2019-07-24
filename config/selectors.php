@@ -134,6 +134,26 @@ return [
             'random' => '随机乱序',
         ],
     ],
+    'thread_index_filter' => [
+        'isPublic' => [
+            'include_private' => '包含私密',
+            'private_only' => '只看私密'
+        ],
+        'ordered' => [
+            'default' => '最后回复',
+            'latest_add_component' => '最新更新',
+            'total_char' => '总字数',
+            'jifen' => '总积分',
+            'weighted_jifen' => '均字数积分',
+            'latest_created' => '最新创建',
+            'collection_count' => '最多收藏',
+            'random' => '随机乱序',
+        ],
+        'withBianyuan' => [
+            'include_bianyuan' => '包含边限',
+            'bianyuan_only' => '只看边限'
+        ],
+    ],
 
     'collection_filter' => [
         'order_by' => [

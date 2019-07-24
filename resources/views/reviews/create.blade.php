@@ -47,7 +47,7 @@
 
                     <div class="">
                         <label for="rating"><h4>评分（0-10）：</h4></label>
-                        <label><input type="text" style="width: 40px" name="rating" value="{{ old('rating')?? 0 }}">分</label><span>（请填写整数。0分没有星，10分是五星）</span>
+                        <label><input type="text" style="width: 80px" name="rating" value="{{ old('rating')?? 0 }}">分</label><span>（请填写整数。0分没有星，10分是五星）</span>
                     </div>
 
                     <div class="checkbox">

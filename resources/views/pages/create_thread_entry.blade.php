@@ -21,7 +21,7 @@
                         至少答过1级题才能发书籍，至少答过2级题才能发主题讨论
                     </div>
                     <div class="font-4">
-                        <span>发文发帖前请务必阅读：<a href="http://sosad.fun/threads/136">《版规》</a>、<a href="{{ route('help') }}">《帮助》</a></span>
+                        <span>发文发帖前请务必阅读：<a href="http://sosad.fun/threads/136">《版规》</a>、<a href="{{ route('help') }}">《帮助》</a></span>，文章、帖子的删除等操作在<a href="https://sosad.fun/threads/88">《申删转区楼》</a>
                     </div>
                 </div>
             </div>

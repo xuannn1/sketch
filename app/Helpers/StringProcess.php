@@ -223,4 +223,31 @@ class StringProcess
         return $post;
     }
 
+    public static function add_to_thread_filter($filter, $request_all)
+    {
+        $finalfilter = [];
+        $selectors = ['inChannel', 'isPublic', 'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered'];
+        foreach($selectors as $selector){
+            if(array_key_exists($selector, $request_all)&&($selector!=key($filter))){
+                $finalfilter =  array_merge([$selector=>$request_all[$selector]], $finalfilter);
+            }
+        }
+        $finalfilter = array_merge($filter, $finalfilter);
+        return $finalfilter;
+    }
+
+    public static function remove_from_thread_filter($filter_key, $request_all)
+    {
+        $finalfilter = [];
+        $selectors = ['inChannel', 'isPublic', 'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered'];
+        foreach($selectors as $selector){
+            if(array_key_exists($selector, $request_all)&&($selector!=$filter_key)){
+                $finalfilter =  array_merge([$selector=>$request_all[$selector]], $finalfilter);
+            }
+        }
+        return $finalfilter;
+    }
+
+
+
 }

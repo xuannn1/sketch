@@ -8,6 +8,8 @@
                 <h3>筛选</h3>
             </div>
             <div class="panel-body">
+                @include('threads._thread_selector')
+                @include('threads._thread_selected')
                 {{ $threads->links() }}
                 @include('threads._threads')
                 {{ $threads->links() }}

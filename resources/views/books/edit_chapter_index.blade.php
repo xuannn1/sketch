@@ -47,7 +47,7 @@
                                 </th>
 
                                 <th>
-                                    <label><input type="text" style="width: 40px" name="order_by[{{$post->id}}]" value="{{$post->order_by}}"></label>
+                                    <label><input type="text" style="width: 80px" name="order_by[{{$post->id}}]" value="{{$post->order_by}}"></label>
                                 </th>
                                 <th>
                                     <label class="radio-inline"><input type="radio" name="first_component_id" value="{{$post->id}}"  {{ $thread->first_component_id==$post->id?'checked':''}}></label>

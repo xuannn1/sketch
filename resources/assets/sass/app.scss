@@ -369,7 +369,7 @@ hr {
 }
 .article-body{
    margin-top:10px;
-   margin-bottom:10px;
+   // margin-bottom:10px;
 }
 .pagination{
    margin-top:0px;
@@ -489,6 +489,10 @@ hr {
     &.pull-right{
         margin-top:6px;
     }
+}
+
+.line-height-1{
+    line-height:1.0;
 }
 
 .brief-0{

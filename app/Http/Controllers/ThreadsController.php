@@ -11,15 +11,17 @@ use App\Models\Post;
 use App\Models\Thread;
 use CacheUser;
 use App\Http\Requests\StoreThread;
-
 use Auth;
+use StringProcess;
 use App\Sosadfun\Traits\ThreadObjectTraits;
 use App\Sosadfun\Traits\PostObjectTraits;
+use App\Sosadfun\Traits\ThreadQueryTraits;
 
 class threadsController extends Controller
 {
     use ThreadObjectTraits;
     use PostObjectTraits;
+    use ThreadQueryTraits;
 
     public function __construct()
     {
@@ -28,28 +30,16 @@ class threadsController extends Controller
 
     public function index(Request $request)
     {
-        $queryid = 'threadQ'
-        .url('/')
-        .'-inChannel'.$request->inChannel
-        .'-withType'.$request->withType
-        .'-withBianyuan'.$request->withBianyuan
-        .'-withTag'.$request->withTag
-        .'-excludeTag'.$request->excludeTag
-        .'-ordered'.$request->ordered
-        .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $threads = Cache::remember($queryid, 5, function () use($request) {
-            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
-            ->inChannel($request->inChannel)
-            ->isPublic()
-            ->inPublicChannel()
-            ->withType($request->withType)
-            ->withBianyuan($request->withBianyuan)
-            ->withTag($request->withTag)
-            ->excludeTag($request->excludeTag)
-            ->ordered($request->ordered)
-            ->paginate(config('preference.threads_per_page'))
-            ->appends($request->only('inChannel','withType','withBianyuan','withTag','excludeTag','ordered','page'));
-        });
+
+        $request_data = $request->only('inChannel', 'inPublicChannel',  'isPublic',  'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered', 'page');
+
+        $request_data = $this->sanitize_request_data($request_data);
+
+        $query_id = $this->process_thread_query_id($request_data);
+
+        $threads = $this->find_threads_with_query($query_id, $request_data);
+
+        StringProcess::add_to_thread_filter(['ordered'=>'12345'], $request_data);
 
         return view('threads.filter', compact('threads'));
     }
@@ -57,7 +47,7 @@ class threadsController extends Controller
     public function thread_index(Request $request)
     {
         $page = is_numeric($request->page)? $request->page:'1';
-        $threads = Cache::remember('thread_index_P'.$page, 5, function () use($page) {
+        $threads = Cache::remember('thread_index_P'.$page.url('/'), 5, function () use($page) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
             ->inPublicChannel()
@@ -75,7 +65,7 @@ class threadsController extends Controller
     {
         $page = is_numeric($request->page)? $request->page:'1';
         $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
-        $threads = Cache::remember('thread_jinghua_P'.$page, 5, function () use($page, $jinghua_tag) {
+        $threads = Cache::remember('thread_jinghua_P'.$page.url('/'), 5, function () use($page, $jinghua_tag) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()//复杂的筛选
             ->inPublicChannel()

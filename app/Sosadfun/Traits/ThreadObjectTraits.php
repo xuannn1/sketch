@@ -61,30 +61,6 @@ trait ThreadObjectTraits{
         $this->clearThreadReviewIndex($id);
     }
 
-    public function jinghua_threads()
-    {
-        return Cache::remember('jinghua-threads', 5, function () {
-            $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
-            return \App\Models\Thread::with('author','tags')
-            ->isPublic()
-            ->inPublicChannel()
-            ->withTag($jinghua_tag->id)
-            ->inRandomOrder()
-            ->take(3)
-            ->get();
-        });
-    }
-
-    public function find_top_threads_in_channel($id)
-    {
-        return Cache::remember('top_threads_in_channel.'.$id, 30, function () use($id) {
-            $zhiding_tag = ConstantObjects::find_tag_by_name('置顶');
-            return \App\Models\Thread::with('author','tags')
-            ->inChannel($id)
-            ->withTag($zhiding_tag->id)
-            ->get();
-        });
-    }
     public function threadChapterIndex($id)
     {
         return Cache::remember('threadChapterIndex.'.$id, 15, function () use($id) {

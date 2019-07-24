@@ -30,7 +30,7 @@
                 <form id="vote_quote_form{{$quote->id}}" action="{{ route('reward.store') }}" method="POST" style="display: none;">
                     {{ csrf_field() }}
                     <input type="radio" name="reward_type" value="fish" checked>
-                    <input type="text" style="width: 40px" name="reward_value" value="1">
+                    <input type="text" style="width: 80px" name="reward_value" value="1">
                     <input name="rewardable_type" value="quote" class="hidden">
                     <input name="rewardable_id" value="{{$quote->id}}" class="hidden">
                 </form>

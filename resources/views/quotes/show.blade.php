@@ -88,7 +88,7 @@
                                     </div>
                                     <hr>
                                     <div class="">
-                                        <label><input type="text" style="width: 40px" name="reward_value" value="1">数额</label>
+                                        <label><input type="text" style="width: 80px" name="reward_value" value="1">数额</label>
                                     </div>
                                     <hr>
                                     <label><input name="rewardable_type" value="quote" class="hidden"></label>

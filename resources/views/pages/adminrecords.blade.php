@@ -17,7 +17,8 @@
                     <a href="{{route('login')}}">登陆看和我有关的管理记录</a>
                     @endif
                     @endif
-
+                    <h3><a href="https://sosad.fun/threads/136">点击查看《版规》详情</a></h3>
+                    <h3><a href="https://sosad.fun/threads/16934">点击查看《管理条例》</a></h3>
                 </div>
                 <div class="panel-body">
                     @foreach($records as $record)

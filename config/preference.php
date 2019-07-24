@@ -14,7 +14,7 @@ return [
 
     'posts_per_page' => 10, //每页展示10个post
     'threads_per_page' => 20, //每页展示20个threads
-    'statuses_per_page' => 10, //每页展示20个statuses
+    'statuses_per_page' => 20, //每页展示20个statuses
     'users_per_page' => 25, //每页展示25个user
     'messages_per_page' => 10, //每页展示10个message
     'rewards_per_page' => 20, //每页展示10个打赏

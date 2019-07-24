@@ -19,16 +19,16 @@
                     </div>
                     <div class="">
                         <label for="expireAt">设置可用时间：</label>
-                        <label><input type="text" style="width: 40px" name="eligible-days" value="0">天</label>
-                        <label><input type="text" style="width: 40px" name="eligible-hours" value="0">小时</label>
+                        <label><input type="text" style="width: 80px" name="eligible-days" value="0">天</label>
+                        <label><input type="text" style="width: 80px" name="eligible-hours" value="0">小时</label>
                     </div>
                     <div class="">
                         <label for="invitation_times">设置可用次数：</label>
-                        <label><input type="text" style="width: 40px" name="invitation_times" value="0">次</label>
+                        <label><input type="text" style="width: 80px" name="invitation_times" value="0">次</label>
                     </div>
                     <div class="">
                         <label for="refresh_times">设置自动更新次数（为0则不会自动更新，其他数值则每日自动更新这个数）：</label>
-                        <label><input type="text" style="width: 40px" name="refresh_times" value="0">次/每天</label>
+                        <label><input type="text" style="width: 80px" name="refresh_times" value="0">次/每天</label>
                     </div>
                     <br>
                     <button type="submit" class="btn btn-danger sosad-button">新建邀请码</button>

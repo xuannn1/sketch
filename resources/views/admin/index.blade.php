@@ -18,6 +18,11 @@
                     <li><a href="{{route('admin.sendpublicnoticeform')}}">发送公共通知</a></li>
                 </ul>
 
+                <h4>主题/书籍（thread）管理</h4>
+                <ul>
+                    <li><a href="{{route('threads.index')}}">全站帖子筛选</a></li>
+                </ul>
+
                 <h4>题头（Quote）管理</h4>
                 <ul>
                     <li><a href="{{ route('quote.review_index', ['withReviewState'=>'notYetReviewed']) }}">文案摘句审核</a></li>

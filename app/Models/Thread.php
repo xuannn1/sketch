@@ -147,14 +147,15 @@ class Thread extends Model
         return $query->where('is_bianyuan', false);
     }
 
-    public function scopeWithTag($query, $withTags="")
+    public function scopeWithTag($query, $withTags="")// (A||B)&&(C||D):A_B-C_D
     {
         if ($withTags){
-            $tags = explode('-',$withTags);
-            foreach($tags as $tag){
-                if(is_numeric($tag)&&$tag>0){
-                    $query = $query->whereHas('tags', function ($query) use ($tag){
-                        $query->where('tags.id', '=', $tag);
+            $andtags = explode('-',$withTags);
+            foreach($andtags as $andtag){
+                $parallel_tags = explode('_', $andtag);
+                if($parallel_tags){
+                    $query = $query->whereHas('tags', function ($query) use ($parallel_tags){
+                        $query->whereIn('tags.id', $parallel_tags);
                     });
                 }
             }
@@ -198,13 +199,22 @@ class Thread extends Model
         return $query;
     }
 
-    public function scopeInPublicChannel($query)//只看公共channel内的
+    public function scopeInPublicChannel($query, $inPublicChannel='')//只看公共channel内的
     {
+        if($inPublicChannel==='include_none_public_channel'){
+            return $query;
+        }
         return $query->whereIn('channel_id', ConstantObjects::public_channels());
     }
 
-    public function scopeIsPublic($query)//只看作者决定公开的
+    public function scopeIsPublic($query, $isPublic='')//只看作者决定公开的
     {
+        if($isPublic==='include_private'){
+            return $query;
+        }
+        if($isPublic==='private_only'){
+            return $query->where('is_public', false);
+        }
         return $query->where('is_public', true);
     }
 

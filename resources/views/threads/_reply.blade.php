@@ -26,7 +26,7 @@
             <h6 style="color:#d66666">(本帖非边限对外公开，请不要引入“边限”讨论。)</h6>
             @endif
             @if($thread->channel()->type==='box')
-            <h6 style="color:#d66666">(严禁提无关问题打扰作者，如“等级”、“签到”相关的日经问题。)</h6>
+            <h6 style="color:#d66666">(严禁提无关问题打扰作者，如“等级”、“签到”、“边限”相关的网站使用问题。)</h6>
             @endif
             <div class="checkbox">
                 <label class="hidden" id="is_comment"><input type="checkbox"  name="is_comment">是点评？</label>

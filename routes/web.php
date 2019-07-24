@@ -132,6 +132,8 @@
         'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]]); //
 
+     Route::get('/threads', 'ThreadsController@index')->name('threads.index');//查看全部的包含隐藏内容的thread
+
    Route::get('/thread_index', 'ThreadsController@thread_index')->name('threads.thread_index');//论坛全部帖子 19.7.9
 
    Route::get('/thread_jinghua', 'ThreadsController@thread_jinghua')->name('threads.thread_jinghua');//论坛精华帖列表 19.7.9

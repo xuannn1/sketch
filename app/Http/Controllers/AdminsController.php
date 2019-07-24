@@ -19,13 +19,14 @@ use CacheUser;
 use App\Sosadfun\Traits\ThreadObjectTraits;
 use App\Sosadfun\Traits\PostObjectTraits;
 use App\Sosadfun\Traits\MessageObjectTraits;
-
+// use App\Sosadfun\Traits\ThreadQueryTraits;
 
 class AdminsController extends Controller
 {
     use ThreadObjectTraits;
     use PostObjectTraits;
     use MessageObjectTraits;
+    // use ThreadQueryTraits;
 
     //所有这些都需要用transaction，以后再说
     public function __construct()

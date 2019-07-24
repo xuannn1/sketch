@@ -117,15 +117,15 @@
     <br>
 
     <!-- 信息汇总：总字数，阅读数，回应数，下载数 （以及如果允许下载，出现下载按钮）-->
-    <div class="">
+    <div class="line-height-1 text-right">
         @if($thread->last_component&&$thread->last_component->type==='chapter')
-        <span class="smaller-20 ">
+        <span class="smaller-20 pull-left">
             <span>
                 <a href="{{ route('post.show', $thread->last_component_id) }}">最新章节《{{$thread->last_component->title}}》</a>
             </span>
         </span>
         @endif
-        <span class="smaller-20 pull-right">
+        <span class="smaller-20">
             <em class="smaller-20">
                 @if($thread->total_char>0)
                 <span class="glyphicon glyphicon-pencil"></span>{{ $thread->total_char }}/
@@ -137,4 +137,8 @@
             @endif
         </span>
     </div>
+    <div class="text-right grayout smaller-30 brief-0 line-height-1">
+        <em><span class="grayout smaller-30">注：点击是延时统计，30分钟更新一次</span></em>
+    </div>
+
 </div>

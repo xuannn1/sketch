@@ -23,7 +23,7 @@
                     </div>
                     <div class="form-group">
                         <label>
-                        <label><input type="text" style="width: 40px" name="quiz-level" value="$quiz->quiz_level">题目等级</label>
+                        <label><input type="text" style="width: 80px" name="quiz-level" value="{{$quiz->quiz_level}}">题目等级</label>
                     </div>
                     <div class="form-group">
                         <label for="quiz-options"><h5>选项列表（选项|解释）：</h5></label>
