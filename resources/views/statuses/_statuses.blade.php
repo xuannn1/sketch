@@ -10,7 +10,7 @@
                 <a href="{{ route('user.show', $status->user_id) }}">{{ $status->author->name }}</a>
                 @endif
                 &nbsp;
-                {{ Carbon::parse($status->created_at)->diffForHumans() }}
+                {{ $status->created_at? Carbon::parse($status->created_at)->diffForHumans():'' }}
             </span>
             @if(!$status->is_public)
                 <span class="glyphicon glyphicon-eye-close"></span>

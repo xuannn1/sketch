@@ -127,7 +127,7 @@
                     @endif
 
                     <!-- 普通回帖展开 -->
-                    <div class="main-text {{ $post->use_indentation? 'indentation':'' }}">
+                    <div class="main-text {{ $post->use_indentation? 'indentation':'' }} {{ $post->type==='chapter'?'chapter':''}}">
 
                         @if($post->type==="chapter"&&$post->chapter&&$post->chapter->warning)
                         <div class="text-center grayout">

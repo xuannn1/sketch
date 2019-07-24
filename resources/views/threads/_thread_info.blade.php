@@ -64,9 +64,9 @@
                 @endif
             </div>
             <p class="grayout smaller-20">
-                发表于{{ $thread->created_at->diffForHumans() }}
+                发表于{{$thread->created_at? $thread->created_at->diffForHumans():'' }}
                 @if($thread->created_at < $thread->edited_at )
-                修改于{{ $thread->edited_at->diffForHumans() }}
+                修改于{{ $thread->edited_at? $thread->edited_at->diffForHumans():'' }}
                 @endif
             </p>
             @if($thread->channel()->type==='book')

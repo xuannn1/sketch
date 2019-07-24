@@ -100,9 +100,25 @@ class CollectionGroupController extends Controller
         return redirect()->route('collection.index');
     }
 
-    public function delete()
+    public function destroy(CollectionGroup $collection_group)
     {
+        $collections = DB::table('collections')
+        ->join('threads', 'threads.id', '=', 'collections.thread_id')
+        ->where('collections.user_id', Auth::id())
+        ->where('collections.group',$collection_group->id)
+        ->update(['collections.group'=>0]);
 
+        $info = Auth::user()->info;
+
+        if($info->default_collection_group_id===$collection_group->id){
+            $info->update(['default_collection_group_id'=>0]);
+        }
+
+        $collection_group->delete();
+
+        $this->refreshCollectionGroups(Auth::id());
+
+        return redirect()->route('collection.index')->with('success','您已成功删除收藏夹');
     }
 
 

@@ -39,10 +39,16 @@ class ErrorCorrection extends Command
      */
     public function handle()
     {
-        DB::table('votes')
-        ->join('posts','posts.id','=','votes.votable_id')
-        ->where('votes.receiver_id','=',0)
-        ->where('votes.votable_type','=', 'post')
-        ->update(['votes.receiver_id'=>DB::raw('posts.user_id')]);
+        $collections = DB::table('collections')
+        ->where('user_id',297043)
+        ->get();
+
+        $new_collections = $collections->map(function ($collection) {
+            $collection->{'user_id'} = 1;
+            unset($collection->id);
+            return (array)$collection;
+        });
+        DB::table('collections')->insert($new_collections->toArray());
+
     }
 }

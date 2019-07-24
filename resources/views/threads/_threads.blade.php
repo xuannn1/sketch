@@ -58,7 +58,7 @@
         </div>
         <div class="col-xs-12 h5 grayout brief-0">
             <span class="smaller-20"><a href="{{ route('thread.showpost', $thread->last_post_id) }}">{{ $thread->last_post? StringProcess::simpletrim($thread->last_post->brief, 15):' ' }}</a></span>
-            <span class="pull-right smaller-20">{{ $thread->created_at->diffForHumans() }}/{{ $thread->responded_at->diffForHumans() }}</span>
+            <span class="pull-right smaller-20">{{ $thread->created_at? $thread->created_at->diffForHumans():'' }}/{{ $thread->responded_at? $thread->responded_at->diffForHumans() :'' }}</span>
         </div>
     </div>
 </article>

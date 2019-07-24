@@ -44,9 +44,9 @@
                         @endif
                         <!-- 发表时间 -->
                         <span class="grayout smaller-30">
-                            {{ $post->created_at->diffForHumans() }}
+                            {{ $post->created_at? $post->created_at->diffForHumans():'' }}
                             @if($post->created_at < $post->edited_at )
-                            /{{ $post->edited_at->diffForHumans() }}
+                            /{{ $post->edited_at? $post->edited_at->diffForHumans():'' }}
                             @endif
                         </span>&nbsp;
 
@@ -124,7 +124,7 @@
                 @endif
 
                 <!-- 普通回帖展开 -->
-                <div class="main-text {{ $post->use_indentation? 'indentation':'' }}">
+                <div class="main-text {{ $post->use_indentation? 'indentation':'' }} {{ $post->type==='chapter'?'chapter':'' }}">
                     @if($post->title)
                     <div class="text-center">
                         <strong><a href="{{ route('post.show', $post->id) }}">{{ $post->title }}</a></strong>

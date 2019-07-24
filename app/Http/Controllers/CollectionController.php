@@ -57,11 +57,12 @@ class CollectionController extends Controller
     public function store($id)
     {
         if(!$this->checkCollectedOrNot(Auth::id(), (int)request('thread'))){
+            $group = request('group')??CacheUser::Ainfo()->default_collection_group_id;
             $thread = $this->findThread($id);
             $collection = Collection::create([
                 'thread_id' => $id,
                 'user_id' => Auth::id(),
-                'group' => request('group')??0,
+                'group' => $group??0,
             ]);
             $thread->increment('collection_count');
 

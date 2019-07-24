@@ -16,7 +16,7 @@
         {{ $post->brief }}
     </span>
     </a>
-    <span id="full{{$post->id}}" class="hidden main-text">
+    <span id="full{{$post->id}}" class="hidden main-text {{ $post->type->chapter?'chapter':'' }}">
         <div class="main-text">
             {!! StringProcess::wrapParagraphs($post->body) !!}
         </div>

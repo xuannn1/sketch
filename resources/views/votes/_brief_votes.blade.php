@@ -2,7 +2,7 @@
 @foreach($votes as $vote)
 <article class="vote{{ $vote->id }}">
     <div class="">
-        {{ $vote->created_at->diffForHumans() }}
+        {{ $vote->created_at? $vote->created_at->diffForHumans():'' }}
         @if($vote->author)
         <a href="{{ route('user.show', $vote->user_id) }}">{{ $vote->author->name }}</a>
         @endif

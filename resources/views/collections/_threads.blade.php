@@ -82,10 +82,10 @@
         <div class="col-xs-12 h5 brief-0">
             @if($thread->last_component)
             <span class="grayout smaller-5"><a href="{{route('post.show', $thread->last_component_id)}}">《{{$thread->last_component->title}}》</a></span>
-            <span class="grayout smaller-20">{{ $thread->add_component_at->diffForHumans() }}</span>
+            <span class="grayout smaller-20">{{ $thread->add_component_at ? $thread->add_component_at->diffForHumans() :''}}</span>
             @else
             <span class="grayout smaller-20"><a href="{{ route('thread.showpost', $thread->last_post_id) }}">{{ $thread->last_post? StringProcess::simpletrim($thread->last_post->brief, 15):' ' }}</a></span>
-            <span class="grayout smaller-20">{{ $thread->responded_at->diffForHumans() }}</span>
+            <span class="grayout smaller-20">{{ $thread->responded_at? $thread->responded_at->diffForHumans() :''}}</span>
             @endif
 
             <span class="pull-right">

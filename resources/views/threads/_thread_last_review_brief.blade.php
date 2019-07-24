@@ -1,6 +1,6 @@
 <div>
     <span class="smaller-20 grayout">
-        {{ $post->created_at->diffForHumans() }}
+        {{ $post->created_at? $post->created_at->diffForHumans():'' }}
     </span>&nbsp;
     <span>
         @if($post->review->reviewee)

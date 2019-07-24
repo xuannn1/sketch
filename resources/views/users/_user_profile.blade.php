@@ -55,7 +55,7 @@
     @if(Auth::check()&&(Auth::user()->isAdmin()||Auth::id()===$user->id))
     <div class="font-5">
         <span>连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
-        <span>最后签到时间：{{ $user->qiandao_at->diffForHumans() }}</span>
+        <span>最后签到时间：{{ $user->qiandao_at?$user->qiandao_at->diffForHumans():'' }}</span>
     </div>
     @endif
 </div>
