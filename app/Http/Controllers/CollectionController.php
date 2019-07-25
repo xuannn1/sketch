@@ -37,8 +37,10 @@ class CollectionController extends Controller
         $orderby = 2;
         if($request->group){
             $group = $groups->keyby('id')->get($request->group);
-            $orderby = $group->order_by;
-            $group->update_count();
+            if($group){
+                $orderby = $group->order_by;
+                $group->update_count();
+            }
         }
         $user->clear_column('unread_updates');
         $info->clear_column('default_collection_updates');

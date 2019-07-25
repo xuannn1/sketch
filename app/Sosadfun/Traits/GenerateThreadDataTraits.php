@@ -86,7 +86,9 @@ trait GenerateThreadDataTraits{
     {
         $tags = [];
         $tags = array_merge($tags,array($this->primary_tag,$this->sexual_orientation_tag, $this->book_length_tag, $this->book_status_tag, $this->tongren_yuanzhu_tag_id, $this->tongren_CP_tag_id));
-        $tags = array_merge($tags,$this->tags);
+        if($this->tags){
+            $tags = array_merge($tags,$this->tags);
+        }
         return $tags;
     }
 

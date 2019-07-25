@@ -201,7 +201,12 @@ class BooksController extends Controller
 
     public function show($id)
     {   $book = DB::table('books')->where('id','=',$id)->first();
-        return redirect()->route('thread.show_profile', $book->thread_id);
+        if($book){
+            return redirect()->route('thread.show_profile', $book->thread_id);
+        }else{
+            abort(404);
+        }
+
     }
 
     public function index(Request $request)

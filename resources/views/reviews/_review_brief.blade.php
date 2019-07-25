@@ -1,4 +1,5 @@
 @foreach($short_reviews as $post)
+@if($post->review&&$post->review->reviewee)
 <article class="{{ 'recommend_book'.$post->review->thread_id }}">
     <div class="row">
         <div class="col-xs-12 h5">
@@ -52,4 +53,5 @@
     </div>
     <hr>
 </article>
+@endif
 @endforeach

@@ -14,7 +14,9 @@ class CacheUser{ //cache-user class
 
         return Cache::remember('cachedUser.'.$id, 30, function() use($id) {
             $user = User::find($id);
-            $user->load('title');
+            if($user){
+                $user->load('title');
+            }
             return $user;
         });
     }
