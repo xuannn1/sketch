@@ -176,7 +176,10 @@ class ConstantObjects
         }
         foreach($tags as $tagid){
             if($tagid>0){
-                $tag_collection->push(self::find_tag_by_id($tagid));
+                $tag = self::find_tag_by_id($tagid);
+                if($tag){
+                    $tag_collection->push($tag);
+                }
             }
         }
         return $tag_collection;

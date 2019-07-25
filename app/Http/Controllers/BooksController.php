@@ -212,11 +212,13 @@ class BooksController extends Controller
 
         $query_id = $this->process_thread_query_id($request_data);
 
-        $threads = $this->find_books_with_query($query_id, $request_data);
+        $results = $this->find_books_with_query($query_id, $request_data);
 
-        $selected_tags = ConstantObjects::find_tags_by_withTag($request->withTag);
+        $threads = $results['threads'];
 
-        $excluded_tags = ConstantObjects::find_tags_by_withTag($request->excludeTag);
+        $selected_tags = $results['selected_tags'];
+
+        $excluded_tags = $results['excluded_tags'];
 
         return view('books.index', compact('threads','tags','selected_tags','excluded_tags'));
     }

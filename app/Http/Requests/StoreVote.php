@@ -37,7 +37,7 @@ class StoreVote extends FormRequest
     public function validateAttitude($voted_model,$attitude_type,$user_id){
         $votes = $voted_model->votes()->where('user_id',$user_id)->get();
         $check_attitude=in_array($attitude_type, array('upvote','downvote')) ? array('upvote','downvote'):array($attitude_type);
-        return $votes->whereIn('attitude', $check_attitude)->isEmpty();
+        return $votes->whereIn('attitude_type', $check_attitude)->isEmpty();
     }
 
     public function generateVote($voted_model){

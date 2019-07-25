@@ -5,8 +5,8 @@
          }}" role="button">显示边限<span class="{{ request()->withBianyuan?'glyphicon glyphicon-remove':''}}"></span></a>
         @endif
 
-        @if(request()->ordered)
-        <a class="btn btn-info btn-md sosad-button-control" href="{{ route('books.index', StringProcess::remove_from_thread_filter('ordered',request()->all())) }}" role="button">{{ config('selectors.thread_index_filter.ordered')[request()->ordered] }}<span class="glyphicon glyphicon-remove"></span></a>
+        @if(request()->ordered&&array_key_exists(request()->ordered, config('selectors.book_index_filter.ordered')))
+        <a class="btn btn-info btn-md sosad-button-control" href="{{ route('books.index', StringProcess::remove_from_thread_filter('ordered',request()->all())) }}" role="button">{{ config('selectors.book_index_filter.ordered')[request()->ordered] }}<span class="glyphicon glyphicon-remove"></span></a>
         @endif
     </div>
 

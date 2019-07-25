@@ -41,7 +41,7 @@ trait ThreadQueryTraits{
         $selectors = ['inChannel', 'isPublic', 'inPublicChannel', 'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered', 'page'];
         foreach($selectors as $selector){
             if(array_key_exists($selector, $request_data)){
-                $queryid.='-'.$selector.$request_data[$selector];
+                $queryid.='-'.$selector.':'.$request_data[$selector];
             }
         }
         return $queryid;
@@ -79,7 +79,7 @@ trait ThreadQueryTraits{
     public function find_books_with_query($query_id, $request_data)
     {
         return Cache::remember('BookQ.'.$query_id, 1, function () use($request_data) {
-            return Thread::with('author', 'tags', 'last_component', 'last_post')
+            $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
             ->withType('book')
             ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')
@@ -89,6 +89,13 @@ trait ThreadQueryTraits{
             ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'latest_add_component')
             ->paginate(config('preference.threads_per_page'))
             ->appends($request_data);
+            $selected_tags = ConstantObjects::find_tags_by_withTag(array_key_exists('withTag',$request_data)? $request_data['withTag']:'');
+            $excluded_tags = ConstantObjects::find_tags_by_withTag(array_key_exists('excludeTag',$request_data)? $request_data['excludeTag']:'');
+            return[
+                'threads' => $threads,
+                'selected_tags' => $selected_tags,
+                'excluded_tags' => $excluded_tags,
+            ];
         });
     }
 

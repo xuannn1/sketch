@@ -294,7 +294,7 @@ class threadsController extends Controller
         ->inComponent($request->inComponent)//可以只看从这个贴发散的全部讨论
         ->ordered($request->ordered)//排序方式
         ->paginate(config('preference.posts_per_page'))
-        ->appends($request->only('withType', 'withComponent', 'userOnly', 'withReplyTo', 'ordered', 'page'));
+        ->appends($request->only('withType', 'withComponent', 'userOnly', 'withReplyTo', 'ordered', 'page','withFolded','inComponent'));
         $withReplyTo = '';
         if($request->withReplyTo>0){
             $withReplyTo = $this->findPost($request->withReplyTo);
