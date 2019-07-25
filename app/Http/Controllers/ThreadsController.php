@@ -291,6 +291,7 @@ class threadsController extends Controller
         ->withFolded($request->withFolded)//是否显示已折叠内容
         ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
         ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
+        ->inComponent($request->inComponent)//可以只看从这个贴发散的全部讨论
         ->ordered($request->ordered)//排序方式
         ->paginate(config('preference.posts_per_page'))
         ->appends($request->only('withType', 'withComponent', 'userOnly', 'withReplyTo', 'ordered', 'page'));
@@ -299,6 +300,13 @@ class threadsController extends Controller
             $withReplyTo = $this->findPost($request->withReplyTo);
             if($withReplyTo->thread_id!=$thread->id){
                 $withReplyTo = '';
+            }
+        }
+        $inComponent = '';
+        if($request->inComponent>0){
+            $inComponent = $this->findPost($request->inComponent);
+            if($inComponent->thread_id!=$thread->id){
+                $inComponent = '';
             }
         }
 
@@ -313,6 +321,6 @@ class threadsController extends Controller
         $info = Auth::check()? CacheUser::Ainfo():'';
         $selector = config('selectors')[$channel->type.'_filter'];
 
-        return view('threads.show', compact('show_config', 'thread', 'posts', 'user', 'info', 'selector', 'withReplyTo'));
+        return view('threads.show', compact('show_config', 'thread', 'posts', 'user', 'info', 'selector', 'withReplyTo','inComponent'));
     }
 }

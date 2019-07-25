@@ -209,9 +209,8 @@
             @endif
         </div>
         <div class="text-center h3">
-            @if($post->reply_count>0)
-            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id, 'withComponent'=>'include_comment']) }}" class="">>>查看全部{{$post->reply_count}}条对本帖的评论</a>
-            @endif
+            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id, 'withComponent'=>'include_comment']) }}" class="font-4 grayout">{{$post->reply_count}}条直接评论<<</a>&nbsp;&nbsp;&nbsp;<span>高赞评论</span>&nbsp;&nbsp;&nbsp;
+            <a href="{{ route('thread.show', ['thread' => $thread->id, 'inComponent' => $post->in_component_id>0?$post->in_component_id:$post->id, 'withComponent'=>'include_comment']) }}" class="font-4 grayout">>>所有相关讨论</a>
         </div>
         <?php $replies = $post->new_replies ?>
         @include('posts._replies')

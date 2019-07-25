@@ -51,12 +51,11 @@ trait GeneratePostDataTraits{
                 $data['reply_to_id'] = $reply->id;
                 $data['reply_to_brief'] = $reply->brief;
                 $data['is_bianyuan']=$data['is_bianyuan']||$reply->is_bianyuan;
+                $data['in_component_id'] = $reply->in_component_id>0?$reply->in_component_id:$reply->id;
                 if(($reply->type==='post'&&$data['char_count']<50)||$reply->type==='comment'){
-                    $data['in_component_id'] = $reply->in_component_id;
                     $data['type'] = 'comment';
                 }
                 if($reply->type==='question'&&$thread->user_id===auth()->id()){
-                    $data['in_component_id'] = $reply->in_component_id;
                     $data['type'] = 'answer';
                 }
             }

@@ -10,6 +10,10 @@
         @if($show_config['show_profile'])
             @include('threads._thread_profile')
         @endif
+        @if($inComponent)
+        <?php $post = $inComponent?>
+        @include('threads._reply_post')
+        @endif
         @if($withReplyTo)
         <?php $post = $withReplyTo?>
         @include('threads._reply_post')

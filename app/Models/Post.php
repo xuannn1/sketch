@@ -154,6 +154,14 @@ class Post extends Model
         return $query;
     }
 
+    public function scopeInComponent($query, $inComponent)
+    {
+        if($inComponent){
+            return $query->where('in_component_id', $inComponent);
+        }
+        return $query;
+    }
+
     public function scopeOrdered($query, $ordered='')
     {
         switch ($ordered) {

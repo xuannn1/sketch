@@ -20,6 +20,10 @@
     <a class="btn btn-info btn-md sosad-button-control" href="{{ route('thread.show',
     array_merge(['thread'=>$thread->id], request()->only('withType', 'withComponent', 'withFolded', 'userOnly', 'ordered'))) }}" role="button">只看对{{ request()->withReplyTo }}的回复<span class="glyphicon glyphicon-remove"></span></a>
     @endif
+    @if(request()->inComponent)
+    <a class="btn btn-info btn-md sosad-button-control" href="{{ route('thread.show',
+    array_merge(['thread'=>$thread->id], request()->only('withType', 'withComponent', 'withFolded', 'userOnly', 'withReplyTo', 'ordered'))) }}" role="button">只看从{{ request()->inComponent }}发起的讨论串<span class="glyphicon glyphicon-remove"></span></a>
+    @endif
     @if(request()->ordered&&array_key_exists(request()->ordered,$selector['ordered']))
     <a class="btn btn-info btn-md sosad-button-control" href="{{ route('thread.show',
     array_merge(['thread'=>$thread->id], request()->only('withType', 'withComponent', 'withFolded', 'userOnly', 'withReplyTo'))) }}" role="button">{{ $selector['ordered'][request()->ordered] }}<span class="glyphicon glyphicon-remove"></span></a>
