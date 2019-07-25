@@ -340,9 +340,15 @@ class Thread extends Model
         }
         if($first){
             if($this->first_component_id<>$first->id){
-                $this->update(['first_component_id' => $first->id]);
+                $this->first_component_id=$first->id;
             }
         }
+        if($previous){
+            if($this->last_component_id<>$previous->id){
+                $this->last_component_id=$previous->id;
+            }
+        }
+        $this->save();
         return;
     }
 

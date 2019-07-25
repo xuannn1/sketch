@@ -81,13 +81,12 @@ trait ThreadQueryTraits{
         return Cache::remember('BookQ.'.$query_id, 1, function () use($request_data) {
             return Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
-            ->inPublicChannel()
             ->withType('book')
             ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')
             ->withBianyuan(array_key_exists('withBianyuan',$request_data)? $request_data['withBianyuan']:'') //
             ->withTag(array_key_exists('withTag',$request_data)? $request_data['withTag']:'')
             ->excludeTag(array_key_exists('excludeTag',$request_data)? $request_data['excludeTag']:'')
-            ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'')
+            ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'latest_add_component')
             ->paginate(config('preference.threads_per_page'))
             ->appends($request_data);
         });

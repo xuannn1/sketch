@@ -80,7 +80,7 @@ class ChapterController extends Controller
         if(($thread->is_locked||!$thread->channel()->allow_edit)&&(!Auth::user()->isAdmin())){abort(403);}
         if(!$post->chapter){
             $previous_chapter = $thread->last_component;
-            $order_by = $previous_chapter? ($previous_chapter->chapter->order_by+1):0;
+            $order_by = $previous_chapter&&$previous_chapter->chapter? ($previous_chapter->chapter->order_by+1):1;
             $chapter = Chapter::create(['post_id'=>$post->id,'order_by'=>$order_by]);
         }
         $post->type = 'chapter';
@@ -94,7 +94,7 @@ class ChapterController extends Controller
         $thread->reorder_chapters();
         $this->clearAllThread($thread->id);
         $this->clearPostProfile($post->id);
-        $chapter = $post->chapter;
+        $chapter = Chapter::find($post->id);
 
         return view('chapters.edit', compact('chapter','post','thread'));
     }

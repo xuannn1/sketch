@@ -15,7 +15,7 @@
         </div>
         @endif
         <div class="h4 text-center">
-            <a href=" {{ route('thread.show', $thread->id) }} ">>>进入论坛查看更多评论</a>
+            <a href=" {{ route('thread.show', $thread->id) }} ">>>进入论坛模式查看/筛选更多评论内容</a>
         </div>
         @include('threads._posts')
         @if(Auth::check())

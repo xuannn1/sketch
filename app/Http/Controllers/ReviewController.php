@@ -85,7 +85,7 @@ class ReviewController extends Controller
         if($thread->channel()->type!='list'){abort(403);}
         if(($thread->is_locked||!$thread->channel()->allow_edit)&&(!Auth::user()->isAdmin())){abort(403);}
         if(!$post->review){
-            Review::create(['post_id'=>$post->id]);
+            $review = Review::create(['post_id'=>$post->id]);
         }
         $post->type = 'review';
         $post->reply_to_id = 0;
@@ -93,7 +93,8 @@ class ReviewController extends Controller
         $post->reply_to_position = 0;
         $post->edited_at = Carbon::now();
         $post->save();
-        $review = $post->review;
+
+        $review = Review::find($post->id);
 
         $thread->recalculate_characters();
         $this->clearAllThread($thread->id);
