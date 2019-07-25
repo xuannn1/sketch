@@ -43,13 +43,6 @@ class Kernel extends ConsoleKernel
         ->withoutOverlapping(10)
         ->onOneServer();
 
-        $schedule->command('cache:clear')
-        ->name('cache:clear')
-        ->timezone('Asia/Shanghai')
-        ->dailyAt('4:00')
-        ->withoutOverlapping(10)
-        ->onOneServer();
-
         $schedule->command('testlog:send')
         ->name('testlog:send')
         ->hourly()

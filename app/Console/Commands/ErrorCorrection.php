@@ -20,7 +20,7 @@ class ErrorCorrection extends Command
      *
      * @var string
      */
-    protected $description = 'to recalculate jifen for threads, weighted_jifen for books';
+    protected $description = 'a temporaral commander for things';
 
     /**
      * Create a new command instance.
@@ -39,6 +39,6 @@ class ErrorCorrection extends Command
      */
     public function handle()
     {
-        
+
     }
 }

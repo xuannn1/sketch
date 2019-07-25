@@ -37,12 +37,15 @@
                        </div>
                     </div>
                     <br>
+                    <div class="text-left">
+                        <button type="submit" class="btn btn-md btn-primary sosad-button">确认修改收藏页</button>
+                    </div>
 
-                    <form method="POST" action="{{ route('collection_group.destroy', $collection_group->id)  }}">
-                        {{ csrf_field() }}
-                        {{ method_field('DELETE') }}
-                        <button type="submit" class="pull-right btn btn-md btn-danger sosad-button-control">删除本收藏页</button>
-                    </form>
+                </form>
+                <form method="POST" action="{{ route('collection_group.destroy', $collection_group->id)  }}">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                    <button type="submit" class="pull-right btn btn-md btn-danger sosad-button-control">删除本收藏页</button>
                 </form>
             </div>
         </div>
