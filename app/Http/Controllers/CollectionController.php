@@ -12,11 +12,14 @@ use Auth;
 use CacheUser;
 use App\Sosadfun\Traits\CollectionObjectTraits;
 use App\Sosadfun\Traits\FindThreadTrait;
+use App\Sosadfun\Traits\ListObjectTraits;
+
 
 class CollectionController extends Controller
 {
     use CollectionObjectTraits;
     use FindThreadTrait;
+    use ListObjectTraits;
 
     public function __construct()
     {
@@ -30,6 +33,7 @@ class CollectionController extends Controller
         $default_collection_updates = $info->default_collection_updates;
 
         $groups = $this->findCollectionGroups($user->id);
+        $lists = $this->findLists($user->id);
         $orderby = 2;
         if($request->group){
             $group = $groups->keyby('id')->get($request->group);

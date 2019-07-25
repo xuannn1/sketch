@@ -6,7 +6,7 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <!-- 首页／版块／导航 -->
         <div class="">
-            <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
+            <a type="btn btn-lg btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
             /
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
             /

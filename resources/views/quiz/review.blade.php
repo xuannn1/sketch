@@ -28,7 +28,7 @@
             </div>
             {{ $quizzes->links() }}
             <br>
-            <a href="{{ route('quiz.create') }}" class="btn btn-danger sosad-button">新建题目</a>
+            <a href="{{ route('quiz.create') }}" class="btn btn-lg btn-danger sosad-button">新建题目</a>
         </div>
     </div>
 </div>

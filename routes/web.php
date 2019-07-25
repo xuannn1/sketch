@@ -208,6 +208,9 @@
         'index', 'create', 'store', 'edit', 'update', 'show'
     ]]); //
 
+    Route::get('book_selector', 'BooksController@selector')->name('books.selector');
+    Route::post('book_selector', 'BooksController@interpret_selector')->name('books.interpret_selector');
+
     //修改书籍标签
     Route::get('books/{book}/edit_tag', 'BooksController@edit_tag')->name('books.edit_tag');
     Route::patch('books/{book}/edit_tag', 'BooksController@update_tag')->name('books.update_tag');

@@ -43,7 +43,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-danger sosad-button">提交</button>
+                    <button type="submit" class="btn btn-lg btn-danger sosad-button">提交</button>
                 </form>
             </div>
         </div>

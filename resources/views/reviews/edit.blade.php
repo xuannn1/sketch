@@ -5,7 +5,7 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <!-- 首页／版块／导航 -->
         <div class="">
-            <a type="btn btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
+            <a type="btn btn-lg btn-danger sosad-button" href="{{ route('home') }}"><span class="glyphicon glyphicon-home"></span><span>首页</span></a>
             /
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
             /
@@ -67,12 +67,12 @@
                         <label><input type="checkbox" name="is_bianyuan" {{ $post->is_bianyuan? 'checked':'' }}>是否边限书评？</label>
                     </div>
                     @endif
-                    <button type="submit" class="btn btn-md btn-primary sosad-button">确认修改书评</button>
+                    <button type="submit" class="btn btn-lg btn-primary sosad-button">确认修改书评</button>
                 </form>
                 <form method="POST" action="{{ route('post.destroy', $post->id) }}">
                     {{ csrf_field() }}
                     {{ method_field('DELETE') }}
-                    <button type="submit" class="pull-right btn btn-md btn-danger sosad-button-control">删除帖子</button>
+                    <button type="submit" class="pull-right btn btn-lf btn-danger sosad-button-control">删除帖子</button>
                 </form>
             </div>
         </div>

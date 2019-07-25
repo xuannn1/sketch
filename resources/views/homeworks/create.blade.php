@@ -24,7 +24,7 @@
                     <label for="start_time">开始报名时间<input id="start_time" type="datetime-local" name="start_time" value="{{ Carbon::now('Asia/Shanghai')->format('Y-m-d\TH:i') }}">，</label>
 
                 </div>
-            <button type="submit" class="btn btn-danger sosad-button">发布</button>
+            <button type="submit" class="btn btn-lg btn-danger sosad-button">发布</button>
         </form>
     </div>
 </div>

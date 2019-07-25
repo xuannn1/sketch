@@ -6,7 +6,7 @@ use DB;
 
 class ConstantObjects
 {
-    protected static $channel_types = array('book', 'thread', 'request', 'homework', 'list'); // channel的分类类别
+    protected static $channel_types = array('book', 'thread', 'request', 'homework', 'list', 'box'); // channel的分类类别
 
     public static function allChannels()//获得站上所有的channel
     {
@@ -165,6 +165,22 @@ class ConstantObjects
         });
     }
 
+    public static function find_tags_by_withTag($withTag)
+    {
+        $tags =[];
+        $tag_collection=collect();
+        $andTags=explode('-',$withTag);
+        foreach($andTags as $andTag){
+            $orTags = explode('_',$andTag);
+            $tags = array_merge($orTags,$tags);
+        }
+        foreach($tags as $tagid){
+            if($tagid>0){
+                $tag_collection->push(self::find_tag_by_id($tagid));
+            }
+        }
+        return $tag_collection;
+    }
 
     public static function titles()//获得站上所有的titles
     {
@@ -187,5 +203,7 @@ class ConstantObjects
         });
 
     }
+
+
 
 }

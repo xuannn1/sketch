@@ -11,7 +11,7 @@
                 <div class="text-center">
                     <h5>题目qid{{ $quiz->id }}，</h5>
                     <h6>（题目等级 {{ $quiz->quiz_level }}，已答 {{ $quiz->quiz_counts}}次，正确回答 {{  $quiz->correct_counts }}次。） </h6>
-                    <a href="{{ route('quiz.edit', $quiz->id) }}" class="btn btn-danger sosad-button">修改本题</a>
+                    <a href="{{ route('quiz.edit', $quiz->id) }}" class="btn btn-lg btn-danger sosad-button">修改本题</a>
                 </div>
                 <!-- 题干   -->
                 <div class="">

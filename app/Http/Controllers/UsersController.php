@@ -18,6 +18,8 @@ use ConstantObjects;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
 use App\Sosadfun\Traits\CollectionObjectTraits;
 use App\Sosadfun\Traits\UserObjectTraits;
+use App\Sosadfun\Traits\ListObjectTraits;
+use App\Sosadfun\Traits\BoxObjectTraits;
 
 class UsersController extends Controller
 {
@@ -26,6 +28,8 @@ class UsersController extends Controller
     use SwitchableMailerTraits;
     use CollectionObjectTraits;
     use UserObjectTraits;
+    use ListObjectTraits;
+    use BoxObjectTraits;
 
     public function __construct()
     {
@@ -154,8 +158,9 @@ class UsersController extends Controller
         $info = CacheUser::Ainfo();
         if(!$user||!$info){abort(404);}
         $groups = $this->findCollectionGroups($user->id);
-        $lists = \App\Models\Thread::withUser($user->id)->WithType('list')->select('id','title')->get();
-        return view('users.edit_preference', compact('user','info','groups','lists'));
+        $lists = $this->findLists($user->id);
+        $boxes = $this->findBoxes($user->id);
+        return view('users.edit_preference', compact('user','info','groups','lists','boxes'));
     }
 
     public function update_preference(Request $request)
@@ -173,9 +178,17 @@ class UsersController extends Controller
 
         if($request->default_list_id){
             $list_id = (int)$request->default_list_id;
-            $list_ids = \App\Models\Thread::withUser($user->id)->WithType('list')->select('id','title')->get()->pluck('id')->toArray();
+            $list_ids = $this->findLists($user->id)->pluck('id')->toArray();
             if(in_array($list_id, $list_ids)){
                 $data['default_list_id']=$list_id;
+            }
+        }
+
+        if($request->default_box_id){
+            $box_id = (int)$request->default_box_id;
+            $box_ids = $this->findBoxes($user->id)->pluck('id')->toArray();
+            if(in_array($box_id, $box_ids)){
+                $data['default_box_id']=$box_id;
             }
         }
 

@@ -51,7 +51,7 @@
                             <label>填写同人作品CP简称（2字）:<input type="text" name="tongren_cp" class="form-control" placeholder="请输入cp简称（2字，中文）" value="{{ old('tongren_cp') }}"></label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-danger sosad-button">发布</button>
+                    <button type="submit" class="btn btn-lg btn-danger sosad-button">发布</button>
                 </form>
             </div>
         </div>

@@ -11,15 +11,18 @@ use App\Models\Thread;
 use ConstantObjects;
 use CacheUser;
 use Auth;
+use StringProcess;
 use App\Sosadfun\Traits\ThreadObjectTraits;
+use App\Sosadfun\Traits\ThreadQueryTraits;
 
 class BooksController extends Controller
 {
     use ThreadObjectTraits;
+    use ThreadQueryTraits;
 
     public function __construct()
     {
-        $this->middleware('auth')->except('show','index');
+        $this->middleware('auth')->except('show','index','selector','interpret_selector');
     }
 
     public function create(Request $request)
@@ -204,30 +207,33 @@ class BooksController extends Controller
     public function index(Request $request)
     {
         $tags = ConstantObjects::organizeBasicBookTags();
-        $ordered = $request->ordered??'latest_add_component';
 
-        $queryid = 'bookQ'
-        .url('/')
-        .'-inChannel'.$request->inChannel
-        .'-withBianyuan'.$request->withBianyuan
-        .'-withTag'.$request->withTag
-        .'-excludeTag'.$request->excludeTag
-        .'-ordered'.$ordered
-        .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        $threads = Cache::remember($queryid, 5, function () use($request) {
-            return Thread::with('author', 'tags', 'last_component', 'last_post')
-            ->inChannel($request->inChannel)
-            ->isPublic()
-            ->withType('book')
-            ->withBianyuan($request->withBianyuan)
-            ->withTag($request->withTag)
-            ->excludeTag($request->excludeTag)
-            ->ordered($request->ordered??'latest_add_component')
-            ->paginate(config('preference.threads_per_page'))
-            ->appends($request->only('inChannel','withBianyuan','withTag','excludeTag','ordered'));
-        });
+        $request_data = $this->sanitize_request_data($request);
 
-        return view('books.index', compact('threads','tags'));
+        $query_id = $this->process_thread_query_id($request_data);
+
+        $threads = $this->find_books_with_query($query_id, $request_data);
+
+        $selected_tags = ConstantObjects::find_tags_by_withTag($request->withTag);
+
+        $excluded_tags = ConstantObjects::find_tags_by_withTag($request->excludeTag);
+
+        return view('books.index', compact('threads','tags','selected_tags','excluded_tags'));
     }
+
+    public function selector(Request $request)
+    {
+        $tag_range = ConstantObjects::organizeBasicBookTags();
+
+        return view('books.selector', compact('tag_range'));
+    }
+
+    public function interpret_selector(Request $request)
+    {
+        $request_data = $this->convert_book_request_data($request);
+
+        return redirect()->route('books.index', $request_data);
+    }
+
 
 }

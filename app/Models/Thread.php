@@ -120,7 +120,7 @@ class Thread extends Model
     public function scopeInChannel($query, $withChannels)
     {
         if($withChannels){
-            $channels=(array)json_decode($withChannels);
+            $channels = explode('-',$withChannels);
             if(!empty($channels)){
                 return $query->whereIn('channel_id', $channels);
             }
@@ -180,10 +180,10 @@ class Thread extends Model
 
     }
 
-    public function scopeExcludeTag($query, $excludeTag="")
+    public function scopeExcludeTag($query, $excludeTag="")// no A, no B, no C: A-B-C
     {
         if ($excludeTag){
-            $tags = explode('-',$withTags);
+            $tags = explode('-',$excludeTag);
             $exclude_tag = [];
             foreach($tags as $tag){
                 if(is_numeric($tag)&&$tag>0){

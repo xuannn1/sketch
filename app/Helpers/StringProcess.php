@@ -187,31 +187,6 @@ class StringProcess
         }
     }
 
-    public static function mergeWithTag($id, $string='')
-    {
-        if($string){
-            return $string.'-'.(string)$id;
-        }
-        return (string)$id;
-    }
-
-    public static function splitWithTag($id, $string='')
-    {
-        $endtag = '';
-        if($string){
-            $tags = explode('-',$string);
-            foreach($tags as $i=>$tag){
-                if($tag!=$id){
-                    $endtag .='-'.$tag;
-                }
-            }
-            if($endtag){
-                $endtag = substr($endtag,1);
-            }
-        }
-        return $endtag;
-    }
-
     public static function wrapSpan($post= null)
     {
         $post = self::trimSpaces($post);
@@ -226,7 +201,7 @@ class StringProcess
     public static function add_to_thread_filter($filter, $request_all)
     {
         $finalfilter = [];
-        $selectors = ['inChannel', 'isPublic', 'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered'];
+        $selectors = ['inChannel', 'isPublic', 'inPublicChannel', 'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered'];
         foreach($selectors as $selector){
             if(array_key_exists($selector, $request_all)&&($selector!=key($filter))){
                 $finalfilter =  array_merge([$selector=>$request_all[$selector]], $finalfilter);
@@ -239,7 +214,7 @@ class StringProcess
     public static function remove_from_thread_filter($filter_key, $request_all)
     {
         $finalfilter = [];
-        $selectors = ['inChannel', 'isPublic', 'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered'];
+        $selectors = ['inChannel', 'isPublic', 'inPublicChannel', 'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered'];
         foreach($selectors as $selector){
             if(array_key_exists($selector, $request_all)&&($selector!=$filter_key)){
                 $finalfilter =  array_merge([$selector=>$request_all[$selector]], $finalfilter);
@@ -248,6 +223,109 @@ class StringProcess
         return $finalfilter;
     }
 
+    public static function mergeWithTag($id, $originalfilter=[])
+    {
+        $finalfilter=[];
+        foreach($originalfilter as $key=>$filter){
+            if($key!='withTag'){
+                $finalfilter=array_merge([$key=>$filter], $finalfilter);
+            }
+        }
+        $withTag=(string)$id;
+        if(array_key_exists('withTag',$originalfilter)){
+            $withTag=self::concatenate_with_char('-',$originalfilter['withTag'],(string)$id);
+        }
+        return array_merge(['withTag'=>$withTag], $finalfilter);
+    }
 
+    public static function removeWithTag($id, $originalfilter='')
+    {
+        $finalfilter=[];
+        foreach($originalfilter as $key=>$filter){
+            if($key!='withTag'){
+                $finalfilter=array_merge([$key=>$filter], $finalfilter);
+            }
+        }
+
+        if(array_key_exists('withTag',$originalfilter)){
+            $withTag='';
+            $oldWithTag = $originalfilter['withTag'];
+            $oldAndTags = explode('-',$oldWithTag);
+            foreach($oldAndTags as $oldAndTag){
+                $oldOrTags = explode('_',$oldAndTag);
+                $orTag='';
+                foreach($oldOrTags as $oldOrTag){
+                    if($oldOrTag!=$id){
+                        $orTag=self::concatenate_with_char('_',$orTag,$oldOrTag);
+                    }
+                }
+                $withTag=self::concatenate_with_char('-',$withTag,$orTag);
+            }
+            if($oldWithTag&&$withTag){
+                $finalfilter=array_merge(['withTag'=>$withTag], $finalfilter);
+            }
+        }
+        return $finalfilter;
+    }
+
+    public static function removeExcludeTag($id, $originalfilter='')
+    {
+        $finalfilter=[];
+        foreach($originalfilter as $key=>$filter){
+            if($key!='withTag'){
+                $finalfilter=array_merge([$key=>$filter], $finalfilter);
+            }
+        }
+
+        if(array_key_exists('excludeTag',$originalfilter)){
+            $excludeTag='';
+            $oldexcludeTags = explode('-',$originalfilter['excludeTag']);
+            foreach($oldexcludeTags as $oldexcludeTag){
+                if($oldexcludeTag!=$id){
+                    $excludeTag=self::concatenate_with_char('_',$excludeTag,$oldexcludeTag);
+                }
+            }
+            if($excludeTag){
+                $finalfilter=array_merge(['excludeTag'=>$excludeTag], $finalfilter);
+            }
+        }
+        return $finalfilter;
+    }
+
+    public static function concatenate_with_char($char='',$a='',$b='')
+    {
+        if($a&&$b){
+            return $a.$char.$b;
+        }
+        if($a){
+            return $a;
+        }
+        if($b){
+            return $b;
+        }
+        return;
+    }
+
+    public static function concatenate_andTag($array=[], $withTag='')
+    {
+        $andTag='';
+        foreach($array as $tag){
+            if($tag!=0){
+                $andTag=StringProcess::concatenate_with_char('_',$andTag,$tag);
+            }
+        }
+        return StringProcess::concatenate_with_char('-',$withTag,$andTag);
+    }
+
+    public static function concatenate_excludeTag($array=[], $withTag='')
+    {
+        $excludeTag='';
+        foreach($array as $tag){
+            if($tag!=0){
+                $excludeTag=StringProcess::concatenate_with_char('-',$excludeTag,(string)$tag);
+            }
+        }
+        return $excludeTag;
+    }
 
 }

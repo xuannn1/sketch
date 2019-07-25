@@ -30,16 +30,11 @@ class threadsController extends Controller
 
     public function index(Request $request)
     {
-
-        $request_data = $request->only('inChannel', 'inPublicChannel',  'isPublic',  'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered', 'page');
-
-        $request_data = $this->sanitize_request_data($request_data);
+        $request_data = $this->sanitize_request_data($request);
 
         $query_id = $this->process_thread_query_id($request_data);
 
         $threads = $this->find_threads_with_query($query_id, $request_data);
-
-        StringProcess::add_to_thread_filter(['ordered'=>'12345'], $request_data);
 
         return view('threads.filter', compact('threads'));
     }
@@ -185,6 +180,9 @@ class threadsController extends Controller
         // }
         if($thread->channel()->type==='list'&&$info->default_list_id===0){
             $info->update(['default_list_id'=>$thread->id]);
+        }
+        if($thread->channel()->type==='box'&&$info->default_box_id===0){
+            $info->update(['default_box_id'=>$thread->id]);
         }
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
     }

@@ -25,7 +25,7 @@
                         </div>
                         @if($groups)
                         <div class="form-group">
-                            <label for="default_collection_group_id">新建立的书籍添加到哪个收藏夹？</label><br>
+                            <label for="default_collection_group_id">新收藏的书籍/文章/讨论，添加到哪个收藏夹？</label><br>
                             @foreach($groups as $group)
                             <label class="radio-inline"><input class="" type="radio" name="default_collection_group_id" value="{{ $group->id }}" {{$info->default_collection_group_id===$group->id ? 'checked':''}}>{{ $group->name }}</label><br>
                             @endforeach
@@ -36,6 +36,14 @@
                             <label for="default_collection_group_id">新建立的书评添加到哪个清单？</label><br>
                             @foreach($lists as $list)
                             <label class="radio-inline"><input class="" type="radio" name="default_list_id" value="{{ $list->id }}" {{$info->default_list_id===$list->id ? 'checked':''}}>{{ $list->title }}</label><br>
+                            @endforeach
+                        </div>
+                        @endif
+                        @if($boxes)
+                        <div class="form-group">
+                            <label for="default_collection_group_id">默认问题箱？</label><br>
+                            @foreach($boxes as $box)
+                            <label class="radio-inline"><input class="" type="radio" name="default_box_id" value="{{ $box->id }}" {{$info->default_box_id===$box->id ? 'checked':''}}>{{ $box->title }}</label><br>
                             @endforeach
                         </div>
                         @endif

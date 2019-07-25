@@ -14,7 +14,7 @@
                         <textarea name="body" data-provide="markdown" id="messagetouser" rows="12" class="form-control" placeholder="消息">{{ old('body') }}</textarea>
                         <button type="button" onclick="retrievecache('messagetouser')" class="sosad-button-control addon-button">恢复数据</button>
                     </div>
-                    <button type="submit" class="btn btn-md btn-primary">发布</button>
+                    <button type="submit" class="btn btn-lg btn-primary">发布</button>
                 </form>
             </div>
         </div>

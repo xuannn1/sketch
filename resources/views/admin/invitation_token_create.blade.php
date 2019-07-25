@@ -31,7 +31,7 @@
                         <label><input type="text" style="width: 80px" name="refresh_times" value="0">次/每天</label>
                     </div>
                     <br>
-                    <button type="submit" class="btn btn-danger sosad-button">新建邀请码</button>
+                    <button type="submit" class="btn btn-lg btn-danger sosad-button">新建邀请码</button>
                 </form>
             </div>
         </div>

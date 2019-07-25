@@ -22,7 +22,7 @@
         @break
 
         @case('status')
-        <a href="{{ route('status.show', $vote->votable_id) }}">{{$vote->votable->brief}}</a>
+        <a href="{{ route('status.show', $reward->rewardable_id) }}">{{$reward->rewardable->brief}}</a>
         @break
 
         @case('quote')

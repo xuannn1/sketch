@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <label for="" class="h6">(有时重置邮件会发送至个人垃圾箱，请注意查看。请注意,<code>不要重复点击</code>“重置”。重复发送邮件会被邮箱系统判断为<code>垃圾邮件</code>拒收。)如果按钮无法打开或无法激活，请尝试清理浏览器缓存，或复制链接到其他浏览器内打开完成激活。</label>
-                        <button type="submit" class="btn btn-danger sosad-button">重置</button>
+                        <button type="submit" class="btn btn-lg btn-danger sosad-button">重置</button>
 
                     </form>
                 </div>
