@@ -62,7 +62,7 @@ class FollowersController extends Controller
             $info->follower_count-=1;
             $info->save();
             $Ainfo->following_count-=1;
-            $Aiinfo->save();
+            $Ainfo->save();
         }
 
         return 'successfully unfollowed user';

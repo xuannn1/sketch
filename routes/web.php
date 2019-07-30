@@ -20,6 +20,10 @@
    Route::post('login', 'Auth\LoginController@login')->name('login');
 
    Route::get('register/confirm/{token}', 'Auth\RegisterController@confirmEmail')->name('confirm_email');//确认邮箱正确 ??
+
+   Route::get('register/invitation', 'Auth\RegisterController@register_by_invitation_form')->name('register_by_invitation_form');//通过邀请码注册
+
+   Route::post('register/invitation', 'Auth\RegisterController@register_by_invitation')->name('register_by_invitation');//通过邀请码注册
 }
 
 { // 关联马甲
@@ -277,14 +281,17 @@
    Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//存储新tag
 
 
-   Route::get('/admin/searchusersform', 'AdminsController@searchusersform')->name('admin.searchusersform');//审核是否存在某用户
-   Route::get('/admin/searchusers', 'AdminsController@searchusers')->name('admin.searchusers');//审核是否存在某用户
+   Route::get('/admin/searchusersform', 'AdminsController@searchusersform')->name('admin.searchusersform');//管理员搜索是否存在某用户
+   Route::get('/admin/searchusers', 'AdminsController@searchusers')->name('admin.searchusers');//管理员搜索否存在某用户的结果
+   Route::get('/admin/searchusers/{user}/convert_to_old_email/{record}', 'AdminsController@convert_to_old_email')->name('admin.convert_to_old_email');//管理员搜索否存在某用户的结果
 }
-
+// invitation_token 部分
 {
     Route::get('/admin/invitation_token', 'InvitationTokensController@index')->name('invitation_tokens.index');//管理员查看邀请码列表
     Route::get('/admin/invitation_token/create', 'InvitationTokensController@create')->name('invitation_token.create');//管理员新建邀请码
     Route::post('/admin/invitation_token/store', 'InvitationTokensController@store')->name('invitation_token.store');//管理员储存邀请码
+    Route::get('/invitation_token', 'InvitationTokensController@my_token')->name('invitation_token.my_token');// 用户查看个人创建和邀请的记录
+    Route::post('/invitation_token/store', 'InvitationTokensController@store_my_token')->name('invitation_token.store_my_token');// 用户储存新码
 }
 
 {//收藏模块

@@ -75,7 +75,7 @@ class RegisterController extends Controller
             'promise' => 'required',
         ]);
         $validator->after(function ($validator) {
-            if(request('promise')!=config('constants.register_promise')){
+            if(request('promise')!=config('preference.register_promise')){
                 $validator->errors()->add('promise', '注册担保输入不正确，请认真打字，重新输入。');
             }
             $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
@@ -100,6 +100,8 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return DB::transaction(function()use($data){
+            $invitation_token = InvitationToken::where('token', $data['invitation_token'])->first();
+            $invitation_token->inactive_once();
             $user = User::firstOrCreate([
                 'email' => $data['email']
             ],[
@@ -107,14 +109,13 @@ class RegisterController extends Controller
                 'password' => bcrypt($data['password']),
                 'activated' => false,
             ]);
-            $info = User::firstOrCreate([
+            $info = UserInfo::firstOrCreate([
                 'user_id' => $user->id
             ],[
                 'invitation_token' => $data['invitation_token'],
                 'activation_token' => str_random(45),
+                'invitor_id' => $invitation_token->is_public?0:$invitation_token->user_id,
             ]);
-            $invitation_token = InvitationToken::where('token', $data['invitation_token'])->first();
-            $invitation_token->inactive_once();
             return $user;
         });
     }
@@ -180,6 +181,29 @@ class RegisterController extends Controller
 
         return redirect()->route('user.edit');
 
+    }
+
+    public function register_by_invitation_form()
+    {
+        return view('auth.register_by_invitation_form');
+    }
+
+    public function register_by_invitation(Request $request)
+    {
+        if (Cache::has('registration-by-invitation-limit-' . request()->ip())){
+            return back()->with('danger','您的ip已于5分钟内尝试注册，请勿重复输入信息或试图暴力破解邀请码');
+        }
+        Cache::put('registration-by-invitation-limit-' . request()->ip(), true, 5);
+
+        $invitation_token = InvitationToken::with('user')->where('token', request('invitation_token'))->first();
+
+        if (!$invitation_token){
+            return back()->with('danger', '邀请码拼写错误，请重新检查，复制粘贴。');
+        }
+        if (($invitation_token->invitation_times < 1)||($invitation_token->invite_until <  Carbon::now())){
+            return back()->with('danger', '邀请码已失效，请更换新版邀请码。');
+        }
+        return view('auth.register_by_invitation', compact('invitation_token'));
     }
 
 }

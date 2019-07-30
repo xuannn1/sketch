@@ -194,10 +194,10 @@
                 @if(Auth::user()->level >= 1)
                     &nbsp;<span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}" onclick="voteItem('post', {{$post->id}},'upvote')" ><span class="glyphicon glyphicon-heart"><span id="post{{$post->id}}upvote">{{ $post->upvote_count }}</span></span></button></span>
                 @endif
-                @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
+                @if((!$thread->is_locked&&!$thread->no_reply&&!Auth::user()->no_posting&&$post->fold_state===0&&Auth::user()->level >= 2)||(Auth::user()->isAdmin()))
                     &nbsp;<span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
                 @endif
-                @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
+                @if(($post->user_id===Auth::id())&&(Auth::user()->isAdmin()||((!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))))
                     &nbsp;<span><a class="btn btn-md btn-danger sosad-button" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
                 @endif
                 @if($thread->user_id===Auth::id()&&!Auth::user()->no_posting)
@@ -209,8 +209,7 @@
             @endif
         </div>
         <div class="text-center h3">
-            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id, 'withComponent'=>'include_comment']) }}" class="font-4 grayout">{{$post->reply_count}}条直接评论<<</a>&nbsp;&nbsp;&nbsp;<span>高赞评论</span>&nbsp;&nbsp;&nbsp;
-            <a href="{{ route('thread.show', ['thread' => $thread->id, 'inComponent' => $post->in_component_id>0?$post->in_component_id:$post->id, 'withComponent'=>'include_comment']) }}" class="font-4 grayout">>>所有相关讨论</a>
+            <a href="{{ route('thread.show', ['thread' => $thread->id, 'withReplyTo' => $post->id, 'withComponent'=>'include_comment']) }}" class="font-4 grayout">{{$post->reply_count}}条直接评论<<</a>&nbsp;&nbsp;&nbsp;&nbsp;<span>高赞评论</span>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ route('thread.show', ['thread' => $thread->id, 'inComponent' => $post->in_component_id>0?$post->in_component_id:$post->id, 'withComponent'=>'include_comment']) }}" class="font-4 grayout">>>所有相关讨论</a>
         </div>
         <?php $replies = $post->new_replies ?>
         @include('posts._replies')

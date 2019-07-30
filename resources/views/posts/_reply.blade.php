@@ -22,12 +22,20 @@
                 <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
                 <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
             </div>
-            @if(!$thread->is_bianyuan||!$post->is_bianyuan)
+            @if(!$thread->is_bianyuan)
             <h6 style="color:#d66666">(本帖非边限对外公开，请不要引入“边限”讨论。)</h6>
+            @endif
+            @if($thread->channel()->type==='box')
+            <h6 style="color:#d66666">(问题箱不意味着可以提“任意问题”，提问前需先看首楼规则，不可以提作者明确说不愿回答的问题。严禁提和作者本人及作品无关问题骚扰，如“等级”、“签到”、“边限”相关的网站使用问题（网站使用问题请“搜索关键词”，或看《帮助》）。)</h6>
+            @endif
+            @if(!$thread->channel()->allow_anonymous)
+            <h6 style="color:#d66666">（投诉仲裁至关严肃，禁止批马、禁止修改留言。未按版规举证的留言一律折叠，视情况禁言禁止登陆）</h6>
             @endif
             <div class="checkbox">
                 <label class="" id="is_comment"><input type="checkbox"  name="is_comment">是点评？</label>
+                @if($thread->channel()->allow_anonymous)
                 <label><input type="checkbox" name="is_anonymous" onclick="document.getElementById('majiareplythread{{$thread->id}}').style.display = 'block'">马甲？</label>&nbsp;
+                @endif
                 <label><input type="checkbox" name="editor" onclick="$('#markdowneditor').markdown({language:'zh'})">显示编辑器？</label>
                 <label><input type="checkbox" name="use_indentation"  {{ Auth::user()->use_indentation? 'checked':'' }}>段首缩进（自动空两格）？</label>
                 <div class="form-group text-right" id="majiareplythread{{$thread->id}}" style="display:none">

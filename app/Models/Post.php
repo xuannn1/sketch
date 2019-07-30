@@ -277,18 +277,21 @@ class Post extends Model
     }
 
 
-    public function favorite_reply()//这个post里面，回复它的postcomment中，最多赞的
+    public function favorite_replies()//这个post里面，回复它的post的comment中，最多赞的
     {
         return Post::where('reply_to_id', $this->id)
         ->with('author.title')
+        ->where('fold_state', 0) // 必须没有被作者折叠
         ->orderBy('upvote_count', 'desc')
-        ->first();
+        ->take(5)
+        ->get();
     }
 
-    public function newest_replies()//这个post里面，回复它的postcomment中，最新的5个，全部内容
+    public function newest_replies() // 这个post里面，回复它的postcomment中，最新的5个，全部内容
     {
         return Post::with('author.title')
         ->where('reply_to_id', $this->id)
+        ->where('fold_state', 0) // 必须没有被作者折叠
         ->orderBy('created_at', 'desc')
         ->take(5)
         ->get();

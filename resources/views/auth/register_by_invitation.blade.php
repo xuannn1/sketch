@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', '注册')
+@section('title', '邀请注册')
 @section('content')
 <div class="container-fluid">
     <style media="screen">
@@ -7,13 +7,20 @@
     <div class="col-sm-offset-3 col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading lead">
-                <h1>注册</h1>
-                <h5 class="text-center">成为废文网的一条咸鱼吧～</h5>
+                <h1>邀请注册</h1>
+                <h5>您的邀请人是：<a href="{{route('user.show', $invitation_token->user_id)}}">{{$invitation_token->user->name}}</a></h5>
+                <h5 style="color:#d66666">如果被邀请人严重违反版规，邀请人需负连带责任。</h5>
             </div>
             <div class="panel-body">
                 @include('shared.errors')
                 <form method="POST" action="{{ route('register') }}">
                     {{ csrf_field() }}
+                    <div class="form-group">
+                        <label for="invitation_token">邀请码：</label>
+                        <input type="text" name="invitation_token" class="form-control hidden" value="{{ $invitation_token->token }}">
+                        <input type="text" class="form-control" value="{{ $invitation_token->token }}" disabled>
+                    </div>
+
                     <div class="form-group">
                         <label for="name">用户名（笔名）：</label>
                         <h6 class="grayout">（用户名注册后，暂时无法更改哦。）</h6>
@@ -29,7 +36,7 @@
                     <div class="form-group">
                         <label for="email_confirmation">确认邮箱：</label>
                         <input type="text" name="email_confirmation" class="form-control" value="{{ old('email_confirmation') }}">
-                        <h6><span style="color:#d66666">友情提醒，请【仔细】检查邮箱输入情况，确认邮箱无误！</span>输入错误的邮箱将无法激活自己的账户，也无法找回自己的账户。<br>虽然很多用户都说自己的输入“绝对没有问题”，然而实践表明，几乎——几乎——所有的登陆问题都是邮箱输入错误导致……<br>为了确保验证邮件正常送达，请务必使用个人<code>目前常用、可用的</code>邮箱地址。</h6>
+                        <h6>友情提醒，请<span style="color:#d66666">仔细检查邮箱</span>输入情况，确认邮箱无误。输入错误的邮箱将无法激活自己的账户，也无法找回自己的账户。<br>为了确保验证邮件正常送达，请务必使用个人<code>目前常用、可用的</code>邮箱地址。</h6>
                     </div>
 
                     <div class="form-group">
@@ -41,14 +48,7 @@
                         <label for="password_confirmation">确认密码：</label>
                         <input type="password" name="password_confirmation" class="form-control" value="{{ old('password_confirmation') }}">
                     </div>
-                    <div class="form-group">
-                        <label for="invitation_token">邀请码：</label>
-                        <h6 class="grayout">（ 邀请码详情查看微博号“废文网大内总管”，或查看站内 <a href="{{ route('thread.show', 2615) }}">公用邀请码楼</a> ）</h6>
-                        <h6 class="grayout">（ 公共邀请码最近一次“刷新”大约发生在
-                            {!! Carbon::parse(ConstantObjects::system_variable()->token_refreshed_at)->diffForHumans() !!} ）
-                        </h6>
-                        <input type="text" name="invitation_token" class="form-control" value="{{ old('invitation_token') }}">
-                    </div>
+
                     <div class="panel panel-default text-center">
                         <div class="panel-title">
                             <h4>注册协议</h4>
@@ -73,7 +73,7 @@
                         <div class="panel-footer text-center h6">
                             <div class="">
                                 <input type="checkbox" name="have_read_policy1" value=true>
-                                <span>我知道在所有页面的右下角的《帮助》页面可以找到各种使用疑难解答</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
+                                <span>我知道可以直接"搜索"帮助关键词获取疑难解答，或查看所有页面右下角的帮助</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
                             </div>
                             <div class="">
                                 <input type="checkbox" name="have_read_policy2" value=true>

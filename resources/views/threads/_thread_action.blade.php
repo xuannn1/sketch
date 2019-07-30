@@ -58,7 +58,7 @@
             <button class="btn btn-md btn-success btn-block sosad-button" id="itemcollection{{$thread->id}}" onclick="add_to_collection({{$thread->id}})">收藏<span class="smaller-10">{{$thread->collection_count}}</span></button>
         </div>
         <div class="col-xs-3">
-            @if((!$thread->noreply)&&(!$thread->is_locked)&&(($thread->is_public)||($thread->user_id===Auth::id())))
+            @if((!$thread->no_reply)&&(!$thread->is_locked)&&(($thread->is_public)||($thread->user_id===Auth::id())))
             <a class="btn btn-md btn-primary btn-block sosad-button" href="#replyToThread">回复<span class="smaller-10">{{$thread->reply_count}}</span></a>
             @endif
         </div>

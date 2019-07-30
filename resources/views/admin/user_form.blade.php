@@ -39,6 +39,7 @@
                         <label><input type="text" style="width: 80px" name="fish" value="0">咸鱼</label>
                         <label><input type="text" style="width: 80px" name="ham" value="0">丧点</label>
                         <label><input type="text" style="width: 80px" name="level" value="0">等级</label>
+                        <label><input type="text" style="width: 80px" name="token_limit" value="0">邀请额度</label>
                     </div>
                     <div class="form-group">
                         <label for="reason"></label>

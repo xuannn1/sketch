@@ -20,7 +20,7 @@ class User extends Authenticatable
     use FindThreadTrait;
 
     protected $dates = ['deleted_at', 'qiandao_at'];
-    public $timestamps = false;
+    const UPDATED_AT = null;
 
     /**
     * The attributes that are mass assignable.
@@ -134,6 +134,16 @@ class User extends Authenticatable
     public function groups()
     {
         return $this->hasMany(CollectionGroup::class, 'user_id');
+    }
+
+    public function emailmodifications()
+    {
+        return $this->hasMany(HistoricalEmailModification::class, 'user_id');
+    }
+
+    public function invitation_tokens()
+    {
+        return $this->hasMany(InvitationToken::class, 'user_id');
     }
 
     public function follow($user_ids)
@@ -352,6 +362,22 @@ class User extends Authenticatable
         }
 
         $this->save();
+    }
+
+    public function scopeNameLike($query, $name)
+    {
+        if($name){
+            return $query->where('name','like','%'.$name.'%');
+        }
+        return $query;
+    }
+
+    public function scopeEmailLike($query, $email)
+    {
+        if($email){
+            return $query->where('email','like','%'.$email.'%');
+        }
+        return $query;
     }
 
 

@@ -79,7 +79,7 @@
         @endif
 
         <!-- 回复 -->
-        @if((!$thread->is_locked)&&(!$thread->noreply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
+        @if((!$thread->is_locked)&&(!$thread->no_reply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
             <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
         @endif
 

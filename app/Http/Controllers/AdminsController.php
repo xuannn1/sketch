@@ -470,11 +470,15 @@ class AdminsController extends Controller
             if(request('level')){
                 $record .='等级+'.request('level');
             }
+            if(request('token_limit')){
+                $record .='邀请码额度+'.request('token_limit');
+            }
             $operation = $this->add_admin_record('user', $user, $record, $reason, 50);
             $info = $user->info;
             $info->salt+=(int)request('salt');
             $info->fish+=(int)request('fish');
             $info->ham+=(int)request('ham');
+            $info->token_limit+=(int)request('token_limit');
             $user->level+=(int)request('level');
             $user->save();
             $info->save();
@@ -544,11 +548,31 @@ class AdminsController extends Controller
         return view('admin.searchusersform');
     }
     public function searchusers(Request $request){
-        $users = User::nameLike($request->name)
-        ->emailLike($request->email)
-        ->select('id','name','email','created_at','last_login')
+        $name = $request->name;
+        $email = $request->email;
+        $users = User::with('emailmodifications')
+        ->nameLike($name)
+        ->emailLike($email)
+        ->select('id','name','email','created_at')
         ->paginate(config('constants.items_per_page'))
         ->appends($request->only('name','email','page'));
-        return view('admin.searchusers', compact('users'));
+        return view('admin.searchusers', compact('users','name','email'));
+    }
+
+    public function convert_to_old_email(User $user, $record)
+    {
+        $records = $user->emailmodifications;
+        $this_record = $records->keyBy('id')->get($record);
+        if(!$this_record){abort(403);}
+        $user->forceFill([
+            'password' => str_random(60),
+            'remember_token' => str_random(60),
+            'activated' => 0,
+            'email' => $this_record->old_email,
+            'no_logging' => 1,
+        ])->save();
+        $this_record->admin_revoked_at = Carbon::now();
+        $this_record->save();
+        return back()->with('success','已经将邮箱复原');
     }
 }

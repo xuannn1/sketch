@@ -17,9 +17,19 @@
     </span>
     </a>
     <span id="full{{$post->id}}" class="hidden main-text">
+        @if( $post->is_bianyuan&&!Auth::check() )
+        <div class="text-center">
+            <h6 class="display-4 grayout"><a href="route('login')">本内容只对注册用户开放，请登陆后查看</a></h6>
+        </div>
+        @elseif( $post->is_bianyuan&&Auth::check()&&Auth::user()->level < 1 )
+        <div class="text-center">
+            <h6 class="display-4 grayout">本内容为限制讨论，只对1级以上注册用户开放，请升级后查看</a></h6>
+        </div>
+        @else
         <div class="main-text">
             {!! StringProcess::wrapParagraphs($post->body) !!}
         </div>
+        @endif
     </span>
     <a type="button" name="button" id="expand{{$post->id}}" onclick="expanditem('{{$post->id}}')">展开</a>
 </article>
