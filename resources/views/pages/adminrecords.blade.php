@@ -24,12 +24,15 @@
                     @foreach($records as $record)
                     <div class="">
                         <h6>
+                            @if( !$record->is_public )
+                            <span class="glyphicon glyphicon-eye-close"></span>
+                            @endif
                             {{ $record->operator->name }}&nbsp;
                             {{ $record->created_at->setTimezone('Asia/Shanghai') }}&nbsp;
                             {{ config('adminoperations')[$record->operation] }}&nbsp;
                             {{ $record->record }}&nbsp;
                             原因：{{ $record->reason }}
-                        </h5>
+                        </h6>
                     </div>
                     @endforeach
                 </div>

@@ -129,12 +129,15 @@ class PostsController extends Controller
         }
         if($post->type==='review'){
             $review = $post->review;
+            if($review->editor_recommend){
+                $reviewee = $review->reviewee;
+                $reviewee->update(['recommended'=>false]);
+            }
             if($review){
                 $review->delete();
                 $this->clearAllThread($thread->id);
             }
         }
-
         $post->delete();
         $this->clearPostProfile($id);
         return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");

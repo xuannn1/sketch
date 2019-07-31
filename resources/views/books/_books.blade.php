@@ -54,7 +54,7 @@
             <span class="pull-right smaller-20">
                 @foreach($thread->tags as $tag)
                 @if($tag->tag_type!='编推')
-                <i><a href="{{ route('books.index', StringProcess::removeWithTag($tag->id,request()->all())) }}">{{ $tag->tag_name }}</a></i>
+                <i><a href="{{ route('books.index', StringProcess::mergeWithTag($tag->id, request()->all())) }}">{{ $tag->tag_name }}</a></i>
                 @endif
                 @endforeach
             </span>

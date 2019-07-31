@@ -70,6 +70,7 @@ class PagesController extends Controller
         $user_id = 0;
         $user_name = null;
         $page = is_numeric($request->page)? $request->page:'1';
+        $is_public='';
 
         if(Auth::check()&&$request->user_id==Auth::id()){
             $user_id = Auth::id();
@@ -77,14 +78,19 @@ class PagesController extends Controller
         if(Auth::check()&&Auth::user()->isAdmin()&&$request->user_id>0){
             $user_id = $request->user_id;
         }
-
+        if(Auth::check()&&Auth::user()->isAdmin()){
+            $is_public="include_private";
+        }
         if($user_id>0){
-            CacheUser::Ainfo()->clear_column('administration_reminders');
-            $records = $this->findAdminRecords($user_id, $page);
             $user_name = CacheUser::user($user_id)->name;
+        }
+
+        if($user_id>0||$is_public){
+            CacheUser::Ainfo()->clear_column('administration_reminders');
+            $records = $this->findAdminRecords($user_id, $page, $is_public);
         }else{
             $records = Cache::remember('adminrecords-p'.$page, 5, function () use($page) {
-                return $this->findAdminRecords(0, $page);
+                return $this->findAdminRecords(0, $page, '');
             });
         }
 

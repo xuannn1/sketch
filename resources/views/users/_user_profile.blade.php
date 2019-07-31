@@ -57,6 +57,12 @@
         <span>连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
         <span>最后签到时间：{{ $user->qiandao_at?$user->qiandao_at->diffForHumans():'' }}</span>
     </div>
+    <div class="font-5">
+        @if($info->invitor_id>0)
+        <span><a href="{{route('user.show', $info->invitor_id)}}">邀请人ID:{{ $info->invitor_id }}</a> </span>&nbsp;&nbsp;&nbsp;
+        @endif
+        <span>剩余邀请额度：{{ $info->token_limit }}</span>
+    </div>
     @endif
 </div>
 @if($intro&&$intro->body)

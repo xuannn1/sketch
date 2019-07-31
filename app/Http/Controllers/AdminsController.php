@@ -38,7 +38,7 @@ class AdminsController extends Controller
         return view('admin.index');
     }
 
-    private function add_admin_record($type='', $item='', $record='', $reason='', $operation = 0)
+    private function add_admin_record($type='', $item='', $record='', $reason='', $operation = 0, $is_public=true)
     {
         if(!$item||$operation==0){return;}
         Administration::create([
@@ -49,6 +49,7 @@ class AdminsController extends Controller
             'record' => $record,
             'administratable_type' => $type,
             'administratable_id' => $item->id,
+            'is_public' => $is_public,
         ]);
         return $operation;
     }
@@ -64,6 +65,7 @@ class AdminsController extends Controller
         $reason = $request->reason;
         $thread_id = $thread->id;
         $user = $thread->user;
+        $is_public = true;
 
         if ($var=="1"&&!$thread->is_locked){//锁帖
             $thread->update(['is_locked'=>true]);
@@ -133,7 +135,8 @@ class AdminsController extends Controller
 
         if ($var=="43"&&$thread->recommended){// 取消推荐
             $thread->update(['recommended'=>false]);
-            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 43);
+            $is_public = false;
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 43, $is_public);
         }
 
         if ($var=="44"){// 加精华
@@ -145,7 +148,8 @@ class AdminsController extends Controller
         if ($var=="45"){// 取消精华
             $tag = ConstantObjects::find_tag_by_name('精华');
             $thread->tags()->detach($tag->id);
-            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 45);
+            $is_public = false;
+            $operation = $this->add_admin_record('thread',$thread, $record, $reason, 45, $is_public);
         }
 
         if ($var=="46"){// 加置顶
@@ -179,7 +183,7 @@ class AdminsController extends Controller
 
         $this->clearAllThread($thread_id);
         CacheUser::clearuser($user->id);
-        if($user){
+        if($user&&$is_public){
             $user->remind('new_administration');
         }
         if($operation===5){
@@ -437,8 +441,8 @@ class AdminsController extends Controller
             $info->save();
         }
         if ($var=="18"){//设置禁止登陆时间
-            $operation = $this->add_admin_record('user', $user, $record.'|'.request('nologging-days').'天', $request, 18);
-            $this->no_log_user($user, request('noposting-days'));
+            $operation = $this->add_admin_record('user', $user, $record.'|'.request('nologging-days').'天', $reason, 18);
+            $this->no_log_user($user, request('nologging-days'));
         }
         if ($var=="19"){//解除禁止登陆
             $operation = $this->add_admin_record('user', $user, $record, $reason, 19);

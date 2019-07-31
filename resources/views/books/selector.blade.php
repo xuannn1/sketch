@@ -55,47 +55,59 @@
                             @endforeach
                         </div>
                         <hr>
-                        <div class="h4">
-                            <div class="">
-                                <span class="font-3">通用标签复合选择：</span>
-                                <span class="grayout font-6">（通用标签复合选择会选择含有任意一项以下tag的书籍，为了达到筛选目的，建议不要一次选择太多tag。另，等级较低时一部分筛选项不可见）</span>
-                            </div>
-                            <?php $previous_tag_type = 0; ?>
-                            <div>
-                                @foreach ($tag_range['book_custom_Tags'] as $tag)
-                                @if($previous_tag_type!=$tag->tag_type)
-                                <br><span>{{ $tag->tag_type }}:</span>
-                                @elseif($previous_tag_type===0)
-                                <span>{{ $tag->tag_type }}:</span>
-                                @endif
-                                @if(!$tag->is_bianyuan||Auth::check()&&Auth::user()->level>2)
-                                <label class="">
-                                    <input type="checkbox" class="" name="withTag[]" value="{{ $tag->id }}">{{ $tag->tag_name }}&nbsp;&nbsp;
-                                </label>
-                                @endif
-                                <?php $previous_tag_type = $tag->tag_type ?>
-                                @endforeach
+                        <div class="">
+                            <a type="button" data-toggle="collapse" data-target="#combo-selection" style="cursor: pointer;" class="font-4">
+                                点击显示通用标签复合选择</a>
+                            <div class="collapse" id="combo-selection">
+                                <div class="h4">
+                                    <div class="">
+                                        <span class="font-3">通用标签复合选择：</span>
+                                        <span class="grayout font-6">（通用标签复合选择会选择含有任意一项以下tag的书籍，为了达到筛选目的，建议不要一次选择太多tag。另，等级较低时一部分筛选项不可见）</span>
+                                    </div>
+                                    <?php $previous_tag_type = 0; ?>
+                                    <div>
+                                        @foreach ($tag_range['book_custom_Tags'] as $tag)
+                                        @if($previous_tag_type!=$tag->tag_type)
+                                        <br><span>{{ $tag->tag_type }}:</span>
+                                        @elseif($previous_tag_type===0)
+                                        <span>{{ $tag->tag_type }}:</span>
+                                        @endif
+                                        @if(!$tag->is_bianyuan||Auth::check()&&Auth::user()->level>2)
+                                        <label class="">
+                                            <input type="checkbox" class="" name="withTag[]" value="{{ $tag->id }}">{{ $tag->tag_name }}&nbsp;&nbsp;
+                                        </label>
+                                        @endif
+                                        <?php $previous_tag_type = $tag->tag_type ?>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <hr>
-                        <div class="h4">
-                            <div class="">
-                                <span class="font-3">通用标签反选：</span>
-                                <span class="grayout font-6">（通用标签反选会显示不含以下任意已勾选标签的结果。）</span>
-                            </div>
-                            <?php $previous_tag_type = 0; ?>
-                            <div class="">
-                                @foreach ($tag_range['book_custom_Tags'] as $tag)
-                                @if($previous_tag_type!=$tag->tag_type)
-                                <br><span>{{ $tag->tag_type }}:</span>
-                                @elseif($previous_tag_type===0)
-                                <span>{{ $tag->tag_type }}:</span>
-                                @endif
-                                <label class="admin-anonymous">
-                                    <input type="checkbox" class="" name="excludeTag[]" value="{{ $tag->id }}"{{$tag->is_bianyuan?'checked':''}}>{{ $tag->tag_name }}
-                                </label>&nbsp;&nbsp;
-                                <?php $previous_tag_type = $tag->tag_type ?>
-                                @endforeach
+                        <div class="">
+                            <a type="button" data-toggle="collapse" data-target="#combo-exclude-selection" style="cursor: pointer;" class="font-4">
+                                点击显示通用标签反选</a>
+                            <div class="collapse" id="combo-exclude-selection">
+                                <div class="h4">
+                                    <div class="">
+                                        <span class="font-3">通用标签反选：</span>
+                                        <span class="grayout font-6">（通用标签反选会显示不含以下任意已勾选标签的结果。）</span>
+                                    </div>
+                                    <?php $previous_tag_type = 0; ?>
+                                    <div class="">
+                                        @foreach ($tag_range['book_custom_Tags'] as $tag)
+                                        @if($previous_tag_type!=$tag->tag_type)
+                                        <br><span>{{ $tag->tag_type }}:</span>
+                                        @elseif($previous_tag_type===0)
+                                        <span>{{ $tag->tag_type }}:</span>
+                                        @endif
+                                        <label class="admin-anonymous">
+                                            <input type="checkbox" class="" name="excludeTag[]" value="{{ $tag->id }}">{{ $tag->tag_name }}
+                                        </label>&nbsp;&nbsp;
+                                        <?php $previous_tag_type = $tag->tag_type ?>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

@@ -24,4 +24,12 @@ class Administration extends Model
         }
         return $query;
     }
+
+    public function scopeIsPublic($query, $is_public)
+    {
+        if($is_public=="include_private"){
+            return $query;
+        }
+        return $query->where('is_public',1);
+    }
 }
