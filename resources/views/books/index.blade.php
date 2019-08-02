@@ -7,6 +7,7 @@
             <div class="panel-body">
                 @include('books._book_selector')
                 @include('books._book_selected')
+                <?php $threads = $results['threads']; ?>
                 {{ $threads->links() }}
                 @include('books._books')
                 {{ $threads->links() }}

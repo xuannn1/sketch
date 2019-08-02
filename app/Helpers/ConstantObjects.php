@@ -167,22 +167,54 @@ class ConstantObjects
 
     public static function find_tags_by_withTag($withTag)
     {
-        $tags =[];
         $tag_collection=collect();
         $andTags=explode('-',$withTag);
         foreach($andTags as $andTag){
             $orTags = explode('_',$andTag);
-            $tags = array_merge($orTags,$tags);
+            $tags = collect();
+            foreach($orTags as $orTag){
+                if($orTag>0){
+                    $tag = self::find_tag_by_id($orTag);
+                    if($tag){
+                        $tags->push($tag);
+                    }
+                }
+            }
+            if($tags->count()>0){
+                $tag_collection->push($tags);
+            }
         }
-        foreach($tags as $tagid){
-            if($tagid>0){
-                $tag = self::find_tag_by_id($tagid);
+
+        return $tag_collection;
+    }
+
+    public static function find_tags_by_excludeTag($excludeTag)
+    {
+        $tag_collection=collect();
+        $tags=explode('-',$excludeTag);
+        foreach($tags as $tag_id){
+            if($tag_id>0){
+                $tag = self::find_tag_by_id($tag_id);
                 if($tag){
                     $tag_collection->push($tag);
                 }
             }
         }
+
         return $tag_collection;
+    }
+
+    public static function find_channels_by_inChannel($inChannel)
+    {
+        $channels = collect();
+        $channel_ids=explode('-',$inChannel);
+        foreach($channel_ids as $channel_id){
+            $channel = collect(config('channel'))->keyby('id')->get($channel_id);
+            if($channel){
+                $channels->push($channel);
+            }
+        }
+        return $channels;
     }
 
     public static function titles()//获得站上所有的titles

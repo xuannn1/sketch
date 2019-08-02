@@ -26,7 +26,8 @@
             @if($info->token_limit>0)
             <form method="POST" action="{{ route('invitation_token.store_my_token') }}" name="store_my_token">
                 {{ csrf_field() }}
-                <button type="submit" class="btn btn-lg btn-danger sosad-button">新建邀请码</button>
+                <button type="submit" class="btn btn-lg btn-danger sosad-button">新建限时邀请码</button>
+                <h6>（如果被邀请人在一月内违反版规，邀请人需负连带责任）</h6>
             </form>
             @endif
         </div>

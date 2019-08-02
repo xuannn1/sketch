@@ -328,4 +328,39 @@ class StringProcess
         return $excludeTag;
     }
 
+    public static function concatenate_channels($array=[])
+    {
+        $inChannel='';
+        foreach($array as $channel_id){
+            if($channel_id!=0){
+                $inChannel=StringProcess::concatenate_with_char('-',$inChannel, $channel_id);
+            }
+        }
+        return $inChannel;
+    }
+
+    public static function removeInChannel($id, $originalfilter='')
+    {
+        $finalfilter=[];
+        foreach($originalfilter as $key=>$filter){
+            if($key!='inChannel'){
+                $finalfilter=array_merge([$key=>$filter], $finalfilter);
+            }
+        }
+
+        if(array_key_exists('inChannel',$originalfilter)){
+            $inChannel='';
+            $oldInChannel = explode('-',$originalfilter['inChannel']);
+            foreach($oldInChannel as $oldChannel){
+                if($oldChannel!=$id){
+                    $inChannel=self::concatenate_with_char('-',$oldChannel,$inChannel);
+                }
+            }
+            if($inChannel){
+                $finalfilter=array_merge(['inChannel'=>$inChannel], $finalfilter);
+            }
+        }
+        return $finalfilter;
+    }
+
 }

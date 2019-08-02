@@ -75,6 +75,7 @@ class InvitationTokensController extends Controller
         $new_token['invitation_times'] = 1;
         $new_token['user_id'] = Auth::id();
         $new_token['is_public'] = false;
+        $new_token['token_level'] = 2;
         InvitationToken::create($new_token);
 
         $info->update(['token_limit'=>$info->token_limit-1]);

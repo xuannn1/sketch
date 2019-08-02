@@ -14,6 +14,9 @@
                 <div class="font-3">
                     <span>发文发帖前请务必阅读：<a href="http://sosad.fun/threads/136">《版规》</a>、<a href="{{ route('help') }}">《帮助》</a></span>
                 </div>
+                <div class="font-5">
+                    不看帮助、版规，直接发布《帮助》、《版规》中已经写明内容的小白求助，视作无意义水贴，见即锁且等级清零。
+                </div>
                 <h4>请选择主题对应类型：</h4>
                 @foreach ($tags as $index => $tag)
                 <label class="radio-inline"><input type="radio" name="tag" value="{{ $tag->id }}">{{ $tag->tag_name }}</label>
@@ -31,8 +34,9 @@
                     <input type="text" name="brief" class="form-control" value="{{ old('brief') }}" placeholder="请输入不超过50字的主题简介">
                 </div>
                 <div>
-                    <label for="brief">是否含有“边缘限制”题材？</label>
+                    <label for="brief">讨论内容是否含有“边缘限制”题材？</label>
                     <div class="font-6">
+                        <a href="https://sosad.fun/posts/848">戳《版规》了解什么是“边限”。</a>
                         涉及“边限”的主题讨论，必须勾选边缘限制，且仍需标题简介和谐，在文案适当预警。标题简介禁止任何擦边性描写、性暗示。讨论内容和性描述相关的，简介需以“午夜场之”开头，预警围观咸鱼。
                     </div>
                     <div>

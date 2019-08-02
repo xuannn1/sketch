@@ -43,7 +43,9 @@ trait ThreadObjectTraits{
     {
         return Cache::remember('thread.'.$id, 10, function () use($id){
             $thread = \App\Models\Thread::find($id);
-            $thread->load('author.title');
+            if($thread){
+                $thread->load('author.title');
+            }
             return $thread;
         });
     }

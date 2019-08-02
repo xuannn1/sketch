@@ -219,13 +219,9 @@ class BooksController extends Controller
 
         $results = $this->find_books_with_query($query_id, $request_data);
 
-        $threads = $results['threads'];
+        //dd($results['excluded_tags']);
 
-        $selected_tags = $results['selected_tags'];
-
-        $excluded_tags = $results['excluded_tags'];
-
-        return view('books.index', compact('threads','tags','selected_tags','excluded_tags'));
+        return view('books.index', compact('tags','results'));
     }
 
     public function selector(Request $request)

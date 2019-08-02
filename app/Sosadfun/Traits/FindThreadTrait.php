@@ -7,8 +7,12 @@ trait FindThreadTrait{
 
     public function findThread($id)
     {
-        return Cache::remember('thread.'.$id, 15, function () use($id){
-            return \App\Models\Thread::find($id);
+        return Cache::remember('thread.'.$id, 10, function () use($id){
+            $thread = \App\Models\Thread::find($id);
+            if($thread){
+                $thread->load('author.title');
+            }
+            return $thread;
         });
     }
 }

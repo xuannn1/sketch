@@ -36,4 +36,27 @@ return [
       '7' => '打赏', //已作废
 	  '8' => '被人圈' //还没做
    ],
+   'token_level' => [
+       0 => [
+         'activated' => false,
+         'level' =>0,
+         'fish' => 0,
+         'salt' => 0,
+         'ham' => 0,
+       ],
+       2 => [
+         'activated' => false,
+         'level' =>2,
+         'fish' => 10,
+         'salt' => 50,
+         'ham' => 0,
+       ],
+       7 => [
+         'activated' => false,
+         'level' =>7,
+         'fish' => 5000,
+         'salt' => 10000,
+         'ham' => 200,
+       ],
+   ]
 ];

@@ -21,7 +21,7 @@ class RefreshToken extends Command
      *
      * @var string
      */
-    protected $description = 'refresh invitation token times';
+    protected $description = 'refresh invitation token';
 
     /**
      * Create a new command instance.
@@ -40,13 +40,15 @@ class RefreshToken extends Command
      */
     public function handle()
     {
-        DB::table('invitation_tokens')
-        ->where('refresh_times','>',0)
-        ->update(['invitation_times' => DB::raw('refresh_times')]);
-
-        DB::table('system_variables')
-        ->update(['token_refreshed_at' => Carbon::now()]);
-
-        Cache::forget('system_variable');
+        DB::table('users')
+        ->join('user_infos','users.id','=','user_infos.user_id')
+        ->join('threads','threads.user_id','=','users.id')
+        ->where('threads.deleted_at','=',null)
+        ->where('threads.is_public','=',1)
+        ->where('threads.total_char','>',5000)
+        ->where('users.level','>=',4)
+        ->where('users.quiz_level','>=',2)
+        ->where('user_infos.token_limit','<',5)
+        ->update(['user_infos.token_limit'=>DB::raw('user_infos.token_limit+1')]);
     }
 }

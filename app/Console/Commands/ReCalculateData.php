@@ -79,6 +79,29 @@ class ReCalculateData extends Command
         ->join('user_infos','user_infos.user_id','=','users.id')
         ->where('user_infos.no_posting_until', '<', Carbon::now()->toDateTimeString())
         ->update(['users.no_posting'=>0]);
+
+        DB::statement('
+            update user_infos
+            set follower_count =
+            (select count(id) from followers
+            where followers.user_id = user_infos.user_id)
+        ');
+
+        DB::statement('
+            update user_infos
+            set following_count =
+            (select count(id) from followers
+            where followers.follower_id = user_infos.user_id)
+        ');
+
+        DB::statement('
+            update tags
+            set thread_count =
+            (select count(id) from tag_thread
+            where tag_thread.tag_id = tags.id)
+        ');
+
+
         Log::emergency('did recalculate Database');
     }
 }

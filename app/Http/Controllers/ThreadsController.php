@@ -42,7 +42,7 @@ class threadsController extends Controller
     public function thread_index(Request $request)
     {
         $page = is_numeric($request->page)? $request->page:'1';
-        $threads = Cache::remember('thread_index_P'.$page.url('/'), 5, function () use($page) {
+        $threads = Cache::remember('thread_index_P'.$page.url('/'), 2, function () use($page) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
             ->inPublicChannel()
@@ -60,7 +60,7 @@ class threadsController extends Controller
     {
         $page = is_numeric($request->page)? $request->page:'1';
         $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
-        $threads = Cache::remember('thread_jinghua_P'.$page.url('/'), 5, function () use($page, $jinghua_tag) {
+        $threads = Cache::remember('thread_jinghua_P'.$page.url('/'), 2, function () use($page, $jinghua_tag) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()//复杂的筛选
             ->inPublicChannel()
@@ -86,7 +86,7 @@ class threadsController extends Controller
         .'-ordered'.$request->ordered
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
-        $threads = Cache::remember($queryid, 5, function () use($request, $channel) {
+        $threads = Cache::remember($queryid, 2, function () use($request, $channel) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
             ->inChannel($channel->id)
@@ -119,7 +119,7 @@ class threadsController extends Controller
 
         if($channel->type==='list'){
             $list_count = Thread::where('user_id', $user->id)->withType('list')->count();
-            if($list_count > $user->level-4){
+            if(($list_count > $user->level-4)&&!$user->isAdmin()&&!$user->isEditor()){
                 return redirect()->back()->with('warning','您的收藏单数量已达上线，不能再建立');
             }
         }
@@ -154,7 +154,7 @@ class threadsController extends Controller
 
         if($channel->type==='list'){
             $list_count = Thread::where('user_id', $user->id)->withType('list')->count();
-            if($list_count > $user->level-4){abort(403);}
+            if(($list_count > $user->level-4)&&!$user->isAdmin()&&!$user->isEditor()){abort(403);}
         }
 
         if($channel->type==='box'){

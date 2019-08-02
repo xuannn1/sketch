@@ -97,17 +97,18 @@ class RegisterController extends Controller
     * @return \App\Models\User
     */
 
-    protected function create(array $data)
+    protected function create(array $data, $invitation_token)
     {
-        return DB::transaction(function()use($data){
-            $invitation_token = InvitationToken::where('token', $data['invitation_token'])->first();
+        return DB::transaction(function()use($data, $invitation_token){
             $invitation_token->inactive_once();
+            $token_level_data = array_key_exists($invitation_token->token_level, config('constants.token_level'))? config('constants.token_level')[$invitation_token->token_level]:'';
             $user = User::firstOrCreate([
                 'email' => $data['email']
             ],[
                 'name' => $data['name'],
                 'password' => bcrypt($data['password']),
                 'activated' => false,
+                'level' => $token_level_data? $token_level_data['level']:0,
             ]);
             $info = UserInfo::firstOrCreate([
                 'user_id' => $user->id
@@ -115,6 +116,9 @@ class RegisterController extends Controller
                 'invitation_token' => $data['invitation_token'],
                 'activation_token' => str_random(45),
                 'invitor_id' => $invitation_token->is_public?0:$invitation_token->user_id,
+                'salt' => $token_level_data? $token_level_data['salt']:0,
+                'fish' => $token_level_data? $token_level_data['fish']:0,
+                'ham' => $token_level_data? $token_level_data['ham']:0,
             ]);
             return $user;
         });
@@ -125,7 +129,11 @@ class RegisterController extends Controller
         $this->validator($request->all())->validate();
 
         if (!Cache::has('registration-limit-' . request()->ip())){
-            $user = $this->create($request->all());
+            $invitation_token = InvitationToken::where('token',$request->invitation_token)->first();
+            if(!$invitation_token||$invitation_token->invitation_times<=0||$invitation_token->invite_until <  Carbon::now()){
+                return redirect('/')->with('danger','邀请码邀请次数已用尽');
+            }
+            $user = $this->create($request->all(), $invitation_token);
             $expiresAt = Carbon::now()->addHours(1);
             Cache::put('registration-limit-' . request()->ip(), true, $expiresAt);
             event(new Registered($user));
@@ -191,9 +199,9 @@ class RegisterController extends Controller
     public function register_by_invitation(Request $request)
     {
         if (Cache::has('registration-by-invitation-limit-' . request()->ip())){
-            return back()->with('danger','您的ip已于5分钟内尝试注册，请勿重复输入信息或试图暴力破解邀请码');
+            return back()->with('danger','本ip('.request()->ip().')已于10分钟内尝试注册，请勿重复输入信息或试图暴力破解邀请码');
         }
-        Cache::put('registration-by-invitation-limit-' . request()->ip(), true, 5);
+        Cache::put('registration-by-invitation-limit-' . request()->ip(), true, 10);
 
         $invitation_token = InvitationToken::with('user')->where('token', request('invitation_token'))->first();
 
@@ -203,6 +211,7 @@ class RegisterController extends Controller
         if (($invitation_token->invitation_times < 1)||($invitation_token->invite_until <  Carbon::now())){
             return back()->with('danger', '邀请码已失效，请更换新版邀请码。');
         }
+        $invitation_token->load('user');
         return view('auth.register_by_invitation', compact('invitation_token'));
     }
 

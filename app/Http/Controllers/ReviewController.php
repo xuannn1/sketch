@@ -70,6 +70,7 @@ class ReviewController extends Controller
         }
 
         $post = $form->updateReview($post, $thread);
+        
         $thread->recalculate_characters();
         $this->clearPostProfile($id);
         $this->clearAllThread($thread->id);

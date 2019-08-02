@@ -10,15 +10,25 @@
         @endif
     </div>
 
+    <div class="select-channel">
+        @foreach($results['channels'] as $channel)
+        <a class="btn btn-info btn-md sosad-button-control" href="{{ route('books.index', StringProcess::removeInChannel($channel->id,request()->all())) }}" role="button">{{ $channel->channel_name }}<span class="glyphicon glyphicon-remove"></span></a>
+        @endforeach
+    </div>
+
     <div class="select-tag">
-        @foreach($selected_tags as $tag)
-        <a class="btn btn-info btn-md sosad-button-control" href="{{ route('books.index', StringProcess::removeWithTag($tag->id,request()->all())) }}" role="button">{{ $tag->tag_name }}<span class="glyphicon glyphicon-remove"></span></a>
+        @foreach($results['selected_tags'] as $tag_group)
+        <div class="">
+            @foreach($tag_group as $tag)
+            <a class="btn btn-info btn-md sosad-button-control" href="{{ route('books.index', StringProcess::removeWithTag($tag->id,request()->all())) }}" role="button">{{ $tag->tag_name }}<span class="glyphicon glyphicon-remove"></span></a>
+            @endforeach
+        </div>
         @endforeach
     </div>
 
     <div class="exclude-tag">
-        @foreach($excluded_tags as $tag)
-        <a class="btn btn-info btn-md sosad-button-control admin-anonymous" href="{{ route('books.index', StringProcess::removeExcludeTag($tag->id,request()->all())) }}" role="button">{{ $tag->tag_name }}<span class="glyphicon glyphicon-remove"></span></a>
+        @foreach($results['excluded_tags'] as $tag)
+        <a class="btn btn-danger btn-md sosad-button-control admin-anonymous" href="{{ route('books.index', StringProcess::removeExcludeTag($tag->id,request()->all())) }}" role="button">{{ $tag->tag_name }}<span class="glyphicon glyphicon-remove"></span></a>
         @endforeach
     </div>
 

@@ -106,7 +106,13 @@
 
                     <!-- 展示推荐书籍内情 -->
                     @if($post->type==='review'&&$post->review)
-                        <div class="post-reply grayout">
+                        <div class="post-reply grayout text-center">
+                            @if($post->review->editor_recommend)
+                            <span class="recommend-label smaller-20">
+                                <span class="glyphicon glyphicon-grain recommend-icon"></span>
+                                <span class="recommend-text">推</span>
+                            </span>
+                            @endif
                             @if($post->review->reviewee)
                             <a href="{{ route('thread.show_profile', $post->review->thread_id) }}">《{{ $post->review->reviewee->title }}》</a>
                             @endif
@@ -124,6 +130,7 @@
                             <span class="badge newchapter-badge badge-tag"><i class="fa fa-heartbeat" aria-hidden="true"></i>推荐</span>
                             @endif
                         </div>
+                        <br>
                     @endif
 
                     <!-- 普通回帖展开 -->

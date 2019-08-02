@@ -48,11 +48,17 @@ class Kernel extends ConsoleKernel
         ->hourly()
         ->onOneServer();
 
-        // $schedule->command('activation:promote')
-        // ->name('token:refresh')
-        // ->timezone('Asia/Shanghai')
-        // ->dailyAt('4:30')
-        // ->onOneServer();
+        $schedule->command('activation:promote')
+        ->name('activation:promote')
+        ->timezone('Asia/Shanghai')
+        ->dailyAt('4:30')
+        ->onOneServer();
+
+        $schedule->command('refresh:token')
+        ->name('refresh:token')
+        ->timezone('Asia/Shanghai')
+        ->weeklyOn(3, '4:45')
+        ->onOneServer();
     }
 
     /**
