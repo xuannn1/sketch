@@ -7,7 +7,7 @@
 
     <body class="error-page">
         <div class="container-fluid">
-            <div class="content text-center">
+            <div class="content">
                 <div class="title">
                     <h2>抱歉，出错了</h2>
                 </div>

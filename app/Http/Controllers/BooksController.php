@@ -11,6 +11,7 @@ use App\Models\Thread;
 use ConstantObjects;
 use CacheUser;
 use Auth;
+use Carbon;
 use StringProcess;
 use App\Sosadfun\Traits\ThreadObjectTraits;
 use App\Sosadfun\Traits\ThreadQueryTraits;
@@ -31,7 +32,7 @@ class BooksController extends Controller
         $user = CacheUser::Auser();
         if(!$user){abort(404);}
         if(Cache::has('created-thread-' . $user->id)){
-            return redirect('/')->with('danger', '您在15分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+            return redirect('/')->with('danger', '您在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
         }
         if($user->no_posting){
             return back()->with('danger','您被禁言中，暂时无法创建书籍');
@@ -50,6 +51,10 @@ class BooksController extends Controller
             abort(403);
         }
 
+        if(Cache::has('created-thread-' . $user->id)){
+            return redirect('/')->with('danger', '您在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+        }
+
         $thread = $form->generateBook($channel);
         $thread->tongren_data_sync($form->all());
 
@@ -59,9 +64,7 @@ class BooksController extends Controller
 
         $thread->user->reward("regular_book");
 
-        if(!$user->isEditor()&&!$user->isAdmin()&&$user->level<5){
-            Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(15));
-        }
+        Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(10));
 
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布文章");
     }

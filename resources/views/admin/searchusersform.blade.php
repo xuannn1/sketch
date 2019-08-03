@@ -11,7 +11,6 @@
                 @include('shared.errors')
 
                 <form method="GET" action="{{ route('admin.searchusers') }}" name="searchusers">
-                    {{ csrf_field() }}
 
                     <div class="form-group">
                         <label for="name">用户名相似字段：</label>

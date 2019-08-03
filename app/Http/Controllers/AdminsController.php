@@ -569,15 +569,18 @@ class AdminsController extends Controller
         $records = $user->emailmodifications;
         $this_record = $records->keyBy('id')->get($record);
         if(!$this_record){abort(403);}
-        $user->forceFill([
-            'password' => str_random(60),
-            'remember_token' => str_random(60),
-            'activated' => 0,
-            'email' => $this_record->old_email,
-            'no_logging' => 1,
-        ])->save();
-        $this_record->admin_revoked_at = Carbon::now();
-        $this_record->save();
+        DB::transaction(function()use($user, $this_record){
+            $user->forceFill([
+                'password' => str_random(60),
+                'remember_token' => str_random(60),
+                'activated' => 0,
+                'email' => $this_record->old_email,
+                'no_logging' => 1,
+            ])->save();
+            $this_record->admin_revoked_at = Carbon::now();
+            $this_record->save();
+        }, 2);
+
         return back()->with('success','已经将邮箱复原');
     }
 }

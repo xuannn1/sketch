@@ -112,7 +112,7 @@ class threadsController extends Controller
         if(!$user||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403);}
 
         if(Cache::has('created-thread-' . $user->id)){
-            return redirect('/')->with('danger', '您在15分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+            return redirect('/')->with('danger', '您在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
         }
 
         if($user->no_posting){
@@ -157,7 +157,7 @@ class threadsController extends Controller
         if(!$user||$user->no_posting||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403);}
 
         if(Cache::has('created-thread-' . $user->id)){
-            return redirect('/')->with('danger', '您在15分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+            return redirect('/')->with('danger', '您在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
         }
 
         if($channel->type==='list'){
@@ -193,9 +193,8 @@ class threadsController extends Controller
             $info->update(['default_box_id'=>$thread->id]);
         }
 
-        if(!$user->isEditor()&&!$user->isAdmin()&&$user->level<5){
-            Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(15));
-        }
+        Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(10));
+
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
     }
 

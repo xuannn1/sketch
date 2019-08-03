@@ -6,7 +6,7 @@
 
     <body class="firewall-page">
         <div class="container-fluid">
-            <div class="content text-center">
+            <div class="content">
                 <div class="title">
                     <h2>本IP：{{request()->ip()}}，被屏蔽访问，如有疑问，请联系管理员。</h2>
                     <br>

@@ -6,7 +6,7 @@
 
     <body class="error-page">
         <div class="container-fluid">
-            <div class="content text-center">
+            <div class="content">
                 <div class="title">
                     <h2>您好，废文网服务器正在技术维护中，请稍后再来。</h2>
                     <br>

@@ -40,10 +40,11 @@ class ErrorCorrection extends Command
     public function handle()
     {
         DB::statement('
-            update user_infos as u1, user_infos as u2
-            set u1.invitee_count =
-            (select count(u2.user_id)
-            where u2.invitor_id>0 and u1.user_id = u2.invitor_id)
+            DELETE c1 FROM collections c1
+            INNER JOIN
+            collections c2
+            WHERE
+            c1.id > c2.id AND c1.user_id = c2.user_id and c1.thread_id = c2.thread_id;
         ');
 
     }

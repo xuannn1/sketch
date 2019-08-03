@@ -146,11 +146,13 @@ class CollectionController extends Controller
     {
         $user = Auth::user();
         $info = CacheUser::Ainfo();
-        Collection::where('user_id','=',$user->id)->update(['updated'=> 0]);
-        CollectionGroup::where('user_id','=',$user->id)->update(['update_count'=> 0]);
+        DB::transaction(function()use($user, $info){
+            Collection::where('user_id','=',$user->id)->update(['updated'=> 0]);
+            CollectionGroup::where('user_id','=',$user->id)->update(['update_count'=> 0]);
+            $user->clear_column('unread_updates');
+            $info->clear_column('default_collection_updates');
+        },2);
         $this->refreshCollectionGroups($user->id);
-        $user->clear_column('unread_updates');
-        $info->clear_column('default_collection_updates');
         return redirect()->back()->with('success','已将所有更新标记为已读');
     }
 

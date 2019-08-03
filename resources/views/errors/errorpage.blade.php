@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="content text-center">
+    <div class="content">
         <div class="title">
             <h1>{{ $error_message }}</h1>
         </div>

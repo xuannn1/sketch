@@ -105,9 +105,13 @@ trait ThreadQueryTraits{
     {
         $request_data = $request->only('withBianyuan', 'ordered');
         $withTag='';
+        $inChannel='';
+        $excludeTag='';
+        
         if($request->channel_id){
             $inChannel=StringProcess::concatenate_channels($request->channel_id);
         }
+
         if($request->book_length_tag){
             $withTag=StringProcess::concatenate_andTag($request->book_length_tag, $withTag);
         }
@@ -120,19 +124,21 @@ trait ThreadQueryTraits{
         if($request->withTag){
             $withTag=StringProcess::concatenate_andTag($request->withTag, $withTag);
         }
-        if($withTag){
-            $request_data = array_merge(['withTag'=>$withTag],$request_data);
-        }
-        $excludeTag='';
+
         if($request->excludeTag){
             $excludeTag=StringProcess::concatenate_excludeTag($request->excludeTag, $excludeTag);
+        }
+
+        if($inChannel){
+            $request_data = array_merge(['inChannel'=>$inChannel],$request_data);
+        }
+        if($withTag){
+            $request_data = array_merge(['withTag'=>$withTag],$request_data);
         }
         if($excludeTag){
             $request_data = array_merge(['excludeTag'=>$excludeTag],$request_data);
         }
-        if($inChannel){
-            $request_data = array_merge(['inChannel'=>$inChannel],$request_data);
-        }
+
         return $request_data;
     }
 }

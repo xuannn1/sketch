@@ -99,31 +99,32 @@ class MessageController extends Controller
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
 
-        DB::table('activities')
-        ->where('user_id',$user->id)
-        ->where('seen',0)
-        ->update([
-            'seen' =>1,
-        ]);
+        DB::transaction(function()use($user, $info){
+            DB::table('activities')
+            ->where('user_id',$user->id)
+            ->where('seen',0)
+            ->update([
+                'seen' =>1,
+            ]);
 
-        DB::table('messages')
-        ->where('receiver_id',$user->id)
-        ->where('seen',0)
-        ->update([
-            'seen' =>1,
-        ]);
+            DB::table('messages')
+            ->where('receiver_id',$user->id)
+            ->where('seen',0)
+            ->update([
+                'seen' =>1,
+            ]);
 
-        $info->clear_column('message_reminders');
-        $info->clear_column('reward_reminders');
-        $info->clear_column('upvote_reminders');
-        $info->clear_column('reply_reminders');
-        $info->clear_column('administration_reminders');
-        $user->clear_column('public_notice_id');
-        $user->clear_column('unread_reminders');
-        $user->clear_column('unread_updates');
-
-        CacheUser::clearuser($user->id);
-
+            $info->message_reminders=0;
+            $info->reward_reminders=0;
+            $info->upvote_reminders=0;
+            $info->reply_reminders=0;
+            $info->administration_reminders=0;
+            $user->public_notice_id=ConstantObjects::system_variable()->latest_public_notice_id;
+            $user->unread_reminders=0;
+            $user->unread_updates=0;
+            $info->save();
+            $user->save();
+        },2);
 
         return redirect()->back();
     }

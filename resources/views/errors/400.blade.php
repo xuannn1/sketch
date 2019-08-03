@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="content text-center">
+    <div class="content">
         <div class="title">
             <h1>普通错误</h1>
             <h4>出现了错误，本页面无法访问</h4>

@@ -7,7 +7,7 @@
 
     <body class="error-page">
         <div class="container-fluid">
-            <div class="content text-center">
+            <div class="content">
                 <div class="title">
                     <h1>发生了未知错误</h1>
                     <h4>因为不确定的原因，发生了未知错误。</h4>
