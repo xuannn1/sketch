@@ -27,6 +27,7 @@
         {{ $posts->links() }}
         <!-- 回复输入框 -->
         @if(Auth::check())
+        <?php $post=null; ?>
         @include('threads._reply')
         @endif
     </div>

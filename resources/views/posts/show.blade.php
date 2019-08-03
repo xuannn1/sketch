@@ -221,7 +221,7 @@
         <?php $replies = $post->new_replies ?>
         @include('posts._replies')
         @if(Auth::check())
-        @include('posts._reply')
+        @include('threads._reply')
         @endif
     </div>
 </div>

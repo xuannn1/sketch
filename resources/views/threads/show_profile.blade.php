@@ -19,6 +19,7 @@
         </div>
         @include('threads._posts')
         @if(Auth::check())
+        <?php $post=null; ?>
         @include('threads._reply')
         @endif
     </div>

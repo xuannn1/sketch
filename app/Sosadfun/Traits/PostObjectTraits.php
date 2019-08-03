@@ -42,7 +42,7 @@ trait PostObjectTraits{
     {
         return Cache::remember('post.'.$id, 10, function () use($id){
              $post = \App\Models\Post::find($id);
-             $post->load('author.title');
+             if($post){$post->load('author.title');}
              return $post;
         });
     }

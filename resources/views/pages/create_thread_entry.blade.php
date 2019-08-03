@@ -88,7 +88,7 @@
                     </div>
                     <hr>
                     <a href="{{ route('threads.create',['channel_id'=>7]) }}" class="btn btn-md btn-info btn-block sosad-button">
-                        站务管理
+                        站务管理（本版不可修改）
                     </a>
                     <a href="{{ route('threads.create',['channel_id'=>8]) }}" class="btn btn-md btn-info btn-block sosad-button">
                         违规举报（本版不可修改）

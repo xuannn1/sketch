@@ -99,6 +99,8 @@ class MessageController extends Controller
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
 
+        if(!$user||!$info){abort(404);}
+
         DB::transaction(function()use($user, $info){
             DB::table('activities')
             ->where('user_id',$user->id)
@@ -125,6 +127,8 @@ class MessageController extends Controller
             $info->save();
             $user->save();
         },2);
+
+        CacheUser::clearuser($user->id);
 
         return redirect()->back();
     }

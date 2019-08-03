@@ -69,7 +69,7 @@ return [
         'order_by' => '7',
         'type' => 'thread',
         'allow_anonymous' => true,
-        'allow_edit' => true,
+        'allow_edit' => false,
         'is_public' => true,
     ],
     (object)[

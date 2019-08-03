@@ -102,6 +102,7 @@ class TitleController extends Controller
     public function wear($title)
     {
         $user = CacheUser::Auser();
+        if(!$user){abort(404);}
         if(!is_numeric($title)){abort(409,'名称不合理');}
         if(!$user->hasTitle($title)){
             return redirect()->back()->with('warning','您不具有这个头衔，无法佩戴');

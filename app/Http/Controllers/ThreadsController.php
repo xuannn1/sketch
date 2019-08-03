@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use DB;
 use Cache;
+use Carbon;
 use ConstantObjects;
 use App\Models\Post;
 use App\Models\Thread;
@@ -309,14 +310,14 @@ class threadsController extends Controller
         $withReplyTo = '';
         if($request->withReplyTo>0){
             $withReplyTo = $this->findPost($request->withReplyTo);
-            if($withReplyTo->thread_id!=$thread->id){
+            if($withReplyTo&&$withReplyTo->thread_id!=$thread->id){
                 $withReplyTo = '';
             }
         }
         $inComponent = '';
         if($request->inComponent>0){
             $inComponent = $this->findPost($request->inComponent);
-            if($inComponent->thread_id!=$thread->id){
+            if($inComponent&&$inComponent->thread_id!=$thread->id){
                 $inComponent = '';
             }
         }

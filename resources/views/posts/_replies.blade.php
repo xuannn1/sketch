@@ -31,7 +31,7 @@
 
                     @if((Auth::check())&&(Auth::user()->isAdmin()))
                     <span>
-                        <a href="#" class="btn btn-xs btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
+                        <a href="#" class="btn btn-md btn-danger sosad-button admin-button"><span class="glyphicon glyphicon-user"></span>管理本帖</a>
                     </span>
                     @endif
 
@@ -75,17 +75,17 @@
     <div class="text-right post-vote">
         <!-- 点赞 -->
         @if(Auth::user()->level >= 1)
-            <span class="voteposts"><button class="btn btn-default btn-xs" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="voteItem('post', {{$post->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
+            <span class="voteposts"><button class="btn btn-default btn-md" data-id="{{$post->id}}"  id = "{{$post->id.'upvote'}}" onclick="voteItem('post', {{$post->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></button></span>
         @endif
 
         <!-- 回复 -->
         @if((!$thread->is_locked)&&(!$thread->no_reply)&&(!Auth::user()->no_posting)&&($post->fold_state==0)&&(Auth::user()->level >= 2))
-            <span ><a href = "#replyToThread" class="btn btn-default btn-xs" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
+            <span ><a href = "#replyToThread" class="btn btn-default btn-md" onclick="replytopost({{ $post->id }}, '{{ StringProcess::trimtext($post->title.$post->brief, 40) }}')"><span class="glyphicon glyphicon-comment">{{ $post->reply_count }}</span></a></span>
         @endif
 
         <!-- 编辑 -->
         @if(($post->user_id===Auth::id())&&(!$thread->is_locked)&&($post->fold_state==0)&&($thread->channel()->allow_edit))
-            <span><a class="btn btn-danger sosad-button btn-xs" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
+            <span><a class="btn btn-danger sosad-button btn-md" href="{{ route('post.edit', $post->id) }}">编辑</a></span>
         @endif
 
     </div>
