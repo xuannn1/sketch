@@ -60,7 +60,7 @@ class threadsController extends Controller
     {
         $page = is_numeric($request->page)? $request->page:'1';
         $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
-        $threads = Cache::remember('thread_jinghua_P'.$page.url('/'), 2, function () use($page, $jinghua_tag) {
+        $threads = Cache::remember('thread_jinghua_P'.$page.url('/'), 10, function () use($page, $jinghua_tag) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()//复杂的筛选
             ->inPublicChannel()
@@ -109,7 +109,11 @@ class threadsController extends Controller
         $user = CacheUser::Auser();
         $channel = collect(config('channel'))->keyby('id')->get($request->channel_id);
 
-        if(!$user||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+        if(!$user||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403);}
+
+        if(Cache::has('created-thread-' . $user->id)){
+            return redirect('/')->with('danger', '您在15分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+        }
 
         if($user->no_posting){
             return back()->with('danger','您被禁言中，无法创建主题');
@@ -150,7 +154,11 @@ class threadsController extends Controller
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
 
-        if(!$user||$user->no_posting||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+        if(!$user||$user->no_posting||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403);}
+
+        if(Cache::has('created-thread-' . $user->id)){
+            return redirect('/')->with('danger', '您在15分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+        }
 
         if($channel->type==='list'){
             $list_count = Thread::where('user_id', $user->id)->withType('list')->count();
@@ -158,7 +166,7 @@ class threadsController extends Controller
         }
 
         if($channel->type==='box'){
-            $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
+            $box_count = Thread::where('user_id', $user->id)->withType('box')->count();
             if($box_count >=1){abort(403);}
         }
 
@@ -184,6 +192,10 @@ class threadsController extends Controller
         if($thread->channel()->type==='box'&&$info->default_box_id===0){
             $info->update(['default_box_id'=>$thread->id]);
         }
+
+        if(!$user->isEditor()&&!$user->isAdmin()&&$user->level<5){
+            Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(15));
+        }
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
     }
 
@@ -192,7 +204,7 @@ class threadsController extends Controller
         $user = CacheUser::Auser();
         $channel = $thread->channel();
 
-        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403,'权限不足');}
+        if(empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403);}
 
         if ((Auth::user()->isAdmin())||($thread->user_id == Auth::id()&&(!$thread->is_locked)&&($thread->channel()->allow_edit))){
 
@@ -267,7 +279,7 @@ class threadsController extends Controller
         $posts = $this->threadProfilePosts($id);
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
-        $thread->recordViewCount('Thread');
+        $thread->recordCount('view', 'thread');
         $thread->recordViewHistory();
         return view('threads.show_profile', compact('thread', 'chapters', 'posts','user','info'));
     }
@@ -281,7 +293,7 @@ class threadsController extends Controller
         }else{
             $thread = $this->findThread($id);
         }
-        $thread->recordViewCount('Thread');
+        $thread->recordCount('view', 'thread');
         $thread->recordViewHistory();
 
         $posts = \App\Models\Post::where('thread_id',$id)

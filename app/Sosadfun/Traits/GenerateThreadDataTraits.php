@@ -34,7 +34,7 @@ trait GenerateThreadDataTraits{
            $thread_data['brief'] = StringProcess::convert_to_public($thread_data['brief']);
         }
         if(!$thread_data['title']){
-            abort('409','标题违规词超标');
+            abort(409,'标题违规词超标');
         }
 
         if ($this->isDuplicateThread($thread_data)){
@@ -76,7 +76,7 @@ trait GenerateThreadDataTraits{
            $thread_data['brief'] = StringProcess::convert_to_public($thread_data['brief']);
         }
         if(!$thread_data['title']||!$thread_data['brief']){
-            abort('409','标题简介违规');
+            abort(409,'标题简介违规');
         }
         return $thread_data;
 

@@ -105,7 +105,7 @@ class PostsController extends Controller
             }
         }
 
-        $post->recordViewCount('Post');
+        $post->recordCount('view', 'post');
 
         return view('posts.show',compact('post','thread','user','info'));
     }

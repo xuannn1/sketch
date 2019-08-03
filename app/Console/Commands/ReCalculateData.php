@@ -101,6 +101,13 @@ class ReCalculateData extends Command
             where tag_thread.tag_id = tags.id)
         ');
 
+        DB::statement('
+            update user_infos
+            set invitee_count =
+            (select count(id) from user_infos as infos
+            where user_infos.user_id = infos.invitor_id)
+        ');
+
 
         Log::emergency('did recalculate Database');
     }

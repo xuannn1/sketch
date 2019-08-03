@@ -21,7 +21,7 @@ class RefreshToken extends Command
      *
      * @var string
      */
-    protected $description = 'refresh invitation token';
+    protected $description = 'refresh invitation token to senior users with books';
 
     /**
      * Create a new command instance.

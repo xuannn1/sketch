@@ -58,7 +58,7 @@ class StoreBook extends FormRequest
            $thread_data['title'] = StringProcess::convert_to_title($thread_data['title']);
         }
         if(!$thread_data['title']||!$thread_data['brief']){
-            abort('409','标题或简介违规');
+            abort(409,'标题或简介违规');
         }
 
         $thread = Thread::create($thread_data);
@@ -74,7 +74,7 @@ class StoreBook extends FormRequest
            $thread_data['title'] = StringProcess::convert_to_title($thread_data['title']);
         }
         if(!$thread_data['title']||!$thread_data['brief']){
-            abort('409','标题或简介违规');
+            abort(409,'标题或简介违规');
         }
 
         $thread->update($thread_data);

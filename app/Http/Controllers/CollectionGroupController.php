@@ -63,7 +63,7 @@ class CollectionGroupController extends Controller
         $info = CacheUser::Ainfo();
 
         if($collection_group->user_id!=$user->id){ //必须本人才能修改自己的收藏页
-            abort(403, '您的权限不足');
+            abort(403);
         }
 
         return view('collections.group_edit', compact('collection_group','info'));
@@ -75,7 +75,7 @@ class CollectionGroupController extends Controller
         $info = CacheUser::Ainfo();
 
         if($collection_group->user_id!=$user->id){ //必须本人才能修改自己的收藏页
-            abort(403, '您的权限不足');
+            abort(403);
         }
 
 

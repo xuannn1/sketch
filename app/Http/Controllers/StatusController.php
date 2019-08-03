@@ -24,7 +24,7 @@ class StatusController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'status_body' => 'required|string|max:180'
+            'status_body' => 'required|string|max:500'
         ]);
         $status_body = trim($request->status_body);
         $last_status = Status::where('user_id', auth()->id())

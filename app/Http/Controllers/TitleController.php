@@ -93,7 +93,7 @@ class TitleController extends Controller
     {
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
-        if(!$user||!$info){abort(404,'找不到该用户');}
+        if(!$user||!$info){abort(404);}
         $default_titles = $this->default_titles();
         $titles = $user->titles;
         return view('titles.mytitles',compact('user','default_titles','titles'));

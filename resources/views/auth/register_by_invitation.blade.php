@@ -32,14 +32,14 @@
 
                     <div class="form-group">
                         <label for="email">邮箱：</label>
-                        <h6 class="grayout">（请输入您的可用邮箱，便于未来找回密码。）</h6>
+                        <h6 class="grayout">（请输入您的可用邮箱，用于激活账户和未来找回密码。）</h6>
                         <input type="text" name="email" class="form-control" value="{{ old('email') }}">
                     </div>
 
                     <div class="form-group">
                         <label for="email_confirmation">确认邮箱：</label>
                         <input type="text" name="email_confirmation" class="form-control" value="{{ old('email_confirmation') }}">
-                        <h6>友情提醒，请<span style="color:#d66666">仔细检查邮箱</span>输入情况，确认邮箱无误。输入错误的邮箱将无法激活自己的账户，也无法找回自己的账户。<br>为了确保验证邮件正常送达，请务必使用个人<code>目前常用、可用的</code>邮箱地址。</h6>
+                        <h6>友情提醒，请<span style="color:#d66666">仔细检查邮箱</span>输入情况，确认邮箱无误。输入错误的邮箱将无法激活自己的账户，也无法找回自己的账户。<br>为了确保验证邮件正常送达，请务必使用个人<span style="color:#d66666">目前常用、可用的</span>邮箱地址。</h6>
                     </div>
 
                     <div class="form-group">
@@ -76,7 +76,7 @@
                         <div class="panel-footer text-center h6">
                             <div class="">
                                 <input type="checkbox" name="have_read_policy1" value=true>
-                                <span>我知道可以直接"搜索"帮助关键词获取疑难解答，或查看所有页面右下角的帮助</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
+                                <span>我知道可以直接"搜索"帮助关键词获取疑难解答，或查看所有页面右下角的帮助，</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
                             </div>
                             <div class="">
                                 <input type="checkbox" name="have_read_policy2" value=true>
@@ -88,7 +88,7 @@
                             </div>
                             <div class="">
                                 <input type="checkbox" name="have_read_policy4" value=true>
-                                <span>我已<span style="color:#d66666">年满十八周岁</span>，神智健全清醒，保证为自己的言行负责。</span>
+                                <span>我保证自己<span style="color:#d66666">年满十八周岁</span>，神智健全清醒，承诺为自己的言行负责。</span>
                             </div>
                         </div>
                     </div>

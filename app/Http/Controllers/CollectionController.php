@@ -34,43 +34,34 @@ class CollectionController extends Controller
 
         $groups = $this->findCollectionGroups($user->id);
         $lists = $this->findLists($user->id);
-        $orderby = 2;
-        if($request->group){
-            $group = $groups->keyby('id')->get($request->group);
-            if($group){
-                $orderby = $group->order_by;
-                $group->update_count();
-            }
-        }
+
+        $group = $request->group? $groups->keyby('id')->get($request->group):null;
+
         $user->clear_column('unread_updates');
         $info->clear_column('default_collection_updates');
 
-        $collections = Collection::join('threads', 'threads.id', '=', 'collections.thread_id')
-        ->where('collections.user_id', $user->id)
-        ->where('collections.group',(int)$request->group??0)
-        ->threadOrdered($orderby)
-        ->select('collections.*')
-        ->paginate(config('preference.threads_per_page'))
-        ->appends($request->only('group'));
+        $page = is_numeric($request->page)? (int)$request->page:1;
 
-        $collections->load('thread.author','thread.tags','thread.last_post','thread.last_component');
-        $lists = $user->lists;
+        $collections = $this->findCollectionIndex($user->id, $group, $page);
 
-        return view('collections.index',compact('user','info','collections','groups','collections','default_collection_updates','order_by','lists'))->with(['show_collection_tab'=>$request->group??'default']);
+        return view('collections.index',compact('user','info','collections','groups','collections','default_collection_updates','order_by','lists'))->with(['show_collection_tab'=>$group?$group->id:'default']);
     }
 
 
     public function store($id)
     {
         if(!$this->checkCollectedOrNot(Auth::id(), (int)request('thread'))){
-            $group = request('group')??CacheUser::Ainfo()->default_collection_group_id;
+            $groups = $this->findCollectionGroups(Auth::id());
+            $group_id = request('group')??CacheUser::Ainfo()->default_collection_group_id;
+            $group = $group_id>0? $groups->keyby('id')->get($group_id):null;
             $thread = $this->findThread($id);
             $collection = Collection::create([
                 'thread_id' => $id,
                 'user_id' => Auth::id(),
-                'group' => $group??0,
+                'group' => $group? $group->id:0,
             ]);
-            $thread->increment('collection_count');
+            $thread->recordCount('collection', 'thread');
+            $this->refreshCollectionIndex(Auth::id(), $group);
 
             return [
                 'success' => '您已成功收藏本文!',
@@ -85,6 +76,9 @@ class CollectionController extends Controller
 
     public function update(Collection $collection, Request $request)
     {
+        $groups = $this->findCollectionGroups(Auth::id());
+        $oldgroup = $collection->group>0? $groups->keyby('id')->get($collection->group):null;
+        $newgroup = null;
         if(!$collection||$collection->user_id!=Auth::id()){
             return 'notwork';
         }
@@ -106,14 +100,16 @@ class CollectionController extends Controller
                 'group' => 0,
             ]);
         }elseif(request()->group){
-            $group = (int)request()->group;
-            if($group>0){
+            $newgroup_id = (int)request()->group;
+            $newgroup = $newgroup_id>0? $groups->keyby('id')->get($newgroup_id):null;
+            if($newgroup){
                 $collection->update([
-                    'group' => $group,
+                    'group' => $newgroup->id,
                 ]);
             }
         }
-
+        $this->refreshCollectionIndex(Auth::id(), $oldgroup);
+        $this->refreshCollectionIndex(Auth::id(), $newgroup);
         return [
             'success' => 'collection updated',
             'collection' => $collection,
@@ -130,6 +126,12 @@ class CollectionController extends Controller
             if($thread){
                 $thread->decrement('collection_count');
             }
+
+            $group_id = $collection->group;
+            $groups = $this->findCollectionGroups(Auth::id());
+            $group = $group_id>0? $groups->keyby('id')->get($group_id):null;
+
+            $this->refreshCollectionIndex(Auth::id(), $group);
 
             $collection->delete();
             return [

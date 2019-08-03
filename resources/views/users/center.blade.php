@@ -52,7 +52,7 @@
                     <a href="{{ route('quiz.quiz_entry') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         答题挑战
                     </a>
-                    @if($user->level>=6)
+                    @if($user->level>=4)
                     <a href="{{ route('invitation_token.my_token') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         邀请好友
                     </a>

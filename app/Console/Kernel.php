@@ -24,25 +24,6 @@ class Kernel extends ConsoleKernel
     */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('webstat:count')
-        ->name('webstat:count')
-        ->daily()
-        ->onOneServer();
-
-        $schedule->command('data:recalculation')
-        ->name('data:recalculation')
-        ->timezone('Asia/Shanghai')
-        ->dailyAt('4:15')
-        ->withoutOverlapping(10)
-        ->onOneServer();
-
-        $schedule->command('data:clearRecords')
-        ->name('data:clearRecords')
-        ->timezone('Asia/Shanghai')
-        ->dailyAt('4:30')
-        ->withoutOverlapping(10)
-        ->onOneServer();
-
         $schedule->command('testlog:send')
         ->name('testlog:send')
         ->hourly()
@@ -51,6 +32,18 @@ class Kernel extends ConsoleKernel
         $schedule->command('activation:promote')
         ->name('activation:promote')
         ->timezone('Asia/Shanghai')
+        ->dailyAt('4:00')
+        ->onOneServer();
+
+        $schedule->command('data:recalculation')
+        ->name('data:recalculation')
+        ->timezone('Asia/Shanghai')
+        ->dailyAt('4:15')
+        ->onOneServer();
+
+        $schedule->command('data:clearRecords')
+        ->name('data:clearRecords')
+        ->timezone('Asia/Shanghai')
         ->dailyAt('4:30')
         ->onOneServer();
 
@@ -58,6 +51,11 @@ class Kernel extends ConsoleKernel
         ->name('refresh:token')
         ->timezone('Asia/Shanghai')
         ->weeklyOn(3, '4:45')
+        ->onOneServer();
+
+        $schedule->command('webstat:count')
+        ->name('webstat:count')
+        ->daily()
         ->onOneServer();
     }
 

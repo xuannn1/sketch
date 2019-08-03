@@ -75,7 +75,7 @@ class MessageController extends Controller
         $speaker_info = CacheUser::info($id);
 
         if(!$speaker||!$speaker_info){
-            abort(404,'找不到对应用户');
+            abort(404);
         }
 
         $recent_previous_message = Message::withPoster($id)

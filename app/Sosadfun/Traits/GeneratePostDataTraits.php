@@ -12,7 +12,7 @@ trait GeneratePostDataTraits{
         $data = $this->only('body','title');
         $data['body'] = StringProcess::trimSpaces($data['body']);
         if ($this->isDuplicatePost($data)){
-            abort(400,'请求已登记，请勿重复提交相同数据');
+            abort(409,'请求已登记，请勿重复提交相同数据');
         }
         $data['brief']=StringProcess::trimtext($data['body'], 45);
         $data['creation_ip'] = request()->ip();

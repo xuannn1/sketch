@@ -49,7 +49,7 @@ class StoreVote extends FormRequest
         $vote_data['receiver_id'] = $voted_model->user_id;
 
         if(!$this->validateAttitude($voted_model, $vote_data['attitude_type'], $vote_data['user_id'])){
-            abort(409); //和已有投票冲突（可能是重复投票，也可能是已经赞还要踩）
+            abort(409,'和已有投票冲突（如重复投票，也可能是已经赞还要踩）'); //和已有投票冲突（可能是重复投票，也可能是已经赞还要踩）
         }
 
         // 被评票的item，统计评票数量

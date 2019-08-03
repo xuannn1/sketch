@@ -39,12 +39,12 @@ class ErrorCorrection extends Command
      */
     public function handle()
     {
-        // DB::statement('
-        //     update tags
-        //     set thread_count =
-        //     (select count(id) from tag_thread
-        //     where tag_thread.tag_id = tags.id)
-        // ');
+        DB::statement('
+            update user_infos as u1, user_infos as u2
+            set u1.invitee_count =
+            (select count(u2.user_id)
+            where u2.invitor_id>0 and u1.user_id = u2.invitor_id)
+        ');
 
     }
 }

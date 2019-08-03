@@ -40,8 +40,19 @@ return [
         ],
 
         'mysql' => [
+            'read' => [
+                'host' => [
+                    env('DB_READ_HOST', env('DB_HOST', '127.0.0.1')),
+                    env('DB_READ_HOST2', env('DB_HOST', '127.0.0.1')),
+                ],
+            ],
+            'write' => [
+                'host' => [
+                    env('DB_HOST', '127.0.0.1'),
+                ],
+            ],
+            'sticky'    => true,
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
@@ -53,7 +64,7 @@ return [
             'strict' => false,
             'engine' => 'InnoDB',
             'options'   => [
-                PDO::ATTR_TIMEOUT => 5,
+                PDO::ATTR_TIMEOUT => 1,
                 //PDO::ATTR_PERSISTENT =>true,
             ],
         ],
@@ -124,6 +135,13 @@ return [
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => 2,
+        ],
+
+        'queue' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => 3,
         ],
 
     ],

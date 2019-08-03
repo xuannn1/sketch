@@ -13,11 +13,8 @@ use App\Models\UserInfo;
 use App\Http\Controllers\Controller;
 use App\Models\InvitationToken;
 use Carbon;
-use Mail;
 use Auth;
 use App\Models\PasswordReset;
-use Swift_Mailer;
-use Swift_SmtpTransport;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
 
 class RegisterController extends Controller
@@ -78,14 +75,6 @@ class RegisterController extends Controller
             if(request('promise')!=config('preference.register_promise')){
                 $validator->errors()->add('promise', '注册担保输入不正确，请认真打字，重新输入。');
             }
-            $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
-            if (!$invitation_token){
-                $validator->errors()->add('invitation_token', '邀请码拼写错误，请重新检查，复制粘贴。');
-            }else{
-                if (($invitation_token->invitation_times < 1)||($invitation_token->invite_until <  Carbon::now())){
-                    $validator->errors()->add('invitation_token', '邀请码已失效，请更换新版邀请码');
-                }
-            }
         });
         return $validator;
     }
@@ -97,9 +86,13 @@ class RegisterController extends Controller
     * @return \App\Models\User
     */
 
-    protected function create(array $data, $invitation_token)
+    protected function create(array $data)
     {
-        return DB::transaction(function()use($data, $invitation_token){
+        return DB::transaction(function()use($data){
+            $invitation_token = InvitationToken::where('token',$data['invitation_token'])->first();
+            if(!$invitation_token||$invitation_token->invitation_times<=0||$invitation_token->invite_until <  Carbon::now()){
+                abort(409, '注册迟了，本邀请码的邀请次数已用尽');
+            }
             $invitation_token->inactive_once();
             $token_level_data = array_key_exists($invitation_token->token_level, config('constants.token_level'))? config('constants.token_level')[$invitation_token->token_level]:'';
             $user = User::firstOrCreate([
@@ -128,21 +121,15 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
 
-        if (!Cache::has('registration-limit-' . request()->ip())){
-            $invitation_token = InvitationToken::where('token',$request->invitation_token)->first();
-            if(!$invitation_token||$invitation_token->invitation_times<=0||$invitation_token->invite_until <  Carbon::now()){
-                return redirect('/')->with('danger','邀请码邀请次数已用尽');
-            }
-            $user = $this->create($request->all(), $invitation_token);
-            $expiresAt = Carbon::now()->addHours(1);
-            Cache::put('registration-limit-' . request()->ip(), true, $expiresAt);
-            event(new Registered($user));
-            $this->sendEmailConfirmationTo($user);
-            session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
-        }else{
-            session()->flash('danger', '您的IP于1小时内已经成功注册，请尝试直接登陆您已注册的账户。');
+        if(Cache::has('registration-limit-' . request()->ip())){
+            return redirect('/')->with('danger', '您的IP今天已经成功注册，请尝试直接登陆您已注册的账户。');
         }
-        return redirect('/');
+        $user = $this->create($request->all());
+        Cache::put('registration-limit-' . request()->ip(), true, Carbon::now()->addDay(1));
+        event(new Registered($user));
+        $this->sendEmailConfirmationTo($user);
+
+        return redirect('/')->with('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
     }
 
     protected function sendEmailConfirmationTo($user)

@@ -324,10 +324,11 @@ class AdminsController extends Controller
         }
     }
 
-    private function clear_user_level($user)// 将用户分数和盐粒清零
+    private function clear_user_level($user)// 将用户分数、答题等级和盐粒清零
     {
         if($user){
             $user->level = 0;
+            $user->quiz_level = 0;
             $info = $user->info;
             $info->salt = 0;
             $info->fish = 0;
