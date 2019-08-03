@@ -230,8 +230,6 @@ class BooksController extends Controller
 
         $results = $this->find_books_with_query($query_id, $request_data);
 
-        //dd($results['excluded_tags']);
-
         return view('books.index', compact('tags','results'));
     }
 

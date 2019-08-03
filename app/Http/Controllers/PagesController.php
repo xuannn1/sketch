@@ -129,16 +129,6 @@ class PagesController extends Controller
 
     }
 
-    public function all_tags()
-    {
-        $level = 0;
-        if(Auth::check()){$level = Auth::user()->level;}
-
-        $tag_range = ConstantObjects::organizeBasicBookTags();
-
-        return view('pages.all_tags', compact('tag_range','level'));
-    }
-
     public function search()
     {
 

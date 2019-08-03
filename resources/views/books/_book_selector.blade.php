@@ -67,7 +67,7 @@
 
         <span class="pull-right">
             <a href="{{ route('books.selector') }}" class="btn btn-default btn-md sosad-button-control">复合筛选</a>
-            <a href="{{ route('all.tags') }}" class="btn btn-default btn-md sosad-button-control">全站标签</a>
+            <a href="{{ route('tag.index') }}" class="btn btn-default btn-md sosad-button-control">全站标签</a>
         </span>
 
     </div>

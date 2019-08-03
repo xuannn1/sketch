@@ -30,7 +30,7 @@ return [
         ],
         'withComponent' => [
             'component_only' => '只显示正文',
-            'post_N_comment' => '显示回帖和点评',
+            'post_N_comment' => '只显示回帖和点评',
             'include_comment' => '显示点评',
         ],
 
@@ -54,7 +54,7 @@ return [
         ],
         'withComponent' => [
             'component_only' => '只显示书评',
-            'post_N_comment' => '显示回帖和点评',
+            'post_N_comment' => '只显示回帖和点评',
             'include_comment' => '显示点评',
         ],
 
@@ -79,7 +79,7 @@ return [
         ],
         'withComponent' => [
             'component_only' => '只显示问+答',
-            'post_N_comment' => '显示回帖和点评',
+            'post_N_comment' => '只显示回帖和点评',
             'include_comment' => '显示点评',
         ],
 

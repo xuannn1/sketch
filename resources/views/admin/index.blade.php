@@ -10,7 +10,7 @@
             <div class="panel-body">
                 <h4>标签（tag）管理</h4>
                 <ul>
-                    <li><a href="{{ route('admin.createtag') }}">新建标签</a></li>
+                    <li><a href="{{ route('tag.index') }}">全站标签</a></li>
                 </ul>
                 <h4>用户（user）管理</h4>
                 <ul>

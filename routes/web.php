@@ -52,7 +52,6 @@
     Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
     Route::get('/recommend_records', 'PagesController@recommend_records')->name('recommend_records');//普通用户查看推荐书籍历史
     Route::get('/create_thread_entry', 'PagesController@create_thread_entry')->name('create_thread_entry');//绝对复杂筛选所有thread？？
-    Route::get('/tags', 'PagesController@all_tags')->name('all.tags');//全站标签列表
 }
 
 {//题头部分
@@ -277,9 +276,6 @@
    Route::get('/admin/sendpublicnoticeform', 'AdminsController@sendpublicnoticeform')->name('admin.sendpublicnoticeform');//发送提醒通知表格
    Route::post('/admin/sendpublicnotice', 'AdminsController@sendpublicnotice')->name('admin.sendpublicnotice')->middleware('admin');//发送提醒通知
 
-   Route::get('/admin/createtag', 'AdminsController@create_tag_form')->name('admin.createtag')->middleware('admin');//显示新建tag表格
-   Route::post('/admin/createtag', 'AdminsController@store_tag')->name('admin.store_tag')->middleware('admin');//存储新tag
-
 
    Route::get('/admin/searchusersform', 'AdminsController@searchusersform')->name('admin.searchusersform');//管理员搜索是否存在某用户
    Route::get('/admin/searchusers', 'AdminsController@searchusers')->name('admin.searchusers');//管理员搜索否存在某用户的结果
@@ -370,4 +366,11 @@
     Route::get('/admin/faq/{faq}/edit', 'FAQController@edit')->name('faq.edit');//管理员修改aq
     Route::patch('/admin/faq/{faq}', 'FAQController@update')->name('faq.update');//管理员保存修改的faq
 
+}
+
+// tag相关
+{
+    Route::resource('tag', 'TagController', ['only' => [
+        'index', 'create', 'store', 'edit', 'update', 'show'
+    ]]); //
 }

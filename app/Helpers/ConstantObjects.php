@@ -62,20 +62,6 @@ class ConstantObjects
         });
     }
 
-    public static function allTags()//获得站上所有的tags
-    {
-        return Cache::remember('allTags', 10, function (){
-            return \App\Models\Tag::all();
-        });
-    }
-
-    public static function noTongrenTags()//获得站上非同人的所有的tags
-    {
-        return Cache::remember('noTongrenTags', 10, function (){
-            return \App\Models\Tag::whereNotIn('tag_type', ['同人原著', '同人CP'])->get();
-        });
-    }
-
     public static function tongren_yuanzhu_tags()
     {
         return Cache::remember('TongrenYuanzhuTags', 10, function (){
@@ -97,50 +83,62 @@ class ConstantObjects
         });
     }
 
-    public static function organizeBookCreationTags()//获得书籍创建必备的tag列表
+    public static function basicBookTags()//篇幅，性向，进度
     {
-        return Cache::remember('organizeBookCreationTags', 10, function (){
-            $yuanchuang_primary_tags = self::primary_tags_in_channel(1);
-            $tongren_primary_tags = self::primary_tags_in_channel(2);
-            $tongren_yuanzhu_tags = self::tongren_yuanzhu_tags();
-            $tongren_CP_tags = self::tongren_CP_tags();
-            $book_length_tags = self::noTongrenTags()->where('tag_type','=','篇幅');
-            $book_status_tags = self::noTongrenTags()->where('tag_type','=','进度');
-            $sexual_orientation_tags = self::noTongrenTags()->where('tag_type','=','性向');
-            $book_custom_Tags = self::book_custom_tags()->sortByDesc('tag_type');
+        return Cache::remember('basicBookTags', 10, function (){
+            $book_length_tags = \App\Models\Tag::where('tag_type','=','篇幅')->get();
+            $book_status_tags =  \App\Models\Tag::where('tag_type','=','进度')->get();
+            $sexual_orientation_tags =  \App\Models\Tag::where('tag_type','=','性向')->get();
+            $editor_tags = \App\Models\Tag::where('tag_type','=','编推')->get();
             return [
-                'yuanchuang_primary_tags' => $yuanchuang_primary_tags,
-                'tongren_primary_tags' => $tongren_primary_tags,
-                'tongren_yuanzhu_tags' => $tongren_yuanzhu_tags,
-                'tongren_CP_tags' => $tongren_CP_tags,
-                'book_length_tags' => $book_length_tags,
-                'book_status_tags' => $book_status_tags,
-                'sexual_orientation_tags' => $sexual_orientation_tags,
-                'book_custom_Tags' => $book_custom_Tags,
-            ];
-        });
-
-    }
-
-    public static function organizeBasicBookTags()//获得书籍tag修改、站内总体标签列表中，必备的tag列表——含同人原著，不含同人CP
-    {
-        return Cache::remember('organizeBasicBookTags', 10, function (){
-            $tongren_yuanzhu_tags = self::tongren_yuanzhu_tags();
-            $book_length_tags = self::noTongrenTags()->where('tag_type','=','篇幅');
-            $book_status_tags = self::noTongrenTags()->where('tag_type','=','进度');
-            $sexual_orientation_tags = self::noTongrenTags()->where('tag_type','=','性向');
-            $editor_tags = self::noTongrenTags()->where('tag_type','=','编推');
-            $book_custom_Tags = self::book_custom_tags()->sortByDesc('tag_type');
-            return [
-                'tongren_yuanzhu_tags' => $tongren_yuanzhu_tags,
                 'book_length_tags' => $book_length_tags,
                 'book_status_tags' => $book_status_tags,
                 'sexual_orientation_tags' => $sexual_orientation_tags,
                 'editor_tags' => $editor_tags,
-                'book_custom_Tags' => $book_custom_Tags,
             ];
         });
+    }
 
+    public static function organizeBookCreationTags()//获得书籍创建必备的tag列表
+    {
+        $yuanchuang_primary_tags = self::primary_tags_in_channel(1);
+        $tongren_primary_tags = self::primary_tags_in_channel(2);
+        $tongren_yuanzhu_tags = self::tongren_yuanzhu_tags();
+        $tongren_CP_tags = self::tongren_CP_tags();
+        $book_custom_Tags = self::book_custom_tags()->sortByDesc('tag_type');
+        return array_merge(self::basicBookTags(),[
+            'yuanchuang_primary_tags' => $yuanchuang_primary_tags,
+            'tongren_primary_tags' => $tongren_primary_tags,
+            'tongren_yuanzhu_tags' => $tongren_yuanzhu_tags,
+            'book_custom_Tags' => $book_custom_Tags,
+        ]);
+    }
+
+    public static function organizeBookSelectorTags()//获得书籍tag修改、站内总体标签列表中，必备的tag列表——含同人原著，不含同人CP
+    {
+        $tongren_primary_tags = self::primary_tags_in_channel(2);
+        $tongren_yuanzhu_tags = self::tongren_yuanzhu_tags();
+        $book_custom_Tags = self::book_custom_tags()->sortByDesc('tag_type');
+        return array_merge(self::basicBookTags(),[
+            'book_custom_Tags' => $book_custom_Tags,
+            'tongren_primary_tags' => $tongren_primary_tags,
+            'tongren_yuanzhu_tags' => $tongren_yuanzhu_tags,
+        ]);
+    }
+
+    public static function organizeBasicBookTags()//获得书籍tag修改、站内总体标签列表中，必备的tag列表——不含同人原著，不含同人CP
+    {
+        $book_custom_Tags = self::book_custom_tags()->sortByDesc('tag_type');
+        return array_merge(self::basicBookTags(),[
+            'book_custom_Tags' => $book_custom_Tags,
+        ]);
+    }
+
+    public static function refreshBookTags()
+    {
+        Cache::forget('bookCustomTags');
+        Cache::forget('TongrenYuanzhuTags');
+        Cache::forget('TongrenCPTags');
     }
 
 
@@ -154,15 +152,24 @@ class ConstantObjects
     public static function find_tag_by_id($tagid)
     {
         return Cache::remember('tagid-'.$tagid, 10, function() use($tagid) {
-            return $tag = \App\Models\Tag::where('id', $tagid)->first();
+            return \App\Models\Tag::where('id', $tagid)->first();
         });
     }
 
-    public static function find_tag_by_parent_id($tagid)
+    public static function findTagProfile($tagid)
     {
-        return Cache::remember('tagparentid-'.$tagid, 10, function() use($tagid) {
-            return $tag = \App\Models\Tag::where('parent_id', $tagid)->get();
+        return Cache::remember('tagProfile-'.$tagid, 10, function() use($tagid) {
+            $tag = \App\Models\Tag::where('id', $tagid)->first();
+            if($tag){
+                $tag->load('parent', 'children');
+            }
+            return $tag;
         });
+    }
+
+    public static function refreshTagProfile($tagid)
+    {
+        Cache::forget('tagProfile-'.$tagid);
     }
 
     public static function find_tags_by_withTag($withTag)

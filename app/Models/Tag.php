@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     protected $guarded = [];
+    const UPDATED_AT = null;
 
     public function threads()
     {
@@ -20,7 +21,7 @@ class Tag extends Model
 
     public function parent()
     {
-        return $this->hasOne(Tag::class, 'parent_id');
+        return $this->belongsTo(Tag::class, 'parent_id');
     }
     public function children()
     {
@@ -29,5 +30,9 @@ class Tag extends Model
     public function admin_only()//判断这个tag是否可以被用户自己控制
     {
         return in_array($this->tag_type, config('tag.limits.admin_only'));
+    }
+    public function channel()
+    {
+        return collect(config('channel'))->keyby('id')->get($this->channel_id);
     }
 }
