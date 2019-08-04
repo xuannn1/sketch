@@ -26,9 +26,6 @@
                     <a href="{{route('user.lists', $user->id)}}" class="btn btn-lg btn-info btn-block sosad-button">
                         我的清单
                     </a>
-                    <a href="#" class="btn btn-lg btn-info btn-block sosad-button">
-                        我的提问（待做）
-                    </a>
                 </div>
             </div>
         </div>

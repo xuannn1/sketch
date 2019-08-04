@@ -1,5 +1,5 @@
 <div class="hidden-sm hidden-md hidden-lg overflow-hidden text-center">
-    @foreach($chapters as $chapter)
+    @foreach($thread->chapters as $chapter)
     <a href="{{ route('post.show', $chapter->id) }}" type="button" class = "btn btn-info sosad-button btn-sm btn-block">
         @if($chapter->is_bianyuan&&!$thread->is_bianyuan)
             <span class="glyphicon glyphicon-info-sign"></span>
@@ -23,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($chapters as $chapter)
+            @foreach($thread->chapters as $chapter)
             <tr>
                 <th><a href="{{ route('post.show', $chapter->id) }}" class = "">
                     @if($chapter->is_bianyuan&&!$thread->is_bianyuan)

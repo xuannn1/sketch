@@ -53,9 +53,7 @@
             <span class="grayout smaller-20"><a href="{{route('post.show', $thread->last_component_id)}}">{{ $thread->last_component? $thread->last_component->title:''}}</a></span>
             <span class="pull-right smaller-20">
                 @foreach($thread->tags as $tag)
-                @if($tag->tag_type!='编推')
                 <i><a href="{{ route('books.index', StringProcess::mergeWithTag($tag->id, request()->all())) }}">{{ $tag->tag_name }}</a></i>
-                @endif
                 @endforeach
             </span>
         </div>

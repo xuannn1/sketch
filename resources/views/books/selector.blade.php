@@ -7,7 +7,7 @@
             <div>
                 <form method="POST" action="{{ route('books.interpret_selector') }}"  name="book_filter">
                     {{ csrf_field() }}
-                    <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control pull-right" href="{{ route('all.tags') }}">全站标签</a>
+                    <a type="button" name="button" class="btn btn-md btn-primary sosad-button-control pull-right" href="{{ route('tag.index') }}">全站标签</a>
                     <div class="selector detailed-selector">
                         <div class="">
                             <span class="font-3">类别筛选：</span>

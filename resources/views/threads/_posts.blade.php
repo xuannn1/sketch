@@ -103,7 +103,7 @@
 
                 <!-- 展示推荐书籍内情 -->
                 @if($post->type==='review'&&$post->review)
-                    <div class="post-reply grayout h4">
+                    <div class="grayout h4">
                         @if($post->review->editor_recommend)
                         <span class="recommend-label smaller-20">
                             <span class="glyphicon glyphicon-grain recommend-icon"></span>

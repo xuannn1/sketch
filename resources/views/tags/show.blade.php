@@ -13,7 +13,7 @@
                     <h4>标签名称：{{$tag->tag_name}}</h4>
                     <h4>标签解释：{{$tag->tag_explanation??'无'}}</h4>
                     <h4>标签类型：{{$tag->tag_type??'暂缺'}}</h4>
-                    <h4>打有标记的书籍：{{$tag->thread_count}}本&nbsp;&nbsp;>><a href="{{route('books.index', ['withTag'=>$tag->id])}}">查看打有这个tag的书籍</a></h4>
+                    <h4>书籍数量：{{$tag->thread_count}}本&nbsp;&nbsp;<a href="{{route('books.index', ['withTag'=>$tag->id])}}">>>查看书籍</a></h4>
                     <h4>边限与否：{{$tag->is_bianyuan?'是边限':'非边限'}}</h4>
                     <h4>大类与否：{{$tag->is_primary?'是大类标签':'非大类标签'}}</h4>
                     <h4>从属频道：<a href="{{route('channel.show', $tag->channel_id)}}">{{$tag->channel_id>0? $tag->channel()->channel_name:'无'}}</a></h4>

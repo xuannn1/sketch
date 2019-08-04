@@ -1,6 +1,6 @@
 <!-- 标题 -->
 <br>
-<div class="article-title {{ $thread->channel()->type == 'thread' ? '':'text-center' }}">
+<div class="article-title text-center">
     <div class="font-2">
         <div>
             @if($thread->channel()->type==='book')
@@ -46,10 +46,10 @@
     <div class="h5">{{ $thread->brief }}</div>
 </div>
 <!-- 简介 -->
-<div class="article-body">
+<div class="article-body text-center">
     <!-- 简介信息 -->
     <div class="">
-        <div class="text-center h5">
+        <div class="h5">
             <!-- 作者信息，发表时间 -->
             <div class="">
                 @if($thread->author)
@@ -63,13 +63,12 @@
                 @endif
                 @endif
             </div>
-            <p class="grayout smaller-20">
+            <div class="grayout smaller-20">
                 发表于{{$thread->created_at? $thread->created_at->diffForHumans():'' }}
                 @if($thread->created_at < $thread->edited_at )
                 修改于{{ $thread->edited_at? $thread->edited_at->diffForHumans():'' }}
                 @endif
-            </p>
-            @if($thread->channel()->type==='book')
+            </div>
             @if($thread->channel_id==2)
                 <div class="">
                     @if($tag=$thread->tags->where('tag_type','同人原著')->first())
@@ -88,20 +87,19 @@
             <div class="">
                 <a href="{{route('books.index', ['inChannel' => $thread->channel_id])}}">{{$thread->channel()->channel_name}}</a>
                 @foreach($thread->tags->whereNotIn('tag_type', ['同人原著', '同人CP']) as $key => $tag)
-                @if($key%4==3)
-                <br>
-                @else
-                -
-                @endif
+                    @if($key%4==3)
+                    <br>
+                    @else
+                    -
+                    @endif
                 <a href="{{route('books.index', ['withTag'=>$tag->id])}}">{{$tag->tag_name}}</a>
                 @endforeach
             </div>
-            @endif
         </div>
     </div>
     <br>
     <!-- 首楼正文 -->
-    <div class="main-text {{ $thread->channel()->type==='thread'&&$thread->use_indentation ? 'indentation':'' }} {{ $thread->channel()->type==='book' ? 'text-center':'' }} ">
+    <div class="main-text {{ $thread->channel()->type==='thread'&&$thread->use_indentation ? 'indentation':'' }} {{ $thread->channel()->type==='book' ? 'text-center':'text-left' }} ">
         @if(($thread->is_bianyuan)&&(!Auth::check()))
         <div class="text-center">
             <h6 class="display-4 grayout"><a href="{{ route('login') }}">主楼隐藏，请登录后查看</a></h6>

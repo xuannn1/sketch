@@ -257,37 +257,30 @@ class threadsController extends Controller
 
     public function chapter_index($id)
     {
-        $thread = $this->findThread($id);
-        $chapters = $this->threadChapterIndex($id);
-        return view('chapters.chapter_index', compact('thread', 'chapters'));
+        $thread = $this->threadProfile($id);
+        return view('chapters.chapter_index', compact('thread'));
     }
 
     public function review_index($id)
     {
-        $thread = $this->findThread($id);
-        $posts = $this->threadReviewIndex($id);
-        return view('reviews.review_index', compact('thread', 'posts'));
+        $thread = $this->threadProfile($id);
+        return view('reviews.review_index', compact('thread'));
     }
 
     public function show_profile($id, Request $request)
     {
         $thread = $this->threadProfile($id);
-        $chapters = '';
-        if($thread->channel()->type==='book'){
-            $chapters = $this->threadChapterIndex($id);
-        }
         $posts = $this->threadProfilePosts($id);
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
         $thread->recordCount('view', 'thread');
         $thread->recordViewHistory();
-        return view('threads.show_profile', compact('thread', 'chapters', 'posts','user','info'));
+        return view('threads.show_profile', compact('thread', 'posts','user','info'));
     }
 
     public function show($id, Request $request)
     {
         $show_config = $this->decide_thread_show_config($request);
-
         if($show_config['show_profile']){
             $thread = $this->threadProfile($id);
         }else{
@@ -297,7 +290,7 @@ class threadsController extends Controller
         $thread->recordViewHistory();
 
         $posts = \App\Models\Post::where('thread_id',$id)
-        ->with('author.title','tags','last_reply')
+        ->with('author.title','last_reply')
         ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
         ->withComponent($request->withComponent)//可以选择是只看component，还是不看component只看post，还是全都看
         ->withFolded($request->withFolded)//是否显示已折叠内容

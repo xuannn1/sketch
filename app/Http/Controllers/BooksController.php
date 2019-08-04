@@ -82,7 +82,7 @@ class BooksController extends Controller
         if($thread->user_id!=Auth::id()){
             return redirect()->back()->with('danger','不能修改不是自己的文章');
         }
-        if($thread->is_locked){
+        if($thread->is_locked&&!Auth::user()->isAdmin()){
             return redirect()->back()->with('danger','不能修改已经锁定的文章');
         }
         return view('books.edit', compact('thread'));

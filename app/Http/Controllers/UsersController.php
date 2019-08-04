@@ -294,7 +294,7 @@ class UsersController extends Controller
             });
         }
 
-        return view('users.show', compact('user','info','intro','threads'))->with(['show_user_tab'=>'book', 'user_title'=>'书籍']);
+        return view('users.show_book', compact('user','info','intro','threads'))->with(['show_user_tab'=>'book', 'user_title'=>'书籍']);
     }
 
     public function threads($id, Request $request)

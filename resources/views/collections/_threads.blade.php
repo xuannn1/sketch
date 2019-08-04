@@ -38,6 +38,19 @@
                         <span class="badge newchapter-badge badge-tag">有更新</span>
                         @endif
                     </span>
+                    &nbsp;by&nbsp;
+                    <span >
+                        @if($thread->author)
+                        @if($thread->is_anonymous)
+                        <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
+                        @if((Auth::check()&&(Auth::user()->isAdmin())))
+                        <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a></span>
+                        @endif
+                        @else
+                        <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a>
+                        @endif
+                        @endif
+                    </span>
                 </div>
 
             </div>
@@ -88,18 +101,12 @@
             <span class="grayout smaller-20">{{ $thread->responded_at? $thread->responded_at->diffForHumans() :''}}</span>
             @endif
 
-            <span class="pull-right">
-                @if($thread->author)
-                @if($thread->is_anonymous)
-                <span>{{ $thread->majia ?? '匿名咸鱼'}}</span>
-                @if((Auth::check()&&(Auth::user()->isAdmin())))
-                <span class="admin-anonymous"><a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a></span>
-                @endif
-                @else
-                <a href="{{ route('user.show', $thread->user_id) }}">{{ $thread->author->name }}</a>
-                @endif
-                @endif
+            <span class="pull-right smaller-20">
+                @foreach($thread->tags as $tag)
+                <i><a href="{{ route('books.index', StringProcess::mergeWithTag($tag->id, request()->all())) }}" class="{{$tag->tag_name==='完结'?'reminder-sign':''}}">{{ $tag->tag_name }}</a></i>
+                @endforeach
             </span>
+
 
         </div>
     </div>

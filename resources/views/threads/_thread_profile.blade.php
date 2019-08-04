@@ -11,3 +11,13 @@
         @include('threads._thread_review')
     @endforeach
 </div>
+@if($thread->channel()->type==='book')
+<div class="panel panel-default">
+    <div class="panel-body">
+        @include('chapters._chapters')
+    </div>
+</div>
+@endif
+@if($thread->channel()->type==='list')
+@include('reviews._reviews')
+@endif

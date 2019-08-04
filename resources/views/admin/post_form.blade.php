@@ -48,6 +48,24 @@
                     </div>
                     @endif
 
+                    @if($post->type==='review'&&$post->review&&$post->review->reviewee)
+                        @if(!$post->review->editor_recommend)
+                            <div class="radio">
+                                <label><input type="radio" name="controlpost" value="101">将本书评标记为当前编推</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="controlpost" value="102">将本书评标记为往期编推</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="controlpost" value="103">将本书评标记为专题推荐</label>
+                            </div>
+                        @else
+                            <div class="radio">
+                                <label><input type="radio" name="controlpost" value="104">将本书评标记为非编推</label>
+                            </div>
+                        @endif
+                    @endif
+
                     <div class="form-group">
                         <label for="reason"></label>
                         <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由，方便查看管理记录，如“涉及举报，标题简介违规”，“涉及举报，不友善”，“边限标记不合规”。"></textarea>

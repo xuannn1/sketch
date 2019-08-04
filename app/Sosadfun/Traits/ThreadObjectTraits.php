@@ -15,8 +15,16 @@ trait ThreadObjectTraits{
             if($thread->channel()->type==="list"&&$thread->last_component_id>0&&$thread->last_component){
                 $thread->last_component->load('review.reviewee');
             }
-            $tongren = \App\Models\Tongren::find($thread->id);
-            $thread->setAttribute('tongren', $tongren);
+            if($thread->channel()->id===2){
+                $tongren = \App\Models\Tongren::find($thread->id);
+                $thread->setAttribute('tongren', $tongren);
+            }
+            if($thread->channel()->type==='book'){
+                $thread->setAttribute('chapters', $this->threadChapterIndex($id));
+            }
+            if($thread->channel()->type==='list'){
+                $thread->setAttribute('reviews', $this->threadReviewIndex($id));
+            }
             $thread->setAttribute('recent_rewards', $thread->latest_rewards());
             return $thread;
         });
@@ -33,6 +41,7 @@ trait ThreadObjectTraits{
             return \App\Models\Post::with('author.title','last_reply')
             ->withType('post')
             ->where('thread_id','=',$id)
+            ->where('fold_state','=',0)
             ->ordered('most_upvoted')
             ->take(5)
             ->get();
@@ -59,40 +68,26 @@ trait ThreadObjectTraits{
     {
         $this->clearThread($id);
         $this->clearThreadProfile($id);
-        $this->clearThreadChapterIndex($id);
-        $this->clearThreadReviewIndex($id);
     }
 
     public function threadChapterIndex($id)
     {
-        return Cache::remember('threadChapterIndex.'.$id, 15, function () use($id) {
-            return DB::table('posts')
-            ->join('chapters', 'chapters.post_id','=','posts.id')
-            ->where('posts.thread_id',$id)
-            ->where('posts.deleted_at','=',null)
-            ->where('posts.type', '=', 'chapter')
-            ->orderBy('chapters.order_by','asc')
-            ->select('posts.id', 'chapters.post_id','posts.user_id', 'posts.thread_id', 'posts.title', 'posts.brief', 'posts.created_at', 'posts.edited_at','posts.is_bianyuan', 'posts.char_count', 'posts.view_count', 'posts.reply_count', 'posts.upvote_count', 'chapters.order_by', 'chapters.volumn_id')
-            ->get();
-        });
-    }
-    public function clearThreadChapterIndex($id)
-    {
-        Cache::forget('threadChapterIndex.'.$id);
+        return DB::table('posts')
+        ->join('chapters', 'chapters.post_id','=','posts.id')
+        ->where('posts.thread_id',$id)
+        ->where('posts.deleted_at','=',null)
+        ->where('posts.type', '=', 'chapter')
+        ->orderBy('chapters.order_by','asc')
+        ->select('posts.id', 'chapters.post_id','posts.user_id', 'posts.thread_id', 'posts.title', 'posts.brief', 'posts.created_at', 'posts.edited_at','posts.is_bianyuan', 'posts.char_count', 'posts.view_count', 'posts.reply_count', 'posts.upvote_count', 'chapters.order_by', 'chapters.volumn_id')
+        ->get();
     }
 
     public function threadReviewIndex($id)
     {
-        return Cache::remember('threadReviewIndex.'.$id, 15, function () use($id) {
-            return \App\Models\Post::with('review.reviewee.author')
-            ->where('thread_id','=',$id)
-            ->withType('review')
-            ->get();
-        });
-    }
-    public function clearThreadReviewIndex($id)
-    {
-        Cache::forget('threadReviewIndex.'.$id);
+        return \App\Models\Post::with('review.reviewee.author')
+        ->where('thread_id','=',$id)
+        ->withType('review')
+        ->get();
     }
 
     public function decide_thread_show_config($request)

@@ -85,18 +85,12 @@ class ConstantObjects
 
     public static function basicBookTags()//篇幅，性向，进度
     {
-        return Cache::remember('basicBookTags', 10, function (){
-            $book_length_tags = \App\Models\Tag::where('tag_type','=','篇幅')->get();
-            $book_status_tags =  \App\Models\Tag::where('tag_type','=','进度')->get();
-            $sexual_orientation_tags =  \App\Models\Tag::where('tag_type','=','性向')->get();
-            $editor_tags = \App\Models\Tag::where('tag_type','=','编推')->get();
-            return [
-                'book_length_tags' => $book_length_tags,
-                'book_status_tags' => $book_status_tags,
-                'sexual_orientation_tags' => $sexual_orientation_tags,
-                'editor_tags' => $editor_tags,
-            ];
-        });
+        return [
+            'book_length_tags' => self::find_tags_by_type('篇幅'),
+            'book_status_tags' => self::find_tags_by_type('进度'),
+            'sexual_orientation_tags' => self::find_tags_by_type('性向'),
+            'editor_tags' => self::find_tags_by_type('编推'),
+        ];
     }
 
     public static function organizeBookCreationTags()//获得书籍创建必备的tag列表
@@ -110,6 +104,7 @@ class ConstantObjects
             'yuanchuang_primary_tags' => $yuanchuang_primary_tags,
             'tongren_primary_tags' => $tongren_primary_tags,
             'tongren_yuanzhu_tags' => $tongren_yuanzhu_tags,
+            'tongren_CP_tags' => $tongren_CP_tags,
             'book_custom_Tags' => $book_custom_Tags,
         ]);
     }
@@ -153,6 +148,13 @@ class ConstantObjects
     {
         return Cache::remember('tagid-'.$tagid, 10, function() use($tagid) {
             return \App\Models\Tag::where('id', $tagid)->first();
+        });
+    }
+
+    public static function find_tags_by_type($tagtype)
+    {
+        return Cache::remember('tagtype-'.$tagtype, 10, function() use($tagtype) {
+            return \App\Models\Tag::where('tag_type', $tagtype)->get();
         });
     }
 

@@ -100,6 +100,22 @@
                         <span class="font-6">如断头车、恶意发文升级</span>
                     </div>
                     @endif
+                    <hr>
+                    @if($thread->channel()->type==='list')
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="111">将全楼标记为当前编推</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="112">将全楼标记为往期编推</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="113">将全楼标记为专题推荐</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="controlthread" value="114">将全楼标记为非编推</label>
+                    </div>
+                    @endif
+                    <hr>
 
                     <label><input type="radio" name="controlthread" value="9">转换板块（注意，如果点选了下面其他选项，记得回头把这个选一下）</label>
                     @foreach(collect(config('channel')) as $channel)

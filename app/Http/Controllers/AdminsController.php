@@ -135,6 +135,8 @@ class AdminsController extends Controller
 
         if ($var=="43"&&$thread->recommended){// 取消推荐
             $thread->update(['recommended'=>false]);
+            $tags = ConstantObjects::find_tags_by_type('编推')->pluck('id')->toArray();
+            $thread->tags()->detach($tags);
             $is_public = false;
             $operation = $this->add_admin_record('thread',$thread, $record, $reason, 43, $is_public);
         }
@@ -177,6 +179,51 @@ class AdminsController extends Controller
             $operation = $this->add_admin_record('thread',$thread, $record, $reason, 60);
         }
 
+        if ($var=='111'){ // 111 全楼改为当前编推
+            $posts = $thread->posts()->with('review.reviewee')->withType('review')->get();
+            $tag = ConstantObjects::find_tag_by_name('当前编推');
+            foreach($posts as $post){
+                $this->editor_recommend_post($post, $tag);
+            }
+            $thread->update(['recommended'=>true]);
+            $thread->tags()->attach($tag);
+            $is_public = false;
+            $operation = $this->add_admin_record('thread', $thread, $record, $reason, 111, $is_public);
+        }
+        if ($var=='112'){ // 112 全楼改为往期编推
+            $posts = $thread->posts()->with('review.reviewee')->withType('review')->get();
+            $tag = ConstantObjects::find_tag_by_name('往期编推');
+            foreach($posts as $post){
+                $this->editor_recommend_post($post, $tag);
+            }
+            $thread->update(['recommended'=>true]);
+            $thread->tags()->attach($tag);
+            $is_public = false;
+            $operation = $this->add_admin_record('thread', $thread, $record, $reason, 112, $is_public);
+        }
+        if ($var=='113'){ // 113 全楼改为专题推荐
+            $posts = $thread->posts()->with('review.reviewee')->withType('review')->get();
+            $tag = ConstantObjects::find_tag_by_name('专题推荐');
+            foreach($posts as $post){
+                $this->editor_recommend_post($post, $tag);
+            }
+            $thread->update(['recommended'=>true]);
+            $thread->tags()->attach($tag);
+            $is_public = false;
+            $operation = $this->add_admin_record('thread', $thread, $record, $reason, 113, $is_public);
+        }
+        if ($var=='114'){ // 114 全楼改为非编推
+            $posts = $thread->posts()->with('review.reviewee')->withType('review')->get();
+            foreach($posts as $post){
+                $this->remove_editor_recommend($post);
+            }
+            $tags = ConstantObjects::find_tags_by_type('编推')->pluck('id')->toArray();
+            $thread->update(['recommended'=>false]);
+            $thread->tags()->detach($tags);
+            $is_public = false;
+            $operation = $this->add_admin_record('thread', $thread, $record, $reason, 114, $is_public);
+        }
+
         if($operation===0){
             return redirect()->back()->with("warning","未能处理该主题。是否未选转换板块？");
         }
@@ -206,6 +253,7 @@ class AdminsController extends Controller
         $post_id = $post->id;
         $user = $post->user;
         $user_id = $user?$user->id:0;
+        $is_public = true;
 
         if ($var=="7"){//删帖
             $operation = $this->add_admin_record('post', $post, $record, $reason, 7);
@@ -280,6 +328,32 @@ class AdminsController extends Controller
             $this->delete_post($post);
             $operation = $this->add_admin_record('post', $post, $record, $reason, 36);
         }
+        if ($var=='101'){ // 101 单项改为当前编推
+            $tag = ConstantObjects::find_tag_by_name('当前编推');
+            $this->editor_recommend_post($post, $tag);
+            $is_public = false;
+            $operation = $this->add_admin_record('post', $post, $record, $reason, 101, $is_public);
+        }
+        if ($var=='102'){ // 101 单项改为往期编推
+            $tag = ConstantObjects::find_tag_by_name('往期编推');
+            if($this->editor_recommend_post($post, $tag)){
+                $is_public = false;
+                $operation = $this->add_admin_record('post', $post, $record, $reason, 102, $is_public);
+            }
+        }
+        if ($var=='103'){ // 101 单项改为专题推荐
+            $tag = ConstantObjects::find_tag_by_name('专题推荐');
+            if($this->editor_recommend_post($post, $tag)){
+                $is_public = false;
+                $operation = $this->add_admin_record('post', $post, $record, $reason, 103, $is_public);
+            }
+        }
+        if ($var=='104'){ // 101 单项改为非编推
+            if($this->remove_editor_recommend($post)){
+                $is_public = false;
+                $operation = $this->add_admin_record('post', $post, $record, $reason, 104, $is_public);
+            }
+        }
 
         if($operation===0){
             return redirect()->back()->with("warning","未能处理该回帖，可能是已经处理了");
@@ -287,10 +361,40 @@ class AdminsController extends Controller
 
         $this->clearPostProfile($post_id);
         CacheUser::clearuser($user_id);
-        if($user){
+        if($user&&$is_public){
             $user->remind('new_administration');
         }
         return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该回帖');
+    }
+
+    private function editor_recommend_post($post, $tag)
+    {
+        if(!$post||!$tag||$post->type!='review'||!$post->review||!$post->review->reviewee||$post->review->editor_recommend){
+            return false;
+        }
+        $post->review->recommend=1;
+        $post->review->editor_recommend=1;
+        $post->review->rating=0;
+        $post->review->save();
+        $post->review->reviewee->recommended=1;
+        $post->review->reviewee->save();
+        $post->review->reviewee->tags()->attach($tag->id);
+        $this->clearThreadProfile($post->review->thread_id);
+        return true;
+    }
+    private function remove_editor_recommend($post)
+    {
+        if(!$post||$post->type!='review'||!$post->review||!$post->review->reviewee||!$post->review->editor_recommend){
+            return false;
+        }
+        $post->review->editor_recommend=0;
+        $post->review->save();
+        $post->review->reviewee->recommended=0;
+        $post->review->reviewee->save();
+        $tags = ConstantObjects::find_tags_by_type('编推')->pluck('id')->toArray();
+        $post->review->reviewee->tags()->detach($tags);
+        $this->clearThreadProfile($post->review->thread_id);
+        return true;
     }
 
     private function delete_post($post)
