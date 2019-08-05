@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="text-center">
-                    <a data-toggle="collapse" data-target="#more_options" class="h5">点击展开更多设置，如文案、勾选标签等（也可日后再填）</a>
+                    <a type="button" data-toggle="collapse" data-target="#more_options" style="cursor: pointer;" class="h5">点击展开更多设置，如文案、勾选标签等（也可日后再填）</a>
                 </div>
 
                 <div id="more_options" class="collapse">

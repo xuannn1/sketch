@@ -68,12 +68,10 @@ class StoreChapter extends FormRequest
     public function updateChapter($post, $thread)
     {
         $chapter = $post->chapter;
-        $post_data = $this->generateUpdatePostData($post);
+        $post_data = $this->generateUpdatePostData($post, $thread);
         $post_data['brief'] = $this->brief;
         $post_data['is_anonymous']=$thread->is_anonymous;
-        if($this->is_bianyuan){
-            $post_data['is_bianyuan']=true;
-        }
+        $post_data['is_bianyuan']= ($thread->is_bianyuan||$this->is_bianyuan)? true:false;
         $chapter_data = $this->only('warning','annotation');
         $chapter_data['annotation']=StringProcess::trimSpaces($chapter_data['annotation']);
         $chapter_data['warning']=StringProcess::trimSpaces($chapter_data['warning']);

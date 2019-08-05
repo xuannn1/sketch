@@ -2,6 +2,9 @@
 <article class="{{ 'status'.$status->id }} {{ 'followuser'.$status->user_id}}">
     <div class="row">
         <div class="col-xs-12 h5">
+            @if(!$status->is_public)
+                <span class="glyphicon glyphicon-eye-close"></span>
+            @endif
             <span>
                 @if($status->author)
                 @if($status->author->title&&$status->author->title->name)
@@ -12,9 +15,6 @@
                 &nbsp;
                 {{ $status->created_at? Carbon::parse($status->created_at)->diffForHumans():'' }}
             </span>
-            @if(!$status->is_public)
-                <span class="glyphicon glyphicon-eye-close"></span>
-            @endif
             @if((Auth::check())&&(Auth::user()->isAdmin()))
             <span>
                 <span><a href="#" data-id="{{$status->id}}" data-toggle="modal" data-target="#TriggerStatusAdministration{{ $status->id }}" class="btn btn-default btn-xs admin-button">管理动态</a></span>
@@ -29,6 +29,7 @@
         </div>
         <div class="col-xs-12 h5 brief-0">
             <span class="smaller-10">
+
                 {!! StringProcess::wrapParagraphs($status->body) !!}
             </span>
         </div>

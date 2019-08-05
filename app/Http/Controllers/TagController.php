@@ -38,12 +38,13 @@ class TagController extends Controller
         $this->validate($request, [
             'tag_name' => 'required|string|max:10|unique:tags',
             'tag_explanation' => 'nullable|string|max:190',
+            'tag_type' => 'required|string|max:10',
             'is_bianyuan' => 'required|string',
             'is_primary' => 'required|string',
             'channel_id' => 'required|numeric',
             'parent_id' => 'required|numeric',
         ]);
-        $tag_data=$request->only('tag_name','tag_explanation','channel_id','parent_id');
+        $tag_data=$request->only('tag_name','tag_explanation','channel_id','parent_id','tag_type');
         $tag_data['is_bianyuan'] = $request->is_bianyuan=='isnot'? false:true;
         $tag_data['is_primary'] = $request->is_primary=='isnot'? false:true;
         $tag = Tag::create($tag_data);
@@ -72,14 +73,15 @@ class TagController extends Controller
         if(!$tag){abort(404);}
 
         $this->validate($request, [
-            'tag_name' => 'required|string|max:10|unique:tags',
+            'tag_name' => 'required|string|max:10',
             'tag_explanation' => 'nullable|string|max:190',
+            'tag_type' => 'required|string|max:10',
             'is_bianyuan' => 'required|string',
             'is_primary' => 'required|string',
             'channel_id' => 'required|numeric',
             'parent_id' => 'required|numeric',
         ]);
-        $tag_data=$request->only('tag_name','tag_explanation','channel_id','parent_id');
+        $tag_data=$request->only('tag_name','tag_explanation','channel_id','parent_id','tag_type');
         $tag_data['is_bianyuan'] = $request->is_bianyuan=='isnot'? false:true;
         $tag_data['is_primary'] = $request->is_primary=='isnot'? false:true;
         $tag->update($tag_data);

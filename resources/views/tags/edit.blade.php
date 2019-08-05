@@ -20,13 +20,13 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tag_name">标签解释：</label>
+                            <label for="tag_explanation">标签解释：</label>
                             <textarea name="tag_explanation" rows="3" class="form-control">{{ $tag->tag_explanation }}</textarea>
                         </div>
 
                         <div class="form-group">
-                            <label for="tag_tyoe">标签类型：</label>
-                            <input type="text" class="form-control" value="{{ $tag->tag_type }}">
+                            <label for="tag_type">标签类型：</label>
+                            <input type="text" name="tag_type" class="form-control" value="{{ $tag->tag_type }}">
                             <div class="text-center">
                                 <a type="button" data-toggle="collapse" data-target="#tag_type_list" style="cursor: pointer;" class="font-6">可选标签类型列表（必须从表内选择）</a>
                             </div>

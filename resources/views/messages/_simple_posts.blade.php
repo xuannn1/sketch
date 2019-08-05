@@ -1,53 +1,54 @@
 <!-- 简单展示一串帖子 -->
 @foreach($activities as $key=>$activity)
 @if($activity->item)
-<article id="post{{ $activity->item_id }}" class="h5">
+<?php $post=$activity->item; ?>
+<article id="post{{ $post->id }}" class="h5">
     <span class="badge newchapter-badge badge-tag {{$activity->seen?'hidden':''}}">新</span>
-    @if($activity->item->type=='post')
-    <a href="{{ route('thread.showpost', $activity->item_id) }}">
-    @elseif($activity->item->type=='comment')
-    <a href="{{ route('post.show', $activity->item_id) }}">
+    @if($post->type=='post')
+    <a href="{{ route('thread.showpost', $post->id) }}">
+    @elseif($post->type=='comment')
+    <a href="{{ route('post.show', $post->id) }}">
     @endif
 
     <!-- 作者信息 -->
     <span>
-        @if($activity->item->is_anonymous)
-        {{ $activity->item->majia ?? '匿名咸鱼' }}
+        @if($post->is_anonymous)
+        {{ $post->majia ?? '匿名咸鱼' }}
         @else
-        {{ $activity->item->author->name }}
+        {{ $post->author->name }}
         @endif
     </span>
     <!-- 时间信息 -->
     <span>
-        {{ $activity->item->created_at->diffForHumans() }}
+        {{ $post->created_at->diffForHumans() }}
     </span>
-    @if($activity->item->simpleThread)
+    @if($post->simpleThread)
     <!-- 主题名称 -->
     <span>
-        在《{{$activity->item->simpleThread->title}}》中
+        在《{{$post->simpleThread->title}}》中
     </span>
     @endif
 
     @if($activity->type==8)
     圈了你
     @else
-        @if($activity->item->type=='post')
+        @if($post->type=='post')
             回复道
         @else
             点评道
         @endif
     @endif
-    <span id="abbreviated{{$activity->item_id}}">
-        {{ $activity->item->brief }}
+    <span id="abbreviated{{$post->id}}">
+        {{ $post->brief }}
     </span>
 
     </a>
-    <span id="full{{$activity->item_id}}" class="hidden main-text">
+    <span id="full{{$post->id}}" class="hidden main-text">
         <div class="main-text">
-            {!! StringProcess::wrapParagraphs($activity->item->body) !!}
+            {!! StringProcess::wrapParagraphs($post->body) !!}
         </div>
     </span>
-    <a type="button" name="button" id="expand{{$activity->item_id}}" onclick="expanditem('{{$activity->item_id}}')">展开</a>
+    <a type="button" name="button" id="expand{{$post->id}}" onclick="expanditem('{{$post->id}}')">展开</a>
     <hr>
 </article>
 @endif

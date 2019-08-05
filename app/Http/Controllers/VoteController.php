@@ -9,6 +9,8 @@ use App\Http\Requests\StoreVote;
 use App\Sosadfun\Traits\FindModelTrait;
 use CacheUser;
 use Cache;
+use Auth;
+use Carbon;
 
 class VoteController extends Controller
 {
@@ -30,6 +32,11 @@ class VoteController extends Controller
             $request['votable_id'],
             array('post','quote','status','thread')
         );
+    }
+
+    private function findVoteRecord($request)
+    {
+        return $request['votable_type'].$request['votable_id'].$request['attitude_type'];
     }
 
     public function index(Request $request)
@@ -87,7 +94,15 @@ class VoteController extends Controller
             ];
         }
 
+        if(Cache::has('VoteRecord'.Auth::id().$this->findVoteRecord($form->all()))){
+            return [
+                'danger' => '重复评票',
+            ];
+		}
+
         $vote = $form->generateVote($voted_model);
+
+        Cache::put('VoteRecord'.Auth::id().$this->findVoteRecord($form->all()),1,Carbon::now()->addDay(1));
 
         return [
             'success' => '已成功评票'

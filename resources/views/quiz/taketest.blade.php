@@ -46,7 +46,7 @@
             </div>
             <br>
             <h6 class="grayout">(答题功能刚制作完成，题库还在填充中，目前只提供基础答题，更多题目和其他分值奖励，请等待新系统出现</h6>
-            <h6 class="grayout">也欢迎热心咸鱼前往<code>出题</code>： <a href="route('thread.show', 13505)">《废文测试题征集楼》</a>，不光可以帮（捉）助（弄）新鱼，一经录用还有<code>丧点</code>的奖励哦～还等什么呢！  )</h6>
+            <h6 class="grayout">也欢迎热心咸鱼前往<code>出题</code>： <a href="route('thread.show', 13505)">《废文测试题征集楼》</a>，不光可以帮（捉）助（弄）新鱼，一经录用还有<code>升级必备虚拟物</code>的奖励哦～还等什么呢！  )</h6>
         </div>
     </div>
 </div>

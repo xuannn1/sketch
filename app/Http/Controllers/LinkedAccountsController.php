@@ -31,9 +31,8 @@ class LinkedAccountsController extends Controller
     {
         $user = CacheUser::Auser();
         if(!$user){abort(404);}
-        $masteraccounts = $user->masteraccounts;
         $branchaccounts = $user->branchaccounts;
-        return view('users.linkedaccounts', compact('user', 'masteraccounts', 'branchaccounts'));
+        return view('users.linkedaccounts', compact('user', 'branchaccounts'));
     }
 
     public function store(Request $request)
@@ -43,7 +42,7 @@ class LinkedAccountsController extends Controller
             'email' => 'required',
             'password'  => 'required'
         ]);
-        if( $user->branchaccounts()->count() >= ($user->level-4) ){
+        if( $user->branchaccounts()->count() >= ($user->level-4)&&!$user->isAdmin()&&!$user->isEditor() ){
             return redirect()->back()->with("warning","您的等级限制了您能够关联的账户上限，请升级后再关联更多账户。");
         }
         $newaccount = User::where('email',request('email'))->first();

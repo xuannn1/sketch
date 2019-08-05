@@ -56,7 +56,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <span class="smaller-5">{{ $thread->brief }}</span>
+                    <span class="smaller-5"><a href="{{ route('thread.show', $thread->id) }}">{{ $thread->brief }}</a></span>
                 </div>
             </div>
             <!-- thread title -->
@@ -83,7 +83,7 @@
                         @endif
                         @foreach($lists as $list)
                         @if(!$list->is_locked||Auth::user()->isAdmin())
-                        <li><a href="{{route('review.create', ['thread' => $list->id, 'reviewee_id'=>$thread->id])}}">向《{{$list->title}}》清单添加本文书评</a></li>
+                        <li><a href="{{route('review.create', ['thread' => $list->id, 'reviewee_id'=>$thread->id])}}">向《{{$list->title}}》清单添加对本文的书评</a></li>
                         @endif
                         @endforeach
 
@@ -95,10 +95,10 @@
         <div class="col-xs-12 h5 brief-0">
             @if($thread->last_component)
             <span class="grayout smaller-5"><a href="{{route('post.show', $thread->last_component_id)}}">《{{$thread->last_component->title}}》</a></span>
-            <span class="grayout smaller-20">{{ $thread->add_component_at ? $thread->add_component_at->diffForHumans() :''}}</span>
-            @else
+            <span class="grayout smaller-20">{{ $thread->last_component->created_at ? $thread->last_component->created_at->diffForHumans() :''}}</span>
+            @elseif($thread->last_post)
             <span class="grayout smaller-20"><a href="{{ route('thread.showpost', $thread->last_post_id) }}">{{ $thread->last_post? StringProcess::simpletrim($thread->last_post->brief, 15):' ' }}</a></span>
-            <span class="grayout smaller-20">{{ $thread->responded_at? $thread->responded_at->diffForHumans() :''}}</span>
+            <span class="grayout smaller-20">{{ $thread->last_post->created_at? $thread->last_post->created_at->diffForHumans() :''}}</span>
             @endif
 
             <span class="pull-right smaller-20">

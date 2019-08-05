@@ -12,7 +12,7 @@
             <div class="panel-body">
                 @foreach($branchaccounts as $account)
                 <div class="linkedaccount{{$user->id}}-{{$account->id}}">
-                    <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-md sosad-button-control" onclick="cancellink({{$user->id}}, {{$account->id}})">取消关联{{$account->name}}</button></li>
+                    <h3><li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-md sosad-button-control" onclick="cancellink({{$user->id}}, {{$account->id}})">取消关联{{$account->name}}</button></li></h3>
                 </div>
                 @endforeach
             </div>
@@ -26,14 +26,14 @@
             <div class="panel-body">
                 @foreach($masteraccounts as $account)
                 <div class="linkedaccount{{$account->id}}-{{$user->id}}">
-                    <li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-md sosad-button-control" onclick="cancellink({{$account->id}}, {{$user->id}})">取消{{$account->name}}对我的关联</button></li>
+                    <h3><li><a href="{{ route('user.show', $account->id) }}">{{ $account->name }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="button" class="btn btn-danger btn-md sosad-button-control" onclick="cancellink({{$account->id}}, {{$user->id}})">取消{{$account->name}}对我的关联</button></li></h3>
                 </div>
                 @endforeach
             </div>
         </div>
         @endif
 
-        @if($branchaccounts->count() < $user->level-3)
+        @if($user->isAdmin()||$user->isEditor()||$branchaccounts->count() < $user->level-3)
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2>关联其他用户</h2>
@@ -50,13 +50,14 @@
                         <label for="password">密码：</label>
                         <input type="password" name="password" class="form-control" value="{{ old('password') }}">
                     </div>
-                    <button type="submit" class="btn btn-danger sosad-button">关联此账户</button>
+                    <button type="submit" class="btn btn-lg btn-danger sosad-button">关联此账户</button>
                 </form>
             </div>
         </div>
         @else
         <h4>您的等级不足，不能增添新的关联账户</h4>
         @endif
+        <h6 class="grayout">友情提醒，关联账户是单向关联关系</h6>
     </div>
 </div>
 @stop

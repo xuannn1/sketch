@@ -248,7 +248,7 @@ class AdminsController extends Controller
         ]);
         $var = request('controlpost');
         $operation = 0;
-        $record = StringProcess::trimtext($post->title.$post->body, 30);
+        $record = StringProcess::trimtext($post->title.$post->body, 25);
         $reason = $request->reason;
         $post_id = $post->id;
         $user = $post->user;
@@ -287,6 +287,13 @@ class AdminsController extends Controller
         if ($var=="12"&&$post->fold_state>0){//转不折叠
             $post->update(['fold_state'=>0]);
             $operation = $this->add_admin_record('post', $post, $record, $reason, 12);
+        }
+        if ($var=="72"){// 72 => '折+扣（回帖折叠，扣除一定虚拟物）',//管理员不愿意回复
+            $record = $this->record_value_changes($record);
+            $post->update(['fold_state'=>1]);
+            if($this->user_value_change($post->user)){
+                $operation = $this->add_admin_record('post', $post, $record, $reason, 72);
+            }
         }
         if($var=='32'){//32 => '回帖折+禁（回帖折叠，发帖人禁言+一天）',//?车轱辘,版务区水贴，作者楼里水贴
             $post->update(['fold_state'=>1]);
@@ -367,6 +374,41 @@ class AdminsController extends Controller
         return redirect()->back()->with('success', '已经成功 '.config('adminoperations')[$operation].' 该回帖');
     }
 
+    private function record_value_changes($record)
+    {
+        if(request('salt')){
+            $record ='盐粒'.request('salt').'|'.$record;
+        }
+        if(request('fish')){
+            $record ='咸鱼'.request('fish').'|'.$record;
+        }
+        if(request('ham')){
+            $record ='火腿'.request('ham').'|'.$record;
+        }
+        if(request('level')){
+            $record ='等级'.request('level').'|'.$record;
+        }
+        if(request('token_limit')){
+            $record ='邀请码额度'.request('token_limit').'|'.$record;
+        }
+        return $record;
+    }
+
+    private function user_value_change($user){
+        if(!$user){return false;}
+        $info = $user->info;
+        if(!$info){return false;}
+        $info->salt+=(int)request('salt');
+        $info->fish+=(int)request('fish');
+        $info->ham+=(int)request('ham');
+        $info->token_limit+=(int)request('token_limit');
+        $user->level+=(int)request('level');
+        $user->save();
+        $info->save();
+        return true;
+    }
+
+
     private function editor_recommend_post($post, $tag)
     {
         if(!$post||!$tag||$post->type!='review'||!$post->review||!$post->review->reviewee||$post->review->editor_recommend){
@@ -379,7 +421,7 @@ class AdminsController extends Controller
         $post->review->reviewee->recommended=1;
         $post->review->reviewee->save();
         $post->review->reviewee->tags()->attach($tag->id);
-        $this->clearThreadProfile($post->review->thread_id);
+        $this->clearAllThread($post->review->thread_id);
         return true;
     }
     private function remove_editor_recommend($post)
@@ -393,7 +435,7 @@ class AdminsController extends Controller
         $post->review->reviewee->save();
         $tags = ConstantObjects::find_tags_by_type('编推')->pluck('id')->toArray();
         $post->review->reviewee->tags()->detach($tags);
-        $this->clearThreadProfile($post->review->thread_id);
+        $this->clearAllThread($post->review->thread_id);
         return true;
     }
 
@@ -446,29 +488,29 @@ class AdminsController extends Controller
         $this->validate($request, [
             'reason' => 'required|string',
         ]);
-        $var = request('controlpost');
+        $var = request('controlstatus');
         $operation = 0;
         $record = StringProcess::trimtext($status->body, 30);
         $reason = $request->reason;
         $status_id = $status->id;
         $user = $status->user;
 
-        if ($var=="61"&&$post->is_public){//转私密
+        if ($var=="61"&&$status->is_public){//转私密
             $status->update(['is_public'=>0]);
             $operation = $this->add_admin_record('status', $status, $record, $reason, 61);
         }
-        if ($var=="62"&&!$post->is_public){//转公开
+        if ($var=="62"&&!$status->is_public){//转公开
             $status->update(['is_public'=>1]);
             $operation = $this->add_admin_record('status', $status, $record, $reason, 62);
         }
 
         if($var=='63'){// 63 => '私+禁（动态转私密，发帖人禁言+一天）',//边限动态
-            $post->update(['is_public'=>0]);
+            $status->update(['is_public'=>0]);
             $this->no_post_user($user,1);
             $operation = $this->add_admin_record('status', $status, $record, $reason, 63);
         }
         if ($var=="64"){// 64 => '私+禁+清（动态转私密，发帖人禁言+1天，积分等级清零）',//多次比较严重的边限/违规动态
-            $post->update(['is_public'=>0]);
+            $status->update(['is_public'=>0]);
             $this->no_post_user($user,1);
             $this->clear_user_level($user);
             $operation = $this->add_admin_record('status', $status, $record, $reason, 64);
@@ -534,7 +576,7 @@ class AdminsController extends Controller
         $reason = $request->reason;
 
         if ($var=="13"){//设置禁言时间
-            $operation = $this->add_admin_record('user', $user, $record.'|'.request('noposting-days').'天', $reason, 13);
+            $operation = $this->add_admin_record('user', $user, request('noposting-days').'天'.$record.'|', $reason, 13);
             $this->no_post_user($user, request('noposting-days'));
         }
         if ($var=="14"){//解除禁言
@@ -546,7 +588,7 @@ class AdminsController extends Controller
             $info->save();
         }
         if ($var=="18"){//设置禁止登陆时间
-            $operation = $this->add_admin_record('user', $user, $record.'|'.request('nologging-days').'天', $reason, 18);
+            $operation = $this->add_admin_record('user', $user, request('nologging-days').'天'.'|'.$record, $reason, 18);
             $this->no_log_user($user, request('nologging-days'));
         }
         if ($var=="19"){//解除禁止登陆
@@ -567,30 +609,10 @@ class AdminsController extends Controller
             return redirect()->back()->with("success","已经成功处理该用户");
         }
         if ($var=="50"){// 分值管理
-            if(request('salt')){
-                $record .='盐粒+'.request('salt');
+            $record = $this->record_value_changes($record);
+            if($this->user_value_change($user)){
+                $operation = $this->add_admin_record('user', $user, $record, $reason, 50);
             }
-            if(request('fish')){
-                $record .='咸鱼+'.request('fish');
-            }
-            if(request('ham')){
-                $record .='火腿+'.request('ham');
-            }
-            if(request('level')){
-                $record .='等级+'.request('level');
-            }
-            if(request('token_limit')){
-                $record .='邀请码额度+'.request('token_limit');
-            }
-            $operation = $this->add_admin_record('user', $user, $record, $reason, 50);
-            $info = $user->info;
-            $info->salt+=(int)request('salt');
-            $info->fish+=(int)request('fish');
-            $info->ham+=(int)request('ham');
-            $info->token_limit+=(int)request('token_limit');
-            $user->level+=(int)request('level');
-            $user->save();
-            $info->save();
         }
 
         if($operation===0){

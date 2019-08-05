@@ -37,7 +37,7 @@
                         <label><input type="radio" name="controluser" value="50">分值管理（正加分，负减分，系统会自动记录分值）</label>
                         <label><input type="text" style="width: 80px" name="salt" value="0">盐粒</label>
                         <label><input type="text" style="width: 80px" name="fish" value="0">咸鱼</label>
-                        <label><input type="text" style="width: 80px" name="ham" value="0">丧点</label>
+                        <label><input type="text" style="width: 80px" name="ham" value="0">火腿</label>
                         <label><input type="text" style="width: 80px" name="level" value="0">等级</label>
                         <label><input type="text" style="width: 80px" name="token_limit" value="0">邀请额度</label>
                     </div>

@@ -18,6 +18,16 @@
                 </div>
 
                 <div class="radio">
+                    <label><input type="radio" name="controlpost" value="72">折+扣（回帖折叠，扣除一定虚拟物）</label>
+                    <h6 class="grayout">管理员不愿意处理该请求，并扣除了一定的虚拟物。（请填写负数数值）</h6>
+                    <label><input type="text" style="width: 40px" name="salt" value="-1">盐粒</label>
+                    <label><input type="text" style="width: 40px" name="fish" value="0">咸鱼</label>
+                    <label><input type="text" style="width: 40px" name="ham" value="0">火腿</label>
+                    <label><input type="text" style="width: 40px" name="level" value="0">等级</label>
+                    <label><input type="text" style="width: 40px" name="token_limit" value="0">邀请额度</label>
+                </div>
+
+                <div class="radio">
                     <label><input type="radio" name="controlpost" value="39">回帖折+禁3（回帖折叠，发帖人禁言+3天）</label>
                     <h6 class="grayout">版务区不看首楼，非边限帖中谈论关于边限</h6>
                 </div>

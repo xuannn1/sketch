@@ -16,7 +16,7 @@ return [
         '同人CP'  , // only one
         '同人聚类'  ,// sum limit
         '版权相关'  ,// sum limit
-        '故事气氛'  ,// sum limit
+        '故事体裁'  ,// sum limit
         '整体时代'  ,// sum limit
         '故事观感'  ,// sum limit
         '强弱关系'  ,// sum limit
@@ -46,6 +46,7 @@ return [
             '床戏性质'  ,
             '同人原著'  ,
             '同人CP'  ,
+            '故事体裁' ,
         ],
         'sum_limit' => [
             '大类'  ,
@@ -53,7 +54,7 @@ return [
             '床戏性质'  ,
             '同人聚类'  ,
             '版权相关'  ,
-            '故事气氛'  ,
+            '故事体裁'  ,
             '整体时代'  ,
             '故事观感'  ,
             '强弱关系'  ,
@@ -126,7 +127,7 @@ return [
         '床戏性质'  , // only one; sum limit
         '同人聚类'  ,// sum limit
         '版权相关'  ,// sum limit
-        '故事气氛'  ,// sum limit
+        '故事体裁'  ,// sum limit
         '整体时代'  ,// sum limit
         '故事观感'  ,// sum limit
         '强弱关系'  ,// sum limit
@@ -149,7 +150,7 @@ return [
         '床戏性质'  , // only one; sum limit
         '同人聚类'  ,// sum limit
         '版权相关'  ,// sum limit
-        '故事气氛'  ,// sum limit
+        '故事体裁'  ,// sum limit
         '整体时代'  ,// sum limit
         '故事观感'  ,// sum limit
         '强弱关系'  ,// sum limit
