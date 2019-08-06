@@ -14,12 +14,12 @@
                 </div>
 
                 <div class="radio">
-                    <label><input type="radio" name="controlstatus" value="63">私+禁（动态转私密，发帖人禁言+一天）</label>
+                    <label><input type="radio" name="controlstatus" value="63">私+禁（动态转私密，发帖人禁言+3天）</label>
                     <h6 class="grayout">单条确定的边限动态/黄图等</h6>
                 </div>
 
                 <div class="radio">
-                    <label><input type="radio" name="controlstatus" value="64">私+禁+清（动态转私密，发帖人禁言+1天，积分等级清零）</label>
+                    <label><input type="radio" name="controlstatus" value="64">私+禁+清（动态转私密，发帖人禁言+7天，积分等级清零）</label>
                     <h6 class="grayout">多次比较严重的边限/违规动态</h6>
                 </div>
 

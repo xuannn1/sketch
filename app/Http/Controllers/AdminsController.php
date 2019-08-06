@@ -96,6 +96,7 @@ class AdminsController extends Controller
             $old_channel = $thread->channel();
             $channel = collect(config('channel'))->keyby('id')->get($request->channel);
             if(!$channel){abort(409, '找不到这个待转频道');}
+            $thread->keep_only_admin_tags();
             $thread->update(['channel_id'=>$channel->id]);
             $record = $old_channel->channel_name."->".$channel->channel_name.'|'.$record;
             $operation = $this->add_admin_record('thread',$thread, $record, $reason, 9);
@@ -143,7 +144,7 @@ class AdminsController extends Controller
 
         if ($var=="44"){// 加精华
             $tag = ConstantObjects::find_tag_by_name('精华');
-            $thread->tags()->attach($tag->id);
+            $thread->tags()->syncWithoutDetaching($tag->id);
             $operation = $this->add_admin_record('thread',$thread, $record, $reason, 44);
         }
 
@@ -156,7 +157,7 @@ class AdminsController extends Controller
 
         if ($var=="46"){// 加置顶
             $tag = ConstantObjects::find_tag_by_name('置顶');
-            $thread->tags()->attach($tag->id);
+            $thread->tags()->syncWithoutDetaching($tag->id);
             $operation = $this->add_admin_record('thread',$thread, $record, $reason, 46);
         }
 
@@ -186,7 +187,7 @@ class AdminsController extends Controller
                 $this->editor_recommend_post($post, $tag);
             }
             $thread->update(['recommended'=>true]);
-            $thread->tags()->attach($tag);
+            $thread->tags()->syncWithoutDetaching($tag);
             $is_public = false;
             $operation = $this->add_admin_record('thread', $thread, $record, $reason, 111, $is_public);
         }
@@ -197,7 +198,7 @@ class AdminsController extends Controller
                 $this->editor_recommend_post($post, $tag);
             }
             $thread->update(['recommended'=>true]);
-            $thread->tags()->attach($tag);
+            $thread->tags()->syncWithoutDetaching($tag);
             $is_public = false;
             $operation = $this->add_admin_record('thread', $thread, $record, $reason, 112, $is_public);
         }
@@ -208,7 +209,7 @@ class AdminsController extends Controller
                 $this->editor_recommend_post($post, $tag);
             }
             $thread->update(['recommended'=>true]);
-            $thread->tags()->attach($tag);
+            $thread->tags()->syncWithoutDetaching($tag);
             $is_public = false;
             $operation = $this->add_admin_record('thread', $thread, $record, $reason, 113, $is_public);
         }
@@ -411,31 +412,35 @@ class AdminsController extends Controller
 
     private function editor_recommend_post($post, $tag)
     {
-        if(!$post||!$tag||$post->type!='review'||!$post->review||!$post->review->reviewee||$post->review->editor_recommend){
+        if(!$post||!$tag||$post->type!='review'||!$post->review){
             return false;
         }
         $post->review->recommend=1;
         $post->review->editor_recommend=1;
         $post->review->rating=0;
         $post->review->save();
-        $post->review->reviewee->recommended=1;
-        $post->review->reviewee->save();
-        $post->review->reviewee->tags()->attach($tag->id);
-        $this->clearAllThread($post->review->thread_id);
+        if($post->review->reviewee){
+            $post->review->reviewee->recommended=1;
+            $post->review->reviewee->save();
+            $post->review->reviewee->tags()->syncWithoutDetaching($tag->id);
+            $this->clearAllThread($post->review->thread_id);
+        }
         return true;
     }
     private function remove_editor_recommend($post)
     {
-        if(!$post||$post->type!='review'||!$post->review||!$post->review->reviewee||!$post->review->editor_recommend){
+        if(!$post||$post->type!='review'||!$post->review){
             return false;
         }
         $post->review->editor_recommend=0;
         $post->review->save();
-        $post->review->reviewee->recommended=0;
-        $post->review->reviewee->save();
-        $tags = ConstantObjects::find_tags_by_type('编推')->pluck('id')->toArray();
-        $post->review->reviewee->tags()->detach($tags);
-        $this->clearAllThread($post->review->thread_id);
+        if($post->review->reviewee){
+            $post->review->reviewee->recommended=0;
+            $post->review->reviewee->save();
+            $tags = ConstantObjects::find_tags_by_type('编推')->pluck('id')->toArray();
+            $post->review->reviewee->tags()->detach($tags);
+            $this->clearAllThread($post->review->thread_id);
+        }
         return true;
     }
 
@@ -504,14 +509,14 @@ class AdminsController extends Controller
             $operation = $this->add_admin_record('status', $status, $record, $reason, 62);
         }
 
-        if($var=='63'){// 63 => '私+禁（动态转私密，发帖人禁言+一天）',//边限动态
+        if($var=='63'){// 63 => '私+禁（动态转私密，发帖人禁言+3天）',//边限动态
             $status->update(['is_public'=>0]);
-            $this->no_post_user($user,1);
+            $this->no_post_user($user,3);
             $operation = $this->add_admin_record('status', $status, $record, $reason, 63);
         }
-        if ($var=="64"){// 64 => '私+禁+清（动态转私密，发帖人禁言+1天，积分等级清零）',//多次比较严重的边限/违规动态
+        if ($var=="64"){// 64 => '私+禁+清（动态转私密，发帖人禁言+7天，积分等级清零）',//多次比较严重的边限/违规动态
             $status->update(['is_public'=>0]);
-            $this->no_post_user($user,1);
+            $this->no_post_user($user,7);
             $this->clear_user_level($user);
             $operation = $this->add_admin_record('status', $status, $record, $reason, 64);
         }

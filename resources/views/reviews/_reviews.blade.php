@@ -7,6 +7,9 @@
         <div class="row">
             <div class="col-xs-12">
                 <span>
+                    @if($post->title)
+                    <a href="{{ route('post.show', $post->id) }}">{{ $post->title }}</a>&nbsp;
+                    @endif
                     @if($post->review->editor_recommend)
                     <span class="recommend-label smaller-20">
                         <span class="glyphicon glyphicon-grain recommend-icon"></span>
@@ -14,7 +17,7 @@
                     </span>
                     @endif
                     @if($post->review->reviewee)
-                    <a class="grayout smaller-10" href="{{ route('thread.show_profile', $post->review->thread_id) }}">《{{ $post->review->reviewee->title }}》</a>
+                    <a class="grayout" href="{{ route('thread.show_profile', $post->review->thread_id) }}">《{{ $post->review->reviewee->title }}》</a>
                     @endif
                     <!-- 星级评价 -->
                     <span>
@@ -41,8 +44,8 @@
                 </span>
             </div>
             <div class="col-xs-12 post-body smaller-10">
-                <a href="{{ route('post.show', $post->id) }}">
-                    {{ StringProcess::trimtext($post->body, 50) }}
+                <a href="{{ route('post.show', $post->id) }}" class="font-weight-400">
+                    {{ $post->brief }}
                 </a>
                 <span class="pull-right">
                     <span class="voteposts"><span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></span></span>

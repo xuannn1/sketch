@@ -41,7 +41,7 @@
                         @else
                         <label for="thread_id"><h4>书籍ID：</h4></label>
                         <h6>（提示：书籍ID从书籍首页的网页地址里寻找，在网址"https://sosad.fun/thread/12345"中，12345就是书籍ID。）</h6>
-                        <label><input type="text" style="width: 200px" name="thread_id" value="{{ old('thread_id') }}"></label>
+                        <label><input type="text" style="width: 200px" name="thread_id" value="{{ old('thread_id')??'0' }}"></label>
                         @endif
                     </div>
 

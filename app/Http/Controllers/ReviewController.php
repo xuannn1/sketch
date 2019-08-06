@@ -52,7 +52,7 @@ class ReviewController extends Controller
         $this->clearAllThread($thread->id);
 
         if($post->post_check('long_comment')){
-            $this->user->reward('long_post');
+            $post->user->reward('long_post');
             return redirect()->route('post.show', $post->id)->with('success', '您得到了长评奖励');
         }
         $post->user->reward("regular_post");
@@ -70,7 +70,7 @@ class ReviewController extends Controller
         }
 
         $post = $form->updateReview($post, $thread);
-        
+
         $thread->recalculate_characters();
         $this->clearPostProfile($id);
         $this->clearAllThread($thread->id);

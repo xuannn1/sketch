@@ -55,7 +55,7 @@
                 <div class="">
                     <div class="">
                         <a type="button" id="help-constants-1" data-toggle="collapse" data-target="#help-constants-level" style="cursor: pointer;" class="font-4">
-                            &nbsp;1 升级需求：</a>
+                            &nbsp;1 升级需求和等级权限：</a>
                     </div>
                     <div class="collapse font-6" id="help-constants-level">
                         <div class="">
@@ -102,7 +102,7 @@
                         &nbsp;3 系统设置：</a>
                     <div class="collapse indentation main-text font-6 grayout" id="help-constants-setting">
                         <p>a)章节更新必须达到这个字数才能进入排名榜:{{config('constants.update_min')}}字</p>
-                        <p>b)“长评”必须达到该字数:{{config('constants.update_min')}}字</p>
+                        <p>b)“长评”必须达到该字数:{{config('constants.longcomment_length')}}字</p>
                         <p>c)一个月能修改多少次邮箱:{{config('constants.monthly_email_resets')}}次</p>
                     </div>
                 </div>
