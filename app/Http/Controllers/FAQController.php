@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon;
+use Cache;
+use DB;
 use App\Models\Helpfaq;
 
 use App\Sosadfun\Traits\FAQObjectTraits;
@@ -22,7 +24,25 @@ class FAQController extends Controller
     public function index()
     {
         $faqs = $this->find_faqs();
-        return view('FAQs.index', compact('faqs'));
+        $webstat = $this->find_web_stats();
+        $online_users = $this->find_online_users();
+        return view('FAQs.index', compact('faqs','webstat','online_users'));
+    }
+
+    private function find_web_stats()
+    {
+        return Cache::remember('webstat-yesterday', 30, function() {
+            return \App\Models\WebStat::latest()->first();
+        });
+    }
+
+    private function find_online_users()
+    {
+        return Cache::remember('online_users', 5, function() {
+            return DB::table('online_statuses')
+            ->where('online_at', '>', Carbon::now()->subMinutes(config('constants.online_count_interval'))->toDateTimeString())
+            ->count();
+        });
     }
 
     public function create(Request $request)

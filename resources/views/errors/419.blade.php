@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-    <head>
-        <link rel="stylesheet" href="/css/app.css">
-        <title>页面已失效</title>
-    </head>
+@extends('layouts.default')
+@section('title', '出错啦')
 
-    <body class="error-page">
-        <div class="container-fluid">
-            <div class="content">
-                <div class="title">
-                    <h1>页面已失效</h1>
-                    <h4>原因：基于安全设置，过长时间没有活动或同时使用多个提交页面，导致本页面已失效。</h4>
-                    <h4>解决办法：请重新从正确的入口进入页面提交数据。</h4>
-                    <h6>（详情代码419）</h6>
-                </div>
-            </div>
+@section('content')
+<div class="container-fluid">
+    <div class="content">
+        <div class="title">
+            <h1>您已登出或页面已失效</h1>
+            <h4>原因：基于废文网安全设置，超过一定时间没有活动，或浏览器同时使用多个输入信息提交页面，会导致用户登出和页面失效。</h4>
+            <h4></h4>
+            <h4>解决办法：请重新登陆、重新提交数据，在登陆时勾选“记得我”。如果频繁出现登出问题，也有可能是浏览器当前设置不兼容安全cookie导致，请修改浏览器安全设置或更换浏览器。</h4>
+            <h6 class="grayout">（详情代码419，这不是bug）</h6>
         </div>
-    </body>
-</html>
+    </div>
+</div>
+@stop

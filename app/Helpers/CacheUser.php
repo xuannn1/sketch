@@ -23,9 +23,12 @@ class CacheUser{ //cache-user class
 
     public static function info($id){
         if(!$id||$id<=0){return;}
-
         return Cache::remember('cachedUserInfo.'.$id, 30, function() use($id) {
-            return UserInfo::find($id);
+            $info = UserInfo::find($id);
+            if($info){
+                $info->load('online_status');
+            }
+            return $info;
         });
     }
 

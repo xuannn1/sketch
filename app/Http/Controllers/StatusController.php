@@ -28,14 +28,14 @@ class StatusController extends Controller
         ]);
         $status_body = trim($request->status_body);
         $last_status = Status::where('user_id', auth()->id())
-        ->orderBy('id', 'desc')
+        ->latest()
         ->first();
         if (!empty($last_status) && strcmp($last_status->body, $status_body) === 0){
             return redirect()->back()->with('warning','您已成功提交状态，请不要重复提交哦！');
         }
 
-        if(($last_status)&&(Carbon::now()->subMinutes(15)->toDateTimeString() < $last_status->created_at )){
-            return redirect()->back()->with('warning','15分钟内只能提交一条状态，请等待缓存后提交下一条状态');
+        if(($last_status)&&(Carbon::now()->subHours(3)->toDateTimeString() < $last_status->created_at )){
+            return redirect()->back()->with('warning','为避免动态泛滥，3小时内只能保存一条动态，请先删除前置状态再发布新动态。');
         }
         $status = Status::create([
             'user_id' => Auth::id(),
@@ -81,7 +81,7 @@ class StatusController extends Controller
             ->appends($request->only('page'));
         });
 
-        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'all']);
+        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'all'])->with('status_expand',false);
     }
 
     public function collection()
@@ -93,6 +93,6 @@ class StatusController extends Controller
         ->ordered()
         ->select('statuses.*')
         ->paginate(config('preference.statuses_per_page'));
-        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'follow']);
+        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'follow'])->with('status_expand',true);
     }
 }

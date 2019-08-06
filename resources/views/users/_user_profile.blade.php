@@ -42,27 +42,29 @@
 
     <div class="font-5">
         <span>盐粒：{{ $info->salt }}</span>&nbsp;&nbsp;&nbsp;
-        <span>咸鱼：{{ $info->fish }}</span>
+        <span>咸鱼：{{ $info->fish }}</span>&nbsp;&nbsp;&nbsp;
+        <span>火腿：{{ $info->ham }}</span>
     </div>
     <div class="font-5">
-        <span>火腿：{{ $info->ham }}</span>&nbsp;&nbsp;&nbsp;
-        <span>答题等级：{{ $user->quiz_level }}</span>
-    </div>
-    <div class="font-5">
-        <span>最多连续签到：{{ $info->qiandao_max }}天</span>&nbsp;&nbsp;&nbsp;
-        <span>总签到：{{ $info->qiandao_all }}天</span>
+        <span>答题等级：{{ $user->quiz_level }}</span>&nbsp;&nbsp;&nbsp;
+        <span>最多连续签到：{{ $info->qiandao_max }}天</span>
     </div>
     @if(Auth::check()&&(Auth::user()->isAdmin()||Auth::id()===$user->id))
-    <div class="font-5">
-        <span>连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
-        <span>最后签到时间：{{ $user->qiandao_at?$user->qiandao_at->diffForHumans():'' }}</span>
-    </div>
-    <div class="font-5">
-        @if($info->invitor_id>0)
-        <span><a href="{{route('user.show', $info->invitor_id)}}">邀请人ID:{{ $info->invitor_id }}</a> </span>&nbsp;&nbsp;&nbsp;
-        @endif
-        <span>剩余邀请额度：{{ $info->token_limit }}</span>
-    </div>
+        <div class="font-5">
+            <span>连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
+            <span>总签到：{{ $info->qiandao_all }}天</span>
+        </div>
+        <div class="font-5">
+            <span>最新签到：{{ $user->qiandao_at?$user->qiandao_at->diffForHumans():'' }}</span>&nbsp;&nbsp;&nbsp;
+            <span>最后在线：{{ $info->online_status? $info->online_status->online_at->diffForHumans():'无记录' }}</span>
+        </div>
+
+        <div class="font-5">
+            @if($info->invitor_id>0)
+            <span><a href="{{route('user.show', $info->invitor_id)}}">邀请人ID:{{ $info->invitor_id }}</a> </span>&nbsp;&nbsp;&nbsp;
+            <span>邀请额度：{{ $info->token_limit }}</span>&nbsp;&nbsp;&nbsp;
+            @endif
+        </div>
     @endif
 </div>
 @if($intro&&$intro->body)

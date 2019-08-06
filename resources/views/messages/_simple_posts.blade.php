@@ -48,7 +48,7 @@
             {!! StringProcess::wrapParagraphs($post->body) !!}
         </div>
     </span>
-    <a type="button" name="button" id="expand{{$post->id}}" onclick="expanditem('{{$post->id}}')">展开</a>
+    &nbsp;&nbsp;&nbsp;<a type="button" name="button" id="expand{{$post->id}}" onclick="expanditem('{{$post->id}}')">展开</a>
     <hr>
 </article>
 @endif

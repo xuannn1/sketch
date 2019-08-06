@@ -13,6 +13,7 @@
     <form action="{{ route('status.store') }}" method="POST">
         {{ csrf_field() }}
         <div class="container-fluid">
+            <h6 style="color:#d66666">（动态公开可见，请勿涉及“边限”内容。）</h6>
             <div class="row">
                 <textarea class="form-control" id="status_body" rows="4" placeholder="今天你丧了吗…"  name="status_body">{{ old('status_body') }}</textarea>
             </div>

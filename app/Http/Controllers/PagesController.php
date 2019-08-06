@@ -53,18 +53,6 @@ class PagesController extends Controller
         return view('pages/test');
     }
 
-    public function error($error_code)
-    {
-        $errors = array(
-            "401" => "抱歉，您未登陆",
-            "403" => "抱歉，由于设置，您无权限访问该页面",
-            "404" => "抱歉，该页面不存在或已删除",
-            "405" => "抱歉，数据库不支持本操作",//修改或增添
-            "409" => "抱歉，数据冲突。",
-        );
-        $error_message = $errors[$error_code];
-        return view('errors.errorpage', compact('error_message'));
-    }
     public function administrationrecords(Request $request)
     {
         $user_id = 0;

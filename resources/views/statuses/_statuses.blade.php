@@ -1,9 +1,10 @@
 @foreach($statuses as $status)
 <article class="{{ 'status'.$status->id }} {{ 'followuser'.$status->user_id}}">
+
     <div class="row">
         <div class="col-xs-12 h5">
             @if(!$status->is_public)
-                <span class="glyphicon glyphicon-eye-close"></span>
+            <span class="glyphicon glyphicon-eye-close"></span>
             @endif
             <span>
                 @if($status->author)
@@ -21,19 +22,19 @@
                 @include('admin._status_management_form')
             </span>
             @endif
-            <span class="pull-right">
-                <a href="{{ route('status.show', $status->id) }}">>>详情</a>
+            <span class="pull-right smaller-20">
+                <a href="{{ route('status.show', $status->id) }}">S.{{$status->id}}</a>
             </span>
-
-
         </div>
-        <div class="col-xs-12 h5 brief-0">
+        <div class="col-xs-12 h5 brief-0 {{$status_expand? '':'fixed-height-90'}}">
             <span class="smaller-10">
-
-                {!! StringProcess::wrapParagraphs($status->body) !!}
+                <a href="{{ route('status.show', $status->id) }}" class="font-weight-400">{!! StringProcess::wrapSpan($status->body) !!}</a>
             </span>
+            @if(Auth::check()&&Auth::user()->level >= 1)
+            <span class="pull-right"><button class="btn btn-default btn-xs" data-id="{{$status->id}}" onclick="voteItem('status', {{$status->id}}, 'upvote')" ><span class="glyphicon glyphicon-heart"></span><span id="status{{$status->id}}upvote">{{ $status->upvote_count }}</span></button></span>
+            @endif
         </div>
     </div>
-
+    <hr class="narrow">
 </article>
 @endforeach

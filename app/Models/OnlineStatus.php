@@ -11,5 +11,6 @@ class OnlineStatus extends Model
 
     public $timestamps = false;
     public $incrementing = false;
+    protected $dates = ['online_at'];
 
 }

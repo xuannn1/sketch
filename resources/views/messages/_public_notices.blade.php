@@ -17,7 +17,7 @@
         <span id="abbreviated{{$public_notice->id}}">
             {!! StringProcess::trimtext($public_notice->body,70) !!}
         </span>
-        <a type="button" name="button" id="expand{{$public_notice->id}}" onclick="expanditem('{{$public_notice->id}}')">展开</a>
+        &nbsp;&nbsp;&nbsp;<a type="button" name="button" id="expand{{$public_notice->id}}" onclick="expanditem('{{$public_notice->id}}')">展开</a>
     </div>
     <hr>
 </article>

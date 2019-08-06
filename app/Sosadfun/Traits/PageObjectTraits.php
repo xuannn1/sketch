@@ -66,22 +66,4 @@ trait PageObjectTraits{
         });
     }
 
-    public function users_online()
-    {
-        return Cache::remember('users-online-count', config('constants.online_count_interval'), function () {
-        $users_online = DB::table('online_statuses')
-        ->where('online_at', '>', Carbon::now()->subMinutes(config('constants.online_count_interval'))->toDateTimeString())
-        ->count();
-        return $users_online;
-        });
-    }
-
-    public function web_stat()
-    {
-        return Cache::remember('webstat-yesterday', config('constants.online_count_interval'), function () {
-            $webstat = \App\Models\WebStat::where('id','>',1)->orderBy('created_at', 'desc')->first();
-            return $webstat;
-        });
-    }
-
 }

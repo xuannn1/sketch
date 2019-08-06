@@ -94,7 +94,7 @@
                 <div class="form-group">
                     <label for="title"><h4>6. 标题：</h4></label>
                     <div id="biaotiguiding" class="h6">
-                        标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，<span style="color:#d66666">不要放入标题。标题不得含有性描写、性暗示。<span>
+                        标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，不要放入标题。<span style="color:#d66666">标题不得含有性描写、性暗示。<span>
                     </div>
                     <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="请输入不超过20字的标题">
                 </div>

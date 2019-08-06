@@ -10,6 +10,7 @@ class StringProcess
 
     public static function simpletrim($text=null, int $len)//截取一个特定长度的字串
     {
+        $text = trim($text);
         $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
         if(iconv_strlen($text) > iconv_strlen($substr)){
             $substr.='…';
@@ -42,7 +43,7 @@ class StringProcess
         $bbCode = self::addCustomParserBBCode($bbCode);
         $text = self::trimSpaces($text);//去除字串中多余的空行，html-tag，每一段开头的空格
         $text = $bbCode->stripBBCodeTags((string) $text);
-        $text = preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text);
+        $text = trim(preg_replace('/[[:punct:]\s\n\t\r]/',' ',$text));
         $substr = trim(iconv_substr($text, 0, $len, 'utf-8'));
         if(iconv_strlen($text) > iconv_strlen($substr)){
             $substr.='…';
@@ -193,6 +194,7 @@ class StringProcess
         $bbCode = new BBCode();
         $bbCode = self::addCustomParserBBCode($bbCode);
         $post = $bbCode->convertToHtml($post);
+        $post = preg_replace('/\n$/','',$post);
         $post = preg_replace('/\n{1,}/', "<br>", $post);
         $post = "{$post}";
         return $post;

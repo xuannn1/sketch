@@ -428,7 +428,7 @@ class UsersController extends Controller
 
         }
 
-        return view('users.show_status', compact('user','info','intro','statuses'))->with(['show_user_tab'=>'status']);
+        return view('users.show_status', compact('user','info','intro','statuses'))->with(['show_user_tab'=>'status'])->with('status_expand',true);
     }
 
     public function comments($id, Request $request)

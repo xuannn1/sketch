@@ -505,7 +505,15 @@ hr {
 }
 .brief-4{
    margin-top:4px;
-   margin-bottom:4px;
+   margin-bottom:2px;
+}
+.brief-6{
+   margin-top:6px;
+   margin-bottom:2px;
+}
+.brief-8{
+   margin-top:8px;
+   margin-bottom:2px;
 }
 .narrow{
    margin-top:7px;
@@ -787,4 +795,14 @@ textarea {
 }
 .title-10{
     background-color:#93a4cc;
+}
+.fixed-height-90{
+    max-height: 90px;
+    overflow:hidden;
+}
+.link-block{
+    display:block;
+}
+.font-weight-400{
+    font-weight:400;
 }

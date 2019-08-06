@@ -26,7 +26,7 @@
         <span id="full{{$message->id}}" class="hidden main-text">
             {!! StringProcess::wrapParagraphs($message->message_body->body) !!}
         </span>
-        <a type="button" name="button" id="expand{{$message->id}}" onclick="expanditem('{{$message->id}}')">展开</a>
+        &nbsp;&nbsp;&nbsp;<a type="button" name="button" id="expand{{$message->id}}" onclick="expanditem('{{$message->id}}')">展开</a>
     </div>
     <hr>
 </article>

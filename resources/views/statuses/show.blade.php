@@ -39,7 +39,7 @@
                 </div>
 
                 <!-- 动态正文 -->
-                <div class="font-4">
+                <div class="font-4 font-weight-400">
                     {!!  StringProcess::wrapParagraphs($status->body) !!}
                 </div>
             </div>

@@ -61,7 +61,7 @@ class AdminsController extends Controller
         ]);
         $var = request('controlthread');
         $operation = 0;
-        $record = StringProcess::trimtext($thread->title.$thread->brief, 30);
+        $record = StringProcess::trimtext('《'.$thread->title."》".$thread->brief, 40);
         $reason = $request->reason;
         $thread_id = $thread->id;
         $user = $thread->user;
@@ -248,7 +248,7 @@ class AdminsController extends Controller
         ]);
         $var = request('controlpost');
         $operation = 0;
-        $record = StringProcess::trimtext($post->title.$post->body, 25);
+        $record = StringProcess::trimtext($post->title.$post->body, 30);
         $reason = $request->reason;
         $post_id = $post->id;
         $user = $post->user;
@@ -490,7 +490,7 @@ class AdminsController extends Controller
         ]);
         $var = request('controlstatus');
         $operation = 0;
-        $record = StringProcess::trimtext($status->body, 30);
+        $record = StringProcess::trimtext($status->body, 40);
         $reason = $request->reason;
         $status_id = $status->id;
         $user = $status->user;
