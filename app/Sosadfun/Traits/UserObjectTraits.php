@@ -15,6 +15,7 @@ trait UserObjectTraits{
         .'include_bianyuan'.$include_anonymous
         .'include_anonymous'.$include_bianyuan
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
+
         $posts = Cache::remember($queryid, 10, function () use($request, $id, $include_anonymous, $include_bianyuan) {
             $query = \App\Models\Post::join('threads','threads.id','=','posts.thread_id')
             ->whereIn('threads.channel_id',ConstantObjects::public_channels())
@@ -31,6 +32,7 @@ trait UserObjectTraits{
             ->select('posts.*')
             ->paginate(config('preference.posts_per_page'))
             ->appends($request->only('page'));
+            $posts->load('simpleThread');
             return $posts;
         });
         return $posts;

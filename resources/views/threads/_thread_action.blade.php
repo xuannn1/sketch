@@ -1,6 +1,6 @@
 <!-- 对帖子进行打赏，投票，阅读等各种操作 -->
 <div class="container-fluid thread-vote">
-    @if($thread->user_id===Auth::id()&&(!$thread->is_locked||Auth::user()->isAdmin()))
+    @if($thread->user_id===Auth::id()&&((!$thread->is_locked&&!Auth::user()->no_posting)||Auth::user()->isAdmin()))
     <!-- 作者专区，编辑首楼和文案-->
     <div class="row text-left">
         @switch($thread->channel()->type)
@@ -9,7 +9,7 @@
             <a href="{{ route('books.edit', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control">编辑书籍</a>
         </div>
         <div class="col-xs-6">
-            <a href="{{ route('chapter.create', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control pull-right">写新章节</a>
+            <a href="{{ route('chapter.create', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control">写新章节</a>
         </div>
         @break
         @case('list')
@@ -41,11 +41,11 @@
 
         </div>
         <div class="col-xs-6">
-            <a href="{{ route('thread.chapter_index', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control pull-right">章节目录</a>
+            <a href="{{ route('thread.chapter_index', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control">章节目录</a>
         </div>
         @elseif($thread->channel()->type==='list')
         <div class="col-xs-12 pull-right">
-            <a href="{{ route('thread.review_index', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control pull-right">评论列表</a>
+            <a href="{{ route('thread.review_index', $thread->id) }}" class="btn btn-md btn-danger btn-block sosad-button-control">评论目录</a>
         </div>
         @endif
     </div>

@@ -81,7 +81,7 @@ class StatusController extends Controller
             ->appends($request->only('page'));
         });
 
-        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'all'])->with('status_expand',false);
+        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'all'])->with('status_expand',false)->with('status_show_title',true);
     }
 
     public function collection()
@@ -93,6 +93,6 @@ class StatusController extends Controller
         ->ordered()
         ->select('statuses.*')
         ->paginate(config('preference.statuses_per_page'));
-        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'follow'])->with('status_expand',true);
+        return view('statuses.index', compact('statuses'))->with(['status_tab'=>'follow'])->with('status_expand',true)->with('status_show_title',true);
     }
 }

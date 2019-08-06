@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', $thread->title.'-评论列表' )
+@section('title', $thread->title.'-评论目录' )
 
 @section('content')
 <div class="container-fluid">
@@ -10,7 +10,7 @@
             <a href="{{ route('channel.show', $thread->channel()->id) }}">{{ $thread->channel()->channel_name }}</a>
             /
             <a href="{{ route('thread.show_profile',$thread->id) }}">{{ $thread->title }}</a>/
-            <a href="{{ route('thread.review_index',$thread->id) }}">评论列表</a>
+            <a href="{{ route('thread.review_index',$thread->id) }}">评论目录</a>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">

@@ -1,6 +1,6 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3>评论列表</h3>
+        <h3>评论目录</h3>
     </div>
     @foreach($thread->reviews as $post)
     <div class="panel-body">

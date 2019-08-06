@@ -57,14 +57,14 @@
                         <a type="button" id="help-constants-1" data-toggle="collapse" data-target="#help-constants-level" style="cursor: pointer;" class="font-4">
                             &nbsp;1 升级需求：</a>
                     </div>
-                    <div class="collapse" id="help-constants-level">
+                    <div class="collapse font-6" id="help-constants-level">
                         <div class="">
                             @foreach(config('level.level_up') as $level=>$level_req)
                             <div class="">
-                                <span class="font-6">&nbsp;&nbsp;{{$level}}级需要：</span>
+                                <span>&nbsp;&nbsp;{{$level}}级需要：</span>
                                 @foreach(config('level.values') as $key=>$value)
                                 @if(array_key_exists($key,$level_req))
-                                <span class="font-6 grayout">{{$value}}:{{$level_req[$key]}}，</span>
+                                <span class="grayout">{{$value}}:{{$level_req[$key]}}，</span>
                                 @endif
                                 @endforeach
                             </div>
@@ -76,20 +76,42 @@
                     </div>
                 </div>
                 <div class="">
-                    <a type="button" id="help-constants-2" data-toggle="collapse" data-target="#help-constants-setting" style="cursor: pointer;" class="font-4">
-                        &nbsp;2 系统设置：</a>
-                    <div class="collapse indentation main-text" id="help-constants-setting">
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-rewards" style="cursor: pointer;" class="font-4">
+                        &nbsp;2 虚拟物奖励数据：</a>
+                    <div class="collapse indentation main-text font-6 grayout" id="help-constants-rewards">
+                        <div class="">
+                            <p>普通动态奖励：1盐粒</p>
+                            <p>普通回帖奖励：1咸鱼</p>
+                            <p>长评奖励（回帖超过200字）：5盐粒3咸鱼1火腿</p>
+                            <p>新章节率先回帖奖励：4盐粒2咸鱼</p>
+                            <p>普通主题贴奖励：5盐粒2咸鱼</p>
+                            <p>普通书籍奖励：10盐粒5咸鱼2火腿</p>
+                            <p>短章节奖励（更新字数小于1000字）：5盐粒1咸鱼</p>
+                            <p>普通章节奖励（更新字数大于1000字）：10盐粒1咸鱼1火腿</p>
+                            <p>多人赞赏奖励：5盐粒1咸鱼1火腿</p>
+                            <p>首次答题奖励：答题等级*20盐粒，答题等级*5咸鱼</p>
+                            <p>首次答题奖励：答题等级*20盐粒，答题等级*5咸鱼</p>
+                            <p>重复答题奖励：答题等级*2盐粒</p>
+                            <p>普通签到奖励：5盐粒，1咸鱼</p>
+                            <p>签到特别奖励：盐粒若干，咸鱼若干，具体数值和连续签到天数有关</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-setting" style="cursor: pointer;" class="font-4">
+                        &nbsp;3 系统设置：</a>
+                    <div class="collapse indentation main-text font-6 grayout" id="help-constants-setting">
                         <p>a)章节更新必须达到这个字数才能进入排名榜:{{config('constants.update_min')}}字</p>
                         <p>b)“长评”必须达到该字数:{{config('constants.update_min')}}字</p>
                         <p>c)一个月能修改多少次邮箱:{{config('constants.monthly_email_resets')}}次</p>
                     </div>
                 </div>
                 <div class="">
-                    <a type="button" id="help-constants-3" data-toggle="collapse" data-target="#help-constants-data-yesterday" style="cursor: pointer;" class="font-4">
-                        &nbsp;3 昨日数据：</a>
-                    <div class="collapse indentation main-text" id="help-constants-data-yesterday">
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-data-yesterday" style="cursor: pointer;" class="font-4">
+                        &nbsp;4 昨日数据：</a>
+                    <div class="collapse indentation main-text font-6 grayout" id="help-constants-data-yesterday">
                         <div class="">
-                            <h6 class="grayout">(统计数据更新于：{{$webstat->created_at->DiffForHumans()}})</h6>
+                            <p>(统计数据更新于：{{$webstat->created_at->DiffForHumans()}})</p>
                             <p>昨日签到人数：{{$webstat->qiandaos}}</p>
                             <p>昨日在线人数：{{$webstat->daily_clicked_users}}</p>
                             <p>昨日新增回帖：{{$webstat->posts}}</p>
@@ -99,9 +121,9 @@
                     </div>
                 </div>
                 <div class="">
-                    <a type="button" id="help-constants-4" data-toggle="collapse" data-target="#help-constants-data-now" style="cursor: pointer;" class="font-4">
-                        &nbsp;4 当前数据：</a>
-                    <div class="collapse indentation main-text" id="help-constants-data-now">
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-data-now" style="cursor: pointer;" class="font-4">
+                        &nbsp;5 当前数据：</a>
+                    <div class="collapse indentation main-text font-6 grayout" id="help-constants-data-now">
                         <div class="">
                             <p>当前在线人数：{{$online_users}}</p>
                         </div>
@@ -109,8 +131,8 @@
                 </div>
                 @if(Auth::check())
                 <div class="">
-                    <a type="button" id="help-constants-5" data-toggle="collapse" data-target="#help-constants-forbiddenwords-public" style="cursor: pointer;" class="font-4">
-                        &nbsp;5 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</a>
+                    <a type="button" data-toggle="collapse" data-target="#help-constants-forbiddenwords-public" style="cursor: pointer;" class="font-4">
+                        &nbsp;6 出现在标题/简介/章节名中会被隐藏的词汇（用‘|’隔开）：</a>
                     <div class="collapse" id="help-constants-forbiddenwords-public">
                         <div class="">
                             <img src="/img/forbidden_words.png" alt="forbidden_words">
@@ -119,7 +141,7 @@
                 </div>
                 <div class="">
                     <a type="button" id="help-constants-6" data-toggle="collapse" data-target="#help-constants-forbiddenwords-title" style="cursor: pointer;" class="font-4">
-                        &nbsp;6 出现在书名中会被隐藏的词汇（用‘|’隔开）：</a>
+                        &nbsp;7 出现在书名中会被隐藏的词汇（用‘|’隔开）：</a>
                     <div class="collapse" id="help-constants-forbiddenwords-title">
                         <div class="">
                             {{ config('forbiddenwords.not_in_title') }}

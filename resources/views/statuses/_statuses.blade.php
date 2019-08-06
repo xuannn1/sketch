@@ -3,12 +3,9 @@
 
     <div class="row">
         <div class="col-xs-12 h5">
-            @if(!$status->is_public)
-            <span class="glyphicon glyphicon-eye-close"></span>
-            @endif
             <span>
                 @if($status->author)
-                @if($status->author->title&&$status->author->title->name)
+                @if($status->author->title&&$status->author->title->name&&$status_show_title)
                 <span class="maintitle title-{{$status->author->title->style_id}}">{{ $status->author->title->name }}</span>
                 @endif
                 <a href="{{ route('user.show', $status->user_id) }}">{{ $status->author->name }}</a>
@@ -27,6 +24,9 @@
             </span>
         </div>
         <div class="col-xs-12 h5 brief-0 {{$status_expand? '':'fixed-height-90'}}">
+            @if(!$status->is_public)
+            <span class="glyphicon glyphicon-eye-close"></span>
+            @endif
             <span class="smaller-10">
                 <a href="{{ route('status.show', $status->id) }}" class="font-weight-400">{!! StringProcess::wrapSpan($status->body) !!}</a>
             </span>

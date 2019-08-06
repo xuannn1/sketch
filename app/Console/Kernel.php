@@ -47,8 +47,8 @@ class Kernel extends ConsoleKernel
         ->dailyAt('4:30')
         ->onOneServer();
 
-        $schedule->command('refresh:token')
-        ->name('refresh:token')
+        $schedule->command('token:refresh')
+        ->name('token:refresh')
         ->timezone('Asia/Shanghai')
         ->weeklyOn(3, '4:45')
         ->onOneServer();
