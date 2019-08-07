@@ -45,7 +45,7 @@
             </div>
             <div class="col-xs-12 post-body smaller-10">
                 <a href="{{ route('post.show', $post->id) }}" class="font-weight-400">
-                    {{ $post->brief }}
+                    {{StringProcess::trimtext($post->body,120)}}
                 </a>
                 <span class="pull-right">
                     <span class="voteposts"><span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-heart">{{ $post->upvote_count }}</span></span></span>

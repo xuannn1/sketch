@@ -136,6 +136,14 @@ class Thread extends Model
         return $query;
     }
 
+    public function scopeWithoutType($query, $withoutType="")
+    {
+        if($withoutType){
+            return $query->whereNotIn('channel_id', ConstantObjects::publicChannelTypes($withoutType));
+        }
+        return $query;
+    }
+
     public function scopeWithBianyuan($query, $withBianyuan="")
     {
         if($withBianyuan==='include_bianyuan'){

@@ -29,32 +29,22 @@
             </div>
             <div class="panel-body">
                 <div class="row">
-                @foreach($short_recom as $int => $post)
-                @if($post->review->reviewee)
+                    @foreach($short_recom as $int => $post)
+                    @if($post->review->reviewee)
                         <div class="col-xs-12">
-                            <a href="{{ route('thread.show', ['thread' => $post->review->thread_id, 'recommendation' => $post->review->id]) }}" class="">
-                                《{{ $post->review->reviewee->title }}》
-                            <span class="grayout smaller-5">{{ $post->body }}</span>
+                            <a href="{{ route('thread.show', ['thread' => $post->review->thread_id, 'recommendation' => $post->review->id]) }}" class="">《{{ $post->review->reviewee->title }}》<span class="grayout smaller-5">{{ $post->brief }}</span>
                             </a>
                         </div>
-                @endif
-                @endforeach
-                </div>
-            </div>
-            @if($thread_recom)
-            <div class="panel-body">
-                <div class="container-fluid">
-                    <div class="recommendation">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <a href="{{ route('thread.show_profile', $thread_recom->id) }}" class="">{{ $thread_recom->title }}：<span class="grayout smaller-25">{{ $thread_recom->brief }}</span>
-                                </a>
-                            </div>
+                    @endif
+                    @endforeach
+                    @if($thread_recom)
+                        <div class="col-xs-12">
+                            <a href="{{ route('thread.show_profile', $thread_recom->id) }}" class="">{{ $thread_recom->title }}：<span class="grayout smaller-5">{{ $thread_recom->brief }}</span>
+                            </a>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
-            @endif
         </div>
     </div>
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">

@@ -8,7 +8,7 @@
         @include('threads._thread_action')
     </div>
     @foreach($thread->editor_recommends as $review)
-        @include('threads._thread_review')
+        @include('reviews._thread_review')
     @endforeach
 </div>
 @if($thread->channel()->type==='book')

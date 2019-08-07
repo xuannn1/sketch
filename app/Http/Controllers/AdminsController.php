@@ -415,15 +415,15 @@ class AdminsController extends Controller
         if(!$post||!$tag||$post->type!='review'||!$post->review){
             return false;
         }
-        $post->review->recommend=1;
-        $post->review->editor_recommend=1;
-        $post->review->rating=0;
-        $post->review->save();
         if($post->review->reviewee){
             $post->review->reviewee->recommended=1;
             $post->review->reviewee->save();
             $post->review->reviewee->tags()->syncWithoutDetaching($tag->id);
             $this->clearAllThread($post->review->thread_id);
+            $post->review->editor_recommend=1;
+            $post->review->recommend=1;
+            $post->review->rating=0;
+            $post->review->save();
         }
         return true;
     }

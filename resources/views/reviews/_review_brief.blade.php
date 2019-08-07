@@ -47,8 +47,7 @@
 
         <div class="col-xs-12 h5 ">
             <!-- 帖子的推荐语、点击率（通过推荐版块点击） -->
-            <span>推荐语：{{ $post->body }}</span>
-            <span class = "pull-right smaller-10">
+            <a href="{{route('post.show', $post->id)}}" class="font-weight-400">推荐语：{{ StringProcess::trimtext($post->body,120) }}</a>
         </div>
     </div>
     <hr>

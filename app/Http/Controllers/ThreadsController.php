@@ -47,7 +47,7 @@ class threadsController extends Controller
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
             ->inPublicChannel()
-            ->withType('thread')
+            ->withoutType('book')
             ->ordered()
             ->paginate(config('preference.threads_per_page'))
             ->appends(['page'=>$page]);
