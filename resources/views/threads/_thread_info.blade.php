@@ -99,44 +99,49 @@
     </div>
     <br>
     <!-- 首楼正文 -->
-    <div class="main-text {{ $thread->channel()->type==='thread'&&$thread->use_indentation ? 'indentation':'' }} {{ $thread->channel()->type==='book' ? 'text-center':'text-left' }} ">
-        @if(($thread->is_bianyuan)&&(!Auth::check()))
-        <div class="text-center">
-            <h6 class="display-4 grayout"><a href="{{ route('login') }}">主楼隐藏，请登录后查看</a></h6>
+    <div class="col-xs-12">
+        <div class="main-text {{ $thread->channel()->type==='thread'&&$thread->use_indentation ? 'indentation':'' }} {{ $thread->channel()->type==='book' ? 'text-center':'text-left' }} ">
+            @if(($thread->is_bianyuan)&&(!Auth::check()))
+            <div class="text-center">
+                <h6 class="display-4 grayout"><a href="{{ route('login') }}">主楼隐藏，请登录后查看</a></h6>
+            </div>
+            @else
+            @if($thread->use_markdown)
+            {!! StringProcess::sosadMarkdown($thread->body) !!}
+            @else
+            {!! StringProcess::wrapParagraphs($thread->body) !!}
+            @endif
+            @endif
         </div>
-        @else
-        @if($thread->use_markdown)
-        {!! StringProcess::sosadMarkdown($thread->body) !!}
-        @else
-        {!! StringProcess::wrapParagraphs($thread->body) !!}
-        @endif
-        @endif
     </div>
     <br>
 
     <!-- 信息汇总：总字数，阅读数，回应数，下载数 （以及如果允许下载，出现下载按钮）-->
-    <div class="line-height-1 text-right">
-        @if($thread->last_component&&$thread->last_component->type==='chapter')
-        <span class="smaller-20 pull-left">
-            <span>
-                <a href="{{ route('post.show', $thread->last_component_id) }}">最新章节《{{$thread->last_component->title}}》</a>
-            </span>
-        </span>
-        @endif
-        <span class="smaller-20">
-            <em class="smaller-20">
-                @if($thread->total_char>0)
-                <span class="glyphicon glyphicon-pencil"></span>{{ $thread->total_char }}/
+    <div class="col-xs-12">
+        <div class="text-right line-height-1 brief-0 smaller-20">
+            <div class="">
+                @if($thread->last_component&&$thread->last_component->type==='chapter')
+                <span class="pull-left">
+                    <a href="{{ route('post.show', $thread->last_component_id) }}">最新章节《{{$thread->last_component->title}}》</a>
+                </span>
                 @endif
-                <span class="glyphicon glyphicon-eye-open"></span>{{ $thread->view_count }}/<span class="glyphicon glyphicon-comment"></span>{{ $thread->reply_count }}/<span class="glyphicon glyphicon-save"></span>{{ $thread->download_count }}
-            </em>
-            @if($thread->download_as_thread||$thread->download_as_book)
-            &nbsp;&nbsp;<span><a href="{{ route('download.index', $thread) }}">下载</a></span>
-            @endif
-        </span>
+                <span class="smaller-20">
+                    <em class="">
+                        @if($thread->total_char>0)
+                        <span class="glyphicon glyphicon-pencil"></span>{{ $thread->total_char }}/
+                        @endif
+                        <span class="glyphicon glyphicon-eye-open"></span>{{ $thread->view_count }}/<span class="glyphicon glyphicon-comment"></span>{{ $thread->reply_count }}/<span class="glyphicon glyphicon-save"></span>{{ $thread->download_count }}
+                    </em>
+                    @if($thread->download_as_thread||$thread->download_as_book)
+                    &nbsp;&nbsp;<span><a href="{{ route('download.index', $thread) }}">下载</a></span>
+                    @endif
+                </span>
+            </div>
+            <div class="">
+                <em class="grayout smaller-30 "><span class="grayout">注：点击是延时统计，10分钟更新一次</span></em>
+            </div>
+        </div>
     </div>
-    <div class="text-right grayout smaller-30 brief-0 line-height-1">
-        <em><span class="grayout smaller-30">注：点击是延时统计，10分钟更新一次</span></em>
-    </div>
+
 
 </div>

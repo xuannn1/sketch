@@ -1,3 +1,4 @@
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <div class="container">
     <div class="col-md-10 col-md-offset-1">
         <footer class="footer">

@@ -7,15 +7,22 @@
     <title>@yield('title', '废文网') - 有趣有品有点丧</title>
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <link rel="shortcut icon" href="{{ secure_asset('img/So-logo.ico') }}" >
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-6301343750852820",
+        enable_page_level_ads: true
+    });
+    </script>
 </head>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137377077-1"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
 
-  gtag('config', 'UA-137377077-1');
+gtag('config', 'UA-137377077-1');
 </script>
 <body>
     @include('layouts._header')

@@ -298,6 +298,15 @@ class Thread extends Model
         ->get();
     }
 
+    public function random_editor_recommendation()
+    {
+        return Review::with('post.author')
+        ->ThreadOnly($this->id)
+        ->withEditorRecommend('editor_recommend_only')
+        ->inRandomOrder()
+        ->first();
+    }
+
     public function register_homework()
     {
         // TODO 检查这名同学参加了作业吗？是的话算他提交了作业

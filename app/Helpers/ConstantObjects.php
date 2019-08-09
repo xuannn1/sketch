@@ -34,6 +34,11 @@ class ConstantObjects
         return self::allChannels()->where('is_public', true)->pluck('id')->toArray();
     }
 
+    public static function homepage_channels()
+    {
+        return self::allChannels()->where('show_on_homepage', true)->sortBy('order_by');
+    }
+
     public static function primary_tags_in_channel($id)
     {
         return Cache::remember('primary_tags_in_channel.'.$id, 10, function () use($id){

@@ -61,7 +61,9 @@
 
         <div class="font-5">
             @if($info->invitor_id>0)
-            <span><a href="{{route('user.show', $info->invitor_id)}}">邀请人ID:{{ $info->invitor_id }}</a> </span>&nbsp;&nbsp;&nbsp;
+            <span><a href="{{route('user.show', $info->invitor_id)}}">邀请人:UID{{ $info->invitor_id }}</a></span>&nbsp;&nbsp;&nbsp;
+            @endif
+            @if($info->token_limit>0)
             <span>邀请额度：{{ $info->token_limit }}</span>&nbsp;&nbsp;&nbsp;
             @endif
         </div>

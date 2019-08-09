@@ -36,7 +36,7 @@ class RewardController extends Controller
     {
         $type = $request->rewardable_type;
         $model=$this->findRewardableModel($request->all());
-        if(empty($model)){abort(404);}
+        if(!$model){abort(404);}
 
         $page = is_numeric($request->page)? 'P'.$request->page:'P1';
         $rewards = Cache::remember('rewardindex.'.$request->rewardable_type.$request->rewardable_id.$page, 15, function () use($request){

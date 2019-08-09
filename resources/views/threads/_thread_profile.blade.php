@@ -7,9 +7,10 @@
         <!-- 对主题进行投票／收藏／赞赏等操作 -->
         @include('threads._thread_action')
     </div>
-    @foreach($thread->editor_recommends as $review)
-        @include('reviews._thread_review')
-    @endforeach
+    @if($thread->random_review)
+    <?php $review = $thread->random_review; ?>
+    @include('reviews._thread_review')
+    @endif
 </div>
 @if($thread->channel()->type==='book')
 <div class="panel panel-default">

@@ -11,7 +11,7 @@ trait ThreadObjectTraits{
     {
         return Cache::remember('threadProfile.'.$id, 10, function () use($id){
             $thread = $this->findThread($id);
-            $thread->load('tags', 'author.title', 'last_post', 'last_component', 'editor_recommends.post.author');
+            $thread->load('tags', 'author.title', 'last_post', 'last_component');
             if($thread->channel()->type==="list"&&$thread->last_component_id>0&&$thread->last_component){
                 $thread->last_component->load('review.reviewee');
             }
@@ -25,6 +25,7 @@ trait ThreadObjectTraits{
             if($thread->channel()->type==='list'){
                 $thread->setAttribute('reviews', $this->threadReviewIndex($id));
             }
+            $thread->setAttribute('random_review', $thread->random_editor_recommendation());
             $thread->setAttribute('recent_rewards', $thread->latest_rewards());
             return $thread;
         });

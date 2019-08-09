@@ -31,7 +31,7 @@ class PagesController extends Controller
         $quotes = $this->quotes();
         $short_recom = $this->short_recommendations();
         $thread_recom = $this->thread_recommendation();
-        $channels = ConstantObjects::allChannels();
+        $channels = ConstantObjects::homepage_channels();
         $channel_threads = [];
         foreach($channels as $channel){
             if($channel->is_public||(Auth::check()&&Auth::user()->canSeeChannel($channel->id))){

@@ -183,8 +183,9 @@ class AdminsController extends Controller
         if ($var=='111'){ // 111 全楼改为当前编推
             $posts = $thread->posts()->with('review.reviewee')->withType('review')->get();
             $tag = ConstantObjects::find_tag_by_name('当前编推');
+            $remove_tag = ConstantObjects::find_tag_by_name('往期编推');
             foreach($posts as $post){
-                $this->editor_recommend_post($post, $tag);
+                $this->editor_recommend_post($post, $tag, $remove_tag);
             }
             $thread->update(['recommended'=>true]);
             $thread->tags()->syncWithoutDetaching($tag);
@@ -194,8 +195,9 @@ class AdminsController extends Controller
         if ($var=='112'){ // 112 全楼改为往期编推
             $posts = $thread->posts()->with('review.reviewee')->withType('review')->get();
             $tag = ConstantObjects::find_tag_by_name('往期编推');
+            $remove_tag = ConstantObjects::find_tag_by_name('当前编推');
             foreach($posts as $post){
-                $this->editor_recommend_post($post, $tag);
+                $this->editor_recommend_post($post, $tag, $remove_tag);
             }
             $thread->update(['recommended'=>true]);
             $thread->tags()->syncWithoutDetaching($tag);
@@ -338,13 +340,15 @@ class AdminsController extends Controller
         }
         if ($var=='101'){ // 101 单项改为当前编推
             $tag = ConstantObjects::find_tag_by_name('当前编推');
-            $this->editor_recommend_post($post, $tag);
+            $remove_tag = ConstantObjects::find_tag_by_name('往期编推');
+            $this->editor_recommend_post($post, $tag, $remove_tag);
             $is_public = false;
             $operation = $this->add_admin_record('post', $post, $record, $reason, 101, $is_public);
         }
         if ($var=='102'){ // 101 单项改为往期编推
             $tag = ConstantObjects::find_tag_by_name('往期编推');
-            if($this->editor_recommend_post($post, $tag)){
+            $remove_tag = ConstantObjects::find_tag_by_name('当前编推');
+            if($this->editor_recommend_post($post, $tag, $remove_tag)){
                 $is_public = false;
                 $operation = $this->add_admin_record('post', $post, $record, $reason, 102, $is_public);
             }
@@ -410,7 +414,7 @@ class AdminsController extends Controller
     }
 
 
-    private function editor_recommend_post($post, $tag)
+    private function editor_recommend_post($post, $tag, $remove_tag='')
     {
         if(!$post||!$tag||$post->type!='review'||!$post->review){
             return false;
@@ -419,6 +423,9 @@ class AdminsController extends Controller
             $post->review->reviewee->recommended=1;
             $post->review->reviewee->save();
             $post->review->reviewee->tags()->syncWithoutDetaching($tag->id);
+            if($remove_tag){
+                $post->review->reviewee->tags()->detach($remove_tag->id);
+            }
             $this->clearAllThread($post->review->thread_id);
             $post->review->editor_recommend=1;
             $post->review->recommend=1;

@@ -43,7 +43,7 @@ class VoteController extends Controller
     {
         $type = $request->votable_type;
         $model=$this->findVotableModel($request->all());
-        if(empty($model)){abort(404);}
+        if(!$model){abort(404);}
 
         $page = is_numeric($request->page)? 'P'.$request->page:'P1';
         $votes = Cache::remember('upvoteindex.'.$request->votable_type.$request->votable_id.$page, 15, function () use($request){

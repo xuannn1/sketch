@@ -11,6 +11,7 @@
                     管理帖子(请不要进行私人操作)
                 </span>
                 <h4><a href="{{route('post.show',$post->id)}}">{{ $post->title }}{{$post->brief}}</a></h4>
+                <h5><a href="{{route('post.show',$post->id)}}">{{StringProcess::trimtext($post->body, 50)}}</a></h5>
             </div>
             <div class="panel-body">
                 <form action="{{ route('admin.postmanagement',$post->id)}}" method="POST">
@@ -49,21 +50,20 @@
                     @endif
 
                     @if($post->type==='review'&&$post->review&&$post->review->reviewee)
-                        @if(!$post->review->editor_recommend)
-                            <div class="radio">
-                                <label><input type="radio" name="controlpost" value="101">将本书评标记为当前编推</label>
-                            </div>
-                            <div class="radio">
-                                <label><input type="radio" name="controlpost" value="102">将本书评标记为往期编推</label>
-                            </div>
-                            <div class="radio">
-                                <label><input type="radio" name="controlpost" value="103">将本书评标记为专题推荐</label>
-                            </div>
-                        @else
-                            <div class="radio">
-                                <label><input type="radio" name="controlpost" value="104">将本书评标记为非编推</label>
-                            </div>
-                        @endif
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="101">将本书评标记为当前编推</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="102">将本书评标记为往期编推</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="103">将本书评标记为专题推荐</label>
+                    </div>
+                    @if($post->review->editor_recommend)
+                    <div class="radio">
+                        <label><input type="radio" name="controlpost" value="104">将本书评标记为非编推</label>
+                    </div>
+                    @endif
                     @endif
 
                     <div class="form-group">
