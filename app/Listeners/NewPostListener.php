@@ -76,8 +76,19 @@ class NewPostListener
                 ]);
             }
 
-            //不是给自己的主题，也不是点评，那么给楼主送出跟帖提醒
-            if($post->user_id!=$thread->user_id&&$post->type!='comment'){
+            //回帖了，不是给自己的帖子回帖，那么送出回帖提醒
+            if(($post->reply_to_id>0)&&($post->user_id!=$post->parent->user_id)){
+                $reply_activity = Activity::create([
+                    'kind' => 1,
+                    'item_type' => 'post',
+                    'item_id' => $post->id,
+                    'user_id' => $post->parent->user_id,
+                ]);
+                $post->parent->user->remind('new_reply');
+            }
+
+            //不是给自己的主题回帖，这个贴也不是点评，而且回复的对象不是楼主，那么给楼主送出跟帖提醒
+            if($post->user_id!=$thread->user_id&&$post->type!='comment'&&$post->parent->user_id!=$thread->user_id){
                 $post_activity = Activity::create([
                     'kind' => 1,
                     'item_type' => 'post',
@@ -109,17 +120,6 @@ class NewPostListener
                     'collection_groups.update_count'=>DB::raw('collection_groups.update_count + 1'),
                     'users.unread_updates' => DB::raw('users.unread_updates + 1'),
                 ]);
-            }
-
-            //回帖了，不是给自己的帖子回帖，回帖对象也不是楼主，那么送出回帖提醒
-            if(($post->reply_to_id>0)&&($post->user_id!=$post->parent->user_id)&&($post->parent->user_id!=$thread->user_id)){
-                $reply_activity = Activity::create([
-                    'kind' => 1,
-                    'item_type' => 'post',
-                    'item_id' => $post->id,
-                    'user_id' => $post->parent->user_id,
-                ]);
-                $post->parent->user->remind('new_reply');
             }
 
             // 修改惯用马甲，惯用indentation

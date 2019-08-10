@@ -6,6 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-heading lead">
                 <h1>关键词:「{{ $pattern }}」</h1>
+                <h6 class="grayout">(友情提示，搜索是严格匹配，过长的关键词可能会影响搜索结果哦，建议使用2-4个字的关键词，不要添加空格)</h6>
             </div>
         </div>
         <div class="panel panel-default">

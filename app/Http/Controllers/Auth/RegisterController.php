@@ -165,8 +165,7 @@ class RegisterController extends Controller
             $user->info->activation_token=str_random(40);
             $user->info->save();
         }
-        $this->sendEmailConfirmationTo($user);
-        session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
+        session()->flash('success', '恭喜，已成功注册！');
 
         DB::table('password_resets')->insert([
             'email' => $user->email,
@@ -186,9 +185,9 @@ class RegisterController extends Controller
     public function register_by_invitation(Request $request)
     {
         if (Cache::has('registration-by-invitation-limit-' . request()->ip())){
-            return back()->with('danger','本ip('.request()->ip().')已于10分钟内尝试注册，请勿重复输入信息或试图暴力破解邀请码');
+            return back()->with('danger','本ip('.request()->ip().')已于2分钟内尝试注册，请等待冷静期经过，请勿重复输入信息或试图暴力破解邀请码');
         }
-        Cache::put('registration-by-invitation-limit-' . request()->ip(), true, 10);
+        Cache::put('registration-by-invitation-limit-' . request()->ip(), true, 2);
 
         $invitation_token = InvitationToken::with('user')->where('token', request('invitation_token'))->first();
 

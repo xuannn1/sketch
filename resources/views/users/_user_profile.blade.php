@@ -38,7 +38,7 @@
     @endif
 </div>
 @endif
-<div class="text-center stats">
+<div class="text-center stat">
 
     <div class="font-5">
         <span>盐粒：{{ $info->salt }}</span>&nbsp;&nbsp;&nbsp;
@@ -52,10 +52,11 @@
     @if(Auth::check()&&(Auth::user()->isAdmin()||Auth::id()===$user->id))
         <div class="font-5">
             <span>连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
-            <span>总签到：{{ $info->qiandao_all }}天</span>
+            <span>总签到：{{ $info->qiandao_all }}天</span>&nbsp;&nbsp;&nbsp;
+            <span>最新签到：{{ $user->qiandao_at?$user->qiandao_at->diffForHumans():'' }}</span>
         </div>
         <div class="font-5">
-            <span>最新签到：{{ $user->qiandao_at?$user->qiandao_at->diffForHumans():'' }}</span>&nbsp;&nbsp;&nbsp;
+            <span>注册时间：{{ $user->created_at? $user->created_at->diffForHumans():'无记录' }}</span>&nbsp;&nbsp;&nbsp;
             <span>最后在线：{{ $info->online_status? $info->online_status->online_at->diffForHumans():'无记录' }}</span>
         </div>
 
@@ -69,8 +70,9 @@
         </div>
     @endif
 </div>
+
 @if($intro&&$intro->body)
-<div class="h5 text-center">
+<div class="h5 text-center stat">
     <span>{!! StringProcess::wrapParagraphs($intro->body) !!}</span>
 </div>
 @endif

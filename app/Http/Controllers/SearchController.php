@@ -24,7 +24,7 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         $validatedData = $request->validate([
-            'search' => 'required|string|min:1|max:6',
+            'search' => 'required|string|min:1',
         ]);
 
         $search_result = Cache::remember('search_index.'.url('/').$request->search,30,function() use($request){
