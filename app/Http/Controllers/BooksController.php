@@ -71,7 +71,7 @@ class BooksController extends Controller
 
     public function edit($id)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         if(!$thread){
             return redirect()->back()->with('danger','找不到文章');
         }
@@ -90,7 +90,7 @@ class BooksController extends Controller
 
     public function edit_profile($id)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
         return view('books.edit_profile', compact('thread'));
@@ -98,20 +98,20 @@ class BooksController extends Controller
 
     public function update_profile($id, StoreBook $form)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
         $thread = $form->updateBookProfile($thread);
         $valid_tags = $thread->tags_validate($thread->tags->pluck('id'));
         $thread->keep_only_admin_tags();
         $thread->tags()->syncWithoutDetaching($valid_tags);
-        $this->clearAllThread($id);
+        $this->refreshThread($id);
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍文案设置信息');
     }
 
     public function edit_tag($id)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
         $selected_tags = $thread->tags;
@@ -122,7 +122,7 @@ class BooksController extends Controller
 
     public function update_tag($id, Request $request)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
         $input_tags = array($request->sexual_orientation_tag, $request->book_length_tag, $request->book_status_tag);
@@ -132,18 +132,18 @@ class BooksController extends Controller
         $thread->drop_none_tongren_tags();//去掉所有本次能选的tag的范畴内的tag
         $thread->tags()->syncWithoutDetaching($thread->tags_validate($input_tags));//并入新tag
 
-        $this->clearAllThread($id);
+        $this->refreshThread($id);
 
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍标签信息');
     }
 
     public function edit_tongren($id)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
 
-        $tongren = \App\Models\Tongren::find($id);
+        $tongren = \App\Models\Tongren::on('mysql::write')->find($id);
 
         $selected_tags = $thread->tags()->whereIn('tag_type',['同人原著','同人CP'])->get();
 
@@ -155,18 +155,18 @@ class BooksController extends Controller
 
     public function update_tongren($id, Request $request)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
 
         $thread->tongren_data_sync($request->all());
-        $this->clearAllThread($id);
+        $this->refreshThread($id);
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍同人信息');
     }
 
     public function edit_chapter_index($id)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $user = CacheUser::Auser();
         $posts = $this->threadChapterIndex($thread->id);
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
@@ -176,7 +176,7 @@ class BooksController extends Controller
 
     public function update_chapter_index($id, Request $request)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $user = CacheUser::Auser();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
 
@@ -208,7 +208,7 @@ class BooksController extends Controller
             }
         }
 
-        $this->clearAllThread($id);
+        $this->refreshThread($id);
         return redirect()->route('thread.chapter_index', $thread->id);
     }
 

@@ -21,7 +21,7 @@ class ChapterController extends Controller
 
     public function create($id)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         $channel = $thread->channel();
         if(!$channel||!$thread||$channel->type!='book'||$thread->is_locked){
             abort(403);
@@ -31,7 +31,7 @@ class ChapterController extends Controller
 
     public function store($id, StoreChapter $form)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         if ($thread->is_locked||$thread->user_id!=Auth::id()){
             abort(403);
         }
@@ -45,7 +45,7 @@ class ChapterController extends Controller
         }else{
             $post->user->reward("short_chapter");
         }
-        $this->clearAllThread($id);
+        $this->refreshThread($id);
 
         return redirect()->route('post.show', $post->id)->with('success', '您已成功发布章节');
     }
@@ -53,7 +53,7 @@ class ChapterController extends Controller
 
     public function update($id, StoreChapter $form)
     {
-        $post = Post::find($id);
+        $post = Post::on('mysql::write')->find($id);
         if(!$post){abort(404);}
         $chapter = $post->chapter;
         $thread = $post->thread;
@@ -64,8 +64,8 @@ class ChapterController extends Controller
 
         $post = $form->updateChapter($post, $thread);
         $thread->recalculate_characters();
-        $this->clearAllThread($thread->id);
-        $this->clearPostProfile($post->id);
+        $this->refreshThread($thread->id);
+        $this->refreshPost($post->id);
 
         return redirect()->route('post.show', $id)->with('success','已经成功更新章节');
 
@@ -73,7 +73,7 @@ class ChapterController extends Controller
 
     public function turn_to_chapter($id)
     {
-        $post = Post::find($id);
+        $post = Post::on('mysql::write')->find($id);
         $thread=$post->thread;
         if($post->user_id!=Auth::id()){abort(403);}
         if($thread->channel()->type!='book'){abort(403);}
@@ -92,9 +92,9 @@ class ChapterController extends Controller
 
         $thread->recalculate_characters();
         $thread->reorder_chapters();
-        $this->clearAllThread($thread->id);
-        $this->clearPostProfile($post->id);
-        $chapter = Chapter::find($post->id);
+        $this->refreshThread($thread->id);
+        $this->refreshPost($post->id);
+        $chapter = Chapter::on('mysql::write')->find($post->id);
 
         return view('chapters.edit', compact('chapter','post','thread'));
     }

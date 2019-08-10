@@ -10,9 +10,12 @@ use Auth;
 use Carbon;
 use CacheUser;
 use Cache;
+use App\Sosadfun\Traits\QuoteObjectTraits;
 
 class QuoteController extends Controller
 {
+    use QuoteObjectTraits;
+
     public function __construct()
     {
         $this->middleware('auth')->only('create', 'store', 'mine');
@@ -55,17 +58,16 @@ class QuoteController extends Controller
     public function create(){
         return view('quotes.create');
     }
-    public function show(Quote $quote){
-        $rewards = \App\Models\Reward::with('author')
-        ->withType('quote')
-        ->withId($quote->id)
-        ->orderBy('created_at','desc')
-        ->take(10)
-        ->get();
+
+    public function show($id){
+        $quote = $this->quoteProfile($id);
+        if(!$quote){abort(404);}
+
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
-        return view('quotes.show', compact('user','info','quote','rewards'));
+        return view('quotes.show', compact('user','info','quote'));
     }
+
     public function index(Request $request){
         $page = is_numeric($request->page)? $request->page:'1';
         $quotes = Cache::remember('quotes.P'.$page, 10, function () {

@@ -34,8 +34,12 @@ class StoreVote extends FormRequest
         ];
     }
 
-    public function validateAttitude($voted_model,$attitude_type,$user_id){
-        $votes = $voted_model->votes()->where('user_id',$user_id)->get();
+    public function validateAttitude($votable_type, $votable_id, $attitude_type, $user_id){
+        $votes = Vote::on('mysql::write')
+        ->where('votable_type', $votable_type)
+        ->where('votable_id', $votable_id)
+        ->where('user_id',$user_id)
+        ->get();
         $check_attitude=in_array($attitude_type, array('upvote','downvote')) ? array('upvote','downvote'):array($attitude_type);
         return $votes->whereIn('attitude_type', $check_attitude)->isEmpty();
     }
@@ -48,7 +52,7 @@ class StoreVote extends FormRequest
         $vote_data['user_id'] = auth()->id();
         $vote_data['receiver_id'] = $voted_model->user_id;
 
-        if(!$this->validateAttitude($voted_model, $vote_data['attitude_type'], $vote_data['user_id'])){
+        if(!$this->validateAttitude($this->votable_type, $this->votable_id, $vote_data['attitude_type'], $vote_data['user_id'])){
             abort(409,'和已有投票冲突（如重复投票，也可能是已经赞还要踩）'); //和已有投票冲突（可能是重复投票，也可能是已经赞还要踩）
         }
 

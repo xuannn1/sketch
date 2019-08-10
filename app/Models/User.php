@@ -146,6 +146,21 @@ class User extends Authenticatable
         return $this->hasMany(InvitationToken::class, 'user_id');
     }
 
+    public function patreon()
+    {
+        return $this->hasOne(Patreon::class, 'user_id');
+    }
+
+    public function patreon_records()
+    {
+        return $this->hasMany(HistoricalPatreonRecord::class, 'user_id');
+    }
+
+    public function reward_tokens()
+    {
+        return $this->hasMany(RewardToken::class, 'user_id');
+    }
+
     public function follow($user_ids)
     {
         if (!is_array($user_ids)){

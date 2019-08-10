@@ -1,11 +1,14 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
-class HistoricalEmailModification extends Model
+
+class HistoricalPatreonRecord extends Model
 {
-    const UPDATED_AT = null;
+    public $timestamps = false;
     protected $guarded = [];
-    protected $dates = ['created_at', 'old_email_verified_at', 'admin_revoked_at'];
+    protected $dates = ['patreon_at'];
 
     public function user()
     {

@@ -7,6 +7,7 @@ use StringProcess;
 use Carbon;
 
 trait GeneratePostDataTraits{
+    use PostObjectTraits;
     public function generatePostData($thread)
     {
         $data = $this->only('body','title');
@@ -37,7 +38,7 @@ trait GeneratePostDataTraits{
 
     public function isDuplicatePost($data)
     {
-        $last_post = Post::where('user_id', auth()->id())
+        $last_post = Post::on('mysql::write')->where('user_id', auth()->id())
         ->orderBy('id', 'desc')
         ->first();
         return !empty($last_post) && strcmp($last_post->body, $data['body']) === 0;
@@ -46,7 +47,7 @@ trait GeneratePostDataTraits{
     public function addReplyData($data, $thread)
     {
         if($this->reply_to_id>0){
-            $reply = Post::find($this->reply_to_id);
+            $reply = $this->findPost($this->reply_to_id);
             if($reply){
                 $data['reply_to_id'] = $reply->id;
                 $data['reply_to_brief'] = $reply->brief;

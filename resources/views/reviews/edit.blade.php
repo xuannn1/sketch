@@ -30,7 +30,7 @@
                         <input type="text" name="brief" class="form-control" value="{{ $post->brief }}">
                     </div>
                     <div id="biaotiguiding" class="h6">
-                        <span style="color:#d66666">（标题概要中不得具有性描写、性暗示，不得使用直白的脏话、黄暴词和明显涉及边缘的词汇。）<span>
+                        <span style="color:#d66666">（标题、概要中不得具有性描写、性暗示，不得使用直白的脏话、黄暴词和明显涉及边缘的词汇。）<span>
                     </div>
 
                     <div class="">

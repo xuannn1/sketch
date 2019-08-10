@@ -196,11 +196,15 @@ class threadsController extends Controller
 
         Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(10));
 
+        $thread = $this->threadProfile($thread->id);
+
         return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
     }
 
-    public function edit(Thread $thread)
+    public function edit($id)
     {
+        $thread = Thread::on('mysql::write')->find($id);
+
         $user = CacheUser::Auser();
         $channel = $thread->channel();
 
@@ -218,8 +222,10 @@ class threadsController extends Controller
         }
     }
 
-    public function update(StoreThread $form, Thread $thread)
+    public function update($id, StoreThread $form)
     {
+        $thread = Thread::on('mysql::write')->find($id);
+
         if ((Auth::id() == $thread->user_id)&&((!$thread->is_locked)||(Auth::user()->isAdmin()))){
 
             $form->updateThread($thread);
@@ -227,14 +233,16 @@ class threadsController extends Controller
             $thread->keep_only_admin_tags();
             $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
 
-            $this->clearAllThread($thread->id);
+            $this->refreshThread($thread->id);
             return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
         }else{
             abort(403);
         }
     }
-    public function showpost(Post $post)
+    public function showpost($id)
     {
+        $post = $this->findPost($id);
+
         $withFolded='';
         $withComponent='';
         if($post->fold_state){

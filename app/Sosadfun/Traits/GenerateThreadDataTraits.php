@@ -45,7 +45,7 @@ trait GenerateThreadDataTraits{
 
     public function isDuplicateThread($thread_data)
     {
-        $last_thread = Thread::where('user_id', auth()->id())
+        $last_thread = Thread::on('mysql::write')->where('user_id', auth()->id())
         ->where('created_at','>',Carbon::now()->subDays(1))
         ->orderBy('id', 'desc')
         ->first();

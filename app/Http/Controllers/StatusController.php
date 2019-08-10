@@ -27,7 +27,7 @@ class StatusController extends Controller
             'status_body' => 'required|string|max:500'
         ]);
         $status_body = trim($request->status_body);
-        $last_status = Status::where('user_id', auth()->id())
+        $last_status = Status::on('mysql::write')->where('user_id', auth()->id())
         ->latest()
         ->first();
         if (!empty($last_status) && strcmp($last_status->body, $status_body) === 0){
@@ -43,16 +43,18 @@ class StatusController extends Controller
             'brief' => StringProcess::trimtext($status_body, 45),
             'is_public' => 1,
         ]);
+        $status = $this->statusProfile($status->id);
 
         return redirect()->route('status.show', $status->id);
     }
 
-    public function destroy(Status $status)
+    public function destroy($id)
     {
-        if($status->user_id != Auth::id()){
-            return redirect('/')->with('danger', '动态不存在，请静待缓存更新，无需重复删除！');
-        }
+        $status = Status::on('mysql::write')->find($id);
+        if(!$status){abort(404);}
+        if($status->user_id != Auth::id()){abort(403);}
         $status->delete();
+        $this->clearStatusProfile($id);
         return redirect('/')->with('success', '动态已被成功删除！请静待缓存更新');
     }
 

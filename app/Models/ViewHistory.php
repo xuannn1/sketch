@@ -11,11 +11,11 @@ class ViewHistory extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->withDefault();
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function thread()
     {
-        return $this->belongsTo(Thread::class, 'thread_id')->withDefault();
+        return $this->belongsTo(Thread::class, 'thread_id');
     }
 }

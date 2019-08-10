@@ -13,7 +13,7 @@ class CacheUser{ //cache-user class
         if(!$id||$id<=0){return;}
 
         return Cache::remember('cachedUser.'.$id, 30, function() use($id) {
-            $user = User::find($id);
+            $user = User::on('mysql::write')->find($id);
             if($user){
                 $user->load('title');
             }
@@ -24,7 +24,7 @@ class CacheUser{ //cache-user class
     public static function info($id){
         if(!$id||$id<=0){return;}
         return Cache::remember('cachedUserInfo.'.$id, 30, function() use($id) {
-            $info = UserInfo::find($id);
+            $info = UserInfo::on('mysql::write')->find($id);
             if($info){
                 $info->load('online_status');
             }
@@ -42,7 +42,7 @@ class CacheUser{ //cache-user class
         if(!$id||$id<=0){return;}
 
         return Cache::remember('cachedUserIntro.'.$id, 10, function() use($id) {
-            return UserIntro::find($id);
+            return UserIntro::on('mysql::write')->find($id);
         });
     }
 

@@ -33,9 +33,17 @@ trait PostObjectTraits{
         });
     }
 
-    public function clearPostProfile($id)
+    public function clearPost($id)
     {
         Cache::forget('postProfile.'.$id);
+        Cache::forget('post.'.$id);
+    }
+
+    public function refreshPost($id)
+    {
+        $this->clearPostProfile($id);
+        $this->findPost($id);
+        return $this->postProfile($id);
     }
 
     public function findPost($id)

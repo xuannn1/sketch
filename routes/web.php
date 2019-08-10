@@ -189,20 +189,20 @@
 
 
 {//作业模块 TODO 全部需要重做
-   Route::get('/homework/create', 'HomeworksController@create')->name('homework.create')->middleware('admin');//创建新作业活动
-   Route::get('/homework/index', 'HomeworksController@index')->name('homework.index')->middleware('admin');//创建新作业活动
-   Route::get('/homework/submit', 'HomeworksController@submit')->name('homework.submit');//交作业
-   Route::post('/homework/store', 'HomeworksController@store')->name('homework.store')->middleware('admin');//储存新建立的作业活动
-
-   Route::get('/homeworks/{homework}/sendreminderform', 'HomeworksController@sendreminderform')->name('homework.sendreminderform')->middleware('admin');//发送提醒通知表格
-   Route::post('/homeworks/{homework}/sendreminder', 'HomeworksController@sendreminder')->name('homework.sendreminder')->middleware('admin');//发送提醒通知
-
-   Route::get('/homeworks/{homework}/rewardsform', 'HomeworksController@rewardsform')->name('homework.rewardsform')->middleware('admin');//发送奖励表格
-   Route::post('/homeworks/{homework}/rewards', 'HomeworksController@rewards')->name('homework.rewards')->middleware('admin');//发送奖励
-
-   Route::get('/homeworks/{homework}', 'HomeworksController@show')->name('homework.show')->middleware('admin');//查看作业信息
-   Route::post('/homeworks/{homework}/register', 'HomeworksController@register')->name('homework.register');//注册参加作业活动
-   Route::get('/homeworks/{homework}/deactivate', 'HomeworksController@deactivate')->name('homework.deactivate')->middleware('admin');//结束作业活动
+   // Route::get('/homework/create', 'HomeworksController@create')->name('homework.create')->middleware('admin');//创建新作业活动
+   // Route::get('/homework/index', 'HomeworksController@index')->name('homework.index')->middleware('admin');//创建新作业活动
+   // Route::get('/homework/submit', 'HomeworksController@submit')->name('homework.submit');//交作业
+   // Route::post('/homework/store', 'HomeworksController@store')->name('homework.store')->middleware('admin');//储存新建立的作业活动
+   //
+   // Route::get('/homeworks/{homework}/sendreminderform', 'HomeworksController@sendreminderform')->name('homework.sendreminderform')->middleware('admin');//发送提醒通知表格
+   // Route::post('/homeworks/{homework}/sendreminder', 'HomeworksController@sendreminder')->name('homework.sendreminder')->middleware('admin');//发送提醒通知
+   //
+   // Route::get('/homeworks/{homework}/rewardsform', 'HomeworksController@rewardsform')->name('homework.rewardsform')->middleware('admin');//发送奖励表格
+   // Route::post('/homeworks/{homework}/rewards', 'HomeworksController@rewards')->name('homework.rewards')->middleware('admin');//发送奖励
+   //
+   // Route::get('/homeworks/{homework}', 'HomeworksController@show')->name('homework.show')->middleware('admin');//查看作业信息
+   // Route::post('/homeworks/{homework}/register', 'HomeworksController@register')->name('homework.register');//注册参加作业活动
+   // Route::get('/homeworks/{homework}/deactivate', 'HomeworksController@deactivate')->name('homework.deactivate')->middleware('admin');//结束作业活动
 }
 
 {//以下是图书／文章模块
@@ -373,4 +373,9 @@
     Route::resource('tag', 'TagController', ['only' => [
         'index', 'create', 'store', 'edit', 'update', 'show'
     ]]); //
+}
+
+//patreon related
+{
+    Route::get('patreon', 'PatreonController@index')->name('patreon.index');
 }

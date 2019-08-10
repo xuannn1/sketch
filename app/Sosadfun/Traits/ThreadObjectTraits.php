@@ -6,6 +6,7 @@ use Cache;
 use ConstantObjects;
 
 trait ThreadObjectTraits{
+    use FindThreadTrait;
 
     public function threadProfile($id)
     {
@@ -49,17 +50,6 @@ trait ThreadObjectTraits{
         });
     }
 
-    public function findThread($id)
-    {
-        return Cache::remember('thread.'.$id, 10, function () use($id){
-            $thread = \App\Models\Thread::find($id);
-            if($thread){
-                $thread->load('author.title');
-            }
-            return $thread;
-        });
-    }
-
     public function clearThread($id)
     {
         Cache::forget('thread.'.$id);
@@ -69,6 +59,12 @@ trait ThreadObjectTraits{
     {
         $this->clearThread($id);
         $this->clearThreadProfile($id);
+    }
+
+    public function refreshThread($id)
+    {
+        $this->clearAllThread($id);
+        return $this->threadProfile($id);
     }
 
     public function threadChapterIndex($id)

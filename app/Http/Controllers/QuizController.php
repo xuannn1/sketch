@@ -61,20 +61,24 @@ class QuizController extends Controller
         return redirect()->route('quiz.review');
     }
 
-    public function edit(Quiz $quiz)
+    public function edit($id)
     {
+        $quiz = Quiz::on('mysql::write')->find($id);
         $quiz->load('quiz_options');
         return view('quiz.edit', compact('quiz'));
     }
 
-    public function show(Quiz $quiz)
+    public function show($id)
     {
+        $quiz = Quiz::on('mysql::write')->find($id);
         $quiz->load('quiz_options');
         return view('quiz.show', compact('quiz'));
     }
 
-    public function update(Request $request, Quiz $quiz)
+    public function update($id, Request $request)
     {
+        $quiz = Quiz::on('mysql::write')->find($id);
+        
         $this->validate($request, [
             'quiz-body' => 'required|string|max:6000',
             'quiz-hint' => 'nullable|string|max:6000',

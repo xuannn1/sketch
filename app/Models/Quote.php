@@ -41,4 +41,15 @@ class Quote extends Model
         }
         return $query;
     }
+
+    public function latest_rewards()
+    {
+        return \App\Models\Reward::with('author')
+        ->withType('quote')
+        ->withId($this->id)
+        ->orderBy('created_at','desc')
+        ->take(10)
+        ->get();
+    }
+
 }

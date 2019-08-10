@@ -9,10 +9,10 @@ class RegisterHomework extends Model
     protected $guarded = [];
     public function thread()
     {
-        return $this->belongsTo(Thread::class, 'thread_id')->select(['id','user_id', 'is_anonymous','majia','title'])->withDefault();
+        return $this->belongsTo(Thread::class, 'thread_id')->select(['id','user_id', 'is_anonymous','majia','title']);
     }
     public function student()
     {
-        return $this->belongsTo(User::class, 'user_id')->select(['id','name'])->withDefault();
+        return $this->belongsTo(User::class, 'user_id')->select(['id','name']);
     }
 }

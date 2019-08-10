@@ -5,18 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePost;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Events\NewPost;
 use Carbon;
 use Auth;
 use CacheUser;
+use DB;
 
 use App\Sosadfun\Traits\PostObjectTraits;
 use App\Sosadfun\Traits\ThreadObjectTraits;
-
-
 
 class PostsController extends Controller
 {
@@ -28,8 +26,9 @@ class PostsController extends Controller
         $this->middleware('auth')->except('show');
     }
 
-    public function store(StorePost $form, Thread $thread)
+    public function store($id, StorePost $form)
     {
+        $thread = $this->findThread($id);
         if ((!Auth::user()->isAdmin())&&($thread->is_locked||((!$thread->is_public)&&($thread->user_id!=Auth::id())))){
             return back()->with('danger', '本主题锁定或设为隐私，不能回帖');
         }
@@ -42,13 +41,16 @@ class PostsController extends Controller
         event(new NewPost($post));
 
         $msg = $post->reward_creation();
+        $post = $this->postProfile($id);
+
         if($post->parent&&$post->parent->type==='chapter'&&$post->parent->chapter&&$post->parent->chapter->next_id>0){ // 回复章节之后自动前往下一章（如果有的话）
             return redirect()->route('post.show', $post->parent->chapter->next_id)->with('success', $msg);
         }
         return back()->with('success', $msg);
     }
-    public function edit(Post $post)
+    public function edit($id)
     {
+        $post = Post::on('mysql::write')->find($id);
         if(!$post){abort(404);}
         $thread=$post->thread;
         $channel = $thread->channel();
@@ -72,8 +74,9 @@ class PostsController extends Controller
         return view('posts.post_edit', compact('post'));
     }
 
-    public function update(StorePost $form, Post $post)
+    public function update($id, StorePost $form)
     {
+        $post = Post::on('mysql::write')->find($id);
         $thread=$post->thread;
         $channel = $thread->channel();
         if(!$thread||!$post||!$channel){abort(404);}
@@ -81,7 +84,7 @@ class PostsController extends Controller
         if(($thread->is_locked||!$thread->channel()->allow_edit||$post->fold_state>0)&&(!Auth::user()->isAdmin())){abort(403);}
 
         $form->updatePost($post);
-        $this->clearPostProfile($post->id);
+        $this->refreshPost($post->id);
         return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
     }
 
@@ -111,7 +114,7 @@ class PostsController extends Controller
     }
 
     public function destroy($id){
-        $post = Post::findOrFail($id);
+        $post = Post::on('mysql::write')->find($id);
         if(!$post){abort(404);}
         $thread=$post->thread;
         $channel = $thread->channel();
@@ -124,7 +127,7 @@ class PostsController extends Controller
             if($chapter){
                 $chapter->delete();
                 $thread->reorder_chapters();
-                $this->clearAllThread($thread->id);
+                $this->refreshThread($thread->id);
             }
         }
         if($post->type==='review'){
@@ -135,15 +138,16 @@ class PostsController extends Controller
             }
             if($review){
                 $review->delete();
-                $this->clearAllThread($thread->id);
+                $this->refreshThread($thread->id);
             }
         }
         $post->delete();
-        $this->clearPostProfile($id);
+        $this->refreshPost($id);
         return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
     }
-    public function turn_to_post(Post $post)
+    public function turn_to_post($id)
     {
+        $post = Post::on('mysql::write')->find($id);
         $thread = $post->thread;
         if(!$thread||$thread->user_id!=Auth::id()){abort(403);}
 
@@ -152,20 +156,20 @@ class PostsController extends Controller
             if($chapter){
                 $chapter->delete();
                 $thread->reorder_chapters();
-                $this->clearAllThread($thread->id);
+                $this->refreshThread($thread->id);
             }
         }
         if($post->type==='review'){
             $review = $post->review;
             if($review){
                 $review->delete();
-                $this->clearAllThread($thread->id);
+                $this->refreshThread($thread->id);
             }
         }
         $post->type='post';
         $post->edited_at = Carbon::now();
         $post->save();
-        $this->clearPostProfile($post->id);
+        $this->refreshPost($post->id);
         return redirect()->route('post.show',$post->id)->with('success','已经成功转化成普通回帖');
     }
 
@@ -178,7 +182,7 @@ class PostsController extends Controller
         if($thread->is_locked||$thread->channel()->type!='box'||$thread->user_id!=Auth::id()||Auth::user()->no_posting){abort(403);}
 
         $post->delete();
-        $this->clearPostProfile($id);
+        $this->refreshPost($id);
         return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
     }
     public function fold_by_owner($id)
@@ -194,7 +198,7 @@ class PostsController extends Controller
 
         $post->update(['fold_state'=>2]);
         if($post->reply_to_id>0){
-            $this->clearPostProfile($post->reply_to_id);
+            $this->refreshPost($post->reply_to_id);
         }
         return redirect()->route('thread.showpost', $post->id)->with("success","已经折叠该回帖");
     }

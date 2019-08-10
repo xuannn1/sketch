@@ -126,10 +126,10 @@ class RegisterController extends Controller
         }
         $user = $this->create($request->all());
         Cache::put('registration-limit-' . request()->ip(), true, Carbon::now()->addDay(1));
-        event(new Registered($user));
-        $this->sendEmailConfirmationTo($user);
 
-        return redirect('/')->with('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
+        event(new Registered($user));
+
+        return redirect('/')->with('success', '您好，您已成功注册');
     }
 
     protected function sendEmailConfirmationTo($user)
@@ -165,7 +165,8 @@ class RegisterController extends Controller
             $user->info->activation_token=str_random(40);
             $user->info->save();
         }
-        session()->flash('success', '恭喜，已成功注册！');
+        $this->sendEmailConfirmationTo($user);
+        session()->flash('success', '恭喜，已发送重置邮件');
 
         DB::table('password_resets')->insert([
             'email' => $user->email,

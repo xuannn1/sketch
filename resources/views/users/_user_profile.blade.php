@@ -53,11 +53,11 @@
         <div class="font-5">
             <span>连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
             <span>总签到：{{ $info->qiandao_all }}天</span>&nbsp;&nbsp;&nbsp;
-            <span>最新签到：{{ $user->qiandao_at?$user->qiandao_at->diffForHumans():'' }}</span>
+            <span>最新签到：{{ $user->qiandao_at? $user->qiandao_at->diffForHumans():'' }}</span>
         </div>
         <div class="font-5">
             <span>注册时间：{{ $user->created_at? $user->created_at->diffForHumans():'无记录' }}</span>&nbsp;&nbsp;&nbsp;
-            <span>最后在线：{{ $info->online_status? $info->online_status->online_at->diffForHumans():'无记录' }}</span>
+            <span>最后在线：{{ $info->online_status&&$info->online_status->online_at? $info->online_status->online_at->diffForHumans():'无记录' }}</span>
         </div>
 
         <div class="font-5">

@@ -10,7 +10,7 @@ use ConstantObjects;
 trait ThreadTongrenTraits{
     public function tongren_data_sync($data)
     {
-        $tongren = Tongren::find($this->id);
+        $tongren = Tongren::on('mysql::write')->find($this->id);
         $this->drop_tongren_tags();
 
         // 不是同人的情况下，去掉同人相关的tag，去掉同人信息

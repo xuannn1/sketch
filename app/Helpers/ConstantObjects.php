@@ -177,6 +177,7 @@ class ConstantObjects
     public static function refreshTagProfile($tagid)
     {
         Cache::forget('tagProfile-'.$tagid);
+        return self::findTagProfile($tagid);
     }
 
     public static function find_tags_by_withTag($withTag)

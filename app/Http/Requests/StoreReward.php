@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Carbon;
 use CacheUser;
+use App\Models\Reward;
 
 class StoreReward extends FormRequest
 {
@@ -34,12 +35,15 @@ class StoreReward extends FormRequest
         ];
     }
 
-    public function validateDateAndAttribite($rewarded_model,$reward_data){
-        return $rewarded_model->rewards()
-        ->where('user_id','=',$reward_data['user_id'])
+    public function validateDateAndAttribite($rewardable_type, $rewardable_id, $reward_data){
+        return
+        $rewards = Reward::on('mysql::write')
+        ->where('rewardable_type', $rewardable_type)
+        ->where('rewardable_id', $rewardable_id)
+        ->where('user_id', $reward_data['user_id'])
         ->where('created_at','>',Carbon::parse($reward_data['created_at'])->subDay(1)->toDateTimeString())
-        ->get()->isEmpty();
-
+        ->get()
+        ->isEmpty();
     }
 
     public function validateBalance($reward_data,$info){
@@ -57,7 +61,7 @@ class StoreReward extends FormRequest
         $reward_data['created_at'] = Carbon::now()->toDateTimeString();
         $reward_data['receiver_id'] = $rewarded_model->user_id;
 
-        if(!$this->validateDateAndAttribite($rewarded_model,$reward_data)){
+        if(!$this->validateDateAndAttribite($this->rewardable_type, $this->rewardable_id, $reward_data)){
             abort(409,'今天已经打赏过该奖励'); //今天已经打赏过该奖励
         }
 

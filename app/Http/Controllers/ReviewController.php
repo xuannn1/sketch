@@ -30,17 +30,17 @@ class ReviewController extends Controller
         if($id==0){
             return redirect()->back()->with('info','您尚无清单设置，请先创建清单');
         }
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         if(!$thread||$thread->channel()->type!='list'||($thread->is_locked&&!Auth::user()->isAdmin())||$thread->user_id!=Auth::id()){
             abort(403);
         }
-        $reviewee = Thread::find($request->reviewee_id);
+        $reviewee = $this->findThread($request->reviewee_id);
         return view('reviews.create', compact('thread','reviewee'));
     }
 
     public function store($id, StoreReview $form)
     {
-        $thread = Thread::find($id);
+        $thread = Thread::on('mysql::write')->find($id);
         if ($thread->is_locked||$thread->user_id!=Auth::id()){
             abort(403);
         }
@@ -49,7 +49,7 @@ class ReviewController extends Controller
 
         event(new NewPost($post));
 
-        $this->clearAllThread($thread->id);
+        $this->refreshThread($thread->id);
 
         if($post->post_check('long_comment')){
             $post->user->reward('long_post');
@@ -61,7 +61,7 @@ class ReviewController extends Controller
 
     public function update($id, StoreReview $form)
     {
-        $post = Post::find($id);
+        $post = Post::on('mysql::write')->find($id);
         $review = $post->review;
         $thread = $post->thread;
 
@@ -72,15 +72,15 @@ class ReviewController extends Controller
         $post = $form->updateReview($post, $thread);
 
         $thread->recalculate_characters();
-        $this->clearPostProfile($id);
-        $this->clearAllThread($thread->id);
+        $this->refreshPost($id);
+        $this->refreshThread($thread->id);
 
         return redirect()->route('post.show', $id)->with('success','已经成功更新书评');
     }
 
     public function turn_to_review($id)
     {
-        $post = Post::find($id);
+        $post = Post::on('mysql::write')->find($id);
         $thread=$post->thread;
         if($post->user_id!=Auth::id()){abort(403);}
         if($thread->channel()->type!='list'){abort(403);}
@@ -95,11 +95,11 @@ class ReviewController extends Controller
         $post->edited_at = Carbon::now();
         $post->save();
 
-        $review = Review::find($post->id);
+        $review = Review::on('mysql::write')->find($post->id);
 
         $thread->recalculate_characters();
-        $this->clearAllThread($thread->id);
-        $this->clearPostProfile($post->id);
+        $this->refreshThread($thread->id);
+        $this->refreshPost($post->id);
 
         return view('reviews.edit', compact('review','post','thread'));
     }

@@ -54,6 +54,11 @@
                         邀请好友
                     </a>
                     @endif
+                    @if($user->level>=11)
+                    <a href="{{ route('patreon.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                        赞助者中心
+                    </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -68,7 +73,7 @@
                     <a href="{{ route('user.edit_preference') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         偏好及隐私设置
                     </a>
-                    <a href="{{ route('user.edit', $user->id) }}" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{ route('user.edit') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         修改账户资料
                     </a>
                     <a href="{{ route('linkedaccounts.index') }}" class="btn btn-lg btn-info btn-block sosad-button">

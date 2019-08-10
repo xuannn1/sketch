@@ -110,6 +110,7 @@
                 <div class="font-4">
                     <span>新鲜打赏：</span>
                 </div>
+                <?php $rewards = $quote->recent_rewards; ?>
                 @include('rewards._brief_rewards')
                 <a href="{{ route('reward.index', ['rewardable_type'=>'quote', 'rewardable_id'=>$quote->id]) }}" class="pull-right">>>本题头的全部打赏</a>
                 <br>
