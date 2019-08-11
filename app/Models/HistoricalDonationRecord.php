@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use ConstantObjects;
 
 class HistoricalDonationRecord extends Model
 {
@@ -18,5 +19,46 @@ class HistoricalDonationRecord extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id','level');
+    }
+
+    public function reward_user()
+    {
+        if($this->is_claimed){return false;}
+
+        $user = $this->user;
+        if(!$user){return false;}
+
+        $info = $user->info;
+
+        $donation_level = $user->donation_level_by_amount($this->donation_amount);
+
+        if($donation_level>1){
+            $user->no_ads = true;
+        }
+
+        $info->donation_level = $donation_level;
+
+        $titles = ConstantObjects::title_type('patreon')->where('level','<=',$donation_level)->pluck('id')->toArray();
+        $user->titles()->syncWithoutDetaching($titles);
+
+        if($donation_level===3){
+            $info->qiandao_reward_limit += 1;
+        }
+
+        if($donation_level===4){
+            $info->no_ads_reward_limit = 5;
+            $info->qiandao_reward_limit += 5;
+        }
+        if($donation_level===5){
+            $info->no_ads_reward_limit = 20;
+            $info->qiandao_reward_limit += 20;
+        }
+
+        $this->is_claimed = 1;
+
+        $user->save();
+        $info->save();
+        $this->save();
+        return true;
     }
 }

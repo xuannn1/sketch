@@ -384,8 +384,13 @@
     Route::get('patreon/create', 'DonationController@patreon_create')->name('donation.patreon_create');
     Route::post('patreon/store', 'DonationController@patreon_store')->name('donation.patreon_store');
     Route::get('patreon/{pateon}/destroy_form', 'DonationController@patreon_destroy_form')->name('donation.patreon_destroy_form');
+    Route::get('patreon/{pateon}/approve_patreon', 'DonationController@approve_patreon')->name('donation.approve_patreon');
     Route::delete('patreon/{pateon}', 'DonationController@patreon_destroy')->name('donation.patreon_destroy');
     Route::get('redeem_token', 'DonationController@redeem_token_form')->name('donation.redeem_token_form');
     Route::post('redeem_token', 'DonationController@redeem_token')->name('donation.redeem_token');
+    Route::get('/donation/{donation}/edit', 'DonationController@donation_edit')->name('donation.donation_edit');
+    Route::patch('/donation/{donation}', 'DonationController@donation_update')->name('donation.donation_update');
+    Route::get('/reward_token/create', 'DonationController@reward_token_create')->name('donation.reward_token_create');
+    Route::get('/review_patreon', 'DonationController@review_patreon')->name('donation.review_patreon');
 
 }

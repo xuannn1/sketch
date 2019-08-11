@@ -11,7 +11,7 @@
             <div class="panel-body">
                 <div class="main-text">
                     <p>废文网自2017年成立至今，一直秉持着“创作自由”的观念，为众多文学爱好者提供了一方天地。我们鼓励优质创作，鼓励友好交流，鼓励题材百花齐放。生活中的种种束缚已经太多，我们真诚的希望，在这里，作者能享受自由创作的快乐、读者能享受自由阅读的快乐、不同身份的人都能找到属于自己的怡然自得。目前我们正不断增加网站功能，APP也在研发制作之中。</p>
-                    <p>如果你愿意帮助我们实现这个目标，可以前往<em><a href="https://www.patreon.com/sosadfun">Patreon 正在创建废文网（sosad.fun）</a></em>对我们进行赞助，废文网感谢你的支持！</p>
+                    <p>如果你愿意帮助我们实现这个目标，可以前往<em><a href="https://www.patreon.com/sosadfun">Patreon赞助页面</a></em>对我们进行赞助，废文网感谢你的支持！</p>
                     <h6 class="grayout">（暂时只支持海外支付途径）</h6>
                 </div>
             </div>
@@ -89,7 +89,8 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2>当前赞助名单</h2>
+                <span class="font-2">当前赞助名单</span>
+                <span class="pull-right">>><a href="#">往期名单</a></span>
             </div>
             <div class="panel-body">
                 <div>

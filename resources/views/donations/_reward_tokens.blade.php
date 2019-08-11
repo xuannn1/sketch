@@ -13,6 +13,9 @@
         <span>
             创建时间：{{ Carbon::parse($token->created_at)->setTimezone('Asia/Shanghai') }}
         </span>
+        <span>
+            保质期：{{ Carbon::parse($token->redeem_until)->setTimezone('Asia/Shanghai') }}
+        </span>
     </div>
 </div>
 @endforeach

@@ -35,6 +35,12 @@ class Kernel extends ConsoleKernel
         ->dailyAt('4:00')
         ->onOneServer();
 
+        $schedule->command('data:rewardDonationRecords')
+        ->name('data:rewardDonationRecords')
+        ->timezone('Asia/Shanghai')
+        ->dailyAt('4:10')
+        ->onOneServer();
+
         $schedule->command('data:recalculation')
         ->name('data:recalculation')
         ->timezone('Asia/Shanghai')

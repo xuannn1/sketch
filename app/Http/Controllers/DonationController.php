@@ -8,6 +8,8 @@ use CacheUser;
 use Carbon;
 use Cache;
 use DB;
+use Auth;
+
 class DonationController extends Controller
 {
     use DonationObjectTraits;
@@ -15,7 +17,7 @@ class DonationController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except('donate');
-        // $this->middleware('admin')->only();
+        $this->middleware('admin')->only('review_patreon', 'approve_patreon');
     }
 
     public function donate()
@@ -89,13 +91,6 @@ class DonationController extends Controller
         return view('donations.patreon_destroy_form', compact('patreon','user'));
     }
 
-    public function approve_patreon($id)
-    {
-        $user = CacheUser::user();
-        $user->reward_donation();
-        return redirect()->back()->with('success','已核准兑换');
-    }
-
     public function redeem_token_form()
     {
         return view('donations.redeem_token_form');
@@ -143,5 +138,79 @@ class DonationController extends Controller
         });
 
         return redirect()->route('donation.mydonations')->with('success','已兑换福利码');
+    }
+
+    public function donation_edit($id)
+    {
+        $record = \App\Models\HistoricalDonationRecord::on('mysql::write')->find($id);
+        if(!$record){abort(404);}
+        if($record->user_id!=Auth::id()){abort(403);}
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+
+        return view('donations.donation_edit', compact('user','info','record'));
+    }
+
+    public function donation_update($id, Request $request)
+    {
+        $record = \App\Models\HistoricalDonationRecord::on('mysql::write')->find($id);
+        if(!$record){abort(404);}
+        if($record->user_id!=Auth::id()){abort(403);}
+        $request->validate([
+            'donation_majia' => 'string|nullable|max:20',
+            'donation_message' => 'string|nullable|max:200',
+        ]);
+
+        $data = $request->only('donation_majia','donation_message');
+        $data['show_amount'] = $request->show_amount?true:false;
+        $data['is_anonymous'] = $request->is_anonymous?true:false;
+
+        $record->update($data);
+
+        return redirect()->route('donation.mydonations')->with('success','已修改赞助记录显示');
+    }
+
+    public function reward_token_create(Request $request)
+    {
+        $type = $request->type;
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        if($info->donation_level<4){abort(403);}
+        if($type=='qiandao+'&&$info->qiandao_reward_limit>0){
+            $info->qiandao_reward_limit-=1;
+            $info->save();
+        }
+        if($type=='no_ads'&&$info->no_ads_limit>0){
+            $info->info->no_ads_limit-=1;
+            $info->save();
+        }
+
+        if($type!='no_ads'&&$type!='qiandao+'){abort(409);}
+        $reward_token = \App\Models\RewardToken::create([
+            'user_id' => $user->id,
+            'token' => str_random(15),
+            'redeem_limit' => 1,
+            'is_public' =>0,
+            'type' => $type,
+            'redeem_until' => Carbon::now()->addMonth(1),
+        ]);
+        return redirect()->route('donation.mydonations')->with('success','已成功创建福利码，可以分享给小伙伴了！');
+    }
+
+    public function review_patreon(Request $request)
+    {
+        $is_approved = 0;
+        if($request->show_review_tab=='approved'){$is_approved = 1;}
+        $patreons = \App\Models\Patreon::with('author','donation_records')->where('is_approved', $is_approved)->latest()->paginate(20)->appends($request->only('page'));
+
+        return view('donations.review_patreon', compact('patreons'))->with('show_review_tab', $request->show_review_tab);
+    }
+
+    public function approve_patreon($id)
+    {
+        $patreon = \App\Models\Patreon::on('mysql::write')->find($id);
+        if(!$patreon){abort(404);}
+        $patreon->sync_records();
+        return redirect()->route('donation.review_patreon')->with('success','synced_records');
     }
 }

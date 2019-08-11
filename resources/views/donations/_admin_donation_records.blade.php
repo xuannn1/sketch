@@ -3,7 +3,9 @@
     <div class="">
         <span class="badge bianyuan-tag badge-tag">{{$record->donation_kind}}</span>
         <span class="badge newchapter-badge badge-tag {{$record->is_claimed? '':'hidden'}}">已关联</span>
-        <span class="">{{StringProcess::mask_email($record->donation_email)}}</span>
+        @if(Auth::user()->isAdmin())
+        <span class="">{{$record->donation_email}}</span>
+        @endif
         <span>
             「
             @if($record->user_id===0)
@@ -11,6 +13,9 @@
             @else
             @if($record->is_anonymous)
             {{$record->donation_majia??'匿名咸鱼'}}
+            @if(Auth::user()->isAdmin()&&$record->author)
+            <span class="admin-anonymous"><a href="{{ route('user.show', $record->user_id) }}">{{ $record->author->name }}</a></span>
+            @endif
             @elseif($record->author)
             <a href="{{ route('user.show', $record->user_id) }}">{{ $record->author->name }}</a>
             @endif
