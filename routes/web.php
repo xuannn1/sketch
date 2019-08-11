@@ -40,6 +40,7 @@
     Route::get('/', 'PagesController@home')->name('home');
     Route::get('about', 'PagesController@about')->name('about');
 
+
     // TODO:  Contact写成动态情况，提供当前编辑管理列表和往期人员。这个完全不急，慢慢做。
     Route::get('contacts', 'PagesController@contacts')->name('contacts');
 
@@ -50,6 +51,7 @@
 
     Route::get('/administrationrecords', 'PagesController@administrationrecords')->name('administrationrecords');
     Route::get('/qiandao', 'UsersController@qiandao')->name('qiandao');//签到
+    Route::get('/complement_qiandao', 'UsersController@complement_qiandao')->name('complement_qiandao');
     Route::get('/recommend_records', 'PagesController@recommend_records')->name('recommend_records');//普通用户查看推荐书籍历史
     Route::get('/create_thread_entry', 'PagesController@create_thread_entry')->name('create_thread_entry');//绝对复杂筛选所有thread？？
 }
@@ -377,5 +379,13 @@
 
 //patreon related
 {
-    Route::get('patreon', 'PatreonController@index')->name('patreon.index');
+    Route::get('donate', 'DonationController@donate')->name('donation.donate');
+    Route::get('mydonations', 'DonationController@mydonations')->name('donation.mydonations');
+    Route::get('patreon/create', 'DonationController@patreon_create')->name('donation.patreon_create');
+    Route::post('patreon/store', 'DonationController@patreon_store')->name('donation.patreon_store');
+    Route::get('patreon/{pateon}/destroy_form', 'DonationController@patreon_destroy_form')->name('donation.patreon_destroy_form');
+    Route::delete('patreon/{pateon}', 'DonationController@patreon_destroy')->name('donation.patreon_destroy');
+    Route::get('redeem_token', 'DonationController@redeem_token_form')->name('donation.redeem_token_form');
+    Route::post('redeem_token', 'DonationController@redeem_token')->name('donation.redeem_token');
+
 }

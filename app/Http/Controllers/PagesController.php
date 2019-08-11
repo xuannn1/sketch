@@ -41,11 +41,11 @@ class PagesController extends Controller
                 ];
             }
         }
-        return view('pages/home',compact('quotes','short_recom','thread_recom','channel_threads'));
+        return view('pages.home',compact('quotes','short_recom','thread_recom','channel_threads'));
     }
     public function about()
     {
-        return view('pages/about');
+        return view('pages.about');
     }
 
     public function test()

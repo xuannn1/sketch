@@ -28,7 +28,7 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name', 'email', 'password', 'title_id', 'unread_updates', 'unread_reminders', 'public_notice_id', 'level'
+        'name', 'email', 'password', 'title_id', 'unread_updates', 'unread_reminders', 'public_notice_id', 'level', 'no_ads'
     ];
 
     /**
@@ -146,20 +146,21 @@ class User extends Authenticatable
         return $this->hasMany(InvitationToken::class, 'user_id');
     }
 
+    public function reward_tokens()
+    {
+        return $this->hasMany(RewardToken::class, 'user_id');
+    }
+
     public function patreon()
     {
         return $this->hasOne(Patreon::class, 'user_id');
     }
 
-    public function patreon_records()
+    public function donation_records()
     {
-        return $this->hasMany(HistoricalPatreonRecord::class, 'user_id');
+        return $this->hasMany(HistoricalDonationRecord::class, 'user_id');
     }
 
-    public function reward_tokens()
-    {
-        return $this->hasMany(RewardToken::class, 'user_id');
-    }
 
     public function follow($user_ids)
     {
@@ -183,9 +184,9 @@ class User extends Authenticatable
 
     public function hasTitle($id)
     {
-        return ($id<=($this->level+1))||($this->titles->contains($id));
+        $title = ConstantObjects::title_type('level')->keyby('id')->get($id);
+        return ($title&&$title->level<=$this->level)||($this->titles->contains($id));
     }
-
 
     public function isAdmin()
     {
@@ -395,10 +396,86 @@ class User extends Authenticatable
         return $query;
     }
 
+    public function remove_donation()
+    {
+        $info = $this->info;
+        if($info->patreon_level<=2){
+            $titles = ConstantObjects::title_group('patreon')->pluck('id')->toArray();
+            $this->titles()->detach($titles);
+        }
+        if($info->patreon_level<=1){
+            $user->no_ads = false;
+        }
+        $info->patreon_level = 0;
+        $info->no_ads_reward_limit = 0;
+        $info->qiandao_reward_limit = 0;
+        $this->save();
+        $info->save();
+        DB::table('historical_donation_records')->where('user_id',$this->id)->update(['user_id'=>0]);
+        $user->reward_tokens->delete();
+    }
 
+    private function patreon_level_by_amount($amount=0)
+    {
+        //TODO: 把这个做进donation config
+        $level = 0;
+        if($amount>=1){$level = 1;}
+        if($amount>=5){$level = 2;}
+        if($amount>=30){$level = 3;}
+        if($amount>=100){$level = 4;}
+        if($amount>=300){$level = 5;}
+        return $level;
+    }
 
+    public function reward_donation()
+    {
+        $info = $this->info;
+        $patreon = $this->patreon;
+        if(!$patreon){return;}
 
+        $last_donation_record = DB::table('historical_donation_records')->where('donation_email',$patreon->patreon_email)->where('is_claimed',0)->orderBy('donated_at', 'desc')->first();
+        if(!$last_donation_record){return;}
 
+        $patreon->last_patreon_id = $last_donation_record->id;
+        $patreon->is_approved = 1;
+        $patreon->save();
+
+        $patreon_level = $this->patreon_level_by_amount($last_donation_record->donation_amount);
+
+        if($patreon_level>1){
+            $user->no_ads = true;
+        }
+
+        $info->patreon_level = $patreon_level;
+
+        $titles = ConstantObjects::title_group('patreon')->pluck('id')->toArray();
+        $this->titles()->detach($titles);
+        $titles = ConstantObjects::title_group('patreon')->where('level','<=',$patreon_level)->pluck('id')->toArray();
+        $this->titles()->syncWithoutDetaching($titles);
+
+        if($patreon_level===4){
+            $info->no_ads_reward_limit = 5;
+            $info->qiandao_reward_limit = 5;
+        }
+        if($patreon_level===5){
+            $info->no_ads_reward_limit = 20;
+            $info->qiandao_reward_limit = 20;
+        }
+
+        $this->save();
+        $info->save();
+
+        DB::table('historical_donation_records')->where('donation_email', $patreon->patreon_email)->update([
+            'user_id' => $this->id,
+            'is_claimed' => 1,
+        ]);
+
+    }
+    
+    public function complement_qiandao()
+    {
+        $this->info->complement_qiandao();
+    }
 
 
 }

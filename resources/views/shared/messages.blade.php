@@ -2,7 +2,7 @@
 @if (Session::has($msg))
 <div class="flash-message">
     <p class="alert alert-{{ $msg }}">
-        {{ Session::get($msg)  }}
+        {!! session()->get($msg)!!}
     </p>
 </div>
 @endif

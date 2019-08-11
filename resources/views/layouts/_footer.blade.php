@@ -8,7 +8,8 @@
                 <a href="{{ route('administrationrecords') }}">管理记录</a>&nbsp;
                 <a href="https://github.com/lyn510/sketch"><i class="fa fa-github" aria-hidden="true"></i></a>&nbsp;
                 <a href="{{ route('about') }}">关于</a>&nbsp;
-                <a href="{{ route('help') }}">帮助</a>
+                <a href="{{ route('help') }}">帮助</a>&nbsp;
+                <a href="{{ route('donation.donate') }}">赞助我们</a>
         </footer>
     </div>
 </div>

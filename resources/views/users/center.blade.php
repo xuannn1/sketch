@@ -54,11 +54,9 @@
                         邀请好友
                     </a>
                     @endif
-                    @if($user->level>=11)
-                    <a href="{{ route('patreon.index') }}" class="btn btn-lg btn-info btn-block sosad-button">
+                    <a href="{{ route('donation.mydonations') }}" class="btn btn-lg btn-info btn-block sosad-button">
                         赞助者中心
                     </a>
-                    @endif
                 </div>
             </div>
         </div>

@@ -224,6 +224,21 @@ class UsersController extends Controller
         return back()->with("success", $message);
     }
 
+    public function complement_qiandao()
+    {
+        $user = Auth::user();
+        $info = $user->info;
+        if($info->qiandao_reward_limit <=0){
+            return back()->with("warning", "您的补签额度不足");
+        }
+        if($info->qiandao_continued >$info->qiandao_last){
+            return back()->with("info", "您的连续签到天数超过了上次断签天数，无需补签");
+        }
+
+        $info->complement_qiandao();
+        return back()->with("success", '成功补签');
+    }
+
     public function followings($id)
     {
         $user = CacheUser::user($id);

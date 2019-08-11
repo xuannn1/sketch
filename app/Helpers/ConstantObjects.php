@@ -232,10 +232,10 @@ class ConstantObjects
         return $channels;
     }
 
-    public static function titles()//获得站上所有的titles
+    public static function title_type($type='')//获得站上所有的titles
     {
-        return Cache::remember('titles', 20, function (){
-            return \App\Models\Title::all();
+        return Cache::remember('title_type.'.$type, 20, function () use($type){
+            return \App\Models\Title::where('type', $type)->get();
         });
     }
 

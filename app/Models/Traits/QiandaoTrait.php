@@ -14,6 +14,7 @@ trait QiandaoTrait
 			$info->qiandao_continued+=1;
 			if($info->qiandao_continued>$info->qiandao_max){$info->qiandao_max = $info->qiandao_continued;}
 		}else{
+			$info->qiandao_last = $info->qiandao_continued;
 			$info->qiandao_continued=1;
 		}
 		$info->qiandao_all+=1;
@@ -39,7 +40,12 @@ trait QiandaoTrait
 			$message .="您的个人等级已提高!";
 		}
 
-		return $message;
+		//补签卡专区
+		if($info->qiandao_continued==1&&$info->qiandao_last>1&&$info->qiandao_reward_limit>0){
+			$message .= "监测到您已断签且具有补签额度，此前签到".$info->qiandao_last."天，".'<a href="'. route('donation.mydonations'). '">前去补签</a> 。';
+		}
+		// TODO:在这里加上补签的链接
 
+		return $message;
 	}
 }

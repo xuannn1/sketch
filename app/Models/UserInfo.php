@@ -143,4 +143,16 @@ class UserInfo extends Model
         }
     }
 
+    public function complement_qiandao()
+    {
+        if($this->qiandao_reward_limit<=0){
+            return false;
+        }
+        $this->qiandao_reward_limit-=1;
+        $this->qiandao_continued = $this->qiandao_last+1;
+        $this->qiandao_last = 0;
+        $this->save();
+        return true;
+    }
+
 }

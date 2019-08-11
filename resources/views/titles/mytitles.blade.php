@@ -27,7 +27,7 @@
         </div>
         <div class="container-fluid">
             <div class="row">
-                @foreach($default_titles as $title)
+                @foreach($level_titles as $title)
                 @if($title->id<=$user->level+1)
                 <div class="col-sm-4 col-xs-6">
                     <div class="panel panel-default">
@@ -51,11 +51,38 @@
                 @endif
                 @endforeach
             </div>
+        </div>
+        <div class="text-center font-3">
+            私人可佩戴头衔
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                @foreach($user_titles as $title)
+                <div class="col-sm-4 col-xs-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body text-center">
+                            <div class="font-4">
+                                <span class="maintitle title-{{$title->style_id}}">
+                                    {{$title->name}}
+                                </span>
+                            </div>
+                            <div class="">
+                                {{$title->description}}
+                            </div>
+                            @if($title->id!=$user->title_id)
+                            <a href="{{route('title.wear',$title->id)}}" class="btn btn-md btn-primary sosad-button-control">佩戴头衔</a>
+                            @else
+                            <a href="{{route('title.wear',0)}}" class="btn btn-md btn-primary sosad-button">取消佩戴</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
             <div class="text-center">
                 <p>更多头衔和任务在路上啦～</p>
             </div>
         </div>
-
     </div>
 </div>
 @stop

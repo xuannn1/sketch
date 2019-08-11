@@ -243,6 +243,8 @@ class threadsController extends Controller
     {
         $post = $this->findPost($id);
 
+        if(!$post){abort(404);}
+
         $withFolded='';
         $withComponent='';
         if($post->fold_state){

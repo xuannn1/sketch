@@ -3,6 +3,7 @@ namespace App\Sosadfun\Traits;
 
 use DB;
 use Cache;
+use Carbon;
 use ConstantObjects;
 
 trait PageObjectTraits{

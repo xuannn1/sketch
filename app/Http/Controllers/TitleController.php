@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use CacheUser;
+use ConstantObjects;
 
 use App\Sosadfun\Traits\TitleObjectTraits;
 
@@ -94,9 +95,9 @@ class TitleController extends Controller
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
         if(!$user||!$info){abort(404);}
-        $default_titles = $this->default_titles();
-        $titles = $user->titles;
-        return view('titles.mytitles',compact('user','default_titles','titles'));
+        $level_titles = ConstantObjects::title_type('level');
+        $user_titles = $user->titles;
+        return view('titles.mytitles',compact('user','level_titles','user_titles'));
     }
 
     public function wear($title)

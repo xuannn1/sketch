@@ -16,6 +16,9 @@
     @if($user->isOnline())
     <span class="badge">在线</span>
     @endif
+    @if($user->no_ads)
+    <span class="badge">免广告</span>
+    @endif
 </div>
 <div class="text-center font-4">
     <span><a href="{{route('user.followings', $user->id)}}">关注{{ $info->following_count }}</a></span>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -52,6 +55,12 @@
     @if(Auth::check()&&(Auth::user()->isAdmin()||Auth::id()===$user->id))
         <div class="font-5">
             <span>连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
+            @if($info->qiandao_reward_limit>0)
+            <span>补签卡：{{ $info->qiandao_reward_limit }}张</span>&nbsp;&nbsp;&nbsp;
+            @endif
+            @if($info->qiandao_continued==1&&$info->qiandao_last>1&&$info->qiandao_reward_limit>0)
+            <a href="{{route('donation.mydonations')}}">前去补签</a>
+            @endif
             <span>总签到：{{ $info->qiandao_all }}天</span>&nbsp;&nbsp;&nbsp;
             <span>最新签到：{{ $user->qiandao_at? $user->qiandao_at->diffForHumans():'' }}</span>
         </div>
