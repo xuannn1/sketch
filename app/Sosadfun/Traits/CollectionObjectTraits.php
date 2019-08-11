@@ -14,12 +14,13 @@ trait CollectionObjectTraits{
 
     public function refreshCollectionGroups($id)
     {
-        return Cache::forget('collectionGroups.'.$id);
+        Cache::forget('collectionGroups.'.$id);
+        return $this->findCollectionGroups($id);
     }
 
     public function checkCollectedOrNot($user_id, $thread_id)
     {
-        $collection = \App\Models\Collection::where('user_id',$user_id)->where('thread_id',$thread_id)
+        $collection = \App\Models\Collection::on('mysql::write')->where('user_id',$user_id)->where('thread_id',$thread_id)
         ->first();
         return $collection? true:false;
     }
@@ -49,5 +50,6 @@ trait CollectionObjectTraits{
     public function refreshCollectionIndex($id, $group)
     {
         Cache::forget('collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.1');
+        return $this->findCollectionIndex($id, $group, 1);
     }
 }

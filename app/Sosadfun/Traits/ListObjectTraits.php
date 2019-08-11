@@ -15,6 +15,7 @@ trait ListObjectTraits{
     }
     public function refreshLists($id)
     {
-        return Cache::forget('Lists.'.$id);
+        Cache::forget('Lists.'.$id);
+        return $this->findLists($id);
     }
 }

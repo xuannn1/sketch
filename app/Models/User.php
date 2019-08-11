@@ -19,7 +19,7 @@ class User extends Authenticatable
     use Traits\QiandaoTrait;
     use FindThreadTrait;
 
-    protected $dates = ['deleted_at', 'qiandao_at'];
+    protected $dates = ['deleted_at', 'qiandao_at', 'created_at'];
     const UPDATED_AT = null;
 
     /**

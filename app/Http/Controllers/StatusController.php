@@ -54,7 +54,7 @@ class StatusController extends Controller
         if(!$status){abort(404);}
         if($status->user_id != Auth::id()){abort(403);}
         $status->delete();
-        $this->clearStatusProfile($id);
+        $this->clearStatus($id);
         return redirect('/')->with('success', '动态已被成功删除！请静待缓存更新');
     }
 

@@ -8,9 +8,9 @@
         <div class="panel panel-default">
             <div class="panel-heading lead">
                 <h1>邀请注册</h1>
-                <h4>友情提醒，本页面含有IP访问频率限制，为了您的正常注册，注册时请<code>不要刷新或倒退</code>网页。</h4>
+                <h4>友情提醒，本页面含有IP访问频率限制，为了您的正常注册，注册时<code>请不要刷新或倒退</code>网页。</h4>
                 @if(!$invitation_token->is_public)
-                <h5>您的邀请人是：<a href="{{route('user.show', $invitation_token->user_id)}}">{{$invitation_token->user->name}}</a></h5>
+                <h5>您使用了私人邀请码！您的邀请人是：<a href="{{route('user.show', $invitation_token->user_id)}}">{{$invitation_token->user->name}}</a></h5>
                 <h5 style="color:#d66666">如果被邀请人严重违反版规，邀请人需负连带责任。</h5>
                 @endif
             </div>
@@ -94,7 +94,7 @@
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-md btn-danger sosad-button">一键注册</button>
-                        <h6>本页面含有IP访问频率限制，友情提醒，为了您的正常注册，请<code>不要刷新或倒退</code>页面。</h6>
+                        <h6>本页面含有IP访问频率限制，友情提醒，为了您的正常注册，<code>请不要刷新或倒退</code>页面。</h6>
                     </div>
                 </form>
             </div>

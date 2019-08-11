@@ -41,7 +41,7 @@ class PostsController extends Controller
         event(new NewPost($post));
 
         $msg = $post->reward_creation();
-        $post = $this->postProfile($id);
+        $post = $this->postProfile($post->id);
 
         if($post->parent&&$post->parent->type==='chapter'&&$post->parent->chapter&&$post->parent->chapter->next_id>0){ // 回复章节之后自动前往下一章（如果有的话）
             return redirect()->route('post.show', $post->parent->chapter->next_id)->with('success', $msg);

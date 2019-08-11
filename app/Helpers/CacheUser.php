@@ -41,7 +41,7 @@ class CacheUser{ //cache-user class
     public static function intro($id){
         if(!$id||$id<=0){return;}
 
-        return Cache::remember('cachedUserIntro.'.$id, 10, function() use($id) {
+        return Cache::remember('cachedUserIntro.'.$id, 30, function() use($id) {
             return UserIntro::on('mysql::write')->find($id);
         });
     }

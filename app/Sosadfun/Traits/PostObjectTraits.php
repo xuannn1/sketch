@@ -5,6 +5,15 @@ use Cache;
 
 trait PostObjectTraits{
 
+    public function findPost($id)
+    {
+        return Cache::remember('post.'.$id, 5, function () use($id){
+             $post = \App\Models\Post::find($id);
+             if($post){$post->load('author.title');}
+             return $post;
+        });
+    }
+
     public function postProfile($id)
     {
         return Cache::remember('postProfile.'.$id, 5, function () use($id) {
@@ -41,18 +50,9 @@ trait PostObjectTraits{
 
     public function refreshPost($id)
     {
-        $this->clearPostProfile($id);
+        $this->clearPost($id);
         $this->findPost($id);
         return $this->postProfile($id);
-    }
-
-    public function findPost($id)
-    {
-        return Cache::remember('post.'.$id, 10, function () use($id){
-             $post = \App\Models\Post::find($id);
-             if($post){$post->load('author.title');}
-             return $post;
-        });
     }
 
 }

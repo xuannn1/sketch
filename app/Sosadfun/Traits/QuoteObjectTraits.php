@@ -19,7 +19,7 @@ trait QuoteObjectTraits{
             return $quote;
         });
     }
-    public function clearQuoteProfile($id)
+    public function clearQuote($id)
     {
         return Cache::forget('quoteProfile.'.$id);
     }

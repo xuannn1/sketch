@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class HistoricalPatreonRecord extends Model
+class HistoricalDonationRecord extends Model
 {
     public $timestamps = false;
     protected $guarded = [];
-    protected $dates = ['patreon_at'];
+    protected $dates = ['donated_at'];
 
     public function user()
     {

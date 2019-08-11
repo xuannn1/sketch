@@ -189,6 +189,7 @@ return [
         'quiz-answer'           => '回答答案',
         'search'                => '搜索内容',
         'status_body'           => '动态内容',
+        'reason'                => '理由',
     ],
 
 ];

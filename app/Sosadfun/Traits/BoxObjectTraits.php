@@ -16,6 +16,7 @@ trait BoxObjectTraits{
 
     public function refreshBoxes($id)
     {
-        return Cache::forget('Boxes.'.$id);
+        Cache::forget('Boxes.'.$id);
+        return $this->findBoxes($id);
     }
 }

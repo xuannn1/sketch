@@ -78,6 +78,7 @@ class QuoteController extends Controller
         });
         return view('quotes.index', compact('quotes'))->with('show_quote_tab','all');
     }
+    
     public function mine(){
         $quotes = \App\Models\Quote::with('author')
         ->where('user_id',Auth::id())

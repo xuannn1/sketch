@@ -84,11 +84,16 @@ class UsersController extends Controller
 
             $this->sendChangeEmailRecordTo($user, $record);
 
-            $user->email = $request->email;
-            $info->activation_token = str_random(30);
-            $user->activated = 0;
-            $user->save();
-            $info->save();
+            $user->forceFill([
+                'email' => $request->email,
+                'remember_token' => str_random(60),
+                'activated' => 0,
+            ])->save();
+
+            $info->forceFill([
+                'activation_token' => str_random(30),
+            ])->save();
+
             return redirect()->route('user.edit', Auth::id())->with("success", "您已成功修改个人资料");
         }
         return back()->with("danger", "您的旧密码输入错误");
@@ -106,7 +111,12 @@ class UsersController extends Controller
             $this->validate($request, [
                 'password' => 'required|min:8|max:16|confirmed',
             ]);
-            $user->update(['password' => bcrypt(request('password'))]);
+
+            $user->forceFill([
+                'password' => bcrypt(request('password')),
+                'remember_token' => str_random(60),
+            ])->save();
+
             return redirect()->route('user.edit', Auth::id())->with("success", "您已成功修改个人密码");
         }
         return back()->with("danger", "您的旧密码输入错误");
@@ -406,7 +416,7 @@ class UsersController extends Controller
         if(!$user||!$info){abort(404);}
         $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
             $statuses = Status::with('author.title')
             ->withUser($id)
             ->ordered()
@@ -438,7 +448,7 @@ class UsersController extends Controller
         if(!$user||!$info){abort(404);}
         $intro = $info->has_intro? CacheUser::intro($id):null;
 
-        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()===$id))){
+        if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
             $posts = $this->select_user_comments(1, 1, $id,$request);
         }elseif(Auth::check()&&Auth::user()->level>0){
             $posts = $this->select_user_comments(0, 1, $id,$request);

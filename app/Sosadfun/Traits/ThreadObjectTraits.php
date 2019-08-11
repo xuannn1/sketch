@@ -10,7 +10,7 @@ trait ThreadObjectTraits{
 
     public function threadProfile($id)
     {
-        return Cache::remember('threadProfile.'.$id, 10, function () use($id){
+        return Cache::remember('threadProfile.'.$id, 5, function () use($id){
             $thread = $this->findThread($id);
             $thread->load('tags', 'author.title', 'last_post', 'last_component');
             if($thread->channel()->type==="list"&&$thread->last_component_id>0&&$thread->last_component){
@@ -32,14 +32,9 @@ trait ThreadObjectTraits{
         });
     }
 
-    public function clearThreadProfile($id)
-    {
-        Cache::forget('threadProfile.'.$id);
-    }
-
     public function threadProfilePosts($id)
     {
-        return Cache::remember('threadProfilePosts.'.$id, 10, function () use($id){
+        return Cache::remember('threadProfilePosts.'.$id, 5, function () use($id){
             return \App\Models\Post::with('author.title','last_reply')
             ->withType('post')
             ->where('thread_id','=',$id)
@@ -53,17 +48,12 @@ trait ThreadObjectTraits{
     public function clearThread($id)
     {
         Cache::forget('thread.'.$id);
-    }
-
-    public function clearAllThread($id)
-    {
-        $this->clearThread($id);
-        $this->clearThreadProfile($id);
+        Cache::forget('threadProfile.'.$id);
     }
 
     public function refreshThread($id)
     {
-        $this->clearAllThread($id);
+        $this->clearThread($id);
         return $this->threadProfile($id);
     }
 

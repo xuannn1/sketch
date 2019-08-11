@@ -89,7 +89,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return DB::transaction(function()use($data){
-            $invitation_token = InvitationToken::where('token',$data['invitation_token'])->first();
+            $invitation_token = InvitationToken::on('mysql::write')->where('token',$data['invitation_token'])->first();
             if(!$invitation_token||$invitation_token->invitation_times<=0||$invitation_token->invite_until <  Carbon::now()){
                 abort(409, '注册迟了，本邀请码的邀请次数已用尽');
             }
@@ -144,7 +144,8 @@ class RegisterController extends Controller
 
     public function confirmEmail($token)
     {
-        $user_info = UserInfo::where('activation_token', $token)->firstOrFail();
+        $user_info = UserInfo::where('activation_token', $token)->first();
+        if(!$user_info){return redirect('/')->with('danger','令牌已失效或不存在这个令牌');}
         $user_info->activate();
 
         session()->flash('success', '恭喜你，激活成功！');
@@ -190,7 +191,7 @@ class RegisterController extends Controller
         }
         Cache::put('registration-by-invitation-limit-' . request()->ip(), true, 2);
 
-        $invitation_token = InvitationToken::with('user')->where('token', request('invitation_token'))->first();
+        $invitation_token = InvitationToken::where('token', request('invitation_token'))->first();
 
         if (!$invitation_token){
             return back()->with('danger', '邀请码拼写错误，请重新检查，复制粘贴。');

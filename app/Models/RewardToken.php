@@ -16,9 +16,4 @@ class RewardToken extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
-    public function redeemed_users()
-    {
-        return $this->hasMany(UserInfo::class, 'patreon_token_id');
-    }
 }

@@ -77,7 +77,7 @@ class PagesController extends Controller
             CacheUser::Ainfo()->clear_column('administration_reminders');
             $records = $this->findAdminRecords($user_id, $page, $is_public);
         }else{
-            $records = Cache::remember('adminrecords-p'.$page, 5, function () use($page) {
+            $records = Cache::remember('adminrecords-p'.$page, 2, function () use($page) {
                 return $this->findAdminRecords(0, $page, '');
             });
         }
