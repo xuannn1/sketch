@@ -20,9 +20,9 @@ class DonationController extends Controller
         $this->middleware('admin')->only('review_patreon', 'approve_patreon');
     }
 
-    public function donate()
+    public function donate(Request $request)
     {
-        $donation_records = $this->RecentDonations();
+        $donation_records = $this->RecentDonations(is_numeric($request->page)? $request->page:'1');
         return view('donations.donate', compact('donation_records'));
     }
 
@@ -32,10 +32,18 @@ class DonationController extends Controller
         $info = CacheUser::Ainfo();
         $patreon = $user->patreon;
         $donation_records = $user->donation_records;
-        $reward_tokens = $user->reward_tokens->where('is_public',0);
+        $reward_tokens = $user->reward_tokens->where('is_public',0)->where('redeem_limit','>',0)->where('redeem_until','>',Carbon::now());
         $reward_tokens->sortByDesc('created_at');
 
         return view('donations.mydonations',compact('user', 'info', 'patreon', 'reward_tokens', 'donation_records'));
+    }
+
+    public function my_reward_tokens()
+    {
+        $user = CacheUser::Auser();
+        $reward_tokens = $user->reward_tokens->where('is_public',0);
+        $reward_tokens->sortByDesc('created_at');
+        return view('donations.my_reward_tokens',compact('user', 'reward_tokens'));
     }
 
     public function patreon_create()
@@ -201,7 +209,7 @@ class DonationController extends Controller
     {
         $is_approved = 0;
         if($request->show_review_tab=='approved'){$is_approved = 1;}
-        $patreons = \App\Models\Patreon::with('author','donation_records')->where('is_approved', $is_approved)->latest()->paginate(20)->appends($request->only('page'));
+        $patreons = \App\Models\Patreon::with('author','donation_records.author')->where('is_approved', $is_approved)->latest()->paginate(20)->appends($request->only('page'));
 
         return view('donations.review_patreon', compact('patreons'))->with('show_review_tab', $request->show_review_tab);
     }

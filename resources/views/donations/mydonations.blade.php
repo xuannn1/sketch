@@ -6,13 +6,13 @@
         <div class="panel panel-default">
             <div class="panel-body text-center">
                 <h1>「{{$user->name}}」的赞助者中心</h1>
-                <h5><a href="https://www.patreon.com/sosadfun">Patreon赞助页面</a></h5>
+                <h5><a href="https://www.patreon.com/sosadfun">前往Patreon赞助页面支持</a></h5>
+                <em><h6 style="color:#d66666">（友情提醒，Patreon默认按月付费，如果你计划一次性付费，请记得及时取消订阅哦～）</h6></em>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
                 <h4>我的赞助记录</h4>
-                <?php $tokens = $reward_tokens ?>
                 @include('donations._donation_records')
             </div>
         </div>
@@ -53,7 +53,11 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-                <h4>我创建的福利码列表</h4>
+                <div class="">
+                    <span class="font-4">我创建的有效福利码</span>
+                    <span class="pull-right"><a href="{{route('donation.my_reward_tokens')}}">>>全部福利码</a></span>
+                </div>
+                <?php $tokens = $reward_tokens ?>
                 @include('donations._reward_tokens')
             </div>
         </div>

@@ -44,8 +44,7 @@ class UsersController extends Controller
         $info = CacheUser::Ainfo();
         $record = PasswordReset::where('email','=',$user->email)->latest()->first();
         $last_email_sent = $record? $record->created_at:'';
-        $email_confirmed = $info->activation_token ? false:true;
-        return view('users.edit', compact('user', 'info','last_email_sent','email_confirmed'));
+        return view('users.edit', compact('user', 'info', 'last_email_sent'));
     }
 
     public function edit_email()

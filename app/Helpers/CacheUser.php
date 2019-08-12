@@ -16,6 +16,7 @@ class CacheUser{ //cache-user class
             $user = User::on('mysql::write')->find($id);
             if($user){
                 $user->load('title');
+                $user->load('patreon');
             }
             return $user;
         });

@@ -23,10 +23,10 @@
             」
         </span>
         <span>
-            {{$record->show_amount? '$'.$record->donation_amount:'赞助者不想展示金额信息'}}
+            ${{$record->donation_amount}}&nbsp;<span class="grayout">{{$record->show_amount? '':'(赞助者不想展示金额信息)'}}</span>
         </span>
         <span>
-            {{$record->donated_at? $record->donated_at->diffForHumans():''}}
+            {{$record->donated_at? $record->donated_at->setTimeZone('Asia/Shanghai'):''}}
         </span>
         @if($record->donation_message)
         <span>留言：

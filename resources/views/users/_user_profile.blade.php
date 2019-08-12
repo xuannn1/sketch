@@ -66,7 +66,10 @@
         </div>
         <div class="font-5">
             <span>注册时间：{{ $user->created_at? $user->created_at->diffForHumans():'无记录' }}</span>&nbsp;&nbsp;&nbsp;
-            <span>最后在线：{{ $info->online_status&&$info->online_status->online_at? $info->online_status->online_at->diffForHumans():'无记录' }}</span>
+            <span>最后在线：{{ $info->online_status&&$info->online_status->online_at? $info->online_status->online_at->diffForHumans():'无记录' }}</span>&nbsp;&nbsp;&nbsp;
+            @if($info->donation_level>0)
+            <span>赞助情况：{{ array_key_exists($info->donation_level, config('donation'))? config('donation')[$info->donation_level]['title']:'暂无'}}</span>
+            @endif
         </div>
 
         <div class="font-5">

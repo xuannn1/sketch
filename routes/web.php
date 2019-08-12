@@ -381,6 +381,7 @@
 {
     Route::get('donate', 'DonationController@donate')->name('donation.donate');
     Route::get('mydonations', 'DonationController@mydonations')->name('donation.mydonations');
+    Route::get('my_reward_tokens', 'DonationController@my_reward_tokens')->name('donation.my_reward_tokens');
     Route::get('patreon/create', 'DonationController@patreon_create')->name('donation.patreon_create');
     Route::post('patreon/store', 'DonationController@patreon_store')->name('donation.patreon_store');
     Route::get('patreon/{pateon}/destroy_form', 'DonationController@patreon_destroy_form')->name('donation.patreon_destroy_form');
