@@ -5,9 +5,9 @@
     </div>
 @else
     @if(Auth::user()->no_posting)
-    <h6 class="text-center">您被禁言，暂时不能回帖。</h6>
+    <h6 class="text-center">你被禁言，暂时不能回帖。</h6>
     @elseif(Auth::user()->level < 2)
-    <h6 class="text-center">您的等级不足2级，不能回帖</h6>
+    <h6 class="text-center">你的等级不足2级，不能回帖</h6>
     @else
     <div class="panel-group h4">
         <form id="replyToThread" action="{{ route('post.store', $thread) }}" method="POST">

@@ -9,13 +9,13 @@
                 <h1>总发文发帖入口</h1>
                 <div class="">
                     <div class="font-4">
-                        您的用户等级是{{$user->level}}级
+                        你的用户等级是{{$user->level}}级
                     </div>
                     <div class="grayout font-6">
                         用户等级1级以上才可发文，4级以上才可发讨论帖。
                     </div>
                     <div class="font-4">
-                        <a href="{{ route('quiz.quiz_entry') }}">您最高答过{{$user->quiz_level}}级题&nbsp;&nbsp; >>前去答题</a>
+                        <a href="{{ route('quiz.quiz_entry') }}">你最高答过{{$user->quiz_level}}级题&nbsp;&nbsp; >>前去答题</a>
                     </div>
                     <div class="grayout font-6">
                         至少答过1级题才能发书籍，至少答过2级题才能发主题讨论

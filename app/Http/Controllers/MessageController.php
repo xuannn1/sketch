@@ -175,7 +175,7 @@ class MessageController extends Controller
         }
 
         if(!$user->isAdmin()&&!$user->isEditor()&&!$isFollowing&&($info->message_limit<=0)){
-            return redirect()->back()->with('warning','您的陌生人私信额度已用完');
+            return redirect()->back()->with('warning','你的陌生人私信额度已用完');
         }
 
         if(!$user->isAdmin()&&!$user->isEditor()&&$recent_sent_message&&$recent_sent_message->created_at>Carbon::now()->subMinutes(15)){

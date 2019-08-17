@@ -38,7 +38,7 @@ trait GenerateThreadDataTraits{
         }
 
         if ($this->isDuplicateThread($thread_data)){
-            abort(409,'您已经成功建立相关主题，请从个人主页找到已经建立的内容，不要重复建立主题！');
+            abort(409,'你已经成功建立相关主题，请从个人主页找到已经建立的内容，不要重复建立主题！');
         }
         return $thread_data;
     }

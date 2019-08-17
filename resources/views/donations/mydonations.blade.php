@@ -38,7 +38,7 @@
                     <a href="{{route('donation.reward_token_create',['type'=>'qiandao+'])}}" class="btn btn-xs btn-primary sosad-button-control">消耗额度创建补签福利码</a>
                     @endif
                     @if($info->qiandao_reward_limit>0&&$info->qiandao_continued<$info->qiandao_last)
-                    <span>发现您已断签，当前连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
+                    <span>发现你已断签，当前连续签到：{{ $info->qiandao_continued }}天</span>&nbsp;&nbsp;&nbsp;
                     <span>断签前签到：{{ $info->qiandao_last }}天</span>&nbsp;&nbsp;&nbsp;
                     <a href="{{route('complement_qiandao')}}" class="btn btn-sm btn-primary sosad-button-control">补签至{{$info->qiandao_last+1}}天？</a>
                     @endif

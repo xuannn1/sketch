@@ -7,6 +7,7 @@ use Carbon;
 use Mail;
 use Swift_Mailer;
 use Swift_SmtpTransport;
+use Exception;
 
 trait SwitchableMailerTraits{
     public function select_server()
@@ -36,8 +37,12 @@ trait SwitchableMailerTraits{
         // Set the mailer as gmail
         Mail::setSwiftMailer($gmail);
 
-        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
-            $message->from($from, $name)->to($to)->subject($subject);
-        });
+        try {
+            Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
+                $message->from($from, $name)->to($to)->subject($subject);
+            });
+        } catch (Exception $ex) {
+            return redirect('/')->with('error', '邮件服务暂不可用，请等待系统空闲时再行尝试');
+        }
     }
 }

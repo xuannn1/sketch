@@ -33,7 +33,7 @@ class FilterThread
 
         if($channel->is_public&&$thread->is_public&&$thread->is_bianyuan){// 公共边
             if(Auth::check()&&!Auth::user()->activated){
-                return redirect()->route('user.edit', Auth::id())->with("warning", "您的邮箱尚未激活，请激活后再访问该版面");
+                return redirect()->route('user.edit', Auth::id())->with("warning", "你的邮箱尚未激活，请激活后再访问该版面");
             }
             return $next($request);
         }

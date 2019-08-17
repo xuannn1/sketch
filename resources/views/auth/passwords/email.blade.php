@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', ' 重置密码/重新激活')
+@section('title', ' 重置密码')
 
 @section('content')
 <div class="container-fluid">
@@ -7,7 +7,7 @@
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default">
                 <div class="panel-heading h5">
-                    向您的邮箱发送 <strong>重置密码/重新激活</strong> 邮件
+                    向你的邮箱发送 <strong>重置密码</strong> 邮件
                 </div>
                 <div class="panel-body">
                     @if (session('status'))

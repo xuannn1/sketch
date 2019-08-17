@@ -1,11 +1,11 @@
 
 @if(Auth::user()->no_posting)
 <div class="">
-<h6 class="text-center">您被禁言，暂时不能发动态。</h6>
+<h6 class="text-center">你被禁言，暂时不能发动态。</h6>
 </div>
 @elseif(Auth::user()->level < 4)
 <div class="">
-<h6 class="text-center greyout">您的等级低于4，暂时不能发动态。</h6>
+<h6 class="text-center greyout">你的等级低于4，暂时不能发动态。</h6>
 </div>
 @else
 <div class="panel-heading">

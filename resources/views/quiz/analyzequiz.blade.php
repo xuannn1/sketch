@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <h3>废文测试题考试结果分析</h3>
-                <h4>{{ $user->name }}，以下是您的答题结果分析，请再接再厉哦！</h4>
+                <h4>{{ $user->name }}，以下是你的答题结果分析，请再接再厉哦！</h4>
             </div>
         </div>
         @foreach($wrong_quiz as $key=>$quiz_set)
@@ -28,7 +28,7 @@
                     @endforeach
                 </div>
                 <div class="">
-                    您的选项：
+                    你的选项：
                     @foreach($quiz_set['submitted_answers'] as $answer)
                     qoid{{ $answer }},&nbsp;
                     @endforeach

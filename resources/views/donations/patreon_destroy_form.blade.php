@@ -12,7 +12,7 @@
                         <label for="email">Patreon账户邮箱：</label>
                         <input type="text" name="email" class="form-control" value="{{ $patreon->patreon_email }}" disabled>
                     </div>
-                    <h3>您好，赞助者信息一旦删除，所有对应的赞助者福利均将取消，且不能补偿，只保留赞助记录。请问您确定要删除本条信息吗？</h3>
+                    <h3>你好，赞助者信息一旦删除，所有对应的赞助者福利均将取消，且不能补偿，只保留赞助记录。请问你确定要删除本条信息吗？</h3>
                     <form method="POST" action="{{ route('donation.patreon_destroy', $patreon->id)}}">
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}

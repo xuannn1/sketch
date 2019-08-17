@@ -22,7 +22,7 @@
 
                     <div class="form-group">
                         <label for="email">邮箱：</label>
-                        <h6 class="grayout">（请输入您的可用邮箱，便于未来找回密码。）</h6>
+                        <h6 class="grayout">（请输入你的可用邮箱，便于未来找回密码。）</h6>
                         <input type="text" name="email" class="form-control" value="{{ old('email') }}">
                     </div>
 
@@ -54,12 +54,12 @@
                             <h4>注册协议</h4>
                         </div>
                         <div >
-                            <p>丧病之家，您的精神墓园</p>
+                            <p>丧病之家，你的精神墓园</p>
                             <p>比欲哭无泪更加down，不抑郁不要钱</p>
                             <p>本站<u><em><b>禁抄袭，禁人身攻击，禁人肉，禁恋童</b></em></u></p>
                             <p>请<u><em><b>不要发布侵犯他人版权的文字</b></em></u></p>
-                            <p>请确保您已<u><em><b>年满<span style="color:#d66666">十八</span>岁</b></em></u></p>
-                            <p>祝您玩得愉快</p>
+                            <p>请确保你已<u><em><b>年满<span style="color:#d66666">十八</span>岁</b></em></u></p>
+                            <p>祝你玩得愉快</p>
                             <br>
                         </div>
                         <div class="panel-footer text-center">

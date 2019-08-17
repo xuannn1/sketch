@@ -106,10 +106,10 @@ class TitleController extends Controller
         if(!$user){abort(404);}
         if(!is_numeric($title)){abort(409,'名称不合理');}
         if(!$user->hasTitle($title)){
-            return redirect()->back()->with('warning','您不具有这个头衔，无法佩戴');
+            return redirect()->back()->with('warning','你不具有这个头衔，无法佩戴');
         }
         $user->update(['title_id'=>$title]);
         CacheUser::clearuser($user->id);
-        return redirect()->back()->with('success','您已成功更换头衔！');
+        return redirect()->back()->with('success','你已成功更换头衔！');
     }
 }

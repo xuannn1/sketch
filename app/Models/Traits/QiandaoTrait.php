@@ -21,14 +21,14 @@ trait QiandaoTrait
 
 		// 更新签到天数
 		$this->qiandao_at = Carbon::now();
-		$message = "您已成功签到！连续签到".$info->qiandao_continued."天！";
+		$message = "你已成功签到！连续签到".$info->qiandao_continued."天！";
 
 		//根据连续签到时间发放奖励
 		$reward_base = 1;
 		if(($info->qiandao_continued>=5)&&($info->qiandao_continued%5==0)){
 			$reward_base = intval($info->qiandao_continued/10)+2;
 			if($reward_base > 10){$reward_base = 10;}
-			$message .="您获得了特殊奖励！";
+			$message .="你获得了特殊奖励！";
 		}
 		$info->rewardData(5*$reward_base, 1*$reward_base, 0);
 		// 更新每日私信数量
@@ -37,12 +37,12 @@ trait QiandaoTrait
 		$this->save();
 
 		if($this->checklevelup()){
-			$message .="您的个人等级已提高!";
+			$message .="你的个人等级已提高!";
 		}
 
 		//补签卡专区
 		if($info->qiandao_continued==1&&$info->qiandao_last>1&&$info->qiandao_reward_limit>0){
-			$message .= "监测到您已断签且具有补签额度，此前签到".$info->qiandao_last."天，".'<a href="'. route('donation.mydonations'). '">前去补签</a> 。';
+			$message .= "监测到你已断签且具有补签额度，此前签到".$info->qiandao_last."天，".'<a href="'. route('donation.mydonations'). '">前去补签</a> 。';
 		}
 		// TODO:在这里加上补签的链接
 

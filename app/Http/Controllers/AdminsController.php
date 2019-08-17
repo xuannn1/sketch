@@ -655,7 +655,7 @@ class AdminsController extends Controller
         DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
         $this->refreshPulicNotices();
 
-        return redirect()->back()->with('success','您已成功发布公共通知');
+        return redirect()->back()->with('success','你已成功发布公共通知');
     }
 
     public function create_tag_form(){

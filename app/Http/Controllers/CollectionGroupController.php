@@ -30,7 +30,7 @@ class CollectionGroupController extends Controller
         if($groups->count()<$user->level){
             return view('collections.group_create');
         }
-        return redirect()->back()->with('warning','您的等级不足，无法建立更多收藏页');
+        return redirect()->back()->with('warning','你的等级不足，无法建立更多收藏页');
     }
 
     public function store(Request $request)
@@ -54,7 +54,7 @@ class CollectionGroupController extends Controller
             }
             return redirect()->route('collection.index');
         }
-        return redirect()->back()->with('warning','您的等级不足，无法建立更多收藏页');
+        return redirect()->back()->with('warning','你的等级不足，无法建立更多收藏页');
     }
 
     public function edit(CollectionGroup $collection_group)
@@ -118,7 +118,7 @@ class CollectionGroupController extends Controller
 
         $this->refreshCollectionGroups(Auth::id());
 
-        return redirect()->route('collection.index')->with('success','您已成功删除收藏夹');
+        return redirect()->route('collection.index')->with('success','你已成功删除收藏夹');
     }
 
 

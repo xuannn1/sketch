@@ -113,11 +113,11 @@ class threadsController extends Controller
         if(!$user||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403);}
 
         if(Cache::has('created-thread-' . $user->id)){
-            return redirect('/')->with('danger', '您在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+            return redirect('/')->with('danger', '你在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
         }
 
         if($user->no_posting){
-            return back()->with('danger','您被禁言中，无法创建主题');
+            return back()->with('danger','你被禁言中，无法创建主题');
         }
 
         $tags = ConstantObjects::primary_tags_in_channel($channel->id);
@@ -125,25 +125,25 @@ class threadsController extends Controller
         if($channel->type==='list'){
             $list_count = Thread::where('user_id', $user->id)->withType('list')->count();
             if(($list_count > $user->level-4)&&!$user->isAdmin()&&!$user->isEditor()){
-                return redirect()->back()->with('warning','您的收藏单数量已达上线，不能再建立');
+                return redirect()->back()->with('warning','你的收藏单数量已达上线，不能再建立');
             }
         }
         if($channel->type==='box'){
             $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
             if($box_count >=1){
-                return redirect()->back()->with('warning','每个人只能建立一个问题箱，您已经建立了问题箱');
+                return redirect()->back()->with('warning','每个人只能建立一个问题箱，你已经建立了问题箱');
             }
         }
 
         if($channel->type==='book'){
             if($user->level<1||$user->quiz_level<1){
-                return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立书籍');
+                return redirect()->back()->with('warning','你的用户等级/答题等级不足，目前不能建立书籍');
             }
             return view('books.create');
         }
 
         if($user->level<4||$user->quiz_level<2){
-            return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立讨论帖');
+            return redirect()->back()->with('warning','你的用户等级/答题等级不足，目前不能建立讨论帖');
         }
 
         return view('threads.create', compact('channel','tags'));
@@ -158,7 +158,7 @@ class threadsController extends Controller
         if(!$user||$user->no_posting||empty($channel)||((!$channel->is_public)&&(!$user->canSeeChannel($channel->id)))){abort(403);}
 
         if(Cache::has('created-thread-' . $user->id)){
-            return redirect('/')->with('danger', '您在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+            return redirect('/')->with('danger', '你在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
         }
 
         if($channel->type==='list'){
@@ -198,7 +198,7 @@ class threadsController extends Controller
 
         $thread = $this->threadProfile($thread->id);
 
-        return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
+        return redirect()->route('thread.show', $thread->id)->with("success", "你已成功发布主题");
     }
 
     public function edit($id)
@@ -234,7 +234,7 @@ class threadsController extends Controller
             $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
 
             $this->refreshThread($thread->id);
-            return redirect()->route('thread.show', $thread->id)->with("success", "您已成功修改主题");
+            return redirect()->route('thread.show', $thread->id)->with("success", "你已成功修改主题");
         }else{
             abort(403);
         }

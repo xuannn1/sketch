@@ -23,12 +23,12 @@
                 <br>
                 @if((!$speaker->isFollowing($user->id))&&(!$user->isAdmin())&&(!$user->isEditor()))
                    @if($speaker_info->no_stranger_msg&&(!$recent_previous_message))
-                   <p>很抱歉，{{ $speaker->name }}未关注您，且并不接收陌生人的私信，</p>
+                   <p>很抱歉，{{ $speaker->name }}未关注你，且并不接收陌生人的私信，</p>
                    @elseif($info->message_limit>0)
-                   <p>{{ $speaker->name }}未关注您，您今日的陌生人私信限额还有{{ $info->message_limit }}条</p>
+                   <p>{{ $speaker->name }}未关注你，你今日的陌生人私信限额还有{{ $info->message_limit }}条</p>
                    @include('messages._create_message_form')
                    @else
-                   <p>很抱歉，{{ $speaker->name }}未关注您，您今日的陌生人私信限额已用完，请明日签到后再发私信</p>
+                   <p>很抱歉，{{ $speaker->name }}未关注你，你今日的陌生人私信限额已用完，请明日签到后再发私信</p>
                    @endif
                 @else
                     @include('messages._create_message_form')

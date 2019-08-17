@@ -47,7 +47,7 @@ class ChapterController extends Controller
         }
         $this->refreshThread($id);
 
-        return redirect()->route('post.show', $post->id)->with('success', '您已成功发布章节');
+        return redirect()->route('post.show', $post->id)->with('success', '你已成功发布章节');
     }
 
 

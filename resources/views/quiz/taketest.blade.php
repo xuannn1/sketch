@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1>废文使用测试题</h1>
-                <h4>{{ $user->name }} 您好！欢迎您参与废文使用测试！在这里您将彻底学习如何做条好鱼。每位咸鱼初次答对全部题目时，还会获得<code>升级</code>必备的分值<code>奖励</code>，还等什么呢，快来尝试一下吧！</h4>
+                <h4>{{ $user->name }} 你好！欢迎你参与废文使用测试！在这里你将彻底学习如何做条好鱼。每位咸鱼初次答对全部题目时，还会获得<code>升级</code>必备的分值<code>奖励</code>，还等什么呢，快来尝试一下吧！</h4>
                 <h3>当前题目等级：{{$level+1}}级</h3>
             </div>
             <div class="panel-body">

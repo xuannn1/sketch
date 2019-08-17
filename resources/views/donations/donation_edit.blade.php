@@ -26,7 +26,7 @@
                         </div>
                         @if($info->donation_level>=4)
                         <div class="form-group">
-                            <textarea name="donation_message" rows="3" class="form-control" id="markdowneditor" placeholder="输入您的赞助感言吧～">{{ $record->donation_message }}</textarea>
+                            <textarea name="donation_message" rows="3" class="form-control" id="markdowneditor" placeholder="输入你的赞助感言吧～">{{ $record->donation_message }}</textarea>
                         </div>
                         @endif
 

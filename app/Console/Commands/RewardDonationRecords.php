@@ -38,7 +38,7 @@ class RewardDonationRecords extends Command
      */
     public function handle()
     {
-        $patreons = \App\Models\Patreon::where('is_approved', 0)->get();
+        $patreons = \App\Models\Patreon::on('mysql::write')->where('is_approved', 0)->get();
         foreach($patreons as $patreon){
             $patreon->sync_records();
         }

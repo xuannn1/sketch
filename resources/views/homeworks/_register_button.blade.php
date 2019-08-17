@@ -20,7 +20,7 @@
                         <form action="{{ route('homework.register', $thread->homework_id) }}" method="POST">
                             {{ csrf_field() }}
                             <div class="form-group">
-                                <label>请输入您的报名马甲：</label>
+                                <label>请输入你的报名马甲：</label>
                                 <code>温馨提示，请不要偷懒使用“匿名咸鱼”作为报名马甲呦！</code>
                                 <input type="text" name="majia" class="form-control" value="">
                             </div>

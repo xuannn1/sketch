@@ -20,7 +20,7 @@ class NoLogControl
         if(Auth::check()) {
             if(Auth::user()->no_logging){
                 Auth::logout();
-                return redirect('/')->with('warning','您被禁止登陆');
+                return redirect('/')->with('warning','你被禁止登陆');
             }
         }
         return $next($request);

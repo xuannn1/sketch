@@ -39,13 +39,9 @@ class ErrorCorrection extends Command
      */
     public function handle()
     {
-        DB::statement('
-            DELETE c1 FROM collections c1
-            INNER JOIN
-            collections c2
-            WHERE
-            c1.id > c2.id AND c1.user_id = c2.user_id and c1.thread_id = c2.thread_id;
-        ');
+        $password_records = DB::table('password_resets')->where('created_at','>','2019-08-14 24:00:00')->get();
+        $password_records = $password_records->map(function($x){ return (array) $x; })->toArray();
+        DB::table('password_resets_2')->insert($password_records);
 
     }
 }

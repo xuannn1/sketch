@@ -50,7 +50,7 @@ class UsersController extends Controller
     public function edit_email()
     {
         $user = Auth::user();
-        $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
+        $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subWeek(1)->toDateTimeString())->count();
         return view('users.edit_email', compact('user','previous_history_counts'));
     }
 
@@ -68,9 +68,9 @@ class UsersController extends Controller
                 return redirect()->back()->with('warning','已经修改为这个邮箱，无需重复修改。');
             }
 
-            $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
-            if ($previous_history_counts>=config('constants.monthly_email_resets')){
-                return redirect()->back()->with('warning','一个月内只能修改'.config('constants.monthly_email_resets').'次邮箱。');
+            $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subWeek(1)->toDateTimeString())->count();
+            if ($previous_history_counts>=1){
+                return redirect()->back()->with('warning','一周内只能修改1次邮箱。');
             }
             $record = HistoricalEmailModification::create([
                 'old_email' => $old_email,
@@ -93,9 +93,9 @@ class UsersController extends Controller
                 'activation_token' => str_random(30),
             ])->save();
 
-            return redirect()->route('user.edit', Auth::id())->with("success", "您已成功修改个人资料");
+            return redirect()->route('user.edit', Auth::id())->with("success", "你已成功修改个人资料");
         }
-        return back()->with("danger", "您的旧密码输入错误");
+        return back()->with("danger", "你的旧密码输入错误");
     }
 
 
@@ -116,9 +116,9 @@ class UsersController extends Controller
                 'remember_token' => str_random(60),
             ])->save();
 
-            return redirect()->route('user.edit', Auth::id())->with("success", "您已成功修改个人密码");
+            return redirect()->route('user.edit', Auth::id())->with("success", "你已成功修改个人密码");
         }
-        return back()->with("danger", "您的旧密码输入错误");
+        return back()->with("danger", "你的旧密码输入错误");
     }
 
     public function edit_introduction()
@@ -209,7 +209,7 @@ class UsersController extends Controller
             }
         }
         $info->update($data);
-        return redirect()->route('user.center')->with("success", "您已成功修改偏好设置");
+        return redirect()->route('user.center')->with("success", "你已成功修改偏好设置");
     }
 
     public function qiandao()
@@ -217,7 +217,7 @@ class UsersController extends Controller
         $user = Auth::user();
         $info = $user->info;
         if($user->qiandao_at > Carbon::today()->subHours(2)->toDateTimeString()){
-            return back()->with("info", "您已领取奖励，请勿重复签到");
+            return back()->with("info", "你已领取奖励，请勿重复签到");
         }
         $message = $user->qiandao();
         return back()->with("success", $message);
@@ -228,10 +228,10 @@ class UsersController extends Controller
         $user = Auth::user();
         $info = $user->info;
         if($info->qiandao_reward_limit <=0){
-            return back()->with("warning", "您的补签额度不足");
+            return back()->with("warning", "你的补签额度不足");
         }
         if($info->qiandao_continued >$info->qiandao_last){
-            return back()->with("info", "您的连续签到天数超过了上次断签天数，无需补签");
+            return back()->with("info", "你的连续签到天数超过了上次断签天数，无需补签");
         }
 
         $info->complement_qiandao();

@@ -8,9 +8,9 @@
         <div class="panel panel-default">
             <div class="panel-heading lead">
                 <h1>邀请注册</h1>
-                <h4>友情提醒，本页面含有IP访问频率限制，为了您的正常注册，注册时<code>请不要刷新或倒退</code>网页。</h4>
+                <h4>友情提醒，本页面含有IP访问频率限制，为了你的正常注册，注册时<code>请不要刷新或倒退</code>网页。</h4>
                 @if(!$invitation_token->is_public)
-                <h5>您使用了私人邀请码！您的邀请人是：<a href="{{route('user.show', $invitation_token->user_id)}}">{{$invitation_token->user->name}}</a></h5>
+                <h5>你使用了私人邀请码！你的邀请人是：<a href="{{route('user.show', $invitation_token->user_id)}}">{{$invitation_token->user->name}}</a></h5>
                 <h5 style="color:#d66666">如果被邀请人严重违反版规，邀请人需负连带责任。</h5>
                 @endif
             </div>
@@ -32,7 +32,7 @@
 
                     <div class="form-group">
                         <label for="email">邮箱：</label>
-                        <h6 class="grayout">（请输入您的可用邮箱，用于激活账户和未来找回密码。）</h6>
+                        <h6 class="grayout">（请输入你的可用邮箱，用于激活账户和未来找回密码。）</h6>
                         <input type="text" name="email" class="form-control" value="{{ old('email') }}">
                     </div>
 
@@ -57,12 +57,12 @@
                             <h4>注册协议</h4>
                         </div>
                         <div >
-                            <p>丧病之家，您的精神墓园</p>
+                            <p>丧病之家，你的精神墓园</p>
                             <p>比欲哭无泪更加down，不抑郁不要钱</p>
                             <p>本站<u><em><b>禁抄袭，禁人身攻击，禁人肉，禁恋童</b></em></u></p>
                             <p>请<u><em><b>不要发布侵犯他人版权的文字</b></em></u></p>
-                            <p>请确保您已<u><em><b>年满<span style="color:#d66666">十八</span>岁</b></em></u></p>
-                            <p>祝您玩得愉快</p>
+                            <p>请确保你已<u><em><b>年满<span style="color:#d66666">十八</span>岁</b></em></u></p>
+                            <p>祝你玩得愉快</p>
                             <br>
                         </div>
                         <div class="panel-footer text-center">
@@ -94,7 +94,7 @@
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-md btn-danger sosad-button">一键注册</button>
-                        <h6>本页面含有IP访问频率限制，友情提醒，为了您的正常注册，<code>请不要刷新或倒退</code>页面。</h6>
+                        <h6>本页面含有IP访问频率限制，友情提醒，为了你的正常注册，<code>请不要刷新或倒退</code>页面。</h6>
                     </div>
                 </form>
             </div>

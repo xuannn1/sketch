@@ -64,12 +64,12 @@ class CollectionController extends Controller
             $this->refreshCollectionIndex(Auth::id(), $group);
 
             return [
-                'success' => '您已成功收藏本文!',
+                'success' => '你已成功收藏本文!',
                 'collection'=> $collection,
             ];
         }
         return [
-            'info' => '您已收藏过本文,请勿重复收藏!',
+            'info' => '你已收藏过本文,请勿重复收藏!',
         ];
 
     }

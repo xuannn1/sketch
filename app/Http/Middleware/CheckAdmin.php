@@ -14,7 +14,7 @@ class CheckAdmin
     public function handle($request, Closure $next)
     {
         if((!Auth::check())||(!Auth::user()->isAdmin())){
-            return redirect('/')->with('warning','您的权限不足');
+            return redirect('/')->with('warning','你的权限不足');
         }
         return $next($request);
     }

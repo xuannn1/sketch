@@ -43,9 +43,9 @@ class ResetPasswordNotification extends Notification
     {
         return (new MailMessage)
         ->subject('废文网密码重置/重激活')
-        ->line('以下是您的废文网密码重置邮件链接')
+        ->line('以下是你的废文网密码重置邮件链接')
         ->action('密码重置/重激活', url(route('password.reset', $this->token, false)))
-        ->line('如果您没有发出密码重置请求，请忽视此邮件');
+        ->line('如果你没有发出密码重置请求，请忽视此邮件');
     }
 
     /**

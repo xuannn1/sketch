@@ -32,13 +32,13 @@ class BooksController extends Controller
         $user = CacheUser::Auser();
         if(!$user){abort(404);}
         if(Cache::has('created-thread-' . $user->id)){
-            return redirect('/')->with('danger', '您在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+            return redirect('/')->with('danger', '你在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
         }
         if($user->no_posting){
-            return back()->with('danger','您被禁言中，暂时无法创建书籍');
+            return back()->with('danger','你被禁言中，暂时无法创建书籍');
         }
         if($user->level<1||$user->quiz_level<1){
-            return redirect()->back()->with('warning','您的用户等级/答题等级不足，目前不能建立书籍');
+            return redirect()->back()->with('warning','你的用户等级/答题等级不足，目前不能建立书籍');
         }
         return view('books.create', compact('tag_range'));
     }
@@ -52,7 +52,7 @@ class BooksController extends Controller
         }
 
         if(Cache::has('created-thread-' . $user->id)){
-            return redirect('/')->with('danger', '您在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
+            return redirect('/')->with('danger', '你在10分钟内已成功建立过新主题，请查询个人主题记录，勿重复建立主题。');
         }
 
         $thread = $form->generateBook($channel);
@@ -66,7 +66,7 @@ class BooksController extends Controller
 
         Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(10));
 
-        return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布文章");
+        return redirect()->route('thread.show', $thread->id)->with("success", "你已成功发布文章");
     }
 
     public function edit($id)

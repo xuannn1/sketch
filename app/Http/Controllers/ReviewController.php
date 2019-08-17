@@ -28,7 +28,7 @@ class ReviewController extends Controller
     public function create($id, Request $request)
     {
         if($id==0){
-            return redirect()->back()->with('info','您尚无清单设置，请先创建清单');
+            return redirect()->back()->with('info','你尚无清单设置，请先创建清单');
         }
         $thread = Thread::on('mysql::write')->find($id);
         if(!$thread||$thread->channel()->type!='list'||($thread->is_locked&&!Auth::user()->isAdmin())||$thread->user_id!=Auth::id()){
@@ -53,10 +53,10 @@ class ReviewController extends Controller
 
         if($post->post_check('long_comment')){
             $post->user->reward('long_post');
-            return redirect()->route('post.show', $post->id)->with('success', '您得到了长评奖励');
+            return redirect()->route('post.show', $post->id)->with('success', '你得到了长评奖励');
         }
         $post->user->reward("regular_post");
-        return redirect()->route('post.show', $post->id)->with('success', '您已成功发布书评');
+        return redirect()->route('post.show', $post->id)->with('success', '你已成功发布书评');
     }
 
     public function update($id, StoreReview $form)

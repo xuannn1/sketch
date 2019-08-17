@@ -31,7 +31,7 @@ class StatusController extends Controller
         ->latest()
         ->first();
         if (!empty($last_status) && strcmp($last_status->body, $status_body) === 0){
-            return redirect()->back()->with('warning','您已成功提交状态，请不要重复提交哦！');
+            return redirect()->back()->with('warning','你已成功提交状态，请不要重复提交哦！');
         }
 
         if(($last_status)&&(Carbon::now()->subHours(3)->toDateTimeString() < $last_status->created_at )){

@@ -8,7 +8,7 @@
                 @if($public_notice->author)
                 <a href="{{route('user.show', $public_notice->author->id)}}">{{$public_notice->author->name}}</a>
                 @endif
-                <span class="grayout">{{$public_notice->created_at}}</span>
+                <span class="grayout">{{$public_notice->created_at->setTimeZone('Asia/Shanghai')}}</span>
             </div>
             <div class="main-text">
                 {!! StringProcess::wrapParagraphs($public_notice->body) !!}

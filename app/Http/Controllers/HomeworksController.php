@@ -61,7 +61,7 @@ class HomeworksController extends Controller
             'body'=>request('requirement'),
         ]);
         $thread->update(['post_id'=>$post->id]);
-        return redirect()->route('thread.show', $thread->id)->with("success", "您已成功发布主题");
+        return redirect()->route('thread.show', $thread->id)->with("success", "你已成功发布主题");
     }
     public function register(Homework $homework, Request $request)
     {
@@ -70,9 +70,9 @@ class HomeworksController extends Controller
             'majia' => 'string|max:10',
         ]);
         if($homework->registered->find($user->id)){
-            return back()->with("info", "您已报名，请勿重复报名");
+            return back()->with("info", "你已报名，请勿重复报名");
         }elseif($user->no_registration>Carbon::now()){
-            return back()->with("danger", "抱歉，您被暂时禁止报名");
+            return back()->with("danger", "抱歉，你被暂时禁止报名");
         }else{
             if($homework->register_at>Carbon::now()){//两波报名都未开始
                 return back()->with("info", "抱歉，报名还未开始");
@@ -80,7 +80,7 @@ class HomeworksController extends Controller
                 if($homework->register_number<=0){
                     return back()->with("info", "抱歉，本波报名人数已满，无法报名。");
                 }elseif($user->sangdian<$homework->hold_sangdian){
-                    return back()->with("info", "抱歉，您的丧点不足，无法报名。");
+                    return back()->with("info", "抱歉，你的丧点不足，无法报名。");
                 }else{
                     $homework->decrement('register_number');//第一波，报名了，去除第一波名额
                 }
@@ -88,7 +88,7 @@ class HomeworksController extends Controller
                 if(($homework->register_number+$homework->register_number_b)<=0){
                     return back()->with("info", "抱歉，报名人数已满，无法报名。");
                 }elseif($user->sangdian<$homework->hold_sangdian){
-                    return back()->with("info", "抱歉，您的丧点不足，无法报名。");
+                    return back()->with("info", "抱歉，你的丧点不足，无法报名。");
                 }else{//去除无论哪一波报名名额的计算
                     if ($homework->register_number>0){
                         $homework->decrement('register_number');
@@ -108,7 +108,7 @@ class HomeworksController extends Controller
                 'user_id' => $user->id,
                 'majia' => request('majia'),
             ]);//报名参加本次作业
-            return redirect()->back()->with("success", "您已成功加入作业小组");
+            return redirect()->back()->with("success", "你已成功加入作业小组");
         }
         return redirect()->back()->with("danger", "出现了问题");
     }
@@ -146,7 +146,7 @@ class HomeworksController extends Controller
                     $receiver->increment('unread_reminders');
                 }
             }
-            return redirect()->route('homework.show', $homework->id)->with('success','您已成功发布作业通知');
+            return redirect()->route('homework.show', $homework->id)->with('success','你已成功发布作业通知');
         }else{
             return redirect()->back()->with("danger", "这次作业已失效");
         }
@@ -178,7 +178,7 @@ class HomeworksController extends Controller
             $homework->active =false;
             $homework->registration_on = false;
             $homework->save();
-            return redirect()->back()->with("success", "您已成功结束这次作业活动");
+            return redirect()->back()->with("success", "你已成功结束这次作业活动");
         }else{
             return redirect()->back()->with("danger", "这次作业已失效");
         }
@@ -215,7 +215,7 @@ class HomeworksController extends Controller
                 }
                 $user->save();
             }
-            return redirect()->route('homework.show', $homework->id)->with('success','您已成功发放奖励');
+            return redirect()->route('homework.show', $homework->id)->with('success','你已成功发放奖励');
         }else{
             return redirect()->back()->with("danger", "这次作业已失效");
         }

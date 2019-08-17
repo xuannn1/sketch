@@ -122,14 +122,14 @@ class RegisterController extends Controller
         $this->validator($request->all())->validate();
 
         if(Cache::has('registration-limit-' . request()->ip())){
-            return redirect('/')->with('danger', '您的IP今天已经成功注册，请尝试直接登陆您已注册的账户。');
+            return redirect('/')->with('danger', '你的IP今天已经成功注册，请尝试直接登陆你已注册的账户。');
         }
         $user = $this->create($request->all());
         Cache::put('registration-limit-' . request()->ip(), true, Carbon::now()->addDay(1));
 
         event(new Registered($user));
 
-        return redirect('/')->with('success', '您好，您已成功注册');
+        return redirect('/')->with('success', '你好，你已成功注册');
     }
 
     protected function sendEmailConfirmationTo($user)
@@ -137,7 +137,7 @@ class RegisterController extends Controller
         $view = 'auth.confirm';
         $data = compact('user');
         $to = $user->email;
-        $subject = $user->name."您好，感谢注册废文网！请确认你的邮箱。";
+        $subject = $user->name."你好，感谢注册废文网！请确认你的邮箱。";
 
         $this->send_email_to_select_server($view, $data, $to, $subject);
     }
@@ -158,8 +158,8 @@ class RegisterController extends Controller
 
         $email_check = PasswordReset::where('email','=',$user->email)->latest()->first();
 
-        if ($email_check&&$email_check->created_at>Carbon::now()->subHour(1)){
-            return back()->with('warning', '一小时内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，因此不再重复发送。');
+        if ($email_check&&$email_check->created_at>Carbon::now()->subDay(1)){
+            return back()->with('warning', '一天内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，因此不再重复发送。');
         }
         DB::table('password_resets')->where('email','=',$user->email)->delete();
         if(!$user->info->activation_token){

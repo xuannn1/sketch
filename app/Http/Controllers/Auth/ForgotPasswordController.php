@@ -50,10 +50,14 @@ class ForgotPasswordController extends Controller
             return back()->with('warning', '该邮箱账户不存在。');
         }
 
+        if ($user_check->created_at>Carbon::now()->subDay(1)){
+            return back()->with('danger', '当日注册的用户不能重置密码。');
+        }
+
         $email_check = DB::table('password_resets')->where('email', $request->email)->first();
 
-        if ($email_check&&$email_check->created_at>Carbon::now()->subHour(1)){
-            return back()->with('warning', '一小时内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，因此不再重复发送。');
+        if ($email_check&&$email_check->created_at>Carbon::now()->subDay(1)){
+            return back()->with('warning', '一天内已发送过重置邮件，请不要重复发送邮件，避免被识别为垃圾邮件。');
         }
 
         $response = $this->broker()->sendResetLink(

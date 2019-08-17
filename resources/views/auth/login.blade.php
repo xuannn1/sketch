@@ -22,7 +22,7 @@
                         <input type="password" name="password" class="form-control" value="{{ old('password') }}">
                     </div>
                     <div class="checkbox">
-                        <label><input type="checkbox" name="remember">记住我<span class="grayout smaller-20">（勾选后将长期保持登陆状态哦～请在信任的机器上使用）</span>
+                        <label><input type="checkbox" name="remember" checked>记住我<span class="grayout smaller-20">（勾选后将长期保持登陆状态哦～请只在信任的机器上使用）</span>
                         </label>
                     </div>
                     <button type="submit" class="btn btn-danger btn-md sosad-button">登录</button>

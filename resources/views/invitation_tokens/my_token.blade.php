@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="text-center">
-            <h6>您可以创建的邀请码余额为{{$info->token_limit}}个。</h6>
+            <h6>你可以创建的邀请码余额为{{$info->token_limit}}个。</h6>
             @if($info->token_limit>0)
             <form method="POST" action="{{ route('invitation_token.store_my_token') }}" name="store_my_token">
                 {{ csrf_field() }}

@@ -33,7 +33,7 @@ class PostsController extends Controller
             return back()->with('danger', '本主题锁定或设为隐私，不能回帖');
         }
         if(Auth::user()->no_posting){
-            return back()->with('danger', '您被禁言中，无法回帖');
+            return back()->with('danger', '你被禁言中，无法回帖');
         }
 
         $post = $form->storePost($thread);
@@ -85,7 +85,7 @@ class PostsController extends Controller
 
         $form->updatePost($post);
         $this->refreshPost($post->id);
-        return redirect()->route('thread.showpost', $post->id)->with('success', '您已成功修改帖子');
+        return redirect()->route('thread.showpost', $post->id)->with('success', '你已成功修改帖子');
     }
 
     public function show($id)

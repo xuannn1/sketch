@@ -66,7 +66,7 @@ class DonationController extends Controller
 
         $other_record = \App\Models\Patreon::on('mysql::write')->where('patreon_email', $request->email)->first();
         if($other_record){
-            return redirect()->back()->with('danger','这个Patreon账户已经有人申请，如果不是您本人，请联系站务人员申诉。');
+            return redirect()->back()->with('danger','这个Patreon账户已经有人申请，如果不是你本人，请联系站务人员申诉。');
         }
         \App\Models\Patreon::create([
             'user_id' => $user->id,
@@ -209,7 +209,7 @@ class DonationController extends Controller
     {
         $is_approved = 0;
         if($request->show_review_tab=='approved'){$is_approved = 1;}
-        $patreons = \App\Models\Patreon::with('author','donation_records.author')->where('is_approved', $is_approved)->latest()->paginate(20)->appends($request->only('page'));
+        $patreons = \App\Models\Patreon::with('author','donation_records.author')->where('is_approved', $is_approved)->latest()->paginate(20)->appends($request->only('page','show_review_tab'));
 
         return view('donations.review_patreon', compact('patreons'))->with('show_review_tab', $request->show_review_tab);
     }

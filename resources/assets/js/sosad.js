@@ -3,14 +3,14 @@ var web_base_url = $('#baseurl').val();
 $('input.tags').on('change', function(evt) {
     if($('input.tags:checked').length > 3) {
         this.checked = false;
-        alert("您只能选择 "+3+" 个标签");
+        alert("你只能选择 "+3+" 个标签");
     }
 });
 
 $('input.alltags').on('change', function(evt) {
     if($('input.alltags:checked').length > 5) {
         this.checked = false;
-        alert("您只能选择 "+5+" 个标签");
+        alert("你只能选择 "+5+" 个标签");
     }
 });
 
