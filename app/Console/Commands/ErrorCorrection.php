@@ -39,9 +39,24 @@ class ErrorCorrection extends Command
      */
     public function handle()
     {
-        $password_records = DB::table('password_resets')->where('created_at','>','2019-08-14 24:00:00')->get();
-        $password_records = $password_records->map(function($x){ return (array) $x; })->toArray();
-        DB::table('password_resets_2')->insert($password_records);
-
+        $records = \App\Models\HistoricalEmailModification::where('created_at','>','2019-08-20 02:52:01')->where('admin_revoked_at',null)->get();
+        foreach($records as $record){
+            $email_address = explode("@",$record->new_email);
+            if($email_address[1]=='163.com'&&strlen($email_address[0])==6){
+                $user = $record->user;
+                DB::transaction(function()use($user, $record){
+                    $user->forceFill([
+                        'password' => str_random(60),
+                        'remember_token' => str_random(60),
+                        'activated' => 0,
+                        'email' => $record->old_email,
+                        'no_logging' => 1,
+                    ])->save();
+                    $record->admin_revoked_at = Carbon::now();
+                    $record->save();
+                }, 2);
+                echo 'recovered user:'.$user->id.'|';
+            }
+        }
     }
 }

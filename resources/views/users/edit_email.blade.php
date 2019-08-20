@@ -19,7 +19,7 @@
                     </div>
                     <hr>
                     <h4>修改邮箱</h4>
-                    <h6>（你本周已修改{{ $previous_history_counts }}次邮箱，一周最多只能修改1次）</h6>
+                    <h6>（你本周已修改{{ $previous_history_counts }}次邮箱，一月最多只能修改3次）</h6>
                 @include('shared.errors')
                 <form method="POST" action="{{ route('user.update_email') }}">
                         {{ csrf_field() }}

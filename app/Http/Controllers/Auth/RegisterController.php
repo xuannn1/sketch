@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Models\InvitationToken;
 use Carbon;
 use Auth;
+use CacheUser;
 use App\Models\PasswordReset;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
 
@@ -63,7 +64,7 @@ class RegisterController extends Controller
         $validator = Validator::make($data, [
             'name' => 'required|string|alpha_dash|max:12|unique:users',
             'email' => 'required|string|email|max:255|unique:users|confirmed',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:10|max:32|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
             'have_read_policy1' => 'required',
             'have_read_policy2' => 'required',
             'have_read_policy3' => 'required',
@@ -132,10 +133,10 @@ class RegisterController extends Controller
         return redirect('/')->with('success', '你好，你已成功注册');
     }
 
-    protected function sendEmailConfirmationTo($user)
+    protected function sendEmailConfirmationTo($user, $info)
     {
         $view = 'auth.confirm';
-        $data = compact('user');
+        $data = compact('user','info');
         $to = $user->email;
         $subject = $user->name."你好，感谢注册废文网！请确认你的邮箱。";
 
@@ -153,7 +154,8 @@ class RegisterController extends Controller
     }
 
     public function resend_email_confirmation(){
-        $user = Auth::user();
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
         $email = Auth::user()->email;
 
         $email_check = PasswordReset::where('email','=',$user->email)->latest()->first();
@@ -162,12 +164,12 @@ class RegisterController extends Controller
             return back()->with('warning', '一天内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，因此不再重复发送。');
         }
         DB::table('password_resets')->where('email','=',$user->email)->delete();
-        if(!$user->info->activation_token){
-            $user->info->activation_token=str_random(40);
-            $user->info->save();
+        if(!$info->activation_token){
+            $info->activation_token=str_random(40);
+            $info->save();
         }
-        $this->sendEmailConfirmationTo($user);
-        session()->flash('success', '恭喜，已发送重置邮件');
+        $this->sendEmailConfirmationTo($user, $info);
+        session()->flash('success', '已成功发送验证邮件，请注意查收');
 
         DB::table('password_resets')->insert([
             'email' => $user->email,

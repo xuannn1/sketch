@@ -25,7 +25,7 @@ class LogUserActivity
                 Cache::put('usr-clicks-'.Auth::id(),1,Carbon::now()->addDay(1));
             }
             if(!Cache::has('usr-on-' . Auth::id())){//假如距离上次cache的时间已经超过了默认时间
-                $online_status = OnlineStatus::updateOrCreate([
+                $online_status = OnlineStatus::on('mysql::write')->updateOrCreate([
                     'user_id' => Auth::id(),
                 ],[
                     'online_at' => Carbon::now(),

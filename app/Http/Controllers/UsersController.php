@@ -34,7 +34,7 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [
-            'except' => ['followers','followings','index','show','threads','lists','statuses'],
+            'except' => ['followers','followings','index','show','threads','lists','statuses','update_email_by_token'],
         ]);
     }
 
@@ -50,38 +50,64 @@ class UsersController extends Controller
     public function edit_email()
     {
         $user = Auth::user();
-        $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subWeek(1)->toDateTimeString())->count();
+        if(Cache::has('email-modification-limit-' . request()->ip())){
+            return redirect('/')->with('danger', '你的IP今天已经修改过邮箱，请不要重复修改邮箱');
+        }
+        $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
+        if ($previous_history_counts>=3){
+            return redirect()->back()->with('warning','一月内只能修改3次邮箱。');
+        }
         return view('users.edit_email', compact('user','previous_history_counts'));
+    }
+
+    public function recover_email()
+    {
+
     }
 
     public function update_email(Request $request)
     {
         $user = Auth::user();
         $info = $user->info;
-        if(Hash::check(request('old-password'), $user->password)) {
-            $this->validate($request, [
-                'email' => 'required|string|email|max:255|unique:users|confirmed',
-            ]);
-            $old_email = $user->email;
+        if(Cache::has('email-modification-limit-' . request()->ip())){
+            return redirect('/')->with('danger', '你的IP今天已经修改过邮箱，请不要重复修改邮箱');
+        }
+        if(!Hash::check(request('old-password'), $user->password)) {
+            return back()->with("danger", "你的旧密码输入错误");
+        }
+        $this->validate($request, [
+            'email' => 'required|string|email|max:255|unique:users|confirmed',
+        ]);
+        $old_email = $user->email;
 
-            if($old_email==$request->email){
-                return redirect()->back()->with('warning','已经修改为这个邮箱，无需重复修改。');
-            }
+        if($old_email==$request->email){
+            return redirect()->back()->with('warning','已经修改为这个邮箱，无需重复修改。');
+        }
 
-            $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subWeek(1)->toDateTimeString())->count();
-            if ($previous_history_counts>=1){
-                return redirect()->back()->with('warning','一周内只能修改1次邮箱。');
-            }
-            $record = HistoricalEmailModification::create([
-                'old_email' => $old_email,
-                'new_email' => request('email'),
-                'user_id' => Auth::id(),
-                'ip_address' => request()->ip(),
-                'old_email_verified_at' => $info->email_verified_at,
-                'token' => str_random(30),
-            ]);
+        $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
+        if ($previous_history_counts>=3){
+            return redirect()->back()->with('warning','一月内只能修改3次邮箱。');
+        }
 
-            $this->sendChangeEmailRecordTo($user, $record);
+        $record = HistoricalEmailModification::create([
+            'old_email' => $old_email,
+            'new_email' => request('email'),
+            'user_id' => Auth::id(),
+            'ip_address' => request()->ip(),
+            'old_email_verified_at' => $info->email_verified_at,
+            'token' => str_random(30),
+            'email_changed_at' => $user->activated? null : Carbon::now(),
+        ]);
+
+        // return view('auth.change_email_confirmed',compact('user','record'));
+
+        Cache::put('email-modification-limit-' . request()->ip(), true, Carbon::now()->addDay(1));
+
+        if($user->activated){
+            $this->sendChangeEmailRecordTo($user, $record, true);
+            return redirect()->route('user.edit', Auth::id())->with("success", "重置邮箱请求已登记，请查收已验证邮箱，根据指示完成重置操作");
+        }else{
+            $this->sendChangeEmailRecordTo($user, $record, false);
 
             $user->forceFill([
                 'email' => $request->email,
@@ -92,23 +118,61 @@ class UsersController extends Controller
             $info->forceFill([
                 'activation_token' => str_random(30),
             ])->save();
-
-            return redirect()->route('user.edit', Auth::id())->with("success", "你已成功修改个人资料");
+            return redirect()->route('user.edit', Auth::id())->with("success", "邮箱已重置");
         }
-        return back()->with("danger", "你的旧密码输入错误");
     }
 
+    public function update_email_by_token($token){
+        $record = HistoricalEmailModification::where('token',$token)->first();
+        if(!$record){
+            return redirect()->back()->with('warning','输入的token已失效或不存在');
+        }
+        $user = CacheUser::user($record->user_id);
+        $info = CacheUser::info($record->user_id);
+        if($record->new_email==$user->email){
+            return redirect()->back()->with('warning','已经转化成本邮箱，无需继续重置');
+        }
+        if($record->old_email!=$user->email){
+            return redirect()->back()->with('warning','原邮箱已更改，信息失效无法再行修改');
+        }
+        if(!$user||!$info){
+            abort(404);
+        }
+        $user->forceFill([
+            'email' => $record->new_email,
+            'remember_token' => str_random(60),
+            'activated' => 0,
+        ])->save();
+
+        $info->forceFill([
+            'activation_token' => str_random(30),
+        ])->save();
+
+        $record->update([
+            'token'=>null,
+            'email_changed_at' => Carbon::now(),
+        ]);
+
+        return redirect()->route('user.edit', Auth::id())->with("success", "邮箱已重置");
+
+    }
 
     public function edit_password(){
         $user = Auth::user();
+        if(!$user->activated){
+            return redirect()->back()->with('danger','你未激活邮箱，为保护账户安全，暂不能重置密码。');
+        }
         return view('users.edit_password', compact('user'));
     }
 
     public function update_password(Request $request){
         $user = Auth::user();
+        if(!$user->activated){
+            return redirect()->back()->with('danger','你未激活邮箱，为保护账户安全，暂不能重置密码。');
+        }
         if(Hash::check(request('old-password'), $user->password)) {
             $this->validate($request, [
-                'password' => 'required|min:8|max:16|confirmed',
+                'password' => 'required|min:10|max:32|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
             ]);
 
             $user->forceFill([
@@ -473,9 +537,12 @@ class UsersController extends Controller
         return view('users.show_comment', compact('user','info','intro', 'posts'))->with(['show_user_tab'=>'comment']);
     }
 
-    protected function sendChangeEmailRecordTo($user, $record)
+    protected function sendChangeEmailRecordTo($user, $record, $confirmed=false)
     {
-        $view = 'auth.change_email';
+        $view = 'auth.change_email_not_confirmed';
+        if($confirmed){
+            $view = 'auth.change_email_confirmed';
+        }
         $data = compact('user', 'record');
         $to = $user->email;
         $subject = $user->name."的废文网邮箱更改提醒！";

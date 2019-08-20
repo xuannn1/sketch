@@ -8,8 +8,8 @@
     <h1>{{ $user->name }}&nbsp;你好，感谢你在 废文网 进行注册！</h1>
     <p>
         请点击下面的链接完成邮箱验证：
-        <a href="{{ route('confirm_email', $user->info->activation_token) }}">
-            {{ route('confirm_email', $user->info->activation_token) }}
+        <a href="{{ route('confirm_email', $info->activation_token) }}">
+            {{ route('confirm_email', $info->activation_token) }}
         </a>
     </p>
     <p>

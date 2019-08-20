@@ -45,6 +45,7 @@
                     <div class="form-group">
                         <label for="password">密码：</label>
                         <input type="password" name="password" class="form-control" value="{{ old('password') }}">
+                        <h6>(密码需包含至少一个大写字母，至少一个小写字母，至少一个数字，至少一个特殊字符)</h6>
                     </div>
 
                     <div class="form-group">

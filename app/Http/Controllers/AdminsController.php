@@ -231,7 +231,6 @@ class AdminsController extends Controller
             return redirect()->back()->with("warning","未能处理该主题。是否未选转换板块？");
         }
 
-        $this->refreshThread($thread_id);
         CacheUser::clearuser($user->id);
         if($user&&$is_public){
             $user->remind('new_administration');
@@ -239,6 +238,7 @@ class AdminsController extends Controller
         if($operation===5){
             return redirect('/')->with('success', '已经成功处理该主题');
         }
+        $this->refreshThread($thread_id);
         return back()->with('success', '已经成功处理该主题');
 
     }

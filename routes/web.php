@@ -112,6 +112,7 @@
 
     // 邮箱更新
     Route::get('/user/edit_email', 'UsersController@edit_email')->name('user.edit_email');//更改用户的邮箱信息 19.7.9
+    Route::patch('/user/recover_email', 'UsersController@recover_email')->name('user.recover_email');//还原用户的邮箱信息
     Route::patch('/user/update_email', 'UsersController@update_email')->name('user.update_email');//更新用户的邮箱信息  19.7.9
 
     // 密码更新
@@ -125,6 +126,8 @@
     // 偏好更新
     Route::get('/user/edit_preference', 'UsersController@edit_preference')->name('user.edit_preference');//更改用户的使用偏好
     Route::patch('/user/update_preference', 'UsersController@update_preference')->name('user.update_preference');//更改用户的使用偏好
+
+    Route::get('update_email_by_token/{token}', 'UsersController@update_email_by_token')->name('update_email_by_token');//通过已经激活的邮件收到的验证修改邮箱
 }
 
 {//以下展示论坛贴按标签（label）与板块（channel）分布的视图
