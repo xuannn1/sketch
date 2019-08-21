@@ -14,8 +14,8 @@ class CachesController extends Controller
     public function save(Request $request)
     {
         $item_value = request('item_value');
-        if (iconv_strlen($item_value)>10){//大于十个字符，进行自动保存
-            $record = TemporaryDataSave::updateOrCreate([
+        if (iconv_strlen($item_value)>10){//大于十个字符，才进行自动保存
+            $record = TemporaryDataSave::on('mysql::write')->updateOrCreate([
                 'user_id' => Auth::id(),
             ],[
                 'new' => $item_value,
@@ -30,7 +30,8 @@ class CachesController extends Controller
         $record = TemporaryDataSave::where('user_id',Auth::id())->first();
         if ($record){
             $value = $record->old;
-            $record->old = $record->new;
+            $record->old = $record->older;
+            $record->older = $record->new;
             $record->new = $value;
             $record->save();
             return $value;
@@ -41,7 +42,8 @@ class CachesController extends Controller
     public static function initcache()
     {
         $record = TemporaryDataSave::where('user_id',Auth::id())->first();
-        if ($record){
+        if ($record&&$record->new){
+            $record->older = $record->old;
             $record->old = $record->new;
             $record->new = null;
             $record->save();

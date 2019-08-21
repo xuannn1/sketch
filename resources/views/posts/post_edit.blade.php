@@ -18,7 +18,7 @@
                     <div class="form-group">
                         <label for="body">帖子正文：</label>
                         <textarea name="body" id="markdowneditor" data-provide="markdown" rows="12" class="form-control" placeholder="请输入至少20字的内容">{{ $post->body }}</textarea>
-                        <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
+                        <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">切换恢复数据</button>
                         <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
                     </div>
                     <div class="checkbox">

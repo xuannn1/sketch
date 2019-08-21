@@ -18,7 +18,7 @@
                 <textarea class="form-control" id="status_body" rows="4" placeholder="今天你丧了吗…"  name="status_body">{{ old('status_body') }}</textarea>
             </div>
             <div >
-                <button type="button" onclick="retrievecache('status_body')" class="sosad-button-control addon-button">恢复数据</button>
+                <button type="button" onclick="retrievecache('status_body')" class="sosad-button-control addon-button">切换恢复数据</button>
                 <button type="submit" class="pull-right sosad-button btn btn-md btn-primary">发布</button>
             </div>
         </div>

@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <label for="introduction">个人介绍：</label>
                         <textarea name="introduction" id="introduction" data-provide="markdown" rows="15" class="form-control" placeholder="在这里输入个人介绍文字哦！支持BBCode格式！可以插图插链接～">{{ $intro?$intro->body:'' }}</textarea>
-                        <button type="button" onclick="retrievecache('introduction')" class="sosad-button-control addon-button">恢复数据</button>
+                        <button type="button" onclick="retrievecache('introduction')" class="sosad-button-control addon-button">切换恢复数据</button>
                     </div>
 
                     <button type="submit" class="btn btn-md btn-primary sosad-button">更新个人介绍</button>

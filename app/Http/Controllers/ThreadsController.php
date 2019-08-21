@@ -44,9 +44,9 @@ class threadsController extends Controller
     {
         $page = is_numeric($request->page)? $request->page:'1';
         $time = 10;
-        if($page===1){$time=2;}
+        if($page==1){$time=2;}
         $threads = Cache::remember('thread_index_P'.$page.url('/'), $time, function () use($page) {
-            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            return $threads = Thread::with('author', 'tags', 'last_post')
             ->isPublic()
             ->inPublicChannel()
             ->withoutType('book')
@@ -64,7 +64,7 @@ class threadsController extends Controller
         $page = is_numeric($request->page)? $request->page:'1';
         $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
         $threads = Cache::remember('thread_jinghua_P'.$page.url('/'), 30, function () use($page, $jinghua_tag) {
-            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            return $threads = Thread::with('author', 'tags', 'last_post')
             ->isPublic()//复杂的筛选
             ->inPublicChannel()
             ->withTag($jinghua_tag->id)
@@ -90,10 +90,10 @@ class threadsController extends Controller
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
         $time = 30;
-        if(!array_key_exists('withTag',$request_data)&&!array_key_exists('ordered',$request_data)&&!array_key_exists('page',$request_data)){$time=2;}
+        if(!$request->withTag&&!$request->ordered&&!$request->page){$time=2;}
 
         $threads = Cache::remember($queryid, $time, function () use($request, $channel) {
-            return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            return $threads = Thread::with('author', 'tags', 'last_post')
             ->isPublic()
             ->inChannel($channel->id)
             ->withBianyuan($request->withBianyuan)

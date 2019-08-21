@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <label for="requirement">作业要求：</label>
                     <textarea name="requirement" id="requirement" rows="12" class="form-control" data-provide="markdown" placeholder="作业时间-流程……etc">{{ old('requirement') }}</textarea>
-                    <button type="button" onclick="retrievecache('requirement')" class="sosad-button-control addon-button">恢复数据</button>
+                    <button type="button" onclick="retrievecache('requirement')" class="sosad-button-control addon-button">切换恢复数据</button>
                     <button href="#" type="button" onclick="wordscount('requirement');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
 
                 </div>

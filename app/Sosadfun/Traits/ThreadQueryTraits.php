@@ -69,7 +69,7 @@ trait ThreadQueryTraits{
     public function find_threads_with_query($query_id, $request_data)
     {
         return Cache::remember('ThreadQ.'.$query_id, 30, function () use($request_data) {
-            return Thread::with('author', 'tags', 'last_component', 'last_post')
+            return Thread::with('author', 'tags', 'last_post')
             ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')
             ->isPublic(array_key_exists('isPublic',$request_data)? $request_data['isPublic']:'')
             ->inPublicChannel(array_key_exists('inPublicChannel',$request_data)? $request_data['inPublicChannel']:'')
@@ -88,7 +88,7 @@ trait ThreadQueryTraits{
         $time = 60;
         if(!array_key_exists('withTag',$request_data)&&!array_key_exists('excludeTag',$request_data)&&!array_key_exists('ordered',$request_data)&&!array_key_exists('page',$request_data)){$time=5;}
         return Cache::remember('BookQ.'.$query_id, $time, function () use($request_data) {
-            $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
+            $threads = Thread::with('author', 'tags', 'last_component')
             ->isPublic()
             ->withType('book')
             ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')

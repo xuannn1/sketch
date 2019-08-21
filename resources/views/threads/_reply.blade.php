@@ -19,7 +19,7 @@
             <input type="hidden" name="reply_to_id" id="reply_to_id" class="form-control" value="{{$post? $post->id:0}}"></input>
             <div class="form-group">
                 <textarea name="body" rows="7" class="form-control" id="markdowneditor" placeholder="评论十个字起哦～请勿发布类似“如何升级”的无意义水贴。站内严禁污言秽语、人身攻击。社区气氛有赖每一条咸鱼的爱惜～">{{ old('body') }}</textarea>
-                <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">恢复数据</button>
+                <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">切换恢复数据</button>
                 <button href="#" type="button" onclick="wordscount('markdowneditor');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
             </div>
             @if(!$thread->is_bianyuan)

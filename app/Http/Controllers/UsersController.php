@@ -360,7 +360,7 @@ class UsersController extends Controller
         $intro = $info->has_intro? CacheUser::intro($id):null;
 
         if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
-            $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
+            $threads = \App\Models\Thread::with('tags','author', 'last_component')
             ->withUser($id)
             ->withType('book')
             ->ordered('latest_add_component')
@@ -372,7 +372,7 @@ class UsersController extends Controller
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
             $threads = Cache::remember($queryid, 10, function () use($request, $id) {
-                return \App\Models\Thread::with('tags','author','last_post','last_component')
+                return \App\Models\Thread::with('tags','author','last_component')
                 ->withUser($id)
                 ->withType('book')
                 ->isPublic()
@@ -395,7 +395,7 @@ class UsersController extends Controller
         $intro = $info->has_intro? CacheUser::intro($id):null;
 
         if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
-            $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
+            $threads = \App\Models\Thread::with('tags','author','last_post')
             ->withUser($id)
             ->withType('thread')
             ->ordered()
@@ -407,7 +407,7 @@ class UsersController extends Controller
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
             $threads = Cache::remember($queryid, 10, function () use($request, $id) {
-                return \App\Models\Thread::with('tags','author','last_post','last_component')
+                return \App\Models\Thread::with('tags','author','last_post')
                 ->withUser($id)
                 ->withType('thread')
                 ->isPublic()
@@ -429,7 +429,7 @@ class UsersController extends Controller
         $intro = $info->has_intro? CacheUser::intro($id):null;
 
         if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
-            $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
+            $threads = \App\Models\Thread::with('tags','author','last_post')
             ->withUser($id)
             ->withType('list')
             ->ordered()
@@ -441,7 +441,7 @@ class UsersController extends Controller
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
             $threads = Cache::remember($queryid, 10, function () use($request, $id) {
-                return \App\Models\Thread::with('tags','author','last_post','last_component')
+                return \App\Models\Thread::with('tags','author','last_post')
                 ->withUser($id)
                 ->withType('list')
                 ->isPublic()
@@ -463,7 +463,7 @@ class UsersController extends Controller
         $intro = $info->has_intro? CacheUser::intro($id):null;
 
         if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
-            $threads = \App\Models\Thread::with('tags','author','last_post','last_component')
+            $threads = \App\Models\Thread::with('tags','author','last_post')
             ->withUser($id)
             ->withType('box')
             ->ordered()
@@ -475,7 +475,7 @@ class UsersController extends Controller
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
             $threads = Cache::remember($queryid, 10, function () use($request, $id) {
-                return \App\Models\Thread::with('tags','author','last_post','last_component')
+                return \App\Models\Thread::with('tags','author','last_post')
                 ->withUser($id)
                 ->withType('box')
                 ->isPublic()

@@ -40,7 +40,7 @@
                     <div class="form-group">
                         <label for="body"><h4>正文：</h4></label>
                         <textarea id="mainbody" name="body" rows="14" class="form-control" data-provide="markdown" placeholder="章节正文">{{ $post->body }}</textarea>
-                        <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-control addon-button">恢复数据</button>
+                        <button type="button" onclick="retrievecache('mainbody')" class="sosad-button-control addon-button">切换恢复数据</button>
                         <button type="button" onclick="removespace('mainbody')" class="sosad-button-control addon-button">清理段首空格</button>
                         <button href="#" type="button" onclick="wordscount('mainbody');return false;" class="pull-right sosad-button-control addon-button">字数统计</button>
                         <br>

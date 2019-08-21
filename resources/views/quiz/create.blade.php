@@ -15,7 +15,7 @@
                     <div class="form-group">
                         <label for="quiz-body"><h5>新题目：</h5></label>
                         <textarea name="quiz-body" id="quiz-body" data-provide="markdown" rows="5" class="form-control" placeholder="题干放在这里">{{ old('quiz-body') }}</textarea>
-                        <button type="button" onclick="retrievecache('quiz-body')" class="sosad-button-control addon-button">恢复数据</button>
+                        <button type="button" onclick="retrievecache('quiz-body')" class="sosad-button-control addon-button">切换恢复数据</button>
                     </div>
                     <div class="form-group">
                         <label for="quiz-hint"><h5>答题暗示：</h5></label>
