@@ -360,7 +360,7 @@ class Post extends Model
             $msg = $msg.', 得到了新章节率先回帖的奖励';
         }
         $this->user->reward("regular_post");
-        return '恭喜，你成功回帖'.$msg;
+        return '恭喜，你成功回帖，缓存数分钟后会讨论主题内展示'.$msg;
     }
 
 }

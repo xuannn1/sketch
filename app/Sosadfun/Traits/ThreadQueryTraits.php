@@ -171,11 +171,14 @@ trait ThreadQueryTraits{
 
     public function find_thread_posts_with_query($thread, $query_id, $request_data)
     {
-        return Cache::remember('ThreadPosts.'.$thread->id.$query_id, 5, function () use($thread, $request_data) {
+        $time = 30;
+        if(!array_key_exists('withType',$request_data)&&!array_key_exists('withComponent',$request_data)&&!array_key_exists('withFolded',$request_data)&&!array_key_exists('userOnly',$request_data)&&!array_key_exists('withReplyTo',$request_data)&&!array_key_exists('inComponent',$request_data)&&!array_key_exists('ordered',$request_data)){$time=2;}
+
+        return Cache::remember('ThreadPosts.'.$thread->id.$query_id, $time, function () use($thread, $request_data) {
             $posts =  \App\Models\Post::where('thread_id',$thread->id)
             ->with('author.title','last_reply')
             ->withType(array_key_exists('withType',$request_data)? $request_data['withType']:'')//可以筛选显示比如只看post，只看comment，只看。。。
-            ->withComponent(array_key_exists('withType',$request_data)? $request_data['withType']:'')//可以选择是只看component，还是不看component只看post，还是全都看
+            ->withComponent(array_key_exists('withComponent',$request_data)? $request_data['withComponent']:'')//可以选择是只看component，还是不看component只看post，还是全都看
             ->withFolded(array_key_exists('withFolded',$request_data)? $request_data['withFolded']:'')//是否显示已折叠内容
             ->userOnly(array_key_exists('userOnly',$request_data)? $request_data['userOnly']:'')//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
             ->withReplyTo(array_key_exists('withReplyTo',$request_data)? $request_data['withReplyTo']:'')//可以只看用于回复某个回帖的

@@ -57,9 +57,22 @@ class ReCalculateData extends Command
 
         DB::table('users')
         ->join('user_infos','user_infos.user_id','=','users.id')
+        ->where('users.no_logging','=',1)
+        ->where('user_infos.no_logging_until', '=', null)
+        ->update(['users.no_logging'=>0]);
+
+        DB::table('users')
+        ->join('user_infos','user_infos.user_id','=','users.id')
         ->where('users.no_posting','=',1)
         ->where('user_infos.no_posting_until', '<', Carbon::now()->toDateTimeString())
         ->update(['users.no_posting'=>0]);
+
+        DB::table('users')
+        ->join('user_infos','user_infos.user_id','=','users.id')
+        ->where('users.no_posting','=',1)
+        ->where('user_infos.no_posting_until', '=', null)
+        ->update(['users.no_posting'=>0]);
+
 
         DB::statement('
             update user_infos

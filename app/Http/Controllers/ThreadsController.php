@@ -43,7 +43,9 @@ class threadsController extends Controller
     public function thread_index(Request $request)
     {
         $page = is_numeric($request->page)? $request->page:'1';
-        $threads = Cache::remember('thread_index_P'.$page.url('/'), 2, function () use($page) {
+        $time = 10;
+        if($page===1){$time=2;}
+        $threads = Cache::remember('thread_index_P'.$page.url('/'), $time, function () use($page) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
             ->inPublicChannel()
@@ -61,7 +63,7 @@ class threadsController extends Controller
     {
         $page = is_numeric($request->page)? $request->page:'1';
         $jinghua_tag = ConstantObjects::find_tag_by_name('精华');
-        $threads = Cache::remember('thread_jinghua_P'.$page.url('/'), 10, function () use($page, $jinghua_tag) {
+        $threads = Cache::remember('thread_jinghua_P'.$page.url('/'), 30, function () use($page, $jinghua_tag) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()//复杂的筛选
             ->inPublicChannel()
@@ -87,7 +89,10 @@ class threadsController extends Controller
         .'-ordered'.$request->ordered
         .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
-        $threads = Cache::remember($queryid, 2, function () use($request, $channel) {
+        $time = 30;
+        if(!array_key_exists('withTag',$request_data)&&!array_key_exists('ordered',$request_data)&&!array_key_exists('page',$request_data)){$time=2;}
+
+        $threads = Cache::remember($queryid, $time, function () use($request, $channel) {
             return $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
             ->inChannel($channel->id)
@@ -241,27 +246,35 @@ class threadsController extends Controller
     }
     public function showpost($id)
     {
-        $post = $this->findPost($id);
+        $url = Cache::remember('PostURL'.$id, 5, function () use($id) {
+            $post = $this->findPost($id);
+            if(!$post){return '/';}
+            $withFolded='';
+            $withComponent='';
+            if($post->fold_state){
+                $withFolded = 'include_folded';
+            }
+            if($post->type==='comment'){
+                $withComponent = 'include_comment';
+            }
+            $previousposts = Post::where('thread_id',$post->thread_id)
+            ->withComponent($withComponent)
+            ->withFolded($withFolded)
+            ->where('created_at', '<', $post->created_at)
+            ->count();
 
-        if(!$post){abort(404);}
+            $page = intdiv($previousposts, config('preference.posts_per_page'))+1;
+            $url = 'threads/'.$post->thread_id.'?page='.$page;
+            if($withFolded){
+                $url.='withFolded='.$withFolded;
+            }
+            if($withComponent){
+                $url.='withComponent='.$withComponent;
+            }
+            $url.='#post'.$post->id;
+            return $url;
+        });
 
-        $withFolded='';
-        $withComponent='';
-        if($post->fold_state){
-            $withFolded = 'include_folded';
-        }
-        if($post->type==='comment'){
-            $withComponent = 'include_comment';
-        }
-        $previousposts = Post::where('thread_id',$post->thread_id)
-        ->withComponent($withComponent)
-        ->withFolded($withFolded)
-        ->where('created_at', '<', $post->created_at)
-        ->count();
-
-        $page = intdiv($previousposts, config('preference.posts_per_page'))+1;
-        $url = 'threads/'.$post->thread_id.'?page='.$page.'&withFolded='.$withFolded.'&withComponent='.$withComponent.
-        '#post'.$post->id;
         return redirect($url);
     }
 
