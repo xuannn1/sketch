@@ -10,8 +10,9 @@
             <div class="content">
                 <div class="title">
                     <h1>发生了未知错误</h1>
-                    <h4>因为不确定的原因，发生了未知错误，可能是程序bug。</h4>
-                    <h5>如果你有时间和意愿，可以携带完整页面信息和操作过程前往<a href="https://sosad.fun/threads/16807">《bug楼》</a>反馈，非常感谢。</h5>
+                    <h4>因为不确定的原因，发生了未知错误。</h4>
+                    <h5>如果参数内含有“too many connection”字样，说明数据库连接过多（人多），这种情况静待流量高峰过去后刷新即可。</h5>
+                    <h5>如果是其他问题，可以携带完整页面信息和操作过程前往<a href="https://sosad.fun/threads/16807">《bug楼》</a>反馈，非常感谢。</h5>
                     <h6>详情/参数：{{ $exception->getMessage() }}</h6>
                 </div>
             </div>

@@ -71,7 +71,9 @@ class LoginController extends Controller
         // Customization: If client status is inactive (0) return failed_status error.
         if($user){
             if ($user->no_logging == 1) {
-                return $this->sendFailedLoginResponse($request, '你的账户被禁止登陆');
+                $info = CacheUser::info($user->id);
+                $msg = $info->no_logging_until&&$info->no_logging_until>Carbon::now() ? $info->no_logging_until:'';
+                abort(495,$msg);
             }
         }
 

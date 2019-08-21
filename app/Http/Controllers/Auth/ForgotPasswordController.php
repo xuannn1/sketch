@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use DB;
 use Carbon;
+use Cache;
 
 class ForgotPasswordController extends Controller
 {
@@ -38,6 +39,15 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
+        if(Cache::has('reset-password-request-limit-' . request()->ip())){
+            return back()->with('danger','本ip('.request()->ip().')已于10分钟内提交过重置密码请求。');
+        }
+        Cache::put('reset-password-request-limit-' . request()->ip(), true, 10);
+
+        if(Cache::has('reset-password-limit-' . request()->ip())){
+            return back()->with('danger','本ip('.request()->ip().')已于1小时内成功重置密码。');
+        }
+
         $this->validateEmail($request);
 
         // We will send the password reset link to this user. Once we have attempted
@@ -63,6 +73,8 @@ class ForgotPasswordController extends Controller
         $response = $this->broker()->sendResetLink(
             $request->only('email')
         );
+
+        Cache::put('reset-password-limit-' . request()->ip(), true, 60);
 
         return $response == Password::RESET_LINK_SENT
         ? $this->sendResetLinkResponse($response)

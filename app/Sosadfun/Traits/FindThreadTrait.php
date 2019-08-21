@@ -10,7 +10,7 @@ trait FindThreadTrait{
         return Cache::remember('thread.'.$id, 10, function () use($id){
             $thread = \App\Models\Thread::find($id);
             if($thread){
-                $thread->load('author.title');
+                $thread->load('tags', 'author.title');
             }
             return $thread;
         });

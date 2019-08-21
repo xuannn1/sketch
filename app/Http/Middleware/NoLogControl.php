@@ -5,6 +5,7 @@ use Auth;
 use CU;
 use Illuminate\Support\Facades\Cache;
 use Carbon;
+use CacheUser;
 
 class NoLogControl
 {
@@ -19,8 +20,10 @@ class NoLogControl
     {
         if(Auth::check()) {
             if(Auth::user()->no_logging){
+                $info = CacheUser::info(Auth::id());
+                $msg = $info->no_logging_until&&$info->no_logging_until>Carbon::now() ? $info->no_logging_until->setTimeZone('Asia/Shanghai'):'';
                 Auth::logout();
-                return redirect('/')->with('warning','你被禁止登陆');
+                abort(495,$msg);
             }
         }
         return $next($request);

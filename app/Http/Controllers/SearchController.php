@@ -27,9 +27,9 @@ class SearchController extends Controller
             'search' => 'required|string|min:1',
         ]);
 
-        $search_result = Cache::remember('search_index.'.url('/').$request->search,120,function() use($request){
-            $threads = $this->find_threads_with_pattern($request,20);
-            $users = $this->find_users_with_pattern($request,40);
+        $search_result = Cache::remember('search_index.'.url('/').$request->search,1200,function() use($request){
+            $threads = $this->find_threads_with_pattern($request,40);
+            $users = $this->find_users_with_pattern($request,80);
             $tags = $this->find_tags_with_pattern($request,40);
             $faqs = $this->find_faqs_with_pattern($request);
             return [
@@ -54,7 +54,7 @@ class SearchController extends Controller
         ]);
         $pattern = $request->search;
         $page = $request->page;
-        $users = $this->find_users_with_pattern($request, 40);
+        $users = $this->find_users_with_pattern($request, 200);
 
         return view('search.search_users', compact('users'))->with('pattern', $request->search);
     }
@@ -76,11 +76,11 @@ class SearchController extends Controller
         $validatedData = $request->validate([
             'search' => 'required|string|min:1|max:6',
         ]);
-        $simplethreads = $this->find_threads_with_pattern($request, 40);
+        $simplethreads = $this->find_threads_with_pattern($request, 60);
         return view('search.search_threads', compact('simplethreads'))->with('pattern', $request->search);
     }
 
-    public function find_threads_with_pattern($request, $paginate = 5)
+    public function find_threads_with_pattern($request, $paginate = 20)
     {
         return \App\Models\Thread::with('tags','author')
         ->where('title','like','%'.$request->search.'%')
@@ -89,14 +89,14 @@ class SearchController extends Controller
         ->appends($request->only('page','search'));
     }
 
-    public function find_users_with_pattern($request, $paginate = 5)
+    public function find_users_with_pattern($request, $paginate = 40)
     {
         return \App\Models\User::where('name','like','%'.$request->search.'%')
         ->paginate($paginate)
         ->appends($request->only('page','search'));
     }
 
-    public function find_tags_with_pattern($request, $paginate = 5)
+    public function find_tags_with_pattern($request, $paginate = 40)
     {
         return \App\Models\Tag::where('tag_name','like','%'.$request->search.'%')
         ->orWhere('tag_explanation', 'like', '%'.$request->search.'%')

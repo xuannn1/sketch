@@ -12,7 +12,8 @@ trait ThreadObjectTraits{
     {
         return Cache::remember('threadProfile.'.$id, 10, function () use($id){
             $thread = $this->findThread($id);
-            $thread->load('tags', 'author.title', 'last_post', 'last_component');
+            if(!$thread){return;}
+            $thread->load('last_post', 'last_component');
             if($thread->channel()->type==="list"&&$thread->last_component_id>0&&$thread->last_component){
                 $thread->last_component->load('review.reviewee');
             }
