@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
+use Carbon;
+
 class ResetPasswordController extends Controller
 {
     /*
@@ -45,9 +47,11 @@ class ResetPasswordController extends Controller
             'activated' => true,
         ])->save();
         $info = $user->info;
-        $info->update([
-            'activation_token' => null,
-        ]);
+        $info->activation_token=null;
+        if(!$info->email_verified_at){
+            $info->email_verified_at = Carbon::now();
+        }
+        $info->save;
 
         $this->guard()->login($user);
     }

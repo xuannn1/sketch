@@ -156,14 +156,17 @@ class RegisterController extends Controller
     public function resend_email_confirmation(){
         $user = CacheUser::Auser();
         $info = CacheUser::Ainfo();
-        $email = Auth::user()->email;
+        if(!$user||!$info){abort(404);}
+
+        $email = $user->email;
 
         $email_check = PasswordReset::where('email','=',$user->email)->latest()->first();
 
-        if ($email_check&&$email_check->created_at>Carbon::now()->subDay(1)){
-            return back()->with('warning', '一天内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，因此不再重复发送。');
+        if ($email_check&&$email_check->created_at>Carbon::now()->subHour(1)){
+            return back()->with('warning', '1小时内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，暂不再重复发送。');
         }
         DB::table('password_resets')->where('email','=',$user->email)->delete();
+
         if(!$info->activation_token){
             $info->activation_token=str_random(40);
             $info->save();
@@ -173,7 +176,7 @@ class RegisterController extends Controller
 
         DB::table('password_resets')->insert([
             'email' => $user->email,
-            'token' => bcrypt($user->activation_token),
+            'token' => bcrypt($info->activation_token),
             'created_at' => Carbon::now(),
         ]);
 

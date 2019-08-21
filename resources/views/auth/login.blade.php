@@ -30,7 +30,7 @@
                 </form>
                 <br>
                 <div class="">
-                    <u><a href="{{ route('password.request') }}">忘记密码/重新激活</a></u>
+                    <u><a href="{{ route('password.request') }}">忘记密码</a></u>
 
                 </div>
                 <hr>

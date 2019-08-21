@@ -103,7 +103,7 @@ class UsersController extends Controller
 
         Cache::put('email-modification-limit-' . request()->ip(), true, Carbon::now()->addDay(1));
 
-        if($user->activated){
+        if($info->email_verified_at){
             $this->sendChangeEmailRecordTo($user, $record, true);
             return redirect()->route('user.edit', Auth::id())->with("success", "重置邮箱请求已登记，请查收已验证邮箱，根据指示完成重置操作");
         }else{
@@ -153,7 +153,9 @@ class UsersController extends Controller
             'email_changed_at' => Carbon::now(),
         ]);
 
-        return redirect()->route('user.edit', Auth::id())->with("success", "邮箱已重置");
+        session()->flash('success', '邮箱已重置');
+
+        return redirect('/');
 
     }
 

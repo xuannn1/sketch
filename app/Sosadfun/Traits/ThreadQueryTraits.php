@@ -47,7 +47,7 @@ trait ThreadQueryTraits{
         return $queryid;
     }
 
-    public function sanitize_request_data($request)
+    public function sanitize_thread_request_data($request)
     {
         $request_data = $request->only('inChannel', 'isPublic', 'inPublicChannel',  'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered', 'page');
         if(!Auth::check()||!Auth::user()->isAdmin()){
@@ -59,9 +59,16 @@ trait ThreadQueryTraits{
         }
         return $request_data;
     }
+
+    public function sanitize_book_request_data($request)
+    {
+        $request_data = $request->only('inChannel', 'isPublic', 'inPublicChannel',  'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered', 'page');
+        return $request_data;
+    }
+
     public function find_threads_with_query($query_id, $request_data)
     {
-        return Cache::remember('ThreadQ.'.$query_id, 5, function () use($request_data) {
+        return Cache::remember('ThreadQ.'.$query_id, 30, function () use($request_data) {
             return Thread::with('author', 'tags', 'last_component', 'last_post')
             ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')
             ->isPublic(array_key_exists('isPublic',$request_data)? $request_data['isPublic']:'')
@@ -78,7 +85,9 @@ trait ThreadQueryTraits{
 
     public function find_books_with_query($query_id, $request_data)
     {
-        return Cache::remember('BookQ.'.$query_id, 5, function () use($request_data) {
+        $time = 60;
+        if(!array_key_exists('withTag',$request_data)&&!array_key_exists('excludeTag',$request_data)&&!array_key_exists('ordered',$request_data)&&!array_key_exists('page',$request_data)){$time=5;}
+        return Cache::remember('BookQ.'.$query_id, $time, function () use($request_data) {
             $threads = Thread::with('author', 'tags', 'last_component', 'last_post')
             ->isPublic()
             ->withType('book')
@@ -160,10 +169,10 @@ trait ThreadQueryTraits{
         return $queryid;
     }
 
-    public function find_thread_posts_with_query($thread_id, $query_id, $request_data)
+    public function find_thread_posts_with_query($thread, $query_id, $request_data)
     {
-        return Cache::remember('ThreadPosts.'.$thread_id.$query_id, 5, function () use($thread_id, $request_data) {
-            return \App\Models\Post::where('thread_id',$thread_id)
+        return Cache::remember('ThreadPosts.'.$thread->id.$query_id, 5, function () use($thread, $request_data) {
+            $posts =  \App\Models\Post::where('thread_id',$thread->id)
             ->with('author.title','last_reply')
             ->withType(array_key_exists('withType',$request_data)? $request_data['withType']:'')//可以筛选显示比如只看post，只看comment，只看。。。
             ->withComponent(array_key_exists('withType',$request_data)? $request_data['withType']:'')//可以选择是只看component，还是不看component只看post，还是全都看
@@ -174,6 +183,14 @@ trait ThreadQueryTraits{
             ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'')//排序方式
             ->paginate(config('preference.posts_per_page'))
             ->appends($request_data);
+            $channel = $thread->channel();
+            if($channel->type==='book'){
+                $posts->load('chapter');
+            }
+            if($channel->type==='list'){
+                $posts->load('review.reviewee');
+            }
+            return $posts;
         });
     }
 }

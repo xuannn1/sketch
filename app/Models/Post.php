@@ -289,7 +289,7 @@ class Post extends Model
 
     public function newest_replies() // 这个post里面，回复它的postcomment中，最新的5个，全部内容
     {
-        return Post::with('author.title')
+        return Post::with('author.title','last_reply')
         ->where('reply_to_id', $this->id)
         ->where('fold_state', 0) // 必须没有被作者折叠
         ->orderBy('created_at', 'desc')

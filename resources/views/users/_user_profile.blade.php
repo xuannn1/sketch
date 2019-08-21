@@ -7,6 +7,11 @@
     @if($user->title&&$user->title->name)
         <span class="maintitle title-{{$user->title->style_id}}">{{ $user->title->name }}</span>
     @endif
+    @if($user->activated)
+    <span class="badge">已激活</span>
+    @else
+    <span class="badge">未激活</span>
+    @endif
     @if($user->no_posting)
     <span class="badge bianyuan-tag badge-tag">禁言中</span>
     @endif

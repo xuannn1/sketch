@@ -31,7 +31,7 @@ class threadsController extends Controller
 
     public function index(Request $request)
     {
-        $request_data = $this->sanitize_request_data($request);
+        $request_data = $this->sanitize_thread_request_data($request);
 
         $query_id = $this->process_thread_query_id($request_data);
 
@@ -303,7 +303,7 @@ class threadsController extends Controller
 
         $query_id = $this->process_thread_post_query_id($request_data);
 
-        $posts = $this->find_thread_posts_with_query($id, $query_id, $request_data);
+        $posts = $this->find_thread_posts_with_query($thread, $query_id, $request_data);
 
         $withReplyTo = '';
         if($request->withReplyTo>0){
@@ -320,15 +320,9 @@ class threadsController extends Controller
             }
         }
 
-        $channel = $thread->channel();
-        if($channel->type==='book'){
-            $posts->load('chapter');
-        }
-        if($channel->type==='list'){
-            $posts->load('review.reviewee');
-        }
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
+        $channel = $thread->channel();
         $selector = config('selectors')[$channel->type.'_filter'];
 
         return view('threads.show', compact('show_config', 'thread', 'posts', 'user', 'info', 'selector', 'withReplyTo','inComponent'));

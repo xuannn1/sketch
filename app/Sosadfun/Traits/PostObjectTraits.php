@@ -7,7 +7,7 @@ trait PostObjectTraits{
 
     public function findPost($id)
     {
-        return Cache::remember('post.'.$id, 5, function () use($id){
+        return Cache::remember('post.'.$id, 10, function () use($id){
              $post = \App\Models\Post::find($id);
              if($post){$post->load('author.title');}
              return $post;
@@ -16,7 +16,7 @@ trait PostObjectTraits{
 
     public function postProfile($id)
     {
-        return Cache::remember('postProfile.'.$id, 5, function () use($id) {
+        return Cache::remember('postProfile.'.$id, 10, function () use($id) {
             $post = \App\Models\Post::find($id);
             if(!$post){
                 return;

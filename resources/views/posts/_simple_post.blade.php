@@ -7,9 +7,10 @@
 
     <!-- 作者信息 -->
     <span>
+
         @if($post->is_anonymous)
         {{ $post->majia ?? '匿名咸鱼' }}
-        @else
+        @elseif($show_author)
         {{ $post->author->name }}
         @endif
     </span>

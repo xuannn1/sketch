@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Carbon;
 use DB;
+use Log;
 
 class ClearRecords extends Command
 {

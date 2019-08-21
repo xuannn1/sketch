@@ -13,8 +13,6 @@
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="token" value="{{ $token }}">
 
-                        <h6>如果遇到“密码重置令牌错误”，说明你发送了不止一封重置密码/重激活邮件，而安全起见，新发送的邮件会使旧邮件失效。遇到这种情况，不要惊慌！这说明邮件是<code>可以</code>发送过去的！只要你仔细查找你的邮件箱，找到时间<code>最新</code>的一封信就可以了。如果还不能成功，请你耐心等待冷冻期过去后后，重新点【一次】重置健。然后选择在你点选重置键之后收到的<code>新鲜邮件</code>进行重置。</h6>
-
                         <div class="form-group">
                             <label class="col-md-4 control-label">邮箱地址：</label>
                             <div class="col-md-6">

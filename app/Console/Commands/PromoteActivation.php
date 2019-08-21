@@ -7,6 +7,7 @@ use DB;
 use Carbon;
 use Cache;
 use App\Models\User;
+use Log;
 
 class PromoteActivation extends Command
 {
@@ -47,7 +48,7 @@ class PromoteActivation extends Command
         ->where('users.activated','=',1)
         ->orderBy('users.id','desc')
         ->select('users.id')
-        ->take(200)
+        ->take(1000)
         ->pluck('id')
         ->toArray();
 

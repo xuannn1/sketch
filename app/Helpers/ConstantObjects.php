@@ -69,21 +69,21 @@ class ConstantObjects
 
     public static function tongren_yuanzhu_tags()
     {
-        return Cache::remember('TongrenYuanzhuTags', 10, function (){
+        return Cache::remember('TongrenYuanzhuTags', 30, function (){
             return \App\Models\Tag::where('tag_type', '同人原著')->get();
         });
     }
 
     public static function tongren_CP_tags()
     {
-        return Cache::remember('TongrenCPTags', 10, function (){
+        return Cache::remember('TongrenCPTags', 30, function (){
             return \App\Models\Tag::where('tag_type', '同人CP')->get();
         });
     }
 
     public static function book_custom_tags()
     {
-        return Cache::remember('bookCustomTags', 10, function (){
+        return Cache::remember('bookCustomTags', 30, function (){
             return \App\Models\Tag::whereIn('tag_type', config('tag.custom_none_tongren_none_book_tag_types'))->where('channel_id','<=',2)->get();
         });
     }
@@ -144,28 +144,28 @@ class ConstantObjects
 
     public static function find_tag_by_name($tagname)
     {
-        return Cache::remember('tagname-'.$tagname, 10, function() use($tagname) {
+        return Cache::remember('tagname-'.$tagname, 30, function() use($tagname) {
             return $tag = \App\Models\Tag::where('tag_name', $tagname)->first();
         });
     }
 
     public static function find_tag_by_id($tagid)
     {
-        return Cache::remember('tagid-'.$tagid, 10, function() use($tagid) {
+        return Cache::remember('tagid-'.$tagid, 30, function() use($tagid) {
             return \App\Models\Tag::where('id', $tagid)->first();
         });
     }
 
     public static function find_tags_by_type($tagtype)
     {
-        return Cache::remember('tagtype-'.$tagtype, 10, function() use($tagtype) {
+        return Cache::remember('tagtype-'.$tagtype, 30, function() use($tagtype) {
             return \App\Models\Tag::where('tag_type', $tagtype)->get();
         });
     }
 
     public static function findTagProfile($tagid)
     {
-        return Cache::remember('tagProfile-'.$tagid, 10, function() use($tagid) {
+        return Cache::remember('tagProfile-'.$tagid, 30, function() use($tagid) {
             $tag = \App\Models\Tag::where('id', $tagid)->first();
             if($tag){
                 $tag->load('parent', 'children');

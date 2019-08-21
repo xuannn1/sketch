@@ -4,6 +4,7 @@ use Illuminate\Console\Command;
 use DB;
 use Carbon;
 use App\Models\WebStat;
+use Log;
 class CountWebStat extends Command
 {
     /**

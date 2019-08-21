@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use DB;
 use Carbon;
 use Cache;
+use Log;
 
 class RefreshToken extends Command
 {

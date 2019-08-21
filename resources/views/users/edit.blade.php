@@ -21,10 +21,14 @@
                     <label for="old-email">邮箱：</label>
                     <h6 class="grayout"><a href="{{route('thread.show', 14361)}}">（戳我看《万能的邮箱激活验证/修改/使用指南》）</a> </h6>
                     <input type="text" name="email" class="form-control" value="{{ $user->email }}" disabled>
-                    @if($user->activated)
-                    <p><span class="glyphicon glyphicon-ok">该邮箱已验证</span></p>
+                    @if($info->email_verified_at)
+                    <p><span class="glyphicon glyphicon-ok">该邮箱已验证，验证于{{$info->email_verified_at->setTimeZone('Asia/Shanghai')}}</span></p>
                     @else
-                    <p><span class="glyphicon glyphicon-remove"></span><span style="color:#d66666">该邮箱尚未验证，请尽快验证。未验证邮箱的账户会限制一部分使用功能。</span></p>
+                    @if($user->activated)
+                    <p><span class="glyphicon glyphicon-remove"></span><span style="color:#d66666">因历史原因，本账户虽已激活，账户邮箱的验证信息缺失。为了您的账户安全，建议您尽快验证邮箱。未验证邮箱的账户存在不小的安全隐患。</span></p>
+                    @else
+                    <p><span class="glyphicon glyphicon-remove"></span><span style="color:#d66666">该邮箱尚未验证，账户未激活。请尽快验证邮箱完成激活程序。未验证邮箱激活的账户会限制一部分使用功能，也存在安全隐患。</span></p>
+                    @endif
                     <h4>验证邮箱/激活账户</h4>
 
                     <a href="{{ route('email_confirmation.send') }}" class="btn btn-lg btn-danger sosad-button">向该邮箱发送验证邮件</a>

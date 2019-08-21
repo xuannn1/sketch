@@ -226,7 +226,7 @@ class BooksController extends Controller
     {
         $tags = ConstantObjects::organizeBasicBookTags();
 
-        $request_data = $this->sanitize_request_data($request);
+        $request_data = $this->sanitize_book_request_data($request);
 
         $query_id = $this->process_thread_query_id($request_data);
 
