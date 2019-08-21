@@ -27,7 +27,7 @@ class SearchController extends Controller
             'search' => 'required|string|min:1',
         ]);
 
-        $search_result = Cache::remember('search_index.'.url('/').$request->search,30,function() use($request){
+        $search_result = Cache::remember('search_index.'.url('/').$request->search,120,function() use($request){
             $threads = $this->find_threads_with_pattern($request,20);
             $users = $this->find_users_with_pattern($request,40);
             $tags = $this->find_tags_with_pattern($request,40);

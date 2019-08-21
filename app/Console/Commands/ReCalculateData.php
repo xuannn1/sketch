@@ -50,25 +50,27 @@ class ReCalculateData extends Command
 
         DB::table('users')
         ->join('user_infos','user_infos.user_id','=','users.id')
+        ->where('users.no_logging','=',1)
         ->where('user_infos.no_logging_until', '<', Carbon::now()->toDateTimeString())
         ->update(['users.no_logging'=>0]);
 
         DB::table('users')
         ->join('user_infos','user_infos.user_id','=','users.id')
+        ->where('users.no_posting','=',1)
         ->where('user_infos.no_posting_until', '<', Carbon::now()->toDateTimeString())
         ->update(['users.no_posting'=>0]);
 
         DB::statement('
             update user_infos
             set follower_count =
-            (select count(id) from followers
+            (select count(followers.id) from followers
             where followers.user_id = user_infos.user_id)
         ');
 
         DB::statement('
             update user_infos
             set following_count =
-            (select count(id) from followers
+            (select count(followers.id) from followers
             where followers.follower_id = user_infos.user_id)
         ');
 
@@ -80,10 +82,13 @@ class ReCalculateData extends Command
         ');
 
         DB::statement('
-            update user_infos
-            set invitee_count =
-            (select count(id) from user_infos as infos
-            where user_infos.user_id = infos.invitor_id)
+            UPDATE user_infos AS u1, (
+            Select user_id,
+            ( select count(invitor_id) from    user_infos a where a.user_id = b.invitor_id) as invitee_count
+            From user_infos b
+            ) AS p
+            SET u1.invitee_count = p.invitee_count
+            WHERE u1.user_id = p.user_id and p.invitee_count>0
         ');
 
 

@@ -299,17 +299,12 @@ class threadsController extends Controller
         $thread->recordCount('view', 'thread');
         $thread->recordViewHistory();
 
-        $posts = \App\Models\Post::where('thread_id',$id)
-        ->with('author.title','last_reply')
-        ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
-        ->withComponent($request->withComponent)//可以选择是只看component，还是不看component只看post，还是全都看
-        ->withFolded($request->withFolded)//是否显示已折叠内容
-        ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
-        ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
-        ->inComponent($request->inComponent)//可以只看从这个贴发散的全部讨论
-        ->ordered($request->ordered)//排序方式
-        ->paginate(config('preference.posts_per_page'))
-        ->appends($request->only('withType', 'withComponent', 'userOnly', 'withReplyTo', 'ordered', 'page','withFolded','inComponent'));
+        $request_data = $this->sanitize_thread_post_request_data($request);
+
+        $query_id = $this->process_thread_post_query_id($request_data);
+
+        $posts = $this->find_thread_posts_with_query($id, $query_id, $request_data);
+
         $withReplyTo = '';
         if($request->withReplyTo>0){
             $withReplyTo = $this->findPost($request->withReplyTo);

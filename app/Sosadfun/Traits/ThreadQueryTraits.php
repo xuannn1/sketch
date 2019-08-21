@@ -107,7 +107,7 @@ trait ThreadQueryTraits{
         $withTag='';
         $inChannel='';
         $excludeTag='';
-        
+
         if($request->channel_id){
             $inChannel=StringProcess::concatenate_channels($request->channel_id);
         }
@@ -140,5 +140,40 @@ trait ThreadQueryTraits{
         }
 
         return $request_data;
+    }
+
+    public function sanitize_thread_post_request_data($request)
+    {
+        $request_data = $request->only('withType', 'withComponent', 'withFolded', 'userOnly', 'withReplyTo', 'inComponent', 'ordered', 'page');
+        return $request_data;
+    }
+
+    public function process_thread_post_query_id($request_data)
+    {
+        $queryid = url('/');
+        $selectors = ['withType', 'withComponent', 'withFolded', 'userOnly', 'withReplyTo', 'inComponent', 'ordered', 'page'];
+        foreach($selectors as $selector){
+            if(array_key_exists($selector, $request_data)){
+                $queryid.='-'.$selector.':'.$request_data[$selector];
+            }
+        }
+        return $queryid;
+    }
+
+    public function find_thread_posts_with_query($thread_id, $query_id, $request_data)
+    {
+        return Cache::remember('ThreadPosts.'.$thread_id.$query_id, 5, function () use($thread_id, $request_data) {
+            return \App\Models\Post::where('thread_id',$thread_id)
+            ->with('author.title','last_reply')
+            ->withType(array_key_exists('withType',$request_data)? $request_data['withType']:'')//可以筛选显示比如只看post，只看comment，只看。。。
+            ->withComponent(array_key_exists('withType',$request_data)? $request_data['withType']:'')//可以选择是只看component，还是不看component只看post，还是全都看
+            ->withFolded(array_key_exists('withFolded',$request_data)? $request_data['withFolded']:'')//是否显示已折叠内容
+            ->userOnly(array_key_exists('userOnly',$request_data)? $request_data['userOnly']:'')//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
+            ->withReplyTo(array_key_exists('withReplyTo',$request_data)? $request_data['withReplyTo']:'')//可以只看用于回复某个回帖的
+            ->inComponent(array_key_exists('inComponent',$request_data)? $request_data['inComponent']:'')//可以只看从这个贴发散的全部讨论
+            ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'')//排序方式
+            ->paginate(config('preference.posts_per_page'))
+            ->appends($request_data);
+        });
     }
 }
