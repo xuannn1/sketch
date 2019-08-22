@@ -107,8 +107,9 @@ class PostsController extends Controller
                 }
             }
         }
-
-        $post->recordCount('view', 'post');
+        if($post->type!='post'&&$post->type!='comment'){
+            $post->recordCount('view', 'post');
+        }
 
         return view('posts.show',compact('post','thread','user','info'));
     }
