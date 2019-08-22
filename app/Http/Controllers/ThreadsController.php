@@ -199,7 +199,7 @@ class threadsController extends Controller
             $info->update(['default_box_id'=>$thread->id]);
         }
 
-        Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(10));
+        Cache::put('created-thread-' . $user->id, true, 10);
 
         $thread = $this->threadProfile($thread->id);
 

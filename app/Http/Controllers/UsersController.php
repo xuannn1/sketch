@@ -101,7 +101,7 @@ class UsersController extends Controller
 
         // return view('auth.change_email_confirmed',compact('user','record'));
 
-        Cache::put('email-modification-limit-' . request()->ip(), true, Carbon::now()->addDay(1));
+        Cache::put('email-modification-limit-' . request()->ip(), true, 1440);
 
         if($info->email_verified_at){
             $this->sendChangeEmailRecordTo($user, $record, true);

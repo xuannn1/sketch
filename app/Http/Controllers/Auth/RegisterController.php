@@ -126,7 +126,7 @@ class RegisterController extends Controller
             return redirect('/')->with('danger', '你的IP今天已经成功注册，请尝试直接登陆你已注册的账户。');
         }
         $user = $this->create($request->all());
-        Cache::put('registration-limit-' . request()->ip(), true, Carbon::now()->addDay(1));
+        Cache::put('registration-limit-' . request()->ip(), true, 1440);
 
         event(new Registered($user));
 

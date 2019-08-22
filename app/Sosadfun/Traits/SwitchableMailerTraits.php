@@ -14,7 +14,7 @@ trait SwitchableMailerTraits{
     {
         $count = Cache::get('switchable-mailer-count')?? 0;
         $tail = $count % env('SWITCHABLE_MAIL_SERVERS','1');
-        Cache::put('switchable-mailer-count',$count+1,Carbon::now()->addMinutes(30));
+        Cache::put('switchable-mailer-count',$count+1, 5);
         return([
             'username' => 'MAIL_USERNAME'.(string)$tail,
             'password' => 'MAIL_PASSWORD'.(string)$tail,

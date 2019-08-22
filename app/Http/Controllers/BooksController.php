@@ -64,7 +64,7 @@ class BooksController extends Controller
 
         $thread->user->reward("regular_book");
 
-        Cache::put('created-thread-' . $user->id, true, Carbon::now()->addMinutes(10));
+        Cache::put('created-thread-' . $user->id, true, 10);
 
         return redirect()->route('thread.show', $thread->id)->with("success", "你已成功发布文章");
     }

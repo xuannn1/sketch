@@ -102,7 +102,7 @@ class VoteController extends Controller
 
         $vote = $form->generateVote($voted_model);
 
-        Cache::put('VoteRecord'.Auth::id().$this->findVoteRecord($form->all()),1,Carbon::now()->addDay(1));
+        Cache::put('VoteRecord'.Auth::id().$this->findVoteRecord($form->all()),1,1440);
 
         return [
             'success' => '已成功评票'
