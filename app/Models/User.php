@@ -255,7 +255,7 @@ class User extends Authenticatable
 
     public function isOnline()
     {
-        return Cache::has('usr-on-' . $this->id);
+        return Cache::has('usr-on-'.$this->id);
     }
 
     public function wearTitle($title_id)
