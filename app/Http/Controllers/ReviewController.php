@@ -49,7 +49,7 @@ class ReviewController extends Controller
 
         event(new NewPost($post));
 
-        $this->refreshThread($thread->id);
+        $this->clearThread($thread->id);
 
         if($post->post_check('long_comment')){
             $post->user->reward('long_post');
@@ -72,8 +72,8 @@ class ReviewController extends Controller
         $post = $form->updateReview($post, $thread);
 
         $thread->recalculate_characters();
-        $this->refreshPost($id);
-        $this->refreshThread($thread->id);
+        $this->clearPost($id);
+        $this->clearThread($thread->id);
 
         return redirect()->route('post.show', $id)->with('success','已经成功更新书评');
     }
@@ -98,8 +98,8 @@ class ReviewController extends Controller
         $review = Review::on('mysql::write')->find($post->id);
 
         $thread->recalculate_characters();
-        $this->refreshThread($thread->id);
-        $this->refreshPost($post->id);
+        $this->clearThread($thread->id);
+        $this->clearPost($post->id);
 
         return view('reviews.edit', compact('review','post','thread'));
     }

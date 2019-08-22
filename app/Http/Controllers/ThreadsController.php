@@ -238,7 +238,7 @@ class threadsController extends Controller
             $thread->keep_only_admin_tags();
             $thread->tags()->syncWithoutDetaching($thread->tags_validate(array($form->tag)));
 
-            $this->refreshThread($thread->id);
+            $this->clearThread($thread->id);
             return redirect()->route('thread.show', $thread->id)->with("success", "你已成功修改主题");
         }else{
             abort(403);
@@ -266,10 +266,10 @@ class threadsController extends Controller
             $page = intdiv($previousposts, config('preference.posts_per_page'))+1;
             $url = 'threads/'.$post->thread_id.'?page='.$page;
             if($withFolded){
-                $url.='withFolded='.$withFolded;
+                $url.='&withFolded='.$withFolded;
             }
             if($withComponent){
-                $url.='withComponent='.$withComponent;
+                $url.='&withComponent='.$withComponent;
             }
             $url.='#post'.$post->id;
             return $url;

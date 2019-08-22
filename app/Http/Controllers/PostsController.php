@@ -84,7 +84,7 @@ class PostsController extends Controller
         if(($thread->is_locked||!$thread->channel()->allow_edit||$post->fold_state>0)&&(!Auth::user()->isAdmin())){abort(403);}
 
         $form->updatePost($post);
-        $this->refreshPost($post->id);
+        $this->clearPost($post->id);
         return redirect()->route('thread.showpost', $post->id)->with('success', '你已成功修改帖子');
     }
 
@@ -127,7 +127,7 @@ class PostsController extends Controller
             if($chapter){
                 $chapter->delete();
                 $thread->reorder_chapters();
-                $this->refreshThread($thread->id);
+                $this->clearThread($thread->id);
             }
         }
         if($post->type==='review'){
@@ -138,11 +138,11 @@ class PostsController extends Controller
             }
             if($review){
                 $review->delete();
-                $this->refreshThread($thread->id);
+                $this->clearThread($thread->id);
             }
         }
         $post->delete();
-        $this->refreshPost($id);
+        $this->clearPost($id);
         return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
     }
     public function turn_to_post($id)
@@ -156,20 +156,20 @@ class PostsController extends Controller
             if($chapter){
                 $chapter->delete();
                 $thread->reorder_chapters();
-                $this->refreshThread($thread->id);
+                $this->clearThread($thread->id);
             }
         }
         if($post->type==='review'){
             $review = $post->review;
             if($review){
                 $review->delete();
-                $this->refreshThread($thread->id);
+                $this->clearThread($thread->id);
             }
         }
         $post->type='post';
         $post->edited_at = Carbon::now();
         $post->save();
-        $this->refreshPost($post->id);
+        $this->clearPost($post->id);
         return redirect()->route('post.show',$post->id)->with('success','已经成功转化成普通回帖');
     }
 
@@ -182,7 +182,7 @@ class PostsController extends Controller
         if($thread->is_locked||$thread->channel()->type!='box'||$thread->user_id!=Auth::id()||Auth::user()->no_posting){abort(403);}
 
         $post->delete();
-        $this->refreshPost($id);
+        $this->clearPost($id);
         return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
     }
     public function fold_by_owner($id)
@@ -198,7 +198,7 @@ class PostsController extends Controller
 
         $post->update(['fold_state'=>2]);
         if($post->reply_to_id>0){
-            $this->refreshPost($post->reply_to_id);
+            $this->clearPost($post->reply_to_id);
         }
         return redirect()->route('thread.showpost', $post->id)->with("success","已经折叠该回帖");
     }

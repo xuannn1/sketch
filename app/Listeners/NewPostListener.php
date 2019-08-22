@@ -60,7 +60,7 @@ class NewPostListener
                 }
                 $thread->check_bianyuan();
 
-                $this->refreshThread($thread->id);
+                $this->clearThread($thread->id);
             }else{
                 $thread->reply_count+=1;
             }

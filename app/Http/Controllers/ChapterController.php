@@ -1,4 +1,4 @@
-<?php
+clearThread<?php
 
 namespace App\Http\Controllers;
 
@@ -45,7 +45,7 @@ class ChapterController extends Controller
         }else{
             $post->user->reward("short_chapter");
         }
-        $this->refreshThread($id);
+        $this->clearThread($id);
 
         return redirect()->route('post.show', $post->id)->with('success', '你已成功发布章节');
     }
@@ -64,8 +64,8 @@ class ChapterController extends Controller
 
         $post = $form->updateChapter($post, $thread);
         $thread->recalculate_characters();
-        $this->refreshThread($thread->id);
-        $this->refreshPost($post->id);
+        $this->clearThread($thread->id);
+        $this->clearPost($post->id);
 
         return redirect()->route('post.show', $id)->with('success','已经成功更新章节');
 
@@ -92,8 +92,8 @@ class ChapterController extends Controller
 
         $thread->recalculate_characters();
         $thread->reorder_chapters();
-        $this->refreshThread($thread->id);
-        $this->refreshPost($post->id);
+        $this->clearThread($thread->id);
+        $this->clearPost($post->id);
         $chapter = Chapter::on('mysql::write')->find($post->id);
 
         return view('chapters.edit', compact('chapter','post','thread'));

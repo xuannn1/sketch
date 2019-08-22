@@ -12,10 +12,9 @@ trait CollectionObjectTraits{
         });
     }
 
-    public function refreshCollectionGroups($id)
+    public function clearCollectionGroups($id)
     {
         Cache::forget('collectionGroups.'.$id);
-        return $this->findCollectionGroups($id);
     }
 
     public function checkCollectedOrNot($user_id, $thread_id)
@@ -47,9 +46,8 @@ trait CollectionObjectTraits{
         });
     }
 
-    public function refreshCollectionIndex($id, $group)
+    public function clearCollectionIndex($id, $group)
     {
         Cache::forget('collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.1');
-        return $this->findCollectionIndex($id, $group, 1);
     }
 }

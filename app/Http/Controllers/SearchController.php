@@ -27,10 +27,10 @@ class SearchController extends Controller
             'search' => 'required|string|min:1',
         ]);
 
-        $search_result = Cache::remember('search_index.'.url('/').$request->search,1200,function() use($request){
-            $threads = $this->find_threads_with_pattern($request,40);
-            $users = $this->find_users_with_pattern($request,80);
-            $tags = $this->find_tags_with_pattern($request,40);
+        $search_result = Cache::remember('search-index-with-pattern-.'.url('/').$request->search,60,function() use($request){
+            $threads = $this->find_threads_with_pattern($request);
+            $users = $this->find_users_with_pattern($request);
+            $tags = $this->find_tags_with_pattern($request);
             $faqs = $this->find_faqs_with_pattern($request);
             return [
                 'threads' => $threads,
@@ -50,7 +50,7 @@ class SearchController extends Controller
     public function search_user(Request $request)
     {
         $validatedData = $request->validate([
-            'search' => 'required|string|min:1|max:6',
+            'search' => 'required|string|min:1',
         ]);
         $pattern = $request->search;
         $page = $request->page;
@@ -62,7 +62,7 @@ class SearchController extends Controller
     public function search_tag(Request $request)
     {
         $validatedData = $request->validate([
-            'search' => 'required|string|min:1|max:6',
+            'search' => 'required|string|min:1',
         ]);
         $pattern = $request->search;
         $page = $request->page;
@@ -74,34 +74,46 @@ class SearchController extends Controller
     public function search_thread(Request $request)
     {
         $validatedData = $request->validate([
-            'search' => 'required|string|min:1|max:6',
+            'search' => 'required|string|min:1',
         ]);
         $simplethreads = $this->find_threads_with_pattern($request, 60);
         return view('search.search_threads', compact('simplethreads'))->with('pattern', $request->search);
     }
 
-    public function find_threads_with_pattern($request, $paginate = 20)
+    public function find_threads_with_pattern($request)
     {
-        return \App\Models\Thread::with('tags','author')
-        ->where('title','like','%'.$request->search.'%')
-        ->orderby('responded_at','desc')
-        ->paginate($paginate)
-        ->appends($request->only('page','search'));
+        $page = is_numeric($request->page)? $request->page:'1';
+        $query_id = 'find-threads-with-pattern-'.url('/').$request->search.'-p'.$page;
+        return Cache::remember($query_id, 2880, function() use($request) {
+            return \App\Models\Thread::with('tags','author')
+            ->where('title','like','%'.$request->search.'%')
+            ->orderby('responded_at','desc')
+            ->paginate(config('preference.threads_per_serach'))
+            ->appends($request->only('page','search'));
+        });
     }
 
-    public function find_users_with_pattern($request, $paginate = 40)
+    public function find_users_with_pattern($request)
     {
-        return \App\Models\User::where('name','like','%'.$request->search.'%')
-        ->paginate($paginate)
-        ->appends($request->only('page','search'));
+        $page = is_numeric($request->page)? $request->page:'1';
+        $query_id = 'find-users-with-pattern-'.url('/').$request->search.'-p'.$page;
+        return Cache::remember($query_id, 2880, function() use($request) {
+            return \App\Models\User::where('name','like','%'.$request->search.'%')
+            ->paginate(config('preference.users_per_serach'))
+            ->appends($request->only('page','search'));
+        });
     }
 
-    public function find_tags_with_pattern($request, $paginate = 40)
+    public function find_tags_with_pattern($request)
     {
-        return \App\Models\Tag::where('tag_name','like','%'.$request->search.'%')
-        ->orWhere('tag_explanation', 'like', '%'.$request->search.'%')
-        ->paginate($paginate)
-        ->appends($request->only('page','search'));
+        $page = is_numeric($request->page)? $request->page:'1';
+        $query_id = 'find-tags-with-pattern-'.url('/').$request->search.'-p'.$page;
+        return Cache::remember($query_id, 2880, function() use($request) {
+            return \App\Models\Tag::where('tag_name','like','%'.$request->search.'%')
+            ->orWhere('tag_explanation', 'like', '%'.$request->search.'%')
+            ->paginate(config('preference.tags_per_serach'))
+            ->appends($request->only('page','search'));
+        });
     }
 
     public function find_faqs_with_pattern($request)

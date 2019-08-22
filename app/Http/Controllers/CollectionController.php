@@ -61,7 +61,7 @@ class CollectionController extends Controller
                 'group' => $group? $group->id:0,
             ]);
             $thread->recordCount('collection', 'thread');
-            $this->refreshCollectionIndex(Auth::id(), $group);
+            $this->clearCollectionIndex(Auth::id(), $group);
 
             return [
                 'success' => '你已成功收藏本文!',
@@ -108,8 +108,8 @@ class CollectionController extends Controller
                 ]);
             }
         }
-        $this->refreshCollectionIndex(Auth::id(), $oldgroup);
-        $this->refreshCollectionIndex(Auth::id(), $newgroup);
+        $this->clearCollectionIndex(Auth::id(), $oldgroup);
+        $this->clearCollectionIndex(Auth::id(), $newgroup);
         return [
             'success' => 'collection updated',
             'collection' => $collection,
@@ -131,7 +131,7 @@ class CollectionController extends Controller
             $groups = $this->findCollectionGroups(Auth::id());
             $group = $group_id>0? $groups->keyby('id')->get($group_id):null;
 
-            $this->refreshCollectionIndex(Auth::id(), $group);
+            $this->clearCollectionIndex(Auth::id(), $group);
 
             $collection->delete();
             return [
@@ -152,7 +152,7 @@ class CollectionController extends Controller
             $user->clear_column('unread_updates');
             $info->clear_column('default_collection_updates');
         },2);
-        $this->refreshCollectionGroups($user->id);
+        $this->clearCollectionGroups($user->id);
         return redirect()->back()->with('success','已将所有更新标记为已读');
     }
 

@@ -46,7 +46,7 @@ class CollectionGroupController extends Controller
                 'user_id' => $user->id,
                 'order_by' => request('order_by')
             ]);
-            $this->refreshCollectionGroups($user->id);
+            $this->clearCollectionGroups($user->id);
             if(request()->set_as_default_group){
                 $info->update([
                     'default_collection_group_id' => $collection_group->id,
@@ -83,7 +83,7 @@ class CollectionGroupController extends Controller
             'name' => request()->name,
             'order_by' => request()->order_by,
         ]);
-        $this->refreshCollectionGroups($user->id);
+        $this->clearCollectionGroups($user->id);
 
         if(request()->set_as_default_group&&$info->default_collection_group_id!=$collection_group->id){
             $info->update([
@@ -116,7 +116,7 @@ class CollectionGroupController extends Controller
 
         $collection_group->delete();
 
-        $this->refreshCollectionGroups(Auth::id());
+        $this->clearCollectionGroups(Auth::id());
 
         return redirect()->route('collection.index')->with('success','你已成功删除收藏夹');
     }

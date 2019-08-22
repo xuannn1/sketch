@@ -238,7 +238,7 @@ class AdminsController extends Controller
         if($operation===5){
             return redirect('/')->with('success', '已经成功处理该主题');
         }
-        $this->refreshThread($thread_id);
+        $this->clearThread($thread_id);
         return back()->with('success', '已经成功处理该主题');
 
     }
@@ -371,7 +371,7 @@ class AdminsController extends Controller
             return redirect()->back()->with("warning","未能处理该回帖，可能是已经处理了");
         }
 
-        $this->refreshPost($post_id);
+        $this->clearPost($post_id);
         CacheUser::clearuser($user_id);
         if($user&&$is_public){
             $user->remind('new_administration');
@@ -426,7 +426,7 @@ class AdminsController extends Controller
             if($remove_tag){
                 $post->review->reviewee->tags()->detach($remove_tag->id);
             }
-            $this->refreshThread($post->review->thread_id);
+            $this->clearThread($post->review->thread_id);
             $post->review->editor_recommend=1;
             $post->review->recommend=1;
             $post->review->rating=0;
@@ -446,7 +446,7 @@ class AdminsController extends Controller
             $post->review->reviewee->save();
             $tags = ConstantObjects::find_tags_by_type('编推')->pluck('id')->toArray();
             $post->review->reviewee->tags()->detach($tags);
-            $this->refreshThread($post->review->thread_id);
+            $this->clearThread($post->review->thread_id);
         }
         return true;
     }

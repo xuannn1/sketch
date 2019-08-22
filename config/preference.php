@@ -22,5 +22,9 @@ return [
     'quotes_per_page'=> 20,
     'records_per_page' => 20, //每页展示20个赞助记录
 
+    'threads_per_search' => 40, //每页展示40个搜索记录
+    'users_per_search' => 80, //每页展示80个搜索记录
+    'tags_per_search' => 80, //每页展示80个搜索记录
+
     'register_promise' => '我保证在废文好好做鱼，认真读版规和帮助，不扒马不骂人不盗文不做伸手党，自觉维护站内和谐风气',
 ];

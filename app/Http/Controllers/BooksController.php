@@ -105,7 +105,7 @@ class BooksController extends Controller
         $valid_tags = $thread->tags_validate($thread->tags->pluck('id'));
         $thread->keep_only_admin_tags();
         $thread->tags()->syncWithoutDetaching($valid_tags);
-        $this->refreshThread($id);
+        $this->clearThread($id);
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍文案设置信息');
     }
 
@@ -132,7 +132,7 @@ class BooksController extends Controller
         $thread->drop_none_tongren_tags();//去掉所有本次能选的tag的范畴内的tag
         $thread->tags()->syncWithoutDetaching($thread->tags_validate($input_tags));//并入新tag
 
-        $this->refreshThread($id);
+        $this->clearThread($id);
 
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍标签信息');
     }
@@ -160,7 +160,7 @@ class BooksController extends Controller
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
 
         $thread->tongren_data_sync($request->all());
-        $this->refreshThread($id);
+        $this->clearThread($id);
         return redirect()->route('thread.show_profile', $id)->with('success','已经成功更新书籍同人信息');
     }
 
@@ -208,7 +208,7 @@ class BooksController extends Controller
             }
         }
 
-        $this->refreshThread($id);
+        $this->clearThread($id);
         return redirect()->route('thread.chapter_index', $thread->id);
     }
 
