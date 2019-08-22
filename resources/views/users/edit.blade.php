@@ -28,7 +28,7 @@
                     <p><span class="glyphicon glyphicon-remove"></span><span style="color:#d66666">因历史原因，本账户虽已激活，账户邮箱的验证信息缺失。为了您的账户安全，建议您尽快验证邮箱。未验证邮箱的账户存在不小的安全隐患。</span></p>
                     @endif
                     @else
-                    <p><span class="glyphicon glyphicon-remove"></span><span style="color:#d66666">该邮箱尚未验证，账户未激活。请尽快验证邮箱完成激活程序。未验证邮箱激活的账户会限制一部分使用功能，也存在安全隐患。</span></p>
+                    <p><span class="glyphicon glyphicon-remove"></span><span style="color:#d66666">账户未激活，请验证邮箱、完成激活程序。未激活的账户会限制一部分使用功能，也存在安全隐患。</span></p>
                     @endif
                     <h4>验证邮箱/激活账户</h4>
 
