@@ -28,10 +28,14 @@
                     <label for="brief">简介：</label>
                     <input type="text" name="brief" class="form-control" value="{{ $thread->brief }}" placeholder="请输入不超过50字的主题简介">
                 </div>
+                <div id="biaotiguiding" class="h6">
+                    <span style="color:#d66666">标题、简介不得具有性描写、性暗示<span>，不得使用直白的脏话、黄暴词和明显涉及边缘的词汇，不应出现和文章无关的内容如qq号、邀请码、注册指路等，不应使用涉及性暗示的emoji。
+                </div>
                 <div>
                     <label for="brief">是否含有“边缘限制”题材？</label>
                     <div class="font-6">
-                        涉及“边限”的主题讨论，必须勾选边缘限制，且仍需标题简介和谐，在文案适当预警。标题简介禁止任何擦边性描写、性暗示。讨论内容和性描述相关的，简介需以“午夜场之”开头，预警围观咸鱼。
+                        <a href="https://sosad.fun/posts/848">戳《版规》了解什么是“边限”。</a>
+                        涉及“边限”的主题讨论，必须勾选边缘限制，在文案预警和规范讨论范畴。讨论内容和性描写相关的，简介需以“午夜场之”开头，预警围观咸鱼。
                     </div>
                     <div>
                         <label class="radio-inline"><input type="radio" name="is_bianyuan" value="isnot" {{$thread->is_bianyuan?'':'checked'}}>非边缘限制敏感</label>
