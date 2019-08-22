@@ -48,11 +48,4 @@ trait PostObjectTraits{
         Cache::forget('post.'.$id);
     }
 
-    public function refreshPost($id)
-    {
-        $this->clearPost($id);
-        $this->findPost($id);
-        return $this->postProfile($id);
-    }
-
 }

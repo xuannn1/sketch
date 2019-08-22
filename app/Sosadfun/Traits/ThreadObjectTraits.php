@@ -35,7 +35,7 @@ trait ThreadObjectTraits{
 
     public function threadProfilePosts($id)
     {
-        return Cache::remember('threadProfilePosts.'.$id, 10, function () use($id){
+        return Cache::remember('threadProfilePosts.'.$id, 60, function () use($id){
             return \App\Models\Post::with('author.title','last_reply')
             ->withType('post')
             ->where('thread_id','=',$id)
@@ -50,12 +50,6 @@ trait ThreadObjectTraits{
     {
         Cache::forget('thread.'.$id);
         Cache::forget('threadProfile.'.$id);
-    }
-
-    public function refreshThread($id)
-    {
-        $this->clearThread($id);
-        return $this->threadProfile($id);
     }
 
     public function threadChapterIndex($id)

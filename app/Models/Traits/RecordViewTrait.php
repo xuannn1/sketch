@@ -22,7 +22,7 @@ trait RecordViewTrait
 					$this->increment($countable.'_count', $value);
 				}
 			}
-			Cache::put($countable.$type.'CacheInterval.'.$this->id,1,Carbon::now()->addMinutes(10));
+			Cache::put($countable.$type.'CacheInterval.'.$this->id,1,Carbon::now()->addMinutes(30));
 		}else{
 			if(!Cache::has($countable.$type.'Count.'.$this->id)){
 				// 不存在的话，新建YYYXXXCount.$tid，并存入1，时限1d
@@ -38,7 +38,7 @@ trait RecordViewTrait
 			return;
 		}
 		if(!Cache::has('ViewHistory.Uid'.Auth::id().'.Tid.'.$this->id)){
-			\App\Models\HistoricalUsersView::create([
+			\App\Models\TodayUsersView::firstOrCreate([
 				'user_id' => Auth::id(),
 				'thread_id' => $this->id,
 			]);

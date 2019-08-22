@@ -38,7 +38,6 @@
                     <h6>最新验证邮件发送于 {{ $last_email_sent->diffForHumans() }}</h6>
                     <h6 class="grayout">请仔细检查个人收件箱/垃圾箱，修改自己的垃圾邮件设置，再重发邮件。<br>友情提醒，新邮件会取消所有旧邮件的验证资格（显示为“令牌不存在”），且重复发件容易被收件箱拒收，因此请你等待恰当时间间隔再行重发邮件。<br>如果一直无法收到验证邮件，建议彻底更换邮箱。<br>qq邮箱容易拒收邮件，请慎重使用。</h6>
                     @endif
-                    @endif
                 </div>
 
                 <a href="{{ route('user.edit_email') }}" class="btn btn-lg btn-danger sosad-button">修改邮箱</a>&nbsp;&nbsp;

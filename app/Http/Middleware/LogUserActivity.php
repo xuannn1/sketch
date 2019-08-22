@@ -4,9 +4,8 @@ use Closure;
 use Auth;
 use Cache;
 use Carbon;
-use App\Models\OnlineStatus;
-use App\Models\HistoricalUsersActivity;
 use CacheUser;
+
 class LogUserActivity
 {
     /**
@@ -24,22 +23,22 @@ class LogUserActivity
             }else{
                 Cache::put('usr-clicks-'.Auth::id(),1,Carbon::now()->addDay(1));
             }
-            if(!Cache::has('usr-on-' . Auth::id())){//假如距离上次cache的时间已经超过了默认时间
-                $online_status = OnlineStatus::on('mysql::write')->updateOrCreate([
+            if(!Cache::has('usr-on-'.Auth::id())){//假如距离上次cache的时间已经超过了默认时间
+                $online_status = \App\Models\OnlineStatus::on('mysql::write')->updateOrCreate([
                     'user_id' => Auth::id(),
                 ],[
                     'online_at' => Carbon::now(),
                 ]);
-                $expiresAt = Carbon::now()->addMinutes(config('constants.online_interval'));
-                Cache::put('usr-on-' . Auth::id(), true, $expiresAt);
-                Auth::user()->info->increment('daily_clicks', (int)Cache::pull('usr-clicks-'.Auth::id()));
+                Cache::put('usr-on-'.Auth::id(), 1, config('constants.online_interval'));
+                $info = CacheUser::Ainfo();
+                $info->increment('daily_clicks', (int)Cache::pull('usr-clicks-'.Auth::id()));
             }
-            if(!Cache::has('usr-ip-on-' . Auth::id())){//一天记录一次活动
-                $user_activity = HistoricalUsersActivity::create([
+            if(!Cache::has('usr-ip-on-'.Auth::id())){//一天记录一次IP活动
+                $user_activity = \App\Models\TodayUsersActivity::firstOrCreate([
                     'user_id' =>Auth::id(),
                     'ip' => request()->ip(),
                 ]);
-                Cache::put('usr-ip-on-' . Auth::id(), true, Carbon::now()->addDay(1));
+                Cache::put('usr-ip-on-'.Auth::id(), 1, 1440);
             }
         }
         return $next($request);

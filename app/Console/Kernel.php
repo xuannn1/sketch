@@ -47,8 +47,8 @@ class Kernel extends ConsoleKernel
         ->dailyAt('4:15')
         ->onOneServer();
 
-        $schedule->command('data:clearRecords')
-        ->name('data:clearRecords')
+        $schedule->command('data:archiveRecords')
+        ->name('data:archiveRecords')
         ->timezone('Asia/Shanghai')
         ->dailyAt('4:30')
         ->onOneServer();
