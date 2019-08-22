@@ -146,7 +146,7 @@ class RegisterController extends Controller
     public function confirmEmail($token)
     {
         $user_info = UserInfo::where('activation_token', $token)->first();
-        if(!$user_info){return redirect('/')->with('danger','令牌已失效或不存在这个令牌');}
+        if(!$user_info){return redirect('/')->with('danger','令牌已使用过或已被新令牌取代');}
         $user_info->activate();
 
         session()->flash('success', '恭喜你，激活成功！');

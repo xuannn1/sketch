@@ -3,16 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Quote extends Model
 {
+    use SoftDeletes;
     use Traits\VoteTrait;
     use Traits\RewardTrait;
     use Traits\TypeValueChangeTrait;
 
     protected $guarded = [];
     const UPDATED_AT = null;
-    protected $dates = ['created_at'];
+    protected $dates = ['created_at', 'deleted_at'];
     protected $count_types = array('fish');
 
     public function user()

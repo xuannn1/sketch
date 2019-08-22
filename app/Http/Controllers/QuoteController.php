@@ -27,7 +27,8 @@ class QuoteController extends Controller
         $last_quote = Quote::where('user_id', Auth::id())->orderBy('created_at','desc')->first();
 
         if($last_quote&&$last_quote->created_at>Carbon::now()->subDay(1)){
-            return redirect()->back()->with('warning','一人一天只能提交一次题头');
+            session()->flash('warning', '一人一天只能提交一次题头');
+            return back();
         }
 
         $this->validate($request, [
@@ -46,8 +47,8 @@ class QuoteController extends Controller
         }
 
         if($last_quote&&strcmp($last_quote->body, $data['body']) === 0){
-            return back()->with('warning','请不要重复提交题头！');
-
+            session()->flash('warning', '同样内容的题头已出现在数据库内！');
+            return back();
         }
 
         $quote = Quote::create($data);
@@ -78,7 +79,7 @@ class QuoteController extends Controller
         });
         return view('quotes.index', compact('quotes'))->with('show_quote_tab','all');
     }
-    
+
     public function mine(){
         $quotes = \App\Models\Quote::with('author')
         ->where('user_id',Auth::id())

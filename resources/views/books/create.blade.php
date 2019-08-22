@@ -94,7 +94,7 @@
                 <div class="form-group">
                     <label for="title"><h4>6. 标题：</h4></label>
                     <div id="biaotiguiding" class="h6">
-                        标题请规范，尊重汉语语法规则，避免火星文、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，不要放入标题。<span style="color:#d66666">标题不得含有性描写、性暗示。<span>
+                        标题请规范，尊重汉语语法规则，避免火星文、emoji、乱用符号标点等。文章类型、CP、背景、版本相关信息请在简介，文案 ，标签 ，备注等处展示，不要放入标题。<span style="color:#d66666">标题不得含有性描写、性暗示。<span>
                     </div>
                     <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="请输入不超过20字的标题">
                 </div>
@@ -102,7 +102,7 @@
                 <div class="form-group">
                     <label for="brief"><h4>7. 简介：</h4></label>
                     <div id="biaotiguiding" class="h6">
-                        <span style="color:#d66666">简介中不得含有性描写、性暗示成分。<span>简介中请勿放置与文章无关的内容，如qq号、邀请码、注册指路等。
+                        <span style="color:#d66666">简介不得具有性描写、性暗示<span>，不得使用直白的脏话、黄暴词和明显涉及边缘的词汇，不应出现和文章无关的内容如qq号、邀请码、注册指路等，不应使用emoji。
                     </div>
                     <input type="text" name="brief" class="form-control" value="{{ old('brief') }}" placeholder="请输入不超过25字的简介">
                 </div>
