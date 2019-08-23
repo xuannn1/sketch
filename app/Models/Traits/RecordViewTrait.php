@@ -15,14 +15,13 @@ trait RecordViewTrait
 			if(!Cache::has($countable.$type.'Count.'.$this->id)){ // 检查 viewPostCount.$tid ?是否有点击数的数据？
 				// 不存在的话，新建viewPostCount.$tid，并存入新点击为0，时限1d
 				 Cache::put($countable.$type.'Count.'.$this->id,1,1440);
-				 $this->increment($countable.'_count', 1);//立刻在数据库计数这个第一次的点击
 			}else{// 存在？的话， 取值，删除，修改post->view，把这部分点击算进去。
 				$value = (int)Cache::pull($countable.$type.'Count.'.$this->id);
-				if($value>1){ 
+				if($value>0){
 					$this->increment($countable.'_count', $value);
 				}
 			}
-			Cache::put($countable.$type.'CacheInterval.'.$this->id,1,20);
+			Cache::put($countable.$type.'CacheInterval.'.$this->id,1,30);
 		}else{
 			if(!Cache::has($countable.$type.'Count.'.$this->id)){
 				// 不存在的话，新建YYYXXXCount.$tid，并存入1，时限1d
