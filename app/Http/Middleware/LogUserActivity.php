@@ -29,7 +29,7 @@ class LogUserActivity
                 ],[
                     'online_at' => Carbon::now(),
                 ]);
-                Cache::put('usr-on-'.Auth::id(), 1, 30);
+                Cache::put('usr-on-'.Auth::id(), 1, 60);
                 $info = CacheUser::Ainfo();
                 $value = (int)Cache::pull('usr-clicks-'.Auth::id());
 				if($value>1){ //为了效率考虑，控制这个值的更新，计算出来的点击数会偏小
