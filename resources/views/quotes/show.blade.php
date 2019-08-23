@@ -47,6 +47,13 @@
                         咸鱼：{{ $quote->fish }}
                     </span>
                 </div>
+                @if(Auth::check()&&Auth::id()==$quote->user_id)
+                <form method="POST" action="{{ route('quote.destroy', $quote->id) }}">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                    <button type="submit" class="btn btn-md btn-danger sosad-button-control">删除题头</button>
+                </form>
+                @endif
                 <br>
                 @if((Auth::check())&&(Auth::user()->isAdmin()))
                 <!-- 管理专区 -->

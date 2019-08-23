@@ -18,7 +18,7 @@
                         <button type="button" onclick="retrievecache('markdowneditor')" class="sosad-button-control addon-button">切换恢复数据</button>
                     </div>
                     <div class="grayout">
-                        <h6>（每人每天只能提交一次题头。题头需要审核，题头审核通过的条件是“有品、有趣、有点丧”。不满足这个条件，过于私密，或可能引起他人不适的题头不会被通过。）</h6>
+                        <h6>（每人每天只能提交一次题头。题头需要审核，题头审核通过的条件是“有品、有趣、有点丧”。不满足这个条件，过于私密，或可能引起他人不适的题头不会被通过。题头审核耗时较久，介意者慎投。提交时遇到“正文已存在”的意思是，相同内容的题头已经存在于数据库中。）</h6>
                     </div>
                     <div class="checkbox">
                         @if(Auth::user()->isAdmin())

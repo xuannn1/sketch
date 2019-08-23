@@ -46,17 +46,18 @@ class QuoteController extends Controller
             $data['majia'] = request('majia');
         }
 
-        if($last_quote&&strcmp($last_quote->body, $data['body']) === 0){
-            session()->flash('warning', '同样内容的题头已出现在数据库内！');
-            return back();
-        }
-
         $quote = Quote::create($data);
 
         return redirect()->route('quote.show', $quote->id)->with('success','成功提交题头');
     }
 
     public function create(){
+        $last_quote = Quote::where('user_id', Auth::id())->orderBy('created_at','desc')->first();
+
+        if($last_quote&&$last_quote->created_at>Carbon::now()->subDay(1)){
+            session()->flash('warning', '一人一天只能提交一次题头');
+            return back();
+        }
         return view('quotes.create');
     }
 
@@ -67,6 +68,13 @@ class QuoteController extends Controller
         $user = Auth::check()? CacheUser::Auser():'';
         $info = Auth::check()? CacheUser::Ainfo():'';
         return view('quotes.show', compact('user','info','quote'));
+    }
+
+    public function destroy($id){
+        $quote = Quote::on('mysql::write')->find($id);
+        $quote->delete();
+        $this->clearQuote($id);
+        return redirect('/')->with("success","已经删除本题头");
     }
 
     public function index(Request $request){
@@ -128,5 +136,6 @@ class QuoteController extends Controller
             'quote' => $quote,
         ];
     }
+
 
 }

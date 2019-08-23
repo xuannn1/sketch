@@ -59,5 +59,7 @@ class archiveRecords extends Command
         foreach (array_chunk($user_views, 5000) as $t){
             DB::table('historical_users_views')->insert($t);
         }
+        DB::table('today_users_activities')->delete();
+        DB::table('today_users_views')->delete();
     }
 }

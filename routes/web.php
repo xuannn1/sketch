@@ -58,7 +58,7 @@
 
 {//题头部分
     Route::resource('quote', 'QuoteController', ['only' => [
-        'index', 'create', 'store', 'show'
+        'index', 'create', 'store', 'show', 'destroy'
     ]]); //
     Route::get('/quote_mine', 'QuoteController@mine')->name('quote.mine');//我提交的题头
 

@@ -25,7 +25,7 @@
 
                 <h4>题头（Quote）管理</h4>
                 <ul>
-                    <li><a href="{{ route('quote.review_index', ['withReviewState'=>'notYetReviewed']) }}">文案摘句审核</a></li>
+                    <li><a href="{{ route('quote.review_index', ['withReviewState'=>'notYetReviewed']) }}">题头审核</a></li>
                 </ul>
 
                 <h4>作业（Homework）管理</h4>
