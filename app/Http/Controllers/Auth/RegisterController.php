@@ -146,7 +146,7 @@ class RegisterController extends Controller
     public function confirmEmail($token)
     {
         $user_info = UserInfo::where('activation_token', $token)->first();
-        if(!$user_info){return redirect('/')->with('danger','令牌已使用过或已被新令牌取代');}
+        if(!$user_info){return redirect('/')->with('danger','令牌已使用或已被新令牌取代');}
         $user_info->activate();
 
         session()->flash('success', '恭喜你，激活成功！');
@@ -162,8 +162,8 @@ class RegisterController extends Controller
 
         $email_check = PasswordReset::where('email','=',$user->email)->latest()->first();
 
-        if ($email_check&&$email_check->created_at>Carbon::now()->subHour(1)){
-            return back()->with('warning', '1小时内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，暂不再重复发送。');
+        if ($email_check&&$email_check->created_at>Carbon::now()->subHours(2)){
+            return back()->with('warning', '2小时内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，暂不再重复发送。');
         }
         DB::table('password_resets')->where('email','=',$user->email)->delete();
 

@@ -40,12 +40,12 @@ class ForgotPasswordController extends Controller
     public function sendResetLinkEmail(Request $request)
     {
         if(Cache::has('reset-password-request-limit-' . request()->ip())){
-            return back()->with('danger','本ip('.request()->ip().')已于10分钟内提交过重置密码请求。');
+            return back()->with('danger','当前ip('.request()->ip().')已于10分钟内提交过重置密码请求。');
         }
         Cache::put('reset-password-request-limit-' . request()->ip(), true, 10);
 
         if(Cache::has('reset-password-limit-' . request()->ip())){
-            return back()->with('danger','本ip('.request()->ip().')已于1小时内成功重置密码。');
+            return back()->with('danger','当前ip('.request()->ip().')已于1小时内成功重置密码。');
         }
 
         $this->validateEmail($request);
@@ -65,9 +65,9 @@ class ForgotPasswordController extends Controller
         }
 
         $email_check = DB::table('password_resets')->where('email', $request->email)->first();
-
-        if ($email_check&&$email_check->created_at>Carbon::now()->subHours(2)){
-            return back()->with('warning', '2小时内已发送过重置邮件，请不要重复发送邮件，避免被识别为垃圾邮件。');
+ 
+        if ($email_check&&$email_check->created_at>Carbon::now()->subHours(12)){
+            return back()->with('warning', '该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。');
         }
 
         $response = $this->broker()->sendResetLink(

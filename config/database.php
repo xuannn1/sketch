@@ -44,6 +44,7 @@ return [
                 'host' => [
                     env('DB_READ_HOST', env('DB_HOST', '127.0.0.1')),
                     env('DB_READ_HOST2', env('DB_HOST', '127.0.0.1')),
+                    env('DB_READ_HOST3', env('DB_HOST', '127.0.0.1')),
                 ],
             ],
             'write' => [
