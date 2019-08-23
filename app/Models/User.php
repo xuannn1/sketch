@@ -19,6 +19,8 @@ class User extends Authenticatable
     use Traits\QiandaoTrait;
     use FindThreadTrait;
 
+    protected $connection= 'mysql::write';
+
     protected $dates = ['deleted_at', 'qiandao_at', 'created_at'];
     const UPDATED_AT = null;
 

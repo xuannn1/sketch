@@ -10,10 +10,13 @@ use App\Models\Review;
 use App\Models\Post;
 use Carbon;
 use App\Sosadfun\Traits\GeneratePostDataTraits;
+use App\Sosadfun\Traits\FindThreadTrait;
 
 class StoreReview extends FormRequest
 {
     use GeneratePostDataTraits;
+    use FindThreadTrait;
+    
     /**
     * Determine if the user is authorized to make this request.
     *
@@ -52,6 +55,15 @@ class StoreReview extends FormRequest
 
         // chapter data
         $review_data = $this->only('rating','thread_id');
+
+        // 如果被推荐对象是站内文章，且是边缘文，需要增加边缘标记
+        if($this->thread_id>0){
+            $reviewee = $this->findThread($review_data['thread_id']);
+            if($reviewee&&$reviewee->is_bianyuan){
+                $post_data['is_bianyuan']=true;
+            }
+        }
+
         $review_data['recommend'] = $this->recommend? true:false;
 
         $post = DB::transaction(function()use($post_data, $review_data){
@@ -73,6 +85,15 @@ class StoreReview extends FormRequest
             $post_data['is_bianyuan']=true;
         }
         $review_data = $this->only('rating','thread_id');
+
+        // 如果被推荐对象是站内文章，且是边缘文，需要增加边缘标记
+        if($this->thread_id>0){
+            $reviewee = $this->findThread($review_data['thread_id']);
+            if($reviewee&&$reviewee->is_bianyuan){
+                $post_data['is_bianyuan']=true;
+            }
+        }
+
         $review_data['recommend'] = $this->recommend? true:false;
 
         $post->update($post_data);

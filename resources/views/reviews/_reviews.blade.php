@@ -7,6 +7,9 @@
         <div class="row">
             <div class="col-xs-12">
                 <span>
+                    @if($post->is_bianyuan&&!$thread->is_bianyuan)
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                    @endif
                     @if($post->title)
                     <a href="{{ route('post.show', $post->id) }}">{{ $post->title }}</a>&nbsp;
                     @endif

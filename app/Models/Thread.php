@@ -369,16 +369,21 @@ class Thread extends Model
         return;
     }
 
-    public function check_bianyuan()// 章节总数超过20%的自动升级成边限
+    public function check_bianyuan()// 章节/书评 总数超过20%的自动升级成边限
     {
-        if($this->channel()->type==='book'){
-            $total_chapters = $this->posts()->withType('chapter')->count();
-            $bianyuan_chapters = $this->posts()->withType('chapter')->withBianyuan('bianyuan_only')->count();
-            if(($bianyuan_chapters*5>$total_chapters)&&$this->is_bianyuan===0){
+        $component_type = $this->channel()->type==='book'? 'chapter':'';
+        $component_type = $this->channel()->type==='list'? 'review':'';
+
+        if($component_type){
+            $total_components = $this->posts()->withType($component_type)->count();
+            $bianyuan_components = $this->posts()->withType($component_type)->withBianyuan('bianyuan_only')->count();
+
+            if(($bianyuan_components*5>$total_components)&&$this->is_bianyuan===0){
                 $this->update(['is_bianyuan'=>1]);
                 return false;
             }
         }
+
         return true;
     }
 }
