@@ -47,10 +47,16 @@ class Kernel extends ConsoleKernel
         ->dailyAt('4:15')
         ->onOneServer();
 
-        $schedule->command('data:archiveRecords')
-        ->name('data:archiveRecords')
+        $schedule->command('data:archiveActivityHistory')
+        ->name('data:archiveActivityHistorys')
         ->timezone('Asia/Shanghai')
-        ->dailyAt('4:30')
+        ->dailyAt('4:20')
+        ->onOneServer();
+
+        $schedule->command('data:archiveViewHistory')
+        ->name('data:archiveViewHistory')
+        ->timezone('Asia/Shanghai')
+        ->weeklyOn(3, '4:25')
         ->onOneServer();
 
         $schedule->command('token:refresh')

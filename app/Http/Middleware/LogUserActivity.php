@@ -21,7 +21,7 @@ class LogUserActivity
             if (Cache::has('usr-clicks-'.Auth::id())){
                 Cache::increment('usr-clicks-'.Auth::id());
             }else{
-                Cache::put('usr-clicks-'.Auth::id(),1, 1440);
+                Cache::put('usr-clicks-'.Auth::id(),1, 10080); //除非一周只有一次，才会漏计，否则都会统计上的
             }
             if(!Cache::has('usr-on-'.Auth::id())){//假如距离上次cache的时间已经超过了默认时间
                 $online_status = \App\Models\OnlineStatus::on('mysql::write')->updateOrCreate([
@@ -32,11 +32,11 @@ class LogUserActivity
                 Cache::put('usr-on-'.Auth::id(), 1, 60);
                 $info = CacheUser::Ainfo();
                 $value = (int)Cache::pull('usr-clicks-'.Auth::id());
-				if($value>1){ //为了效率考虑，控制这个值的更新，计算出来的点击数会偏小
+				if($value>=1){
 					$info->increment('daily_clicks', $value);
 				}
             }
-            if(!Cache::has('usr-ip-on-'.Auth::id())){//一天记录一次IP活动
+            if(!Cache::has('usr-ip-on-'.Auth::id())){//1天记录一次IP活动
                 $user_activity = \App\Models\TodayUsersActivity::firstOrCreate([
                     'user_id' =>Auth::id(),
                     'ip' => request()->ip(),

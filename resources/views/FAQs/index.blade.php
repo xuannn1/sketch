@@ -113,7 +113,6 @@
                         <div class="">
                             <p>(统计数据更新于：{{$webstat->created_at->DiffForHumans()}})</p>
                             <p>昨日签到人数：{{$webstat->qiandaos}}</p>
-                            <p>昨日在线人数：{{$webstat->daily_clicked_users}}</p>
                             <p>昨日新增回帖：{{$webstat->posts}}</p>
                             <p>昨日新增章节：{{$webstat->chapters}}</p>
                             <p>昨日新注册用户：{{$webstat->new_users}}</p>
