@@ -24,7 +24,7 @@ class LogUserActivity
                 Cache::put('usr-clicks-'.Auth::id(),1, 10080); //除非一周只有一次，才会漏计，否则都会统计上的
             }
             if(!Cache::has('usr-on-'.Auth::id())){//假如距离上次cache的时间已经超过了默认时间
-                $online_status = \App\Models\OnlineStatus::on('mysql::write')->updateOrCreate([
+                $online_status = \App\Models\OnlineStatus::updateOrCreate([
                     'user_id' => Auth::id(),
                 ],[
                     'online_at' => Carbon::now(),

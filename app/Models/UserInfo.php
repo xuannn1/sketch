@@ -10,7 +10,7 @@ class UserInfo extends Model
     use Traits\TypeValueChangeTrait;
 
     protected $guarded = [];
-    protected $connection= 'mysql::write';
+    // protected $connection= 'mysql::write';
     protected $primaryKey = 'user_id';
     const UPDATED_AT = null;
     protected $dates = ['no_posting_until', 'no_logging_until', 'login_at',  'email_verified_at'];
