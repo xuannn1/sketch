@@ -10,6 +10,7 @@ use Carbon;
 use DB;
 use Auth;
 use CacheUser;
+use Cache;
 use App\Sosadfun\Traits\CollectionObjectTraits;
 use App\Sosadfun\Traits\FindThreadTrait;
 use App\Sosadfun\Traits\ListObjectTraits;
@@ -50,6 +51,11 @@ class CollectionController extends Controller
 
     public function store($id)
     {
+        if(Cache::has('AddToCollectionByUser.'.Auth::id())){
+            return [
+                'info' => '2分钟内只能收藏一本图书，请勿批量收藏!',
+            ];
+        }
         if(!$this->checkCollectedOrNot(Auth::id(), (int)request('thread'))){
             $groups = $this->findCollectionGroups(Auth::id());
             $group_id = request('group')??CacheUser::Ainfo()->default_collection_group_id;
@@ -60,7 +66,8 @@ class CollectionController extends Controller
                 'user_id' => Auth::id(),
                 'group' => $group? $group->id:0,
             ]);
-            $thread->recordCount('collection', 'thread');
+            Cache::put('AddToCollectionByUser.'.Auth::id(),1,2);
+            $thread->increment('collection_count');
             $this->clearCollectionIndex(Auth::id(), $group);
 
             return [

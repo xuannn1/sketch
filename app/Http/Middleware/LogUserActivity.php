@@ -32,7 +32,7 @@ class LogUserActivity
                 Cache::put('usr-on-'.Auth::id(), 1, 60);
                 $info = CacheUser::Ainfo();
                 $value = (int)Cache::pull('usr-clicks-'.Auth::id());
-				if($value>=1){
+				if($value>1){ //担心数据库更新频率过高，调整计数方法，暂时忽略只点一次的情况。可能会偏低，再说吧。
 					$info->increment('daily_clicks', $value);
 				}
             }

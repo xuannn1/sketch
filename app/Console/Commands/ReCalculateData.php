@@ -105,6 +105,12 @@ class ReCalculateData extends Command
             WHERE u1.user_id = p.user_id and p.invitee_count>0
         ');
 
+        DB::statement('
+            update threads
+            set collection_count =
+            (select count(collections.id) from collections
+            where collections.thread_id = threads.id)
+        ');
 
         Log::emergency('did recalculate Database');
     }
