@@ -165,23 +165,24 @@ class RegisterController extends Controller
         if ($email_check&&$email_check->created_at>Carbon::now()->subHours(2)){
             return back()->with('warning', '2小时内已发送过重置邮件，短时间内重复提交容易被收件公司识别为垃圾邮件，暂不再重复发送。');
         }
-        DB::table('password_resets')->where('email','=',$user->email)->delete();
 
-        if(!$info->activation_token){
-            $info->activation_token=str_random(40);
-            $info->save();
-        }
+        DB::transaction(function()use($user, $info){
+            if(!$info->activation_token){
+                $info->activation_token=str_random(40);
+                $info->save();
+            }
+            DB::table('password_resets')->where('email','=',$user->email)->delete();
+            DB::table('password_resets')->insert([
+                'email' => $user->email,
+                'token' => bcrypt($info->activation_token),
+                'created_at' => Carbon::now(),
+            ]);
+        });
+
         $this->sendEmailConfirmationTo($user, $info);
         session()->flash('success', '已成功发送验证邮件，请注意查收');
 
-        DB::table('password_resets')->insert([
-            'email' => $user->email,
-            'token' => bcrypt($info->activation_token),
-            'created_at' => Carbon::now(),
-        ]);
-
         return redirect()->route('user.edit');
-
     }
 
     public function register_by_invitation_form()
