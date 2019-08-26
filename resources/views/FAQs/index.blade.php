@@ -124,7 +124,7 @@
                         &nbsp;5 当前数据：</a>
                     <div class="collapse indentation main-text font-6 grayout" id="help-constants-data-now">
                         <div class="">
-                            <p>当前在线人数：{{$online_users}}</p>
+                            <p>当前在线人数：数据调整中，暂不显示</p>
                         </div>
                     </div>
                 </div>

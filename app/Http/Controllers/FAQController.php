@@ -25,23 +25,13 @@ class FAQController extends Controller
     {
         $faqs = $this->find_faqs();
         $webstat = $this->find_web_stats();
-        $online_users = $this->find_online_users();
-        return view('FAQs.index', compact('faqs','webstat','online_users'));
+        return view('FAQs.index', compact('faqs','webstat'));
     }
 
     private function find_web_stats()
     {
         return Cache::remember('webstat-yesterday', 30, function() {
             return \App\Models\WebStat::latest()->first();
-        });
-    }
-
-    private function find_online_users()
-    {
-        return Cache::remember('online_users', 5, function() {
-            return DB::table('online_statuses')
-            ->where('online_at', '>', Carbon::now()->subMinutes(config('constants.online_count_interval'))->toDateTimeString())
-            ->count();
         });
     }
 

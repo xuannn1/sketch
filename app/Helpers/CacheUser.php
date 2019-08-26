@@ -26,9 +26,6 @@ class CacheUser{ //cache-user class
         if(!$id||$id<=0){return;}
         return Cache::remember('cachedUserInfo.'.$id, 60, function() use($id) {
             $info = UserInfo::on('mysql::write')->find($id);
-            if($info){
-                $info->load('online_status');
-            }
             return $info;
         });
     }

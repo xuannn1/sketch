@@ -29,11 +29,6 @@ class UserInfo extends Model
         $this->ham+=$ham;
     }
 
-    public function online_status()
-    {
-        return $this->hasOne(OnlineStatus::class, 'user_id');
-    }
-
     public function reward($kind, $base = 0){
         switch ($kind):
             case "regular_status"://普通状态奖励

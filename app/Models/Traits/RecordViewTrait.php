@@ -22,7 +22,7 @@ trait RecordViewTrait
 				$this->increment($countable.'_count', $value);
 				Cache::put($countable.$type.'Count.'.$this->id,0,10080);
 			}
-			Cache::put($countable.$type.'CacheInterval.'.$this->id,1,30);
+			Cache::put($countable.$type.'CacheInterval.'.$this->id,1,15);
 		}
 	}
 
