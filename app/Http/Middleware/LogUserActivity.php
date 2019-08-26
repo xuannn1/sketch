@@ -21,21 +21,24 @@ class LogUserActivity
             if (Cache::has('usr-clicks-'.Auth::id())){
                 Cache::increment('usr-clicks-'.Auth::id());
             }else{
-                Cache::put('usr-clicks-'.Auth::id(),1, 10080); //除非一周只有一次，才会漏计，否则都会统计上的
+                Cache::put('usr-clicks-'.Auth::id(),1, 10080);
             }
+
             if(!Cache::has('usr-on-'.Auth::id())){//假如距离上次cache的时间已经超过了默认时间
                 $online_status = \App\Models\OnlineStatus::updateOrCreate([
                     'user_id' => Auth::id(),
                 ],[
                     'online_at' => Carbon::now(),
                 ]);
-                Cache::put('usr-on-'.Auth::id(), 1, 60);
                 $info = CacheUser::Ainfo();
-                $value = (int)Cache::pull('usr-clicks-'.Auth::id());
-				if($value>1){ //担心数据库更新频率过高，调整计数方法，暂时忽略只点一次的情况。可能会偏低，再说吧。
+                $value = (int)Cache::get('usr-clicks-'.Auth::id());
+				if($value>1){
 					$info->increment('daily_clicks', $value);
+                    Cache::put('usr-clicks-'.Auth::id(),0, 10080);
 				}
+                Cache::put('usr-on-'.Auth::id(), 1, 60);
             }
+
             if(!Cache::has('usr-ip-on-'.Auth::id())){//1天记录一次IP活动
                 $user_activity = \App\Models\TodayUsersActivity::firstOrCreate([
                     'user_id' =>Auth::id(),
