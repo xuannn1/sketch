@@ -3,6 +3,7 @@ import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 import { Core } from '../../core';
 import { CollectionBook } from './collection/book';
 import { User } from './user';
+import { Message } from './message';
 import { Status } from './status';
 import { LoginRoute } from './user/login';
 import { HomeMain } from './home/main';
@@ -60,6 +61,9 @@ export const MobileRoute:RouteComponentType[] = [
   // status
   { path: '/status/collection', component: StatusCollection },
   { path: '/status/all', component: Status },
+
+  // message
+  { path: '/messages', component: Message },
 
   // others
   { path: '/createquote', component: CreateQuote },
