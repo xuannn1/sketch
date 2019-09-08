@@ -3,8 +3,8 @@ import { RouteMenu } from '../../components/common/route-menu';
 
 export function MessageMenu () {
   const items = [
-    {to:'/notifications', label: '提醒'},
-    {to:'/pm', label: '个人消息'},
+    {to:'/messages', label: '提醒'},
+    {to:'/messages/pm', label: '个人消息'},
   ];
   let onIndex = 0;
   for (let i = 0; i < items.length; i ++) {

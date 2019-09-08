@@ -4,6 +4,7 @@ import { Core } from '../../core';
 import { CollectionBook } from './collection/book';
 import { User } from './user';
 import { Message } from './message';
+import { PersonalMessage } from './message/personal-msg';
 import { Status } from './status';
 import { LoginRoute } from './user/login';
 import { HomeMain } from './home/main';
@@ -64,7 +65,7 @@ export const MobileRoute:RouteComponentType[] = [
 
   // message
   { path: '/messages', component: Message },
-
+  { path: '/messages/pm', component: PersonalMessage },
   // others
   { path: '/createquote', component: CreateQuote },
 ];
