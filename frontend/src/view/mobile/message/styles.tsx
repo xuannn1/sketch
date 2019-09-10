@@ -42,4 +42,5 @@ export const oneLineTruncationStyle:React.CSSProperties = {
   textOverflow:'ellipsis',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
+  marginTop: '0.8em',
 };
