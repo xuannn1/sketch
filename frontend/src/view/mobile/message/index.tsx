@@ -7,84 +7,12 @@ import { MessageMenu } from './message-menu';
 import { Card } from '../../components/common/card';
 import { Badge } from '../../components/common/badge';
 import ClampLines from 'react-clamp-lines';
+import { pageStyle, largeListItemStyle, badgeStyle, topCardStle, contentCardStyle, replyNotificationCardStyle, replyMessageContentStyle, unreadStyle } from './styles';
+import { mockReplyNotifications } from './mock-data';
 
 interface State {
 
 }
-
-// TODO: refactor styles, probably move to a css file
-const pageStyle:React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-};
-const largeListItemStyle:React.CSSProperties = {
-  padding: '1em 1em',
-};
-const badgeStyle:React.CSSProperties = {float:'right', marginTop:'2px'};
-const topCardStle:React.CSSProperties = {
-  border: 'none',
-  backgroundColor: '#f4f5f9',
-  textAlign: 'right',
-  boxShadow: 'none',
-};
-const contentCardStyle:React.CSSProperties = {
-  margin: '0px',
-  padding:'0px',
-  border: 'none',
-  backgroundColor: 'transparent',
-  textAlign: 'left',
-  boxShadow: 'none',
-};
-const replyNotificationCardStyle:React.CSSProperties = {
-  border: 'none',
-  paddingLeft: '0px',
-  paddingRight: '0px',
-  backgroundColor: '#f4f5f9',
-  boxShadow: 'none',
-  marginTop: '0px',
-  flexGrow: 1,
-};
-const replyMessageContentStyle:React.CSSProperties = {
-  fontSize: '0.8em',
-  height: '3em',
-  overflow: 'hidden',
-};
-const unreadStyle:React.CSSProperties = {
-  fontWeight:'bold',
-};
-
-// mock data
-const mockReplyNotifications = [{
-  author: 'Alex',
-  title: 'Hello World',
-  message: '个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息',
-  read: true,
-}, {
-  author: 'Alex',
-  title: 'Hello World',
-  message: 'Expanding the #down child to fill the remaining space of aa ss #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-  read: false,
-}, {
-  author: 'Alex',
-  title: 'Hello World',
-  message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-  read: false,
-}, {
-  author: 'Alex',
-  title: 'Hello World',
-  message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-  read: false,
-}, {
-  author: 'Alex',
-  title: 'Hello World',
-  message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-  read: true,
-}, {
-  author: 'Alex',
-  title: 'Hello World',
-  message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-  read: true,
-}];
 
 export class Message extends React.Component<MobileRouteProps, State> {
   public render () {
@@ -93,7 +21,7 @@ export class Message extends React.Component<MobileRouteProps, State> {
           <MessageMenu/>
         </NavBar>}>
         <Card style={topCardStle}>
-          <a className="is-text">mark all as read</a>
+          <a className="is-text" style={{color:'#d2646a'}}>全部标记已读</a>
         </Card>
         <Card style={contentCardStyle}>
           <List>

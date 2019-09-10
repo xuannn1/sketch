@@ -28,7 +28,6 @@ interface State {
 
 }
 
-
 export interface MobileRouteProps extends RouteComponentProps<any> {
   core:Core;
   path:string;
@@ -64,8 +63,8 @@ export const MobileRoute:RouteComponentType[] = [
   { path: '/status/all', component: Status },
 
   // message
-  { path: '/messages', component: Message },
   { path: '/messages/pm', component: PersonalMessage },
+  { path: '/messages', component: Message },
   // others
   { path: '/createquote', component: CreateQuote },
 ];
