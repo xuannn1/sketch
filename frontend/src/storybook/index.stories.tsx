@@ -330,8 +330,7 @@ storiesOf('Common Components', module)
         <p> 加载中请稍后</p>
       </div>
     </Loading>,
-  )
-;
+  );
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar

@@ -1,17 +1,18 @@
 import * as React from 'react';
 import { MobileRouteProps } from '../router';
-// import { StatusNav } from './nav';
 import { Page } from '../../components/common/page';
 import { List } from '../../components/common/list';
 import { NavBar } from '../../components/common/navbar';
 import { MessageMenu } from './message-menu';
 import { Card } from '../../components/common/card';
 import { Badge } from '../../components/common/badge';
+import ClampLines from 'react-clamp-lines';
 
 interface State {
 
 }
 
+// TODO: refactor styles, probably move to a css file
 const pageStyle:React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
@@ -44,38 +45,46 @@ const replyNotificationCardStyle:React.CSSProperties = {
   flexGrow: 1,
 };
 const replyMessageContentStyle:React.CSSProperties = {
-  height: '4.5em',
+  fontSize: '0.8em',
+  height: '3em',
   overflow: 'hidden',
+};
+const unreadStyle:React.CSSProperties = {
+  fontWeight:'bold',
 };
 
 // mock data
 const mockReplyNotifications = [{
   author: 'Alex',
   title: 'Hello World',
-  message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-},{
+  message: '个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息个人消息',
+  read: true,
+}, {
+  author: 'Alex',
+  title: 'Hello World',
+  message: 'Expanding the #down child to fill the remaining space of aa ss #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
+  read: false,
+}, {
   author: 'Alex',
   title: 'Hello World',
   message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-},{
+  read: false,
+}, {
   author: 'Alex',
   title: 'Hello World',
   message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-},{
+  read: false,
+}, {
   author: 'Alex',
   title: 'Hello World',
   message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-},{
+  read: true,
+}, {
   author: 'Alex',
   title: 'Hello World',
   message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
-},{
-  author: 'Alex',
-  title: 'Hello World',
-  message: 'Expanding the #down child to fill the remaining space of #container can be accomplished in various ways depending on the browser support you wish to achieve and whether or not #up has a defined height.',
+  read: true,
 }];
-
-// TODO: add multiline line truncation: http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
 
 export class Message extends React.Component<MobileRouteProps, State> {
   public render () {
@@ -105,8 +114,16 @@ export class Message extends React.Component<MobileRouteProps, State> {
         <List style={{background:'transparent'}}>
           {mockReplyNotifications.map((n, i) =>
           <List.Item key={i} style={{background:'white', marginBottom:'0.3em'}}>
-            <h6 className="title is-6">{n.author}回复了你的主题{n.title}</h6>
-            <div style={replyMessageContentStyle}>{n.message}</div>
+            <h6 className="is-6" style={n.read ? {} : unreadStyle}>{n.author}回复了你的主题{n.title}</h6>
+            <div style={replyMessageContentStyle}>
+              <ClampLines
+                text={n.message}
+                id={'text' + i}
+                lines={2}
+                ellipsis="..."
+                buttons={false}
+                innerElement="p"/>
+            </div>
           </List.Item>)}
         </List>
         </Card>
