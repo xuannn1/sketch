@@ -26,7 +26,7 @@ export class Slider extends React.Component<{
 }, {
   // state
 }> {
-  public static Item = SliderItem; 
+  public static Item = SliderItem;
 
   public render () {
     return <div className={classnames('slider-container', this.props.className)}

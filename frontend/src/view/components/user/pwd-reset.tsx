@@ -16,7 +16,7 @@ export class PasswordReset extends React.Component<Props, State> {
   public state = {
     email: '',
     errorMsg: '',
-  }
+  };
 
   public render () {
     return <Card>
@@ -30,9 +30,9 @@ export class PasswordReset extends React.Component<Props, State> {
         placeholder={this.placeholder}
         onChange={(ev) => this.setState({email: ev.target.value})} />
 
-      <br /> 
+      <br />
 
-      <a className="button is-normal is-fullwidth" onChange={(ev) => {
+      <a className="button is-normal is-fullwidth" onChange={async(ev) => {
         if (this.state.email === '') {
           this.setState({ errorMsg: '邮箱不能为空' });
           return;
@@ -41,7 +41,7 @@ export class PasswordReset extends React.Component<Props, State> {
           this.setState({ errorMsg: '邮箱格式不正确' });
           return;
         }
-        this.props.resetPassword(this.state.email);
+        await this.props.resetPassword(this.state.email);
       }}>发送重置邮件</a>
 
       </div>

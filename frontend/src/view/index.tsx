@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Core } from '../core';
-import { isMobile } from '../utils/mobile';
 import { MobileRouter } from './mobile/router';
 import { Router } from 'react-router-dom';
 
@@ -27,6 +26,6 @@ export class App extends React.Component<Props, State> {
       <Router history={this.props.core.history}>
         { this.renderApp() }
       </Router>
-    )
+    );
   }
 }

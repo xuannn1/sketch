@@ -71,7 +71,7 @@
       "check-open-brace",
       "check-whitespace"
     ],
-    "promise-function-async": true,
+    "promise-function-async": false,
     "quotemark": [true, "single", "avoid-escape", "jsx-double"],
     "semicolon": [true, "always"],
     "variable-name": [true, "ban-keywords"]

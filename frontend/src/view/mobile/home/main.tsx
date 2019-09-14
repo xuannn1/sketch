@@ -23,8 +23,8 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
       recent_responded_books: [],
       recent_responded_threads: [],
       recent_statuses: [],
-    }
-  }
+    },
+  };
 
   public async componentDidMount () {
     const data = await this.props.core.db.getPageHome();
@@ -63,7 +63,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
             name: '最新回复',
             children: this.state.data.recent_responded_books.map((book) => <BookPreview data={book} mini />),
             // more: '/books'
-          }
+          },
         ]}
       />
 
@@ -88,7 +88,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
             name: '最新动态',
             children: this.state.data.recent_statuses.map((status) => <StatusPreview status={status} />),
             // more: '/status/all',
-          }
+          },
         ]}
       />
     </Page>);

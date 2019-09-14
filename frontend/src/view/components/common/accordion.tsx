@@ -24,7 +24,7 @@ export class Accordion extends React.Component<Props, State> {
     this.setState((prevState) => {
       const expanded = !prevState.expanded;
       return { expanded };
-    })
+    });
   }
 
   public render () {

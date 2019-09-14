@@ -1,5 +1,5 @@
 import { History } from '.';
-import { ResData, ReqData, Increments, API } from '../config/api';
+import { ReqData, Increments, API } from '../config/api';
 import { parsePath, URLQuery } from '../utils/url';
 import { loadStorage, saveStorage } from '../utils/storage';
 import { ErrorMsg, ErrorCodeKeys } from '../config/error';
@@ -12,7 +12,7 @@ type FetchOptions = {
   pathInsert?:(number|string)[],
   errorMsg?:{[code:string]:string},
   errorCodes?:ErrorCodeKeys[],
-}
+};
 
 export class DB {
   private user:User;
@@ -30,6 +30,12 @@ export class DB {
     this.host = 'localhost'; // for test
     this.port = 8000; // for test
   }
+  private _handleError (code:number|string, msg:string) {
+    return new Error(JSON.stringify({
+      code,
+      msg,
+    }));
+  }
   private commonOption:RequestInit = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -38,7 +44,7 @@ export class DB {
     mode: 'cors',
   };
   private async _fetch<T extends JSONType> (path:string, reqInit:RequestInit, spec:FetchOptions = {}) {
-    const headers = Object.assign({}, this.commonOption.headers, reqInit['headers']||{});
+    const headers = Object.assign({}, this.commonOption.headers, reqInit['headers'] || {});
     const options = Object.assign({}, this.commonOption, reqInit, {headers});
     const token = loadStorage('token');
     if (token) {
@@ -57,42 +63,41 @@ export class DB {
       try {
         options.body = JSON.stringify(options.body);
       } catch (e) {
-        console.error(ErrorMsg.JSONParseError, e);
+        throw this._handleError(0, ErrorMsg.JSONParseError);
       }
-      return;
     }
+
     const url = `${this.protocol}://${this.host}:${this.port}${this.API_PREFIX}${_path}`;
     console.log(options.method, url, options.body);
 
     const errorMsgKeys = Object.keys(spec.errorMsg || {});
+
+    const handleErrorCodes = (code:ErrorCodeKeys) => {
+      if (spec.errorMsg && errorMsgKeys.indexOf('' + code) >= 0) {
+        throw this._handleError(code, spec.errorMsg[code]);
+      }
+      if (spec.errorCodes && spec.errorCodes.indexOf(code) >= 0) {
+        throw this._handleError(code, ErrorMsg[code]);
+      }
+    };
+
     try {
       const response = await fetch(url, options);
       const result = await response.json();
       if (!result.code || !result.data) {
-        console.error(ErrorMsg.JSONParseError, result);
-        return;
+        console.error('response:', result);
+        throw this._handleError(500, ErrorMsg.JSONParseError);
       }
       if (result.code === 200) {
         return result.data as T;
       }
-      return handleErrorCodes(result.code);
+      throw handleErrorCodes(result.code);
     } catch (e) {
-      console.error(ErrorMsg.FetchError, e);
-      return Promise.reject({code: 501, msg: ErrorMsg.FetchError});
-    }
-
-    function handleErrorCodes (code:ErrorCodeKeys) {
-      if (spec.errorMsg && errorMsgKeys.indexOf('' + code) >= 0) {
-        return Promise.reject({code, msg: spec.errorMsg[code]});
-      }
-      if (spec.errorCodes && spec.errorCodes.indexOf(code) >= 0) {
-        return Promise.reject({code, msg: ErrorMsg[code]});
-      }
-      return;
+      throw this._handleError(501, ErrorMsg.FetchError);
     }
   }
-  private async _get<Path extends keyof API.Get> (path:Path, ops:FetchOptions = {}) {
-    return await this._fetch<API.Get[Path]>(path, {method: 'GET'}, ops);
+  private _get<Path extends keyof API.Get> (path:Path, ops:FetchOptions = {}) {
+    return this._fetch<API.Get[Path]>(path, {method: 'GET'}, ops);
   }
   private _post<Path extends keyof API.Post> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Post[Path]>(path, {method: 'POST'}, ops);
@@ -100,9 +105,9 @@ export class DB {
   private _patch<Path extends keyof API.Patch> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Patch[Path]>(path, {method: 'PATCH'}, ops);
   }
-  private _put<Path extends keyof API.Put> (path:Path, ops:FetchOptions = {}) {
-    return this._fetch<API.Put[Path]>(path, {method: 'PUT'}, ops);
-  }
+  // private _put<Path extends keyof API.Put> (path:Path, ops:FetchOptions = {}) {
+  //   return this._fetch<API.Put[Path]>(path, {method: 'PUT'}, ops);
+  // }
   private _delete<Path extends keyof API.Delete> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Delete[Path]>(path, {method: 'DELETE'}, ops);
   }
@@ -146,7 +151,7 @@ export class DB {
       pathInsert: [userId],
       body: {keep_updated},
       errorCodes: [401, 403, 404, 412],
-    })
+    });
   }
   public getFollowingIndex (userId:number) {
     return this._get(`/user/$0/following`, {
@@ -273,7 +278,7 @@ export class DB {
   }
   public getThread (id:number, query?:{
     page?:number,
-    ordered?:ReqData.Thread.ordered
+    ordered?:ReqData.Thread.ordered,
   }) {
     return this._get(`/thread/$0`, {
       pathInsert: [id],
@@ -363,7 +368,7 @@ export class DB {
       query: {
         withType,
       },
-    })
+    });
   }
 
   // User System
@@ -384,7 +389,7 @@ export class DB {
     saveStorage('token', res.token);
     return true;
   }
-  public async login (email:string, password:string, backto?:string) {
+  public async login (email:string, password:string, backTo?:string) {
     const res = await this._post('/login', {
       body: {
         email,
@@ -397,7 +402,7 @@ export class DB {
     if (!res) { return false; }
     this.user.isLogin = true;
     saveStorage('token', res.token);
-    backto ? this.history.push(backto) : this.history.push('/');
+    backTo ? this.history.push(backTo) : this.history.push('/');
     return true;
   }
   public resetPassword (email:string) {
@@ -417,6 +422,6 @@ export class DB {
   }
   public getNoTongrenTags () {
     // fixme:
-    return [];
+    return new Promise<[]>((resolve) => resolve([]));
   }
 }

@@ -3,7 +3,7 @@ import { loadStorage, saveStorage } from '../utils/storage';
 
 export class User {
   private history:History;
-  
+
   public isLogin = false;
   public name = '';
 

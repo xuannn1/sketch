@@ -1,9 +1,9 @@
 export type BasicType = string|number|boolean;
 export type URLQuery = {[key:string]:BasicType|BasicType[]|undefined};
 export function parsePath (path:string, query:URLQuery) {
-  let res = path;
+  const res = path;
 
-  let obj = Object.assign({}, query);
+  const obj = Object.assign({}, query);
   // const matches = path.match(/:\w+/g);
 
   // if (matches) {
@@ -94,7 +94,7 @@ export class URLParser {
         this.queries[query] = false;
       } else {
         this.queries[query] = value;
-      } 
+      }
     } else {
       this.queries[query] = value;
     }

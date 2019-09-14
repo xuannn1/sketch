@@ -19,28 +19,28 @@ export class Badge extends React.Component<Props, State> {
   public render() {
 
     const {hidden, num, dot, max, children, style} = this.props;
-    
-    let value = "";
-    let max_value:number = max || 99;
+
+    let value = '';
+    const max_value:number = max || 99;
     let hidden_value = hidden ;
-   
-    if(num) {
-      if(num <= 0) {
+
+    if (num) {
+      if (num <= 0) {
         hidden_value = true;
       }
 
-      if(num > max_value) {
-        value = max_value + "+";
-      }else {
-        value = "" + num;
+      if (num > max_value) {
+        value = max_value + '+';
+      } else {
+        value = '' + num;
       }
     }
 
-    let style_name = "badge_content";
-    if(dot) {
-      style_name = style_name + " " + "is_dot";
+    let style_name = 'badge_content';
+    if (dot) {
+      style_name = style_name + ' ' + 'is_dot';
     }
-    
+
     return (
       <div className="badge" style={style || {}}>
         {children}
@@ -52,4 +52,3 @@ export class Badge extends React.Component<Props, State> {
     );
   }
 }
-

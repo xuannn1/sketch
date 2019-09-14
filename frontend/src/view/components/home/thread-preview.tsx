@@ -28,7 +28,7 @@ export class ThreadPreview extends React.Component<Props, State> {
       </span>}
       <Link className="title"
         to={`/thread/${id}`}>{attributes.title}</Link>
-    </div> 
+    </div>
 
     <div className="second-line">
       {attributes.brief}
@@ -48,8 +48,8 @@ export class ThreadPreview extends React.Component<Props, State> {
 
       {
         !mini && <span className="counters">
-          <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 
-          <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span>  
+          <span><i className="fas fa-eye"></i>{attributes.view_count}</span> /
+          <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span>
         </span>
       }
     </div>

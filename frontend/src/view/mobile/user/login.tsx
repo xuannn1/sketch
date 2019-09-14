@@ -6,7 +6,6 @@ import { NavBar } from '../../components/common/navbar';
 import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 
-
 interface State {
 }
 
@@ -25,13 +24,13 @@ export class LoginRoute extends React.Component<MobileRouteProps, State> {
     switch (window.location.pathname) {
       case '/login':
         this.location = 'login';
-        return <Login login={async (email, pwd) => 
-          this.props.location.state && 
-          this.props.location.state.from?
+        return <Login login={async (email, pwd) =>
+          this.props.location.state &&
+          this.props.location.state.from ?
             await this.props.core.db.login(
               email,
               pwd,
-              this.props.location.state.from) : 
+              this.props.location.state.from) :
               await this.props.core.db.login(email, pwd) }></Login>;
       case '/register':
         this.location = 'register';

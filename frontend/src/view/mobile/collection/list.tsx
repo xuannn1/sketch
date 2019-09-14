@@ -8,7 +8,6 @@ import { Pagination } from '../../components/common/pagination';
 import { Card } from '../../components/common/card';
 import { List } from '../../components/common/list';
 
-
 interface State {
     data:API.Get['/collection'];
 }

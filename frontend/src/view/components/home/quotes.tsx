@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Carousel } from '../common/carousel';
-import { ResData, } from '../../../config/api';
+import { ResData } from '../../../config/api';
 import { Core } from '../../../core/index';
 
 interface Props {
@@ -28,7 +28,7 @@ export class Quotes extends React.Component<Props, State> {
             <div>——{quote.attributes.is_anonymous ? quote.attributes.majia : quote.author.attributes.name}</div>
           </div>,
         )}
-        getIndex={(index) => {this.setState({index : index})}}
+        getIndex={(index) => { this.setState({index : index}); }}
         indicator={true}
         startIndex={this.state.index}
       />

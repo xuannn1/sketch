@@ -11,7 +11,7 @@
     "noImplicitReturns": true,
     "noImplicitAny": false,
     "outDir": "dist",
-    "rootDirs": ["src", "stories"],
+    "rootDirs": ["src"],
     "plugins": [
       {
         "name": "tslint-language-service"

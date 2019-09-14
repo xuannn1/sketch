@@ -15,7 +15,7 @@ export class ChapterList extends React.Component<Props, State> {
   public render () {
     return <Card className="book-chapters">
       {this.props.chapters.map((chapter, i) =>
-        <Link to={`/book/${this.props.bookId}/chapter/${chapter.id}`} key={i}>{chapter.attributes.title}</Link>
+        <Link to={`/book/${this.props.bookId}/chapter/${chapter.id}`} key={i}>{chapter.attributes.title}</Link>,
       )}
     </Card>;
   }

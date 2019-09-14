@@ -1,10 +1,10 @@
-import { DB } from "./db";
-import { User } from "./user";
+import { DB } from './db';
+import { User } from './user';
 import createHistory from 'history/createBrowserHistory';
 import { History, UnregisterCallback } from 'history';
 import { EventBus } from '../utils/events';
 import * as _ from 'lodash/core';
-import { TagHandler } from "./tag-handler";
+import { TagHandler } from './tag-handler';
 const debounce = require('lodash/debounce');
 
 export type History = History;

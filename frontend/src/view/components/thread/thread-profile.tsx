@@ -29,16 +29,15 @@ export class ThreadProfile extends React.Component<Props, State> {
       { tags &&
         <div className="intro">
           <div className="tags">
-            {tags.map((tag, i) => 
+            {tags.map((tag, i) =>
               <Link key={i} to={`/book-tag/${tag.id}`}>{tag.attributes.tag_name}</Link>)}
           </div>
-        </div> 
+        </div>
       }
-
 
       <div className="counters">
         <span><i className="fas fa-pencil-alt"></i>{attributes.total_char}</span> /
-        <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 
+        <span><i className="fas fa-eye"></i>{attributes.view_count}</span> /
         <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span> /
         <span><i className="fas fa-download"></i>{attributes.download_count}</span>
       </div>

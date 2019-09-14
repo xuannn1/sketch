@@ -5,7 +5,7 @@ export function HomeMenu () {
   const items = [
     {to:'/', label: '首页'},
     {to:'/homebook', label: '文库'},
-    {to:'/homethread', label: '论坛'}, 
+    {to:'/homethread', label: '论坛'},
   ];
   let onIndex = 0;
   for (let i = 0; i < items.length; i ++) {

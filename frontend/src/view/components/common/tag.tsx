@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { classnames } from '../../../utils/classname';
 
-type TagColor = 'black'|'dark'|'light'|'white'|'primary'|'link'|'info'|'success'|'warning'|'danger'; 
+type TagColor = 'black'|'dark'|'light'|'white'|'primary'|'link'|'info'|'success'|'warning'|'danger';
 
 export class Tag extends React.Component<{
   // props
@@ -21,7 +21,7 @@ export class Tag extends React.Component<{
 }> {
   public state = {
     selected: this.props.selected || false,
-  }
+  };
 
   public render () {
     const selectedColor = this.props.selectedColor ? 'is-' + this.props.selectedColor : 'is-warning';
@@ -34,7 +34,7 @@ export class Tag extends React.Component<{
         size,
         {'is-rounded': this.props.rounded},
         {[selectedColor]: this.props.selectable && this.state.selected},
-        {[color]: this.props.selectable && !this.state.selected}
+        {[color]: this.props.selectable && !this.state.selected},
       )}
       style={this.props.style}
       onClick={() => {

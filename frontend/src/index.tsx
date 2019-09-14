@@ -9,7 +9,7 @@ import '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
 import './theme.scss';
 
-(async function () {
+async function run () {
   const core = new Core();
 
   const root = document.createElement('div');
@@ -20,4 +20,6 @@ import './theme.scss';
     <App core={core} />,
     root,
   );
-})();
+}
+
+run().catch(console.error);

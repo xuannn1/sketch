@@ -19,13 +19,13 @@ export class NavBar extends React.Component<Props, State> {
       minHeight: '2.25rem',
       backgroundColor: 'white',
       position: 'relative',
-    }, this.props.style || {})}
+    },                               this.props.style || {})}
       className="navbar"
       role="navigation"
       aria-label="main navigation">
 
       <div className="navbar-brand">
-        <a className="navbar-item prev" onClick={this.goBack}>&#10094;</a> 
+        <a className="navbar-item prev" onClick={this.goBack}>&#10094;</a>
       </div>
 
       <div className="navbar-start" style={{
@@ -35,7 +35,7 @@ export class NavBar extends React.Component<Props, State> {
       }}>
         {this.props.children}
       </div>
-      
+
       <div className="navbar-end" style={{width: '32.14px'}}>
         {this.props.onMenuClick &&
             <div className="navbar-item" onClick={this.props.onMenuClick} style={{

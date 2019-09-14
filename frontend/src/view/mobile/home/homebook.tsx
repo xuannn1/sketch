@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { API, ResData, ReqData } from '../../../config/api';
+import { API, ResData } from '../../../config/api';
 import { TagFilter } from '../../components/common/tag-filter';
 import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
@@ -59,14 +59,14 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
           },
           {
             name: '往期',
-            children: this.state.data.random_short_recommendations.map(this.renderRecomPreivew)
+            children: this.state.data.random_short_recommendations.map(this.renderRecomPreivew),
           },
         ]}
       />
-      
+
       <Card>
         <Slider>
-          {this.state.data.recent_custom_short_recommendations.map(data => this.renderRecomPreivew(data, data.id))}
+          {this.state.data.recent_custom_short_recommendations.map((data) => this.renderRecomPreivew(data, data.id))}
         </Slider>
       </Card>
 
@@ -91,7 +91,7 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
             name: '最新回复',
             children: this.state.data.recent_responded_books.map(this.renderBookPreview),
             // more: `/books`,
-          } 
+          },
         ]}
       />
     </Page>);
@@ -106,20 +106,14 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
   }
 
   public loadData (tags?:number[]) {
-    (async () => {
-      const data = await this.props.core.db.getPageHomeBook();
-      if (data) {
-        this.setState({data});
-      }
-    })();
+    this.props.core.db.getPageHomeBook()
+      .then((data) => this.setState({data}))
+      .catch(console.error);
   }
 
   public loadNoTongrenTags () {
-    (async () => {
-      const tags = await this.props.core.db.getNoTongrenTags();
-      if (tags) {
-        this.setState({tags});
-      }
-    })();
+    this.props.core.db.getNoTongrenTags()
+      .then((tags) => this.setState({tags}))
+      .catch(console.error);
   }
 }

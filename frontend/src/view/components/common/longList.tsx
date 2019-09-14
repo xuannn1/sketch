@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { classnames } from '../../../utils/classname';
-import { List } from './list';
 import './list.scss';
 
 export interface LongListProps {

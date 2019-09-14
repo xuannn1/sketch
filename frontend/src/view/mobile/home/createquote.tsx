@@ -6,10 +6,10 @@ import { Card } from '../../components/common/card';
 import { NoticeBar } from '../../components/common/notice-bar';
 
 interface State {
-  body: string
-  isAnonymous: boolean
-  majia: string
-  errorMsg: string
+  body:string;
+  isAnonymous:boolean;
+  majia:string;
+  errorMsg:string;
   // createQuote: (body:string, is_anonymous:boolean, majia: string) => Promise<APIPost['/quote']['res'] | null>;
 }
 
@@ -19,25 +19,25 @@ export class CreateQuote extends React.Component<MobileRouteProps, State> {
     isAnonymous: false,
     majia: '',
     errorMsg: '',
-  }
+  };
 
-  public createQuote = async (body: string, isAnonymous: boolean, majia) =>
+  public createQuote = async (body:string, isAnonymous:boolean, majia) =>
     await this.props.core.db.addQuote({
       body,
       is_anonymous: isAnonymous,
-      majia: isAnonymous ? majia : undefined
-    });
+      majia: isAnonymous ? majia : undefined,
+    })
 
   public render () {
     return <Page
         top={<NavBar goBack={this.props.core.history.goBack}>
-          创建题头 
+          创建题头
         </NavBar>}>
       {this.props.core.user.isLoggedIn() &&
         <Card>
           {this.state.errorMsg && <NoticeBar>{this.state.errorMsg}</NoticeBar>}
           新题头：
-          <textarea className="textarea" 
+          <textarea className="textarea"
             placeholder="不丧不成活~"
             rows={5}
             value={this.state.body}
@@ -51,15 +51,15 @@ export class CreateQuote extends React.Component<MobileRouteProps, State> {
           </div>
 
           <label className="checkbox">
-            <input type="checkbox" 
+            <input type="checkbox"
               checked={this.state.isAnonymous}
               onChange={(ev) => this.setState({isAnonymous: ev.target.checked})}
               />
             马甲？
           </label>
           {this.state.isAnonymous &&
-          <input className="input" 
-            type="text" 
+          <input className="input"
+            type="text"
             value={this.state.majia}
             onChange={(ev) => this.setState({majia: ev.target.value})}
           />
@@ -68,28 +68,24 @@ export class CreateQuote extends React.Component<MobileRouteProps, State> {
           <a className="button is-full-width" onClick={async (ev) => {
             if (this.state.body === '') {
               this.setState({errorMsg: '题头正文 不能为空。'});
-            }
-            else if (this.state.body.length > 80) {
+            } else if (this.state.body.length > 80) {
               this.setState({errorMsg: '题头不能超过80个字符。'});
-            }
-            else if (this.state.isAnonymous && this.state.majia === '') {
-              this.setState({errorMsg: '马甲不能为空。'})
-            }
-            else {
+            } else if (this.state.isAnonymous && this.state.majia === '') {
+              this.setState({errorMsg: '马甲不能为空。'});
+            } else {
               const res = await this.createQuote(this.state.body, this.state.isAnonymous, this.state.majia);
               if (!res) { /* TOFIX: 现在只处理422错误 */
                 // this.setState({errorMsg: '提交失败。'})
-                this.setState({errorMsg: '题头已存在，请勿重复提交。'})
-              }
-              else {
-                this.setState({body: '', errorMsg: ''})
+                this.setState({errorMsg: '题头已存在，请勿重复提交。'});
+              } else {
+                this.setState({body: '', errorMsg: ''});
                 /* TODO: 提示提交成功 */
               }
             }
           }}>
             提交
           </a>
-        </Card> 
+        </Card>
       }
 
       {/* 未登录 */
@@ -98,6 +94,6 @@ export class CreateQuote extends React.Component<MobileRouteProps, State> {
           用户未登录
         </Card>
       }
-    </Page>
+    </Page>;
   }
 }

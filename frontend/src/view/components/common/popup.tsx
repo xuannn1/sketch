@@ -24,7 +24,7 @@ export class Popup extends React.Component <{
         <div className={'modal-background'}
           onClick={() => props.onClose()}
           style={{
-            background: `rgba(10, 10, 10, ${this.props.darkBackground})`
+            background: `rgba(10, 10, 10, ${this.props.darkBackground})`,
         }}></div>
       }
 
@@ -47,7 +47,7 @@ export class Popup extends React.Component <{
           margin: 0,
           position: props.bottom ? 'fixed' : undefined,
           bottom: props.bottom || undefined,
-        }, props.style || {})}>
+        },                   props.style || {})}>
           {props.children}
       </div>;
     }

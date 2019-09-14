@@ -21,7 +21,7 @@ export class Book extends React.Component<MobileRouteProps, State> {
       most_upvoted: ResData.allocPost(),
       top_review: null,
       paginate: ResData.allocThreadPaginate(),
-    }
+    },
   };
 
   public async componentDidMount () {
@@ -34,13 +34,13 @@ export class Book extends React.Component<MobileRouteProps, State> {
   public render () {
     const { data } = this.state;
     return (
-      <Page 
+      <Page
         top={
           <NavBar goBack={this.props.core.history.goBack}>
             <div className="buttons">
               <Anchor className="button" isDisabled={true} to={''}>目录模式</Anchor>
               <Anchor className="button" to={'' /* fixme: */}>论坛模式</Anchor>
-            </div> 
+            </div>
           </NavBar>}
         >
         <ThreadProfile thread={data.thread} />

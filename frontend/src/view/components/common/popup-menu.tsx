@@ -16,7 +16,7 @@ export class PopupMenu extends React.Component<Props, State> {
   public readonly timeout = 500;
   public state:State = {
     onClosing: false,
-  }
+  };
   public render () {
     const name = this.state.onClosing ? 'slideOutDown' : 'slideInUp';
     const listStyle:React.CSSProperties = {
