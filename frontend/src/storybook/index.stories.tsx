@@ -19,6 +19,7 @@ import { Center } from '../view/components/common/center';
 import { Dropdown } from '../view/components/common/dropdown';
 import { FilterBar } from '../view/components/common/filter-bar';
 import { List } from '../view/components/common/list';
+import { LongList } from '../view/components/common/longList';
 import { Mark } from '../view/components/common/mark';
 import { NavBar } from '../view/components/common/navbar';
 import { Popup } from '../view/components/common/popup';
@@ -46,7 +47,7 @@ storiesOf('Common Components', module)
       dot={boolean('dot', false)}
       hidden={boolean('hidden', false)}>
       {text('text', 'test')}
-    </Badge>
+    </Badge>,
   )
   .add('Tag', () => {
     const colorOptions = {
@@ -69,7 +70,7 @@ storiesOf('Common Components', module)
         normal: 'normal',
         medium: 'medium',
         large: 'large',
-      }, 'normal')}
+      },           'normal')}
       color={select('color', colorOptions, '')}
       selectedColor={select('selectedColor', colorOptions)}
       rounded={boolean('rounded', false)}
@@ -92,23 +93,23 @@ storiesOf('Common Components', module)
     };
     return <TagList>
       {(new Array(number('length', 20)).fill(text('text', 'tag')).map((text, i) => <Tag
-        key={i} 
+        key={i}
         onClick={action('tag click ' + i)}
         size={select('size', {
           normal: 'normal',
           medium: 'medium',
           large: 'large',
-        }, 'normal')}
+        },           'normal')}
         color={select('color', colorOptions, '')}
         selectedColor={select('selectedColor', colorOptions)}
         rounded={boolean('rounded', false)}
         selectable={boolean('selectable', true)}
       >{text}</Tag>))}
-    </TagList>
+    </TagList>;
   })
 
   .add('FilterBar', () => {
-    return <FilterBar></FilterBar>
+    return <FilterBar></FilterBar>;
   })
   .add('Popup', () => React.createElement(class extends React.Component {
     public state = {
@@ -129,7 +130,7 @@ storiesOf('Common Components', module)
       </div>;
     }
   }))
-  .add('Center', () => <Center width={text('width', '')} height={text('height','')}>
+  .add('Center', () => <Center width={text('width', '')} height={text('height', '')}>
     <div>center anything</div>
   </Center>)
   .add('List', () => <List>
@@ -140,6 +141,57 @@ storiesOf('Common Components', module)
       {item}
     </List.Item>)}
   </List>)
+  .add('LongList', () => React.createElement(class extends React.Component {
+    public state = {
+      items: [],
+      isLoading: true,
+      cursor: 0,
+    };
+
+    public componentDidMount() {
+      // do some paginated fetch
+      this.loadMore();
+    }
+
+    public apiCall = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      return ['a', 'a', 'a', 'a', 'a'];
+    }
+
+    public loadMore = () => {
+      // throttle could be implemented here, or in api service
+      this.setState({ isLoading: true, error: undefined });
+      this.apiCall().then((res) => {
+        this.setState({
+          items: [...this.state.items, ...res],
+          isLoading: false,
+          });
+        },
+                          (error) => {
+            this.setState({ isLoading: false, error });
+          });
+      }
+
+      public render() {
+        return (
+          <LongList
+            isLoading={this.state.isLoading}
+            hasMore={true}
+            onLoadMore={this.loadMore}
+          >
+            {this.state.items.map((item, i) => (
+              <List.Item
+                key={i}
+                onClick={() => alert('click item ' + item)}
+                arrow={boolean('arrow', false)}
+              >
+                {item}
+              </List.Item>
+              ))}
+          </LongList>
+        );
+      }
+    }))
   .add('Accordion', () => <Accordion
     title={text('title', 'accordion title')}
     arrow={boolean('arrow', true)}
@@ -158,7 +210,7 @@ storiesOf('Common Components', module)
       const items = [
         {to: '', label: 'menu1'},
         {to: '', label: 'menu2'},
-        {to: '', label: 'menu3'}
+        {to: '', label: 'menu3'},
       ];
       if (this.state.icon) {
         for (let i = 0; i < items.length; i ++) {
@@ -177,13 +229,13 @@ storiesOf('Common Components', module)
       </Router>;
     }
   }))
-  .add('Mark', () => <Mark length={number('length', 5)} 
+  .add('Mark', () => <Mark length={number('length', 5)}
       mark={boolean('disabled', false) ? 4 : undefined}
-      onClick={action('onClick')} />
+      onClick={action('onClick')} />,
   )
-  .add('Slider', () => 
+  .add('Slider', () =>
     <Slider>
-      {[1, 2, 3, 4, 5, 6, 7].map((i) => 
+      {[1, 2, 3, 4, 5, 6, 7].map((i) =>
         <Slider.Item key={i}>
           <Card style={{
             width: '70px',
@@ -196,9 +248,9 @@ storiesOf('Common Components', module)
               card {i}
             </Center>
           </Card>
-        </Slider.Item>
+        </Slider.Item>,
       )}
-    </Slider>
+    </Slider>,
   )
   .add('tab', () => {
     const tabContent = [1, 2, 3, 4, 5].map((tab) => {
@@ -206,17 +258,17 @@ storiesOf('Common Components', module)
         name: 'tab' + tab,
         children: <List noBorder>
           {[1, 2, 3, 4].map((item) =>
-            <List.Item key={item}>tab {tab} list-item {item}</List.Item>
+            <List.Item key={item}>tab {tab} list-item {item}</List.Item>,
           )}
-        </List>
-      }
+        </List>,
+      };
     });
     return <Tab
       tabs={tabContent}
       onClickTab={action('onClickTab')}
     />;
   })
-  .add('popup menu', () => React.createElement(class extends React.Component<{}, {showPopup: boolean}> {
+  .add('popup menu', () => React.createElement(class extends React.Component<{}, {showPopup:boolean}> {
     public state = {
       showPopup: true,
     };
@@ -233,12 +285,12 @@ storiesOf('Common Components', module)
           ]}
           onClose={() => this.setState({showPopup: false})}
         />}
-    </div>; 
+    </div>;
     }
   }))
   .add('animation', () => <Animate
     name={select('name', {
-      slideInUp: 'slideInUp',    
+      slideInUp: 'slideInUp',
       slideOutUp: 'slideOutUp',
       slideInDown: 'slideInDown',
       slideOutDown: 'slideOutDown',
@@ -278,8 +330,7 @@ storiesOf('Common Components', module)
         <p> 加载中请稍后</p>
       </div>
     </Loading>,
-  )
-;
+  );
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar
@@ -288,7 +339,7 @@ storiesOf('Common Components/Notice Bar', module)
     onClick={action('onClick')}
     customizeLink={(() => {
       if (boolean('customizeLink', false)) {
-        return <div>go</div>
+        return <div>go</div>;
       }
       return undefined;
     })()}
@@ -296,7 +347,7 @@ storiesOf('Common Components/Notice Bar', module)
   </NoticeBar>)
   .add('long message', () => <NoticeBar
     icon={text('icon', 'fas fa-bullhorn')}
-    closable={boolean('closable', true)} 
+    closable={boolean('closable', true)}
     onClick={action('onClick')}
   >
     example super super super super super super super super super super super super super super super super super super long notice message

@@ -17,7 +17,7 @@ class ListItem extends React.Component<{
       style={this.props.style}
       onClick={this.props.onClick}>
       {this.props.arrow && <div className="list-arrow">
-        <i className="fas fa-angle-right"></i>
+        <i className="fas fa-angle-right icon"></i>
       </div>}
       {this.props.children}
     </div>;
@@ -33,7 +33,7 @@ export class List extends React.Component<{
 }, {
   //state
 }> {
-  public static Item = ListItem; 
+  public static Item = ListItem;
 
   public render () {
     return <div className={classnames('list', this.props.className)}

@@ -34,7 +34,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
   }
 
   public render () {
-    return (<Page 
+    return (<Page
       bottom={<MainMenu />}
       top={<HomeMenu />} >
       <Quotes

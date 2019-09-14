@@ -7,6 +7,7 @@ interface Props {
   num?:number;
   max?:number;
   children?:React.ReactNode;
+  style?:React.CSSProperties;
 }
 
 interface State {
@@ -17,7 +18,7 @@ export class Badge extends React.Component<Props, State> {
 
   public render() {
 
-    const {hidden, num, dot, max, children} = this.props;
+    const {hidden, num, dot, max, children, style} = this.props;
     
     let value = "";
     let max_value:number = max || 99;
@@ -41,7 +42,7 @@ export class Badge extends React.Component<Props, State> {
     }
     
     return (
-      <div className="badge">
+      <div className="badge" style={style || {}}>
         {children}
         {!hidden_value &&
         <sup className={`${style_name}`}>
