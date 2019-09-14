@@ -4,7 +4,6 @@ import { Profile } from './profile';
 import { Redirect } from 'react-router';
 import { Page } from '../../components/common/page';
 
-
 interface State {
 
 }
@@ -19,13 +18,13 @@ export class User extends React.Component<MobileRouteProps, State> {
     </div>);
   }
   public render() {
-    const isLogin = this.props.core.user.isLoggedIn()
+    const isLogin = this.props.core.user.isLoggedIn();
     return (
       <Page>
         {isLogin ? this.renderProfile() : <Redirect to={{ pathname: './login', state: { from: this.props.location } }}></Redirect>}
       </Page>
 
-    )
+    );
 
   }
 }

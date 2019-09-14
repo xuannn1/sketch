@@ -31,17 +31,17 @@ export namespace ResData {
         body: '',
       },
       author: allocUser(),
-    }
+    };
   }
 
   export interface User {
     type:'user';
     id:number;
-    attributes:Database.User_Default;
+    attributes:Database.UserDefault;
     followInfo?:{
       keep_updated:boolean;
       is_updated:boolean;
-    }
+    };
   }
 
   export function allocUser () : User {
@@ -136,10 +136,10 @@ export namespace ResData {
   }
 
   export interface Review {
-    type:'review',
+    type:'review';
     id:number;
-    attributes:{},
-    reviewee:Database.Thread,
+    attributes:{};
+    reviewee:Database.Thread;
   }
 
   export function allocReview () {
@@ -148,7 +148,7 @@ export namespace ResData {
       id: 0,
       attributes: {},
       reviewee: allocThread(),
-    }
+    };
   }
 
   export interface Recommendation {
@@ -159,7 +159,7 @@ export namespace ResData {
       body:string;
       type:'long'|'shot';
       created_at:Database.Timestamp;
-    }
+    };
     authors:User[];
   }
 
@@ -241,7 +241,7 @@ export namespace ResData {
         created_at: '',
       },
       user: allocUser(),
-    }
+    };
   }
 
   export interface Title {
@@ -323,7 +323,7 @@ export namespace ReqData {
 
     export enum ordered {
       oldest,
-      latest
+      latest,
     }
 
     export enum read {
@@ -394,13 +394,13 @@ export namespace API {
       recent_responded_books:ResData.Thread[],
       recent_responded_threads:ResData.Thread[],
       recent_statuses:ResData.Status[],
-    }
+    };
     '/homethread':{
       [idx:string]:{
         channel:ResData.Channel,
         threads:ResData.Thread[],
-      }
-    }
+      },
+    };
     '/homebook':{
       recent_long_recommendations:ResData.Post[],
       recent_short_recommendations:ResData.Post[],
@@ -410,54 +410,54 @@ export namespace API {
       recent_added_chapter_books:ResData.Thread[],
       recent_responded_books:ResData.Thread[],
       highest_jifen_books:ResData.Thread[],
-      most_collected_books:ResData.Thread[] 
-    }
+      most_collected_books:ResData.Thread[],
+    };
     '/user/$0/following':{
       user:ResData.User,
       followings:ResData.User[],
       paginate:ResData.ThreadPaginate,
-    }
+    };
     '/user/$0/followingStatuses':{
       user:ResData.User,
       followingStatuses:ResData.User[],
       paginate:ResData.ThreadPaginate,
-    }
+    };
     '/user/$0/follower':{
       user:ResData.User,
       followers:ResData.User[],
       paginate:ResData.ThreadPaginate,
-    }
+    };
     '/user/$0/message':{
       messages:ResData.Message[],
       paginate:ResData.ThreadPaginate,
-      style: ReqData.Message.style,
-    }
+      style:ReqData.Message.style,
+    };
     '/config/titles':{
-      titles:ResData.Title[]
-    }
+      titles:ResData.Title[],
+    };
     '/user/$0/title':{
       user:ResData.User,
       titles:ResData.Title[],
       paginate:ResData.ThreadPaginate,
-    }
+    };
     '/vote':{
       votes:ResData.Vote[],
-      paginate:ResData.ThreadPaginate
-    }
+      paginate:ResData.ThreadPaginate,
+    };
     '/thread':{
       threads:ResData.Thread[],
       paginate:ResData.ThreadPaginate,
-    }
+    };
     '/thread/$0':{
       thread:ResData.Thread,
       posts:ResData.Post[],
-      paginate:ResData.ThreadPaginate
-    }
+      paginate:ResData.ThreadPaginate,
+    };
     '/thread/$0/post':{
       thread:ResData.Thread,
       posts:ResData.Post[],
       paginate:ResData.ThreadPaginate,
-    }
+    };
     '/book/$0':{
       thread:ResData.Thread,
       chapters:ResData.Post[],
@@ -465,40 +465,40 @@ export namespace API {
       paginate:ResData.ThreadPaginate,
       most_upvoted:ResData.Post,
       top_review:null|ResData.Post,
-    }
+    };
     '/collection':{ // fixme: need check
       threads:ResData.Thread[],
       paginate:ResData.ThreadPaginate,
-    }
+    };
     '/config/noTongrenTags':ResData.Tag[]; // fixme:
   }
 
   export interface Post {
     '/user/$0/follow':{
       user:ResData.User,
-    }
+    };
     '/message':{
       message:ResData.Message,
-    }
+    };
     '/groupmessage':{
-      messages:ResData.Message[]
-    }
+      messages:ResData.Message[],
+    };
     '/publicnotce':{
-      public_notice:ResData.PublicNotice
-    }
-    '/vote':ResData.Vote,
+      public_notice:ResData.PublicNotice,
+    };
+    '/vote':ResData.Vote;
     '/thread/$0/chapter':any; //fixme:
     '/thread/$0/collect':ResData.Collection;
     '/register':{
       token:string;
       name:string;
       id:number;
-    }
+    };
     '/login':{
       token:string;
       name:string;
-      id:number; 
-    }
+      id:number;
+    };
     '/quote':any; //fixme:
   }
 
@@ -509,13 +509,13 @@ export namespace API {
     '/user/$0/title/$1':{
       user:ResData.User,
       title:ResData.Title,
-    }
+    };
   }
 
   export interface Delete {
-    '/user/$0/follow': {
-      user:ResData.User
-    }
+    '/user/$0/follow':{
+      user:ResData.User,
+    };
     '/vote/$0':string;
   }
 

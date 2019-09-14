@@ -28,7 +28,7 @@ export function checkObject (src:object, target:object) {
     if (isNormalType(targetValue)) {
       continue;
     }
-    
+
     if (targetValue instanceof Function) {
       return false;
     }
@@ -36,7 +36,7 @@ export function checkObject (src:object, target:object) {
     if (targetValue instanceof Array) {
       valid = src[prop] instanceof Array;
       continue;
-    } 
+    }
 
     valid = checkObject(src[prop], targetValue);
   }
@@ -53,7 +53,7 @@ export function checkArray (src:any[], target) {
     if (isNormalType(v)) {
       return typeof v === typeof target;
     }
-    
+
     if (v instanceof Function) {
       return false;
     }

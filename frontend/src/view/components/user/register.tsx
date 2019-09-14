@@ -117,7 +117,7 @@ export class Register extends React.Component<Props, State> {
             const success = await this.props.register(this.state.username, this.state.email, this.state.pwd);
             if (!success) {
               // todo:
-              this.setState({errMsg: '注册失败'})
+              this.setState({errMsg: '注册失败'});
             }
           }
         }}>注册</a>

@@ -6,7 +6,7 @@ export namespace Database {
   export type Increments = number;
   export type Timestamp = string;
 
-  export interface User_Default {
+  export interface UserDefault {
     id?:Increments;
     name:string;
     email?:string;
@@ -18,7 +18,7 @@ export namespace Database {
     title_id?:Increments;
   }
 
-  export interface User_Info {
+  export interface UserInfo {
     user_id?:Increments;
     user_level?:number;
     last_login_ip?:IPAddress;
@@ -51,7 +51,7 @@ export namespace Database {
     // daily_book_characters?:number;
     // daily_comment_characters?:number;
   }
-  export interface User_Profile {
+  export interface UserProfile {
     user_id?:Increments;
     description?:string;
     use_markdown?:boolean;
@@ -187,7 +187,7 @@ export namespace Database {
     user_count?:UInt;
   }
 
-  export interface User_Role {
+  export interface UserRole {
     user_id?:Increments;
     role?:string;
     reason?:string;

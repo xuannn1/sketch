@@ -33,7 +33,7 @@ export class Pagination extends React.Component <{
   style?:React.CSSProperties,
   className?:string,
   currentPage:number,
-  lastPage:number, 
+  lastPage:number,
 }, {}> {
   public FirstShowPages = 3;
   public MiddleShowPages = 10;
@@ -42,7 +42,7 @@ export class Pagination extends React.Component <{
   public render () {
     const pages = new Array(this.props.lastPage);
     pages.fill(0);
-  
+
     return <Card className={this.props.className}
       style={Object.assign({}, this.props.style || {})}>
       <nav className="pagination is-centered is-small" role="navigation" aria-label="pagination">

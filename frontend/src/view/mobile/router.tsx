@@ -34,9 +34,9 @@ export interface MobileRouteProps extends RouteComponentProps<any> {
 }
 export type RouteComponentType = {
   path:string;
-  component:React.ComponentClass<MobileRouteProps,any>;
+  component:React.ComponentClass<MobileRouteProps, any>;
   exact?:boolean;
-}
+};
 export const MobileRoute:RouteComponentType[] = [
   // home
   { path: '/', component: HomeMain, exact: true },
@@ -87,7 +87,7 @@ export class MobileRouter extends React.Component<Props, State> {
                 ...props,
               },
             )}
-          />
+          />,
         )}
       </Switch>
     </div>);

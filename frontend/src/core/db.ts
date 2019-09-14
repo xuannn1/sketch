@@ -1,5 +1,5 @@
 import { History } from '.';
-import { ResData, ReqData, Increments, API } from '../config/api';
+import { ReqData, Increments, API } from '../config/api';
 import { parsePath, URLQuery } from '../utils/url';
 import { loadStorage, saveStorage } from '../utils/storage';
 import { ErrorMsg, ErrorCodeKeys } from '../config/error';
@@ -30,6 +30,12 @@ export class DB {
     this.host = 'localhost'; // for test
     this.port = 8000; // for test
   }
+  private _handleError (code:number|string, msg:string) {
+    return new Error(JSON.stringify({
+      code,
+      msg,
+    }));
+  }
   private commonOption:RequestInit = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -57,69 +63,68 @@ export class DB {
       try {
         options.body = JSON.stringify(options.body);
       } catch (e) {
-        console.error(ErrorMsg.JSONParseError, e);
+        throw this._handleError(0, ErrorMsg.JSONParseError);
       }
-      return;
     }
+
     const url = `${this.protocol}://${this.host}:${this.port}${this.API_PREFIX}${_path}`;
     console.log(options.method, url, options.body);
 
     const errorMsgKeys = Object.keys(spec.errorMsg || {});
+
+    const handleErrorCodes = (code:ErrorCodeKeys) => {
+      if (spec.errorMsg && errorMsgKeys.indexOf('' + code) >= 0) {
+        throw this._handleError(code, spec.errorMsg[code]);
+      }
+      if (spec.errorCodes && spec.errorCodes.indexOf(code) >= 0) {
+        throw this._handleError(code, ErrorMsg[code]);
+      }
+    };
+
     try {
       const response = await fetch(url, options);
       const result = await response.json();
       if (!result.code || !result.data) {
-        console.error(ErrorMsg.JSONParseError, result);
-        return;
+        console.error('response:', result);
+        throw this._handleError(500, ErrorMsg.JSONParseError);
       }
       if (result.code === 200) {
         return result.data as T;
       }
-      return handleErrorCodes(result.code);
+      throw handleErrorCodes(result.code);
     } catch (e) {
-      console.error(ErrorMsg.FetchError, e);
-      return Promise.reject({code: 501, msg: ErrorMsg.FetchError});
-    }
-
-    function handleErrorCodes (code:ErrorCodeKeys) {
-      if (spec.errorMsg && errorMsgKeys.indexOf('' + code) >= 0) {
-        return Promise.reject({code, msg: spec.errorMsg[code]});
-      }
-      if (spec.errorCodes && spec.errorCodes.indexOf(code) >= 0) {
-        return Promise.reject({code, msg: ErrorMsg[code]});
-      }
-      return;
+      throw this._handleError(501, ErrorMsg.FetchError);
     }
   }
-  private async _get<Path extends keyof API.Get> (path:Path, ops:FetchOptions = {}) {
-    return await this._fetch<API.Get[Path]>(path, {method: 'GET'}, ops);
+  private _get<Path extends keyof API.Get> (path:Path, ops:FetchOptions = {}) {
+    return this._fetch<API.Get[Path]>(path, {method: 'GET'}, ops);
   }
-  private async _post<Path extends keyof API.Post> (path:Path, ops:FetchOptions = {}) {
+  private _post<Path extends keyof API.Post> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Post[Path]>(path, {method: 'POST'}, ops);
   }
-  private async _patch<Path extends keyof API.Patch> (path:Path, ops:FetchOptions = {}) {
+  private _patch<Path extends keyof API.Patch> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Patch[Path]>(path, {method: 'PATCH'}, ops);
   }
-  private async _put<Path extends keyof API.Put> (path:Path, ops:FetchOptions = {}) {
-    return this._fetch<API.Put[Path]>(path, {method: 'PUT'}, ops);
-  }
-  private async _delete<Path extends keyof API.Delete> (path:Path, ops:FetchOptions = {}) {
+  // private _put<Path extends keyof API.Put> (path:Path, ops:FetchOptions = {}) {
+  //   return this._fetch<API.Put[Path]>(path, {method: 'PUT'}, ops);
+  // }
+  private _delete<Path extends keyof API.Delete> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Delete[Path]>(path, {method: 'DELETE'}, ops);
   }
 
   // page
-  public async getPageHome () {
+  public getPageHome () {
     return this._get('/');
   }
-  public async getPageHomeThread () {
+  public getPageHomeThread () {
     return this._get('/homethread');
   }
-  public async getPageHomeBook () {
+  public getPageHomeBook () {
     return this._get('/homebook');
   }
 
   // follow system
-  public async followUser (userId:number) {
+  public followUser (userId:number) {
     return this._post(`/user/$0/follow`, {
       pathInsert: [userId],
       errorCodes: [401],
@@ -130,7 +135,7 @@ export class DB {
       },
     });
   }
-  public async unFollowUser (userId:number) {
+  public unFollowUser (userId:number) {
     return this._delete(`/user/$0/follow`, {
       pathInsert: [userId],
       errorCodes: [401],
@@ -141,26 +146,26 @@ export class DB {
       },
     });
   }
-  public async updateFollowStatus (userId:number, keep_updated:boolean) {
+  public updateFollowStatus (userId:number, keep_updated:boolean) {
     return this._patch(`/user/$0/follow`, {
       pathInsert: [userId],
       body: {keep_updated},
       errorCodes: [401, 403, 404, 412],
     });
   }
-  public async getFollowingIndex (userId:number) {
+  public getFollowingIndex (userId:number) {
     return this._get(`/user/$0/following`, {
       pathInsert: [userId],
       errorCodes: [401],
     });
   }
-  public async getFollowingStatuses (userId:number) {
+  public getFollowingStatuses (userId:number) {
     return this._get(`/user/$0/followingStatuses`, {
       pathInsert: [userId],
       errorCodes: [401],
     });
   }
-  public async getFollowers (userId:number) {
+  public getFollowers (userId:number) {
     return this._get(`/user/$0/follower`, {
       pathInsert: [userId],
       errorCodes: [401],
@@ -168,7 +173,7 @@ export class DB {
   }
 
   // Message System
-  public async sendMessage (toUserId:number, content:string) {
+  public sendMessage (toUserId:number, content:string) {
     return this._post('/message', {
       body: {
         sendTo: toUserId,
@@ -177,7 +182,7 @@ export class DB {
       errorCodes: [403],
     });
   }
-  public async sendGroupMessage (toUsers:number[], content:string) {
+  public sendGroupMessage (toUsers:number[], content:string) {
     return this._post('/groupmessage', {
       body: {
         sendTos: toUsers,
@@ -189,7 +194,7 @@ export class DB {
       },
     });
   }
-  public async getMessages (id:number, query:{
+  public getMessages (id:number, query:{
     withStyle:ReqData.Message.style;
     chatWith:Increments;
     ordered?:ReqData.Message.ordered;
@@ -200,7 +205,7 @@ export class DB {
       query,
     });
   }
-  public async sendPublicNotice (content:string) {
+  public sendPublicNotice (content:string) {
     return this._post('/publicnotce', {
       body: {
         body: content,
@@ -210,16 +215,16 @@ export class DB {
   }
 
   // User Title System
-  public async getAllTitles () {
+  public getAllTitles () {
     return this._get('/config/titles');
   }
-  public async getUserTitles (userId:number) {
+  public getUserTitles (userId:number) {
     return this._get(`/user/$0/title`, {
       pathInsert: [userId],
       errorCodes: [401],
     });
   }
-  public async updateTitleStatus (userId:number, titleId:number, status:ReqData.Title.status) {
+  public updateTitleStatus (userId:number, titleId:number, status:ReqData.Title.status) {
     return this._patch(`/user/$0/title/$1`, {
       pathInsert: [userId, titleId],
       body: {
@@ -230,7 +235,7 @@ export class DB {
   }
 
   // Vote System
-  public async vote (type:ReqData.Vote.type, id:number, attitude:ReqData.Vote.attitude) {
+  public vote (type:ReqData.Vote.type, id:number, attitude:ReqData.Vote.attitude) {
     return this._post('/vote', {
       body: {
         votable_type: type,
@@ -244,7 +249,7 @@ export class DB {
       },
     });
   }
-  public async getVotes (type:ReqData.Vote.type, id:number, attitude?:ReqData.Vote.attitude) {
+  public getVotes (type:ReqData.Vote.type, id:number, attitude?:ReqData.Vote.attitude) {
     return this._get('/vote', {
       query: {
         votable_type: type,
@@ -253,12 +258,12 @@ export class DB {
       },
     });
   }
-  public async deleteVote (voteId:number) {
+  public deleteVote (voteId:number) {
     return this._delete(`/vote/$0`);
   }
 
   // Thread System
-  public async getThreadList (query?:{
+  public getThreadList (query?:{
     channels?:number[],
     tags?:number[],
     excludeTag?:number[],
@@ -271,7 +276,7 @@ export class DB {
       query,
     });
   }
-  public async getThread (id:number, query?:{
+  public getThread (id:number, query?:{
     page?:number,
     ordered?:ReqData.Thread.ordered,
   }) {
@@ -280,7 +285,7 @@ export class DB {
       query,
     });
   }
-  public async getThreadPosts (threadId:number, query?:{
+  public getThreadPosts (threadId:number, query?:{
     withType?:ReqData.Post.withType,
     withComponent?:ReqData.Post.withComponent,
     userOnly?:number, // user id
@@ -292,12 +297,12 @@ export class DB {
       query,
     });
   }
-  public async turnToPost (threadId:number, postId:number) {
+  public turnToPost (threadId:number, postId:number) {
     return this._patch(`/thread/$0/post/$1/turnToPost`, {
       pathInsert: [threadId, postId],
     });
   }
-  public async updateThreadTags (threadId:number, tags:number[]) {
+  public updateThreadTags (threadId:number, tags:number[]) {
     return this._patch(`/thread/$0/synctags`, {
       pathInsert: [threadId],
       body: {
@@ -332,7 +337,7 @@ export class DB {
   // }
 
   // Book System
-  public async addChapterToThread (threadId:number, chapter:{
+  public addChapterToThread (threadId:number, chapter:{
     title:string;
     brief:string;
     body:string;
@@ -344,7 +349,7 @@ export class DB {
       body: chapter,
     });
   }
-  public async getBook (id:number, page?:number) {
+  public getBook (id:number, page?:number) {
     const query = page ? { page } : undefined;
     return this._get('/book/$0', {
       pathInsert: [id],
@@ -353,12 +358,12 @@ export class DB {
   }
 
   // Collection System
-  public async collectThread (threadId:number) {
+  public collectThread (threadId:number) {
     return this._post(`/thread/$0/collect`, {
       pathInsert: [threadId],
     });
   }
-  public async getCollection (withType?:ReqData.Collection.type) {
+  public getCollection (withType?:ReqData.Collection.type) {
     return this._get('/collection', {
       query: {
         withType,
@@ -400,7 +405,7 @@ export class DB {
     backTo ? this.history.push(backTo) : this.history.push('/');
     return true;
   }
-  public async resetPassword (email:string) {
+  public resetPassword (email:string) {
     // fixme:
     return new Promise<boolean>((resolve) => resolve(true));
   }
@@ -408,7 +413,7 @@ export class DB {
   // Status System
 
   // others
-  public async addQuote (body:{
+  public addQuote (body:{
     body:string;
     is_anonymous?:boolean;
     majia?:string;
@@ -417,6 +422,6 @@ export class DB {
   }
   public getNoTongrenTags () {
     // fixme:
-    return [];
+    return new Promise<[]>((resolve) => resolve([]));
   }
 }

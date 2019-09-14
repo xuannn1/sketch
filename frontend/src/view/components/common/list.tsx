@@ -40,7 +40,7 @@ export class List extends React.Component<{
         style={Object.assign({
           border: this.props.noBorder ? 'none' : undefined,
           boxShadow: this.props.noBorder ? 'none' : undefined,
-        }, this.props.style || {})}>
+        },                   this.props.style || {})}>
       {this.props.children}
     </div>;
   }

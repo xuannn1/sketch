@@ -51,7 +51,7 @@ export class TagFilter extends React.Component<Props, State> {
             this.selectedTags.push(tag);
           }
         }
-        this.firstLoad = false
+        this.firstLoad = false;
       }
     }
 
@@ -65,7 +65,7 @@ export class TagFilter extends React.Component<Props, State> {
         renderTagList = this.renderInitTags;
       }
     }
-    
+
     return <Card className="book-tags">
       {renderTagList()}
     </Card>;
@@ -86,13 +86,13 @@ export class TagFilter extends React.Component<Props, State> {
               this.props.search(this.getTagsPathname(), this.selectedTagIds);
             }}
             selectable
-        >{tag.attributes.tag_name}</Tag>;})}
+        >{tag.attributes.tag_name}</Tag>; })}
         <Tag onClick={() => {
           this.showFullList = true;
           this.props.getFullList();
         }}>更多</Tag>
       </div>
-    </div>
+    </div>;
   }
 
   public renderInitTags = () => {
@@ -100,11 +100,11 @@ export class TagFilter extends React.Component<Props, State> {
     return <div className="short_list">
       {this.renderChannels()}
       <TagList>
-        {tags.map((tag) => 
+        {tags.map((tag) =>
           <Tag
             onClick={() => {
               this.clickTag(tag);
-              this.props.search(this.getTagsPathname() ,this.selectedTagIds);
+              this.props.search(this.getTagsPathname() , this.selectedTagIds);
             }}
             selectable
             key={tag.id}>{tag.attributes.tag_name}</Tag>)}
@@ -154,17 +154,17 @@ export class TagFilter extends React.Component<Props, State> {
           <TagList>
             <span>{type}</span>
             {tagTypes[type].map((tag) => {
-              const idx = this.selectedTagIds.indexOf(tag.id)
+              const selectedTagIndex = this.selectedTagIds.indexOf(tag.id);
               return <Tag
                 onClick={() => {
                   this.clickTag(tag);
                 }}
                 selectable
-                selected={idx >= 0}
-                key={tag.id}>{tag.attributes.tag_name}</Tag>; 
+                selected={selectedTagIndex >= 0}
+                key={tag.id}>{tag.attributes.tag_name}</Tag>;
             })}
           </TagList>
-        </div>     
+        </div>,
       )}
       <div className="li">
         <a className="button is-fullwidth" onClick={() => {}}>点击加载同人标签</a>
@@ -209,6 +209,6 @@ class Channel extends React.Component<{
         }
         return url.getPathname();
       })()}
-    >{this.props.text}</Link>
+    >{this.props.text}</Link>;
   }
 }

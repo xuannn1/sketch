@@ -6,8 +6,8 @@ interface Props {
   onClick?:(mark:number) => void;
 }
 interface State {
-  currentValue:number, 
-  value:number,
+  currentValue:number;
+  value:number;
 }
 
 export class Mark extends React.Component<Props, State> {
@@ -18,46 +18,46 @@ export class Mark extends React.Component<Props, State> {
     this.state = {
       currentValue: -1,
       value: -1,
-    }
+    };
   }
 
   private selectValue(value:number) {
     const {onClick, mark} = this.props;
-    if(mark) {
+    if (mark) {
       return;
     }
 
     this.setState({
       currentValue: value,
       value,
-    }, () => {
-      onClick && onClick(value + 1)
+    },            () => {
+      onClick && onClick(value + 1);
     });
   }
 
   private setCurrentValue(value:number) {
 
     const {mark} = this.props;
-    if(mark) {
+    if (mark) {
       return;
     }
 
     this.setState({
-      currentValue: value
+      currentValue: value,
     });
   }
 
   private resetCurrentValue() {
 
     const {mark} = this.props;
-    if(mark) {
+    if (mark) {
       return;
     }
 
     this.setState((prevState) => ({
-      currentValue: prevState.value
+      currentValue: prevState.value,
     }));
-    
+
   }
 
   public render () {
@@ -66,20 +66,20 @@ export class Mark extends React.Component<Props, State> {
 
     return (
       <div>
-        {(new Array(length)).fill("").map((v, k) => (
-          <span 
-            style={{cursor: mark ? "auto" : "pointer"}}
+        {(new Array(length)).fill('').map((v, k) => (
+          <span
+            style={{cursor: mark ? 'auto' : 'pointer'}}
             onMouseMove={(e) => this.setCurrentValue(k)}
             onMouseLeave={() => this.resetCurrentValue()}
             onClick={() => this.selectValue(k)}
             key={k}
-          > 
+          >
             <i className={
                 k <= (mark === undefined ? currentValue : mark - 1)
-                  ? "fas fa-star"
-                  : "far fa-star"
+                  ? 'fas fa-star'
+                  : 'far fa-star'
             }>
-            </i> 
+            </i>
           </span>
         ))}
       </div>

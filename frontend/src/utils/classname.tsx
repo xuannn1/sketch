@@ -2,7 +2,7 @@ type clnBasicType = string|undefined;
 type clnType = {[cln:string]:boolean|undefined}|clnBasicType;
 
 export function classnames (firstName:clnType, ...args:clnType[]) {
-  let cln:string[] = [];
+  const cln:string[] = [];
   addToClassname(cln, firstName);
   for (let i = 0; i < args.length; i ++) {
     addToClassname(cln, args[i]);

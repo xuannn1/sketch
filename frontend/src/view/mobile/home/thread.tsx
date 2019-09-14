@@ -7,7 +7,6 @@ import { Post } from '../../components/thread/post';
 import { Page } from '../../components/common/page';
 import { Pagination } from '../../components/common/pagination';
 
-
 interface State {
   data:API.Get['/thread/$0'];
 }
@@ -27,7 +26,7 @@ export class Thread extends React.Component<MobileRouteProps, State> {
 
     const data = await this.props.core.db.getThread(+id, {
       page: url.getQuery('page'),
-    })
+    });
     if (data) {
       this.setState({data});
     }

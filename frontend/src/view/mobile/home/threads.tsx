@@ -25,7 +25,7 @@ export class Threads extends React.Component<MobileRouteProps, State> {
   public unlisten:UnregisterCallback|null = null;
   public componentDidMount () {
     this.loadData();
-    this.props.core.history.listen(() => this.loadData())
+    this.props.core.history.listen(() => this.loadData());
   }
 
   public componentWillUnmount () {
@@ -44,20 +44,17 @@ export class Threads extends React.Component<MobileRouteProps, State> {
   }
 
   public loadData () {
-    (async () => {
       const url = new URLParser();
       if (url.getAllPath()[0] !== this.props.path) { return; }
 
-      const data = await this.props.core.db.getThreadList({
+      this.props.core.db.getThreadList({
         page: url.getQuery('page'),
         tags: url.getQuery('tags'),
         channels: url.getQuery('channels'),
         withType: ReqData.Thread.withType.thread,
         ordered: url.getQuery('ordered'),
-      });
-      if (data) {
-        this.setState({data});
-      }
-    })();
+      })
+        .then((data) => this.setState({data}))
+        .catch(console.error);
   }
 }

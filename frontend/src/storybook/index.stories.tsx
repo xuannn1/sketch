@@ -92,7 +92,7 @@ storiesOf('Common Components', module)
       danger: 'danger',
     };
     return <TagList>
-      {(new Array(number('length', 20)).fill(text('text', 'tag')).map((text, i) => <Tag
+      {(new Array(number('length', 20)).fill(text('text', 'tag')).map((content, i) => <Tag
         key={i}
         onClick={action('tag click ' + i)}
         size={select('size', {
@@ -104,7 +104,7 @@ storiesOf('Common Components', module)
         selectedColor={select('selectedColor', colorOptions)}
         rounded={boolean('rounded', false)}
         selectable={boolean('selectable', true)}
-      >{text}</Tag>))}
+      >{content}</Tag>))}
     </TagList>;
   })
 

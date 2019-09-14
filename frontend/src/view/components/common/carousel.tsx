@@ -71,7 +71,7 @@ export class Carousel extends React.Component<Props, State> {
   const speed = 20;
 
   this.toggleTransition(true);
-  
+
   const step = (dt) => {
     const move = dir * speed;
     this.lastOffset += move;
@@ -83,7 +83,7 @@ export class Carousel extends React.Component<Props, State> {
     } else {
     requestAnimationFrame(step);
     }
-  }
+  };
   requestAnimationFrame(step);
   }
 
@@ -94,7 +94,7 @@ export class Carousel extends React.Component<Props, State> {
   public handleDrag = (x:number) => {
   this.endX = x;
   this.toggleTransition(false);
-  
+
   const dx = this.endX - this.startX;
   this.translate(dx + this.lastOffset);
   }
@@ -194,11 +194,10 @@ export class Carousel extends React.Component<Props, State> {
             }}
             ref={(el) => el && (this.slider = el)}>
 
-            { this.props.slides.map((slide, i) => 
+            { this.props.slides.map((slide, i) =>
               <div key={i} className="slide">{slide}</div>)
             }
           </div>
-
 
         </div>
       </div>
@@ -208,7 +207,7 @@ export class Carousel extends React.Component<Props, State> {
 
       { this.props.indicator &&
         <div className="indicator">
-          { this.props.slides.map((el, i) => 
+          { this.props.slides.map((el, i) =>
             <span key={i}
               className={`dot ${this.current === i && 'active'}`}
               onClick={() => this.slideTo(this.getSlideOffset(i))}>
@@ -216,8 +215,8 @@ export class Carousel extends React.Component<Props, State> {
           }
         </div>
       }
-      
-      { this.props.afterSlides && 
+
+      { this.props.afterSlides &&
         <div className="after-slide">
           { this.props.afterSlides }
         </div>

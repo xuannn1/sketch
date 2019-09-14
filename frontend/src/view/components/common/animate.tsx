@@ -2,12 +2,12 @@ import * as React from 'react';
 import './animate_slide.scss';
 import { classnames } from '../../../utils/classname';
 
-export type AnimateName = 
+export type AnimateName =
   'slideInUp' |
   'slideOutUp' |
   'slideInDown' |
   'slideOutDown' |
-  'slideInRight' | 
+  'slideInRight' |
   'slideOutRight' |
   'slideInLeft' |
   'slideOutLeft';
@@ -46,6 +46,6 @@ export class Animate extends React.Component<Props, State> {
       }}
     >
       {this.props.children}
-    </div>
+    </div>;
   }
 }

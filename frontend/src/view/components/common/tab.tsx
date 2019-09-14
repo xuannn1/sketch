@@ -11,10 +11,10 @@ export class Tab extends React.Component<{
 }> {
   public state = {
     onTab: 0,
-  }
+  };
 
   public render () {
-    const tab = this.props.tabs[this.state.onTab];
+    const onTab = this.props.tabs[this.state.onTab];
 
     return <Card className={classnames('tab-card', this.props.className)}>
       <div className="tabs is-boxed">
@@ -28,7 +28,7 @@ export class Tab extends React.Component<{
         </ul>
       </div>
       <div className="tab-content">
-        {tab.children}
+        {onTab.children}
       </div>
     </Card>;
   }

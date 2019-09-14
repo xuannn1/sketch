@@ -4,7 +4,7 @@ import { RouteMenu } from '../components/common/route-menu';
 export function MainMenu () {
   const items = [
     {to:'/', label: 'home'},
-    {to:'/status/all',label: 'status'},
+    {to:'/status/all', label: 'status'},
     {to:'/collection/book', label: 'collection'},
     {to:'/user', label: 'user'},
   ];
@@ -18,5 +18,5 @@ export function MainMenu () {
   return <RouteMenu
     onIndex={onIndex}
     items={items}
-  />
+  />;
 }

@@ -13,7 +13,7 @@ export function Page (props:{
     { props.top &&
       <div className="top">
         {props.top}
-      </div> 
+      </div>
     }
 
     <div className={classnames('body', props.className)} style={props.style}>
@@ -23,8 +23,8 @@ export function Page (props:{
     { props.bottom &&
       <div className="bottom">
         {props.bottom}
-      </div> 
+      </div>
     }
 
-  </div>; 
+  </div>;
 }

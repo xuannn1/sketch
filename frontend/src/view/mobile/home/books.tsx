@@ -36,31 +36,27 @@ export class Books extends React.Component<MobileRouteProps, State> {
   }
 
   public loadData (tags?:number[]) {
-    (async () => {
-      const url = new URLParser();
-      if (url.getAllPath()[0] !== this.props.path) { return; }
+    const url = new URLParser();
+    if (url.getAllPath()[0] !== this.props.path) { return; }
 
-      const data = await this.props.core.db.getThreadList({
-        page: url.getQuery('page'),
-        tags: tags || url.getQuery('tags'),
-        channels: url.getQuery('channels'),
-        withType: ReqData.Thread.withType.book,
-        ordered: url.getQuery('ordered'),
-      });
-      if (data) {
+    this.props.core.db.getThreadList({
+      page: url.getQuery('page'),
+      tags: tags || url.getQuery('tags'),
+      channels: url.getQuery('channels'),
+      withType: ReqData.Thread.withType.book,
+      ordered: url.getQuery('ordered'),
+    })
+      .then((data) => {
         this.setState({data});
-      }
-      this.loadNoTongrenTags();
-    })();
+        this.loadNoTongrenTags();
+      })
+      .catch(console.error);
   }
 
   public loadNoTongrenTags () {
-    (async () => {
-      const tags = await this.props.core.db.getNoTongrenTags();
-      if (tags) {
-        this.setState({tags});
-      }
-    })();
+    this.props.core.db.getNoTongrenTags()
+      .then((tags) => this.setState({tags}))
+      .catch(console.error);
   }
 
   public render () {

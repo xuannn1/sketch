@@ -93,6 +93,6 @@ export class Dropdown<T extends string|number> extends React.Component<Props<T>,
             className="dropdown-item">{item.text}</span>)}
         </div>
       </div>
-    </div>
+    </div>;
   }
 }

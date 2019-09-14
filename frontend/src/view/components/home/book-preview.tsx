@@ -28,10 +28,10 @@ export class BookPreview extends React.Component<Props, State> {
       }
       { !mini && tags &&
         <div className="tags">
-          { tags.map((tag, i) => 
-            <Link className="tag" key={i} to={`/books/?tags=[${tag.id}]`}>{tag.attributes.tag_name}</Link>
+          { tags.map((tag, i) =>
+            <Link className="tag" key={i} to={`/books/?tags=[${tag.id}]`}>{tag.attributes.tag_name}</Link>,
           )}
-        </div> 
+        </div>
       }
       <div className="meta">
         <Link className="author" to={`/user/${author.id}`}>{author.attributes.name}</Link>
@@ -45,7 +45,7 @@ export class BookPreview extends React.Component<Props, State> {
         {
           !mini &&  <div className="counters">
           <span><i className="fas fa-pencil-alt"></i>{attributes.total_char}</span> /
-          <span><i className="fas fa-eye"></i>{attributes.view_count}</span> / 
+          <span><i className="fas fa-eye"></i>{attributes.view_count}</span> /
           <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span> /
         </div>
         }

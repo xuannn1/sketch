@@ -9,7 +9,7 @@ type MenuItem = {
   icon?:string;
   defaultColor?:string;
   selectedColor?:string;
-}
+};
 
 interface Props {
   items:MenuItem[];
@@ -31,7 +31,7 @@ export class RouteMenu extends React.Component<Props, State> {
           key={item.to + item.label + selected}
           onClick={() => this.props.onClick && this.props.onClick(item, i)}>
           {item.icon && <div style={{
-            color: selected ? (item.selectedColor || '') : (item.defaultColor || ''), 
+            color: selected ? (item.selectedColor || '') : (item.defaultColor || ''),
           }}>
             <i className={item.icon}></i>
           </div>}
@@ -39,7 +39,7 @@ export class RouteMenu extends React.Component<Props, State> {
             key={i}
             to={item.to}
           >{item.label}</Link>
-        </div>
+        </div>;
       })}
     </div>;
   }

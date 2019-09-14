@@ -65,7 +65,7 @@ export class Login extends React.Component<Props, State> {
           } else {
             const success = await this.props.login(this.state.email, this.state.password);
             if (!success) {
-              this.setState({errMsg: '用户名或密码错误。'})
+              this.setState({errMsg: '用户名或密码错误。'});
             }
           }
         }}>登录</a>

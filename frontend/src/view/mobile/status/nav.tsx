@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteMenu } from "../../components/common/route-menu";
+import { RouteMenu } from '../../components/common/route-menu';
 
 export function StatusNav () {
   return <RouteMenu

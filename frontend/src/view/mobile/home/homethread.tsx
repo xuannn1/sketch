@@ -24,7 +24,7 @@ export class HomeThread extends React.Component<MobileRouteProps, State> {
   }
 
   public render () {
-    const { data } = this.state; 
+    const { data } = this.state;
     const channelIdx = Object.keys(data);
     return <Page top={<HomeMenu />}>
       {channelIdx.map((idx) =>
