@@ -2,7 +2,7 @@ import * as React from 'react';
 import { API } from '../../../config/api';
 import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
-import { ThreadPreview } from '../../components/home/thread-preview';
+import { ThreadPreview } from '../../components/thread/thread-preview';
 import { Page } from '../../components/common/page';
 import { Card } from '../../components/common/card';
 import { List } from '../../components/common/list';
@@ -11,6 +11,7 @@ interface State {
   data:API.Get['/homethread'];
 }
 
+/*
 export class HomeThread extends React.Component<MobileRouteProps, State> {
   public state:State = {
     data: {},
@@ -37,3 +38,4 @@ export class HomeThread extends React.Component<MobileRouteProps, State> {
     </Page>;
   }
 }
+*/

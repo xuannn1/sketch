@@ -5,6 +5,7 @@ import { History, UnregisterCallback } from 'history';
 import { EventBus } from '../utils/events';
 import * as _ from 'lodash/core';
 import { TagHandler } from './tag-handler';
+import { Page } from './page';
 const debounce = require('lodash/debounce');
 
 export type History = History;
@@ -16,6 +17,7 @@ export class Core {
   public history:History;
   public unlistenHistory:UnregisterCallback;
   public windowResizeEvent:EventBus<void>;
+  public toPage:Page;
 
   constructor () {
     this.history = createHistory();
@@ -23,6 +25,7 @@ export class Core {
       console.log(action, location.pathname, location.state);
     });
 
+    this.toPage = new Page(this.history);
     this.tag = new TagHandler();
     this.user = new User(this.history);
     this.db = new DB(this.user, this.history);

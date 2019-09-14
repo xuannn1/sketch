@@ -12,6 +12,7 @@ interface State {
   data:API.Get['/book/$0'];
 }
 
+/*
 export class Book extends React.Component<MobileRouteProps, State> {
   public state:State = {
     data: {
@@ -39,7 +40,7 @@ export class Book extends React.Component<MobileRouteProps, State> {
           <NavBar goBack={this.props.core.history.goBack}>
             <div className="buttons">
               <Anchor className="button" isDisabled={true} to={''}>目录模式</Anchor>
-              <Anchor className="button" to={'' /* fixme: */}>论坛模式</Anchor>
+              <Anchor className="button" to={''}>论坛模式</Anchor>
             </div>
           </NavBar>}
         >
@@ -53,3 +54,4 @@ export class Book extends React.Component<MobileRouteProps, State> {
     );
   }
 }
+*/

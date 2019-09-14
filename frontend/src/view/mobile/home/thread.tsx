@@ -11,6 +11,7 @@ interface State {
   data:API.Get['/thread/$0'];
 }
 
+/*
 export class Thread extends React.Component<MobileRouteProps, State> {
   public state = {
     data: {
@@ -41,9 +42,10 @@ export class Thread extends React.Component<MobileRouteProps, State> {
           </NavBar>
         }
       >
-      {/* <ThreadProfile data={thread} /> */}
+      <ThreadProfile data={thread} />
       {posts.map((post, idx) => <Post data={post} key={idx} />)}
       <Pagination currentPage={paginate.current_page} lastPage={paginate.total_pages} />
     </Page>;
   }
 }
+*/

@@ -34,6 +34,8 @@ import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
+import { ThreadPreview } from '../view/components/thread/thread-preview';
+import { randomCnWords } from '../utils/fake';
 
 const core = new Core();
 
@@ -420,4 +422,57 @@ storiesOf('User Components', module)
 ;
 
 storiesOf('Thread Components', module)
+  .add('list preview', () => <Card>
+    <ThreadPreview
+      mini={boolean('mini', false)}
+      data={{
+        type: 'thread',
+        id: 1,
+        attributes: {
+          title: randomCnWords(number('title', 20), 0.15),
+          brief: randomCnWords(number('brief', 40), 0.2),
+          view_count: number('view', 200),
+          reply_count: number('reply', 40),
+          channel_id: 1,
+        },
+        last_post: {
+          type: 'post',
+          id: 1,
+          attributes: {
+            title: randomCnWords(number('post title', 40), 0.2),
+            body: '',
+          },
+        },
+        author: {
+          id: 1,
+          attributes: {
+            name: randomCnWords(number('author name', 3), 0),
+          },
+          type: 'user',
+        },
+        tags: [
+          {
+            type: 'tag',
+            id: 1,
+            attributes: {
+              tag_name: '日常闲聊',
+              tag_type: '',
+            },
+          },
+        ],
+      }}
+      onTagClick={action('toChannelTag')}
+      onClick={action('onClick')}
+      onUserClick={action('onUserClick')}
+    />
+  </Card>)
+;
+
+storiesOf('Message Components', module)
+;
+
+storiesOf('Status Components', module)
+;
+
+storiesOf('Collection Components', module)
 ;

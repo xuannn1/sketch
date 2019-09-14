@@ -3,7 +3,7 @@ import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
 import { API, ResData, ReqData } from '../../../config/api';
 import { URLParser } from '../../../utils/url';
-import { ThreadPreview } from '../../components/home/thread-preview';
+import { ThreadPreview } from '../../components/thread/thread-preview';
 import { UnregisterCallback } from 'history';
 import { Page } from '../../components/common/page';
 import { Pagination } from '../../components/common/pagination';
@@ -14,6 +14,7 @@ interface State {
   data:API.Get['/thread'];
 }
 
+/*
 export class Threads extends React.Component<MobileRouteProps, State> {
   public state:State = {
     data: {
@@ -58,3 +59,4 @@ export class Threads extends React.Component<MobileRouteProps, State> {
         .catch(console.error);
   }
 }
+*/

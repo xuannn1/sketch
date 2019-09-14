@@ -15,6 +15,7 @@ interface State {
   tags:API.Get['/config/noTongrenTags'];
 }
 
+/*
 export class HomeBook extends React.Component<MobileRouteProps, State> {
   public state:State = {
     data: {
@@ -117,3 +118,4 @@ export class HomeBook extends React.Component<MobileRouteProps, State> {
       .catch(console.error);
   }
 }
+*/

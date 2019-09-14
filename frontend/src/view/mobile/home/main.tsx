@@ -5,7 +5,7 @@ import { API } from '../../../config/api';
 import { HomeMenu } from './home-menu';
 import { MobileRouteProps } from '../router';
 import { BookPreview } from '../../components/home/book-preview';
-import { ThreadPreview } from '../../components/home/thread-preview';
+import { ThreadPreview } from '../../components/thread/thread-preview';
 import { StatusPreview } from '../../components/home/status-preview';
 import { Page } from '../../components/common/page';
 import { Card } from '../../components/common/card';
@@ -51,46 +51,6 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
       }
 
       {/* <Recommendation recommendations={this.state.data.recommendation} core={this.props.core} /> */}
-
-      <Tab
-        tabs={[
-          {
-            name: '最新更新',
-            children: this.state.data.recent_added_chapter_books.map((book) => <BookPreview data={book} mini />),
-            // more: '/books?ordered=latest_added_component',
-          },
-          {
-            name: '最新回复',
-            children: this.state.data.recent_responded_books.map((book) => <BookPreview data={book} mini />),
-            // more: '/books'
-          },
-        ]}
-      />
-
-      <Tab
-        tabs={[
-          {
-            name: '最新讨论',
-            children: this.state.data.recent_responded_threads.map((thread) => <ThreadPreview data={thread} mini />),
-            // more: '/threads?ordered=latest_added_component',
-          },
-          // {
-          //     name: '精华讨论',
-          //     children: [],  //fixme:
-          //     more: `/threads?tags=[${this.props.core.tag.getId('精华')}]`,
-          // },
-        ]}
-      />
-
-      <Tab
-        tabs={[
-          {
-            name: '最新动态',
-            children: this.state.data.recent_statuses.map((status) => <StatusPreview status={status} />),
-            // more: '/status/all',
-          },
-        ]}
-      />
     </Page>);
   }
 }

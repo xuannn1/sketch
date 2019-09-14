@@ -1,12 +1,16 @@
 import * as React from 'react';
 import { ResData } from '../../../config/api';
-import { Link } from 'react-router-dom';
 import { parseDate } from '../../../utils/date';
+import { Tag } from '../common/tag';
+import './thread-preview.scss';
 
 // todo: mini version
 interface Props {
   data:ResData.Thread;
-  mini?:boolean;
+  mini?:boolean; // 精简版/非精简版
+  onTagClick:(channelId:number, tagId:number) => void;
+  onClick:(id:number) => void;
+  onUserClick:(id:number) => void;
 }
 interface State {
 }
@@ -21,13 +25,15 @@ export class ThreadPreview extends React.Component<Props, State> {
     <div className="first-line">
       { !mini && tags && <span className="tags">
         {tags.map((tag, i) =>
-          <Link className="tag"
+          <Tag
             key={i}
-            to={`/threads/?channels=[${attributes.channel_id}]&tags=[${tag.id}]`}>
-          {tag.attributes.tag_name}</Link>)}
+            onClick={() => this.props.onTagClick(attributes.channel_id, tag.id)}
+          >{tag.attributes.tag_name}</Tag>)
+        }
       </span>}
-      <Link className="title"
-        to={`/thread/${id}`}>{attributes.title}</Link>
+      <div className="thread-title" onClick={() => this.props.onClick(id)}>
+        {attributes.title}
+      </div>
     </div>
 
     <div className="second-line">
@@ -39,19 +45,20 @@ export class ThreadPreview extends React.Component<Props, State> {
     </div>}
 
     <div className="meta">
-      <Link className="author" to={`/user/${author.id}`}>{author.attributes.name}</Link>
-      {attributes.created_at && attributes.edited_at &&
+      {/* {attributes.created_at && attributes.edited_at &&
         <span className="date">
           {parseDate(attributes.created_at)}/{parseDate(attributes.edited_at)}
         </span>
-      }
+      } */}
 
       {
         !mini && <span className="counters">
-          <span><i className="fas fa-eye"></i>{attributes.view_count}</span> /
+          <span><i className="fas fa-eye"></i>{attributes.view_count}</span>
           <span><i className="fas fa-comment-alt"></i>{attributes.reply_count}</span>
         </span>
       }
+
+      <div className="author" onClick={() => this.props.onUserClick(author.id)}>{author.attributes.name}</div>
     </div>
   </div>;
   }

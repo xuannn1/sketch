@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MobileRouteProps } from '../router';
 import { CollectionNav } from './nav';
 import { ResData, ReqData, API } from '../../../config/api';
-import { ThreadPreview } from '../../components/home/thread-preview';
+import { ThreadPreview } from '../../components/thread/thread-preview';
 import { Page } from '../../components/common/page';
 import { Pagination } from '../../components/common/pagination';
 import { Card } from '../../components/common/card';
@@ -12,6 +12,7 @@ interface State {
     data:API.Get['/collection'];
 }
 
+/*
 export class CollectionThread extends React.Component<MobileRouteProps, State> {
     public state:State = {
         data: {
@@ -37,3 +38,4 @@ export class CollectionThread extends React.Component<MobileRouteProps, State> {
         </Page>);
     }
 }
+*/

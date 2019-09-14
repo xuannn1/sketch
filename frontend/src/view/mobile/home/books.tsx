@@ -5,7 +5,7 @@ import { URLParser } from '../../../utils/url';
 import { UnregisterCallback } from 'history';
 import { TagFilter } from '../../components/common/tag-filter';
 import { HomeMenu } from './home-menu';
-import { ThreadPreview } from '../../components/home/thread-preview';
+import { ThreadPreview } from '../../components/thread/thread-preview';
 import { Page } from '../../components/common/page';
 import { Pagination } from '../../components/common/pagination';
 import { List } from '../../components/common/list';
@@ -15,6 +15,7 @@ interface State {
   tags:ResData.Tag[]; //fixme:
 }
 
+/*
 export class Books extends React.Component<MobileRouteProps, State> {
   public state:State = {
     data: {
@@ -80,3 +81,4 @@ export class Books extends React.Component<MobileRouteProps, State> {
     </Page>;
   }
 }
+*/

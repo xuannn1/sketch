@@ -141,13 +141,13 @@ export namespace Database {
   export interface Tag {
     id?:Increments;
     tag_name:string;
-    tag_explanation:string|null;
+    tag_explanation?:string|null;
     tag_type:string;
-    is_bianyuan:boolean;
-    is_primary:boolean;
-    channel_id:UInt;
-    parent_id:UInt;
-    book_count:UInt;
+    is_bianyuan?:boolean;
+    is_primary?:boolean;
+    channel_id?:UInt;
+    parent_id?:UInt;
+    book_count?:UInt;
   }
 
   export interface Chapter {

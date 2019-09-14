@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MobileRouteProps } from '../router';
 import { CollectionNav } from './nav';
 import { ReqData, ResData, API } from '../../../config/api';
-import { ThreadPreview } from '../../components/home/thread-preview';
+import { ThreadPreview } from '../../components/thread/thread-preview';
 import { Page } from '../../components/common/page';
 import { Pagination } from '../../components/common/pagination';
 import { Card } from '../../components/common/card';
@@ -32,7 +32,12 @@ export class CollectionList extends React.Component<MobileRouteProps, State> {
         return (<Page top={<CollectionNav />}>
             <Pagination currentPage={data.paginate.current_page} lastPage={data.paginate.total_pages} />
             <Card>
-                <List children={data.threads.map((thread) => <ThreadPreview data={thread} key={thread.id} />)} />
+                <List children={data.threads.map((thread) => <ThreadPreview
+                    onUserClick={(userId) => this.props.core.toPage.user(userId)}
+                    onClick={(id) => this.props.core.toPage.thread(id)}
+                    onTagClick={(channelId, tagId) => this.props.core.toPage.channelTag(channelId, tagId)}
+                    data={thread}
+                    key={thread.id} />)} />
             </Card>
         </Page>);
     }
