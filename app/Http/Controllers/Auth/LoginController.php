@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use App\Models\User;
 use Carbon;
+use CacheUser;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 

@@ -186,6 +186,7 @@ class User extends Authenticatable
 
     public function hasTitle($id)
     {
+        if($id==0){return true;}
         $title = ConstantObjects::title_type('level')->keyby('id')->get($id);
         return ($title&&$title->level<=$this->level)||($this->titles->contains($id));
     }

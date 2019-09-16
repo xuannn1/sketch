@@ -371,6 +371,9 @@ class Thread extends Model
 
     public function check_bianyuan()// 章节/书评 总数超过20%的自动升级成边限
     {
+        $user = $this->user;
+        if($user->isAdmin()||$user->isEditor()){return true;}
+
         $component_type = $this->channel()->type==='book'? 'chapter':'';
         $component_type = $this->channel()->type==='list'? 'review':'';
 

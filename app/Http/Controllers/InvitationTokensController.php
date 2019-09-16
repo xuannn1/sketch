@@ -69,6 +69,7 @@ class InvitationTokensController extends Controller
     {
         $info = CacheUser::Ainfo();
         if($info->token_limit<=0){abort(403);}
+        if($info->ham<5){return back()->with('warning','您的火腿不足，不能兑换私人邀请码。');}
         $new_token = [];
         $new_token['token'] = 'SOSAD_InviteBy'.Auth::id().'_'.str_random(10);
         $new_token['invite_until'] = Carbon::now()->addDays(10)->toDateTimeString();
@@ -78,7 +79,10 @@ class InvitationTokensController extends Controller
         $new_token['token_level'] = 2;
         InvitationToken::create($new_token);
 
-        $info->update(['token_limit'=>$info->token_limit-1]);
+        $info->update([
+            'token_limit'=>$info->token_limit-1,
+            'ham' => $info->ham-5,
+        ]);
         return redirect()->route('invitation_token.my_token');
     }
 }
