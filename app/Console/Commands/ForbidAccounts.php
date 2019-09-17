@@ -131,9 +131,8 @@ class ForbidAccounts extends Command
         //删除封号
         // $records = DB::table('historical_email_modifications as h')
         // ->join('users as u','h.user_id','=','u.id')
-        // ->where('h.old_email', 'REGEXP', '^[a-z]{4,5}[0-9]{5,6}@163.com$')
-        // ->where('u.name', 'REGEXP', '^[a-zA-Z0-9]{6,11}$')
-        // ->where('u.created_at','>','2019-08-16 00:00:00')
+        // ->where('h.old_email', 'REGEXP', '^644505')
+        // ->where('u.no_logging',0)
         // ->orderBy('u.id','desc')
         // ->get();
         //
@@ -151,25 +150,88 @@ class ForbidAccounts extends Command
         //     echo 'user_id: '.$user->id.'|user_name: '.$user->name.'|old_email: '.$record->old_email.'|created_at: '.$user->created_at.'|user_email: '.$user->email."\n";
         // }
 
-        $str1 = str_random(60);
-        $str2 = str_random(60);
-
-        $users = DB::table('users')
-        ->join('user_infos','user_infos.user_id','=','users.id')
-        ->where('users.email', 'REGEXP', '^[a-z]{4,5}[0-9]{5,6}@163.com$')
-        ->where('users.name', 'REGEXP', '^[a-zA-Z0-9]{6,11}$')
-        ->where('users.created_at','>','2019-09-10 00:00:00')
-        ->where('users.created_at','<','2019-09-13 00:00:00')
-        ->where('users.activated',0)
-        // ->select('users.id','users.name')
+        // $str1 = str_random(60);
+        // $str2 = str_random(60);
+        //
+        // $users = DB::table('users')
+        // ->join('user_infos','user_infos.user_id','=','users.id')
+        // ->where('users.name', 'REGEXP', '^Archer')
+        // ->where('users.created_at','>','2019-08-20 00:00:00')
+        // ->where('users.no_logging',0)
+        // ->select('users.id','users.name','users.email','users.activated','users.no_logging','users.created_at')
         // ->get();
-        ->update([
-            'users.password' => $str1,
-            'users.remember_token' => $str2,
-            'users.activated' => 0,
-            'users.no_logging' => 1,
-            'user_infos.no_logging_until' => '2050-08-24 00:00:00',
-        ]);
+        //
+        // // ->update([
+        // //     'users.password' => $str1,
+        // //     'users.remember_token' => $str2,
+        // //     'users.activated' => 0,
+        // //     'users.no_logging' => 1,
+        // //     'user_infos.no_logging_until' => '2050-08-24 00:00:00',
+        // // ]);
         // dd($users);
+
+        // $records = DB::table('historical_email_modifications')
+        // ->where('old_email', 'REGEXP', '^351707913')
+        // ->orWhere('old_email', 'REGEXP', '^114465106')
+        // ->orderBy('user_id','asc')
+        // ->get();
+        //
+        // foreach($records as $record){
+        //     $user = \App\Models\User::find($record->user_id);
+        //     $info = $user->info;
+        //     $user->forceFill([
+        //            'remember_token' => str_random(60),
+        //            'activated' => 0,
+        //            'no_logging' => 1,
+        //     ])->save();
+        //     $info->forceFill([
+        //            'no_logging_until' => '2050-08-24 00:00:00',
+        //     ])->save();
+        //     echo 'user_id: '.$user->id.'|user_name: '.$user->name.'|old_email:'.$record->old_email.'|user_email:'.$user->email.'|user_created_at:'.$user->created_at."\n";
+        // }
+        //
+        // $user_ids = [
+        //     343170,
+        //     343356,
+        //     343601,
+        //     344100,
+        //     344743,
+        //     344764,
+        //     345122,
+        // ];
+        //
+        // $str1 = str_random(60);
+        // $str2 = str_random(60);
+        //
+        //
+        // $records = DB::table('historical_email_modifications')
+        // ->whereIn('user_id',$user_ids)
+        // ->get();
+        //
+        // foreach($records as $record){
+        //     $user = \App\Models\User::find($record->user_id);
+        //     $info = $user->info;
+        //     $user->forceFill([
+        //         'remember_token' => str_random(60),
+        //         'activated' => 0,
+        //         'no_logging' => 1,
+        //         ])->save();
+        //     $info->forceFill([
+        //         'no_logging_until' => '2050-08-24 00:00:00',
+        //         ])->save();
+        //     echo 'user_id: '.$user->id.'|user_name: '.$user->name.'|old_email:'.$record->old_email.'|user_email:'.$user->email.'|user_created_at:'.$user->created_at.'|email_modified_at'.$record->created_at."\n";
+        // }
+    //
+    //     $users = DB::table('users')
+    //     ->join('user_infos','user_infos.user_id','=','users.id')
+    //     ->whereIn('users.id',$user_ids)
+    //     ->where('no_logging',0)
+    //     ->update([
+    //         'users.password' => $str1,
+    //         'users.remember_token' => $str2,
+    //         'users.activated' => 0,
+    //         'users.no_logging' => 1,
+    //         'user_infos.no_logging_until' => '2050-08-24 00:00:00',
+    //     ]);
     }
 }

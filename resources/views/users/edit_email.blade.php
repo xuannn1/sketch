@@ -19,7 +19,7 @@
                     <hr>
                     <h4>修改邮箱</h4>
                     <h6>（你本周已修改{{ $previous_history_counts }}次邮箱，一月最多只能修改3次）</h6>
-                    <h6><span style="color:#d66666">请注意，废文网【严禁】账户买卖、租借，一经发现所有相关账户、担保账户、邮箱、IP永封，永久不能访问废文。</span></h6>
+                    <h6><span style="color:#d66666">IP访问异常的账户，系统会自动查封。请注意，废文网【严禁】账户买卖、租借、共享账户。一经发现所有相关账户、担保账户、邮箱、IP永封，永久不能访问废文。</span></h6>
                 @include('shared.errors')
                 <form method="POST" action="{{ route('user.update_email') }}">
                         {{ csrf_field() }}

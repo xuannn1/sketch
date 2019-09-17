@@ -24,6 +24,7 @@
     <h5>如果这是你本人的操作，请忽略本邮件。</h5>
     <br>
     <h5>如果这【不是】你本人的操作，请按照下述流程，通过废文网公共邮箱完成盗号申诉，申诉时请提供本邮件截图。</h5>
-    <h5>具体申诉流程及格式: <a href="https://sosad.fun/search?search=%E7%9B%97%E5%8F%B7"></a></h5>
+    <h5>具体申诉流程及格式，可直接搜索关键词“盗号”获取: <a href="https://sosad.fun/search?search=%E7%9B%97%E5%8F%B7">https://sosad.fun/search?search=%E7%9B%97%E5%8F%B7</a></h5>
+    <h5><span style="color:#d66666">（邮件来自自动发件信箱，请不要直接回复本邮件）</span></h5>
 </body>
 </html>

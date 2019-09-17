@@ -48,7 +48,7 @@ class PromoteActivation extends Command
         ->where('users.activated','=',1)
         ->orderBy('users.id','desc')
         ->select('users.id')
-        ->take(1000)
+        ->take(400)
         ->pluck('id')
         ->toArray();
 

@@ -31,8 +31,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('activation:promote')
         ->name('activation:promote')
-        ->timezone('Asia/Shanghai')
-        ->dailyAt('4:00')
+        ->hourly()
         ->onOneServer();
 
         $schedule->command('data:rewardDonationRecords')
