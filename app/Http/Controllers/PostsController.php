@@ -82,7 +82,7 @@ class PostsController extends Controller
         if(!$thread||!$post||!$channel){abort(404);}
         if($post->user_id!=Auth::id()){abort(403);}
         if(($thread->is_locked||!$thread->channel()->allow_edit||$post->fold_state>0)&&(!Auth::user()->isAdmin())){abort(403);}
-
+        
         $form->updatePost($post);
         $this->clearPost($post->id);
         return redirect()->route('thread.showpost', $post->id)->with('success', '你已成功修改帖子');
@@ -142,6 +142,7 @@ class PostsController extends Controller
                 $this->clearThread($thread->id);
             }
         }
+        Auth::user()->retract('delete_post');
         $post->delete();
         $this->clearPost($id);
         return redirect()->route('thread.show', $thread->id)->with("success","已经删帖");
@@ -155,6 +156,7 @@ class PostsController extends Controller
         if($post->type==='chapter'){
             $chapter = $post->chapter;
             if($chapter){
+                Auth::user()->retract('convert_chapter_to_post');
                 $chapter->delete();
                 $thread->reorder_chapters();
                 $this->clearThread($thread->id);

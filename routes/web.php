@@ -397,4 +397,11 @@
     Route::get('/reward_token/create', 'DonationController@reward_token_create')->name('donation.reward_token_create');
     Route::get('/review_patreon', 'DonationController@review_patreon')->name('donation.review_patreon');
 
+    {
+
+        Route::get('createcaptcha', 'CaptchaController@create');
+        Route::post('captcha', 'CaptchaController@captchaValidate');
+        Route::get('refreshcaptcha', 'CaptchaController@refreshCaptcha');
+    }
+
 }

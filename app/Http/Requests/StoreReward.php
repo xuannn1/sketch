@@ -85,7 +85,8 @@ class StoreReward extends FormRequest
 
     public function info_transaction($infoA, $infoB, $type, $value)
     {
-        $infoB->type_value_change($type, $value);
+        $half_value = $value - (int)($value / 2);
+        $infoB->type_value_change($type, $half_value);
         $infoA->type_value_change($type, -$value);
     }
 

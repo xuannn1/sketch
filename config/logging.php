@@ -13,7 +13,7 @@ return [
     | one of the channels defined in the "channels" configuration array.
     |
     */
-    'default' => env('LOG_CHANNEL', 'stack'),
+    'default' => env('LOG_CHANNEL', 'single'),
     /*
     |--------------------------------------------------------------------------
     | Log Channels
@@ -76,6 +76,12 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
+        ],
+        'records' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/records.log'),
+            'level' => 'debug',
+            'days' => 14,
         ],
     ],
 ];

@@ -67,6 +67,7 @@ class StoreChapter extends FormRequest
 
     public function updateChapter($post, $thread)
     {
+        $old_post = $post;
         $chapter = $post->chapter;
         $post_data = $this->generateUpdatePostData($post, $thread);
         $post_data['brief'] = $this->brief;
@@ -78,6 +79,8 @@ class StoreChapter extends FormRequest
 
         $post->update($post_data);
         $chapter->update($chapter_data);
+
+        $this->check_length($old_post,$post);
 
         return $post;
 

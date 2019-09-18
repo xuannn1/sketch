@@ -48,8 +48,11 @@ class StorePost extends FormRequest
 
     public function updatePost(Post $post)
     {
+        $old_post = $post;
         $data = $this->generateUpdatePostData($post);
         $post->update($data);
+        $this->check_length($old_post,$post);
         return $post;
     }
+
 }

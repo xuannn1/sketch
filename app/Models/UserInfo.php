@@ -29,6 +29,13 @@ class UserInfo extends Model
         $this->ham+=$ham;
     }
 
+    public function retractData($salt=0, $fish=0, $ham=0)
+    {
+        $this->salt-=$salt;
+        $this->fish-=$fish;
+        $this->ham-=$ham;
+    }
+
     public function reward($kind, $base = 0){
         switch ($kind):
             case "regular_status"://普通状态奖励
@@ -71,10 +78,33 @@ class UserInfo extends Model
             $this->rewardData(50,20,$base*2);
             break;
             case "first_quiz":// 首次答题奖励
-            $this->rewardData(20*$base,5*$base,0);
+            $this->rewardData(5*$base,1*$base,0);
             break;
             case "more_quiz":// 重复答题奖励
-            $this->rewardData(2*$base,0,0);
+            $this->rewardData(0,0,0);
+            break;
+            default:
+            echo "应该奖励什么呢？一个bug呀……";
+        endswitch;
+        $this->save();
+    }
+
+    public function retract($kind, $base = 0){
+        switch ($kind):
+            case "delete_post"://删除回帖惩罚 ok
+            $this->retractData(0,1,0);
+            break;
+            case "reduce_long_to_short"://将长内容修改为短内容
+            $this->retractData(0,0,1);
+            break;
+            case "convert_chapter_to_post"://将章节转为回帖的惩罚 ok
+            $this->retractData(0,0,1);
+            break;
+            case "delete_book"://删除书籍惩罚
+            $this->retractData(10,5,2);
+            break;
+            case "delete_thread"://删除主题惩罚
+            $this->retractData(5,2,0);
             break;
             default:
             echo "应该奖励什么呢？一个bug呀……";

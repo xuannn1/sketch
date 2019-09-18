@@ -78,7 +78,7 @@ class QuizController extends Controller
     public function update($id, Request $request)
     {
         $quiz = Quiz::on('mysql::write')->find($id);
-        
+
         $this->validate($request, [
             'quiz-body' => 'required|string|max:6000',
             'quiz-hint' => 'nullable|string|max:6000',
@@ -155,8 +155,8 @@ class QuizController extends Controller
                 $user->save();
                 return redirect('/')->with('success', '恭喜，初次答对本组题目的奖励已经发放！');
             }else{
-                $user->reward('more_quiz');
-                return redirect('/')->with('success', '恭喜，已经完成了测试！多次答对题目的奖励已经发放！');
+                // $user->reward('more_quiz');
+                return redirect('/')->with('success', '恭喜，已经成功完成了测试！');
             }
         }else{
             $level = (int)$request->level ?? 0;

@@ -77,22 +77,19 @@
                         <div class="panel-footer text-center h6">
                             <div class="">
                                 <input type="checkbox" name="have_read_policy1" value=true>
-                                <span>我知道可以直接"搜索"帮助关键词获取疑难解答，或查看所有页面右下角的帮助，</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
+                                <span>我知道可以左上角直接【搜索】关键词获取使用帮助</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
                             </div>
                             <div class="">
                                 <input type="checkbox" name="have_read_policy2" value=true>
-                                <span>我知道在所有页面的右下角的《关于》页面可以找到本站介绍和《版规》入口</span>&nbsp;<u><a href="{{'about'}}">关于页面</a></u>
-                            </div>
-                            <div class="">
-                                <input type="checkbox" name="have_read_policy3" value=true>
                                 <span>我已阅读《版规》中约定的社区公约，同意遵守版规</span>&nbsp;<u><a href="{{ route('thread.show', 136) }}">版规详情</a></u>
                             </div>
                             <div class="">
-                                <input type="checkbox" name="have_read_policy4" value=true>
+                                <input type="checkbox" name="have_read_policy3" value=true>
                                 <span>我保证自己<span style="color:#d66666">年满十八周岁</span>，神智健全清醒，承诺为自己的言行负责。</span>
                             </div>
                         </div>
                     </div>
+
                     <div class="text-center">
                         <button type="submit" class="btn btn-md btn-danger sosad-button">一键注册</button>
                         <h6>本页面含有IP访问频率限制，友情提醒，为了你的正常注册，<code>请不要刷新或倒退</code>页面。</h6>

@@ -73,7 +73,9 @@ function review_quote(quote_id, attitude){
             });
             if(!(data['quote'] === undefined)){
                 console.log(data['quote']);
-                $( '.quotebutton'+quote_id ).addClass('hidden');
+                $( '.quotebutton-show'+quote_id ).addClass('hidden');
+                $( '.quotebutton-notshow'+quote_id ).addClass('hidden');
+                $( '.quotebutton-review'+quote_id ).removeClass('hidden');
                 $( '.not_reviewed_'+quote_id ).addClass('hidden');
                 if(data['quote'].approved==0){
                     $( '.quotereviewstatus'+quote_id ).html('不对外显示');
@@ -569,4 +571,13 @@ $( ".daily-quote" ).each(function( quote ) {
     else {
         $quote.css("font-size", "1.0em");
     }
+});
+$('#refresh').click(function(){
+  $.ajax({
+     type:'GET',
+     url:web_base_url + '/refreshcaptcha',
+     success:function(data){
+        $(".captcha span").html(data.captcha);
+     }
+  });
 });

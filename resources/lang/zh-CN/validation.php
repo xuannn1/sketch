@@ -190,6 +190,7 @@ return [
         'search'                => '搜索内容',
         'status_body'           => '动态内容',
         'reason'                => '理由',
+        'captcha'               => '验证码错误',
     ],
 
 ];

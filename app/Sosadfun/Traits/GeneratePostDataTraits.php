@@ -79,4 +79,10 @@ trait GeneratePostDataTraits{
         }
         return $data;
     }
+
+    public function check_length($old_post,$post)
+    {
+        if($old_post->char_count>config('constants.longcomment_length')&&$post->char_count<config('constants.longcomment_length'))
+        $post->user->retract('reduce_long_to_short');
+    }
 }

@@ -256,6 +256,10 @@ class User extends Authenticatable
         return $this->info->reward($kind, $base);
     }
 
+    public function retract($kind, $base = 0){
+        return $this->info->retract($kind, $base);
+    }
+
     public function isOnline()
     {
         return Cache::has('usr-on-'.$this->id);

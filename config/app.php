@@ -168,6 +168,7 @@ return [
          */
         Laravel\Tinker\TinkerServiceProvider::class,
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+        Mews\Captcha\CaptchaServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -233,6 +234,8 @@ return [
         'ConstantObjects' => App\Helpers\ConstantObjects::class,
         'StringProcess' => App\Helpers\StringProcess::class,
         'CacheUser' => App\Helpers\CacheUser::class,
+
+        'Captcha' => Mews\Captcha\Facades\Captcha::class,
 
     ],
 
