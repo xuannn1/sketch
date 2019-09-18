@@ -25,9 +25,9 @@ trait QiandaoTrait
 
 		//根据连续签到时间发放奖励
 		$reward_base = 1;
-		if(($info->qiandao_continued>=5)&&($info->qiandao_continued%5==0)){
+		if(($info->qiandao_continued>=5)&&($info->qiandao_continued%10==0)){
 			$reward_base = intval($info->qiandao_continued/10)+2;
-			if($reward_base > 10){$reward_base = 10;}
+			if($reward_base > 5){$reward_base = 5;}
 			$message .="你获得了特殊奖励！";
 		}
 		$info->rewardData(5*$reward_base, 1*$reward_base, 0);

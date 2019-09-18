@@ -73,6 +73,7 @@
                     {{ csrf_field() }}
                     {{ method_field('DELETE') }}
                     <button type="submit" class="pull-right btn btn-lf btn-danger sosad-button-control">删除帖子</button>
+                    <h6 class="grayout">（删除帖子会扣除发帖时奖励的虚拟物）</h6>
                 </form>
             </div>
         </div>
