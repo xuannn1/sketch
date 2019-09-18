@@ -21,7 +21,9 @@
                 @include('messages._messages')
                 {{ $messages->links() }}
                 <br>
-                @if((!$speaker->isFollowing($user->id))&&(!$user->isAdmin())&&(!$user->isEditor()))
+                @if($user->no_posting)
+                <p>正在禁言中，无法发送私信。</p>
+                @elseif((!$speaker->isFollowing($user->id))&&(!$user->isAdmin())&&(!$user->isEditor()))
                    @if($speaker_info->no_stranger_msg&&(!$recent_previous_message))
                    <p>很抱歉，{{ $speaker->name }}未关注你，且并不接收陌生人的私信，</p>
                    @elseif($info->message_limit>0)

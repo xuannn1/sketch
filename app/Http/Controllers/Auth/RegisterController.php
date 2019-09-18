@@ -70,6 +70,7 @@ class RegisterController extends Controller
             'have_read_policy3' => 'required',
             'invitation_token' => 'required|string|exists:invitation_tokens,token|max:255',
             'promise' => 'required',
+            'captcha' => 'required|captcha',
         ]);
         $validator->after(function ($validator) {
             if(request('promise')!=config('preference.register_promise')){
@@ -191,9 +192,6 @@ class RegisterController extends Controller
 
     public function register_by_invitation(Request $request)
     {
-        $request->validate([
-            'captcha' => 'required|captcha'
-        ]);
         if (Cache::has('registration-by-invitation-limit-' . request()->ip())){
             return back()->with('danger','本ip('.request()->ip().')已于2分钟内尝试注册，请等待冷静期经过，请勿重复输入信息或试图暴力破解邀请码');
         }

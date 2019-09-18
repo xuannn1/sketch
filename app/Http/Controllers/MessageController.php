@@ -170,6 +170,10 @@ class MessageController extends Controller
             return redirect()->back()->with('danger','查无此人');
         }
 
+        if($user->no_posting){
+            return redirect()->back()->with('danger','禁言中，无法发送私信');
+        }
+
         if(!$user->isAdmin()&&!$user->isEditor()&&!$isFollowing&&($speaker_info->no_stranger_msg&&!$recent_previous_message)){
             return redirect()->back()->with('warning','对方未关注你，且拒收陌生人信息');
         }

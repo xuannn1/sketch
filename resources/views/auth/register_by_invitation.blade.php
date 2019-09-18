@@ -71,13 +71,13 @@
                                 <label for="promise">注册担保：</label>
                                 <h6 class="grayout">请手工输入下面这句红色的话：</h6>
                                 <h6 class="" style="color:#f44248"><em>{{ config('preference.register_promise') }}</em></h6>
-                                <input type="text" name="promise" class="form-control" value="{{ old('promise') }}">
+                                <textarea name="promise" data-provide="markdown" rows="3" class="form-control">{{ old('promise') }}</textarea>
                             </div>
                         </div>
                         <div class="panel-footer text-center h6">
                             <div class="">
                                 <input type="checkbox" name="have_read_policy1" value=true>
-                                <span>我知道可以左上角直接【搜索】关键词获取使用帮助</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
+                                <span>我知道可以左上角【搜索】关键词获取使用帮助</span>&nbsp;<u><a href="{{'help'}}">帮助页面</a></u>
                             </div>
                             <div class="">
                                 <input type="checkbox" name="have_read_policy2" value=true>
@@ -87,6 +87,23 @@
                                 <input type="checkbox" name="have_read_policy3" value=true>
                                 <span>我保证自己<span style="color:#d66666">年满十八周岁</span>，神智健全清醒，承诺为自己的言行负责。</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="form-group col-md-4">
+                            <div class="captcha">
+                                <span>{!! captcha_img() !!}</span>
+                                <button type="button" class="btn btn-success"><i class="fa fa-refresh" id="refresh"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha">
                         </div>
                     </div>
 
