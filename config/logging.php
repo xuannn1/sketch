@@ -81,7 +81,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/records.log'),
             'level' => 'debug',
-            'days' => 14,
+            'days' => 3,
         ],
     ],
 ];

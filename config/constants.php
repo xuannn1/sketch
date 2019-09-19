@@ -47,8 +47,8 @@ return [
        2 => [
          'activated' => false,
          'level' =>2,
-         'fish' => 25,
-         'salt' => 100,
+         'fish' => 10,
+         'salt' => 50,
          'ham' => 0,
        ],
        7 => [
