@@ -581,6 +581,7 @@ class AdminsController extends Controller
             'fish' => 'required|numeric',
             'ham' => 'required|numeric',
             'level' => 'required|numeric',
+            'title' => 'required|numeric',
         ]);
         $var = request('controluser');
         $operation = 0;
@@ -625,6 +626,13 @@ class AdminsController extends Controller
             if($this->user_value_change($user)){
                 $operation = $this->add_admin_record('user', $user, $record, $reason, 50);
             }
+        }
+
+        if ($var=="55"){//赠送头衔
+            $title =  \App\Models\Title::find(request('title'));
+            if(!$title){return back()->with("warning","没有这个头衔");}
+            $operation = $this->add_admin_record('user', $user, $title->id.$title->name.'|'.$record.'|', $reason, 55);
+            $user->titles()->syncWithoutDetaching($title->id);
         }
 
         if($operation===0){

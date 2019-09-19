@@ -12,6 +12,15 @@ use App\Sosadfun\Traits\TitleObjectTraits;
 class TitleController extends Controller
 {
     use TitleObjectTraits;
+
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'except' => ['index'],
+        ]);
+        $this->middleware('admin')->only('index');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,9 +28,8 @@ class TitleController extends Controller
      */
     public function index()
     {
-        $this->middleware('auth', [
-            'except' => ['index'],
-        ]);
+        $titles = \App\Models\Title::all();
+        return view('titles.index', compact('titles'));
     }
 
     /**

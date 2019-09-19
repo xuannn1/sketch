@@ -13,12 +13,13 @@
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                         <div class="form-group">
-                            <label class="col-md-4 control-label">Patreon账户邮箱地址：</label>
-                            <h6 class="grayout">(信息提交后，工作人员会关联Patreon赞助信息，大概需要1-3个工作日。)</h6>
-                            <div class="col-md-6">
+
+                            <label class="control-label">Patreon账户邮箱地址：</label>
+                            <h6>（友情提醒，请提交在【patreon】网站注册的账户的邮箱，这和废文账户的邮箱不一定一样。邮箱提交错误将无法关联账户信息。信息提交后，工作人员会关联Patreon赞助信息，大概需要1-3个工作日。）</h6>
+                            <div class="">
                                 <input type="email" class="form-control" name="email" value="{{ old('email') }}">
                             </div>
-
+                            <h6>其他邮箱问题，可直接搜索关键词“赞助”获取: <a href="https://sosad.fun/search?search=赞助">https://sosad.fun/search?search=赞助</a></h6>
                         </div>
                         <button type="submit" class="btn btn-lg btn-danger sosad-button">
                             提交信息

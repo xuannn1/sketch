@@ -8,11 +8,11 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
-                <h4>标签（tag）管理</h4>
+                <h4>标签（Tag）管理</h4>
                 <ul>
                     <li><a href="{{ route('tag.index') }}">全站标签</a></li>
                 </ul>
-                <h4>用户（user）管理</h4>
+                <h4>用户（User）管理</h4>
                 <ul>
                     <li><a href="{{route('admin.searchusersform')}}">搜索用户</a></li>
                     <li><a href="{{route('admin.sendpublicnoticeform')}}">发送公共通知</a></li>
@@ -42,6 +42,11 @@
                 <h4>赞助者（Donation）管理</h4>
                 <ul>
                     <li><a href="{{ route('donation.review_patreon', ['show_review_tab'=> 'not_approved']) }}">查看赞助者申请</a></li>
+                </ul>
+
+                <h4>头衔（Title）管理</h4>
+                <ul>
+                    <li><a href="{{route('title.index')}}">头衔列表</a></li>
                 </ul>
 
                 <h4>答题测试（Quiz）管理</h4>

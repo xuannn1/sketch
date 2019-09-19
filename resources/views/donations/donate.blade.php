@@ -25,7 +25,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="font-4">
-                            <span class="maintitle">
+                            <span class="maintitle title-{{$donation['style']}}">
                                 {{ $donation['title'] }}
                             </span>
                         </div>

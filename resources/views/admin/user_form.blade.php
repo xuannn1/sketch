@@ -41,6 +41,10 @@
                         <label><input type="text" style="width: 80px" name="level" value="0">等级</label>
                         <label><input type="text" style="width: 80px" name="token_limit" value="0">邀请额度</label>
                     </div>
+                    <div class="radio">
+                        <label><input type="radio" name="controluser" value="55">赠送头衔</label>
+                        <label><input type="text" style="width: 80px" name="title" value="0">头衔ID</label>
+                    </div>
                     <div class="form-group">
                         <label for="reason"></label>
                         <textarea name="reason"  rows="3" class="form-control" placeholder="请输入处理理由，方便查看管理记录，如“涉及举报，标题简介违规”，“涉及举报，不友善”，“边限标记不合规”。"></textarea>
