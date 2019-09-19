@@ -383,6 +383,7 @@
 //patreon related
 {
     Route::get('donate', 'DonationController@donate')->name('donation.donate');
+    Route::get('donation_records', 'DonationController@donation_records')->name('donation.donation_records');
     Route::get('mydonations', 'DonationController@mydonations')->name('donation.mydonations');
     Route::get('my_reward_tokens', 'DonationController@my_reward_tokens')->name('donation.my_reward_tokens');
     Route::get('patreon/create', 'DonationController@patreon_create')->name('donation.patreon_create');
@@ -396,6 +397,8 @@
     Route::patch('/donation/{donation}', 'DonationController@donation_update')->name('donation.donation_update');
     Route::get('/reward_token/create', 'DonationController@reward_token_create')->name('donation.reward_token_create');
     Route::get('/review_patreon', 'DonationController@review_patreon')->name('donation.review_patreon');
+    Route::get('/upload_patreon', 'DonationController@upload_patreon_create')->name('donation.upload_patreon_create');
+    Route::post('/upload_patreon', 'DonationController@upload_patreon')->name('donation.upload_patreon');
 
     {
 

@@ -12,6 +12,9 @@
         </div>
         @include('donations._review_patreons')
         {{ $patreons->links() }}
+        <div class="text-center">
+            <a href="{{route('donation.upload_patreon_create')}}" class="btn btn-lg btn-primary sosad-button">批量加载patreon付款记录</a>
+        </div>
     </div>
 </div>
 @stop

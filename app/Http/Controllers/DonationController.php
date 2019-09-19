@@ -17,7 +17,7 @@ class DonationController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except('donate');
-        $this->middleware('admin')->only('review_patreon', 'approve_patreon');
+        $this->middleware('admin')->only('review_patreon', 'approve_patreon', 'upload_patreon_create', 'upload_patreon');
     }
 
     public function donate(Request $request)
@@ -25,6 +25,14 @@ class DonationController extends Controller
         $donation_records = $this->RecentDonations(is_numeric($request->page)? $request->page:'1');
         return view('donations.donate', compact('donation_records'));
     }
+
+    public function donation_records(Request $request)
+    {
+        $donation_records = $this->AllDonations(is_numeric($request->page)? $request->page:'1');
+        return view('donations.donation_records', compact('donation_records'));
+    }
+
+
 
     public function mydonations()
     {
@@ -221,4 +229,25 @@ class DonationController extends Controller
         $patreon->sync_records();
         return redirect()->route('donation.review_patreon')->with('success','synced_records');
     }
+
+    public function upload_patreon_create()
+    {
+        return view('donations.upload_patreon');
+    }
+
+    public function upload_patreon(Request $request)
+    {
+        $body = $request->body;
+        $lines = explode("\n",$body);
+        foreach($lines as $line){
+            $result = $this->processDonationRecord($line);
+            if(!array_key_exists('success',$result)){
+                session()->flash('warning', $result['data']);
+                return back();
+            }
+            $record = $this->storeDonationRecord($result['data']);
+        }
+        return redirect()->route('donation.review_patreon')->with('success','已成功修改赞助记录');
+    }
+
 }

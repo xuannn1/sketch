@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Log;
+use Carbon;
+use DB;
 
 class RewardDonationRecords extends Command
 {
@@ -38,13 +40,20 @@ class RewardDonationRecords extends Command
      */
     public function handle()
     {
-        $patreons = \App\Models\Patreon::on('mysql::write')->where('is_approved', 0)->get();
-        foreach($patreons as $patreon){
-            $patreon->sync_records();
-        }
-        $records = \App\Models\HistoricalDonationRecord::on('mysql::write')->where('user_id','>',0)->where('is_claimed',0)->get();
+
+        DB::table('patreons')
+        ->join('historical_donation_records','historical_donation_records.donation_email','=','patreons.patreon_email')
+        ->where('patreons.is_approved',0)
+        ->update([
+            'patreons.is_approved' => 1,
+            'historical_donation_records.user_id' => DB::raw('patreons.user_id'),
+        ]);
+
+        $records = \App\Models\HistoricalDonationRecord::on('mysql::write')->where('user_id','>',0)->where('donated_at','>',Carbon::now()->subMonth())->get();
+
         foreach($records as $record){
             $record->reward_user();
         }
+
     }
 }

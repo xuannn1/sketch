@@ -90,7 +90,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="font-2">当前赞助名单</span>
-                <span class="pull-right">>><a href="#">往期名单</a></span>
+                <span class="pull-right">>><a href="{{route('donation.donation_records')}}">往期名单</a></span>
             </div>
             <div class="panel-body">
                 <div>

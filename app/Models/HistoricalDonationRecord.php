@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use ConstantObjects;
+use Carbon;
 
 class HistoricalDonationRecord extends Model
 {
@@ -24,6 +25,8 @@ class HistoricalDonationRecord extends Model
     public function reward_user()
     {
         if($this->is_claimed){return false;}
+
+        if($this->donated_at<Carbon::now()->subMonth()){return false;}
 
         $user = $this->user;
         if(!$user){return false;}

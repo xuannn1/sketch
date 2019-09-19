@@ -20,7 +20,8 @@ return [
     'rewards_per_page' => 20, //每页展示10个打赏
     'votes_per_page' => 20, //每页展示10个赞赏
     'quotes_per_page'=> 20,
-    'records_per_page' => 20, //每页展示20个赞助记录
+    'records_per_part' => 20, //每页展示20个赞助记录
+    'records_per_page' => 40, //每页展示40个赞助记录
 
     'threads_per_search' => 40, //每页展示40个搜索记录
     'users_per_search' => 80, //每页展示80个搜索记录
