@@ -71,6 +71,7 @@ class NewPostListener
             if($post->parent){
                 $post->parent->update([
                     'reply_count'=> $post->parent->reply_count+1,
+                    'view_count'=> $post->parent->view_count+1,
                     'responded_at' => $post->created_at,
                     'last_reply_id' => $post->id,
                 ]);

@@ -55,6 +55,7 @@ trait DonationObjectTraits{
         $data['donation_amount']=$amount;
         $data['donated_at'] = $real_time;
         $data['donation_kind'] = 'patreon';
+        $data['is_claimed'] = false;
         return ['success'=>'success', 'data' => $data];
 
     }

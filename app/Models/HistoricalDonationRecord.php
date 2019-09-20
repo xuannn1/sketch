@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use ConstantObjects;
 use Carbon;
+use DB;
 
 class HistoricalDonationRecord extends Model
 {
@@ -57,10 +58,9 @@ class HistoricalDonationRecord extends Model
             $info->qiandao_reward_limit += 20;
         }
 
-        $this->is_claimed = 1;
-
         $user->save();
         $info->save();
+        $this->is_claimed = 1;
         $this->save();
         return true;
     }

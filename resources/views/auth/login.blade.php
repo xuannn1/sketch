@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="col-sm-offset-3 col-sm-6">
+    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2>登录</h2>
@@ -26,8 +26,7 @@
                         </label>
                     </div>
                     <div class="row">
-                        <div class="col-md-4"></div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group">
                             <div class="captcha">
                                 <span>{!! captcha_img() !!}</span>
                                 <button type="button" class="btn btn-success"><i class="fa fa-refresh" id="refresh"></i></button>
@@ -35,10 +34,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha">
+                        <div class="form-group">
+                            <input id="captcha" type="text" class="form-control" placeholder="输入验证码" name="captcha">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-danger btn-md sosad-button">登录</button>

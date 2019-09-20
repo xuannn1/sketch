@@ -42,7 +42,6 @@ class DonationController extends Controller
         $donation_records = $user->donation_records;
         $reward_tokens = $user->reward_tokens->where('is_public',0)->where('redeem_limit','>',0)->where('redeem_until','>',Carbon::now());
         $reward_tokens->sortByDesc('created_at');
-
         return view('donations.mydonations',compact('user', 'info', 'patreon', 'reward_tokens', 'donation_records'));
     }
 
@@ -91,8 +90,9 @@ class DonationController extends Controller
         if($patreon->user_id!=$user->id){abort(403);}
         $patreon->delete();
 
-        // TODO::取消相关福利
-        $user->remove_donation();
+        $user->cancel_donation_reward();
+
+        DB::table('historical_donation_records')->where('user_id', $user->id)->update(['user_id'=>0]);
 
         return redirect()->route('donation.mydonations')->with('success','已删除patreon关联信息。');
     }
@@ -114,14 +114,10 @@ class DonationController extends Controller
 
     public function redeem_token(Request $request)
     {
-        if (Cache::has('redeem-reward-limit-' . request()->ip())){
-            return back()->with('danger','本ip('.request()->ip().')已于2分钟内尝试兑换，请等待冷静期经过，请勿重复输入信息或试图暴力破解福利码');
-        }
-        Cache::put('redeem-reward-limit-' . request()->ip(), true, 2);
-
         $user = CacheUser::Auser();
         $request->validate([
             'token' => 'required|string|max:30',
+            'captcha' => 'required|captcha',
         ]);
         $reward_token = \App\Models\RewardToken::where('token',$request->token)->first();
 

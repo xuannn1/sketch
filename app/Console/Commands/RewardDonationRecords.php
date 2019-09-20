@@ -49,7 +49,11 @@ class RewardDonationRecords extends Command
             'historical_donation_records.user_id' => DB::raw('patreons.user_id'),
         ]);
 
-        $records = \App\Models\HistoricalDonationRecord::on('mysql::write')->where('user_id','>',0)->where('donated_at','>',Carbon::now()->subMonth())->get();
+        $records = \App\Models\HistoricalDonationRecord::on('mysql::write')
+        ->where('user_id','>',0)
+        ->where('is_claimed', 0)
+        ->where('donated_at','>',Carbon::now()->subMonth())
+        ->get();
 
         foreach($records as $record){
             $record->reward_user();

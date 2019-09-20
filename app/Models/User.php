@@ -403,15 +403,11 @@ class User extends Authenticatable
         return $query;
     }
 
-    public function remove_donations()
+    public function cancel_donation_reward()
     {
         $info = $this->info;
         $info->donation_level = 0;
-        $info->no_ads_reward_limit = 0;
-        $this->save();
         $info->save();
-        DB::table('historical_donation_records')->where('user_id',$this->id)->update(['user_id'=>0]);
-        $user->reward_tokens->delete();
     }
 
     public function donation_level_by_amount($amount=0)

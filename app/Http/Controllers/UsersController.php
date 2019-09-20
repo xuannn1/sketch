@@ -67,6 +67,11 @@ class UsersController extends Controller
 
     public function update_email(Request $request)
     {
+        $this->validate($request, [
+            'email' => 'required|string|email|max:255|unique:users|confirmed',
+            'captcha' => 'required|captcha',
+        ]);
+
         $user = Auth::user();
         $info = $user->info;
         if(Cache::has('email-modification-limit-' . request()->ip())){
@@ -75,9 +80,7 @@ class UsersController extends Controller
         if(!Hash::check(request('old-password'), $user->password)) {
             return back()->with("danger", "你的旧密码输入错误");
         }
-        $this->validate($request, [
-            'email' => 'required|string|email|max:255|unique:users|confirmed',
-        ]);
+
         $old_email = $user->email;
 
         if($old_email==$request->email){
@@ -168,23 +171,28 @@ class UsersController extends Controller
     }
 
     public function update_password(Request $request){
+
+        $this->validate($request, [
+            'password' => 'required|min:10|max:32|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
+            'captcha' => 'required|captcha',
+        ]);
+
         $user = Auth::user();
+
         if(!$user->activated){
             return redirect()->back()->with('danger','你未激活邮箱，为保护账户安全，暂不能重置密码。');
         }
-        if(Hash::check(request('old-password'), $user->password)) {
-            $this->validate($request, [
-                'password' => 'required|min:10|max:32|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
-            ]);
-
-            $user->forceFill([
-                'password' => bcrypt(request('password')),
-                'remember_token' => str_random(60),
-            ])->save();
-
-            return redirect()->route('user.edit', Auth::id())->with("success", "你已成功修改个人密码");
+        if(!Hash::check(request('old-password'), $user->password)) {
+            return back()->with("danger", "你的旧密码输入错误");
         }
-        return back()->with("danger", "你的旧密码输入错误");
+
+        $user->forceFill([
+            'password' => bcrypt(request('password')),
+            'remember_token' => str_random(60),
+        ])->save();
+
+        return redirect()->route('user.edit', Auth::id())->with("success", "你已成功修改个人密码");
+
     }
 
     public function edit_introduction()

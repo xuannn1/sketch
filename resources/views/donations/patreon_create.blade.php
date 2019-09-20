@@ -19,7 +19,7 @@
                             <div class="">
                                 <input type="email" class="form-control" name="email" value="{{ old('email') }}">
                             </div>
-                            <h6>其他邮箱问题，可直接搜索关键词“赞助”获取: <a href="https://sosad.fun/search?search=赞助">https://sosad.fun/search?search=赞助</a></h6>
+                            <h6>其他赞助问题，可直接搜索关键词“赞助”获取: <a href="https://sosad.fun/search?search=赞助">https://sosad.fun/search?search=赞助</a></h6>
                         </div>
                         <button type="submit" class="btn btn-lg btn-danger sosad-button">
                             提交信息

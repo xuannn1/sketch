@@ -28,13 +28,13 @@
                 </div>
                 <div class="">
                     免广告福利码余额：{{$info->no_ads_reward_limit}}&nbsp;&nbsp;
-                    @if($info->donation_level>=4&&$info->no_ads_reward_limit>0)
+                    @if($info->no_ads_reward_limit>0)
                     <a href="{{route('donation.reward_token_create',['type'=>'no_ads'])}}" class="btn btn-xs btn-primary sosad-button-control">消耗额度创建免广告福利码</a>
                     @endif
                 </div>
                 <div class="">
                     补签福利码余额：{{$info->qiandao_reward_limit}}&nbsp;&nbsp;
-                    @if($info->donation_level>=4&&$info->qiandao_reward_limit>0)
+                    @if($info->qiandao_reward_limit>0)
                     <a href="{{route('donation.reward_token_create',['type'=>'qiandao+'])}}" class="btn btn-xs btn-primary sosad-button-control">消耗额度创建补签福利码</a>
                     @endif
                     @if($info->qiandao_reward_limit>0&&$info->qiandao_continued<$info->qiandao_last)
@@ -42,7 +42,6 @@
                     <span>断签前签到：{{ $info->qiandao_last }}天</span>&nbsp;&nbsp;&nbsp;
                     <a href="{{route('complement_qiandao')}}" class="btn btn-sm btn-primary sosad-button-control">补签至{{$info->qiandao_last+1}}天？</a>
                     @endif
-
                 </div>
                 <hr>
                 <div class="">
@@ -73,7 +72,8 @@
                 @if($patreon->is_approved)
                 <p><span class="glyphicon glyphicon-ok">Patreon赞助者信息已验证</span></p>
                 @else
-                <p><span><i class="fa fa-question-circle-o" aria-hidden="true"></i>&nbsp;Patreon赞助者信息验证中（一般1-3天，感谢你的耐心等待）</span></p>
+                <p><span><i class="fa fa-question-circle-o" aria-hidden="true"></i>&nbsp;Patreon赞助者信息验证中（一般1-3天，感谢你的耐心等待）。</span></p>
+                <h6 class="grayout">(如果长时间无法关联，请检查邮箱是否一致。友情提醒，请在此提交在【patreon】网站注册的账户的邮箱，这和废文账户的邮箱不一定一样。邮箱提交错误将无法关联账户信息。其他赞助问题，可直接搜索关键词“赞助”获取:  <a href="https://sosad.fun/search?search=赞助">https://sosad.fun/search?search=赞助</a>)</h6>
                 @endif
                 <a href="{{route('donation.patreon_destroy_form', $patreon->id)}}" class="btn btn-md btn-primary sosad-button-control">删除我的patreon身份信息</a>
                 @else

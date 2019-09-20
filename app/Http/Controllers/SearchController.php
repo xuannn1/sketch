@@ -119,7 +119,7 @@ class SearchController extends Controller
     public function find_faqs_with_pattern($request)
     {
         return $this->all_faqs()->filter(function ($value, $key) use($request){
-            return strpos($value->question,$request->search);
+            return strpos($value->question,$request->search)!==false;
         });
     }
 }

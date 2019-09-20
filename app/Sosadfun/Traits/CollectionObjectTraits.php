@@ -26,7 +26,7 @@ trait CollectionObjectTraits{
 
     public function findCollectionIndex($id, $group, $page)
     {
-        return Cache::remember('collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.'.$page, 15, function () use($id, $group, $page){
+        return Cache::remember(url('/').'collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.'.$page, 15, function () use($id, $group, $page){
             $orderby = 2;
             $group_id = 0;
             if($group){
@@ -48,6 +48,6 @@ trait CollectionObjectTraits{
 
     public function clearCollectionIndex($id, $group)
     {
-        Cache::forget('collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.1');
+        Cache::forget(url('/').'collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.1');
     }
 }

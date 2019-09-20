@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <style media="screen">
     </style>
-    <div class="col-sm-offset-3 col-sm-6">
+    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3>修改 {{ $user->name }} 的密码</h3>
@@ -29,6 +29,20 @@
                     <div class="form-group">
                         <label for="password_confirmation">确认新密码：</label>
                         <input type="password" name="password_confirmation" class="form-control">
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="captcha">
+                                <span>{!! captcha_img() !!}</span>
+                                <button type="button" class="btn btn-success"><i class="fa fa-refresh" id="refresh"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <input id="captcha" type="text" class="form-control" placeholder="输入验证码" name="captcha">
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-lg btn-danger sosad-button">更新密码</button>

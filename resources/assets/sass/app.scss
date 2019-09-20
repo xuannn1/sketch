@@ -857,6 +857,59 @@ textarea {
     color:#3a165f;
 }
 
+.title-31 { // fish
+  background: url(https://img.icons8.com/color/32/000000/fish-food.png) no-repeat;
+  background-position: 0% 50%;
+  color: #4dd0e1;
+  padding-left: 32px;
+}
+
+.title-76 { // sketch
+  background:url(
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAG0lEQVQYV2NMKL/ty4ADMIIkF3SqbsYmP+gkAayXGgfe8HOVAAAAAElFTkSuQmCC
+   ) repeat;
+  color: #424656;
+  font-weight: 400;
+}
+
+.title-77 { //doge
+  background: #3d6fc7 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA2ElEQVQ4T2NkoBAwUqifgfoGTPZW/g9yVe7WuyiGg8TRxUDqMBTlLF0C9tWU6BgU34HEQWLohmA34G4h1qCZUveaMgPALkMzBNMFTaI4IwakOWfLHYYpPipwl8ANAAUS2P9ozodpYjhnCTcY2RXYDVDuR7gCyUCQRhBADlCwAWDbQU4HaQRpQDYAzUOgmMBqgGUkF4OxJjdY+dnP6QzGBhoIJyNFKXI0g6IUxQsgQ+BApgjFEGSHnL1wg+F4dws4IDFiAW6ITBHO2IBpxpoSiclcyKmR4swEAKGRdxGhsgIHAAAAAElFTkSuQmCC') no-repeat;
+  background-size: 16px;
+  background-position: 6px 50%;
+  padding: 6px 8px 6px 24px;
+  color: #fff0c7;
+  border-radius: 3em;
+  font-size: 80%;
+  box-shadow: 0 0 1em #94A3D9;
+}
+
+.title-80 { //alice-light
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='18' viewBox='0 0 16 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d6eff6' fill-opacity='0.8' fill-rule='evenodd'%3E%3Cpath d='M8.000,0.012 L15.992,12.000 L8.000,23.988 L0.008,12.000 L8.000,0.012 Z'/%3E%3C/g%3E%3C/svg%3E");
+  font-weight: 400;
+  color: #557;
+  &::before {
+    content: "♠ ";
+  }
+  &::after {
+    content: " ♠";
+  }
+}
+
+.title-81 { //alice-dark
+  background-color: #5a5c7a;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='18' viewBox='0 0 16 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffb7d0' fill-opacity='0.8' fill-rule='evenodd'%3E%3Cpath d='M8.000,0.012 L15.992,12.000 L8.000,23.988 L0.008,12.000 L8.000,0.012 Z'/%3E%3C/g%3E%3C/svg%3E");
+  font-weight: 400;
+  color: #fff;
+  text-shadow: -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;
+  &::before {
+    content: "♠ ";
+  }
+  &::after {
+    content: " ♠";
+  }
+}
+
 .title-82 { //pokeball
   background: linear-gradient(
     180deg,
@@ -950,6 +1003,26 @@ textarea {
     }
 }
 
+.title-90 { //bug
+  background: url(https://img.icons8.com/dusk/32/000000/bug.png) no-repeat;
+  background-position: 0% 50%;
+  padding-left: 36px;
+  color: #8d6c9f;
+  animation: bug 0.5s infinite;
+}
+
+@keyframes bug
+{
+  0%   {clip-path: polygon(0% 0%, 100% 0%, 100% 20%, 0% 40%);}
+  5%  {clip-path: polygon(0% 60%, 80% 60%, 90% 100%, 0% 70%);}
+  10%  {clip-path: polygon(0% 20%, 100% 20%, 100% 90%, 0% 80%);}
+  30%  {clip-path: padding-box polygon(0% 20%, 100% 20%, 100% 60%, 0% 40%);}
+  40%  {clip-path: padding-box polygon(5% 60%, 100% 80%, 90% 90%, 0% 100%);}
+  50%  {clip-path: padding-box polygon(5% 10%, 100% 20%, 90% 50%, 0% 50%);}
+  70%  {clip-path: padding-box polygon(5% 60%, 100% 20%, 90% 80%, 0% 70%);}
+  90%  {clip-path: padding-box polygon(0% 0%, 80% 50%, 100% 1000%, 5% 70%);}
+}
+
 .title-91 { // card style title
     background-color: #c5c5a8;
     width: 25%;
@@ -1031,14 +1104,42 @@ textarea {
     color: #0f0;
 }
 
-.title-111 {
-    background: linear-gradient(to right top, #c2ccd7, #bdc7d3, #b8c1cf, #b3bcca, #afb6c6, #b1b8c8, #b2bbca, #b4bdcc, #bec8d5, #c9d4dd, #d4dfe5, #e1eaee);
-    color: #111;
+.title-110 { //bronze
+  background: linear-gradient(45deg, #844615, #9d603b, #b37b60, #c79885, #d9b6ab, #dabab1, #dabdb7, #dac1bc, #ccaba4, #bd958c, #ae7f75, #9f6a5e);
+  color: #111;
+  animation: bronze 1s infinite;
+  text-shadow: 1px 1px 1px #fefefe;
 }
 
-.title-112 {
-    background: linear-gradient(45deg, #f6daa8, #ebcf9e, #e0c594, #d6ba8b, #cbb081, #ccb284, #ccb386, #cdb589, #d9c399, #e6d1a9, #f2e0b9, #ffeeca);
-    color: #333;
+@keyframes bronze {
+
+}
+
+.title-111 { // silver
+  background: linear-gradient(45deg, #c2ccd7, #bdc7d3, #b8c1cf, #b3bcca, #afb6c6, #b1b8c8, #b2bbca, #b4bdcc, #bec8d5, #c9d4dd, #d4dfe5, #e1eaee);
+  color: #114;
+  animation: silver 1s infinite;
+  text-shadow: 1px 1px 1px #fefefe;
+  box-shadow: 0 1px 1px #114;
+}
+
+@keyframes silver {
+  0% {background: linear-gradient(45deg, #c2ccd7, #bdc7d3, #b8c1cf, #b3bcca, #afb6c6, #b1b8c8, #b2bbca, #b4bdcc, #bec8d5, #c9d4dd, #d4dfe5, #e1eaee);}
+  33% {background: linear-gradient(45deg, #bec8d5, #c9d4dd, #d4dfe5, #e1eaee, #c2ccd7, #bdc7d3, #b8c1cf, #b3bcca, #afb6c6, #b1b8c8, #b2bbca, #b4bdcc);}
+  66% {background: linear-gradient(45deg, #afb6c6, #b1b8c8, #b2bbca, #b4bdcc, #bec8d5, #c9d4dd, #d4dfe5, #e1eaee, #c2ccd7, #bdc7d3, #b8c1cf, #b3bcca);}
+}
+
+.title-112 { // gold
+  background: linear-gradient(45deg, #f6daa8, #ebcf9e, #e0c594, #d6ba8b, #cbb081, #ccb284, #ccb386, #cdb589, #d9c399, #e6d1a9, #f2e0b9, #ffeeca);
+  color: #333;
+  animation: gold 1s infinite;
+  text-shadow: 1px 1px 1px #fefefe;
+}
+
+@keyframes gold {
+  0% {background: linear-gradient(45deg, #f6daa8, #ebcf9e, #e0c594, #d6ba8b, #cbb081, #ccb284, #ccb386, #cdb589, #d9c399, #e6d1a9, #f2e0b9, #ffeeca);}
+  33% {background: linear-gradient(45deg, #d9c399, #e6d1a9, #f2e0b9, #ffeeca, #f6daa8, #ebcf9e, #e0c594, #d6ba8b, #cbb081, #ccb284, #ccb386, #cdb589);}
+  66% {background: linear-gradient(45deg, #cbb081, #ccb284, #ccb386, #cdb589, #d9c399, #e6d1a9, #f2e0b9, #ffeeca, #f6daa8, #ebcf9e, #e0c594, #d6ba8b);}
 }
 
 

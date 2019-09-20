@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <style media="screen">
     </style>
-    <div class="col-sm-offset-3 col-sm-6">
+    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3>修改邮箱资料</h3>
@@ -40,6 +40,20 @@
                         <h6>友情提醒，请【仔细】检查邮箱输入情况，确认邮箱无误。输入错误的邮箱将无法激活自己的账户，也无法找回自己的账户。为了确保验证邮件正常送达，请务必使用个人<code>目前常用、可用的</code>邮箱地址。</h6>
                         <br>
                         <h6>由于邮件业务存在跨国跨墙情况，有时会出现运营商截停/延误邮件的情况，请给邮箱预留一天以上的空余时间接收，不要连续重复发件。<br>如果确认邮箱正确仍不能收到邮件，请酌情更换自己常用、可用的其他邮箱。<br>qq邮箱容易拒收邮件，请慎重使用。</h6>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="captcha">
+                                <span>{!! captcha_img() !!}</span>
+                                <button type="button" class="btn btn-success"><i class="fa fa-refresh" id="refresh"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <input id="captcha" type="text" class="form-control" placeholder="输入验证码" name="captcha">
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-md btn-danger sosad-button">更新邮箱</button>
