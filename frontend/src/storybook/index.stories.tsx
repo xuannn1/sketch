@@ -36,6 +36,14 @@ import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
+import { FooterMenu } from '../view/components/common/footer-menu';
+import { SearchHomepageBar } from '../view/components/common/searchhomepage-bar';
+import { ChannelPreview } from '../view/components/home/channel-preview';
+import { TagBasic } from '../view/components/common/tagbasic';
+import { TagBasicList } from '../view/components/common/tagbasic-list';
+import { TagBasicListSelect } from '../view/components/common/tagbasiclist-select';
+import { TagBasicListFilter } from '../view/components/common/tagbasiclist-filter';
+import { RecommendList } from '../view/components/common/recommend-list';
 
 const core = new Core();
 
@@ -414,7 +422,231 @@ storiesOf('Common Components/Float Button', module)
     <div className="button">customize</div>
   </FloatButton>)
 ;
-
+storiesOf('Home Components/HomePage', module)
+  .add('SearchHomepageBar', () => React.createElement(class extends React.Component {
+    public render () {
+      return <div style={{
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'rgba(244,245,249,1)',
+      }}>
+          <SearchHomepageBar hasInfo={true}
+            onSearch={() => console.log('click search')} onInfo={() => console.log('click info')}>
+          </SearchHomepageBar>
+      </div>;
+    }
+  }))
+  .add('ChannelPreview', () => React.createElement(class extends React.Component {
+    public render () {
+      const items = [
+        {id:1, channel_id:1, title:'春潮', brief:'我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性', author:'小山鬼'},
+        {id:2, channel_id:1, title:'stay gold', brief:'娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷', author:'草率'},
+        {id:3, channel_id:1, title:'英国病人', brief:'我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性', author:'小山鬼'},
+    ];
+      return <Router history={createBrowserHistory()}>
+          <ChannelPreview
+          channel={{id:1, name: '推荐榜单'}}
+          threads={items}>
+        </ChannelPreview>
+        </Router>;
+    }
+  }))
+  .add('buttons', () => <NavBar goBack={action('goBack')}>
+    <div className="button is-danger"><i className="fas fa-fire"></i>推荐</div>
+    <div className="button is-danger"><i className="fas fa-book-open"></i>文库</div>
+  </NavBar>)
+  .add('FooterMenu', () => React.createElement(class extends React.Component {
+    public state = {
+      onIndex: 0,
+      icon: boolean('icon', false),
+    };
+    public render () {
+      const items = [
+        {to: '', label: '首页', icon: 'fas fa-home',defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '论坛', icon: 'fas fa-comments',defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '动态', icon: 'far fa-compass',defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '收藏', icon: 'far fa-star',defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '我的', icon: 'far fa-user',defaultColor:'black', selectedColor:'red'},
+      ];
+      return <Router history={createBrowserHistory()}>
+      <div style={{
+          position: 'absolute',
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column'}}>
+          <FooterMenu
+            items={items}
+            onIndex={this.state.onIndex}
+            onClick={(_, i) => this.setState({onIndex: i})}
+          ></FooterMenu>
+          </div>
+      </Router>;
+    }
+  }))
+  .add('tagbasicMidium', () => <TagBasic
+    tagId={'233'}
+    tagName={'tag'}
+    onClick={(selected, selectedId) => {console.log('select', selectedId); } }
+    selected={false}
+    size={'medium'}
+    color={'light'}
+    selectedColor={'danger'}
+    selectable={true}>
+    </TagBasic>)
+  .add('tagbasicSmall', () => <TagBasic
+    tagId={'233'}
+    tagName={'tag'}
+    onClick={(selected, selectedId) => {console.log('select', selectedId); } }
+    selected={false}
+    size={'normal'}
+    color={'white'}
+    selectedColor={'danger'}
+    selectable={true}>
+  </TagBasic>)
+  .add('TagBasicList1', () => React.createElement(class extends React.Component {
+    public render () {
+      return <div style={{
+        width: '100%',
+        margin: '0',
+        padding: '0',
+        backgroundColor:'rgba(244,245,249,1)'}}>
+        <TagBasicList
+          tagCategoryName={'最近搜索'}
+          childTags={ [{tagId:'12', tagName:'星星'} , {tagId:'13' , tagName:'星星月亮'}]}
+          tagSize={'normal'}
+          tagColor={'white'}
+          selectedColor={'danger'}
+          showTrashbin={true}
+          backgroundColor={'rgba(244,245,249,1)'}
+          onClick={(selected, selectedId) => {console.log('selectedId' , selectedId); }}>
+        </TagBasicList>
+      </div>;
+    }
+  }))
+  .add('TagBasicList2', () => React.createElement(class extends React.Component {
+    public render () {
+      return <div style={{
+        width: '100%',
+        margin: '0',
+        padding: '0',
+        backgroundColor:'rgba(244,245,249,1)'}}>
+        <TagBasicList
+          tagCategoryName={'热门推荐'}
+          childTags={ [{tagId:'12', tagName:'得偿所愿'} , {tagId:'13' , tagName:'翅膀养护日记'}]}
+          tagSize={'normal'}
+          tagColor={'white'}
+          selectedColor={'danger'}
+          showTrashbin={false}
+          backgroundColor={'rgba(244,245,249,1)'}
+          onClick={(selected, selectedId) => {console.log('selectedId' , selectedId); }}>
+        </TagBasicList>
+      </div>;
+    }
+  }))
+  .add('TagBasicList3', () => React.createElement(class extends React.Component {
+    public render () {
+      return <div style={{
+        width: '100%',
+        margin: '0',
+        padding: '0',
+        backgroundColor:'white'}}>
+        <TagBasicList
+          tagCategoryName={'文章分类'}
+          childTags={ [{tagId:'12', tagName:'原创'} , {tagId:'13' , tagName:'同人'}]}
+          tagSize={'medium'}
+          tagColor={'light'}
+          selectedColor={'danger'}
+          showTrashbin={false}
+          backgroundColor={'white'}
+          onClick={(selected, selectedId) => {console.log('selectedId' , selectedId); }}>
+        </TagBasicList>
+      </div>;
+    }
+  }))
+  .add('tagBasicListSelect', () => React.createElement(class extends React.Component {
+    public state = {
+        counter: 0,
+        selectedTags: [],
+    };
+    public render () {
+        return <TagBasicListSelect
+        taglist={[{tagCatagoryName:'文章分类',
+        childTags:[{tagId:'12', tagName:'原创'} , {tagId:'13' , tagName:'同人'}]},
+        {tagCatagoryName:'篇幅',
+        childTags:[{tagId:'14', tagName:'短篇'} , {tagId:'15' , tagName:'中篇'},
+        {tagId:'16', tagName:'长篇'},{tagId:'17', tagName:'大纲'}]}
+        ]}
+        onBack={() => {console.log('back'); }}
+        onFilter={() => {console.log('filter'); }}
+        selectedCounter={this.state.counter}
+        onSelect={(tags) => {
+          const selectedTags = [...tags];
+          this.setState({selectedTags});
+          this.setState({counter:selectedTags.length});
+          console.log('stearry', this.state.selectedTags);
+          console.log('stearbuber', this.state.counter);
+        }}
+        >
+        </TagBasicListSelect>;
+    }
+  }))
+  .add('tagBasicListFilter', () => React.createElement(class extends React.Component {
+    public state = {
+        recentSearchTags: [],
+    };
+    public render () {
+        return <TagBasicListFilter
+        taglist={[{tagCategoryName:'最近搜索',
+        categoryTrash:true,
+        childTags:[{tagId:'12', tagName:'夏天'} , {tagId:'13' , tagName:'星赭'}]},
+        {tagCategoryName:'热门推荐',
+        categoryTrash:false,
+        childTags:[{tagId:'14', tagName:'九州见闻'} , {tagId:'15' , tagName:'得偿所愿'},
+        {tagId:'16', tagName:'翅膀养护日记'},{tagId:'17', tagName:'不知道写啥'}]}
+        ]}
+        onBack={() => {console.log('back'); }}
+        onDelete={(tags) => {
+          console.log('filter');
+          // 1,从最近搜索标签组中删除
+          const recentSearchTags = [...tags];
+          this.setState({recentSearchTags});
+        }}
+        onFilter={ (filCriteria) => {
+          // 1，加入到最近搜索
+          // 2，进行搜索
+          console.log('filter condition is ', filCriteria); } }
+        >
+        </TagBasicListFilter>;
+    }
+  }))
+  .add('RecommendList', () => React.createElement(class extends React.Component {
+    public render () {
+      const items = [
+        {id:1, channel_id:1, title:'夜深知雪重量', brief:'推荐语：小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开；小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开', author:'尸尸'},
+        {id:2, channel_id:1, title:'贼雀', brief:'一二三四五六七，我们都死得很离奇；七六五四三二一，找到答案前谁都出不去', author:'叽里呱啦'},
+        {id:3, channel_id:1, title:'她捡到1个放大镜', brief:'夏天夏天悄悄过去充满小秘密，放大镜的乐趣我只想告诉你', author:'越荷兮'},
+    ];
+      return <Router history={createBrowserHistory()}>
+          <RecommendList
+          taglist={[{tagCatagoryName:'文章分类',
+          childTags:[{tagId:'12', tagName:'原创'} , {tagId:'13' , tagName:'同人'}]},
+          {tagCatagoryName:'篇幅',
+          childTags:[{tagId:'14', tagName:'长篇'} , {tagId:'15' , tagName:'中篇'},
+          {tagId:'16', tagName:'短篇'},{tagId:'17', tagName:'大纲'}]}
+          ]}
+          threads={items}
+          onBack={() => {}}
+          onSearch={() => {}}
+          onShowTags={() => {}}>
+        </RecommendList>
+        </Router>;
+    }
+  }))
+;
 storiesOf('Home Components', module)
 ;
 
