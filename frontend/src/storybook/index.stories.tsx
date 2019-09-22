@@ -37,13 +37,13 @@ import { Loading } from '../view/components/common/loading';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
 import { FooterMenu } from '../view/components/common/footer-menu';
-import { SearchHomepageBar } from '../view/components/common/searchhomepage-bar';
+import { SearchHomepageBar } from '../view/components/home/searchhomepage-bar';
 import { ChannelPreview } from '../view/components/home/channel-preview';
-import { TagBasic } from '../view/components/common/tagbasic';
-import { TagBasicList } from '../view/components/common/tagbasic-list';
-import { TagBasicListSelect } from '../view/components/common/tagbasiclist-select';
-import { TagBasicListFilter } from '../view/components/common/tagbasiclist-filter';
-import { RecommendList } from '../view/components/common/recommend-list';
+import { TagBasic } from '../view/components/home/tagbasic';
+import { TagBasicList } from '../view/components/home/tagbasic-list';
+import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
+import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
+import { RecommendList } from '../view/components/home/recommend-list';
 
 const core = new Core();
 

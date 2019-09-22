@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link  } from 'react-router-dom';
-import { Popup } from './popup';
+import { Popup } from '../common/popup';
 import './recommend-list.scss';
 import { TagBasicList } from './tagbasic-list';
 
