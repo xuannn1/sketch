@@ -1,0 +1,8 @@
+.recommendlist {
+  a {
+    color: black;
+    &:focus{
+      text-decoration: black;
+    }
+  }
+}
