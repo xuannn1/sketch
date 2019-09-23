@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { MobileRouteProps } from '../router';
 import { List } from '../../components/common/list';
-import  './styles.css';
+import  './styles.scss';
 // 等后续用api直接替换
 import data from './data';
 import { Fragment } from 'react'
@@ -17,7 +17,7 @@ export class Tidings extends React.Component<MobileRouteProps, State> {
     list: data
 };
 
-  render () {
+public render () {
     return (
       <Fragment>
         <textarea className="textarea font13 border-0" placeholder="今天你丧了吗…" ></textarea>
@@ -35,7 +35,7 @@ export class Tidings extends React.Component<MobileRouteProps, State> {
   }
 
   // 根据获取的动态信息渲染列表
-  renderList () {
+  public renderList () {
     return data.map((msg, idx) => {
       return (
         <List.Item key={ msg.id }>
@@ -48,7 +48,7 @@ export class Tidings extends React.Component<MobileRouteProps, State> {
     })
   }
   
-  async handleClick (isAll) {
+  public async handleClick (isAll:boolean) {
     // TODO 确定api如何交互后修改
     // await this.getTidingsList().then(res => {
     //   this.setState((preState) => ({
@@ -58,6 +58,6 @@ export class Tidings extends React.Component<MobileRouteProps, State> {
   }
 
   // 获取消息列表
-  getTidingsList () {}
+  public getTidingsList () {}
 
 }

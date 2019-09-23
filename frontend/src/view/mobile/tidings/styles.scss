@@ -54,7 +54,7 @@
 .list {
   border: 0;
   box-shadow: none !important;
-}
-.list:first-child {
-  border-top: 0;
+  &:first-child {
+    border-top: 0;
+  }
 }
