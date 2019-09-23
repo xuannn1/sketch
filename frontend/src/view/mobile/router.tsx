@@ -13,6 +13,7 @@ import { StatusCollection } from './status/collection';
 import { CollectionList } from './collection/list';
 import { CreateQuote } from './home/createquote';
 
+import { Tidings } from './tidings';
 interface Props {
   core:Core;
 }
@@ -58,6 +59,8 @@ export const MobileRoute:RouteComponentType[] = [
   // message
   { path: '/messages/pm', component: PersonalMessage },
   { path: '/messages', component: Message },
+
+  { path: '/tidings', component: Tidings },
   // others
   { path: '/createquote', component: CreateQuote },
 ];
