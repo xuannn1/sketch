@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { classnames } from '../../../utils/classname';
 
-type TagColor = 'black'|'dark'|'light'|'white'|'primary'|'link'|'info'|'success'|'warning'|'danger';
+export type TagColor = 'black'|'dark'|'light'|'white'|'primary'|'link'|'info'|'success'|'warning'|'danger';
 
 export class Tag extends React.Component<{
   // props
