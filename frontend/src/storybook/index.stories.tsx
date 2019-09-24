@@ -27,7 +27,7 @@ import { PopupMenu } from '../view/components/common/popup-menu';
 import { RouteMenu } from '../view/components/common/route-menu';
 import { Slider } from '../view/components/common/slider';
 import { Tab } from '../view/components/common/tab';
-import { Tag } from '../view/components/common/tag';
+import { Tag, TagColor } from '../view/components/common/tag';
 import { TagList } from '../view/components/common/tag-list';
 import { FloatButton } from '../view/components/common/float-button';
 import { Core } from '../core/index';
@@ -60,8 +60,7 @@ storiesOf('Common Components', module)
     </Badge>,
   )
   .add('Tag', () => {
-    const colorOptions = {
-      default: '',
+    const colorOptions:{[name:string]:TagColor} = {
       black: 'black',
       dark: 'dark',
       light: 'light',
@@ -81,15 +80,14 @@ storiesOf('Common Components', module)
         medium: 'medium',
         large: 'large',
       },           'normal')}
-      color={select('color', colorOptions, '')}
-      selectedColor={select('selectedColor', colorOptions)}
+      color={select('color', colorOptions, undefined)}
+      selectedColor={select('selectedColor', colorOptions, undefined)}
       rounded={boolean('rounded', false)}
       selectable={boolean('selectable', true)}
     >{text('text', 'test')}</Tag>;
   })
   .add('TagList', () => {
-    const colorOptions = {
-      default: '',
+    const colorOptions:{[name:string]:TagColor} = {
       black: 'black',
       dark: 'dark',
       light: 'light',
@@ -110,8 +108,8 @@ storiesOf('Common Components', module)
           medium: 'medium',
           large: 'large',
         },           'normal')}
-        color={select('color', colorOptions, '')}
-        selectedColor={select('selectedColor', colorOptions)}
+        color={select('color', colorOptions, undefined)}
+        selectedColor={select('selectedColor', colorOptions, undefined)}
         rounded={boolean('rounded', false)}
         selectable={boolean('selectable', true)}
       >{content}</Tag>))}
@@ -299,22 +297,28 @@ storiesOf('Common Components', module)
     }
   }))
   .add('animation', () => <Animate
-    name={select('name', {
-      slideInUp: 'slideInUp',
-      slideOutUp: 'slideOutUp',
-      slideInDown: 'slideInDown',
-      slideOutDown: 'slideOutDown',
-      slideInRight: 'slideInRight',
-      slideOutRight: 'slideOutRight',
-      slideInLeft: 'slideInLeft',
-      slideOutLeft: 'slideOutLeft',
-    })}
-    speed={select('speed', {
-      slow: 'slow',
-      slower: 'slower',
-      fast: 'fast',
-      faster: 'faster',
-    })}
+    name={select(
+      'name',
+      {
+        slideInUp: 'slideInUp',
+        slideOutUp: 'slideOutUp',
+        slideInDown: 'slideInDown',
+        slideOutDown: 'slideOutDown',
+        slideInRight: 'slideInRight',
+        slideOutRight: 'slideOutRight',
+        slideInLeft: 'slideInLeft',
+        slideOutLeft: 'slideOutLeft',
+      },
+      'slideInUp')}
+    speed={select(
+      'speed',
+      {
+        slow: 'slow',
+        slower: 'slower',
+        fast: 'fast',
+        faster: 'faster',
+      },
+      undefined)}
     infinite={boolean('infinite', false)}
     ><div>example animation</div></Animate>)
   .add('carousel', () => <Carousel
@@ -465,11 +469,11 @@ storiesOf('Home Components/HomePage', module)
     };
     public render () {
       const items = [
-        {to: '', label: '首页', icon: 'fas fa-home',defaultColor:'black', selectedColor:'red'},
-        {to: '', label: '论坛', icon: 'fas fa-comments',defaultColor:'black', selectedColor:'red'},
-        {to: '', label: '动态', icon: 'far fa-compass',defaultColor:'black', selectedColor:'red'},
-        {to: '', label: '收藏', icon: 'far fa-star',defaultColor:'black', selectedColor:'red'},
-        {to: '', label: '我的', icon: 'far fa-user',defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '首页', icon: 'fas fa-home', defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '论坛', icon: 'fas fa-comments', defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '动态', icon: 'far fa-compass', defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '收藏', icon: 'far fa-star', defaultColor:'black', selectedColor:'red'},
+        {to: '', label: '我的', icon: 'far fa-user', defaultColor:'black', selectedColor:'red'},
       ];
       return <Router history={createBrowserHistory()}>
       <div style={{
