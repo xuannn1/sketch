@@ -75,13 +75,12 @@ class ForgotPasswordController extends Controller
         ];
 //该邮箱账户不存在
         if (!$user_check) {        
-
-            abort(404,($data));
+            return response()->error($data, 404);
         }
 //当日注册的用户不能重置密码
-        if ($user_check->created_at > Carbon::now()->subDay(1)){     
+        if ($user_check->created_at>Carbon::now()->subDay()){     
 
-            abort(403,($data));
+            return response()->error($data, 403);
         }
 
         $email_check = DB::table('password_resets')->where('email', $request->email)->first();
@@ -96,11 +95,8 @@ class ForgotPasswordController extends Controller
 
    //     Cache::put('reset-password-limit-' . request()->ip(), true, 60);
 
-   return response()->success($response) ;
-//    == Password::RESET_LINK_SENT
-//    ? $this->sendResetLinkResponse($response)
-//    : $this->sendResetLinkFailedResponse($request, $response);
-        // ? response()->success(($data))
-        // : response()->error(config('error.595'), 595);
+        return $response == Password::RESET_LINK_SENT
+        ? response()->success(($data))
+        : response()->error(config('error.595'), 595);
     }
 }
