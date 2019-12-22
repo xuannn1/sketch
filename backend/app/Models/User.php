@@ -8,7 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Sosadfun\Traits\ColumnTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use App\Notifications\ResetPasswordNotification;
 use App\Helpers\ConstantObjects;
 
 class User extends Authenticatable
@@ -205,5 +205,10 @@ class User extends Authenticatable
             'title_id' => $title_id,
         ]);
     }
+
+    public function sendPasswordResetNotification($token) 
+    { 
+     $this->notify(new ResetPasswordNotification($token)); 
+    } 
 
 }
