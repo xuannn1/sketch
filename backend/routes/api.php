@@ -21,6 +21,9 @@ Route::middleware('auth:api')->group( function(){
 // 注册相关
 Route::post('register', 'API\PassportController@register');
 Route::post('login', 'API\PassportController@login')->name('login');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/reset', 'API\PassportController@postReset');
+
 
 // 默认页面
 Route::get('/', 'API\PageController@home')->name('home');// 网站首页
@@ -57,6 +60,7 @@ Route::resource('/thread/{thread}/chapter', 'API\ChapterController')->only(['sto
 // 用户
 Route::apiResource('user', 'API\UserController');
 Route::get('user/{user}/thread', 'API\UserController@showthread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
+Route::patch('user/{user}/profile', 'API\UserController@updateProfile');// 
 Route::resource('/user/{user}/title', 'API\TitleController')->only(['index', 'update']);// title resource
 Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
 Route::get('user/{user}/following', 'API\FollowerController@following');//展示该用户的所有关注

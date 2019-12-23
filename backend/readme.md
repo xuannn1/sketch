@@ -55,6 +55,7 @@ $ valet park
 以下默认使用`http://127.0.0.1:8000/`作为访问路径。
 
 
+
 ### 2.6 在成功初次使用之后，需要重新pull代码，更新数据库
 #### 2.6.1 使用场景
 有的时候我们会面对这样的情况：
@@ -222,6 +223,30 @@ password: password
 | Accept  | application/json |照着写就行|
 | Authorization | Bearer eyJ0eXAiOiJK...|这个token字串会很长，注意Bearer和token之间有一个英文空格， 还有注意是Bearer，不是Bear|
 
+#### 4.1.4 重置密码
+忘记密码，可以通过邮箱进行密码重置，方法是：
+网址设置为`http://127.0.0.1:8000/api/password/email`，选择POST方式发送信息  
+在下拉内容中填写：  
+email: tester@example.com  
+正确返回：
+200 data email
+错误代码：
+403 当日注册的用户，12小时内已发送过重置邮件不能重置密码
+404 邮箱账户不存在
+422 邮箱格式错误
+595 发送邮件失败
+
+登陆邮箱读取重置邮件，获取token，利用token进行重置，方法是：
+网址设置为`http://127.0.0.1:8000/api/password/reset`，选择POST方式发送信息  
+在下拉内容中填写：  
+email: tester@example.com 
+token: token_example
+password: passsword_example
+正确返回：
+200 
+错误代码：
+403 密码格式错误
+404 token不存在/token过期
 
 
 ### 4.2 错误处理 error handling

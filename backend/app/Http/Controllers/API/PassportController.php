@@ -120,7 +120,7 @@ class PassportController extends Controller
             abort(404,$token);
             //token不存在
         if ($token_check&&$token_check->created_at<Carbon::now()->subMinutes(30)){
-            abort(403);
+            abort(404);
           //  token过期
         }
         $user=$this->reset($data);
