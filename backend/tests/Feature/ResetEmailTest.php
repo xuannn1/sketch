@@ -27,6 +27,11 @@ class ResetEmailTest extends TestCase
               'email' => '1@163.com'
             ],
         ]);
+        $response = $this->post('api/password/email', ['email' => '12345'])
+        ->assertStatus(422)
+        ->assertJson([
+            'code' => 422
+        ]);
 
     }
 

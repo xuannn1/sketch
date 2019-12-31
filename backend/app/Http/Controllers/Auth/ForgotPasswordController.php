@@ -41,33 +41,17 @@ class ForgotPasswordController extends Controller
     public function sendResetLinkEmail(Request $request)
     {
 
-        //这个报错 captcha不存在 验证码功能
-        // $request->validate([
-        //     'captcha' => 'required|captcha'
-        // ]);
-        
-        //cache没有设置所以不会执行 报错
-        // if(Cache::has('reset-password-request-limit-' . request()->ip())){
-        //     return back()->with('danger','当前ip('.request()->ip().')已于10分钟内提交过重置密码请求。');
-        // }
-        // Cache::put('reset-password-request-limit-' . request()->ip(), true, 10);
-
-        // if(Cache::has('reset-password-limit-' . request()->ip())){
-        //     return back()->with('danger','当前ip('.request()->ip().')已于1小时内成功重置密码。');
-        // }
-    
-   //    $this->validateEmail($request);
-
-//重写了validator,为了规范返回格式
-       $validator = Validator::make($request->all(), [
-        'email' => 'required|email|email'
-    ]);
-    if ($validator->fails()) {
         $data = [
-            "message"=> "validation failed"
-       ];
-        abort(422,json_encode($data));
-    }
+            'email'   => $request->email
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->error($data, 422);
+        }
 
         $user_check = User::where('email', $request->email)->first();
         $data = [
@@ -79,7 +63,6 @@ class ForgotPasswordController extends Controller
         }
 //当日注册的用户不能重置密码
         if ($user_check->created_at>Carbon::now()->subDay()){     
-
             return response()->error($data, 403);
         }
 
