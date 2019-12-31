@@ -9,6 +9,7 @@ class Reward extends Model
     //
     protected $guarded = [];
     const UPDATED_AT = null;
+    
     public function rewardable(){
     	return $this->morphTo();
     }

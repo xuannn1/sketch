@@ -25,7 +25,6 @@ $ php artisan migrate --seed
 如果是第一次使用laravel， `.env` 文件中不含APP_KEY这个变量，那么还需要让程序加载初始key。一些情况下，也可以使用以前曾经使用过的key，来确保数据库之间能够对应。只需运行下面这两个指令即可：
 ```
 $ php artisan key:generate
-$ php artisan passport:keys
 ```  
 如果之前已经配置了key，程序会提示你，是否想要重置key，按自己需求选择即可。
 
@@ -33,6 +32,7 @@ $ php artisan passport:keys
 在这个工程中，我们使用laravel自带的passport这个package，给api进行基本的授权。为了在本地顺利测试相关情况，我们需要对passport进行基本配置，比如说，以Personal access client的名义，给自己的前端部分授权。
 ```
 $ php artisan passport:install
+$ php artisan passport:keys
 ```
 
 这一步按照程序提示，输入任意字符串即可。
@@ -76,7 +76,9 @@ $ valet park
 $ git pull
 $ composer update
 $ php artisan migrate:reset
+$ php artisan migrate
 $ php artisan passport:install
+$ php artisan passport:keys
 $ php artisan db:seed
 $ vendor/bin/phpunit
 ```
