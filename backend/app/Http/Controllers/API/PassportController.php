@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use DB;
 use App\Models\User;
 use App\Models\UserInfo;
+use App\Models\PasswordReset;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -53,13 +54,7 @@ class PassportController extends Controller
         return $user;
     }
 
-    protected function reset(array $data)
-    {
-        $user = User::updateOrCreate(
-            ['email'=>$data['email']],
-            ['password' => bcrypt($data['password']), 'email_verified_at' => Carbon::now(),'remember_token' => Str::random(60)]);
-        return $user;
-    }
+
     public function register(Request $request)
     {
         $validator = $this->validator($request->all());
@@ -98,6 +93,7 @@ class PassportController extends Controller
     public function postReset(Request $request)
     {
 
+
         $password = $request->password;
         $data = $request->all();
         $rules = [
@@ -111,22 +107,35 @@ class PassportController extends Controller
         $validator = Validator::make($data, $rules, $messages);
 
         if ($validator->fails()) {
-            abort(403);
+            abort(422);
             //返回一次性错误
         }
-        $token=hash::make($request->token);
+       // $token=hash::make($request->token);
         $token_check = DB::table('password_resets')->where('email',$request->email)->first();
-        if(!hash::check($request->token,$token_check->token))
-            abort(404,$token);
-            //token不存在
+        if(!$token_check||!hash::check($request->token,$token_check->token))
+            abort(404,$request->token);
+            //email及token的配对不存在重置表
         if ($token_check&&$token_check->created_at<Carbon::now()->subMinutes(30)){
-            abort(404);
+            abort(422,$request->token);
           //  token过期
         }
-        $user=$this->reset($data);
-
-        Auth::guard()->login($user);
-   return response()->success('200');
+        $user_check = DB::table('users')->where('email',$request->email)->first(); 
+        if(!$user_check)  
+            abort(404,'users');//邮箱不存在用户表   
+        if($user_check&&$user_check->email_verified_at>Carbon::now()->subHours(12))
+            abort(409);//12小时内已成功重置密码不能重置密码
+        $toekn_update= DB::table('password_resets')->where('email',$request->email)->update(
+            ['created_at'=>Carbon::now()->subMinutes(20)]);
+        if(!$toekn_update)
+            abort(404,'faile');  
+        $user = User::updateOrCreate(
+            ['email'=>$data['email']],
+            ['password' => bcrypt($data['password']), 'email_verified_at' => Carbon::now(),'remember_token' => Str::random(60)]);
+        if($user){
+            Auth::guard()->login($user);
+            return response()->success('200');
+        }
+        abort(500);
 
     }  
 }
