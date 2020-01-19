@@ -14,7 +14,7 @@ class QuotesTableSeeder extends Seeder
     {
         $quotes1 = factory(Quote::class)->times(20)->create();
         $quotes2 = factory(Quote::class)->times(20)->create([
-            'is_approved' => false,
+            'approved' => false,
         ]);
     }
 }

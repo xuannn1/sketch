@@ -8,6 +8,8 @@ class Firewall extends Model
 {
     protected $guarded = [];
 
+    protected $table = 'firewall';
+
     const UPDATED_AT = null;
 
     public function user()

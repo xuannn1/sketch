@@ -2,22 +2,18 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\StorePost;
-//use App\Helpers\StringProcess;
-// common
-use Carbon\Carbon;
-use App\Helpers\ConstantObjects;
-
-// model
+use Illuminate\Foundation\Http\FormRequest;
+use DB;
+use StringProcess;
 use App\Models\Thread;
 use App\Models\Post;
-use App\Models\Chapter;
+use App\Models\PostInfo;
+use Carbon;
+use App\Sosadfun\Traits\GeneratePostDataTraits;
 
-// form request
-use DB;
-
-class StoreChapter extends StorePost
+class StoreChapter extends FormRequest
 {
+    use GeneratePostDataTraits;
     /**
     * Determine if the user is authorized to make this request.
     *
@@ -25,9 +21,7 @@ class StoreChapter extends StorePost
     */
     public function authorize()
     {
-        $thread = request()->route('thread');
-        $channel = $thread->channel();
-        return auth('api')->id()===$thread->user_id && $channel->type==='book' && !$thread->is_locked;
+        return true;
     }
 
     /**
@@ -39,79 +33,60 @@ class StoreChapter extends StorePost
     {
         return [
             'title' => 'required|string|max:30',
-            'brief' => 'string|max:50',
-            'body' => 'required|string|max:20000',
-            'warning' => 'string|max:50',
-            'annotation' => 'string|max:20000',
-            'use_markdown' => 'boolean',
-            'use_indentation' => 'boolean',
-            'is_bianyuan' => 'boolean',
+            'brief' => 'required|string|max:40',
+            'body' => 'required|string|min:15|max:20000',
+            'annotation' => 'max:2000',
+            'warning' => 'max:200',
         ];
     }
 
-    public function generateChapter()
-    {
-        $thread = request()->route('thread');
-        $previous_chapter = $thread->last_chapter;
-        $chapter_data = $this->generateChapterData($previous_chapter);
-
-        // generate post first
-        $post_data = $this->generatePostData();
+    public function generateChapter($thread){
+        $post_data = $this->generatePostData($thread);
         $post_data['type'] = 'chapter';
-        if($thread->is_anonymous){$post_data['is_anonymous']=true;}
-
-        // save 把所有东西放进transaction里
-        $post = DB::transaction(function() use($post_data, $chapter_data, $previous_chapter, $thread){
-            // create post first
-            $post = Post::create($post_data);
-            $chapter_data['post_id'] = $post->id;
-            if (($previous_chapter)&&($previous_chapter->chapter)){
-                $previous_chapter->chapter->update(['next_id'=>$post->id]);
-            }
-            $chapter = Chapter::create($chapter_data);
-            $thread->last_component_id = $post->id;
-            $thread->add_component_at = Carbon::now();
-            $thread->total_char = $thread->count_char();
-            $thread->save();
-            return $post;
-        });
-        return $post;
-    }
-
-    public function generateChapterData($previous_chapter)
-    {
-        $chapter_data = $this->only('warning', 'annotation');
-        if($previous_chapter){
-            $chapter_data['previous_id'] = $previous_chapter->id;
-            //考虑到也有可能前一个并不是chapter，比如是poll，留出兼容空间。
-            if(($previous_chapter->type==='chapter')&&($previous_chapter->chapter)){
-                $chapter_data['order_by'] = $previous_chapter->chapter->order_by + 1;
-                $chapter_data['volumn_id'] = $previous_chapter->chapter->volumn_id; //默认跟前面的同一volumn
-            }
+        $post_data['brief'] = $this->brief;
+        $post_data['is_anonymous']=$thread->is_anonymous;
+        $post_data['majia']=$thread->majia;
+        if($this->is_bianyuan){
+            $post_data['is_bianyuan']=true;
         }
-        return $chapter_data;
-    }
 
-    public function updateChapter($post)
-    {
-        $chapter = $post->chapter;
-        if((!$post)||(!$chapter)){ abort(404);}
+        // chapter data
+        $info_data['annotation']=StringProcess::trimSpaces($this->annotation);
+        $info_data['warning']=StringProcess::trimSpaces($this->warning);
 
-        $this->canUpdatePost($post);
+        $info_data['abstract']=StringProcess::trimtext($post_data['body'],150);
 
-        $post_data = $this->generateUpdatePostData();
-
-        $chapter_data = $this->only('warning', 'annotation');
-
-        $thread = $this->thread();
-        $post = DB::transaction(function () use($post, $chapter, $post_data, $chapter_data, $thread) {
-            $post->update($post_data);
-            $chapter->update($chapter_data);
-            $thread->total_char = $thread->count_char();
-            $thread->save();
+        $max_order_by = $thread->max_component_order();
+        $info_data['order_by'] = $max_order_by ? $max_order_by+1 : 1;
+        $post = DB::transaction(function()use($post_data, $info_data){
+            $post = Post::create($post_data);
+            $info_data['post_id']=$post->id;
+            $info = PostInfo::create($info_data);
             return $post;
         });
+        return $post;
+    }
+
+    public function updateChapter($post, $thread)
+    {
+        $old_post = $post;
+        $info = $post->info;
+        $post_data = $this->generateUpdatePostData($post, $thread);
+        $post_data['brief'] = $this->brief;
+        $post_data['is_anonymous']=$thread->is_anonymous;
+        $post_data['is_bianyuan']= ($thread->is_bianyuan||$this->is_bianyuan)? true:false;
+        $info_data = $this->only('warning','annotation');
+        $info_data['annotation']=StringProcess::trimSpaces($info_data['annotation']);
+        $info_data['warning']=StringProcess::trimSpaces($info_data['warning']);
+
+        $info_data['abstract']=StringProcess::trimtext($post_data['body'],150);
+
+        $post->update($post_data);
+        $info->update($info_data);
+
+        $this->check_length($old_post,$post);
 
         return $post;
+
     }
 }

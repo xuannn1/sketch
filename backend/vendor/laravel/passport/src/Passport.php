@@ -2,11 +2,12 @@
 
 namespace Laravel\Passport;
 
-use Mockery;
-use DateInterval;
 use Carbon\Carbon;
+use DateInterval;
 use DateTimeInterface;
 use Illuminate\Support\Facades\Route;
+use League\OAuth2\Server\ResourceServer;
+use Mockery;
 
 class Passport
 {
@@ -39,6 +40,13 @@ class Passport
     public static $personalAccessClientId;
 
     /**
+     * The default scope.
+     *
+     * @var string
+     */
+    public static $defaultScope;
+
+    /**
      * All of the scopes defined for the application.
      *
      * @var array
@@ -60,6 +68,13 @@ class Passport
      * @var \DateTimeInterface|null
      */
     public static $refreshTokensExpireAt;
+
+    /**
+     * The date when personal access tokens expire.
+     *
+     * @var \DateTimeInterface|null
+     */
+    public static $personalAccessTokensExpireAt;
 
     /**
      * The name for API token cookies.
@@ -123,6 +138,13 @@ class Passport
      * @var bool
      */
     public static $unserializesCookies = false;
+
+    /**
+     * Indicates the scope should inherit its parent scope.
+     *
+     * @var bool
+     */
+    public static $withInheritedScopes = false;
 
     /**
      * Enable the implicit grant type.
@@ -199,6 +221,17 @@ class Passport
     }
 
     /**
+     * Set the default scope(s). Multiple scopes may be an array or specified delimited by spaces.
+     *
+     * @param  array|string  $scope
+     * @return void
+     */
+    public static function setDefaultScope($scope)
+    {
+        static::$defaultScope = is_array($scope) ? implode(' ', $scope) : $scope;
+    }
+
+    /**
      * Get all of the defined scope IDs.
      *
      * @return array
@@ -243,8 +276,6 @@ class Passport
             if (isset(static::$scopes[$id])) {
                 return new Scope($id, static::$scopes[$id]);
             }
-
-            return;
         })->filter()->values()->all();
     }
 
@@ -298,6 +329,25 @@ class Passport
     }
 
     /**
+     * Get or set when personal access tokens expire.
+     *
+     * @param  \DateTimeInterface|null  $date
+     * @return \DateInterval|static
+     */
+    public static function personalAccessTokensExpireIn(DateTimeInterface $date = null)
+    {
+        if (is_null($date)) {
+            return static::$personalAccessTokensExpireAt
+                ? Carbon::now()->diff(static::$personalAccessTokensExpireAt)
+                : new DateInterval('P1Y');
+        }
+
+        static::$personalAccessTokensExpireAt = $date;
+
+        return new static;
+    }
+
+    /**
      * Get or set the name for API token cookies.
      *
      * @param  string|null  $cookie
@@ -317,8 +367,8 @@ class Passport
     /**
      * Indicate that Passport should ignore incoming CSRF tokens.
      *
-     * @param  boolean|null  $ignoreCsrfToken
-     * @return boolean|static
+     * @param  bool  $ignoreCsrfToken
+     * @return static
      */
     public static function ignoreCsrfToken($ignoreCsrfToken = true)
     {
@@ -330,14 +380,14 @@ class Passport
     /**
      * Set the current user for the application with the given scopes.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @param  \Illuminate\Contracts\Auth\Authenticatable|\Laravel\Passport\HasApiTokens  $user
      * @param  array  $scopes
      * @param  string  $guard
      * @return \Illuminate\Contracts\Auth\Authenticatable
      */
     public static function actingAs($user, $scopes = [], $guard = 'api')
     {
-        $token = Mockery::mock(Passport::tokenModel())->shouldIgnoreMissing(false);
+        $token = Mockery::mock(self::tokenModel())->shouldIgnoreMissing(false);
 
         foreach ($scopes as $scope) {
             $token->shouldReceive('can')->with($scope)->andReturn(true);
@@ -345,11 +395,38 @@ class Passport
 
         $user->withAccessToken($token);
 
+        if (isset($user->wasRecentlyCreated) && $user->wasRecentlyCreated) {
+            $user->wasRecentlyCreated = false;
+        }
+
         app('auth')->guard($guard)->setUser($user);
 
         app('auth')->shouldUse($guard);
 
         return $user;
+    }
+
+    /**
+     * Set the current client for the application with the given scopes.
+     *
+     * @param  \Laravel\Passport\Client  $client
+     * @param  array  $scopes
+     * @return \Laravel\Passport\Client
+     */
+    public static function actingAsClient($client, $scopes = [])
+    {
+        $mock = Mockery::mock(ResourceServer::class);
+
+        $mock->shouldReceive('validateAuthenticatedRequest')
+            ->andReturnUsing(function ($request) use ($client, $scopes) {
+                return $request
+                    ->withAttribute('oauth_client_id', $client->id)
+                    ->withAttribute('oauth_scopes', $scopes);
+            });
+
+        app()->instance(ResourceServer::class, $mock);
+
+        return $client;
     }
 
     /**

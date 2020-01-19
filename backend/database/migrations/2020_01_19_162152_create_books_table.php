@@ -13,7 +13,7 @@ class CreateBooksTable extends Migration
      */
     public function up()
     {
-        Schema::table('books', function (Blueprint $table) {
+        Schema::create('books', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('thread_id')->default(0)->index();
         });
@@ -24,10 +24,8 @@ class CreateBooksTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::table('books', function (Blueprint $table) {
-            //
-        });
-    }
+     public function down()
+     {
+         Schema::dropIfExists('books');
+     }
 }

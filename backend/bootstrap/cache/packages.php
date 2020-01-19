@@ -1,4 +1,15 @@
 <?php return array (
+  'barryvdh/laravel-debugbar' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Debugbar' => 'Barryvdh\\Debugbar\\Facade',
+    ),
+  ),
   'beyondcode/laravel-dump-server' => 
   array (
     'providers' => 
@@ -11,6 +22,17 @@
     'providers' => 
     array (
       0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
+    ),
+  ),
+  'genert/bbcode' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Genert\\BBCode\\BBCodeServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Invoice' => 'Genert\\BBCode\\Facades\\BBCode',
     ),
   ),
   'laravel/nexmo-notification-channel' => 
@@ -41,13 +63,6 @@
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
     ),
   ),
-  'mll-lab/laravel-graphql-playground' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'MLL\\GraphQLPlayground\\GraphQLPlaygroundServiceProvider',
-    ),
-  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
@@ -60,17 +75,6 @@
     'providers' => 
     array (
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
-    ),
-  ),
-  'nuwave/lighthouse' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Nuwave\\Lighthouse\\Providers\\LighthouseServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'graphql' => 'Nuwave\\Lighthouse\\GraphQL',
     ),
   ),
 );

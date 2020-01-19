@@ -175,6 +175,11 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
 
+
+        Laravel\Tinker\TinkerServiceProvider::class,
+        // \GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+        // \Genert\BBCode\BBCodeServiceProvider::class,
+        \Genert\BBCode\BBCodeServiceProvider::class,
     ],
 
     /*
@@ -223,6 +228,11 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        'Carbon' => Carbon\Carbon::class,
+        'ConstantObjects' => App\Helpers\ConstantObjects::class,
+        'StringProcess' => App\Helpers\StringProcess::class,
+        'CacheUser' => App\Helpers\CacheUser::class,
 
     ],
 

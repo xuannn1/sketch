@@ -2,8 +2,8 @@
 
 namespace Laravel\Passport\Bridge;
 
-use Laravel\Passport\Passport;
 use Illuminate\Database\Connection;
+use Laravel\Passport\Passport;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -59,7 +59,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     public function revokeAuthCode($codeId)
     {
-        $this->database->table('oauth_auth_codes')
+        $this->database->table(Passport::authCode()->getTable())
                     ->where('id', $codeId)->update(['revoked' => true]);
     }
 
@@ -68,7 +68,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     public function isAuthCodeRevoked($codeId)
     {
-        return $this->database->table('oauth_auth_codes')
+        return $this->database->table(Passport::authCode()->getTable())
                     ->where('id', $codeId)->where('revoked', 1)->exists();
     }
 }

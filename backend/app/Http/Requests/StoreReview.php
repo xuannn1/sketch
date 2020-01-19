@@ -2,16 +2,21 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\StorePost;
-//use App\Http\Requests\FormRequest;
-use App\Models\Review;
+use Illuminate\Foundation\Http\FormRequest;
+use DB;
+use StringProcess;
 use App\Models\Thread;
 use App\Models\Post;
-use Carbon\Carbon;
-use DB;
+use App\Models\PostInfo;
+use Carbon;
+use App\Sosadfun\Traits\GeneratePostDataTraits;
+use App\Sosadfun\Traits\FindThreadTrait;
 
-class StoreReview extends StorePost
+class StoreReview extends FormRequest
 {
+    use GeneratePostDataTraits;
+    use FindThreadTrait;
+
     /**
     * Determine if the user is authorized to make this request.
     *
@@ -19,9 +24,7 @@ class StoreReview extends StorePost
     */
     public function authorize()
     {
-        $thread = request()->route('thread');
-        $channel = $thread->channel();
-        return auth('api')->id()===$thread->user_id&&$channel->type=='list'&&!$thread->is_locked;
+        return true;
     }
 
     /**
@@ -32,82 +35,84 @@ class StoreReview extends StorePost
     public function rules()
     {
         return [
-            'reviewee_id' => 'numeric',
-            'title' => 'string|max:30',
-            'brief' => 'string|max:50',
-            'body' => 'string|max:20000',
-            'use_markdown' => 'boolean',
-            'use_indentation' => 'boolean',
-            'recommend' => 'boolean',
+            'title' => 'nullable|string|max:30',
+            'brief' => 'nullable|string|max:50',
+            'body' => 'required|string|min:15|max:20000',
             'rating' => 'numeric|min:0|max:10',
+            'reviewee_id' => 'numeric|min:0',
         ];
     }
 
-    public function generateReview()
-    {
-        $thread = request()->route('thread');
-        $this->canReviewThread();
-        $this->noDuplicateReview();
-
-        $post_data = $this->generatePostData();
+    public function generateReview($thread){
+        $post_data = $this->generatePostData($thread);
         $post_data['type'] = 'review';
-        if($thread->is_anonymous){$post_data['is_anonymous']=true;}
+        $post_data['brief'] = $this->brief;
+        $post_data['is_anonymous']=$thread->is_anonymous;
+        $post_data['majia']=$thread->majia;
 
-        $review_data = $this->generateReviewData();
+        $info_data = $this->only('rating','reviewee_id');
+        $info_data = $this->validateReviewee($info_data, $thread);
+        $info_data['recommend'] = $this->recommend? true:false;
 
-        //use transaction to update collection && post (if necessary)
-        $post = DB::transaction(function () use($review_data, $post_data) {
+        $info_data['abstract']=StringProcess::trimtext($post_data['body'],150);
+
+        $post_data = $this->validateBianyuan($post_data, $info_data, $thread);
+
+        $post = DB::transaction(function()use($post_data, $info_data){
             $post = Post::create($post_data);
-            $review_data['post_id'] = $post->id;
-            $review = Review::create($review_data);
+            $info_data['post_id']=$post->id;
+            $info = PostInfo::create($info_data);
             return $post;
         });
         return $post;
     }
 
-    public function noDuplicateReview()
+    public function updateReview($post, $thread)
     {
-        $reviewed = Post::join('reviews', 'reviews.post_id', 'posts.id')
-        ->where('posts.user_id', auth('api')->id())
-        //->where('posts.thread_id', request()->route('thread')->id)
-        ->where('reviews.thread_id', request()->reviewee_id)
-        ->count();
-        if($reviewed>0){abort(409);}
+        $info = $post->info;
+
+        $post_data = $this->generateUpdatePostData($post);
+        $post_data['brief'] = $this->brief;
+        $post_data['is_anonymous']=$thread->is_anonymous;
+
+        $info_data = $this->only('rating','reviewee_id');
+        $info_data = $this->validateReviewee($info_data, $thread);
+        $info_data['recommend'] = $this->recommend? true:false;
+
+        $info_data['abstract']=StringProcess::trimtext($post_data['body'],150);
+
+        $post_data = $this->validateBianyuan($post_data, $info_data, $thread);
+
+        $post->update($post_data);
+        $info->update($info_data);
+
+        return $post;
+
     }
 
-    public function canReviewThread()
-    {
-        $reviewee = Thread::find($this->reviewee_id);//被推荐书籍
-        if($reviewee){
-            $channel = $reviewee->channel();
-            if((!$reviewee->is_public)||((!$channel->is_public)&&(!auth('api')->user()->canSeeChannel($reviewee->channel_id)))){abort(403);}
+    public function validateReviewee($info_data, $thread){
+        // 如果填写的书籍id就是本帖的id，归零
+        if($info_data['reviewee_id']==$thread->id){
+            $info_data['reviewee_id']=0;
         }
+        if($info_data['reviewee_id']>0){
+            $info_data['reviewee_type']='thread';// TODO right now, reviewee has to be a thread
+        }
+        return $info_data;
     }
 
-    public function generateReviewData()
-    {
-        $review_data = $this->only('recommend','rating');
-        $review_data['thread_id']=$this->reviewee_id;
-        $review_data['long']=(bool)mb_strlen($this->body)>config('constants.long_review');
-        return $review_data;
-    }
-
-    public function updateReview($post)
-    {
-        $review = $post->review;
-        if((!$post)||(!$review)){ abort(404);}
-
-        $this->canUpdatePost($post);
-
-        $post_data = $this->generateUpdatePostData();
-
-        $review_data = $this->generateReviewData();
-
-        $post = DB::transaction(function () use($review_data, $post_data, $review, $post) {
-            $post->update($post_data);
-            $review->update($review_data);
-            return $post;
-        });
-        return $post;
+    public function validateBianyuan($post_data, $info_data, $thread){
+        // 如果整个书评楼都是边限，这个评也属于边限
+        if($thread->is_bianyuan){
+            $post_data['is_bianyuan']=true;
+        }
+        // 如果被推荐对象是站内文章，且是边缘文，需要增加边缘标记
+        if($info_data['reviewee_id']>0){
+            $reviewee = $this->findThread($info_data['reviewee_id']);
+            if($reviewee&&$reviewee->is_bianyuan){
+                $post_data['is_bianyuan']=true;
+            }
+        }
+        return $post_data;
     }
 }

@@ -649,12 +649,12 @@ class DefaultSettingsSeeder extends Seeder
                 'description' => '在废文深水遨游、咸之又咸的鱼。',
             ]);
         }
-        // InvitationToken::create([
-        //     'user_id' => 1,
-        //     'token' => 'SOSAD_invite',
-        //     'invitation_times' => 10,
-        //     'invite_until' => Carbon::now()->addYears(2),
-        // ]);
+        DB::table('invitation_tokens')->insert([
+            'user_id' => 1,
+            'token' => 'SOSAD_invite',
+            'invitation_times' => 10,
+            'invite_until' => Carbon::now()->addYears(2),
+        ]);
         DB::table('system_variables')->insert([
             'latest_public_notice_id' => 0,
         ]);
