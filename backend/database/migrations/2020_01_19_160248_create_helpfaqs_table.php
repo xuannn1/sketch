@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateVolumnsTable extends Migration
+class CreateHelpfaqsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateVolumnsTable extends Migration
      */
     public function up()
     {
-        Schema::create('volumns', function (Blueprint $table) {
+        Schema::create('helpfaqs', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('thread_id')->default(0);//属于哪本图书
-            $table->string('title')->nullable();//卷标题
-            $table->string('brief')->nullable();//卷简介
-            $table->text('body')->nullable();//卷正文
+            $table->string('key',10)->nullable()->index();
+            $table->string('question')->nullable()->index();
+            $table->text('answer')->nullable();
         });
     }
 
@@ -29,6 +28,6 @@ class CreateVolumnsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('volumns');
+        Schema::dropIfExists('helpfaqs');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTagPostTable extends Migration
+class CreateCheckinsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateTagPostTable extends Migration
      */
     public function up()
     {
-        Schema::create('tag_post', function (Blueprint $table) {
-            $table->unsignedInteger('tag_id')->index();
-            $table->unsignedInteger('post_id')->index();
-            $table->primary(['post_id', 'tag_id']);
+        Schema::create('checkins', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('user_id')->default(0)->index();
+            $table->dateTime('created_at')->index();
         });
     }
 
@@ -27,6 +27,6 @@ class CreateTagPostTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tag_post');
+        Schema::dropIfExists('checkins');
     }
 }
