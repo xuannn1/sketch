@@ -27,6 +27,13 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::post('password/reset_via_email', 'API\PassportController@reset_via_email');
 Route::post('password/reset_via_password', 'API\PassportController@reset_via_password');
 
+// 输入邮箱申请测试答题
+Route::post('register/by_invitation_email/submit_email', 'API\RegAppController@submit_email'); // 输入邮箱尝试注册
+Route::post('register/by_invitation_email/submit_quiz', 'API\RegAppController@submit_quiz'); // 尝试答题
+Route::get('register/by_invitation_email/resend_email_verification', 'API\RegAppController@resend_email_verification'); // 重新发送邮箱确认邮件
+Route::post('register/by_invitation_email/submit_essay', 'API\RegAppController@submit_essay'); // 提交小论文
+Route::get('register/by_invitation_email/resend_invitation_email', 'API\RegAppController@resend_invitation_email'); // 重发邀请邮件
+
 // 关联账户相关
 Route::get('/linkaccount','LinkAccountController@index');
 Route::post('/linkaccount/store','LinkAccountController@store');
