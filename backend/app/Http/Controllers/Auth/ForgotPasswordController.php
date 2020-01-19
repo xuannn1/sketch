@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use App\Sosadfun\Traits\SwitchableMailerTraits;
 use DB;
-use Validator;
-use Carbon\Carbon;
+use Carbon;
 use Cache;
-use Illuminate\Database\Eloquent\Builder; 
+
 class ForgotPasswordController extends Controller
 {
     /*
@@ -27,6 +26,7 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
+    use SwitchableMailerTraits;
 
     /**
     * Create a new controller instance.
@@ -38,48 +38,71 @@ class ForgotPasswordController extends Controller
         $this->middleware('guest');
     }
 
+    /**
+     * Send a reset link to the given user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
     public function sendResetLinkEmail(Request $request)
     {
 
-        $data = [
-            'email'   => $request->email
-        ];
+        // TODO：把这些请求都改写成适应API的response的格式
+        if(Cache::has('reset-password-request-limit-' . request()->ip())){
+            return back()->with('danger','当前ip('.request()->ip().')已于10分钟内提交过重置密码请求。');
+        }
+        Cache::put('reset-password-request-limit-' . request()->ip(), true, 10);
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email'
-        ]);
-        
-        if ($validator->fails()) {
-            return response()->error($data, 422);
+        if(Cache::has('reset-password-limit-' . request()->ip())){
+            return back()->with('danger','当前ip('.request()->ip().')已于1小时内成功重置密码。');
         }
 
-        $user_check = User::where('email', $request->email)->first();
-        $data = [
-            'email'   => $request->email
-        ];
-//该邮箱账户不存在
-        if (!$user_check) {        
-            return response()->error($data, 404);
-        }
-//当日注册的用户不能重置密码
-        if ($user_check->created_at>Carbon::now()->subDay()){     
-            return response()->error($data, 403);
+        $this->validateEmail($request);
+
+        $user = \App\Models\User::onWriteConnection()->where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->with('warning', '该邮箱账户不存在。');
         }
 
-        $email_check = DB::table('password_resets')->where('email', $request->email)->first();
-//该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。 这个应该可以放到redis里面
+        if ($user->created_at>Carbon::now()->subDay(1)){
+            return back()->with('danger', '当日注册的用户不能重置密码。');
+        }
+
+        $info = $user->info;
+
+        if($info&&$info->no_logging_until&&$info->no_logging_until>Carbon::now()){
+            return back()->with('danger', '封禁管理中的账户不能重置密码');
+        }
+
+        $email_check = DB::connection('mysql::write')->table('password_resets')->where('email', $request->email)->first();
+
         if ($email_check&&$email_check->created_at>Carbon::now()->subHours(12)){
-            abort(403);
+            return back()->with('warning', '该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。');
         }
 
-        $response = $this->broker()->sendResetLink(
-            $request->only('email')
-        );
+        $token = str_random(40);
 
-   //     Cache::put('reset-password-limit-' . request()->ip(), true, 60);
+        $reset_record = \App\Models\PasswordReset::updateOrCreate([
+            'email' => $request->email,
+        ],[
+            'token'=>bcrypt($token),
+            'created_at' => Carbon::now(),
+        ]);
+        $this->sendEmailConfirmationTo($user, $token);
 
-        return $response == Password::RESET_LINK_SENT
-        ? response()->success(($data))
-        : response()->error(config('error.595'), 595);
+        Cache::put('reset-password-limit-' . request()->ip(), true, 60);
+
+        return back()->with('success', '已成功发送重置密码邮件。');
+    }
+
+    protected function sendEmailConfirmationTo($user, $token)
+    {
+        $view = 'auth.passwords.reset_password_email';
+        $data = compact('user','token');
+        $to = $user->email;
+        $subject = $user->name."的废文网密码重置申请";
+
+        $this->send_email_from_ses_server($view, $data, $to, $subject);
     }
 }

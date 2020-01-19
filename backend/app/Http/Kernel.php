@@ -23,6 +23,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\EnableCrossRequestMiddleware::class,
         \App\Http\Middleware\ConvertStringBooleans::class,
         //\App\Http\Middleware\RecordReviewRedirect::class,
+        \App\Http\Middleware\NoLogControl::class,
     ];
 
     /**

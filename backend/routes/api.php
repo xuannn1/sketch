@@ -20,9 +20,18 @@ Route::middleware('auth:api')->group( function(){
 
 // 注册相关
 Route::post('register', 'API\PassportController@register');
+Route::post('register_by_invitation', 'API\PassportController@register_by_invitation');
 Route::post('login', 'API\PassportController@login')->name('login');
+Route::post('logout', 'API\PassportController@logout')->name('logout');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::post('password/reset', 'API\PassportController@postReset');
+Route::post('password/reset_via_email', 'API\PassportController@reset_via_email');
+Route::post('password/reset_via_password', 'API\PassportController@reset_via_password');
+
+// 关联账户相关
+Route::get('/linkaccount','LinkAccountController@index');
+Route::post('/linkaccount/store','LinkAccountController@store');
+Route::get('/linkaccount/switch/{id}','LinkAccountController@switch');
+Route::delete('/linkaccount/destroy','LinkAccountController@destroy');
 
 
 // 默认页面
@@ -60,7 +69,7 @@ Route::resource('/thread/{thread}/chapter', 'API\ChapterController')->only(['sto
 // 用户
 Route::apiResource('user', 'API\UserController');
 Route::get('user/{user}/thread', 'API\UserController@showthread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
-Route::patch('user/{user}/profile', 'API\UserController@updateProfile');// 
+Route::patch('user/{user}/profile', 'API\UserController@updateProfile');//
 Route::resource('/user/{user}/title', 'API\TitleController')->only(['index', 'update']);// title resource
 Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
 Route::get('user/{user}/following', 'API\FollowerController@following');//展示该用户的所有关注

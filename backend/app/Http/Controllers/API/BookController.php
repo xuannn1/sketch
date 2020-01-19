@@ -8,8 +8,6 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Http\Resources\ThreadProfileResource;
 use App\Http\Resources\PostInfoResource;
-use App\Http\Resources\VolumnResource;
-use App\Http\Resources\VolumnBriefResource;
 use App\Http\Resources\PaginateResource;
 use App\Http\Resources\PostBriefResource;
 

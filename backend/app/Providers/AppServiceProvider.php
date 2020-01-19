@@ -14,13 +14,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Schema::defaultStringLength(191);
+        // User::observe(UserObserver::class);
+        // UserInfo::observe(UserInfoObserver::class);
+
         Relation::morphMap([
-            'Post' => 'App\Models\Post',
-            'Quote' => 'App\Models\Quote',
-            'Status' => 'App\Models\Status',
-            'Thread' => 'App\Models\Thread',
+            'post' => 'App\Models\Post',
+            'quote' => 'App\Models\Quote',
+            'status' => 'App\Models\Status',
+            'thread' => 'App\Models\Thread',
+            'vote' => 'App\Models\Vote',
         ]);
+
+        Validator::extend('display_length', 'App\Validators\DisplayLength@validate');
+        Validator::extend('nocaptcha', 'App\Validators\NoCaptcha@validate');
     }
 
     /**

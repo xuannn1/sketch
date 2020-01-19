@@ -9,13 +9,13 @@ class Linkaccount extends Model
     protected $guarded = [];
     public $timestamps = false;
 
-    public function linker()
+    public function master()
     {
-        return $this->belongsTo(User::class, 'account1')->select('name');
+        return $this->belongsTo(User::class, 'master_account')->select('name');
     }
-    public function linkee()
+    public function branch()
     {
-        return $this->belongsTo(User::class, 'account2')->select('name');
+        return $this->belongsTo(User::class, 'branch_account')->select('name');
     }
 
 }
