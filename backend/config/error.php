@@ -5,10 +5,10 @@ return [
     '401' => 'unauthorised',//未登陆用户，不能验证用户身份
     '403' => 'permission denied',//已登陆用户，但权限不足，不允许进行此项操作（如试图修改非本人创建的内容，试图修改非本人账户的信息，旧密码不等于当前密码）
     '404' => 'not found',//post/thread/chapter等内容未找到
-    '405' => 'method not allowed',
-    '409' => 'content duplication conflict', //数据内容重复，邀请链接已经成功注册（可直接登陆），新旧密码重复
+    '405' => 'method not allowed',//用户不能关注自己
+    '409' => 'content duplication conflict', //数据内容重复，邀请链接已经成功注册（可直接登陆），新旧密码重复，已经关注
     '410' => 'number conflict', //不允许建立更多的同类内容了，需要更长时间间隔或者更高等级或更多余额
-    '412' => 'precondition failed', //前提失败导致动作无效，如取关未关注的人
+    '412' => 'precondition failed', //前提失败导致动作无效，不能取关未关注的人,不能修改未关注人的关注偏好
     '416' => 'user further authentification method reqired', // 用户需要激活邮箱才能访问内容
     '422' => 'validation failed',//输入的数据不符合规则，不能validate内容，
     '433' => 'item is component, has to be a regular post/comment to delete', //目标物并不是普通的回帖，而是chapter/review/question/answer一类的内容，需要转换成普通post才能正常删除
