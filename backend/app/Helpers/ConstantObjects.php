@@ -276,4 +276,18 @@ class ConstantObjects
         });
     }
 
+    public static function allTags()//获得站上所有的tags
+    {
+        return Cache::remember('allTags', 10, function (){
+            return \App\Models\Tag::all();
+        });
+    }
+
+    public static function allTitles()//获得站上所有的titles
+   {
+       return Cache::remember('allTitles', 10, function (){
+           return \App\Models\Title::all();
+       });
+   }
+
 }

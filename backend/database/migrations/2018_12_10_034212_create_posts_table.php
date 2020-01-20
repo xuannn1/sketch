@@ -33,7 +33,6 @@ class CreatePostsTable extends Migration
             $table->string('reply_to_brief')->nullable();//如果是回帖，给出它回复对象的brief
             $table->unsignedInteger('reply_to_position')->default(0)->index();//回复对象句子在原来评论中的位置
             $table->unsignedInteger('last_reply_id')->default(0)->index();//最新回复id
-            $table->boolean('is_folded')->default(false);//是否属于折叠状态
             $table->boolean('is_bianyuan')->default(false);//是否属于边缘内容（以至于需要对非注册用户隐藏内容）
             $table->boolean('use_markdown')->default(false);//是否使用md语法
             $table->boolean('use_indentation')->default(true);//是否使用段首缩进格式

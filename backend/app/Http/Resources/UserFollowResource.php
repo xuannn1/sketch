@@ -19,6 +19,8 @@ class UserFollowResource extends JsonResource
             'id' => (int)$this->id,
             'attributes' => [
                 'name' => (string)$this->name,
+                'level' => (string)$this->level,
+                'title_id' => (string)$this->title_id,
             ],
             'title' => new TitleBriefResource($this->whenLoaded('mainTitle')),
             'followInfo' => [

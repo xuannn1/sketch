@@ -7,12 +7,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Http\Resources\ThreadProfileResource;
+use App\Http\Resources\ThreadInfoResource;
 use App\Http\Resources\PostInfoResource;
 use App\Http\Resources\PaginateResource;
 use App\Http\Resources\PostBriefResource;
+use App\Sosadfun\Traits\ThreadQueryTraits;
+
 
 class BookController extends Controller
 {
+    use ThreadQueryTraits;
     /**
     * Display a listing of the resource.
     *
@@ -21,7 +25,24 @@ class BookController extends Controller
 
     public function __construct()
     {
-        $this->middleware('filter_thread');
+        $this->middleware('filter_thread')->except('index');
+    }
+
+    public function index(Request $request)
+    {
+        $request_data = $this->sanitize_book_request_data($request);
+
+        if($request_data&&!auth('api')->check()){abort(401);}
+
+        $query_id = $this->process_thread_query_id($request_data);
+
+        $books = $this->find_books_with_query($query_id, $request_data);
+
+        return response()->success([
+            'threads' => ThreadInfoResource::collection($books),
+            'paginate' => new PaginateResource($books),
+            'request_data' => $request_data,
+        ]);
     }
 
     public function show(Thread $thread)

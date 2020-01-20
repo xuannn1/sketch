@@ -43,16 +43,14 @@ Route::delete('/linkaccount/destroy','LinkAccountController@destroy');
 
 // 默认页面
 Route::get('/', 'API\PageController@home')->name('home');// 网站首页
-Route::get('/homebook', 'API\PageController@homebook')->name('homebook');// 文库页面首页
-Route::get('/homethread', 'API\PageController@homethread')->name('homethread');// 论坛页面首页
 
 // 固定信息
 Route::get('config/allTags', 'API\PageController@allTags');
-Route::get('config/noTongrenTags', 'API\PageController@noTongrenTags');
 Route::get('config/allChannels', 'API\PageController@allChannels');
-Route::get('config/titles', 'API\PageController@titles');
+Route::get('config/allTitles', 'API\PageController@allTitles');
 
 // 讨论串/讨论楼/讨论帖
+Route::get('/channel/{channel}', 'API\ThreadController@channel_index')->middleware('filter_channel');//某个版面的讨论贴
 Route::apiResource('thread', 'API\ThreadController');
 Route::apiResource('/thread/{thread}/post', 'API\PostController');
 Route::get('/thread/{thread}/recommendation', 'API\ThreadController@recommendation');// 展示这个书籍名下recommendation的index
@@ -68,6 +66,7 @@ Route::patch('/thread/{thread}/post/{post}/turnToAnswer', 'API\QAController@turn
 Route::get('answer', 'API\QAController@index');// 展示所有回答的问答
 
 // 书籍
+Route::get('/book', 'API\BookController@index');//文库筛选主页
 Route::get('/book/{thread}', 'API\BookController@show');// 显示书籍主页
 Route::get('/book/{thread}/chapterindex', 'API\BookController@chapterindex');// 显示书籍所有chapter的列表
 // 章节

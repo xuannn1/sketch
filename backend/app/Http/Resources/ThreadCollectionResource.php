@@ -30,7 +30,6 @@ class ThreadCollectionResource extends JsonResource
                 'majia' => (string)$this->majia,
             ],
             'author' => $author,
-            'channel'        => new ChannelBriefResource($this->channel()),
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
             'last_component' => new PostBriefResource($this->whenLoaded('last_component')),
             'last_post' => new PostBriefResource($this->whenLoaded('last_post')),

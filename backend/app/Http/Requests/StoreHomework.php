@@ -70,7 +70,7 @@ class StoreHomework extends FormRequest
         $thread_data = [
             'title' => $homework->title.'报名入口',
             'channel_id' => config('constants.commentary_channel_id'),
-            'user_id' => Auth::id(),
+            'user_id' => auth('api')->id(),
             'brief' => '作业报名',
             'responded_at' => Carbon::now(),
             'creation_ip' => request()->ip(),

@@ -52,7 +52,6 @@ class ThreadProfileResource extends JsonResource
                 'responded_at' => (string)$this->responded_at,
             ],
             'author' => $author,
-            'channel' => new ChannelBriefResource($this->channel()),
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
             'last_component' => new PostBriefResource($this->whenLoaded('last_component')),
             'last_post' => new PostBriefResource($this->whenLoaded('last_post')),

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Laravel\Passport\HasApiTokens;
 use App\Notifications\ResetPasswordNotification;
 use DB;
 use Carbon;
@@ -16,13 +16,14 @@ use App\Sosadfun\Traits\FindThreadTrait;
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasApiTokens;
     use Traits\QiandaoTrait;
     use FindThreadTrait;
     use Traits\UserHomeworkTraits;
 
     protected $connection= 'mysql::write';
 
-    protected $dates = ['deleted_at', 'qiandao_at', 'created_at'];
+    protected $dates = ['deleted_at', 'created_at'];
     const UPDATED_AT = null;
 
     /**

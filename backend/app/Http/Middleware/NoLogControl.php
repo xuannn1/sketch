@@ -17,17 +17,17 @@ class NoLogControl
     */
     public function handle($request, Closure $next)
     {
-        if(Auth::check()) {
-            $user = Auth::user();
+        if(auth('api')->check()) {
+            $user = auth('api')->user();
             if($user->no_logging){
-                $info = CacheUser::info(Auth::id());
+                $info = CacheUser::info(auth('api')->id());
                 $msg = $info->no_logging_until&&$info->no_logging_until>Carbon::now() ? $info->no_logging_until->setTimeZone('Asia/Shanghai'):'';
 
                 $userTokens = $user->tokens;
                 foreach($userTokens as $token) {
                     $token->revoke();
                 }
-                Auth::logout();
+                auth('api')->logout();
                 abort(495,$msg);
             }
         }

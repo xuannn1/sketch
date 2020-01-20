@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PostInfoResource extends JsonResource
+class PostIndexResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -12,18 +12,15 @@ class PostInfoResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-     //在book/list/other thread formed index页面，用于返回components目录(因此不需要返回作者是谁)
     public function toArray($request)
     {
-        $component = [];
-        if($this->type==='chapter'){
-            $component = new ChapterInfoResource($this->whenLoaded('chapter'));
+        $info = [];
+        if($this->type==='chapter'||$this->type==='review'){
+            $info = new PostInfoBriefResource($this->whenLoaded('simpleInfo'));
         }
-        if($this->type==='review'){
-            $component = new ReviewResource($this->whenLoaded('review'));
-        }
+        $parent = [];
         if($this->type==='answer'){
-            $component = new PostInfoResource($this->whenLoaded('parent_brief'));
+            $parent = new PostResource($this->whenLoaded('parent'));
         }
         return [
             'type' => 'post',
@@ -35,15 +32,14 @@ class PostInfoResource extends JsonResource
                 'brief' => (string)$this->brief,
                 'created_at' => (string)$this->created_at,
                 'edited_at' => (string)$this->edited_at,
+                'is_bianyuan' => (bool)$this->is_bianyuan,
                 'upvote_count' => (int)$this->upvote_count,
                 'reply_count' => (int)$this->reply_count,
                 'view_count' => (int)$this->views,
                 'char_count' => (int)$this->char_count,
-                'is_folded' => (bool)$this->is_folded,
-                'is_bianyuan' => (bool)$this->is_bianyuan,
-                'responded_at' => (string)$this->responded_at,
             ],
-            'component' => $component,
+            'info' => $info,
+            'parent' => $parent,
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
         ];
     }

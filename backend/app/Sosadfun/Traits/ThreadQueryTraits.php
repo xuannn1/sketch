@@ -4,7 +4,6 @@ namespace App\Sosadfun\Traits;
 use DB;
 use Cache;
 use ConstantObjects;
-use Auth;
 use App\Models\Thread;
 use StringProcess;
 
@@ -37,10 +36,10 @@ trait ThreadQueryTraits{
 
     public function process_thread_query_id($request_data)
     {
-        $queryid = url('/');
+        $queryid = '';
         $selectors = ['inChannel', 'isPublic', 'inPublicChannel', 'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered', 'page'];
         foreach($selectors as $selector){
-            if(array_key_exists($selector, $request_data)){
+            if(array_key_exists($selector, $request_data)&&$request_data[$selector]){
                 $queryid.='-'.$selector.':'.$request_data[$selector];
             }
         }
@@ -50,11 +49,13 @@ trait ThreadQueryTraits{
     public function sanitize_thread_request_data($request)
     {
         $request_data = $request->only('inChannel', 'isPublic', 'inPublicChannel',  'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered', 'page');
-        if(!Auth::check()||!Auth::user()->isAdmin()){
+        if((!auth('api')->check()||!auth('api')->user()->isAdmin())&&$request->isPublic){
             $request_data['isPublic']='';
+        }
+        if((!auth('api')->check()||!auth('api')->user()->isAdmin())&&$request->inPublicChannel){
             $request_data['inPublicChannel']='';
         }
-        if(!Auth::check()||Auth::user()->level<3){
+        if((!auth('api')->check()||auth('api')->user()->level<3)&&$request->withBianyuan){
             $request_data['withBianyuan']='';
         }
         return $request_data;
@@ -63,6 +64,9 @@ trait ThreadQueryTraits{
     public function sanitize_book_request_data($request)
     {
         $request_data = $request->only('inChannel', 'isPublic', 'inPublicChannel',  'withType', 'withBianyuan', 'withTag', 'excludeTag', 'ordered', 'page');
+        if((!auth('api')->check()||auth('api')->user()->level<3)&&$request->withBianyuan){
+            $request_data['withBianyuan']='';
+        }
         return $request_data;
     }
 
@@ -88,7 +92,7 @@ trait ThreadQueryTraits{
         $time = 60;
         if(!array_key_exists('withTag',$request_data)&&!array_key_exists('excludeTag',$request_data)&&!array_key_exists('ordered',$request_data)&&!array_key_exists('page',$request_data)){$time=5;}
         return Cache::remember('BookQ.'.$query_id, $time, function () use($request_data) {
-            $threads = Thread::with('author', 'tags', 'last_component')
+            return $threads = Thread::with('author', 'tags', 'last_component')
             ->isPublic()
             ->withType('book')
             ->inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'')
@@ -98,15 +102,6 @@ trait ThreadQueryTraits{
             ->ordered(array_key_exists('ordered',$request_data)? $request_data['ordered']:'latest_add_component')
             ->paginate(config('preference.threads_per_page'))
             ->appends($request_data);
-            $channels = ConstantObjects::find_channels_by_inChannel(array_key_exists('inChannel',$request_data)? $request_data['inChannel']:'');
-            $selected_tags = ConstantObjects::find_tags_by_withTag(array_key_exists('withTag',$request_data)? $request_data['withTag']:'');
-            $excluded_tags = ConstantObjects::find_tags_by_excludeTag(array_key_exists('excludeTag',$request_data)? $request_data['excludeTag']:'');
-            return[
-                'threads' => $threads,
-                'selected_tags' => $selected_tags,
-                'excluded_tags' => $excluded_tags,
-                'channels' => $channels,
-            ];
         });
     }
 
@@ -162,7 +157,7 @@ trait ThreadQueryTraits{
         $queryid = url('/');
         $selectors = ['withType', 'withComponent', 'withFolded', 'userOnly', 'withReplyTo', 'inComponent', 'ordered', 'page'];
         foreach($selectors as $selector){
-            if(array_key_exists($selector, $request_data)){
+            if(array_key_exists($selector, $request_data)&&$request_data[$selector]){
                 $queryid.='-'.$selector.':'.$request_data[$selector];
             }
         }
@@ -207,7 +202,7 @@ trait ThreadQueryTraits{
     public function sanitize_review_posts_request_data($request)
     {
         $request_data = $request->only('channel_mode', 'withBianyuan', 'withLength', 'reviewType', 'reviewEditor', 'reviewRecommend', 'ordered', 'page');
-        if(!Auth::check()||Auth::user()->level<3){
+        if(!auth('api')->check()||auth('api')->user()->level<3){
             $request_data['withBianyuan']='';
         }
         return $request_data;
@@ -215,10 +210,10 @@ trait ThreadQueryTraits{
 
     public function process_review_posts_query_id($request_data)
     {
-        $queryid = url('/');
+        $queryid = '';
         $selectors = ['channel_mode', 'withBianyuan', 'withLength', 'reviewType', 'reviewEditor', 'reviewRecommend', 'ordered', 'page'];
         foreach($selectors as $selector){
-            if(array_key_exists($selector, $request_data)){
+            if(array_key_exists($selector, $request_data)&&$request_data[$selector]){
                 $queryid.='-'.$selector.':'.$request_data[$selector];
             }
         }
@@ -244,7 +239,7 @@ trait ThreadQueryTraits{
             ->paginate(config('preference.reviews_per_page'))
             ->appends($request_data);
 
-            $posts->load('info.reviewee');
+            $posts->load('simpleInfo.reviewee');
 
             return $posts;
         });

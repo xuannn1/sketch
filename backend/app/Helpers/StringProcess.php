@@ -414,4 +414,12 @@ class StringProcess
         return false;
     }
 
+    public static function toName($text=null)//截取一个特定长度的字串
+    {
+        $text = preg_replace('/ /','',$text);
+        $text = preg_replace('/\./','',$text);
+        $text = iconv_substr($text, 0, 8, 'utf-8');
+        return $text;
+    }
+
 }

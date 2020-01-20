@@ -35,4 +35,7 @@ class Tag extends Model
     {
         return collect(config('channel'))->keyby('id')->get($this->channel_id);
     }
+    public function scopeBrief($query){
+        return $query->select('id','tag_name','tag_type');
+    }
 }

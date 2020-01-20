@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Validator;
 use Hash;
-use Carbon\Carbon;
+use Carbon;
 use ConstantObjects;
 use DB;
 use App\Models\User;
@@ -31,8 +31,8 @@ class PassportController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|string|alpha_dash|unique:users|display_length:2,8',
-            'email' => 'required|string|email|max:255|unique:users|confirmed',
-            'password' => 'required|string|min:10|max:32|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:10|max:32|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
         ]);
         //password_confirmation must be included in this string
     }
@@ -205,7 +205,7 @@ class PassportController extends Controller
 
     public function login(){
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
-            $user = Auth::user();
+            $user = auth('api')->user();
             $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
             $success['id'] = $user->id;
@@ -239,7 +239,7 @@ class PassportController extends Controller
         }
         $user=$this->reset($data);
 
-        Auth::guard()->login($user);
+        auth('api')->login($user);
         return response()->success('200');
         // TODO：在更新密码之后，安全上需要取消和登出这个账户名下所有往期的token（方法参考NoLogControl里的内容），然后采取新token登入，在这里返回新token
 

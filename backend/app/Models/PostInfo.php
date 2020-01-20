@@ -20,6 +20,6 @@ class PostInfo extends Model
 
     public function reviewee()//被评论的文章
     {
-        return $this->belongsTo(Thread::class, 'reviewee_id')->select('id','user_id','channel_id','title','brief','is_bianyuan','is_anonymous','is_public','no_reply');
+        return $this->belongsTo(Thread::class, 'reviewee_id')->select('id','user_id','channel_id','title','brief','is_bianyuan','is_anonymous','is_public','no_reply','is_locked');
     }
 }

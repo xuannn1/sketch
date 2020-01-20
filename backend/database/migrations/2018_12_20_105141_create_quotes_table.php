@@ -15,7 +15,7 @@ class CreateQuotesTable extends Migration
     {
         Schema::create('quotes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('body')->nullable();//题头文字本身
+            $table->string('body')->nullable()->index();//题头文字本身
             $table->unsignedInteger('user_id')->index();//提交的人是谁
             $table->boolean('is_anonymous')->default(false);//是否匿名
             $table->string('majia',10)->nullable();//马甲名称

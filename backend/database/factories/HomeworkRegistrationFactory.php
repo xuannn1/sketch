@@ -13,19 +13,16 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\Models\Post::class, function (Faker $faker) {
-    $body = $faker->paragraph;
+
+$factory->define(App\Models\HomeworkRegistration::class, function (Faker $faker) {
     return [
-        'title' => $faker->sentence,
-        'brief' => App\Helpers\StringProcess::simpletrim($body, 20),
-        'body' => $body,
         'user_id' => function(){
             return \App\Models\User::inRandomOrder()->first()->id;
         },
-        'thread_id' => function(){
-            return \App\Models\Thread::inRandomOrder()->first()->id;
+        'homework_id' => function(){
+            return \App\Models\Homework::inRandomOrder()->first()->id;
         },
-        'type' => 'post',
-        'char_count' => mb_strlen($body),
+        'role' => 'critic',
+        'majia' => str_random(5),
     ];
 });

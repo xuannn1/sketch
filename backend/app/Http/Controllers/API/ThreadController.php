@@ -6,20 +6,25 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Thread;
 use App\Models\Post;
-use App\Models\Review;
 use App\Http\Requests\StoreThread;
 use App\Http\Requests\UpdateThread;
+use App\Http\Resources\ThreadBriefResource;
 use App\Http\Resources\ThreadInfoResource;
 use App\Http\Resources\ThreadProfileResource;
+use App\Http\Resources\PostIndexResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PaginateResource;
+use App\Sosadfun\Traits\ThreadQueryTraits;
+use Cache;
+use ConstantObjects;
 
 class ThreadController extends Controller
 {
+    use ThreadQueryTraits;
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:api')->except(['index', 'show','channel_index']);
         $this->middleware('filter_thread')->only('show');
     }
     /**
@@ -44,6 +49,58 @@ class ThreadController extends Controller
             'paginate' => new PaginateResource($threads),
         ]);
         //return view('test',compact('threads'));
+    }
+
+    public function channel_index($channel, Request $request)
+    {
+        if(!auth('api')->check()&&$request->page){abort(401);}
+
+        $channel = collect(config('channel'))->keyby('id')->get($channel);
+
+        if($channel->id===config('constants.list_channel_id')&&$request->channel_mode==='review'){
+            $request_data = $this->sanitize_review_posts_request_data($request);
+            $query_id = $this->process_review_posts_query_id($request_data);
+            $posts = $this->find_review_posts_with_query($query_id, $request_data);
+            return response()->success([
+                'posts' => PostIndexResource::collection($posts),
+                'paginate' => new PaginateResource($posts),
+                'request_data' => $request_data,
+            ]);
+        }
+
+        $primary_tags = ConstantObjects::extra_primary_tags_in_channel($channel->id);
+
+        $queryid = 'channel-index'
+        .'-ch'.$channel->id
+        .'-withBianyuan'.$request->withBianyuan
+        .'-withTag'.$request->withTag
+        .'-ordered'.$request->ordered
+        .(is_numeric($request->page)? 'P'.$request->page:'P1');
+
+        $time = 30;
+        if(!$request->withTag&&!$request->ordered&&!$request->page){$time=2;}
+
+        $threads = Cache::remember($queryid, $time, function () use($request, $channel) {
+            return $threads = Thread::with('author', 'tags', 'last_post')
+            ->isPublic()
+            ->inChannel($channel->id)
+            ->withBianyuan($request->withBianyuan)
+            ->withTag($request->withTag)
+            ->ordered($request->ordered)
+            ->paginate(config('preference.threads_per_page'))
+            ->appends($request->only('withBianyuan', 'ordered', 'withTag','page'));
+        });
+
+        $simplethreads = $this->find_top_threads_in_channel($channel->id);
+
+        return response()->success([
+            'channel' => $channel,
+            'threads' => ThreadInfoResource::collection($threads),
+            'primary_tags' => $primary_tags,
+            'simplethreads' => ThreadBriefResource::collection($simplethreads),
+            'paginate' => new PaginateResource($threads),
+        ]);
+
     }
 
     /**
