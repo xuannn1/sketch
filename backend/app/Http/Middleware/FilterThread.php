@@ -44,7 +44,7 @@ class FilterThread
         if($thread->is_public&&$thread->channel()->type==='homework'){
             if(auth('api')->user()->no_homework){abort(497);}
             $homework_registration = $thread->find_homework_registration_via_thread();
-            if(!$homework_registration){abort(404);}
+            if(!$homework_registration){abort(403, '本帖暂无权限访问');}
             if(auth('api')->user()->canSeeHomework($homework_registration->homework)){
                 return $next($request);
             }
@@ -55,11 +55,11 @@ class FilterThread
                     'type' => 'homework_registration',
                     'homework_id' => $homework_registration->homework_id,
                     ],
-            ],451);
+            ],417);
         }
 
         if(!$thread->is_public){
-            abort(403,'文章隐藏');
+            abort(413,'文章或讨论处于隐藏状态');
         }
         abort(403,'权限不足');
     }

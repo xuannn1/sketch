@@ -33,7 +33,7 @@ class TitleController extends Controller
         }
 
         return response()->success([
-            'user'=> new UserBriefResource($user->load('mainTitle')),
+            'user'=> new UserBriefResource($user->load('title')),
             'titles' => TitleResource::collection($titles),
             'paginate' => new PaginateResource($titles),
         ]);
@@ -73,7 +73,7 @@ class TitleController extends Controller
             abort(422,'option is not allowed');
         }
 
-        $user->load('mainTitle');
+        $user->load('title');
         $titleStatus = auth('api')->user()->titleStatus($title->id);
 
         return response()->success([

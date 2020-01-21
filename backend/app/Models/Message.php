@@ -61,6 +61,15 @@ class Message extends Model
         return $query->where('created_at','<',Carbon::now()->subDays($days));
     }
 
+    public function scopeWithRead($query, $readstatus)
+    {
+        if($readstatus === 'read_only') {
+            return $query->where('seen', 1);
+        }else if($readstatus === 'unread_only') {
+            return $query->where('seen', 0);
+        }
+    }
+
     public function scopeOrdered($query, $ordered = '')
     {
         switch ($ordered) {

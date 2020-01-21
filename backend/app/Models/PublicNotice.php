@@ -10,8 +10,14 @@ class PublicNotice extends Model
 {
     use SoftDeletes;
 
-    protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+    protected $dates = ['deleted_at', 'created_at', 'edited_at'];
     protected $guarded = [];
+    const UPDATED_AT = null;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     public function author()
     {

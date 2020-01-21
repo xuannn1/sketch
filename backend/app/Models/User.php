@@ -135,6 +135,11 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
     }
 
+    public function isFollowing($id)
+    {
+        return \App\Models\Follower::where('user_id', $id)->where('follower_id', $this->id)->count();
+    }
+
     public function homeworks()
     {
         return $this->belongsToMany(Homework::class, 'homework_registrations', 'user_id', 'homework_id');

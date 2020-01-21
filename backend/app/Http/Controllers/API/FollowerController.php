@@ -28,7 +28,7 @@ class FollowerController extends Controller
         $user = User::find($id);
         if(!$user){abort(404);}
 
-        if (auth('api')->id()===$user->id){abort(405);}
+        if (auth('api')->id()===$user->id){abort(411);}
 
         $follow_relationship = \App\Models\Follower::where('user_id', $id)->where('follower_id', auth('api')->id())
         ->first();

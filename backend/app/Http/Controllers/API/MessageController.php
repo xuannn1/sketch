@@ -23,7 +23,7 @@ class MessageController extends Controller
     {
         $message = $form->userSend();
         if(!$message){abort(495);}
-        $message->load('body','poster','receiver');
+        $message->load('message_body','poster','receiver');
         return response()->success([
             'message' => new MessageResource($message),
         ]);
@@ -33,7 +33,7 @@ class MessageController extends Controller
     {
         $messages = $form->adminSend();
         if(!$messages){abort(495);}
-        $messages->load('body','poster','receiver')->except('seen');
+        $messages->load('message_body','poster','receiver')->except('seen');
         return response()->success([
             'messages' => MessageResource::collection($messages),
         ]);
@@ -43,7 +43,7 @@ class MessageController extends Controller
     {
         $public_notice = $form->generatePublicNotice();
         if(!$public_notice){abort(495);}
-        $public_notice->load('poster');
+        $public_notice->load('author');
         return response()->success([
             'public_notice' => new PublicNoticeResource($public_notice),
         ]);
@@ -51,33 +51,32 @@ class MessageController extends Controller
 
     public function index(User $user, Request $request)
     {
-        if (auth('api')->id() === $user->id
-        || auth('api')->user()->isAdmin()){//若访问的信箱为登录用户的信箱或登录用户为管理员
-            $chatWith = $request->chatWith ?? 0;
-            $query = Message::with('poster.mainTitle', 'receiver.mainTitle', 'body');
+        if(auth('api')->id()!=$user->id&&!auth('api')->user()->isAdmin()){abort(403);}
+        //访问的信箱需为登录用户的信箱或登录用户为管理员
 
-            switch ($request->withStyle) {
-                case 'sendbox': $query = $query->withPoster($user->id);
-                break;
-                case 'dialogue': $query = $query->withDialogue($user->id, $chatWith);
-                break;
-                default: $query = $query->withReceiver($user->id)->withRead($request->read);
-                break;
-            }
-            $messages = $query->withOrdered($request->ordered)
-            ->paginate(config('constants.messages_per_page'));
-            if((request()->withStyle==='sendbox'
-                || request()->withStyle==='dialogue')
-                && (!auth('api')->user()->isAdmin())){
-                $messages->except('seen');
-            }
-            return response()->success([
-                'style' => $request->withStyle,
-                'messages' => MessageResource::collection($messages),
-                'paginate' => new PaginateResource($messages),
-            ]);
-        }else{
-            abort(403);
+        $chatWith = $request->chatWith ?? 0;
+        $query = Message::with('poster.title', 'receiver.title', 'message_body');
+
+        switch ($request->withStyle) {
+            case 'sendbox': $query = $query->withPoster($user->id);
+            break;
+            case 'dialogue': $query = $query->withDialogue($user->id, $chatWith);
+            break;
+            default: $query = $query->withReceiver($user->id)->withRead($request->read);
+            break;
         }
+        $messages = $query->ordered($request->ordered)
+        ->paginate(config('constants.messages_per_page'));
+        if((request()->withStyle==='sendbox'
+            || request()->withStyle==='dialogue')
+            && (!auth('api')->user()->isAdmin())){
+            $messages->except('seen');
+        }
+        return response()->success([
+            'style' => $request->withStyle,
+            'messages' => MessageResource::collection($messages),
+            'paginate' => new PaginateResource($messages),
+        ]);
+
     }
 }

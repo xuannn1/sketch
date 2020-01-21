@@ -20,12 +20,13 @@ class MessageResource extends JsonResource
             'attributes' => [
                 'poster_id' => (int)$this->poster_id,
                 'receiver_id' => (int)$this->receiver_id,
-                'message_body' => $this->body,
+                'body_id' => (int)$this->body_id,
                 'created_at' => (string)$this->created_at,
                 'seen' => (bool)$this->seen,
             ],
-            'poster' => new UserBriefResource($this->poster),
-            'receiver' => new UserBriefResource($this->receiver),
+            'poster' => new UserBriefResource($this->whenLoaded('poster')),
+            'receiver' => new UserBriefResource($this->whenLoaded('receiver')),
+            'message_body' => new MessageBodyResource($this->whenLoaded('message_body')),
         ];
     }
 }

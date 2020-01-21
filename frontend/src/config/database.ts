@@ -41,7 +41,7 @@ export namespace Database {
     // unread_updates?:number;
     reviewed_public_notices?:number;
     message_limit?:number;
-    no_stranger_message?:boolean;
+    no_stranger_msg?:boolean;
     no_upvote_reminder?:boolean;
     total_book_characters?:number;
     total_comment_characters?:number;

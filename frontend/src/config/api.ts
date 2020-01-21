@@ -197,12 +197,22 @@ export namespace ResData {
     attributes:{
       poster_id:number;
       receiver_id:number;
-      message_body:string;
+      body_id:number;
       created_at:Timestamp;
       seen:boolean;
     };
-    poster:User;
-    receiver:User;
+    poster?:User;
+    message_body?:MessageBody;
+    receiver?:User;
+  }
+
+  export interface MessageBody {
+    type:'message_body';
+    id:number;
+    attributes:{
+      body:string;
+      bulk:boolean;
+    };
   }
 
   export function allocMessage () : Message {
@@ -212,12 +222,24 @@ export namespace ResData {
       attributes: {
         poster_id: 0,
         receiver_id: 0,
-        message_body: '',
+        body_id: 0,
         created_at: '',
         seen: false,
       },
       poster: allocUser(),
       receiver: allocUser(),
+      message_body: allocMessageBody()
+    };
+  }
+
+  export function allocMessageBody () : Message {
+    return {
+      type: 'message_body',
+      id: 0,
+      attributes: {
+          body: '',
+          bulk: false,
+      },
     };
   }
 
@@ -226,10 +248,11 @@ export namespace ResData {
     id:number;
     attributes:{
       user_id:number;
-      notice_body:string;
+      body:string;
       created_at:Timestamp;
+      edited_at:Timestamp;
     };
-    user:User;
+    user?:User;
   }
   export function allocPublicNotice () : PublicNotice {
     return {
@@ -237,8 +260,9 @@ export namespace ResData {
       id: 0,
       attributes: {
         user_id: 0,
-        notice_body: '',
+        body: '',
         created_at: '',
+        edited_at: '',
       },
       user: allocUser(),
     };

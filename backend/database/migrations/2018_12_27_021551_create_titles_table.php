@@ -15,7 +15,7 @@ class CreateTitlesTable extends Migration
     {
         Schema::create('titles', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name',10)->nullable()->index();//头衔名称
+            $table->string('name',30)->nullable()->index();//头衔名称
             $table->text('description')->nullable();//头衔解释
             $table->unsignedInteger('user_count')->default(0)->index();//多少人获得了这个头衔
             $table->unsignedInteger('style_id')->default(0);//头衔样式id

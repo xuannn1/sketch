@@ -14,17 +14,16 @@ class PublicNoticeResource extends JsonResource
      */
     public function toArray($request)
     {
-        $user = new UserBriefResource($this->whenLoaded('author'));
         return [
             'type' => 'public_notice',
             'id' => (int)$this->id,
             'attributes' => [
                 'user_id' => (int)$this->user_id,
-                'body' => $this->notice_body,
+                'body' => $this->body,
                 'created_at' => (string)$this->created_at,
                 'edited_at' => (string)$this->edited_at,
             ],
-            'user' => $user,
+            'user' => new UserBriefResource($this->whenLoaded('author')),
         ];
     }
 }

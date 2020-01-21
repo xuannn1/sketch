@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserBriefResource extends JsonResource
+class MessageBodyResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,14 +15,12 @@ class UserBriefResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => 'user',
+            'type' => 'message_body',
             'id' => (int)$this->id,
             'attributes' => [
-                'name' => (string)$this->name,
-                'level' => (string)$this->level,
-                'title_id' => (string)$this->title_id,
+                'body' => (int)$this->body,
+                'bulk' => (bool)$this->bulk,
             ],
-            'title' => new TitleBriefResource($this->whenLoaded('title')),
         ];
     }
 }
