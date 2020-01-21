@@ -49,8 +49,11 @@ class MessageController extends Controller
         ]);
     }
 
-    public function index(User $user, Request $request)
+    public function index($id, Request $request)
     {
+        $user = User::find($id);
+        if(!$user){abort(404);}
+        
         if(auth('api')->id()!=$user->id&&!auth('api')->user()->isAdmin()){abort(403);}
         //访问的信箱需为登录用户的信箱或登录用户为管理员
 

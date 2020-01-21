@@ -17,8 +17,8 @@ class RewardTest extends TestCase
     /** @test */
     public function a_user_can_create_reward()
     {
-        
-        
+
+
         $user=factory('App\Models\User')->create();
         $userinfo = factory('App\Models\UserInfo')->create(['user_id' => $user->id]);
         $this->actingAs($user, 'api');
@@ -35,8 +35,8 @@ class RewardTest extends TestCase
         $data = [
             'rewardable_type' => 'Thread',
             'rewardable_id' => $thread->id,
-            'attribute' => 'sangdian',
-            'value' => 3,
+            'reward_type' => 'ham',
+            'reward_value' => 3,
         ];
 
         $response = $this->post('api/reward', $data);
@@ -49,8 +49,8 @@ class RewardTest extends TestCase
         $data = [
             'rewardable_type' => 'Post',
             'rewardable_id' => $post->id,
-            'attribute' => 'xianyu',
-            'value' => 5,
+            'reward_type' => 'fish',
+            'reward_value' => 5,
         ];
 
         $response = $this->post('api/reward', $data);
@@ -60,8 +60,8 @@ class RewardTest extends TestCase
         $data = [
             'rewardable_type' => 'Post',
             'rewardable_id' => '0',
-            'attribute' => 'sangdian',
-            'value' => 1,
+            'reward_type' => 'ham',
+            'reward_value' => 1,
         ];
 
         $response = $this->post('api/reward', $data);
@@ -89,8 +89,8 @@ class RewardTest extends TestCase
         $data = [
             'rewardable_type' => 'Thread',
             'rewardable_id' => $thread->id,
-            'attribute' => 'shengfan',
-            'value' => 3,
+            'reward_type' => 'salt',
+            'reward_value' => 3,
         ];
 
         $response = $this->post('api/reward', $data);
@@ -105,5 +105,5 @@ class RewardTest extends TestCase
         $this->assertDatabaseMissing('rewards',$data);
 
     }
-    
+
 }

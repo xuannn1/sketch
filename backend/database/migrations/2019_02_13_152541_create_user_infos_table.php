@@ -59,6 +59,7 @@ class CreateUserInfosTable extends Migration
 
             $table->unsignedInteger('unread_reminders')->default(0);//全部未读提醒
             $table->unsignedInteger('unread_updates')->default(0);//全部未读收藏更新
+            $table->unsignedInteger('message_reminders')->default(0);//私信提醒
             $table->unsignedInteger('reply_reminders')->default(0);//回复提醒
             $table->unsignedInteger('upvote_reminders')->default(0);//赞提醒
             $table->unsignedInteger('reward_reminders')->default(0);//打赏提醒

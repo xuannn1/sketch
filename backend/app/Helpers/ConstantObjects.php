@@ -253,6 +253,13 @@ class ConstantObjects
             return \App\Models\Title::where('type', $type)->get();
         });
     }
+    
+    public static function find_title_by_id($title_id)
+    {
+        return Cache::remember('titleId-'.$title_id, 30, function() use($title_id) {
+            return \App\Models\Title::where('id', $title_id)->first();
+        });
+    }
 
     public static function system_variable()//获得当前系统数据
     {

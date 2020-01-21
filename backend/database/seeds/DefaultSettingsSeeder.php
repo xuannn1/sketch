@@ -627,10 +627,14 @@ class DefaultSettingsSeeder extends Seeder
             DB::table('titles')->insert([
                 'name' => '大咸者',
                 'description' => '用户等级大于7',
+                'level' => 7,
+                'tyle' => 'level',
             ]);
             DB::table('titles')->insert([
                 'name' => '初来乍到',
                 'description' => '新注册咸鱼',
+                'level' => 0,
+                'tyle' => 'level',
             ]);
             DB::table('titles')->insert([
                 'name' => '编辑',
@@ -647,6 +651,12 @@ class DefaultSettingsSeeder extends Seeder
             DB::table('titles')->insert([
                 'name' => '资深咸鱼',
                 'description' => '在废文深水遨游、咸之又咸的鱼。',
+            ]);
+            DB::table('titles')->insert([
+                'id' => 61,
+                'name' => '2019 winter',
+                'description' => '2019冬季限定，在2020年前注册的用户可以领取',
+                'type' => 'task',
             ]);
         }
         DB::table('invitation_tokens')->insert([

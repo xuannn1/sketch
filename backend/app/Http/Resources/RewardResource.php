@@ -18,10 +18,12 @@ class RewardResource extends JsonResource
             'id' => (int)$this->id,
             'rewardable_type' => (string)$this->rewardable_type,
             'rewardable_id' => (int)$this->rewardable_id,
-            'attribure' => (string)$this->attribute,
-            'value' => (int)$this->value,
+            'reward_type' => (string)$this->reward_type,
+            'reward_value' => (int)$this->reward_type,
             'created_at' => (string)$this->created_at,
+            'deleted_at' => (string)$this->deleted_at,
             'user_id' => (int)$this->user_id,
+            'receiver_id' => (int)$this->receiver_id,
         ];
     }
 }

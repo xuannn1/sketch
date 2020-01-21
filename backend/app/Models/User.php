@@ -95,6 +95,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Title::class, 'title_user', 'user_id', 'title_id')->withPivot('is_public');
     }
 
+    public function public_titles()
+    {
+        return $this->belongsToMany(Title::class, 'title_user', 'user_id', 'title_id')->wherePivot('is_public',1)->withPivot('is_public');
+    }
+
     public function branchaccounts()
     {
         return $this->belongsToMany(User::class, 'linkaccounts', 'master_account', 'branch_account');
@@ -366,43 +371,6 @@ class User extends Authenticatable
         $this->info->active_now($ip);
     }
 
-
-    public function clear_column($column_name='')
-    {
-        switch ($column_name) {
-            case 'unread_reminders':
-            if($this->unread_reminders>0){
-                $this->update(['unread_reminders'=>0]);
-            }
-            return true;
-            break;
-
-            case 'unread_updates':
-            if($this->unread_updates>0){
-                $this->update(['unread_updates'=>0]);
-            }
-            return true;
-            break;
-
-            case 'public_notice_id':
-            if($this->public_notice_id<ConstantObjects::system_variable()->latest_public_notice_id){
-                $this->update(['public_notice_id'=>ConstantObjects::system_variable()->latest_public_notice_id]);
-            }
-            return true;
-            break;
-
-            default:
-            return false;
-        }
-    }
-
-    public function unread_reminder_count()
-    {
-        return $this->unread_reminders
-        + ConstantObjects::system_variable()->latest_public_notice_id
-        - $this->public_notice_id;
-    }
-
     public function linked($user_id)
     {
         return $this->branchaccounts->contains($user_id);
@@ -414,45 +382,40 @@ class User extends Authenticatable
         switch ($reminder) {
             case 'new_message':
             if(!$info->no_message_reminders){
-                $this->unread_reminders +=1;
+                $info->unread_reminders +=1;
                 $info->message_reminders += 1;
                 $info->save();
-                $this->save();
             }
             break;
 
             case 'new_reply':
             if(!$info->no_reply_reminders){
-                $this->unread_reminders +=1;
+                $info->unread_reminders +=1;
                 $info->reply_reminders +=1;
                 $info->save();
-                $this->save();
             }
             break;
 
             case 'new_reward':
             if(!$info->no_reward_reminders){
-                $this->unread_reminders +=1;
+                $info->unread_reminders +=1;
                 $info->reward_reminders +=1;
                 $info->save();
-                $this->save();
             }
             break;
 
             case 'new_upvote':
             if(!$info->no_upvote_reminders){
-                $this->unread_reminders +=1;
+                $info->unread_reminders +=1;
                 $info->upvote_reminders +=1;
                 $info->save();
-                $this->save();
             }
             break;
 
             case 'new_administration':
-                $this->unread_reminders +=1;
+                $info->unread_reminders +=1;
                 $info->administration_reminders +=1;
                 $info->save();
-                $this->save();
             break;
 
             default:

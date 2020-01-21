@@ -23,7 +23,7 @@ class PublicNoticeResource extends JsonResource
                 'created_at' => (string)$this->created_at,
                 'edited_at' => (string)$this->edited_at,
             ],
-            'user' => new UserBriefResource($this->whenLoaded('author')),
+            'author' => new UserBriefResource($this->whenLoaded('author')),
         ];
     }
 }

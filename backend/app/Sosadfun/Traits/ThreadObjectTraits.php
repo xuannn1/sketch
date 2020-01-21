@@ -55,18 +55,14 @@ trait ThreadObjectTraits{
     public function decide_thread_show_config($request)
     {
         $show_profile = true;
-        $show_selected = false;
+        
         $page = (int)(is_numeric($request->page)? $request->page:'1');
         if($page>1||$request->withType||$request->userOnly||$request->withFolded||$request->withReplyTo||$request->ordered||$request->withComponent){
             $show_profile = false;
         }
 
-        if($request->withType||$request->userOnly||$request->withFolded||$request->withComponent||$request->withReplyTo||$request->ordered){
-            $show_selected = true;
-        }
         return [
             'show_profile' => $show_profile,
-            'show_selected' => $show_selected,
         ];
     }
 

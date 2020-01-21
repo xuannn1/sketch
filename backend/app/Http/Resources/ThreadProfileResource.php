@@ -55,6 +55,9 @@ class ThreadProfileResource extends JsonResource
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
             'last_component' => new PostBriefResource($this->whenLoaded('last_component')),
             'last_post' => new PostBriefResource($this->whenLoaded('last_post')),
+            'component_index' => PostIndexResource::collection($this->whenLoaded('component_index')),
+            'random_review' => new PostBriefResource($this->whenLoaded('random_review')),
+            'recent_rewards' => RewardResource::collection($this->whenLoaded('recent_rewards'))
         ];
     }
 }

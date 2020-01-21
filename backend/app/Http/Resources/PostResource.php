@@ -65,6 +65,7 @@ class PostResource extends JsonResource
             'parent' => $parent,
             'last_reply' => $last_reply,
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
+            'thread' => new ThreadBriefResource($this->whenLoaded('simpleThread')),
         ];
     }
 }

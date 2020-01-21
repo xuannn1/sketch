@@ -64,7 +64,7 @@ $ valet park
 3. 想要进行下一个任务，
 4. 其他人刚往远端push了新的代码，本地希望和远程保持同步  
 
-这些时候我们需要重新加载来自远程主branch（`backend-reconstruct`）的更新，并且将数据库对应的变化同步更新。
+这些时候我们需要重新加载来自远程主branch（`master`）的更新，并且将数据库对应的变化同步更新。
 
 #### 2.6.2 注意事项
 - 请确保自己在backend文件夹内！否则会遇到artisan command不存在这一类的报错
@@ -100,7 +100,7 @@ $ vendor/bin/phpunit
 #### 3.1.1 废文网数据库的基本情况
 关于数据库的ER图，请参考`backend`下文件`20200115-Sosad-ER2.png`。这个图还会根据具体情况作出调整。
 关于数据库的名称和各项解释，请参考`backend`下文件`20200114-sosadfun-ER-database-structure.xlsx`。这个表格会随时更新。
-关于具体的API内容，见trello“废文技术站-API”版的更新。
+关于具体的API内容，见trello“废文技术站-API”版的实时更新条目。
 
 ## 4. API文档
 建议下载并使用postman程序，对api进行测试。

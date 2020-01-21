@@ -76,7 +76,6 @@ Route::resource('/thread/{thread}/chapter', 'API\ChapterController')->only(['sto
 Route::apiResource('user', 'API\UserController');
 Route::get('user/{user}/thread', 'API\UserController@showthread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
 Route::patch('user/{user}/profile', 'API\UserController@updateProfile');//
-Route::resource('/user/{user}/title', 'API\TitleController')->only(['index', 'update']);// title resource
 Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
 Route::get('user/{user}/following', 'API\FollowerController@following');//展示该用户的所有关注
 Route::get('user/{user}/followingStatuses', 'API\FollowerController@followingStatuses');//展示该用户的所有关注，附带关注信息更新状态
@@ -105,7 +104,8 @@ Route::post('groupmessage', 'API\MessageController@groupmessage');//管理员群
 Route::post('publicnotice', 'API\MessageController@publicnotice');//管理员发系统消息
 
 // 消息部分
-Route::get('/user/{user}/notification', 'API\NotificationController@index');// 展示某用户的信箱，仅允许本人和管理员查询
+Route::get('/user/{user}/activity', 'API\ActivityController@index');// 展示某用户的站内提醒，仅允许本人和管理员查询
+Route::post('/clearupdates', 'API\ActivityController@clearupdates');// 清除未读提醒
 
 // 阅读历史保存
 
@@ -114,3 +114,8 @@ Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'destr
 
 // 打赏
 Route::apiResource('reward', 'API\RewardController')->only(['index', 'store', 'destroy']);
+
+// 头衔
+Route::get('user/{user}/mytitle', 'API\TitleController@mytitle');
+Route::post('wearTitle/{title}', 'API\TitleController@wear');
+Route::post('redeemTitle', 'API\TitleController@redeem_title');

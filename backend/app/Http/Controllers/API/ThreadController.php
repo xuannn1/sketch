@@ -15,12 +15,21 @@ use App\Http\Resources\PostIndexResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PaginateResource;
 use App\Sosadfun\Traits\ThreadQueryTraits;
+use App\Sosadfun\Traits\ThreadObjectTraits;
+use App\Sosadfun\Traits\PostObjectTraits;
+use App\Sosadfun\Traits\RecordRedirectTrait;
+use App\Sosadfun\Traits\DelayRecordHistoryTraits;
 use Cache;
+use Carbon;
 use ConstantObjects;
 
 class ThreadController extends Controller
 {
     use ThreadQueryTraits;
+    use ThreadObjectTraits;
+    use PostObjectTraits;
+    use RecordRedirectTrait;
+    use DelayRecordHistoryTraits;
 
     public function __construct()
     {
@@ -34,21 +43,19 @@ class ThreadController extends Controller
     */
     public function index(Request $request)
     {
-        $threads = Thread::threadInfo()
-        ->inChannel($request->channels)
-        ->isPublic()//复杂的筛选
-        ->with('author', 'tags', 'last_component', 'last_post')
-        ->withType($request->withType)
-        ->withBianyuan($request->withBianyuan)
-        ->withTag($request->tags)
-        ->excludeTag($request->excludeTags)
-        ->ordered($request->ordered)
-        ->paginate(config('constants.threads_per_page'));
+        $request_data = $this->sanitize_thread_request_data($request);
+
+        if($request_data&&!auth('api')->check()){abort(401);}
+
+        $query_id = $this->process_thread_query_id($request_data);
+
+        $threads = $this->find_threads_with_query($query_id, $request_data);
+
         return response()->success([
             'threads' => ThreadInfoResource::collection($threads),
             'paginate' => new PaginateResource($threads),
+            'request_data' => $request_data,
         ]);
-        //return view('test',compact('threads'));
     }
 
     public function channel_index($channel, Request $request)
@@ -97,6 +104,7 @@ class ThreadController extends Controller
             'channel' => $channel,
             'threads' => ThreadInfoResource::collection($threads),
             'primary_tags' => $primary_tags,
+            'request_data' => $request->only('withBianyuan', 'ordered', 'withTag','page'),
             'simplethreads' => ThreadBriefResource::collection($simplethreads),
             'paginate' => new PaginateResource($threads),
         ]);
@@ -139,31 +147,48 @@ class ThreadController extends Controller
     * @param  int  $thread
     * @return \Illuminate\Http\Response
     */
-    public function show(Thread $thread, Request $request)
+    public function show($id, Request $request)
     {
-        if($request->page>1){
-            $threadprofile = new ThreadBriefResource($thread);
+        $show_config = $this->decide_thread_show_config($request);
+        if($show_config['show_profile']){
+            $thread = $this->threadProfile($id);
         }else{
-            $thread->load('tags', 'author', 'last_post', 'last_component');
-            $threadprofile = new ThreadProfileResource($thread);
+            $thread = $this->findThread($id);
         }
-        $posts = Post::where('thread_id',$thread->id)
-        ->with('author', 'tags')
-        ->ordered($request->ordered)//排序方式
-        ->paginate(config('constants.posts_per_page'));
+        $thread->delay_count('view_count', 1);
+        if(auth('api')->check()){
+            $this->delay_record_thread_view_history(auth('api')->id(), $thread->id, Carbon::now());
+        }
 
-        $channel = $thread->channel();
-        if($channel->type==='book'){
-            $posts->load('chapter');
+        $request_data = $this->sanitize_thread_post_request_data($request);
+
+        if($request_data&&!auth('api')->check()){abort(401);}
+
+        $query_id = $this->process_thread_post_query_id($request_data);
+
+        $posts = $this->find_thread_posts_with_query($thread, $query_id, $request_data);
+
+        $withReplyTo = '';
+        if($request->withReplyTo>0){
+            $withReplyTo = $this->findPost($request->withReplyTo);
+            if($withReplyTo&&$withReplyTo->thread_id!=$thread->id){
+                $withReplyTo = '';
+            }
         }
-        if($channel->type==='review'){
-            $posts->load('review.reviewee');
-            $posts->review->reviewee->load('tags','author');
+        $inComponent = '';
+        if($request->inComponent>0){
+            $inComponent = $this->findPost($request->inComponent);
+            if($inComponent&&$inComponent->thread_id!=$thread->id){
+                $inComponent = '';
+            }
         }
 
         return response()->success([
-            'thread' => $threadprofile,
+            'thread' => new ThreadProfileResource($thread),
+            'withReplyTo' => $withReplyTo,
+            'inComponent' => $inComponent,
             'posts' => PostResource::collection($posts),
+            'request_data' => $request_data,
             'paginate' => new PaginateResource($posts),
         ]);
 

@@ -10,11 +10,12 @@ return [
     '409' => 'content duplication conflict', //数据内容重复，邀请链接已经成功注册（可直接登陆），新旧密码重复，已经关注
     '410' => 'allowed number limit conflict', //不允许建立更多的同类内容了，需要更长时间间隔或者更高等级或更多余额
     '411' => 'precondition failed due to self input', //由于自身当前输入的内容，前提失败导致动作无效，不能关注或取关自己，不能给自己发私信
-    '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信
+    '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信, 不能佩戴不具有的头衔
     '413' => 'precondition failed due to other side setting', //由于对方设置，前提失败导致动作无效，不能发私信给拒绝接收私信的用户，不能访问作者设置私密的讨论
     '414' => 'precondition failed due to system setting', //由于系统设置，前提失败导致动作无效.
     '416' => 'user further action reqired: needs authentification', // 用户需要激活邮箱才能访问内容
     '417' => 'user further action reqired: needs purchase', // 作业需购买才能阅读
+    '420' => 'precondition failed, nothing really done', // 因为输入的内容不可操作，实际上什么都没做
     '422' => 'validation failed',//输入的数据不符合规则，不能validate内容，
     '433' => 'item is component, has to be a regular post/comment to delete', //目标物并不是普通的回帖，而是chapter/review/question/answer一类的内容，需要转换成普通post才能正常删除
     '444' => 'item or command expired, unable to perform operation', //操作已失效，比如邀请码已经使用，邀请链接已经使用

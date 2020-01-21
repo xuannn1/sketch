@@ -26,6 +26,7 @@ class PostBriefResource extends JsonResource
                 'created_at' => (string)$this->created_at,
                 'is_bianyuan' => (bool)$this->is_bianyuan,
             ],
+            'thread' => new ThreadBriefResource($this->whenLoaded('simpleThread')),
         ];
     }
 }

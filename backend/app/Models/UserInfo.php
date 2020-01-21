@@ -137,6 +137,27 @@ class UserInfo extends Model
     public function clear_column($column_name='')
     {
         switch ($column_name) {
+            case 'unread_reminders':
+            if($this->unread_reminders>0){
+                $this->update(['unread_reminders'=>0]);
+            }
+            return true;
+            break;
+
+            case 'unread_updates':
+            if($this->unread_updates>0){
+                $this->update(['unread_updates'=>0]);
+            }
+            return true;
+            break;
+
+            case 'public_notice_id':
+            if($this->public_notice_id<ConstantObjects::system_variable()->latest_public_notice_id){
+                $this->update(['public_notice_id'=>ConstantObjects::system_variable()->latest_public_notice_id]);
+            }
+            return true;
+            break;
+
             case 'default_collection_updates':
                 if($this->default_collection_updates>0){
                     $this->update(['default_collection_updates'=>0]);

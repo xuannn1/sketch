@@ -100,10 +100,14 @@ return [
        'essay' => '文章', // TODO column
 
        'case' => '情况',// TODO report
+       'solution' => '处理结果',
    ],
    'quiz_types' => [
        'level_up' => '站内升级测试题',
        'register' => '注册申请选择题',
        'essay' => '注册申请简答题',
+   ],
+   'task_titles' => [
+     '2019winter' => 61,
    ],
 ];

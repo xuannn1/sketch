@@ -41,6 +41,7 @@ class PostIndexResource extends JsonResource
             'info' => $info,
             'parent' => $parent,
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
+            'thread' => new ThreadBriefResource($this->whenLoaded('simpleThread')),
         ];
     }
 }
