@@ -63,7 +63,7 @@ Route::patch('/thread/{thread}/update_tongren', 'API\BookController@update_tongr
 Route::patch('/thread/{thread}/update_component_index', 'API\ComponentController@update_component_index');
 
 Route::apiResource('/thread/{thread}/post', 'API\PostController')->only(['show', 'store'])->middleware('filter_thread');
-Route::apiResource('/post', 'API\PostController')->only(['update', 'delete']);
+Route::apiResource('/post', 'API\PostController')->only(['update', 'destroy']);
 
 Route::patch('/post/{post}/convert', 'API\ComponentController@convert');// 将特别的post转化为普通post, 或将post转化成特殊格式 // TODO
 Route::patch('/post/{post}/fold', 'API\PostController@fold');

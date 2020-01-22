@@ -6,11 +6,12 @@ use ConstantObjects;
 trait ValidateTagTraits{
 
 
-    public function tags_validate($tags)//检查由用户提交的tags组合，是否符合基本要求 $tags is an array [1,2,3]...
+    public function tags_validate($tags=[])//检查由用户提交的tags组合，是否符合基本要求 $tags is an array [1,2,3]...
     {
         $valid_tags = [];//通过检查的tag
         $limit_count_tags = [];//tag数量限制
         $only_one_tags = [];//只能选一个的tag
+        $tags = (array)$tags;
         foreach($tags as $key => $value){
             $tag = ConstantObjects::find_tag_by_id($value);
             if($tag){//首先应该判断这个tag是否存在，否则会报错Trying to get property 'tag_type' of non-object

@@ -25,7 +25,7 @@ trait ThreadObjectTraits{
                 $thread->setAttribute('tongren', $tongren);
             }
             if(in_array($thread->channel()->type,['book','list','box'])){
-                $thread->setAttribute('component_index', $thread->component_index());
+                $thread->setAttribute('component_index_brief', $thread->component_index());
             }
             $thread->setAttribute('random_review', $thread->random_editor_recommendation());
             $thread->setAttribute('recent_rewards', $thread->latest_rewards());
@@ -55,7 +55,7 @@ trait ThreadObjectTraits{
     public function decide_thread_show_config($request)
     {
         $show_profile = true;
-        
+
         $page = (int)(is_numeric($request->page)? $request->page:'1');
         if($page>1||$request->withType||$request->userOnly||$request->withFolded||$request->withReplyTo||$request->ordered||$request->withComponent){
             $show_profile = false;

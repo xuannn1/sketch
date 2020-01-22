@@ -24,6 +24,22 @@ class ThreadProfileResource extends JsonResource
         }else{
             $author = [];
         }
+        $tongren = [];
+        if($this->tongren){
+            $tongren = new TongrenResource($this->tongren);
+        }
+        $component_index_brief = [];
+        if($this->component_index_brief){
+            $component_index_brief = PostIndexResource::collection($this->component_index_brief);
+        }
+        $random_review = [];
+        if($this->random_review){
+            $random_review = new PostBriefResource($this->random_review);
+        }
+        $recent_rewards = [];
+        if($this->recent_rewards){
+            $recent_rewards = RewardResource::collection($this->recent_rewards);
+        }
         return [
             'type' => 'thread',
             'id' => (int)$this->id,
@@ -57,9 +73,10 @@ class ThreadProfileResource extends JsonResource
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
             'last_component' => new PostBriefResource($this->whenLoaded('last_component')),
             'last_post' => new PostBriefResource($this->whenLoaded('last_post')),
-            'component_index' => PostIndexResource::collection($this->whenLoaded('component_index')),
-            'random_review' => new PostBriefResource($this->whenLoaded('random_review')),
-            'recent_rewards' => RewardResource::collection($this->whenLoaded('recent_rewards'))
+            'component_index_brief' => $component_index_brief,
+            'random_review' => $random_review,
+            'recent_rewards' => $recent_rewards,
+            'tongren' => $tongren,
         ];
     }
 }

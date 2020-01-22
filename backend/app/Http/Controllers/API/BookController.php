@@ -60,11 +60,6 @@ class BookController extends Controller
         ]);
     }
 
-    public function store()
-    {
-        // TODO 这个函数是否保留，待讨论
-    }
-
     public function update_tongren($id, Request $request)
     {
         $thread = Thread::on('mysql::write')->find($id);

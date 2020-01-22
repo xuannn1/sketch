@@ -37,7 +37,11 @@ class PostController extends Controller
     */
     public function store($id, StorePost $form)
     {
+
         $thread = Thread::on('mysql::write')->find($id);
+        if(!$thread||!auth('api')->user()){abort(404);}
+        if(auth('api')->user()->no_posting){abort(403,'禁言中');}
+
         $post = $form->storePost($thread);
         $post = $this->postProfile($post->id);
         return response()->success(new PostResource($post));
@@ -87,16 +91,17 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function destroy($post)
+    public function destroy($id)
     {
-        $post = Post::on('mysql::write')->find($post);
-        if($post->user_id===auth('api')->id()){
-            if($post->type==='post'||$post->type==='comment'){
-                $post->delete();
-            }else{
-                // TODO
-            }
+        $post = Post::on('mysql::write')->find($id);
+        if(!$post){abort(404);}
+        if($post->user_id!=auth('api')->id()&&!auth('api')->user()->isAdmin()){abort(403,'不能删除非自己的回帖');}
+
+        if($post->type==='post'||$post->type==='comment'||auth('api')->user()->isAdmin()){
+            $post->delete();
+            return response()->success('deleted post'.$id);
         }
+        abort(420,'什么都没做');
     }
 
     public function fold($post)

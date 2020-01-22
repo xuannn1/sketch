@@ -50,12 +50,12 @@ class FollowerController extends Controller
     {
         $user = User::find($id);
 
-        if (auth('api')->id()===$user->id){abort(405);}
+        if (auth('api')->id()===$user->id){abort(411, '不能取关自己');}
 
         $follow_relationship = \App\Models\Follower::where('user_id', $id)->where('follower_id', auth('api')->id())
         ->first();
 
-        if (!$follow_relationship){abort(412);}
+        if (!$follow_relationship){abort(412,'未关注');}
 
         $follow_relationship->delete();
 

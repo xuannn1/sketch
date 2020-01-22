@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Thread;
 use App\Models\Post;
 use App\Http\Requests\StoreThread;
-use App\Http\Requests\UpdateThread;
 use App\Http\Resources\ThreadBriefResource;
 use App\Http\Resources\ThreadInfoResource;
 use App\Http\Resources\ThreadProfileResource;
@@ -118,19 +117,42 @@ class ThreadController extends Controller
     */
     public function store(StoreThread $form)//
     {
-        $channel = $form->channel();
-        if(empty($channel)||((!$channel->is_public)&&(!auth('api')->user()->canSeeChannel($channel->id)))){abort(403);}
+        $channel = collect(config('channel'))->keyby('id')->get($form->channel_id);
+        if(!$channel||!auth('api')->user()){abort(404);}
+
+        if(auth('api')->user()->no_posting){abort(403,'禁言中');}
+
+        if($channel->type==='book'&&(auth('api')->user()->level<1||auth('api')->user()->quiz_level<1)&&!auth('api')->user()->isAdmin()){abort(403,'发布书籍，必须用户等级1以上，答题等级1以上');}
+
+        if($channel->type<>'book'&&(auth('api')->user()->level<4||auth('api')->user()->quiz_level<2)&&!auth('api')->user()->isAdmin()){abort(403,'发布非书籍主题，必须用户等级4以上，答题等级2以上');}
+
+        if(!$channel->is_public&&!auth('api')->user()->canSeeChannel($channel->id)){abort(403,'不能访问这个channel');}
+
+        if(!auth('api')->user()->isAdmin()&&Cache::has('created-thread-' . auth('api')->id())){abort(410,"不能短时间频繁建立新主题");}
 
         //针对创建清单进行一个数值的限制
         if($channel->type==='list'){
             $list_count = Thread::where('user_id', auth('api')->id())->withType('list')->count();
-            if($list_count > auth('api')->user()->user_level){abort(403);}
+            if($list_count > auth('api')->user()->user_level){abort(410,'额度不足，不能创建更多清单');}
         }
         if($channel->type==='box'){
             $box_count = Thread::where('user_id', auth('api')->id())->withType('box')->count();
-            if($box_count >=1){abort(403);}//暂时每个人只能建立一个问题箱
+            if($box_count >=1){abort(410,'目前每个人只能建立一个问题箱');}
         }
-        $thread = $form->generateThread();
+
+        $thread = $form->generateThread($channel);
+
+        Cache::put('created-thread-' . auth('api')->id(), true, 10);
+
+        if($channel->type==='list'&&auth('api')->user()->info->default_list_id===0){
+            auth('api')->user()->info->update(['default_list_id'=>$thread->id]);
+        }
+        if($channel->type==='box'&&auth('api')->user()->info->default_box_id===0){
+            auth('api')->user()->info->update(['default_box_id'=>$thread->id]);
+        }
+
+        $thread = $this->threadProfile($thread->id);
+
         return response()->success(new ThreadProfileResource($thread));
     }
 
@@ -215,6 +237,8 @@ class ThreadController extends Controller
     {
         $thread = Thread::on('mysql::write')->find($id);
         $thread = $form->updateThread($thread);
+        $this->clearThread($id);
+        $thread = $this->threadProfile($id);
         return response()->success(new ThreadProfileResource($thread));
     }
 
@@ -242,7 +266,7 @@ class ThreadController extends Controller
     public function update_tag($id, Request $request)
     {
         $thread = Thread::on('mysql::write')->find($id);
-        $user = CacheUser::Auser();
+        $user = auth('api')->user();
         if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
 
         $thread->drop_none_tongren_tags();//去掉所有本次能选的tag的范畴内的tag
