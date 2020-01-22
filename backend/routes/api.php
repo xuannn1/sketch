@@ -112,8 +112,14 @@ Route::post('/clearupdates', 'API\ActivityController@clearupdates');// 清除未
 // 投票
 Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'destroy']);
 
+Route::get('/user/{user}/vote_sent','API\VoteController@sent');//我给出的评票
+Route::get('/user/{user}/vote_received','API\VoteController@received');//我收到的评票
+
 // 打赏
 Route::apiResource('reward', 'API\RewardController')->only(['index', 'store', 'destroy']);
+
+Route::get('/user/{user}/reward_sent','API\RewardController@sent');//我给出的评票
+Route::get('/user/{user}/reward_received','API\RewardController@received');//我收到的评票
 
 // 头衔
 Route::get('user/{user}/mytitle', 'API\TitleController@mytitle');

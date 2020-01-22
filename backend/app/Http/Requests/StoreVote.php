@@ -53,7 +53,7 @@ class StoreVote extends FormRequest
         $vote_data['receiver_id'] = $voted_model->user_id;
 
         if(!$this->validateAttitude($this->votable_type, $this->votable_id, $vote_data['attitude_type'], $vote_data['user_id'])){
-            abort(422,'和已有投票冲突（如重复投票，也可能是已经赞还要踩）'); //和已有投票冲突（可能是重复投票，也可能是已经赞还要踩）
+            abort(411,'和已有投票冲突（如重复投票，也可能是已经赞还要踩）'); //和已有投票冲突（可能是重复投票，也可能是已经赞还要踩）
         }
 
         // 被评票的item，统计评票数量
@@ -61,7 +61,7 @@ class StoreVote extends FormRequest
 
         $vote = $voted_model->votes()->create($vote_data);
 
-        if($vote_data['attitude_type']==='upvote'){
+        if($vote_data['attitude_type']==='upvote'&&$voted_model->user){
             $voted_model->user->remind('new_upvote');
         }
 

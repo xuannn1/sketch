@@ -20,11 +20,11 @@ class AppServiceProvider extends ServiceProvider
         // UserInfo::observe(UserInfoObserver::class);
 
         Relation::morphMap([
-            'post' => '\App\Models\Post',
-            'quote' => '\App\Models\Quote',
-            'status' => '\App\Models\Status',
-            'thread' => '\App\Models\Thread',
-            'vote' => '\App\Models\Vote',
+            'post' => 'App\Models\Post',
+            'quote' => 'App\Models\Quote',
+            'status' => 'App\Models\Status',
+            'thread' => 'App\Models\Thread',
+            'vote' => 'App\Models\Vote',
         ]);
 
         Validator::extend('display_length', 'App\Validators\DisplayLength@validate');

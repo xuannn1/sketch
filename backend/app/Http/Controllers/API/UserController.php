@@ -90,7 +90,7 @@ class UserController extends Controller
     {
         //
     }
-    
+
     public function updateProfile($user,Request $request)
     {
         if(!auth('api')->user()->isAdmin()&&($user!=auth('api')->id())){abort(403);}
@@ -103,6 +103,30 @@ class UserController extends Controller
             } else {
                 return response()->error(config('error.595'), 595);
             }
+    }
+
+    public function received($id, Request $request)
+    {
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        $info->clear_column('reward_reminders');
+        $rewards = Reward::with('rewardable','author')
+        ->where('receiver_id',$user->id)
+        ->orderBy('created_at','desc')
+        ->paginate(config('preference.rewards_per_page'));
+        return view('rewards.index_received', compact('user', 'info', 'rewards'))->with('show_reward_tab','received');
+
+    }
+
+    public function sent($id, Request $request)
+    {
+        $user = CacheUser::Auser();
+        $info = CacheUser::Ainfo();
+        $rewards = Reward::with('rewardable','author')
+        ->where('user_id',$user->id)
+        ->orderBy('created_at','desc')
+        ->paginate(config('preference.rewards_per_page'));
+        return view('rewards.index_sent', compact('user', 'info', 'rewards'))->with('show_reward_tab','sent');
     }
 
 }

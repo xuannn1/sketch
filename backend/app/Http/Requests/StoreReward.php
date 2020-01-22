@@ -47,26 +47,25 @@ class StoreReward extends FormRequest
     }
 
     public function validateBalance($reward_data,$info){
-        return $info->value($reward_data['reward_type']) >= $reward_data['reward_value'];
-
+        return $info->{$reward_data['reward_type']} >= $reward_data['reward_value'];
     }
 
     public function generateReward($rewarded_model){
-        if(!in_array($this->reward_type, $this->reward_types)){abort(422,'不存在这种投票');}
+        if(!in_array($this->reward_type, $this->reward_types)){abort(422,'不存在这种虚拟物');}
 
         $reward_data = $this->only('reward_type','reward_value');
-        $user = CacheUser::Auser();
-        $info = CacheUser::Ainfo();
+        $user = auth('api')->user();
+        $info = $user->info;
         $reward_data['user_id'] = $user->id;
         $reward_data['created_at'] = Carbon::now()->toDateTimeString();
         $reward_data['receiver_id'] = $rewarded_model->user_id;
 
         if(!$this->validateDateAndAttribite($this->rewardable_type, $this->rewardable_id, $reward_data)){
-            abort(422,'今天已经打赏过该奖励'); //今天已经打赏过该奖励
+            abort(410,'今天已经打赏过该奖励'); //今天已经打赏过该奖励
         }
 
         if(!$this->validateBalance($reward_data,$info)){
-            abort(422,'奖励余额不充足'); //奖励余额是否充足
+            abort(412, '奖励余额不充足'); //奖励余额是否充足
         }
 
         // 打赏和被打赏用户之间转账
@@ -88,6 +87,7 @@ class StoreReward extends FormRequest
         $half_value = $value - (int)($value / 2);
         $infoB->type_value_change($type, $half_value);
         $infoA->type_value_change($type, -$value);
+        // TODO record value change and reason
     }
 
     public function model_update($model, $type, $value)

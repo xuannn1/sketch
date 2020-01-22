@@ -16,6 +16,7 @@ class CreateVotesTable extends Migration
         Schema::create('votes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id')->default(0)->index();
+            $table->unsignedInteger('receiver_id')->default(0)->index();
             $table->unsignedInteger('votable_id')->default(0)->index();
             $table->string('votable_type',10)->nullable()->index();
             $table->string('attitude_type', 10)->nullable()->index();  //upvote,downvote,funnyvote,foldvote

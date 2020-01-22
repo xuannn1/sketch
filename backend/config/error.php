@@ -8,9 +8,9 @@ return [
     '405' => 'method not allowed',//
     '408' => 'content duplication conflict: report from database', //数据库宣布数据内容重复，不能写入
     '409' => 'content duplication conflict', //数据内容重复，邀请链接已经成功注册（可直接登陆），新旧密码重复，已经关注
-    '410' => 'allowed number limit conflict', //不允许建立更多的同类内容了，需要更长时间间隔或者更高等级或更多余额
-    '411' => 'precondition failed due to self input', //由于自身当前输入的内容，前提失败导致动作无效，不能关注或取关自己，不能给自己发私信
-    '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信, 不能佩戴不具有的头衔
+    '410' => 'allowed number limit conflict', //不允许建立更多的同类内容了，需要更长时间间隔或者更高等级或更多余额，一日只能打赏一个东西一次
+    '411' => 'precondition failed due to self input', //由于自身输入的内容，前提失败导致动作无效，不能关注或取关自己，不能给自己发私信，不能即赞又踩
+    '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信, 不能佩戴不具有的头衔，不能打赏超过个人收入的虚拟物
     '413' => 'precondition failed due to other side setting', //由于对方设置，前提失败导致动作无效，不能发私信给拒绝接收私信的用户，不能访问作者设置私密的讨论
     '414' => 'precondition failed due to system setting', //由于系统设置，前提失败导致动作无效.
     '416' => 'user further action reqired: needs authentification', // 用户需要激活邮箱才能访问内容
