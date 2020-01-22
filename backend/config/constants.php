@@ -100,8 +100,17 @@ return [
        'essay' => '文章', // TODO column
 
        'case' => '情况',// TODO report
-       'solution' => '处理结果',
+       'solution' => '处理结果', // TODO report
    ],
+   'with_info_component_types' => [
+       'chapter','volumn','review','answer','essay','solution'
+   ],
+    'owner_component_types' => [
+        'chapter','volumn','review','answer','essay','work','solution'
+    ],
+    'all_post_types' => [
+        'post','comment','chapter','volumn','review','question','answer','essay','work','critique','solution'
+    ],
    'quiz_types' => [
        'level_up' => '站内升级测试题',
        'register' => '注册申请选择题',

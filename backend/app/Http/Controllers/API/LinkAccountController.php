@@ -13,7 +13,7 @@ use Carbon;
 use App\Models\Linkaccount;
 use CacheUser;
 
-class LinkedAccountsController extends Controller
+class LinkAccountController extends Controller
 {
     public function __construct()
     {

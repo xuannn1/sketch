@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 class CollectionTest extends TestCase
 {
-    /** @test */
+    // TODO
     public function an_authorised_user_can_collect_a_thread_and_update_and_delete_it()
     {
 
@@ -61,7 +61,7 @@ class CollectionTest extends TestCase
         ]);
     }
 
-    /** @test */
+    // TODO
     public function an_authorised_user_can_see_his_collections()
     {
         $author = \App\Models\User::inRandomOrder()->first();

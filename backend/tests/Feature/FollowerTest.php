@@ -37,7 +37,7 @@ class FollowerTest extends TestCase
 
         // assert that one cannot follow themself
         $this->post('api/user/'.$follower->id.'/follow')
-            ->assertStatus(405);
+            ->assertStatus(411);
         // assert one can follow aother
         $this->post('api/user/'.$followed_user->id.'/follow')
             ->assertStatus(200);

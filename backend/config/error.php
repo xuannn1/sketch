@@ -3,7 +3,7 @@ return [
     '200' => 'success',
     '400' => 'not found',//相关指令服务器无法识别resolve
     '401' => 'unauthorised',//未登陆用户，不能验证用户身份
-    '403' => 'permission denied',//已登陆用户，但权限不足，不允许进行此项操作（如试图修改非本人创建的内容，试图修改非本人账户的信息，旧密码不等于当前密码），非管理试图访问私密版块的内容
+    '403' => 'permission denied',//已登陆用户，但权限不足，不允许进行此项操作（如试图修改非本人创建的内容，试图修改非本人账户的信息，旧密码不等于当前密码），非管理试图访问私密版块的内容，非管理试图修改禁止修改的版块的内容
     '404' => 'not found',//post/thread/chapter等内容未找到
     '405' => 'method not allowed',//
     '408' => 'content duplication conflict: report from database', //数据库宣布数据内容重复，不能写入

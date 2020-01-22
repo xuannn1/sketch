@@ -41,6 +41,8 @@ class ThreadInfoResource extends JsonResource
                 'weighted_jifen' => (int)$this->weighted_jifen,
                 'total_char' => (int)$this->total_char,
                 'responded_at' => (string)$this->responded_at,
+                'add_component_at' => (string)$this->add_component_at,
+                'deletion_applied_at' => (string)$this->deletion_applied_at,
             ],
             'author' => $author,
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),

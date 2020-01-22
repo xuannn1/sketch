@@ -35,11 +35,10 @@ Route::post('register/by_invitation_email/submit_essay', 'API\RegAppController@s
 Route::get('register/by_invitation_email/resend_invitation_email', 'API\RegAppController@resend_invitation_email'); // 重发邀请邮件
 
 // 关联账户相关
-Route::get('/linkaccount','LinkAccountController@index');
-Route::post('/linkaccount/store','LinkAccountController@store');
-Route::get('/linkaccount/switch/{id}','LinkAccountController@switch');
-Route::delete('/linkaccount/destroy','LinkAccountController@destroy');
-
+Route::get('/linkaccount','API\LinkAccountController@index');
+Route::post('/linkaccount/store','API\LinkAccountController@store');
+Route::get('/linkaccount/switch/{id}','API\LinkAccountController@switch');
+Route::delete('/linkaccount/destroy','API\LinkAccountController@destroy');
 
 // 默认页面
 Route::get('/', 'API\PageController@home')->name('home');// 网站首页
@@ -50,32 +49,31 @@ Route::get('config/allChannels', 'API\PageController@allChannels');
 Route::get('config/allTitles', 'API\PageController@allTitles');
 
 // 讨论串/讨论楼/讨论帖
-Route::get('/channel/{channel}', 'API\ThreadController@channel_index')->middleware('filter_channel');//某个版面的讨论贴
+Route::get('/channel/{channel}', 'API\ThreadController@channel_index')->middleware('filter_channel');//某个版面的讨论贴，或者书评/问答列表
+
 Route::apiResource('thread', 'API\ThreadController');
-Route::apiResource('/thread/{thread}/post', 'API\PostController');
-Route::get('/thread/{thread}/recommendation', 'API\ThreadController@recommendation');// 展示这个书籍名下recommendation的index
-Route::patch('/thread/{thread}/synctags', 'API\ThreadController@synctags')->name('synctags');// 用户给自己的thread修改对应的tag信息
-Route::patch('/thread/{thread}/post/{post}/turnToPost', 'API\PostController@turnToPost');// 把任意的component转化成post
-
-// 书评清单部分
-Route::resource('/thread/{thread}/review', 'API\ReviewController')->only(['store', 'update']);// 书评增改
-Route::get('review', 'API\ReviewController@index');// 展示所有评论
-
-// 问题箱部分
-Route::patch('/thread/{thread}/post/{post}/turnToAnswer', 'API\QAController@turnToAnswer');// 把box楼里的某个回复转变成问答
-Route::get('answer', 'API\QAController@index');// 展示所有回答的问答
+Route::get('/thread/{thread}/profile', 'API\ThreadController@show_profile');//展示书籍或讨论首页(非论坛模式，默认从此进入)
+Route::patch('/thread/{thread}/update_tag', 'API\ThreadController@update_tag');
 
 // 书籍
-Route::get('/book', 'API\BookController@index');//文库筛选主页
-Route::get('/book/{thread}', 'API\BookController@show');// 显示书籍主页
-Route::get('/book/{thread}/chapterindex', 'API\BookController@chapterindex');// 显示书籍所有chapter的列表
-// 章节
-Route::resource('/thread/{thread}/chapter', 'API\ChapterController')->only(['store', 'update']);
+Route::get('/book','API\BookController@index');// 文库目录和筛选
+Route::get('/books/{thread}', 'API\BookController@show');// 往期书籍遗留导航
+Route::patch('/thread/{thread}/update_tongren', 'API\BookController@update_tongren');
+
+Route::patch('/thread/{thread}/update_component_index', 'API\ComponentController@update_component_index');
+
+Route::apiResource('/thread/{thread}/post', 'API\PostController')->only(['show', 'store'])->middleware('filter_thread');
+Route::apiResource('/post', 'API\PostController')->only(['update', 'delete']);
+
+Route::patch('/post/{post}/convert', 'API\ComponentController@convert');// 将特别的post转化为普通post, 或将post转化成特殊格式 // TODO
+Route::patch('/post/{post}/fold', 'API\PostController@fold');
 
 // 用户
 Route::apiResource('user', 'API\UserController');
 Route::get('user/{user}/thread', 'API\UserController@showthread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
 Route::patch('user/{user}/profile', 'API\UserController@updateProfile');//
+
+// 关注
 Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
 Route::get('user/{user}/following', 'API\FollowerController@following');//展示该用户的所有关注
 Route::get('user/{user}/followingStatuses', 'API\FollowerController@followingStatuses');//展示该用户的所有关注，附带关注信息更新状态

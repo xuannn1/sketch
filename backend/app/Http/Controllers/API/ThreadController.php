@@ -110,13 +110,6 @@ class ThreadController extends Controller
         ]);
 
     }
-
-    /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-
     /**
     * Store a newly created resource in storage.
     *
@@ -194,6 +187,23 @@ class ThreadController extends Controller
 
     }
 
+    public function show_profile($id, Request $request)
+    {
+        if($request->review_redirect){
+            $this->recordRedirectReviewCount($request->review_redirect);
+        }
+        $thread = $this->threadProfile($id);
+        $posts = $this->threadProfilePosts($id);
+        $thread->delay_count('view_count', 1);
+        if(auth('api')->check()){
+            $this->delay_record_thread_view_history(auth('api')->id(), $thread->id, Carbon::now());
+        }
+        return response()->success([
+            'thread' => new ThreadProfileResource($thread),
+            'posts' => PostResource::collection($posts),
+        ]);
+    }
+
     /**
     * Update the specified resource in storage.
     *
@@ -201,11 +211,11 @@ class ThreadController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(StoreThread $form, Thread $thread)
+    public function update($id, StoreThread $form) //TODO
     {
+        $thread = Thread::on('mysql::write')->find($id);
         $thread = $form->updateThread($thread);
         return response()->success(new ThreadProfileResource($thread));
-
     }
 
 
@@ -217,25 +227,32 @@ class ThreadController extends Controller
     */
     public function destroy($id)
     {
-        //
+        if(!auth('api')->user()->isAdmin()&&(auth('api')->id()!=$thread->user_id||!$thread->channel()->allow_deletion||$thread->is_locked)){abort(403);}
+
+        $thread->apply_to_delete();
+
+        $this->clearThread($id);
+        $thread = $this->threadProfile($id);
+
+        return response()->success([
+            'thread' => new ThreadProfileResource($thread),
+        ]);
     }
 
-    public function synctags(Request $request, Thread $thread)
+    public function update_tag($id, Request $request)
     {
-        if(auth('api')->id()!=$thread->user_id){
-            abort(403);
-        }
-        $original_tags = json_decode($request->tags);
-        $validated_tags = $thread->tags_validate($original_tags);
-        if($original_tags===$validated_tags){
-            $thread->remove_custom_tags();
-            $thread->tags()->syncWithoutDetaching($validated_tags);
-            return response()->success(['tags' => $validated_tags]);
-        }else{
-            return response()->error([
-                'original_tags' => $original_tags,
-                'validated_tags' => $validated_tags,
-            ], 422);
-        }
+        $thread = Thread::on('mysql::write')->find($id);
+        $user = CacheUser::Auser();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())){abort(403);}
+
+        $thread->drop_none_tongren_tags();//去掉所有本次能选的tag的范畴内的tag
+        $thread->tags()->syncWithoutDetaching($thread->tags_validate($request->tags));//并入新tag. tags应该输入一个array of tags，前端进行一定的过滤
+
+        $this->clearThread($id);
+        $thread = $this->threadProfile($id);
+
+        return response()->success([
+            'thread' => new ThreadProfileResource($thread),
+        ]);
     }
 }

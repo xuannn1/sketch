@@ -36,9 +36,12 @@ class ChapterTest extends TestCase
             'title' => 'chapter1',
             'brief' => 'brief1',
             'body' => '这是一个测试章节，天地蹦出一石猴.',
+            'type' => 'chapter',
+            'annotation' => '这是一个测试注释',
+            'warning' => '这是一个章前预警',
         ];
 
-        $response = $this->post('api/thread/'.$thread->id.'/chapter', $data)
+        $response = $this->post('api/thread/'.$thread->id.'/post', $data)
         ->assertStatus(200);
     }
 
@@ -56,12 +59,15 @@ class ChapterTest extends TestCase
             'title' => 'chapter1',
             'brief' => 'brief1',
             'body' => '这是一个测试章节，天地蹦出一石猴.',
+            'type' => 'chapter',
+            'annotation' => '这是一个测试注释',
+            'warning' => '这是一个章前预警',
         ];
 
-        $response = $this->post('api/thread/'.$thread->id.'/chapter',$data)
+        $response = $this->post('api/thread/'.$thread->id.'/post',$data)
         ->assertStatus(200);
 
-        $response = $this->post('api/thread/'.$thread->id.'/chapter',$data)
+        $response = $this->post('api/thread/'.$thread->id.'/post',$data)
         ->assertStatus(409);
     }
 
@@ -79,18 +85,24 @@ class ChapterTest extends TestCase
             'title' => 'chapter1',
             'brief' => 'brief1',
             'body' => '这是一个测试章节，天地蹦出一石猴.1',
+            'type' => 'chapter',
+            'annotation' => '这是一个测试注释',
+            'warning' => '这是一个章前预警',
         ];
 
-        $response = $this->post('api/thread/'.$thread->id.'/chapter',$data)
+        $response = $this->post('api/thread/'.$thread->id.'/post',$data)
         ->assertStatus(200);
 
         $data = [
             'title' => 'chapter2',
             'brief' => 'brief2',
             'body' => '这是一个测试章节，天地蹦出一石猴.2',
+            'type' => 'chapter',
+            'annotation' => '这是一个测试注释2',
+            'warning' => '这是一个章前预警2',
         ];
 
-        $response = $this->post('api/thread/'.$thread->id.'/chapter',$data)
+        $response = $this->post('api/thread/'.$thread->id.'/post',$data)
         ->assertStatus(200);
         //这里需要增加测试，是否把这两个章节关联上了
     }
@@ -109,9 +121,12 @@ class ChapterTest extends TestCase
             'title' => 'chapter1',
             'brief' => 'brief1',
             'body' => '这是一个测试章节，天地蹦出一石猴.',
+            'type' => 'chapter',
+            'annotation' => '这是一个测试注释',
+            'warning' => '这是一个章前预警',
         ];
 
-        $response = $this->post('api/thread/'.$thread->id.'/chapter', $data)
+        $response = $this->post('api/thread/'.$thread->id.'/post', $data)
         ->assertStatus(200);
 
         $content = $response->decodeResponseJson();
@@ -120,38 +135,14 @@ class ChapterTest extends TestCase
             'title' => 'modifiedchapt',
             'brief' => 'modifiedchapt',
             'body' => 'modifiedchapt',
+            'type' => 'chapter',
+            'annotation' => 'modified_annotation',
+            'warning' => 'modified_warning',
         ];
 
-        $response = $this->put('api/thread/'.$thread->id.'/chapter/'.$content['data']['id'], $data)
+        $response = $this->patch('api/post/'.$content['data']['id'], $data)
 
         ->assertStatus(200);
     }
 
-
-    // 测试更新post存在但是chapter不存在的情况
-    public function can_not_update_invalid_chapter()
-    {
-    	$user = factory('App\Models\User')->create();
-        $this->actingAs($user, 'api');
-
-        // create thread first
-        $thread = $this->createThread($user);
-        $data['body'] = "这是一个测试章节，ummmm反正它不会被存进数据库里不然就出问题了！！！";
-
-        # post doesn't exist
-        $request = $this->actingAs($user,'api')
-        ->put('api/thread/'.$thread->id.'/chapter/1000000',$data);
-
-        $response = $request->send();
-
-        $this->assertEquals(404, $response->getStatusCode());
-
-        # post exist but is not a chapter
-        $request = $this->actingAs($user,'api')
-        ->put('api/thread/'.$thread->id.'/chapter/19',$data);
-
-        $response = $request->send();
-
-        $this->assertEquals(404, $response->getStatusCode());
-    }
 }

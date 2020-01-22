@@ -12,11 +12,13 @@ use App\Http\Resources\PostInfoResource;
 use App\Http\Resources\PaginateResource;
 use App\Http\Resources\PostBriefResource;
 use App\Sosadfun\Traits\ThreadQueryTraits;
+use App\Sosadfun\Traits\ThreadObjectTraits;
 
 
 class BookController extends Controller
 {
     use ThreadQueryTraits;
+    use ThreadObjectTraits;
     /**
     * Display a listing of the resource.
     *
@@ -25,7 +27,20 @@ class BookController extends Controller
 
     public function __construct()
     {
-        $this->middleware('filter_thread')->except('index');
+
+    }
+
+    public function show($id)
+    {   $book = DB::table('books')->where('id','=',$id)->first();
+        if($book){
+            return response()->error([
+                'book_id' => $book->id,
+                'thread_id' => $book->thread_id,
+                'url' => route('thread.show', $book->thread_id),
+            ], 301);
+        }else{
+            abort(404);
+        }
     }
 
     public function index(Request $request)
@@ -45,52 +60,23 @@ class BookController extends Controller
         ]);
     }
 
-    public function show(Thread $thread)
+    public function store()
     {
-        $thread->load('author', 'tags', 'last_component', 'last_post');
-        $chapters = Post::postBrief()
-        ->with('chapter')
-        ->join('chapters', 'chapters.post_id','=','posts.id')
-        ->where('posts.thread_id',$thread->id)
-        ->where('posts.type', '=', 'chapter')
-        ->orderBy('chapters.order_by', 'asc')
-        ->paginate(config('constants.components_per_page'));
-        $most_upvoted = $thread->most_upvoted();
-        if($most_upvoted){
-            $most_upvoted = new PostBriefResource($most_upvoted);
-        }
-        $top_review = $thread->top_review();
-        if($top_review){
-            $top_review->load('review');
-            $top_review = new PostResource($top_review);
-        }
-        $volumns = $chapters->pluck('chapter.volumn')->unique();
-        return response()->success([
-            'thread' => new ThreadProfileResource($thread),
-            'chapters' => PostInfoResource::collection($chapters),
-            'paginate' => new PaginateResource($chapters),
-            'volumns' => VolumnBriefResource::collection($volumns),
-            'most_upvoted' => $most_upvoted,
-            'top_review' => $top_review
-        ]);
+        // TODO 这个函数是否保留，待讨论
     }
 
-    public function chapterindex(Thread $thread)
+    public function update_tongren($id, Request $request)
     {
-        $thread->load('author', 'tags');
-        $chapters = Post::postBrief()
-        ->with('chapter')
-        ->join('chapters', 'chapters.post_id','=','posts.id')
-        ->where('posts.thread_id',$thread->id)
-        ->where('posts.type', '=', 'chapter')
-        ->orderBy('chapters.order_by', 'asc')
-        ->get();
+        $thread = Thread::on('mysql::write')->find($id);
+        $user = auth('api')->user();
+        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
 
-        $volumns = $chapters->pluck('chapter.volumn')->unique();
+        $thread->tongren_data_sync($request->all());
+        $this->clearThread($id);
+        $thread = $this->threadProfile($id);
+
         return response()->success([
             'thread' => new ThreadProfileResource($thread),
-            'chapters' => PostInfoResource::collection($chapters),
-            'volumns' => VolumnResource::collection($volumns),
         ]);
     }
 }

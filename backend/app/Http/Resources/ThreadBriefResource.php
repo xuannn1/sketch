@@ -32,6 +32,7 @@ class ThreadBriefResource extends JsonResource
                 'is_bianyuan' => (bool)$this->is_bianyuan,
                 'is_public' => (bool)$this->is_public,
                 'no_reply' => (bool)$this->no_reply,
+                'deletion_applied_at' => (string)$this->deletion_applied_at,
             ],
             'author' => $author,
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),

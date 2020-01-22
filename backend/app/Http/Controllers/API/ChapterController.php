@@ -1,4 +1,4 @@
-auth('api')-><?php
+<?php
 
 namespace App\Http\Controllers\API;
 
@@ -47,10 +47,10 @@ class ChapterController extends Controller
 
         $this->clearThread($id);
 
-        return response()->success(
+        return response()->success([
             'post' => new PostResource($post),
             'message' => $msg,
-        );
+        ]);
     }
 
 
