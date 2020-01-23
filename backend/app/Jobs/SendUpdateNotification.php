@@ -57,7 +57,7 @@ class SendUpdateNotification implements ShouldQueue
             DB::table('collections')
             ->join('user_infos','user_infos.user_id','=','collections.user_id')
             ->join('users','users.id','=','collections.user_id')
-            ->where([['collections.thread_id','=',$item_id],['collections.keep_updated','=',1],['collections.user_id','<>',$author_id],['collections.group','=',0]])
+            ->where([['collections.thread_id','=',$item_id],['collections.keep_updated','=',1],['collections.user_id','<>',$author_id],['collections.group_id','=',0]])
             ->update([
                 'collections.updated'=>1,
                 'user_infos.default_collection_updates'=>DB::raw('user_infos.default_collection_updates + 1'),
@@ -67,7 +67,7 @@ class SendUpdateNotification implements ShouldQueue
             DB::table('collections')
             ->join('user_infos','user_infos.user_id','=','collections.user_id')
             ->join('users','users.id','=','collections.user_id')
-            ->join('collection_groups','collection_groups.id','=','collections.group')
+            ->join('collection_groups','collection_groups.id','=','collections.group_id')
             ->where([['collections.thread_id','=',$item_id],['collections.keep_updated','=',1],['collections.user_id','<>',$author_id]])
             ->update([
                 'collections.updated'=>1,

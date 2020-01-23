@@ -15,8 +15,9 @@ use Illuminate\Http\Request;
 
 // 测试用api
 Route::middleware('auth:api')->group( function(){
-    // Route::resource('thread', 'API\ThreadController');
+    // Route::get('test/{id}', 'API\ThreadController@test');
 });
+
 
 // 注册相关
 Route::post('register', 'API\PassportController@register');
@@ -57,13 +58,15 @@ Route::patch('/thread/{thread}/update_tag', 'API\ThreadController@update_tag');
 
 // 书籍
 Route::get('/book','API\BookController@index');// 文库目录和筛选
-Route::get('/books/{thread}', 'API\BookController@show');// 往期书籍遗留导航
+Route::get('/books/{thread}', 'API\BookController@redirect')->name('book.redirect');// 往期书籍遗留导航
 Route::patch('/thread/{thread}/update_tongren', 'API\BookController@update_tongren');
 
 Route::patch('/thread/{thread}/update_component_index', 'API\ComponentController@update_component_index');
 
 Route::apiResource('/thread/{thread}/post', 'API\PostController')->only(['show', 'store'])->middleware('filter_thread');
 Route::apiResource('/post', 'API\PostController')->only(['update', 'destroy']);
+
+Route::get('/post/{post}', 'API\PostController@redirect')->name('post.redirect');
 
 Route::patch('/post/{post}/convert', 'API\ComponentController@convert');// 将特别的post转化为普通post, 或将post转化成特殊格式 // TODO
 Route::patch('/post/{post}/fold', 'API\PostController@fold');
@@ -86,8 +89,12 @@ Route::get('user/{user}/follow','API\FollowerController@show');//返回与该关
 Route::post('/thread/{thread}/collect', 'API\CollectionController@store');//收藏某个thread
 Route::patch('/collection/{collection}', 'API\CollectionController@update');//修改某个收藏
 Route::delete('/collection/{collection}', 'API\CollectionController@destroy');//删除某个收藏
-Route::get('user/{user}/collection', 'API\CollectionController@index');//查看收藏夹
+Route::get('user/{user}/collection', 'API\CollectionController@index');//查看收藏更新
 
+Route::get('user/{user}/collection_group', 'API\CollectionGroupController@index');//查看收藏分页列表
+Route::post('collection_group', 'API\CollectionGroupController@store');//新建收藏分页
+Route::patch('collection_group/{collection_group}', 'API\CollectionGroupController@update');//修改收藏分页
+Route::delete('collection_group/{collection_group}', 'API\CollectionGroupController@destroy');//删除收藏分页
 
 // 动态部分
 Route::apiResource('status', 'API\StatusController');

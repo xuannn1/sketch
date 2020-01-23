@@ -180,6 +180,8 @@ return [
         // \GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         // \Genert\BBCode\BBCodeServiceProvider::class,
         \Genert\BBCode\BBCodeServiceProvider::class,
+
+        \Barryvdh\Debugbar\ServiceProvider::class,
     ],
 
     /*
@@ -233,6 +235,8 @@ return [
         'ConstantObjects' => App\Helpers\ConstantObjects::class,
         'StringProcess' => App\Helpers\StringProcess::class,
         'CacheUser' => App\Helpers\CacheUser::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
+
 
     ],
 

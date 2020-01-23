@@ -40,6 +40,7 @@
     36 => 'App\\Providers\\ResponseMacroServiceProvider',
     37 => 'Laravel\\Tinker\\TinkerServiceProvider',
     38 => 'Genert\\BBCode\\BBCodeServiceProvider',
+    39 => 'Barryvdh\\Debugbar\\ServiceProvider',
   ),
   'eager' => 
   array (
@@ -65,6 +66,7 @@
     19 => 'App\\Providers\\EventServiceProvider',
     20 => 'App\\Providers\\RouteServiceProvider',
     21 => 'App\\Providers\\ResponseMacroServiceProvider',
+    22 => 'Barryvdh\\Debugbar\\ServiceProvider',
   ),
   'deferred' => 
   array (

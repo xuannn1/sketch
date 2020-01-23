@@ -628,13 +628,13 @@ class DefaultSettingsSeeder extends Seeder
                 'name' => '大咸者',
                 'description' => '用户等级大于7',
                 'level' => 7,
-                'tyle' => 'level',
+                'type' => 'level',
             ]);
             DB::table('titles')->insert([
                 'name' => '初来乍到',
                 'description' => '新注册咸鱼',
                 'level' => 0,
-                'tyle' => 'level',
+                'type' => 'level',
             ]);
             DB::table('titles')->insert([
                 'name' => '编辑',

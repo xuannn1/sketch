@@ -24,6 +24,16 @@ class Collection extends Model
         return $this->belongsTo(Thread::class, 'thread_id');
     }
 
+    public function briefThread()//收藏的对象
+    {
+        return $this->belongsTo(Thread::class, 'thread_id')->brief();
+    }
+
+    public function group()//从属的收藏页
+    {
+        return $this->belongsTo(CollectionGroup::class, 'group_id');
+    }
+
     public function scopeThreadOrdered($query, $ordered='')
     {
         // see constant.php 'collection_group_order_by'

@@ -10,6 +10,7 @@ use App\Http\Resources\UserBriefResource;
 use App\Http\Resources\UserFollowResource;
 use App\Http\Resources\PaginateResource;
 use Validator;
+use CacheUser;
 
 use DB;
 
@@ -25,7 +26,7 @@ class FollowerController extends Controller
     */
     public function store($id)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         if(!$user){abort(404);}
 
         if (auth('api')->id()===$user->id){abort(411);}
@@ -48,7 +49,7 @@ class FollowerController extends Controller
     */
     public function destroy($id)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
 
         if (auth('api')->id()===$user->id){abort(411, '不能取关自己');}
 
@@ -70,7 +71,7 @@ class FollowerController extends Controller
     */
     public function update($id, Request $request)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
 
         if(!$user){abort(404);}
 
@@ -97,7 +98,7 @@ class FollowerController extends Controller
     //
     public function show($id)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
 
         if(!$user){abort(404);}
 
@@ -117,7 +118,7 @@ class FollowerController extends Controller
     **/
     public function follower($id)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         if(!$user){abort(404);}
 
         $followers = $user->followers()->paginate(config('constants.index_per_page'));
@@ -131,7 +132,7 @@ class FollowerController extends Controller
 
     public function following($id)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         if(!$user){abort(404);}
 
         $followings = $user->followings()->paginate(config('constants.index_per_page'));
@@ -145,7 +146,7 @@ class FollowerController extends Controller
 
     public function followingStatuses($id)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         if(!$user){abort(404);}
 
         if(auth('api')->id()!=$user->id){abort(403);}

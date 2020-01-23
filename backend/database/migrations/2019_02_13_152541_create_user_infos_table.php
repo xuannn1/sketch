@@ -68,7 +68,7 @@ class CreateUserInfosTable extends Migration
 
             $table->unsignedInteger('default_list_id')->default(0);//默认清单id
             $table->unsignedInteger('default_box_id')->default(0);//默认问题箱id
-            $table->unsignedInteger('default_collection_group')->default(0);//默认收藏页id
+            $table->unsignedInteger('default_collection_group_id')->default(0);//默认收藏页id
 
             $table->string('creation_ip', 45)->index();//创建ip
             $table->dateTime('email_verified_at')->nullable()->index();//邮箱验证时间

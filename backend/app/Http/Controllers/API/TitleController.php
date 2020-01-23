@@ -11,6 +11,7 @@ use App\Http\Resources\UserBriefResource;
 use App\Http\Resources\PaginateResource;
 use Validator;
 use ConstantObjects;
+use CacheUser;
 
 class TitleController extends Controller
 {
@@ -21,7 +22,7 @@ class TitleController extends Controller
 
     public function mytitle($id)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         if(!$user){abort(404);}
         if(auth('api')->check()&&(auth('api')->id()===$id||auth('api')->user()->isAdmin())){
             $user_titles = $user->titles;

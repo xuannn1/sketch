@@ -5,14 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon;
 
-use App\Sosadfun\Traits\CollectionObjectTraits;
-
 class CollectionGroup extends Model
 {
     protected $guarded = [];
     public $timestamps = false;
-
-    use CollectionObjectTraits;
 
     public function user()
     {
@@ -28,7 +24,6 @@ class CollectionGroup extends Model
     {
         if($this->update_count>0){
             $this->update(['update_count' => 0]);
-            $this->clearCollectionGroups($this->user_id);
         }
     }
 

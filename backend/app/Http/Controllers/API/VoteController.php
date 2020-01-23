@@ -11,6 +11,7 @@ use App\Http\Resources\VoteResource;
 use App\Sosadfun\Traits\FindModelTrait;
 use App\Http\Resources\PaginateResource;
 use Cache;
+use CacheUser;
 
 class VoteController extends Controller
 {
@@ -93,7 +94,7 @@ class VoteController extends Controller
 
     public function received($id, Request $request)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         $info = $user->info();
         $info->clear_column('upvote_reminders');
         $votes = Vote::with('votable','author')
@@ -107,7 +108,7 @@ class VoteController extends Controller
 
     public function sent($id, Request $request)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         $votes = Vote::with('votable','receiver')
         ->where('user_id',$user->id)
         ->orderBy('created_at','desc')

@@ -11,6 +11,7 @@ use App\Sosadfun\Traits\FindModelTrait;
 use App\Http\Resources\PaginateResource;
 
 use Cache;
+use CacheUser;
 
 class RewardController extends Controller
 {
@@ -83,7 +84,7 @@ class RewardController extends Controller
 
     public function received(Request $request)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         $info = $user->info();
         $info->clear_column('reward_reminders');
         $rewards = Reward::with('rewardable','author')
@@ -96,7 +97,7 @@ class RewardController extends Controller
 
     public function sent($id, Request $request)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         $rewards = Reward::with('rewardable','receiver')
         ->where('user_id',$user->id)
         ->orderBy('created_at','desc')

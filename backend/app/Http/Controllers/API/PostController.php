@@ -12,11 +12,13 @@ use App\Http\Resources\ThreadProfileResource;
 use App\Http\Resources\ThreadBriefResource;
 use App\Http\Resources\PaginateResource;
 use App\Sosadfun\Traits\PostObjectTraits;
+use App\Sosadfun\Traits\ThreadObjectTraits;
 
 
 class PostController extends Controller
 {
     use PostObjectTraits;
+    use ThreadObjectTraits;
     /**
     * Display a listing of the resource.
     *
@@ -25,7 +27,7 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except('show');
+        $this->middleware('auth:api')->except('show','redirect');
 
     }
 
@@ -65,6 +67,16 @@ class PostController extends Controller
             'thread' => new ThreadBriefResource($thread),
             'post' => new PostResource($post),
         ]);
+    }
+
+    public function redirect($post)
+    {
+        $post = $this->postProfile($post);
+        return response()->error([
+            'post_id' => $post->id,
+            'thread_id' => $post->thread_id,
+            'url' => route('post.show',['post'=>$post->id, 'thread' => $post->thread_id]),
+        ], 301);
     }
 
 

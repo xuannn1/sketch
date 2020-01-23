@@ -17,37 +17,21 @@ trait CollectionObjectTraits{
         Cache::forget('collectionGroups.'.$id);
     }
 
-    public function checkCollectedOrNot($user_id, $thread_id)
+    public function findCollectionIndex($id, $group_id, $order_by, $page)
     {
-        $collection = \App\Models\Collection::onWriteConnection()->where('user_id',$user_id)->where('thread_id',$thread_id)
-        ->first();
-        return $collection? true:false;
+        $collections = \App\Models\Collection::join('threads', 'threads.id', '=', 'collections.thread_id')
+        ->where('collections.user_id', $id)
+        ->where('collections.group_id', $group_id)
+        ->threadOrdered($order_by)
+        ->select('collections.*')
+        ->paginate(config('preference.threads_per_page'))
+        ->appends(['group'=>$group_id, 'page'=>$page, 'order_by'=> $order_by]);
+        $collections->load('briefThread.author','briefThread.tags','briefThread.last_post','briefThread.last_component');
+        return $collections;
     }
 
-    public function findCollectionIndex($id, $group, $page)
-    {
-        return Cache::remember(url('/').'collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.'.$page, 2, function () use($id, $group, $page){
-            $orderby = 2;
-            $group_id = 0;
-            if($group){
-                $orderby = $group->order_by;
-                $group->update_count();
-                $group_id = $group->id;
-            }
-            $collections = \App\Models\Collection::join('threads', 'threads.id', '=', 'collections.thread_id')
-            ->where('collections.user_id', $id)
-            ->where('collections.group', $group_id)
-            ->threadOrdered($orderby)
-            ->select('collections.*')
-            ->paginate(config('preference.threads_per_page'))
-            ->appends(['group'=>$group_id, 'page'=>$page]);
-            $collections->load('thread.author','thread.tags','thread.last_post','thread.last_component');
-            return $collections;
-        });
-    }
-
-    public function clearCollectionIndex($id, $group)
-    {
-        Cache::forget(url('/').'collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.1');
-    }
+    // public function clearCollectionIndex($id, $group)
+    // {
+    //     Cache::forget(url('/').'collectionIndexU.'.$id.'Group.'.($group?$group->id:0).'P.1');
+    // }
 }

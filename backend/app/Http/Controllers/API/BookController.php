@@ -13,7 +13,7 @@ use App\Http\Resources\PaginateResource;
 use App\Http\Resources\PostBriefResource;
 use App\Sosadfun\Traits\ThreadQueryTraits;
 use App\Sosadfun\Traits\ThreadObjectTraits;
-
+use DB;
 
 class BookController extends Controller
 {
@@ -27,20 +27,18 @@ class BookController extends Controller
 
     public function __construct()
     {
-
+        $this->middleware('auth:api')->except('redirect', 'index');
     }
 
-    public function show($id)
-    {   $book = DB::table('books')->where('id','=',$id)->first();
-        if($book){
-            return response()->error([
-                'book_id' => $book->id,
-                'thread_id' => $book->thread_id,
-                'url' => route('thread.show', $book->thread_id),
-            ], 301);
-        }else{
-            abort(404);
-        }
+    public function redirect($id)
+    {
+        $book = $this->findBook($id);
+        if(!$book){abort(404);}
+        return response()->error([
+            'book_id' => $book->id,
+            'thread_id' => $book->thread_id,
+            'url' => route('thread.show', $book->thread_id),
+        ], 301);
     }
 
     public function index(Request $request)
@@ -64,7 +62,8 @@ class BookController extends Controller
     {
         $thread = Thread::on('mysql::write')->find($id);
         $user = auth('api')->user();
-        if(!$thread||$thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
+        if(!$thread||!$user){abort(404);}
+        if($thread->user_id!=$user->id||($thread->is_locked&&!$user->isAdmin())||$thread->channel_id<>2){abort(403);}
 
         $thread->tongren_data_sync($request->all());
         $this->clearThread($id);

@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use App\Models\UserInfo;
+use App\Observers\UserObserver;
+use App\Observers\UserInfoObserver;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -16,8 +20,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        // User::observe(UserObserver::class);
-        // UserInfo::observe(UserInfoObserver::class);
+        User::observe(UserObserver::class);
+        UserInfo::observe(UserInfoObserver::class);
 
         Relation::morphMap([
             'post' => 'App\Models\Post',
@@ -38,6 +42,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if ($this->app->isLocal()){
+            $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+        }
     }
 }

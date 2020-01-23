@@ -155,9 +155,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Thread::class, 'collections', 'user_id', 'thread_id');
     }
 
-    public function groups()
+    public function collection_groups()
     {
         return $this->hasMany(CollectionGroup::class, 'user_id');
+    }
+
+    public function isCollecting($thread_id)
+    {
+        return Collection::where('user_id',$this->id)->where('thread_id', $thread_id)->count();
     }
 
     public function emailmodifications()
@@ -531,6 +536,21 @@ class User extends Authenticatable
         $info->no_logging_until = null;
         $this->save();
         $info->save();
+    }
+
+    public function check_default_collection_group($collection_group_id, $doSet=true)
+    {
+        if($doSet&&$this->info->default_collection_group_id!=$collection_group_id){
+            $this->info->update([
+                'default_collection_group_id' => $collection_group_id,
+            ]);
+        }
+
+        if(!$doSet&&$this->info->default_collection_group_id===$collection_group_id){
+            $this->info->update([
+                'default_collection_group_id' => 0,
+            ]);
+        }
     }
 
 }

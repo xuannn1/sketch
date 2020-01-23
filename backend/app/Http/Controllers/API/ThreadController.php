@@ -21,6 +21,7 @@ use App\Sosadfun\Traits\DelayRecordHistoryTraits;
 use Cache;
 use Carbon;
 use ConstantObjects;
+use CacheUser;
 
 class ThreadController extends Controller
 {
@@ -34,6 +35,11 @@ class ThreadController extends Controller
     {
         $this->middleware('auth:api')->except(['index', 'show','channel_index']);
         $this->middleware('filter_thread')->only('show');
+    }
+
+    public function test($id)
+    {
+        return view('welcome');
     }
     /**
     * Display a listing of the resource.

@@ -8,6 +8,12 @@ use ConstantObjects;
 trait ThreadObjectTraits{
     use FindThreadTrait;
 
+    public function findBook($book_id){
+        return Cache::remember('findOldBookRecord.'.$book_id, 10, function () use($book_id){
+            return DB::table('books')->where('id','=',$book_id)->first();
+        });
+    }
+
     public function threadProfile($id)
     {
         return Cache::remember('threadProfile.'.$id, 10, function () use($id){

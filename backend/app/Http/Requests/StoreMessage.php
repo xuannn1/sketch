@@ -4,11 +4,11 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\FormRequest;
 use App\Models\Message;
-use App\Models\User;
 use App\Models\MessageBody;
 use App\Models\PublicNotice;
 use DB;
 use Carbon\Carbon;
+use CacheUser;
 
 class StoreMessage extends FormRequest
 {
@@ -105,7 +105,7 @@ class StoreMessage extends FormRequest
     private function validateSendTos($sendTos, $selfId)
     {
         if(!auth('api')->user()->isAdmin()){abort(403);}
-        $newSendTos = User::whereIn('id', $sendTos)
+        $newSendTos = \App\Models\User::whereIn('id', $sendTos)
         ->where('id', '<>', $selfId)
         ->whereNull('deleted_at')
         ->select('id')
@@ -122,7 +122,7 @@ class StoreMessage extends FormRequest
             &&(auth('api')->user()->info->message_limit <= 0)){
                 abort(410,'message limit violation');
         }
-        $sendToUser = User::find($sendToId);
+        $sendToUser = CacheUser::user($sendToId);
         if(!$sendToUser){abort(404);}
         if($selfId === $sendToId){abort(411,'cannot send message to oneself');}
         if($sendToUser->info->no_stranger_msg&&!$sendToUser->isFollowing(auth('api')->id())){abort(413,'receiver refuse to get message');}

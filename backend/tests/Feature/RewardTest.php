@@ -78,7 +78,7 @@ class RewardTest extends TestCase
         $response = $this->post('api/reward', $data);
         $response->assertStatus(404);
 
-        $this->artisan('cache:clear');
+        // $this->artisan('cache:clear');
 
         $response = $this->get('api/reward?rewardable_type=thread&rewardable_id='.$thread->id);
         $response->assertStatus(200);

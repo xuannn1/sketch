@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\PaginateResource;
-use App\Models\User;
 use DB;
 use ConstantObjects;
+use CacheUser;
 
 class ActivityController extends Controller
 {
@@ -19,7 +19,7 @@ class ActivityController extends Controller
 
     public function index($id)
     {
-        $user = User::find($id);
+        $user = CacheUser::user($id);
         if(!$user){abort(404);}
 
         if((auth('api')->id()!= $id)&&(!auth('api')->user()->isAdmin())){abort(403);}

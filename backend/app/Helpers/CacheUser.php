@@ -48,12 +48,12 @@ class CacheUser{ //cache-user class
     }
 
     public static function AUser(){
-        return self::user(auth()->check()?auth()->id():0);
+        return self::user(auth('api')->check()?auth('api')->id():0);
     }
     public static function AInfo(){
-        return self::info(auth()->check()?auth()->id():0);
+        return self::info(auth('api')->check()?auth('api')->id():0);
     }
     public static function AIntro(){
-        return self::intro(auth()->check()?auth()->id():0);
+        return self::intro(auth('api')->check()?auth('api')->id():0);
     }
 }
