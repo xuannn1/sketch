@@ -12,7 +12,7 @@ trait StatusObjectTraits{
             if(!$status){
                 return;
             }
-            $status->load('author.title','replies.last_reply','replies.author.title','parent');
+            $status->load('author.title','replies.last_reply','replies.author.title','parent','attachable');
 
             $status->setAttribute('recent_rewards', $status->latest_rewards());
             $status->setAttribute('recent_upvotes', $status->latest_upvotes());

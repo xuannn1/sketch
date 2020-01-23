@@ -10,7 +10,7 @@ trait GenerateStatusDataTraits{
     use StatusObjectTraits;
     public function generateStatusData()
     {
-        $data['body'] = StringProcess::trimSpaces($this->status_body);
+        $data['body'] = StringProcess::trimSpaces($this->body);
         if ($this->isDuplicateStatus($data)){
             abort(409,'请求已登记，请耐心等待缓存更新，无需重复提交相同数据');
         }
@@ -27,6 +27,15 @@ trait GenerateStatusDataTraits{
         ->orderBy('id', 'desc')
         ->first();
         return !empty($last_status) && strcmp($last_status->body, $data['body']) === 0;
+    }
+
+    public function addAttachableData($data)
+    {
+        if($this->attachable_id&&$this->attachable_type&&in_array($this->attachable_type,['status','thread','post','quote'])){
+            $data['attachable_id'] = $this->attachable_id;
+            $data['attachable_type'] = $this->attachable_type;
+        }
+        return $data;
     }
 
     public function addReplyData($data)

@@ -33,6 +33,18 @@ class PostResource extends JsonResource
             $parent = new PostResource($this->whenLoaded('parent'));
         }
         $last_reply = new PostBriefResource($this->whenLoaded('last_reply'));
+        $recent_rewards = [];
+        if($this->recent_rewards){
+            $recent_rewards = RewardResource::collection($this->recent_rewards);
+        }
+        $recent_upvotes = [];
+        if($this->recent_upvotes){
+            $recent_upvotes = VoteResource::collection($this->recent_upvotes);
+        }
+        $new_replies = [];
+        if($this->new_replies){
+            $new_replies = PostResource::collection($this->new_replies);
+        }
         return [
             'type' => 'post',
             'id' => (int)$this->id,
@@ -66,6 +78,9 @@ class PostResource extends JsonResource
             'last_reply' => $last_reply,
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
             'thread' => new ThreadBriefResource($this->whenLoaded('simpleThread')),
+            'recent_rewards' => $recent_rewards,
+            'recent_upvotes' => $recent_upvotes,
+            'new_replies' => $new_replies,
         ];
     }
 }

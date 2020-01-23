@@ -25,7 +25,7 @@ class CreateStatusesTable extends Migration
             $table->string('creation_ip', 45)->index();//创建的ip
 
             $table->boolean('no_reply')->default(false);//禁止跟帖
-            $table->boolean('is_public')->default(false)->index();//是否公开可见
+            $table->boolean('is_public')->default(true)->index();//是否公开可见
             $table->unsignedInteger('reply_count')->default(0)->index();//回复数
             $table->unsignedInteger('forward_count')->default(0)->index();//转发数
             $table->unsignedInteger('upvote_count')->default(0)->index();//赞数

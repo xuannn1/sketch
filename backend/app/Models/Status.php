@@ -49,6 +49,10 @@ class Status extends Model
         return $this->hasMany(Status::class, 'reply_to_id');
     }
 
+    public function attachable(){
+    	return $this->morphTo();
+    }
+
     public function scopeOrdered($query, $ordered='')
     {
         switch ($ordered) {

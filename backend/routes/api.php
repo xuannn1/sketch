@@ -98,6 +98,8 @@ Route::delete('collection_group/{collection_group}', 'API\CollectionGroupControl
 
 // 动态部分
 Route::apiResource('status', 'API\StatusController');
+Route::patch('status/{status}/no_reply', 'API\StatusController@no_reply');//作者设置某动态不可回复
+Route::get('follow_status', 'API\StatusController@follow_status');//关注的人的动态
 
 // 题头部分
 Route::post('quote', 'API\QuoteController@store');

@@ -42,6 +42,12 @@ class NewStatusListener
                     'last_reply_id' => $status->id,
                 ]);
             }
+            // 转发动态的情况，递增动态转发数量
+            if($status->attachable_type==='status'&&$status->attachable){
+                $status->attachable->update([
+                    'forward_count'=> $status->attachable->forward_count+1,
+                ]);
+            }
 
             //回帖了，不是给自己的动态回帖，那么送出回帖提醒
             if(($status->reply_to_id>0)&&$status->parent&&($status->user_id!=$status->parent->user_id)){

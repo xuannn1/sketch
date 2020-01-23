@@ -30,8 +30,9 @@ class StoreStatus extends FormRequest
     public function rules()
     {
         return [
-            'status_body' => 'required|string|max:1000',
+            'body' => 'required|string|max:1000',
             'reply_to_id' => 'numeric',
+            'attachable_id' => 'numeric',
         ];
     }
 
@@ -39,6 +40,7 @@ class StoreStatus extends FormRequest
     {
         $data = $this->generateStatusData();
         $data = $this->addReplyData($data);
+        $data = $this->addAttachableData($data); 
         $status = Status::create($data);
         return $status;
     }
