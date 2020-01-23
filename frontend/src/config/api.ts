@@ -275,6 +275,10 @@ export namespace ResData {
       name:string;
       description:string;
       user_count:number;
+      style_id:number;
+      type:string;
+      level:number;
+      style_type:string;
     };
   }
   export function allocTitle () : Title {
@@ -306,7 +310,19 @@ export namespace ResData {
       user_id:number;
       thread_id:number;
       keep_updated:boolean;
-      is_updated:boolean;
+      updated:boolean;
+      group_id:number;
+      last_read_post_id:number;
+    };
+  }
+  export interface CollectionGroup {
+    type:'collection_group';
+    id:number;
+    attributes:{
+      user_id:number;
+      name:string;
+      update_count:number;
+      order_by:number;
     };
   }
 }
@@ -485,7 +501,6 @@ export namespace API {
     '/book/$0':{
       thread:ResData.Thread,
       chapters:ResData.Post[],
-      volumns:ResData.Volumn[],
       paginate:ResData.ThreadPaginate,
       most_upvoted:ResData.Post,
       top_review:null|ResData.Post,
