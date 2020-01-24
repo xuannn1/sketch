@@ -59,4 +59,15 @@ class PageController extends Controller
             'titles' => TitleResource::collection(ConstantObjects::allTitles()),
         ]);
     }
+
+    public function system()
+    {
+        return response()->success([
+            'system_variable' => ConstantObjects::system_variable(),
+            'forbidden_words' => config('forbidden_words'),
+            'selectors' => config('selectors'),
+            'constants' => config('constants'),
+            'preferences' => config('preferences'),
+        ]);
+    }
 }

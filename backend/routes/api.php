@@ -25,8 +25,10 @@ Route::post('register_by_invitation', 'API\PassportController@register_by_invita
 Route::post('login', 'API\PassportController@login')->name('login');
 Route::post('logout', 'API\PassportController@logout')->name('logout');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::post('password/reset_via_email', 'API\PassportController@reset_via_email');
-Route::post('password/reset_via_password', 'API\PassportController@reset_via_password');
+Route::patch('password/reset__via_email', 'API\PassportController@reset_password_via_email');
+Route::patch('password/reset_via_password', 'API\PassportController@reset_password_via_password');
+Route::patch('email/reset_via_password', 'API\PassportController@reset_email_via_password');//修改个人邮箱
+Route::get('email/reset_via_password/{token}', 'API\PassportController@reset_email_via_token');//确认个人邮箱为本人
 
 // 输入邮箱申请测试答题
 Route::post('register/by_invitation_email/submit_email', 'API\RegAppController@submit_email'); // 输入邮箱尝试注册
@@ -48,6 +50,7 @@ Route::get('/', 'API\PageController@home')->name('home');// 网站首页
 Route::get('config/allTags', 'API\PageController@allTags');
 Route::get('config/allChannels', 'API\PageController@allChannels');
 Route::get('config/allTitles', 'API\PageController@allTitles');
+Route::get('config/system', 'API\PageController@system');
 
 // 讨论串/讨论楼/讨论帖
 Route::get('/channel/{channel}', 'API\ThreadController@channel_index')->middleware('filter_channel');//某个版面的讨论贴，或者书评/问答列表
@@ -61,7 +64,7 @@ Route::get('/book','API\BookController@index');// 文库目录和筛选
 Route::get('/books/{thread}', 'API\BookController@redirect')->name('book.redirect');// 往期书籍遗留导航
 Route::patch('/thread/{thread}/update_tongren', 'API\BookController@update_tongren');
 
-Route::patch('/thread/{thread}/update_component_index', 'API\ComponentController@update_component_index');
+Route::patch('/thread/{thread}/update_component_index', 'API\ComponentController@update_component_index');//书籍重排序
 
 Route::apiResource('/thread/{thread}/post', 'API\PostController')->only(['show', 'store'])->middleware('filter_thread');
 Route::apiResource('/post', 'API\PostController')->only(['update', 'destroy']);
@@ -72,9 +75,23 @@ Route::patch('/post/{post}/convert', 'API\ComponentController@convert');// 将�
 Route::patch('/post/{post}/fold', 'API\PostController@fold');
 
 // 用户
-Route::apiResource('user', 'API\UserController');
-Route::get('user/{user}/thread', 'API\UserController@showthread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
-Route::patch('user/{user}/profile', 'API\UserController@updateProfile');//
+Route::apiResource('/user', 'API\UserController')->only(['index', 'show', 'destroy']);
+
+Route::patch('user/{user}/intro', 'API\UserController@updateIntro');//修改个人简介
+Route::get('user/{user}/info', 'API\UserController@getInfo');// 获取用户的个人偏好信息
+Route::patch('user/{user}/info', 'API\UserController@updateInfo');//修改个人偏好
+
+Route::delete('user/{user}', 'API\UserController@destroy');//用户注销
+
+Route::get('user/{user}/thread', 'API\UserController@showThread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
+Route::get('user/{user}/post', 'API\UserController@showPost');// 展示某用户的全部post，当本人或管理查询时，允许出现匿名post
+Route::get('user/{user}/status', 'API\UserController@showStatus');// 展示某用户的全部status，当本人或管理查询时，允许出现匿名post
+
+// 签到
+Route::get('qiandao', 'API\QiandaoController@qiandao');// 签到
+Route::get('qiandao/complement', 'API\QiandaoController@complement_qiandao');// 补签
+// TODO 未来可能制作签到日历，增加其他内容
+
 
 // 关注
 Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
