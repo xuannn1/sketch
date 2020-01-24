@@ -26,53 +26,42 @@ class FAQController extends Controller
     {
         $faqs = $this->find_faqs();
         $webstat = $this->find_web_stats();
-        return view('FAQs.index', compact('faqs','webstat'));
+        // return view('FAQs.index', compact('faqs','webstat'));
     }
 
     private function find_web_stats()
     {
-        return Cache::remember('webstat-yesterday', 30, function() {
-            return \App\Models\WebStat::latest()->first();
-        });
-    }
-
-    public function create(Request $request)
-    {
-        $validatedData = $request->validate([
-            'key' => 'required|string|min:1|max:6',
-        ]);
-        $keys = explode('-',$request->key);
-
-        return view('FAQs.create', compact('keys'));
+        // return Cache::remember('webstat-yesterday', 30, function() {
+        //     return \App\Models\WebStat::latest()->first();
+        // });
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'key' => 'required|string|min:1|max:6',
-            'question' => 'required|string|min:1|max:180',
-            'answer'=>'required|string|min:1|max:2000',
-        ]);
-        Helpfaq::create($request->only('key','question','answer'));
-        $this->clear_all_faqs();
-        return redirect()->route('help')->with('success','成功添加FAQ条目');
-    }
-
-    public function edit(Helpfaq $faq)
-    {
-        $keys = explode('-',$faq->key);
-        return view('FAQs.edit', compact('faq','keys'));
+        // $validatedData = $request->validate([
+        //     'key' => 'required|string|min:1|max:6',
+        //     'question' => 'required|string|min:1|max:180',
+        //     'answer'=>'required|string|min:1|max:2000',
+        // ]);
+        // Helpfaq::create($request->only('key','question','answer'));
+        // $this->clear_all_faqs();
+        // return redirect()->route('help')->with('success','成功添加FAQ条目');
     }
 
     public function update(Helpfaq $faq, Request $request)
     {
-        $validatedData = $request->validate([
-            'question' => 'required|string|min:1|max:180',
-            'answer'=>'required|string|min:1|max:2000',
-        ]);
-        $faq->update($request->only('question','answer'));
-        $this->clear_all_faqs();
-        return redirect()->route('help')->with('success','成功修改FAQ条目');
+        // $validatedData = $request->validate([
+        //     'question' => 'required|string|min:1|max:180',
+        //     'answer'=>'required|string|min:1|max:2000',
+        // ]);
+        // $faq->update($request->only('question','answer'));
+        // $this->clear_all_faqs();
+        // return redirect()->route('help')->with('success','成功修改FAQ条目');
+    }
+
+    public function destroy(Helpfaq $faq)
+    {
+
     }
 
 }

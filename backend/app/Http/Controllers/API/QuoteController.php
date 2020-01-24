@@ -16,6 +16,7 @@ class QuoteController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
+        $this->middleware('admin')->only('review_index', 'review');
     }
     /**
      * Display a listing of the resource.
@@ -150,25 +151,5 @@ class QuoteController extends Controller
         //     'success' => "成功审核题头",
         //     'quote' => $quote,
         // ];
-    }
-
-    public function batch_review(Request $request)
-    {
-        // $ids = $request->quotes_for_review;
-        // if($request->pass_all){
-        //     Quote::whereIn('id',$ids)->update([
-        //         'approved' => 1,
-        //         'reviewed' => 1,
-        //         'reviewer_id' => Auth::id(),
-        //     ]);
-        // }
-        // if($request->unpass_all){
-        //     Quote::whereIn('id',$ids)->update([
-        //         'approved' => 0,
-        //         'reviewed' => 1,
-        //         'reviewer_id' => Auth::id(),
-        //     ]);
-        // }
-        // return back()->with('success','成功批量审核提头');
     }
 }

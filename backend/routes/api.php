@@ -53,6 +53,7 @@ Route::get('config/allTitles', 'API\PageController@allTitles');
 Route::get('config/system', 'API\PageController@system');
 
 // 讨论串/讨论楼/讨论帖
+Route::get('/thread_index', 'API\ThreadController@thread_index');//某个版面的讨论贴，或者书评/问答列表
 Route::get('/channel/{channel}', 'API\ThreadController@channel_index')->middleware('filter_channel');//某个版面的讨论贴，或者书评/问答列表
 
 Route::apiResource('thread', 'API\ThreadController');
@@ -153,3 +154,27 @@ Route::get('/user/{user}/reward_received','API\RewardController@received');//我
 Route::get('user/{user}/title', 'API\TitleController@title');
 Route::post('wearTitle/{title}', 'API\TitleController@wear');
 Route::post('redeemTitle', 'API\TitleController@redeem_title');
+
+// 作业列表
+Route::apiResource('homework', 'API\HomeworkController')->only(['index', 'store', 'update', 'destroy']);
+Route::get('/user/{user}/homework','API\HomeworkController@userHomework');
+// 用户参加作业
+Route::get('/user/{user}/homework_invitation','API\HomeworkController@userHomeworkInvitation');
+// 用户作业邀请
+Route::post('/homework/{homework}/register', 'API\HomeworkController@register');//用户注册参加作业
+Route::post('/homework/{homework}/submit', 'API\HomeworkController@submit');//用户提交作业
+Route::post('/homework/{homework}/submit_work', 'API\HomeworkController@submitWork');//用户提交作业
+Route::patch('/homework_registration/{homework_registration}/mark_as_finished', 'API\HomeworkController@markAsFinished');//用户标记作业结束
+Route::patch('/homework/{homework}/deactivate', 'API\HomeworkController@deactivate');//管理员终止作业
+Route::patch('/homework/{homework}/send_reward', 'API\HomeworkController@send_reward');//管理员终发放奖励
+Route::patch('/homework_registration/{homework_registration}/manage_registration', 'API\HomeworkController@manage_registration');//管理员修改注册详情
+
+// 帮助FAQ管理
+Route::apiResource('helpfaq', 'API\FAQController')->only(['index', 'store', 'update', 'destroy']);
+
+Route::apiResource('quiz', 'API\QuizController');
+Route::get('take_quiz','API\QuizController@takeQuiz');
+Route::get('submit_quiz','API\QuizController@submitQuiz');
+
+// 标签系统管理
+Route::apiResource('tag', 'API\TagController');

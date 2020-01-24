@@ -15,8 +15,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->only('store', 'destroy');
-        $this->middleware('admin')->only('review_index', 'review', 'batch_review');
+        $this->middleware('auth:api')->except('index','show','showThread','showPost','showStatus','showQuote');
     }
     /**
      * Display a listing of the resource.
