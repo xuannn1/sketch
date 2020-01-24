@@ -24,6 +24,7 @@ class CreateTagsTable extends Migration
             $table->unsignedInteger('parent_id')->default(0)->index();//用于同人CP寻找同人原著，同人原著寻找同人作品其他分类
             $table->unsignedInteger('thread_count')->default(0)->index();
             $table->dateTime('created_at')->nullable()->index();
+            $table->dateTime('deleted_at')->nullable()->index();
         });
     }
 
