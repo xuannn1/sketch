@@ -14,8 +14,12 @@ use App\Models\User;
 use App\Models\UserInfo;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use App\Sosadfun\Traits\SwitchableMailerTraits;
+
 class PassportController extends Controller
 {
+    use SwitchableMailerTraits;
+
     public function __construct()
     {
         $this->middleware('auth:api')->only('logout');
@@ -356,5 +360,27 @@ class PassportController extends Controller
         // session()->flash('success', '邮箱已重置');
         //
         // return redirect('/');
+    }
+
+    protected function sendChangeEmailConfirmationTo($user, $record)
+    {
+        $view = 'auth.confirm_email_change';
+        $data = compact('user', 'record');
+        $to = $record->new_email;
+        $subject = $user->name."的废文网账户信息更改确认！";
+
+        // $this->send_email_to_select_server($view, $data, $to, $subject);
+        $this->send_email_from_ses_server($view, $data, $to, $subject);
+    }
+
+    protected function sendChangeEmailNotificationTo($user, $record)
+    {
+        $view = 'auth.change_email_notification';
+        $data = compact('user', 'record');
+        $to = $user->email;
+        $subject = $user->name."的废文网账户信息更改提醒！";
+
+        // $this->send_email_to_select_server($view, $data, $to, $subject);
+        $this->send_email_from_ses_server($view, $data, $to, $subject);
     }
 }

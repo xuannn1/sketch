@@ -25,7 +25,7 @@ Route::post('register_by_invitation', 'API\PassportController@register_by_invita
 Route::post('login', 'API\PassportController@login')->name('login');
 Route::post('logout', 'API\PassportController@logout')->name('logout');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::patch('password/reset__via_email', 'API\PassportController@reset_password_via_email');
+Route::patch('password/reset_via_email', 'API\PassportController@reset_password_via_email');
 Route::patch('password/reset_via_password', 'API\PassportController@reset_password_via_password');
 Route::patch('email/reset_via_password', 'API\PassportController@reset_email_via_password');//修改个人邮箱
 Route::get('email/reset_via_password/{token}', 'API\PassportController@reset_email_via_token');//确认个人邮箱为本人
@@ -77,15 +77,17 @@ Route::patch('/post/{post}/fold', 'API\PostController@fold');
 // 用户
 Route::apiResource('/user', 'API\UserController')->only(['index', 'show', 'destroy']);
 
+// 用户个人管理
 Route::patch('user/{user}/intro', 'API\UserController@updateIntro');//修改个人简介
 Route::get('user/{user}/info', 'API\UserController@getInfo');// 获取用户的个人偏好信息
 Route::patch('user/{user}/info', 'API\UserController@updateInfo');//修改个人偏好
-
 Route::delete('user/{user}', 'API\UserController@destroy');//用户注销
 
+//用户的个人内容
 Route::get('user/{user}/thread', 'API\UserController@showThread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
 Route::get('user/{user}/post', 'API\UserController@showPost');// 展示某用户的全部post，当本人或管理查询时，允许出现匿名post
 Route::get('user/{user}/status', 'API\UserController@showStatus');// 展示某用户的全部status，当本人或管理查询时，允许出现匿名post
+Route::get('user/{user}/quote', 'API\UserController@showQuote');// 展示某用户的全部quote，当本人或管理查询时，允许出现匿名quote
 
 // 签到
 Route::get('qiandao', 'API\QiandaoController@qiandao');// 签到
@@ -119,7 +121,9 @@ Route::patch('status/{status}/no_reply', 'API\StatusController@no_reply');//作�
 Route::get('follow_status', 'API\StatusController@follow_status');//关注的人的动态
 
 // 题头部分
-Route::post('quote', 'API\QuoteController@store');
+Route::apiResource('quote', 'API\QuoteController')->only(['index','show','store','destroy']);
+
+Route::patch('/quote/{quote}/review','QuoteController@review')->name('quote.review');//审核单独题头
 
 // 私信部分
 Route::get('/user/{user}/message', 'API\MessageController@index');// 展示某用户的信箱，仅允许本人和管理员查询
@@ -131,7 +135,7 @@ Route::post('publicnotice', 'API\MessageController@publicnotice');//管理员发
 Route::get('/user/{user}/activity', 'API\ActivityController@index');// 展示某用户的站内提醒，仅允许本人和管理员查询
 Route::post('/clearupdates', 'API\ActivityController@clearupdates');// 清除未读提醒
 
-// 阅读历史保存
+// 阅读历史保存?
 
 // 投票
 Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'destroy']);
@@ -146,6 +150,6 @@ Route::get('/user/{user}/reward_sent','API\RewardController@sent');//我给出�
 Route::get('/user/{user}/reward_received','API\RewardController@received');//我收到的评票
 
 // 头衔
-Route::get('user/{user}/mytitle', 'API\TitleController@mytitle');
+Route::get('user/{user}/title', 'API\TitleController@title');
 Route::post('wearTitle/{title}', 'API\TitleController@wear');
 Route::post('redeemTitle', 'API\TitleController@redeem_title');
