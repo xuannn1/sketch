@@ -12,7 +12,6 @@ vendor
 backend/public/hot
 backend/public/storage
 backend/storage/*.key
-backend/vendor
 backend/nbproject
 backend/.vagrant
 backend/Homestead.json
