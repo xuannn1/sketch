@@ -28,10 +28,14 @@ class ThreadBriefResource extends JsonResource
                 'brief' => (string)$this->brief,
                 'is_anonymous' => (bool)$this->is_anonymous,
                 'majia' => (string)$this->majia,
+                'is_locked' => (bool)$this->is_locked,
+                'is_bianyuan' => (bool)$this->is_bianyuan,
+                'is_public' => (bool)$this->is_public,
+                'no_reply' => (bool)$this->no_reply,
+                'deletion_applied_at' => (string)$this->deletion_applied_at,
             ],
             'author' => $author,
-            'channel'        => new ChannelBriefResource($this->channel()),
-            'tags' => TagInfoResource::collection($this->whenLoaded('tags'))
+            'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
         ];
     }
 }

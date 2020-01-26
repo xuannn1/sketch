@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-
+use App\Helpers\StringProcess;
 class ReviewTest extends TestCase
 {
 
@@ -13,8 +13,8 @@ class ReviewTest extends TestCase
     * @return void
     */
 
-    private function createThread($user, $type){
-        $channel = collect(config('channel'))->where('type','list')->first();
+    public function createThread($user, $type){
+        $channel = collect(config('channel'))->where('type', $type)->first();
         $thread = factory('App\Models\Thread')->create([
             'channel_id' => $channel->id,
             'user_id' => $user->id,
@@ -34,13 +34,16 @@ class ReviewTest extends TestCase
             'reviewee_id' => $reviewee->id,
             'title' => '评《xxx》:根本不好看',
             'brief' => 'sdalkenfaifoub',
-            'body'=> '是人性的堕落还是丧失？',
+            'body'=> '是人性的堕落还是丧失,是人性的堕落还是丧失',
+            'is_anonymous' => true,
             'use_markdown' => true,
             'use_indentation' => false,
             'recommend' => false,
             'rating' => 3,
+            'type' => 'review',
         ];
-        $response = $this->post('api/thread/'.$list->id.'/review', $data)
+        $data['body'] = StringProcess::trimSpaces($data['body']);
+        $response = $this->post('api/thread/'.$list->id.'/post', $data)
         ->assertStatus(200)
         ->assertJson([
             'code' => 200,
@@ -53,10 +56,10 @@ class ReviewTest extends TestCase
                     //'use_markdown' => $data['use_markdown'],
                     'use_indentation' => $data['use_indentation'],
                 ],
-                'review' => [
-                    'type' => 'review',
+                'info' => [
+                    'type' => 'post_info',
                     'attributes' => [
-                        'thread_id' => $reviewee->id,
+                        'reviewee_id' => $reviewee->id,
                         'recommend' => $data['recommend'],
                         'rating' => $data['rating'],
                     ],
@@ -82,9 +85,11 @@ class ReviewTest extends TestCase
             'use_indentation' => false,
             'recommend' => true,
             'rating' => 3,
+            'type' => 'review',
         ];
+        $data['body'] = StringProcess::trimSpaces($data['body']);
         $content = $response->decodeResponseJson();
-        $response = $this->patch('api/thread/'.$list->id.'/review/'.$content['data']['id'], $data)
+        $response = $this->patch('api/post/'.$content['data']['id'], $data)
         ->assertStatus(200)
         ->assertJson([
             'code' => 200,
@@ -97,10 +102,10 @@ class ReviewTest extends TestCase
                     //'use_markdown' => $data['use_markdown'],
                     'use_indentation' => $data['use_indentation'],
                 ],
-                'review' => [
-                    'type' => 'review',
+                'info' => [
+                    'type' => 'post_info',
                     'attributes' => [
-                        'thread_id' => $reviewee->id,
+                        'reviewee_id' => $reviewee->id,
                         'recommend' => $data['recommend'],
                         'rating' => $data['rating'],
                     ],

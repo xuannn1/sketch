@@ -14,10 +14,11 @@ class CreateFollowersTable extends Migration
     public function up()
     {
         Schema::create('followers', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('user_id')->index();
             $table->unsignedInteger('follower_id')->index();
             $table->boolean('keep_updated')->default(true);//是否跟踪动态
-            $table->boolean('is_updated')->default(false);//是否有新动态
+            $table->boolean('updated')->default(false);//是否有新动态
         });
     }
 

@@ -4,27 +4,35 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Helpers\ConstantObjects;
-use App\Sosadfun\Traits\ColumnTrait;
+use ConstantObjects;
 
 use DB;
+use Carbon;
 
 class Thread extends Model
 {
-    use SoftDeletes, ColumnTrait;
+    use SoftDeletes;
     use Traits\VoteTrait;
     use Traits\RewardTrait;
+    use Traits\ValidateTagTraits;
+    use Traits\TypeValueChangeTrait;
+    use Traits\ThreadTongrenTraits;
+    use Traits\ThreadHomeworkTraits;
+    use Traits\DelayCountTrait;
 
     protected $guarded = [];
     protected $hidden = [
         'creation_ip',
     ];
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at','created_at','responded_at', 'edited_at', 'add_component_at','deletion_applied_at'];
+
+    protected $thread_types = array('list', 'box', 'book', 'thread', 'request', 'homework'); // post的分类类别
+
+    protected $count_types = array('salt','fish','ham');
 
     const UPDATED_AT = null;
 
     //以下是relationship关系
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -37,12 +45,17 @@ class Thread extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id','name', 'title_id');
+        return $this->belongsTo(User::class, 'user_id')->select('id','name', 'title_id','level');
     }
 
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function briefPosts()
+    {
+        return $this->hasMany(Post::class)->brief();
     }
 
     public function tags()
@@ -52,31 +65,49 @@ class Thread extends Model
 
     public function votes()
     {
-        return $this->morphMany('App\Models\Vote', 'votable');
+        return $this->morphMany(Vote::class, 'votable');
     }
 
     public function last_component()
     {
-        return $this->belongsTo(Post::class, 'last_component_id');
+        return $this->belongsTo(Post::class, 'last_component_id')->select('id','type', 'user_id','title','brief','created_at');
+    }
+
+    public function first_component()
+    {
+        return $this->belongsTo(Post::class, 'first_component_id')->select('id','type','user_id','title','brief','created_at');
+    }
+
+    public function homework_registration()
+    {
+        return $this->hasOne(HomeworkRegistration::class, 'thread_id');
+    }
+
+    public function rewards()
+    {
+        return $this->morphMany(Reward::class, 'rewardable');
     }
 
     public function last_post()
     {
-        return $this->belongsTo(Post::class, 'last_post_id');
+        return $this->belongsTo(Post::class, 'last_post_id')->select('id','type','user_id','title','brief','created_at');
     }
 
     public function collectors()
     {
-        return $this->belongsToMany('App\Models\User', 'collections', 'thread_id', 'user_id')->select(['id','name']);
+        return $this->belongsToMany(User::class, 'collections', 'thread_id', 'user_id')->select(['id','name']);
     }
 
 
-    //以下是scopes
+    public function scopeBrief($query)
+    {
+        return $query->select('id', 'user_id', 'channel_id', 'title', 'brief', 'is_locked', 'is_public', 'is_bianyuan', 'is_anonymous', 'majia', 'view_count', 'reply_count', 'responded_at', 'created_at', 'collection_count', 'no_reply', 'last_post_id', 'last_component_id', 'weighted_jifen', 'total_char', 'deletion_applied_at');
+    }
 
     public function scopeInChannel($query, $withChannels)
     {
         if($withChannels){
-            $channels=(array)json_decode($withChannels);
+            $channels = explode('-',$withChannels);
             if(!empty($channels)){
                 return $query->whereIn('channel_id', $channels);
             }
@@ -84,65 +115,118 @@ class Thread extends Model
         return $query;
     }
 
-    public function scopeWithType($query, $withType)
+    public function scopeWithType($query, $withType=[])
     {
-        if($withType){
+        $withType = (array)$withType;
+        if(!array_diff($withType, $this->thread_types)){
             return $query->whereIn('channel_id', ConstantObjects::publicChannelTypes($withType));
         }
         return $query;
     }
 
-    public function scopeWithBianyuan($query, $withBianyuan)
+    public function scopeWithoutType($query, $withoutType="")
     {
-        if($withBianyuan==='bianyuan_only'){
-            return $query->where('is_bianyuan', true);
-        }
-        if($withBianyuan==='none_bianyuan_only'){
-            return $query->where('is_bianyuan', false);
+        if($withoutType){
+            return $query->whereNotIn('channel_id', ConstantObjects::publicChannelTypes($withoutType));
         }
         return $query;
     }
 
-    public function scopeWithTag($query, $withTags)
+    public function scopeWithBianyuan($query, $withBianyuan="")
+    {
+        if($withBianyuan==='include_bianyuan'){
+            return $query;
+        }
+        if($withBianyuan==='bianyuan_only'){
+            return $query->where('is_bianyuan', true);
+        }
+        return $query->where('is_bianyuan', false);
+    }
+
+    public function scopeWithTag($query, $withTags="")// (A||B)&&(C||D):A_B-C_D 新增防止搜索边缘标签
     {
         if ($withTags){
-            $tags=(array)json_decode($withTags);
-            return $query->whereHas('tags', function ($query) use ($tags){
-                $query->whereIn('id', $tags);
-            });
-        }else{
+            $andtags = explode('-',$withTags);
+            foreach($andtags as $andtag){
+                $parallel_tags = explode('_', $andtag);
+                $parallel_tags = $this->filter_paralllel_tags($parallel_tags);
+                if($parallel_tags){
+                    $query = $query->whereHas('tags', function ($query) use ($parallel_tags){
+                        $query->whereIn('tags.id', $parallel_tags);
+                    });
+                }
+            }
+        }
+        return $query;
+    }
+
+    private function filter_paralllel_tags($parallel_tags){
+        $final_tags = [];
+        foreach($parallel_tags as $tagid){
+            $tag = ConstantObjects::find_tag_by_id($tagid);
+            if($tag&&!$tag->is_bianyuan){
+                array_push($final_tags, $tag->id);
+            }
+        }
+        return $final_tags;
+    }
+
+    public function scopeWithUser($query, $id)
+    {
+        return $query->where('user_id','=',$id);
+    }
+
+    public function scopeWithAnonymous($query, $withAnonymous='')
+    {
+        if($withAnonymous==='anonymous_only'){
+            return $query->where('is_anonymous','=',1);
+        }
+        if($withAnonymous==='none_anonymous_only'){
+            return $query->where('is_anonymous','=',0);
+        }
+        return $query;
+
+    }
+
+    public function scopeExcludeTag($query, $excludeTag="")// no A, no B, no C: A-B-C
+    {
+        if ($excludeTag){
+            $tags = explode('-',$excludeTag);
+            $exclude_tag = [];
+            foreach($tags as $tag){
+                if(is_numeric($tag)&&$tag>0){
+                    array_push($exclude_tag, $tag);
+                }
+            }
+            if($exclude_tag){
+                return $query->whereDoesntHave('tags', function ($query) use ($exclude_tag){
+                    $query->whereIn('tags.id', $exclude_tag);
+                });
+            }
+        }
+        return $query;
+    }
+
+    public function scopeInPublicChannel($query, $inPublicChannel='')//只看公共channel内的
+    {
+        if($inPublicChannel==='include_none_public_channel'){
             return $query;
         }
+        return $query->whereIn('channel_id', ConstantObjects::public_channels());
     }
 
-    public function scopeExcludeTag($query, $excludeTags)
+    public function scopeIsPublic($query, $isPublic='')//只看作者决定公开的
     {
-        if ($excludeTags){
-            $tags=(array)json_decode($excludeTags);
-            return $query->whereDoesntHave('tags', function ($query) use ($tags){
-                $query->whereIn('id', $tags);
-            });
-        }else{
+        if($isPublic==='include_private'){
             return $query;
         }
+        if($isPublic==='private_only'){
+            return $query->where('is_public', false);
+        }
+        return $query->where('is_public', true);
     }
 
-    public function scopeIsPublic($query)//在thread index的时候，只看公共channel内的公开thread
-    {
-        return $query->where('is_public', true)->whereIn('channel_id', ConstantObjects::public_channels());
-    }
-
-    public function scopeThreadInfo($query)
-    {
-        return $query->select(array_diff( $this->thread_columns, ['body']));
-    }
-
-    public function scopeThreadBrief($query)
-    {
-        return $query->select($this->threadbrief_columns);
-    }
-
-    public function scopeOrdered($query, $ordered)
+    public function scopeOrdered($query, $ordered="")
     {
         switch ($ordered) {
             case 'latest_add_component'://最新更新
@@ -174,72 +258,8 @@ class Thread extends Model
         }
     }
     // 以下是其他function
-    public function tags_validate($tags)//检查由用户提交的tags组合，是否符合基本要求
-    {
-        $valid_tags = [];//通过检查的tag
-        $limit_count_tags = [];//tag数量限制
-        $only_one_tags = [];//只能选一个的tag
-        foreach($tags as $key => $value){
-            $tag = ConstantObjects::allTags()->keyBy('id')->get($value);
-            if($tag){//首先应该判断这个tag是否存在，否则会报错Trying to get property 'tag_type' of non-object
-                if (array_key_exists($tag->tag_type,config('tag.types'))){//一个正常录入的tag，它的type应该在config中能够找到。
-                    $error = '';
-                    //检查是否为非边缘文章提交了边缘标签
-                    if((!$this->is_bianyuan) && $tag->is_bianyuan){
-                        $error = 'bianyuan violation';
-                    }
-                    //如不属于某channel却选择了专属于某channel的tag,如为非同人thread选择了同人channel的tag
-                    if(($tag->channel_id>0)&&( $tag->channel_id != $this->channel_id)){
-                        $error = 'channel violation';
-                    }
 
-                    //检查是否满足某些类tag只能选一个的限制情况，
-                    if (array_key_exists($tag->tag_type, config('tag.limits.only_one'))){
-                        if(array_key_exists($tag->tag_type, $only_one_tags)){
-                            $error = 'only one tag violation';
-                        }else{
-                            $only_one_tags[$tag->tag_type] = $tag->id;
-                        }
-                    }
-
-                    //检查数目限制的那些是否满足要求， sum_limit < sum_limit_count
-                    if (array_key_exists($tag->tag_type,config('tag.limits.sum_limit'))){
-                        if(!empty($limit_count_tags)&&(count($limit_count_tags)>config('tag.sum_limit_count'))){
-                            $error = 'too many tags in total';
-                        }else{
-                            array_push($limit_count_tags,$tag->id);
-                        }
-                    }
-
-                    //如果这个tag没有犯上面的任何错误，而且不属于只有编辑才能添加的tag，那么通过检验
-                    if((!$tag->user_not_manageable())&&($error==='')){
-                        array_push($valid_tags, $tag->id);
-                    }else{
-                        echo($error.', invalid tag id='.$tag->id."\n");//这个信息应该前端保证它不要出现
-                    }
-                }
-            }
-        }//循环结束
-        return $valid_tags;
-    }
-
-    public function remove_custom_tags()//去掉所有用户自己提交的tag,返回成功去掉的
-    {
-        $detach_tags = [];
-        foreach($this->tags as $tag){
-            if(!array_key_exists($tag->tag_type, config('tag.limits.user_not_manageable'))){
-                array_push($detach_tags,$tag->id);
-            }
-        }
-        if(!empty($detach_tags)){
-            $this->tags()->detach($detach_tags);
-            return count($detach_tags);
-        }else{
-            return 0;
-        }
-    }
-
-    public function count_char()//计算本thread内所有chapter的characters总和
+    public function count_char()//计算本thread内所有component的characters总和
     {
         return  DB::table('posts')
         ->where('deleted_at', '=', null)
@@ -250,7 +270,7 @@ class Thread extends Model
 
     public function most_upvoted()//这个thread里面，普通的post中，最多赞的评论
     {
-        return Post::postInfo()
+        return Post::with('info')
         ->where('thread_id', $this->id)
         ->where('type', '=', 'post')
         ->orderBy('upvote_count', 'desc')
@@ -259,13 +279,208 @@ class Thread extends Model
 
     public function top_review()//对这个thread的review里最热门的一个
     {
-        return Post::join('reviews', 'posts.id', '=', 'reviews.post_id')
-        ->where('reviews.thread_id', $this->id)
-        ->where('reviews.recommend', true)
-        ->where('reviews.author_disapprove', false)
-        ->orderby('reviews.redirects', 'desc')
-        ->select('posts.*')
+        return Post::with('info')
+        ->reviewThread($this->id)
+        // ->reviewAuthorAttitude('approved_only')
+        ->reviewRecommend('recommend_only')
+        ->ordered('redirect_count')
         ->first();
     }
 
+    public function latest_rewards()
+    {
+        return Reward::with('author')
+        ->withType('thread')
+        ->withId($this->id)
+        ->latest()
+        ->take(10)
+        ->get();
+    }
+
+    public function random_editor_recommendation()
+    {
+        $post = Post::join('post_infos','posts.id','=','post_infos.post_id')
+        ->reviewThread($this->id)
+        ->reviewEditor('editor_only')
+        ->reviewRecommend('recommend_only')
+        ->inRandomOrder()
+        ->select('posts.*')
+        ->first();
+        if($post){
+            $post->load('info.reviewee','author');
+        }
+        return $post;
+    }
+
+    public function register_homework()
+    {
+        // TODO 检查这名同学参加了作业吗？是的话算他提交了作业
+    }
+
+    public function max_component_order()
+    {
+        return DB::table('posts')
+        ->join('post_infos','post_infos.post_id','=','posts.id')
+        ->where('posts.thread_id','=',$this->id)
+        ->select('post_infos.order_by')
+        ->max('post_infos.order_by');
+    }
+
+    public function recalculate_characters()
+    {
+        $sum_char = Post::where('thread_id',$this->id)
+        ->withComponent('component_only')
+        ->sum('char_count');
+        $this->update(['total_char'=>$sum_char]);
+        return $sum_char;
+    }
+
+    public function reorder_components()
+    {
+        $posts = $this->component_index();
+        $previous = null;
+        $first = null;
+        foreach($posts as $post){
+            if($post->simpleInfo){
+                if(!$first){
+                    $first = $post;
+                }
+                if($previous){
+                    if($post->simpleInfo->previous_id<>$previous->id){
+                        $post->simpleInfo->update(['previous_id' => $previous->id]);
+                    }
+                    if($previous->simpleInfo->next_id<>$post->id){
+                        $previous->simpleInfo->update(['next_id' => $post->id]);
+                    }
+                }
+                $previous = $post;
+            }
+        }
+        if($previous&&$previous->simpleInfo&&$previous->simpleInfo->next_id>0){
+            $previous->simpleInfo->update(['next_id' => 0]);
+        }
+        if($first){
+            if($this->first_component_id<>$first->id){
+                $this->first_component_id=$first->id;
+            }
+        }
+        if($previous){
+            if($this->last_component_id<>$previous->id){
+                $this->last_component_id=$previous->id;
+            }
+        }
+        $this->save();
+        return;
+    }
+
+    public function check_bianyuan()// 章节/书评 总数超过20%的自动升级成边限
+    {
+        $user = $this->user;
+        if($user->isAdmin()||$user->isEditor()){return true;}
+
+        if($this->is_bianyuan){return true;}
+
+        $component_type = $this->channel()->type==='book'? 'chapter':'';
+        $component_type = $this->channel()->type==='list'? 'review':'';
+
+        if($component_type){
+            $total_components = $this->posts()->withType($component_type)->count();
+            $bianyuan_components = $this->posts()->withType($component_type)->withBianyuan('bianyuan_only')->count();
+
+            if($bianyuan_components*5>$total_components){
+                $this->update(['is_bianyuan'=>1]);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function increment_new_critique($post)
+    {
+        if($post->type==='critique'&&$this->channel()->type==='homework'){
+            $homework_registration = $this->homework_registration;
+            if($homework_registration){
+                $homework_registration->increment('received_critique_count');
+                $homework = $homework_registration->homework;
+                if($homework){
+                    $critic_registration = $homework->registrations()->where('user_id',$post->user_id)->first();
+                    if($critic_registration){
+                        $critic_registration->given_critique_count+=1;
+                        if($critic_registration->required_critique_thread_id===$this->id){
+                            $critic_registration->required_critique_done = 1;
+                        }
+                        $critic_registration->save();
+                    }
+                }
+            }
+        }
+    }
+
+    public function decrement_new_critique($post)
+    {
+        if($post->type==='critique'&&$this->channel()->type==='homework'){
+            $homework_registration = $this->homework_registration;
+            if($homework_registration){
+                $homework_registration->decrement('received_critique_count');
+                $homework = $homework_registration->homework;
+                if($homework){
+                    $critic_registration = $homework->registrations()->where('user_id',$post->user_id)->first();
+                    if($critic_registration){
+                        $critic_registration->given_critique_count-=1;
+                        if($critic_registration->required_critique_thread_id===$this->id){
+                            $critic_registration->required_critique_done = 0;
+                        }
+                        $critic_registration->save();
+                    }
+                }
+            }
+        }
+    }
+
+    public function apply_to_delete()
+    {
+        if($this->channel()->type==='book'){
+            $this->user->retract('delete_book');
+        }
+        $this->user->retract('delete_thread');
+        return $this->update([
+            'deletion_applied_at'=>Carbon::now(),
+            'no_reply' => 1,
+        ]);
+    }
+
+    public function apply_to_cancel_delete()
+    {
+        if($this->channel()->type==='book'){
+            $this->user->retract('delete_book');
+        }
+        $this->user->retract('delete_thread');
+        return $this->update(['deletion_applied_at'=>null]);
+    }
+
+    public function component_index()
+    {
+        $posts = Post::with('simpleInfo.reviewee')
+        ->threadOnly($this->id)
+        ->withType($this->index_component_type())
+        ->brief()
+        ->get();
+        return $posts->sortBy('simpleInfo.order_by');
+    }
+
+    public function index_component_type()
+    {
+        if($this->channel()->type==='book'){
+            return ['chapter','volumn'];
+        }
+        if($this->channel()->type==='list'){
+            return ['review','volumn'];
+        }
+        if($this->channel()->type==='box'){
+            return ['answer','volumn'];
+        }
+        return;
+
+    }
 }

@@ -1,5 +1,19 @@
 <?php
 
+$read_hosts = env('DB_READ_HOST_COUNT', 0);
+
+$mysql_read_hosts = [];
+
+$default_host = env('DB_READ_HOST', env('DB_HOST', '127.0.0.1'));
+
+for($i=1;$i<=$read_hosts;$i++){
+    array_push($mysql_read_hosts, env('DB_READ_HOST'.(string)$i, $default_host));
+}
+
+if(empty($mysql_read_hosts)){
+    array_push($mysql_read_hosts, $default_host);
+}
+
 return [
 
     /*
@@ -41,19 +55,30 @@ return [
         ],
 
         'mysql' => [
+            'read' => [
+                'host' => $mysql_read_hosts,
+            ],
+            'write' => [
+                'host' => [
+                    env('DB_HOST', '127.0.0.1'),
+                ],
+            ],
+            'sticky'    => true,
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'prefix_indexes' => true,
-            'strict' => true,
+            'strict' => false,
             'engine' => 'InnoDB',
+            'options'   => [
+                PDO::ATTR_TIMEOUT => 1,
+                //PDO::ATTR_PERSISTENT =>true,
+            ],
         ],
 
         'pgsql' => [
@@ -110,20 +135,34 @@ return [
 
     'redis' => [
 
-        'client' => 'predis',
+        'client' => env('REDIS_LIBRARY', 'predis'),
 
         'default' => [
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => env('REDIS_DB', 0),
+            'database' => 1,
         ],
 
-        'cache' => [
+        'session' => [
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => env('REDIS_CACHE_DB', 1),
+            'database' => 2,
+        ],
+
+        'queue' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => 3,
+        ],
+
+        'horizon' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => 5,
         ],
 
     ],

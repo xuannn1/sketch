@@ -32,10 +32,25 @@ class ChapterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Thread $thread, StoreChapter $form)
+    public function store($id, StoreChapter $form)
     {
-        $post = $form->generateChapter();
-        return response()->success(new PostResource($post));
+        $thread = Thread::on('mysql::write')->find($id);
+        if ($thread->is_locked||$thread->user_id!=auth('api')->id()){
+            abort(403);
+        }
+
+        $post = $form->generateChapter($thread);
+
+        event(new NewPost($post));
+
+        $msg = $post->reward_check();
+
+        $this->clearThread($id);
+
+        return response()->success([
+            'post' => new PostResource($post),
+            'message' => $msg,
+        ]);
     }
 
 

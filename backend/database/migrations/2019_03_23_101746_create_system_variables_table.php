@@ -15,6 +15,8 @@ class CreateSystemVariablesTable extends Migration
     {
         Schema::create('system_variables', function (Blueprint $table) {
             $table->integer('latest_public_notice_id')->default(0);//最新系统消息是哪个
+            $table->text('register_slogan')->nullable();//注册通知
+            $table->integer('homepage_thread_id')->default(0);//封推主题ID
         });
     }
 

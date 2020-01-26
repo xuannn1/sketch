@@ -2,9 +2,6 @@
 
 namespace App\Sosadfun\Traits;
 
-use Carbon\Carbon;
-use Auth;
-
 trait FindModelTrait
 {
 	public function findModel($model,$id,$array){

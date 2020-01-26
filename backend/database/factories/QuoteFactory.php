@@ -8,7 +8,7 @@ $factory->define(App\Models\Quote::class, function (Faker $faker) {
         'user_id' => function(){
             return \App\Models\User::inRandomOrder()->first()->id;
         },
-        'is_approved' => true,
+        'approved' => true,
         'reviewer_id' => function(){
             return \App\Models\User::inRandomOrder()->first()->id;
         },

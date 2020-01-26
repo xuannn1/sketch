@@ -16,7 +16,7 @@ use Faker\Generator as Faker;
 $factory->define(App\Models\Thread::class, function (Faker $faker) {
     return [
         'channel_id' => 1,//默认的channel作为1
-        'title' => $faker->sentence,
+        'title' => $faker->word,
         'brief' => $faker->sentence,
         'body' => $faker->paragraph,
         'user_id' => function(){

@@ -18,16 +18,19 @@ class CreateStatusesTable extends Migration
             $table->unsignedInteger('user_id')->index();
             $table->string('brief')->nullable();
             $table->text('body')->nullable();
-            $table->string('attachable_type', 10)->nullable();//附件类型：status(转发当条状态), chapter, book, thread, post..., picture
-            $table->unsignedInteger('attachable_id')->default(0);//附件id
-            $table->unsignedInteger('reply_id')->default(0)->index();//回复的status是哪个
+            $table->string('attachable_type', 10)->nullable()->index();//附件类型：status(转发当条状态), chapter, book, thread, post..., picture
+            $table->unsignedInteger('attachable_id')->default(0)->index();//附件id
+            $table->unsignedInteger('reply_to_id')->default(0)->index();//回复的status是哪个
+            $table->unsignedInteger('last_reply_id')->default(0)->index();//最后回复的status是哪个
+            $table->string('creation_ip', 45)->index();//创建的ip
+
             $table->boolean('no_reply')->default(false);//禁止跟帖
-            $table->unsignedInteger('reply_count')->default(0);//回复数
-            $table->unsignedInteger('forward_count')->default(0);//转发数
-            $table->unsignedInteger('upvote_count')->default(0);//赞数
-            $table->dateTime('created_at')->nullable();//创建时间
-            //是否允许回帖
-            //多少回帖，多少转发
+            $table->boolean('is_public')->default(true)->index();//是否公开可见
+            $table->unsignedInteger('reply_count')->default(0)->index();//回复数
+            $table->unsignedInteger('forward_count')->default(0)->index();//转发数
+            $table->unsignedInteger('upvote_count')->default(0)->index();//赞数
+            $table->dateTime('created_at')->nullable()->index();//创建时间
+            $table->dateTime('deleted_at')->nullable()->index();//创建时间
         });
     }
 

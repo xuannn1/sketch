@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-
+use Illuminate\Database\Eloquent\Builder; 
+use Illuminate\Support\Str;
 class ResetPasswordController extends Controller
 {
     /*
@@ -36,4 +38,9 @@ class ResetPasswordController extends Controller
     {
         $this->middleware('guest');
     }
+    public function getReset($token)
+    {
+        return view('reset',$token);
+    }
+ 
 }

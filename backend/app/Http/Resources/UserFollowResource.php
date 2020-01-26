@@ -15,16 +15,16 @@ class UserFollowResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => 'user',
+            'type' => 'follower',
             'id' => (int)$this->id,
             'attributes' => [
-                'name' => (string)$this->name,
+                'user_id' => (int)$this->user_id,
+                'follower_id' => (int)$this->follower_id,
+                'keep_updated'=>(boolean)$this->keep_updated,
+                'updated'=>(boolean)$this->updated,
             ],
-            'title' => new TitleBriefResource($this->whenLoaded('mainTitle')),
-            'followInfo' => [
-                'keep_updated'=>(boolean)$this->pivot->keep_updated,
-                'is_updated'=>(boolean)$this->pivot->is_updated,
-            ],
+            'user' => new UserBriefResource($this->whenLoaded('user_brief')),
+            'follower' => new UserBriefResource($this->whenLoaded('follower_brief')),
         ];
     }
 }
