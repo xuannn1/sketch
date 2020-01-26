@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\RegistrationApplication;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -117,6 +118,7 @@ class RegAppController extends Controller
                     'msg_' => '未验证邮箱，请输入邮箱验证码。'
                 ]
             ];
+            $this->refreshFindApplicationViaEmail($request->email);
             return response()->success($success);
         }
 
@@ -150,6 +152,7 @@ class RegAppController extends Controller
                     'msg_' => '你已通过申请，无需重复申请。'
                 ]
             ];
+            $this->refreshFindApplicationViaEmail($request->email);
             return response()->success($success);
         }
         if($application->submitted_at&&$application->submitted_at > Carbon::now()->subDays(config('constants.application_cooldown_days'))){
@@ -164,10 +167,23 @@ class RegAppController extends Controller
                     'msg_' => '申请排队中，请耐心等待，勿更换邮箱重复提交申请，重复提交会进入黑名单。'
                 ]
             ];
+            $this->refreshFindApplicationViaEmail($request->email);
             return response()->success($success);
         }
 
-        return null;
+        $success['registration_application'] = [
+            "id" => $application->id,
+            "type" => "registration_application",
+            "attributes" => [
+                "quizzed_" => true,
+                'email_email_verified_' => true,
+                'essay_submitted_' => true,
+                'passed_' => false,
+                'msg_' => '很抱歉你没有通过申请。'
+            ]
+        ];
+        $this->refreshFindApplicationViaEmail($request->email);
+        return response()->success($success);
     }
 
     public function submit_quiz(Request $request)
