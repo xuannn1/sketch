@@ -46,9 +46,9 @@ class RegAppController extends Controller
             return response()->error($validator->errors(), 422);
         }
 
-//        if(Cache::has('IP-refresh-limit-' . request()->ip())){
-//            abort(498);
-//        }
+        if(Cache::has('IP-refresh-limit-' . request()->ip())){
+            abort(498);
+        }
         Cache::put('IP-refresh-limit-' . request()->ip(), true, 5);
 
         $message = $this->checkApplicationViaEmail($request->email);
