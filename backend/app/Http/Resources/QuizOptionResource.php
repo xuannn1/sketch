@@ -20,7 +20,7 @@ class QuizOptionResource extends JsonResource
             'attributes' => [
                 'body' => (string)$this->body,
                 'explanation' => (string)$this->explanation,
-                $this->mergeWhen(auth('api')->user() && auth('api')->user()->isAdmin(), [
+                $this->mergeWhen(auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin(), [
                     'quiz_id' => (int)$this->quiz_id,
                     'is_correct' => (bool)$this->is_correct,
                     'select_count' => (int)$this->select_count,

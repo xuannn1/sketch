@@ -21,7 +21,7 @@ class QuizResource extends JsonResource
             'attributes' => [
                 'body' => (string)$this->body,
                 'hint' => (string)$this->hint,
-                $this->mergeWhen(auth('api')->user() && auth('api')->user()->isAdmin(), [
+                $this->mergeWhen(auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin(), [
                     'type' => (string)$this->type,
                     'level' => (int)$this->quiz_level,
                     'quiz_count' => (int)$this->quiz_count,
