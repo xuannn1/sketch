@@ -5,6 +5,7 @@ use App\Models\Thread;
 use App\Models\Post;
 use App\Models\PostInfo;
 use Carbon\Carbon;
+use App\Models\Activity;
 
 class ThreadsTableSeeder extends Seeder
 {
@@ -43,6 +44,14 @@ class ThreadsTableSeeder extends Seeder
                         $thread->last_post_id = $post->id;
                         $thread->save();
                     });
+                    $posts->each(function($post) use($thread){
+                        $activity = factory(Activity::class)->create([
+                            'item_id' => $post->id,
+                            'item_type' => 'post',
+                            'user_id' => $thread->user_id,
+                            'kind' => 1,
+                        ]);
+                    });
                 }
                 if($channel->type ==='list'){
                     //如果这是一本图书，给他添加示范章节
@@ -66,6 +75,14 @@ class ThreadsTableSeeder extends Seeder
                         $thread->responded_at = Carbon::now();
                         $thread->last_post_id = $post->id;
                         $thread->save();
+                    });
+                    $posts->each(function($post) use($thread){
+                        $activity = factory(Activity::class)->create([
+                            'item_id' => $post->id,
+                            'item_type' => 'post',
+                            'user_id' => $thread->user_id,
+                            'kind' => 1,
+                        ]);
                     });
                 }
             });
