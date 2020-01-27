@@ -20,6 +20,7 @@ laravel后端中所有环境变量（基本配置比如数据库地址、用户�
 ```
 $ php artisan migrate --seed
 ```
+注意，如果之前已经populate过老数据库，建议彻底删除后重新migrate。
 ### 2.4 配置passport
 #### 2.4.1 配置APP_KEY
 如果是第一次使用laravel， `.env` 文件中不含APP_KEY这个变量，那么还需要让程序加载初始key。一些情况下，也可以使用以前曾经使用过的key，来确保数据库之间能够对应。只需运行下面这两个指令即可：

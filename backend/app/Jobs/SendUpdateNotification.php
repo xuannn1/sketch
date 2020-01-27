@@ -61,7 +61,7 @@ class SendUpdateNotification implements ShouldQueue
             ->update([
                 'collections.updated'=>1,
                 'user_infos.default_collection_updates'=>DB::raw('user_infos.default_collection_updates + 1'),
-                'users.unread_updates' => DB::raw('users.unread_updates + 1'),
+                'user_infos.unread_updates' => DB::raw('user_infos.unread_updates + 1'),
             ]);
 
             DB::table('collections')
@@ -72,7 +72,7 @@ class SendUpdateNotification implements ShouldQueue
             ->update([
                 'collections.updated'=>1,
                 'collection_groups.update_count'=>DB::raw('collection_groups.update_count + 1'),
-                'users.unread_updates' => DB::raw('users.unread_updates + 1'),
+                'user_infos.unread_updates' => DB::raw('user_infos.unread_updates + 1'),
             ]);
         }
 
