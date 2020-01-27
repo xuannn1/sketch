@@ -124,14 +124,14 @@ Route::get('follow_status', 'API\StatusController@follow_status');//关注的人
 // 题头部分
 Route::apiResource('quote', 'API\QuoteController')->only(['index','show','store','destroy']);
 
-Route::patch('/quote/{quote}/review','QuoteController@review')->name('quote.review');//审核单独题头
+Route::patch('/quote/{quote}/review','API\QuoteController@review')->name('quote.review');//审核单独题头
 
 // 私信部分
 Route::get('/user/{user}/message', 'API\MessageController@index');// 展示某用户的信箱，仅允许本人和管理员查询
 Route::post('message', 'API\MessageController@store');
 Route::post('groupmessage', 'API\MessageController@groupmessage');//管理员群发私信
 Route::post('publicnotice', 'API\MessageController@publicnotice');//管理员发系统消息
-
+Route::get('publicnotice', 'API\MessageController@publicnotice_index');//用户查看当前全部系统公共消息
 // 消息部分
 Route::get('/user/{user}/activity', 'API\ActivityController@index');// 展示某用户的站内提醒，仅允许本人和管理员查询
 Route::post('/clearupdates', 'API\ActivityController@clearupdates');// 清除未读提醒
