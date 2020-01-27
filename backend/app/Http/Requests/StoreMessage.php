@@ -4,11 +4,11 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\FormRequest;
 use App\Models\Message;
-use App\Models\User;
 use App\Models\MessageBody;
 use App\Models\PublicNotice;
 use DB;
 use Carbon\Carbon;
+use CacheUser;
 
 class StoreMessage extends FormRequest
 {
@@ -79,23 +79,22 @@ class StoreMessage extends FormRequest
             $message_datas[] = [
                 'poster_id' => auth('api')->id(),
                 'receiver_id' => $sendTo,
-                'message_body_id' => $bodyId,
+                'body_id' => $bodyId,
                 'created_at'=> $created_at,
             ];
         }
         Message::insert($message_datas);
-        return $messages = Message::where('message_body_id', $bodyId)->get();
+        return $messages = Message::where('body_id', $bodyId)->get();
     }
 
     public function generatePublicNotice()
     {
         if(!auth('api')->user()->isAdmin()){abort(403);}
 
-        $notice_data['notice_body'] = Request('body');
+        $notice_data['body'] = Request('body');
         $notice_data['user_id'] = auth('api')->id();
         $public_notice = DB::transaction(function() use($notice_data) {
             $public_notice = PublicNotice::create($notice_data);
-            DB::table('users')->increment('unread_reminders');
             DB::table('system_variables')->update(['latest_public_notice_id' => $public_notice->id]);
             return $public_notice;
         });
@@ -106,7 +105,7 @@ class StoreMessage extends FormRequest
     private function validateSendTos($sendTos, $selfId)
     {
         if(!auth('api')->user()->isAdmin()){abort(403);}
-        $newSendTos = User::whereIn('id', $sendTos)
+        $newSendTos = \App\Models\User::whereIn('id', $sendTos)
         ->where('id', '<>', $selfId)
         ->whereNull('deleted_at')
         ->select('id')
@@ -121,12 +120,12 @@ class StoreMessage extends FormRequest
     {
         if((!auth('api')->user()->isAdmin())
             &&(auth('api')->user()->info->message_limit <= 0)){
-                abort(403,'message limit violation');
+                abort(410,'message limit violation');
         }
-        $sendToUser = User::find($sendToId);
+        $sendToUser = CacheUser::user($sendToId);
         if(!$sendToUser){abort(404);}
-        if($selfId === $sendToId){abort(403,'cannot send message to oneself');}
-        if($sendToUser->info->no_stranger_message){abort(403,'receiver refuse to get message');}
+        if($selfId === $sendToId){abort(411,'cannot send message to oneself');}
+        if($sendToUser->info->no_stranger_msg&&!$sendToUser->isFollowing(auth('api')->id())){abort(413,'receiver refuse to get message');}
     }
 
     private function isDuplicateMessage($body, $selfId)
@@ -134,6 +133,6 @@ class StoreMessage extends FormRequest
         $last_message = Message::where('poster_id', $selfId)
         ->orderBy('created_at', 'desc')
         ->first();
-        if(!empty($last_message) && (strcmp($last_message->body->body, $body) === 0)){abort(403, 'cannot send duplicate message');}
+        if(!empty($last_message) && (strcmp($last_message->message_body->body, $body) === 0)){abort(409, 'cannot send duplicate message');}
     }
 }

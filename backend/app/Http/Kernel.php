@@ -23,6 +23,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\EnableCrossRequestMiddleware::class,
         \App\Http\Middleware\ConvertStringBooleans::class,
         //\App\Http\Middleware\RecordReviewRedirect::class,
+        \App\Http\Middleware\NoLogControl::class,
     ];
 
     /**
@@ -65,7 +66,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'filter_thread' => \App\Http\Middleware\FilterThread::class,
-        'filter_role' => \App\Http\Middleware\FilterRole::class,
+        'filter_channel' => \App\Http\Middleware\FilterChannel::class,
+        'admin' => \App\Http\Middleware\CheckAdmin::class,
+        'reviewer' => \App\Http\Middleware\CheckReviewer::class,
+        'no_homework_control' => \App\Http\Middleware\NoHomeworkControl::class,
     ];
 
     /**

@@ -10,7 +10,7 @@ $factory->define(App\Models\Message::class, function (Faker $faker) {
       'receiver_id' => function(){
           return \App\Models\User::inRandomOrder()->first()->id;
       },
-      'message_body_id' => function(){
+      'body_id' => function(){
           return \App\Models\MessageBody::inRandomOrder()->first()->id;
       },
       'seen' => 0,

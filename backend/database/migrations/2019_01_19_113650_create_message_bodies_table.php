@@ -16,6 +16,7 @@ class CreateMessageBodiesTable extends Migration
         Schema::create('message_bodies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('body');//消息内容
+            $table->boolean('bulk')->default(false);//是否群发信息
         });
     }
 

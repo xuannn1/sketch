@@ -10,6 +10,7 @@ use App\Http\Resources\UserBriefResource;
 use App\Http\Resources\UserFollowResource;
 use App\Http\Resources\PaginateResource;
 use Validator;
+use CacheUser;
 
 use DB;
 
@@ -23,11 +24,17 @@ class FollowerController extends Controller
     /**
     * follow 关注某人
     */
-    public function store(User $user)
+    public function store($id)
     {
-        if (auth('api')->id()===$user->id){abort(403);}
+        $user = CacheUser::user($id);
+        if(!$user){abort(404);}
 
-        if (auth('api')->user()->isFollowing($user->id)){abort(412);}
+        if (auth('api')->id()===$user->id){abort(411);}
+
+        $follow_relationship = \App\Models\Follower::where('user_id', $id)->where('follower_id', auth('api')->id())
+        ->first();
+
+        if ($follow_relationship){abort(409);}
 
         auth('api')->user()->follow($user->id);
 
@@ -40,13 +47,18 @@ class FollowerController extends Controller
     /**
     * unfollow
     */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        if (auth('api')->id()===$user->id){abort(403);}
+        $user = CacheUser::user($id);
 
-        if (!auth('api')->user()->isFollowing($user->id)){abort(412);}
+        if (auth('api')->id()===$user->id){abort(411, '不能取关自己');}
 
-        auth('api')->user()->unfollow($user->id);
+        $follow_relationship = \App\Models\Follower::where('user_id', $id)->where('follower_id', auth('api')->id())
+        ->first();
+
+        if (!$follow_relationship){abort(412,'未关注');}
+
+        $follow_relationship->delete();
 
         return response()->success([
             'user' => new UserBriefResource($user),
@@ -57,10 +69,16 @@ class FollowerController extends Controller
     /**
     * switch whether to receive updates of this user
     */
-    public function update(User $user, Request $request)
+    public function update($id, Request $request)
     {
-        $relationship = auth('api')->user()->followStatus($user->id);
-        if(!$relationship){abort(412);}
+        $user = CacheUser::user($id);
+
+        if(!$user){abort(404);}
+
+        $follow_relationship = \App\Models\Follower::where('user_id', $id)->where('follower_id', auth('api')->id())
+        ->first();
+
+        if(!$follow_relationship){abort(412);}
 
         $validator = Validator::make($request->all(), [
             'keep_updated' => 'required|boolean',
@@ -69,33 +87,42 @@ class FollowerController extends Controller
             return response()->error($validator->errors(), 422);
         }
 
-        auth('api')->user()->followings()->updateExistingPivot($user->id, ['keep_updated'=>$request->keep_updated]);
+        $follow_relationship->update(['keep_updated'=>$request->keep_updated]);
 
-        $relationship = auth('api')->user()->followStatus($user->id);
-
-        return response()->success(new UserFollowResource($relationship));
+        return response()->success(new UserFollowResource($follow_relationship));
     }
 
     /**
     * show the profile of the relationship for the given following
     **/
     //
-    public function show(User $user)
+    public function show($id)
     {
-        $relationship = auth('api')->user()->followStatus($user->id);
+        $user = CacheUser::user($id);
 
-        if(!$relationship){abort(404);}
+        if(!$user){abort(404);}
 
-        return response()->success(new UserFollowResource($relationship));
+        $follow_relationship = \App\Models\Follower::where('user_id', $id)->where('follower_id', auth('api')->id())
+        ->first();
+
+        if(!$follow_relationship){abort(404);}
+
+        $follow_relationship->load('user_brief');
+
+        return response()->success(new UserFollowResource($follow_relationship));
 
     }
 
     /**
     * 好友关系
     **/
-    public function follower(User $user)
+    public function follower($id)
     {
+        $user = CacheUser::user($id);
+        if(!$user){abort(404);}
+
         $followers = $user->followers()->paginate(config('constants.index_per_page'));
+
         return response()->success([
             'user'=> new UserBriefResource($user),
             'followers' => UserBriefResource::collection($followers),
@@ -103,8 +130,11 @@ class FollowerController extends Controller
         ]);
     }
 
-    public function following(User $user)
+    public function following($id)
     {
+        $user = CacheUser::user($id);
+        if(!$user){abort(404);}
+
         $followings = $user->followings()->paginate(config('constants.index_per_page'));
 
         return response()->success([
@@ -114,16 +144,19 @@ class FollowerController extends Controller
         ]);
     }
 
-    public function followingStatuses(User $user)
+    public function followingStatuses($id)
     {
+        $user = CacheUser::user($id);
+        if(!$user){abort(404);}
+
         if(auth('api')->id()!=$user->id){abort(403);}
 
-        $followings = $user->followings()->paginate(config('constants.index_per_page'));
+        $follow_relationships = \App\Models\Follower::with('user_brief')->where('follower_id', auth('api')->id())->paginate(config('constants.index_per_page'));
 
         return response()->success([
             'user'=> new UserBriefResource($user),
-            'followingStatuses' => UserFollowResource::collection($followings),
-            'paginate' => new PaginateResource($followings),
+            'followingStatuses' => UserFollowResource::collection($follow_relationships),
+            'paginate' => new PaginateResource($follow_relationships),
         ]);
     }
 

@@ -10,76 +10,60 @@ use App\Http\Resources\TitleResource;
 use App\Http\Resources\UserBriefResource;
 use App\Http\Resources\PaginateResource;
 use Validator;
+use ConstantObjects;
+use CacheUser;
 
 class TitleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index');
+        $this->middleware('auth:api')->except('title');
     }
-    /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function index(User $user)
+
+    public function title($id)
     {
-        if(auth('api')->check()
-        && (auth('api')->id()===$user->id
-        || auth('api')->user()->isAdmin())){
-            $titles = $user->titles()->paginate(config('constants.index_per_page'));
+        $user = CacheUser::user($id);
+        if(!$user){abort(404);}
+        if(auth('api')->check()&&(auth('api')->id()===$id||auth('api')->user()->isAdmin())){
+            $user_titles = $user->titles;
         }else{
-            $titles = $user->publicTitles()->paginate(config('constants.index_per_page'));
+            $user_titles = $user->public_titles;
         }
-
-        return response()->success([
-            'user'=> new UserBriefResource($user->load('mainTitle')),
-            'titles' => TitleResource::collection($titles),
-            'paginate' => new PaginateResource($titles),
-        ]);
-
-    }
-
-
-    /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  \App\Title  $title
-    * @return \Illuminate\Http\Response
-    */
-    public function update(User $user, Title $title, Request $request)
-    {
-        if(auth('api')->id()!=$user->id
-            &&!auth('api')->user()->isAdmin()){
-            abort(403);
-        }
-
-        $titleStatus = auth('api')->user()->titleStatus($title->id);
-        if(!$titleStatus){abort(412);}
-
-        switch ($request->option) {
-            case 'wear'://佩戴头衔
-            $user->wearTitle($title->id);
-            $user->titles()->updateExistingPivot($title->id, ['is_public'=>true]);
-            break;
-            case 'public'://公开头衔
-            $user->titles()->updateExistingPivot($title->id, ['is_public'=>true]);
-            break;
-            case 'hide'://隐藏头衔
-            $user->titles()->updateExistingPivot($title->id, ['is_public'=>false]);
-            break;
-            default://默认按时间顺序排列，最早的在前面
-            abort(422,'option is not allowed');
-        }
-
-        $user->load('mainTitle');
-        $titleStatus = auth('api')->user()->titleStatus($title->id);
-
         return response()->success([
             'user' => new UserBriefResource($user),
-            'title' => new TitleResource($titleStatus),
+            'titles' => TitleResource::collection($user_titles),
         ]);
+    }
+
+    public function wear($title)
+    {
+        $user = auth('api')->user();
+        $title_instance = ConstantObjects::find_title_by_id($title);
+        if(!$user||!$title_instance){abort(404);}
+        if(!is_numeric($title)){abort(422,'名称不合理');}
+        if(!$user->hasTitle($title)){abort(412, '你不具有这个头衔');}
+
+        $user->update(['title_id'=>$title]);
+        return response()->success([
+            'user' => new UserBriefResource($user),
+            'title' => new TitleResource($title_instance),
+        ]);
+    }
+
+    public function redeem_title(Request $request)
+    {
+        $user = auth('api')->user();
+        if($request->redeem_type==="2019winter"){
+            $title = ConstantObjects::find_title_by_id(config('constants.task_titles.2019winter'));
+            if($title&&$title->check_availability($user->id)){
+                $user->titles()->syncWithoutDetaching($title->id);
+                return response()->success([
+                    'user' => new UserBriefResource($user),
+                    'title' => new TitleResource($title),
+                ]);
+            }
+        }
+        abort(420);//什么都没做
     }
 
 }

@@ -13,18 +13,13 @@ class VoteResource extends JsonResource
     * @param  \Illuminate\Http\Request  $request
     * @return array
     */
-    protected $isAdmin;
-
-    public function isAdmin($isAdmin){
-        $this->isAdmin = $isAdmin;
-        return $this;
-    }
     public function toArray($request)
     {
+        $author = [];
+        $receiver = [];
         if ($this->showUser($this)){
             $author = new UserBriefResource($this->whenLoaded('author'));
-        }else{
-            $author = [];
+            $receiver = new UserBriefResource($this->whenLoaded('receiver'));
         }
         return [
             'type' => 'vote',
@@ -36,6 +31,7 @@ class VoteResource extends JsonResource
                 'created_at' => (string)$this->created_at,
             ],
             'author' => $author,
+            'receiver' => $receiver,
         ];
     }
 
@@ -48,7 +44,7 @@ class VoteResource extends JsonResource
     }
 
     private function showUser($vote){
-        return $this->isUpvote($vote->attitude)||$this->isOwnVote($vote->user_id)||$this->isAdmin;
+        return $this->isUpvote($vote->attitude)||$this->isOwnVote($vote->user_id)||auth('api')->user()->isAdmin();
     }
 
 }

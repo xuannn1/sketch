@@ -26,6 +26,10 @@ class TitleResource extends JsonResource
                 'description' => (string)$this->description,
                 'user_count' => (int)$this->user_count,
                 'is_public' => $is_public,
+                'style_id' => (int)$this->style_id,
+                'type' => (string)$this->type,
+                'level' => (int)$this->level,
+                'style_type' => (string)$this->style_type,
             ]
         ];
     }

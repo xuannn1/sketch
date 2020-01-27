@@ -14,9 +14,10 @@ class CreateTagThreadTable extends Migration
     public function up()
     {
         Schema::create('tag_thread', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('thread_id')->index();
             $table->unsignedInteger('tag_id')->index();
-            $table->primary(['thread_id', 'tag_id']);
+            $table->unique(['thread_id', 'tag_id']);
         });
     }
 
