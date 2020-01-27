@@ -25,8 +25,10 @@ Route::post('register_by_invitation', 'API\PassportController@register_by_invita
 Route::post('login', 'API\PassportController@login')->name('login');
 Route::post('logout', 'API\PassportController@logout')->name('logout');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::post('password/reset_via_email', 'API\PassportController@reset_via_email');
-Route::post('password/reset_via_password', 'API\PassportController@reset_via_password');
+Route::patch('password/reset_via_email', 'API\PassportController@reset_password_via_email');
+Route::patch('password/reset_via_password', 'API\PassportController@reset_password_via_password');
+Route::patch('email/reset_via_password', 'API\PassportController@reset_email_via_password');//修改个人邮箱
+Route::get('email/reset_via_password/{token}', 'API\PassportController@reset_email_via_token');//确认个人邮箱为本人
 
 // 输入邮箱申请测试答题
 Route::post('register/by_invitation_email/submit_email', 'API\RegAppController@submit_email'); // 输入邮箱尝试注册
@@ -48,8 +50,10 @@ Route::get('/', 'API\PageController@home')->name('home');// 网站首页
 Route::get('config/allTags', 'API\PageController@allTags');
 Route::get('config/allChannels', 'API\PageController@allChannels');
 Route::get('config/allTitles', 'API\PageController@allTitles');
+Route::get('config/system', 'API\PageController@system');
 
 // 讨论串/讨论楼/讨论帖
+Route::get('/thread_index', 'API\ThreadController@thread_index');//某个版面的讨论贴，或者书评/问答列表
 Route::get('/channel/{channel}', 'API\ThreadController@channel_index')->middleware('filter_channel');//某个版面的讨论贴，或者书评/问答列表
 
 Route::apiResource('thread', 'API\ThreadController');
@@ -61,7 +65,7 @@ Route::get('/book','API\BookController@index');// 文库目录和筛选
 Route::get('/books/{thread}', 'API\BookController@redirect')->name('book.redirect');// 往期书籍遗留导航
 Route::patch('/thread/{thread}/update_tongren', 'API\BookController@update_tongren');
 
-Route::patch('/thread/{thread}/update_component_index', 'API\ComponentController@update_component_index');
+Route::patch('/thread/{thread}/update_component_index', 'API\ComponentController@update_component_index');//书籍重排序
 
 Route::apiResource('/thread/{thread}/post', 'API\PostController')->only(['show', 'store'])->middleware('filter_thread');
 Route::apiResource('/post', 'API\PostController')->only(['update', 'destroy']);
@@ -72,9 +76,25 @@ Route::patch('/post/{post}/convert', 'API\ComponentController@convert');// 将�
 Route::patch('/post/{post}/fold', 'API\PostController@fold');
 
 // 用户
-Route::apiResource('user', 'API\UserController');
-Route::get('user/{user}/thread', 'API\UserController@showthread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
-Route::patch('user/{user}/profile', 'API\UserController@updateProfile');//
+Route::apiResource('/user', 'API\UserController')->only(['index', 'show', 'destroy']);
+
+// 用户个人管理
+Route::patch('user/{user}/intro', 'API\UserController@updateIntro');//修改个人简介
+Route::get('user/{user}/info', 'API\UserController@getInfo');// 获取用户的个人偏好信息
+Route::patch('user/{user}/info', 'API\UserController@updateInfo');//修改个人偏好
+Route::delete('user/{user}', 'API\UserController@destroy');//用户注销
+
+//用户的个人内容
+Route::get('user/{user}/thread', 'API\UserController@showThread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
+Route::get('user/{user}/post', 'API\UserController@showPost');// 展示某用户的全部post，当本人或管理查询时，允许出现匿名post
+Route::get('user/{user}/status', 'API\UserController@showStatus');// 展示某用户的全部status，当本人或管理查询时，允许出现匿名post
+Route::get('user/{user}/quote', 'API\UserController@showQuote');// 展示某用户的全部quote，当本人或管理查询时，允许出现匿名quote
+
+// 签到
+Route::get('qiandao', 'API\QiandaoController@qiandao');// 签到
+Route::get('qiandao/complement', 'API\QiandaoController@complement_qiandao');// 补签
+// TODO 未来可能制作签到日历，增加其他内容
+
 
 // 关注
 Route::get('user/{user}/follower', 'API\FollowerController@follower');//展示该用户的所有粉丝
@@ -102,7 +122,9 @@ Route::patch('status/{status}/no_reply', 'API\StatusController@no_reply');//作�
 Route::get('follow_status', 'API\StatusController@follow_status');//关注的人的动态
 
 // 题头部分
-Route::post('quote', 'API\QuoteController@store');
+Route::apiResource('quote', 'API\QuoteController')->only(['index','show','store','destroy']);
+
+Route::patch('/quote/{quote}/review','QuoteController@review')->name('quote.review');//审核单独题头
 
 // 私信部分
 Route::get('/user/{user}/message', 'API\MessageController@index');// 展示某用户的信箱，仅允许本人和管理员查询
@@ -114,7 +136,7 @@ Route::post('publicnotice', 'API\MessageController@publicnotice');//管理员发
 Route::get('/user/{user}/activity', 'API\ActivityController@index');// 展示某用户的站内提醒，仅允许本人和管理员查询
 Route::post('/clearupdates', 'API\ActivityController@clearupdates');// 清除未读提醒
 
-// 阅读历史保存
+// 阅读历史保存?
 
 // 投票
 Route::apiResource('vote', 'API\VoteController')->only(['index', 'store', 'destroy']);
@@ -129,6 +151,30 @@ Route::get('/user/{user}/reward_sent','API\RewardController@sent');//我给出�
 Route::get('/user/{user}/reward_received','API\RewardController@received');//我收到的评票
 
 // 头衔
-Route::get('user/{user}/mytitle', 'API\TitleController@mytitle');
+Route::get('user/{user}/title', 'API\TitleController@title');
 Route::post('wearTitle/{title}', 'API\TitleController@wear');
 Route::post('redeemTitle', 'API\TitleController@redeem_title');
+
+// 作业列表
+Route::apiResource('homework', 'API\HomeworkController')->only(['index', 'store', 'update', 'destroy']);
+Route::get('/user/{user}/homework','API\HomeworkController@userHomework');
+// 用户参加作业
+Route::get('/user/{user}/homework_invitation','API\HomeworkController@userHomeworkInvitation');
+// 用户作业邀请
+Route::post('/homework/{homework}/register', 'API\HomeworkController@register');//用户注册参加作业
+Route::post('/homework/{homework}/submit', 'API\HomeworkController@submit');//用户提交作业
+Route::post('/homework/{homework}/submit_work', 'API\HomeworkController@submitWork');//用户提交作业
+Route::patch('/homework_registration/{homework_registration}/mark_as_finished', 'API\HomeworkController@markAsFinished');//用户标记作业结束
+Route::patch('/homework/{homework}/deactivate', 'API\HomeworkController@deactivate');//管理员终止作业
+Route::patch('/homework/{homework}/send_reward', 'API\HomeworkController@send_reward');//管理员终发放奖励
+Route::patch('/homework_registration/{homework_registration}/manage_registration', 'API\HomeworkController@manage_registration');//管理员修改注册详情
+
+// 帮助FAQ管理
+Route::apiResource('helpfaq', 'API\FAQController')->only(['index', 'store', 'update', 'destroy']);
+
+Route::apiResource('quiz', 'API\QuizController');
+Route::get('take_quiz','API\QuizController@takeQuiz');
+Route::get('submit_quiz','API\QuizController@submitQuiz');
+
+// 标签系统管理
+Route::apiResource('tag', 'API\TagController');

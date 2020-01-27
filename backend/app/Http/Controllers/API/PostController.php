@@ -13,6 +13,7 @@ use App\Http\Resources\ThreadBriefResource;
 use App\Http\Resources\PaginateResource;
 use App\Sosadfun\Traits\PostObjectTraits;
 use App\Sosadfun\Traits\ThreadObjectTraits;
+use App\Events\NewPost;
 
 
 class PostController extends Controller
@@ -45,6 +46,9 @@ class PostController extends Controller
         if(auth('api')->user()->no_posting){abort(403,'禁言中');}
 
         $post = $form->storePost($thread);
+
+        event(new NewPost($post));
+
         $post = $this->postProfile($post->id);
         return response()->success(new PostResource($post));
     }

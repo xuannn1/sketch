@@ -33,7 +33,7 @@ class ThreadController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show','channel_index']);
+        $this->middleware('auth:api')->except(['index', 'show','channel_index', 'thread_index']);
         $this->middleware('filter_thread')->only('show');
     }
 
@@ -60,6 +60,31 @@ class ThreadController extends Controller
             'threads' => ThreadInfoResource::collection($threads),
             'paginate' => new PaginateResource($threads),
             'request_data' => $request_data,
+        ]);
+    }
+
+    public function thread_index(Request $request)
+    {
+        if($request->page&&!auth('api')->check()){abort(401);}
+
+        $page = is_numeric($request->page)? $request->page:'1';
+        $time = 10;
+        if($page==1){$time=2;}
+        $threads = Cache::remember('thread_index_P'.$page, $time, function () use($page) {
+            return $threads = Thread::with('author', 'tags', 'last_post')
+            ->isPublic()
+            ->inPublicChannel()
+            ->withoutType('book')
+            ->ordered()
+            ->paginate(config('preference.threads_per_page'))
+            ->appends(['page'=>$page]);
+        });
+        $simple_threads = $this->jinghua_threads();
+
+        return response()->success([
+            'simple_threads' => ThreadInfoResource::collection($simple_threads),
+            'threads' => ThreadInfoResource::collection($threads),
+            'paginate' => new PaginateResource($threads),
         ]);
     }
 

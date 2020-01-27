@@ -106,7 +106,7 @@ class NewPostListener
                 ]);
                 $thread->user->remind('new_reply');
             }
-            
+
             // 修改惯用马甲，惯用indentation
             $post->user->created_new_post($post);
         });

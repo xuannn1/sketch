@@ -17,10 +17,10 @@ class TitleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except('mytitle');
+        $this->middleware('auth:api')->except('title');
     }
 
-    public function mytitle($id)
+    public function title($id)
     {
         $user = CacheUser::user($id);
         if(!$user){abort(404);}

@@ -232,7 +232,7 @@ export namespace ResData {
     };
   }
 
-  export function allocMessageBody () : Message {
+  export function allocMessageBody () : MessageBody {
     return {
       type: 'message_body',
       id: 0,
@@ -289,6 +289,10 @@ export namespace ResData {
         name: '',
         description: '',
         user_count: 0,
+        style_id:0,
+        type:'',
+        level:0,
+        style_type:'',
       },
     };
   }
