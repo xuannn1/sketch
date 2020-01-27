@@ -22,10 +22,10 @@ class QuizResource extends JsonResource
                 'body' => (string)$this->body,
                 'hint' => (string)$this->hint,
                 $this->mergeWhen(auth('api')->user() && auth('api')->user()->isAdmin(), [
-                    'type' => $this->type,
-                    'level' => $this->quiz_level,
-                    'quiz_count' => $this->quiz_count,
-                    'correct_count' => $this->correct_count,
+                    'type' => (string)$this->type,
+                    'level' => (int)$this->quiz_level,
+                    'quiz_count' => (int)$this->quiz_count,
+                    'correct_count' => (int)$this->correct_count,
                     'edited_at' => (string)$this->edited_at
                 ]),
                 'options' => QuizOptionResource::collection($this->random_options)
