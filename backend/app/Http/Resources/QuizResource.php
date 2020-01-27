@@ -15,8 +15,14 @@ class QuizResource extends JsonResource
      */
     public function toArray($request)
     {
+        $quiz_type = '';
+        if ($this->type == "register") {
+            $quiz_type = 'quiz';
+        } elseif ($this->type == "essay") {
+            $quiz_type = 'essay';
+        }
         return [
-            'type' => 'quiz',
+            'type' => $quiz_type,
             'id' => (int)$this->id,
             'attributes' => [
                 'body' => (string)$this->body,
@@ -28,7 +34,7 @@ class QuizResource extends JsonResource
                     'correct_count' => (int)$this->correct_count,
                     'edited_at' => (string)$this->edited_at
                 ]),
-                'options' => QuizOptionResource::collection($this->random_options)
+                'options' => $this->when($quiz_type == 'quiz', QuizOptionResource::collection($this->random_options))
             ]
         ];
     }

@@ -180,10 +180,7 @@ class RegistrationApplication extends Model
                 'reviewed_at' => null,
             ]);
         }
-        return [
-            "body" => $quiz->body,
-            "hint" => $quiz->hint
-        ];
+        return $quiz;
     }
 
     public function assign_email_token()

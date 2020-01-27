@@ -14,6 +14,7 @@ use Validator;
 use Cache;
 use App\Http\Resources\QuizResource;
 use App\Http\Resources\QuizOptionResource;
+use App\Http\Resources\RegistrationApplicationResource;
 
 class RegAppController extends Controller
 {
@@ -85,103 +86,26 @@ class RegAppController extends Controller
             $this->refreshFindApplicationViaEmail($request->email);
         }
 
-        if(!$application->is_passed&&!$application->cut_in_line&&!$application->has_quizzed){
-            $success['registration_application'] = [
-                "id" => $application->id,
-                "type" => "registration_application",
-                "attributes" => [
-                    "quizzed_" => false,
-                    'email_email_verified_' => false,
-                    'essay_submitted_' => false,
-                    'passed_' => false,
-                ]
-            ];
+        $success['registration_application'] = [
+            "id" => $application->id,
+            "type" => "registration_application",
+            "attributes" => new RegistrationApplicationResource($application)
+        ];
 
+        if(!$application->is_passed&&!$application->cut_in_line&&!$application->has_quizzed){
             $quizzes = $this->random_quizzes(-1, 'register', config('constants.registration_quiz_total'));
             $quiz_questions = implode(",", $quizzes->pluck('id')->toArray());
             $application ->update(['quiz_questions' => $quiz_questions]);
-            $this->refreshFindApplicationViaEmail($request->email);
 
             $success['quizzes'] = QuizResource::collection($quizzes);
-            return response()->success($success);
-        }
-
-        if(!$application->email_verified_at&&!$application->cut_in_line&&!$application->last_invited_at){
-            $success['registration_application'] = [
-                "id" => $application->id,
-                "type" => "registration_application",
-                "attributes" => [
-                    "quizzed_" => true,
-                    'email_email_verified_' => false,
-                    'essay_submitted_' => false,
-                    'passed_' => false,
-                    'msg_' => '未验证邮箱，请输入邮箱验证码。'
-                ]
-            ];
-            $this->refreshFindApplicationViaEmail($request->email);
-            return response()->success($success);
         }
 
         if($application->email_verified_at&&!$application->is_passed&&!$application->cut_in_line&&$application->has_quizzed&&!$application->submitted_at){
             $essay = $application->assign_essay_question();
-            $this->refreshFindApplicationViaEmail($request->email);
-            $success['registration_application'] = [
-                "id" => $application->id,
-                "type" => "registration_application",
-                "attributes" => [
-                    "quizzed_" => true,
-                    'email_email_verified_' => true,
-                    'essay_submitted_' => false,
-                    'essay_topic_' => $essay['body'],
-                    'essay_hint' => $essay['hint'],
-                    'passed_' => false,
-                ]
-            ];
-            return response()->success($success);
+            $success['essay'] = new QuizResource($essay);
         }
 
-        if($application->cut_in_line||$application->is_passed||$application->last_invited_at){
-            $success['registration_application'] = [
-                "id" => $application->id,
-                "type" => "registration_application",
-                "attributes" => [
-                    "quizzed_" => true,
-                    'email_email_verified_' => true,
-                    'essay_submitted_' => true,
-                    'passed_' => true,
-                    'msg_' => '你已通过申请，无需重复申请。'
-                ]
-            ];
-            $this->refreshFindApplicationViaEmail($request->email);
-            return response()->success($success);
-        }
-        if($application->submitted_at&&$application->submitted_at > Carbon::now()->subDays(config('constants.application_cooldown_days'))){
-            $success['registration_application'] = [
-                "id" => $application->id,
-                "type" => "registration_application",
-                "attributes" => [
-                    "quizzed_" => true,
-                    'email_email_verified_' => true,
-                    'essay_submitted_' => true,
-                    'passed_' => false,
-                    'msg_' => '申请排队中，请耐心等待，勿更换邮箱重复提交申请，重复提交会进入黑名单。'
-                ]
-            ];
-            $this->refreshFindApplicationViaEmail($request->email);
-            return response()->success($success);
-        }
 
-        $success['registration_application'] = [
-            "id" => $application->id,
-            "type" => "registration_application",
-            "attributes" => [
-                "quizzed_" => true,
-                'email_email_verified_' => true,
-                'essay_submitted_' => true,
-                'passed_' => false,
-                'msg_' => '很抱歉你没有通过申请。'
-            ]
-        ];
         $this->refreshFindApplicationViaEmail($request->email);
         return response()->success($success);
     }
