@@ -19,6 +19,9 @@ use App\Http\Resources\RegistrationApplicationResource;
 class RegAppController extends Controller
 {
 
+    use RegistrationApplicationObjectTraits;
+    use QuizObjectTraits;
+
     public function __construct()
     {
         $this->middleware('guest');
@@ -36,9 +39,6 @@ class RegAppController extends Controller
             'email' => 'required|string|email|max:255',
         ]);
     }
-
-    use RegistrationApplicationObjectTraits;
-    use QuizObjectTraits;
 
     public function submit_email(Request $request)
     {
