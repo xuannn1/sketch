@@ -11,8 +11,7 @@ trait QuizObjectTraits{
     public static function random_quizzes($level=-1, $quizType='', $number=5)
     {
         return Cache::remember('random_quizzes'.'|level:'.$level.'|type:'.$quizType.'|number:'.$number, 3, function () use ($level, $quizType, $number) {
-            return Quiz::with('random_options')
-            ->withQuizLevel($level)
+            return Quiz::withQuizLevel($level)
             ->withQuizType($quizType)
             ->isOnline()
             ->inRandomOrder()

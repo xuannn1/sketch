@@ -2,20 +2,100 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\RegistrationApplication;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Sosadfun\Traits\RegistrationApplicationObjectTraits;
+use App\Sosadfun\Traits\QuizObjectTraits;
+use Validator;
+use Cache;
+use App\Http\Resources\QuizResource;
+use App\Http\Resources\QuizOptionResource;
+use App\Http\Resources\RegistrationApplicationResource;
 
 class RegAppController extends Controller
 {
+
+    use RegistrationApplicationObjectTraits;
+    use QuizObjectTraits;
+
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'email' => 'required|string|email|max:255',
+        ]);
+    }
+
     public function submit_email(Request $request)
     {
-        //TODO: 如果是黑名单邮箱，直接拒绝
-        // TODO：如果未注册过，增加新的申请记录，并且新建一套测试题，返回测试题的题目要求回答
-        // TODO：如果未注册过，已答题，未验证邮箱，告诉对方需要提交邮箱确认码
-        // TODO：如果已经验证邮箱，提供小论文题目
-        // TODO：如果已经验证邮箱，而且已经提交申请，返回当前申请进度供查询
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            return response()->error($validator->errors(), 422);
+        }
+
+        if(Cache::has('IP-refresh-limit-' . request()->ip())){
+            abort(498);
+        }
+        Cache::put('IP-refresh-limit-' . request()->ip(), true, 5);
+
+        $message = $this->checkApplicationViaEmail($request->email);
+        if ($message['code'] != 200) {
+            abort($message['code'],$message['msg']);
+        }
+
+        $application = $this->findApplicationViaEmail($request->email);
+
+        if(!$application){
+
+            if(preg_match('/qq\.com/', $request->email)){
+                return response()->error('qq邮箱拒收本站邮件，请勿使用qq邮箱。', 422);
+            }
+
+            if(preg_match('/\.con$/', $request->email)){
+                return response()->error('请确认邮箱拼写正确。', 422);
+            }
+
+            $application = RegistrationApplication::UpdateOrCreate([
+                'email' => $request->email,
+            ],[
+                'ip_address' => request()->ip(),
+                'email_token' => str_random(10),
+                'token' => str_random(35),
+            ]);
+            $this->refreshCheckApplicationViaEmail($request->email);
+            $this->refreshFindApplicationViaEmail($request->email);
+        }
+
+        $success['registration_application'] = new RegistrationApplicationResource($application);
+
+        if(!$application->is_passed&&!$application->cut_in_line&&!$application->has_quizzed){
+            $quizzes = $this->random_quizzes(-1, 'register', config('constants.registration_quiz_total'));
+            $quiz_questions = implode(",", $quizzes->pluck('id')->toArray());
+            $application ->update(['quiz_questions' => $quiz_questions]);
+
+            $success['quizzes'] = QuizResource::collection($quizzes);
+        } elseif($application->email_verified_at&&!$application->is_passed&&!$application->cut_in_line&&$application->has_quizzed&&!$application->submitted_at){
+            $essay = $application->assign_essay_question();
+            $success['essay'] = new QuizResource($essay);
+        }
+
+        $this->refreshFindApplicationViaEmail($request->email);
+        return response()->success($success);
     }
 
     public function submit_quiz(Request $request)
@@ -48,56 +128,56 @@ class RegAppController extends Controller
     // 以下都是过度系统的内容，供参考业务逻辑
     // public function register_by_invitation_email_submit_email(Request $request)
     // {
-    //     $this->validate($request, [
-    //         'email' => 'required|string|email|max:255',
-    //         'g-recaptcha-response' => 'required|nocaptcha'
-    //     ]);
-    //
-    //     if(Cache::has('IP-refresh-limit-' . request()->ip())){
-    //         return redirect('/')->with('danger', '本IP（'.request()->ip().'）在5分钟内已访问过注册申请页面，请等待至少5分钟后再重新访问');
-    //     }
-    //     Cache::put('IP-refresh-limit-' . request()->ip(), true, 5);
-    //
-    //     $message = $this->checkApplicationViaEmail($request->email);
-    //
-    //     if(!array_key_exists('success', $message)){return back()->with($message);}
-    //
-    //     $application = $this->findApplicationViaEmail($request->email);
-    //
-    //     if(!$application){
-    //
-    //         if(preg_match('/qq\.com/', $request->email)){
-    //             return redirect()->route('register.by_invitation_email.submit_email_form')->with('danger', 'qq邮箱拒收本站邮件，请勿使用qq邮箱。');
-    //         }
-    //
-    //         if(preg_match('/\.con$/', $request->email)){
-    //             return redirect()->route('register.by_invitation_email.submit_email_form')->with('danger', '请确认邮箱拼写正确。');
-    //         }
-    //
-    //         $application = RegistrationApplication::UpdateOrCreate([
-    //             'email' => $request->email,
-    //         ],[
-    //             'ip_address' => request()->ip(),
-    //             'email_token' => str_random(10),
-    //             'token' => str_random(35),
-    //         ]);
-    //         $this->refreshCheckApplicationViaEmail($request->email);
-    //         $this->refreshFindApplicationViaEmail($request->email);
-    //     }
-    //
-    //     if(!$application->is_passed&&!$application->cut_in_line&&!$application->has_quizzed){
-    //         return redirect()->route('register.by_invitation_email.take_quiz_form',['email'=>$request->email]);
-    //     }
-    //
-    //     if(!$application->email_verified_at&&!$application->cut_in_line&&!$application->last_invited_at){
-    //         return redirect()->route('register.by_invitation_email.submit_email_verification_form',['email'=>$request->email]);
-    //     }
-    //
-    //     if($application->email_verified_at&&!$application->is_passed&&!$application->cut_in_line&&$application->has_quizzed&&!$application->submitted_at){
-    //         return redirect()->route('register.by_invitation_email.submit_essay_form',['email'=>$request->email]);
-    //     }
-    //
-    //     return view('auth.registration.by_invitation_email.application_result', compact('application'));
+//         $this->validate($request, [
+//             'email' => 'required|string|email|max:255',
+//             'g-recaptcha-response' => 'required|nocaptcha'
+//         ]);
+//
+//         if(Cache::has('IP-refresh-limit-' . request()->ip())){
+//             return redirect('/')->with('danger', '本IP（'.request()->ip().'）在5分钟内已访问过注册申请页面，请等待至少5分钟后再重新访问');
+//         }
+//         Cache::put('IP-refresh-limit-' . request()->ip(), true, 5);
+//
+//         $message = $this->checkApplicationViaEmail($request->email);
+//
+//         if(!array_key_exists('success', $message)){return back()->with($message);}
+//
+//         $application = $this->findApplicationViaEmail($request->email);
+//
+//         if(!$application){
+//
+//             if(preg_match('/qq\.com/', $request->email)){
+//                 return redirect()->route('register.by_invitation_email.submit_email_form')->with('danger', 'qq邮箱拒收本站邮件，请勿使用qq邮箱。');
+//             }
+//
+//             if(preg_match('/\.con$/', $request->email)){
+//                 return redirect()->route('register.by_invitation_email.submit_email_form')->with('danger', '请确认邮箱拼写正确。');
+//             }
+//
+//             $application = RegistrationApplication::UpdateOrCreate([
+//                 'email' => $request->email,
+//             ],[
+//                 'ip_address' => request()->ip(),
+//                 'email_token' => str_random(10),
+//                 'token' => str_random(35),
+//             ]);
+//             $this->refreshCheckApplicationViaEmail($request->email);
+//             $this->refreshFindApplicationViaEmail($request->email);
+//         }
+//
+//         if(!$application->is_passed&&!$application->cut_in_line&&!$application->has_quizzed){
+//             return redirect()->route('register.by_invitation_email.take_quiz_form',['email'=>$request->email]);
+//         }
+//
+//         if(!$application->email_verified_at&&!$application->cut_in_line&&!$application->last_invited_at){
+//             return redirect()->route('register.by_invitation_email.submit_email_verification_form',['email'=>$request->email]);
+//         }
+//
+//         if($application->email_verified_at&&!$application->is_passed&&!$application->cut_in_line&&$application->has_quizzed&&!$application->submitted_at){
+//             return redirect()->route('register.by_invitation_email.submit_essay_form',['email'=>$request->email]);
+//         }
+//
+//         return view('auth.registration.by_invitation_email.application_result', compact('application'));
     //
     // }
     //
@@ -158,15 +238,15 @@ class RegAppController extends Controller
     //     if(!$application||$application->is_forbidden||!$application->has_quizzed||!$application->email_verified_at){
     //         return redirect()->route('register.by_invitation_email.submit_email_form')->with('warning','你有待完成的步骤，不能回答问卷。请输入邮箱，重新查询申请状态。友情提醒，申请中请勿使用浏览器回退功能。');
     //     }
-    //     if($application->cut_in_line||$application->is_passed||$application->last_invited_at){
-    //         return redirect()->route('register.by_invitation_email.submit_email_form')->with('info','你已通过申请，无需重复申请。请输入邮箱，重新查询申请状态。友情提醒，申请中请勿使用浏览器回退功能。');
-    //     }
-    //     if($application->submitted_at&&$application->submitted_at > Carbon::now()->subDays(config('constants.application_cooldown_days'))){
-    //         return redirect()->route('register.by_invitation_email.submit_email_form')->with('warning','申请排队中，请耐心等待，勿更换邮箱重复提交申请，重复提交会进入黑名单。');
-    //     }
+//         if($application->cut_in_line||$application->is_passed||$application->last_invited_at){
+//             return redirect()->route('register.by_invitation_email.submit_email_form')->with('info','你已通过申请，无需重复申请。请输入邮箱，重新查询申请状态。友情提醒，申请中请勿使用浏览器回退功能。');
+//         }
+//         if($application->submitted_at&&$application->submitted_at > Carbon::now()->subDays(config('constants.application_cooldown_days'))){
+//             return redirect()->route('register.by_invitation_email.submit_email_form')->with('warning','申请排队中，请耐心等待，勿更换邮箱重复提交申请，重复提交会进入黑名单。');
+//         }
     //     if($application->essay_question_id===0||($application->submitted_at&&$application->submitted_at<Carbon::now()->subDays(config('constants.application_cooldown_days')))){
-    //         $application->assign_essay_question();
-    //         $this->refreshFindApplicationViaEmail($request->email);
+//             $application->assign_essay_question();
+//             $this->refreshFindApplicationViaEmail($request->email);
     //     }
     //     return view('auth.registration.by_invitation_email.submit_essay_form', compact('application'));
     // }
@@ -195,22 +275,22 @@ class RegAppController extends Controller
     //     return redirect()->route('register.by_invitation_email.submit_email_form')->with('success','成功提交申请，请耐心等待审核通过。');
     // }
     //
-    // public function register_by_invitation_email_take_quiz_form(Request $request){
-    //     if(Cache::has('Ratelimit-email-application-quiz-form' . $request->email)){
-    //         return redirect('/')->with('danger', '你在5分钟内已经尝试过答题，请稍后再答');
-    //     }
-    //     Cache::put('Ratelimit-email-application-quiz-form' . $request->email, true, 5);
-    //
-    //     $application = $this->findApplicationViaEmail($request->email);
-    //     if(!$application||$application->cut_in_line||$application->is_passed||$application->has_quizzed||$application->is_forbidden){
-    //         return redirect()->route('register.by_invitation_email.submit_email_form')->with('danger','页面数据失效，请输入邮箱，重新查询申请状态。友情提醒，申请中请勿使用浏览器回退功能。');
-    //     }
-    //     $quizzes = $this->random_quizzes(-1, 'register', config('constants.registration_quiz_total'));
-    //     $quiz_questions = implode(",", $quizzes->pluck('id')->toArray());
-    //     $application ->update(['quiz_questions' => $quiz_questions]);
-    //     $this->refreshFindApplicationViaEmail($request->email);
-    //     return view('auth.registration.by_invitation_email.take_quiz_form', compact('application', 'quizzes'));
-    // }
+//     public function register_by_invitation_email_take_quiz_form(Request $request){
+//         if(Cache::has('Ratelimit-email-application-quiz-form' . $request->email)){
+//             return redirect('/')->with('danger', '你在5分钟内已经尝试过答题，请稍后再答');
+//         }
+//         Cache::put('Ratelimit-email-application-quiz-form' . $request->email, true, 5);
+//
+//         $application = $this->findApplicationViaEmail($request->email);
+//         if(!$application||$application->cut_in_line||$application->is_passed||$application->has_quizzed||$application->is_forbidden){
+//             return redirect()->route('register.by_invitation_email.submit_email_form')->with('danger','页面数据失效，请输入邮箱，重新查询申请状态。友情提醒，申请中请勿使用浏览器回退功能。');
+//         }
+//         $quizzes = $this->random_quizzes(-1, 'register', config('constants.registration_quiz_total'));
+//         $quiz_questions = implode(",", $quizzes->pluck('id')->toArray());
+//         $application ->update(['quiz_questions' => $quiz_questions]);
+//         $this->refreshFindApplicationViaEmail($request->email);
+//         return view('auth.registration.by_invitation_email.take_quiz_form', compact('application', 'quizzes'));
+//     }
     //
     // public function register_by_invitation_email_take_quiz(Request $request){
     //     if(Cache::has('Ratelimit-email-application-quiz' . $request->email)){
