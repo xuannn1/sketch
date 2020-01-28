@@ -118,8 +118,8 @@ class RegAppController extends Controller
         Cache::put('IP-refresh-limit-resend_email_verification-' . request()->ip(), true, 5);
 
         $message = $this->checkApplicationViaEmail($request->email);
-        if (array_key_exists('danger', $message)) {
-            abort(499,'该邮箱已被拉黑。');
+        if ($message["code"] != 200) {
+            abort($message["code"],$message["msg"]);
         }
 
         $application = RegistrationApplication::where('email',$request->email)->first();
