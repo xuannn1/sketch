@@ -34,7 +34,7 @@ class QuizResource extends JsonResource
                     'correct_count' => (int)$this->correct_count,
                     'edited_at' => (string)$this->edited_at
                 ]),
-                'options' => $this->when($quiz_type == 'quiz', QuizOptionResource::collection($this->random_options))
+                'options' => $this->when($quiz_type == 'quiz', QuizOptionResource::collection($this->quiz_options))
             ]
         ];
     }

@@ -13,7 +13,7 @@ class Quiz extends Model
 
     public function quiz_options()
     {
-        return $this->hasMany(QuizOption::class, 'quiz_id')->orderBy('created_at', 'asc');
+        return $this->hasMany(QuizOption::class, 'quiz_id')->orderBy('id', 'asc');
     }
     public function random_options()
     {
