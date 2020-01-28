@@ -33,7 +33,7 @@ class RegAppController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255',
         ]);
     }
 
@@ -54,13 +54,8 @@ class RegAppController extends Controller
         Cache::put('IP-refresh-limit-' . request()->ip(), true, 5);
 
         $message = $this->checkApplicationViaEmail($request->email);
-
-        if (array_key_exists('danger', $message)) {
-            abort(499);
-        }
-
-        if (array_key_exists('warning', $message)) {
-            abort(409);
+        if ($message['code'] != 200) {
+            abort($message['code'],$message['msg']);
         }
 
         $application = $this->findApplicationViaEmail($request->email);
