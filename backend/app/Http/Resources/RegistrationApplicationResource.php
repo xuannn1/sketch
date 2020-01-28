@@ -15,13 +15,19 @@ class RegistrationApplicationResource extends JsonResource
      */
     public function toArray($request)
     {
+        $cooldown = (bool)($this->submitted_at > Carbon::now()->subDays(config('constants.application_cooldown_days')));
         return [
-            'email' => (string)$this->email,
-            'has_quizzed' => (bool)$this->has_quizzed,
-            'is_email_verified' => (bool)$this->email_verified_at,
-            'is_essay_submitted' => (bool)$this->submitted_at,
-            'is_in_cooldown' => (bool)($this->submitted_at > Carbon::now()->subDays(config('constants.application_cooldown_days'))),
-            'is_passed' => (bool)$this->is_passed,
+            'id' => $this->id,
+            'type' => 'registration_application',
+            'attributes' => [
+                'email' => (string)$this->email,
+                'has_quizzed' => (bool)$this->has_quizzed,
+                'email_verified_at' => (string)$this->email_verified_at,
+                'submitted_at' => (string)$this->submitted_at,
+                'is_passed' => (bool)$this->is_passed,
+                'last_invited_at' => (string)$this->last_invited_at,
+                'is_in_cooldown' => (bool)$cooldown
+            ]
         ];
     }
 }

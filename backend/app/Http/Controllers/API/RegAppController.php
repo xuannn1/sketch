@@ -48,9 +48,9 @@ class RegAppController extends Controller
             return response()->error($validator->errors(), 422);
         }
 
-        if(Cache::has('IP-refresh-limit-' . request()->ip())){
-            abort(498);
-        }
+//        if(Cache::has('IP-refresh-limit-' . request()->ip())){
+//            abort(498);
+//        }
         Cache::put('IP-refresh-limit-' . request()->ip(), true, 5);
 
         $message = $this->checkApplicationViaEmail($request->email);
@@ -86,11 +86,7 @@ class RegAppController extends Controller
             $this->refreshFindApplicationViaEmail($request->email);
         }
 
-        $success['registration_application'] = [
-            "id" => $application->id,
-            "type" => "registration_application",
-            "attributes" => new RegistrationApplicationResource($application)
-        ];
+        $success['registration_application'] = new RegistrationApplicationResource($application);
 
         if(!$application->is_passed&&!$application->cut_in_line&&!$application->has_quizzed){
             $quizzes = $this->random_quizzes(-1, 'register', config('constants.registration_quiz_total'));
@@ -98,13 +94,10 @@ class RegAppController extends Controller
             $application ->update(['quiz_questions' => $quiz_questions]);
 
             $success['quizzes'] = QuizResource::collection($quizzes);
-        }
-
-        if($application->email_verified_at&&!$application->is_passed&&!$application->cut_in_line&&$application->has_quizzed&&!$application->submitted_at){
+        } elseif($application->email_verified_at&&!$application->is_passed&&!$application->cut_in_line&&$application->has_quizzed&&!$application->submitted_at){
             $essay = $application->assign_essay_question();
             $success['essay'] = new QuizResource($essay);
         }
-
 
         $this->refreshFindApplicationViaEmail($request->email);
         return response()->success($success);
