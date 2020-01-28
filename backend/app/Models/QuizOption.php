@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class QuizOption extends Model
 {
     protected $guarded = [];
+    const UPDATED_AT = null;
 
     public function quiz()
     {
