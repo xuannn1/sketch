@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Http\Resources\QuizOptionResource;
 use App\Models\QuizOption;
 use App\Models\RegistrationApplication;
+use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,21 +19,25 @@ class RegistrationByInvitationEmailTest extends TestCase
             'email' => 'hahahahaha'
         ];
         // 邮箱格式不符合的时候，不允许注册
+        Artisan::call('cache:clear');
         $this->post('api/register/by_invitation_email/submit_email', $data)
             ->assertStatus(422);
 
         // qq邮箱不允许注册
         $data['email'] = 'tester@qq.com';
+        Artisan::call('cache:clear');
         $this->post('api/register/by_invitation_email/submit_email', $data)
             ->assertStatus(422);
 
         // .con 报错
         $data['email'] = 'tester@tester.con';
+        Artisan::call('cache:clear');
         $this->post('api/register/by_invitation_email/submit_email', $data)
             ->assertStatus(422);
 
         // 验证返回题目和格式
-        $data['email'] = 'tester7@tester.com';
+        $data['email'] = $this->faker->email;
+        Artisan::call('cache:clear');
         $response = $this->post('api/register/by_invitation_email/submit_email', $data);
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -89,5 +94,9 @@ class RegistrationByInvitationEmailTest extends TestCase
             $this->assertEquals($options_from_database,$options_from_returned);
         }
         $this->assertEquals($quizzes_questions,implode(",",$returned_quizzes_questions));
+
+        // 验证禁止频繁访问
+        $response = $this->post('api/register/by_invitation_email/submit_email', $data)
+            ->assertStatus(498);
     }
 }

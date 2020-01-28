@@ -32,14 +32,23 @@ trait RegistrationApplicationObjectTraits{
         return Cache::remember('checkApplicationViaEmail.'.$email, 30, function() use($email) {
             $existing_user = DB::table('users')->where('email',$email)->first();
             if($existing_user){
-                return ['warning'=>'该邮箱已注册'];
+                return [
+                    'code' => 409,
+                    'msg'=>'该邮箱已注册。'
+                ];
             }
 
             $blocked_email = ConstantObjects::black_list_emails()->where('email',$email)->first();
             if($blocked_email){
-                return ['danger'=>'本邮箱'.$email.'存在违规记录，已被拉黑。'];
+                return [
+                    'code' => 498,
+                    'msg'=>'本邮箱'.$email.'存在违规记录，已被拉黑。'
+                ];
             }
-            return ['success'=>'本邮箱可用'];
+            return [
+                'code' => 200,
+                'msg'=>'本邮箱可用'
+            ];
         });
     }
 
