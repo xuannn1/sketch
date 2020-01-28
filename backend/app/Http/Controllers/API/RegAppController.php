@@ -112,7 +112,31 @@ class RegAppController extends Controller
 
     public function resend_email_verification(Request $request)
     {
-        //TODO:重新发送确认邮件
+//        if(Cache::has('IP-refresh-limit-resend_email_verification-' . request()->ip())){
+//            abort(498,'访问过于频繁。');
+//        }
+        Cache::put('IP-refresh-limit-resend_email_verification-' . request()->ip(), true, 5);
+
+        $message = $this->checkApplicationViaEmail($request->email);
+        if (array_key_exists('danger', $message)) {
+            abort(499,'该邮箱已被拉黑。');
+        }
+
+        $application = RegistrationApplication::where('email',$request->email)->first();
+        if(!$application) {
+            abort(404,'申请记录不存在。');
+        }
+        if($application->last_invited_at && $application->last_invited_at>=Carbon::now()->subDay(1)) {
+            abort(409,'已成功发信，暂时不能重复发送邮件。');
+        }
+        if(!$application->has_quizzed) {
+            abort(411,'未完成前序步骤，不能发送验证邮件。');
+        }
+        if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0){
+            abort(409,'你已经成功验证过邮箱，不需要重复验证。');
+        }
+        $application->sendVerificationEmail();
+        $this->refreshCheckApplicationViaEmail($request->email);
     }
 
     public function submit_essay(Request $request)
