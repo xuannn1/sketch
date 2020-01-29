@@ -13,15 +13,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Validator;
 use Hash;
+use Redis;
+use Cache;
 
 class ResetEmailTest extends TestCase
 {
     /** @test 
-     * 建议用实际存在的邮箱进行测试 200 的流程
+     *
     */
     public function anyone_can_reset_password_by_email()
     {
         $user = factory('App\Models\User')->create();
+        Cache::flush();
         $data=['email' => $user->email];
         $response = $this->post('api/password/email', $data)
         ->assertStatus(409)//当天注册用户
@@ -31,6 +34,11 @@ class ResetEmailTest extends TestCase
               'email' => $user->email
             ],
         ]);
+
+        $response = $this->post('api/password/email', $data)
+        ->assertStatus(409);//当前ip已于10分钟内提交过重置密码请求。
+
+        Cache::flush();
         $response = $this->post('api/password/email',['email' => '111'] )
         ->assertStatus(422)//邮箱格式错误
         ->assertJson([
@@ -39,6 +47,7 @@ class ResetEmailTest extends TestCase
               "message"=> "validation failed"
          ]
         ]);
+
         $response = $this->post('api/password/email',['email' => '111@163.com'] )
         ->assertStatus(404)//邮箱账户不存在
         ->assertJson([
@@ -47,46 +56,58 @@ class ResetEmailTest extends TestCase
               'email' => '111@163.com'
             ]
         ]);
+
         $user_update=User::where('email',$user->email)->update(['created_at' =>Carbon::now()->subDays(2)]);
+        Cache::flush();
         $response = $this->post('api/password/email', $data)
-        ->assertStatus(200)
-        ->assertJson([
-            'code' => 200,
-            'data' => $data
-        ]);
+        ->assertStatus(200);
+        
+        $token=$response->original['data']['token'];
+        //$user_update=User::where('email',$user->email)->update(['email_verified_at' =>Carbon::now()->subDays(2)]);
+        
+        $request=[
+          'token' => $token,
+          'password' => '111'
+        ];
+        $response = $this->post('api/password/reset_via_email', $request)
+        ->assertStatus(422);    //密码格式错误
 
-    }
+        array_set($request, 'password', '1111111');
+          $response = $this->post('api/password/reset_via_email', [
+            'token' => 'token',
+            'password' => '122111'
+          ])
+          ->assertJson([
+              'code' => 404,
+              'data' => [
+                'token' => 'token'
+              ]
+          ]);    //cache中token不存在或过期  60min
 
-    public function anyone_can_reset_password_by_token()
-    {
-        $user = factory('App\Models\User')->create();
-        $user_update=User::where('email',$user->email)->update(['email_verified_at' =>Carbon::now()->subDays(2)]);
-          $reset=PasswordReset::Create([
-            'email' => $user->email,
-            'token' => bcrypt('807a30c807ce5c9a1e9ae9a30d7e3cb82c87f2e8b30fa7bacabc80a5d651b201'),
-            'created_at' => Carbon::now()->subMinutes(40)
-            ]);
-            $request=[
-              'email' => $user->email,
-              'token' => '807a30c807ce5c9a1e9ae9a30d7e3cb82c87f2e8b30fa7bacabc80a5d651b201',
-              'password' => '111'
-            ];
-            $response = $this->post('api/password/reset', $request)
-            ->assertStatus(422);    //密码格式错误
-            array_set($request, 'password', '1111111');
-              $response = $this->post('api/password/reset', $request)
-              ->assertJson([
-                  'code' => 422,
-                  'data' => $request['token']//'807a30c807ce5c9a1e9ae9a30d7e3cb82c87f2e8b30fa7bacabc80a5d651b201'
-              ]);    //token过期  
-              $user_update=DB::table('password_resets')->where('email',$user->email)->update(
-                [ 'created_at' => Carbon::now()->subMinutes(10)]);
-              $response = $this->post('api/password/reset', $request)
-              //->assertStatus(200)
-              ->assertJson([
-                  'code' => 200,
-                  'data' => '200'
-              ]); 
-             
-              }
-}
+          $user_update=User::where('email',$user->email)->update(['email_verified_at' =>Carbon::now()->subDays(2)]);
+          $response = $this->post('api/password/reset_via_email', [
+            'token' => $token,
+            'password' => '111111'
+          ])
+          ->assertJson([
+              'code' => 200,
+              'data' => [
+                'token' => $token
+              ]
+          ]); 
+          $response = $this->post('api/password/reset_via_email', [
+            'token' => $token,
+            'password' => '111111'
+          ])
+          ->assertStatus(422); //token一次性有效
+          
+    $response =$this->post('api/login',['email'=>$user->email,'password'=>'111111'])
+    ->assertStatus(200)
+    ->assertJsonStructure([
+        'code',
+        'data' => [
+            'token',
+        ],
+    ]);
+  }
+  }

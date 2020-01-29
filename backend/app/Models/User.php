@@ -10,6 +10,7 @@ use App\Sosadfun\Traits\ColumnTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPasswordNotification;
 use App\Helpers\ConstantObjects;
+use Cache;
 
 class User extends Authenticatable
 {
@@ -208,7 +209,9 @@ class User extends Authenticatable
 
     public function sendPasswordResetNotification($token) 
     { 
-     $this->notify(new ResetPasswordNotification($token)); 
+        Cache::put($token, $this->email, 60);
+        Cache::put($this->email,$token, 60);
+        $this->notify(new ResetPasswordNotification($token)); 
     } 
 
 }
