@@ -8,9 +8,9 @@ return [
     '405' => 'method not allowed',//
     '408' => 'content duplication conflict: report from database', //数据库宣布数据内容重复，不能写入
     '409' => 'content duplication conflict', //数据内容重复，邀请链接已经成功注册（可直接登陆），新旧密码重复，已经关注
-    '410' => 'allowed number limit conflict', //不允许建立更多的同类内容了，需要更长时间间隔或者更高等级或更多余额，一日只能打赏一个东西一次
+    '410' => 'allowed number limit conflict', //不允许建立更多的同类内容了，需要更长时间间隔或者更高等级或更多余额，一日只能打赏一个东西一次，同一账户几小时内只能重置密码一次。
     '411' => 'precondition failed due to self input', //由于自身输入的内容，前提失败导致动作无效，不能关注或取关自己，不能给自己发私信，不能即赞又踩
-    '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信, 不能佩戴不具有的头衔，不能打赏超过个人收入的虚拟物
+    '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信, 不能佩戴不具有的头衔，不能打赏超过个人收入的虚拟物，新注册的用户当天不能重置密码。
     '413' => 'precondition failed due to other side setting', //由于对方设置，前提失败导致动作无效，不能发私信给拒绝接收私信的用户，不能访问作者设置私密的讨论，不能收藏申请删除中的书籍/讨论
     '414' => 'precondition failed due to system setting', //由于系统设置，前提失败导致动作无效.
     '416' => 'user further action reqired: needs authentification', // 用户需要激活邮箱才能访问内容
@@ -24,7 +24,7 @@ return [
     '488' => 'forbidden word',//内容中违禁词超过了运作能力（比如标题因违禁词存在变成空白字串）
     '495' => 'did not store in database', //不知为何，数据未能存储
     '497' => 'user temporarily prohibited from certain services',//用户暂时禁言或禁止访问作业区
-    '498' => 'request frequency limit', // 对某页面的访问过于频繁
+    '498' => 'request frequency limit on IP address', // 短时间内，同IP对安全相关页面（注册、重置密码等）的访问过于频繁
     '499' => 'is blocked',//用户因不当行为被站内封禁
     '595' => 'database error',//数据库连接出现问题
     '599' => 'unknown errors',//其他所有未知的问题
