@@ -391,7 +391,7 @@ export class DB {
   }
   public async login (email:string, password:string, backTo?:string) {
     const res = await this._post('/login', {
-      body: {
+      query: {
         email,
         password,
       },

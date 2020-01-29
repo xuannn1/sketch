@@ -27,11 +27,11 @@ export class LoginRoute extends React.Component<MobileRouteProps, State> {
         return <Login login={async (email, pwd) =>
           this.props.location.state &&
           this.props.location.state.from ?
-            await this.props.core.db.login(
+            this.props.core.db.login(
               email,
               pwd,
               this.props.location.state.from) :
-              await this.props.core.db.login(email, pwd) }></Login>;
+              this.props.core.db.login(email, pwd) }></Login>;
       case '/register':
         this.location = 'register';
         return <Register register={async (name, email, pwd) => await this.props.core.db.register({
