@@ -7,11 +7,12 @@
 <body>
     <h1>{{ $application->email }}&nbsp;你好，感谢你提交注册废文网的请求！</h1>
     <h4>为了确保你的邮箱可以接收邀请链接，请首先验证邮箱</h4>
-    <p>请打开注册页面，</p>
-    <p>
-        {{route('register.by_invitation_email.submit_email_form')}}
-    </p>
-    <p>于指定位置输入下列确认码（应为10个随机字母）：</p>
+{{--    <p>请打开注册页面，</p>--}}
+{{--    <p>--}}
+{{--        {{route('register.by_invitation_email.submit_email_form')}}--}}
+{{--    </p>--}}
+{{--    <p>于指定位置输入下列确认码（应为10个随机字母）：</p>--}}
+    <p>请在注册页面的验证码输入框内输入下列确认码（应为10个随机字母）：</p>
     <h3>
         {{$application->email_token}}
     </h3>
