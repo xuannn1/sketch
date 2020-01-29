@@ -19,6 +19,9 @@ use App\Http\Resources\RegistrationApplicationResource;
 class RegAppController extends Controller
 {
 
+    use RegistrationApplicationObjectTraits;
+    use QuizObjectTraits;
+
     public function __construct()
     {
         $this->middleware('guest');
@@ -36,9 +39,6 @@ class RegAppController extends Controller
             'email' => 'required|string|email|max:255',
         ]);
     }
-
-    use RegistrationApplicationObjectTraits;
-    use QuizObjectTraits;
 
     public function submit_email(Request $request)
     {
@@ -103,6 +103,12 @@ class RegAppController extends Controller
         //TODO:提交答题的结果
         //TODO：如果题目不正确，后台题目清零（避免重复刷题）
         //TODO:如果题目正确，给邮箱发送确认邮件
+    }
+
+    public function submit_email_confirmation_token(Request $request)
+    {
+        // TODO: 提交邮箱+确认码
+
     }
 
     public function resend_email_verification(Request $request)

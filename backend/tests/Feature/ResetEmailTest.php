@@ -10,8 +10,8 @@ class ResetEmailTest extends TestCase
     public function anyone_can_reset_password_by_email()
     {
         $user = factory('App\Models\User')->create();
-        $data=['email' => $user->email];
         // TODO 这里需要重新修补test
+         // $data=['email' => $user->email];
         // $response = $this->post('api/password/email', $data)
         // ->assertStatus(403)
         // ->assertJson([

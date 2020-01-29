@@ -12,9 +12,12 @@ use App\Http\Resources\MessageResource;
 use App\Http\Resources\PaginateResource;
 use App\Http\Resources\PublicNoticeResource;
 use CacheUser;
-
+use ConstantObjects;
+use App\Sosadfun\Traits\MessageObjectTraits;
 class MessageController extends Controller
 {
+    use MessageObjectTraits;
+
     public function __construct()
     {
         $this->middleware('auth:api');
@@ -42,11 +45,24 @@ class MessageController extends Controller
 
     public function publicnotice(StoreMessage $form)
     {
+        if(!auth('api')->user()->isAdmin()){abort(403,'管理员才可以发公共消息');}
         $public_notice = $form->generatePublicNotice();
         if(!$public_notice){abort(495);}
+        $this->refreshPulicNotices();
         $public_notice->load('author');
         return response()->success([
             'public_notice' => new PublicNoticeResource($public_notice),
+        ]);
+    }
+
+    public function publicnotice_index()
+    {
+        $info = CacheUser::AInfo();
+        $info->clear_column('public_notice_id');
+        $public_notices = $this->findAllPulicNotices();
+
+        return response()->success([
+            'public_notices' => PublicNoticeResource::collection($public_notices),
         ]);
     }
 
@@ -81,6 +97,5 @@ class MessageController extends Controller
             'messages' => MessageResource::collection($messages),
             'paginate' => new PaginateResource($messages),
         ]);
-
     }
 }
