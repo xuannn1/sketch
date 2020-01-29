@@ -18,7 +18,7 @@ class MessageBodyResource extends JsonResource
             'type' => 'message_body',
             'id' => (int)$this->id,
             'attributes' => [
-                'body' => (int)$this->body,
+                'body' => (string)$this->body,
                 'bulk' => (bool)$this->bulk,
             ],
         ];
