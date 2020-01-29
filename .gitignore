@@ -20,7 +20,6 @@ backend/Homestead.yaml
 backend/npm-debug.log
 backend/.env
 backend/.phpunit.result.cache
-backend/storage/framework/cache
 
 # frontend
 frontend/dist
