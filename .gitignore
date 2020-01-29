@@ -5,8 +5,6 @@
 node_modules
 yarn-error.log
 package-lock.json
-backend/vendor
-
 
 # backend
 backend/public/hot
