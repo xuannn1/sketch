@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Message;
 use App\Models\PublicNotice;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\MessageBodyResource;
 use App\Http\Resources\PaginateResource;
 use App\Http\Resources\PublicNoticeResource;
 use CacheUser;
@@ -37,9 +38,12 @@ class MessageController extends Controller
     {
         $messages = $form->adminSend();
         if(!$messages){abort(495);}
-        $messages->load('message_body','poster','receiver')->except('seen');
+        $messages->load('poster','receiver')->except('seen');
+        $message = $messages[0];
+        $message_body = $message->message_body;
         return response()->success([
             'messages' => MessageResource::collection($messages),
+            'message_body' => new MessageBodyResource($message_body),
         ]);
     }
 

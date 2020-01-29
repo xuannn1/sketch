@@ -150,7 +150,8 @@ class MessageTest extends TestCase
                         'body_id',
                         'created_at',
                     ],
-                ]]
+                ]],
+                'message_body',
             ],
         ])
         ->assertJson([
@@ -162,23 +163,19 @@ class MessageTest extends TestCase
                         'poster_id' => $admin->id,
                         'receiver_id' => $receivers_id[0],
                     ],
-                    'message_body' => [
-                        'attributes' => [
-                             'body' => $body,
-                        ],
-                    ],
                 ],[
                     'type' => 'message',
                     'attributes' => [
                         'poster_id' => $admin->id,
                         'receiver_id' => $receivers_id[1],
                     ],
-                    'message_body' => [
-                        'attributes' => [
-                             'body' => $body,
-                        ],
+                ]],
+                'message_body' => [
+                    'type' => 'message_body',
+                    'attributes' => [
+                        'body' => $body,
                     ],
-                ]]
+                ],
             ],
         ]);
     }
