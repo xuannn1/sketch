@@ -105,6 +105,12 @@ class RegAppController extends Controller
         //TODO:如果题目正确，给邮箱发送确认邮件
     }
 
+    public function submit_email_confirmation_token(Request $request)
+    {
+        // TODO: 提交邮箱+确认码
+
+    }
+
     public function resend_email_verification(Request $request)
     {
         //TODO:重新发送确认邮件

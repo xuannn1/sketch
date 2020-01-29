@@ -33,6 +33,8 @@ Route::get('email/reset_via_password/{token}', 'API\PassportController@reset_ema
 // 输入邮箱申请测试答题
 Route::post('register/by_invitation_email/submit_email', 'API\RegAppController@submit_email'); // 输入邮箱尝试注册
 Route::post('register/by_invitation_email/submit_quiz', 'API\RegAppController@submit_quiz'); // 尝试答题
+Route::post('register/by_invitation_email/submit_email_confirmation_token', 'API\RegAppController@submit_email_confirmation_token'); // 填写确认邮箱的token
+
 Route::get('register/by_invitation_email/resend_email_verification', 'API\RegAppController@resend_email_verification'); // 重新发送邮箱确认邮件
 Route::post('register/by_invitation_email/submit_essay', 'API\RegAppController@submit_essay'); // 提交小论文
 Route::get('register/by_invitation_email/resend_invitation_email', 'API\RegAppController@resend_invitation_email'); // 重发邀请邮件
