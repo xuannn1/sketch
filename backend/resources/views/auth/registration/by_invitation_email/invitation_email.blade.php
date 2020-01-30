@@ -9,7 +9,7 @@
     <h4>经过审核，我们在此特别邀请你注册废文网</h4>
     <p>
         友情提醒，收到本邮件【并非】注册成功，你仍需点击下面的链接进行注册：
-        {{ route('register.by_invitation_email.submit_token', $application->token) }}
+{{--        {{ route('register.by_invitation_email.submit_token', $application->token) }}--}}
     </p>
     <p>链接中含个人信息，请注意个人信息保护。</p>
     <p>
