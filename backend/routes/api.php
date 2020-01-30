@@ -22,7 +22,7 @@ Route::middleware('auth:api')->group( function(){
 Route::post('register', 'API\PassportController@register');
 Route::post('login', 'API\PassportController@login')->name('login');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::post('password/reset', 'API\PassportController@postReset');
+Route::post('password/reset_via_email', 'API\PassportController@postReset');
 
 
 // 默认页面
