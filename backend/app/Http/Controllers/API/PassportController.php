@@ -241,126 +241,130 @@ class PassportController extends Controller
             $info = $user_check->info;
             $info->activation_token=null;
             $info->email_verified_at = Carbon::now();
-            $info->save;
-            Auth::guard()->login($user_check);
+            $info->save;        
+            auth('api')->login($user_check);
             $token_update= PASSWORDRESET::where('email',$email)->forceDelete();
             if(!$token_update)
                 return response()->error('db error',595);
             return response()->success(200);
         }else
             return response()->error('db error',595);
+            
     }
-    public function reset_password_via_password(Request $request)	            'ip_address' => request()->ip(),
-    {	            'old_password' => $user_check->password,
-        ]);
-        // TODO 在登陆情况下，用户可以凭借旧密码验证自己的身份，将旧密码更换成新密码	        $user_check->password=bcrypt($request->password);
-        // TODO 更新密码之后，在HistoricalPasswordReset留下记录	        $user_check->remember_token=str_random(60);
-        // TODO 更新密码后，原先的token全失活	        $user_check->save();
-        // TODO 更新密码后，向邮箱发送密码已修改的提醒邮件	            
-        // TODO 如果新旧密码重复，提醒用户conflict contents	        if($user_check){
-        // 更改后，发送一封关于密码已修改的邮件	            $info = $user_check->info;
-    }	            $info->activation_token=null;
-    public function reset_email_via_password(Request $request)	            $info->email_verified_at = Carbon::now();
-    {	            $info->save;
-        // TODO 在登陆状态下，用户可以凭借旧密码，申请将邮箱更换为新邮箱	            Auth::guard()->login($user_check);
-        // 提交申请之后，系统会记录这次尝试，并向新邮箱发送确认邮件	            $token_update= PASSWORDRESET::where('email',$email)->forceDelete();
-        // 以下是过渡系统内容，供参考	            if(!$token_update)
-        // $user = Auth::user();	                return response()->error('db error',595);
-        // $info = $user->info;	            return response()->success(200);
-        // if(Cache::has('email-modification-limit-' . request()->ip())){	        }else
-        //     return redirect('/')->with('danger', '你的IP今天已经修改过邮箱，请不要重复修改邮箱');	            return response()->error('db error',595);
-        // }	
-        // if(!Hash::check(request('old-password'), $user->password)) {	
-        //     return back()->with("danger", "你的旧密码输入错误");	
-        // }	
-        //	
-        // if(ConstantObjects::black_list_emails()->where('email',request('email'))->first()){	
-        //     return back()->with('danger', '邮箱'.request('email').'存在违规记录，禁止在本站使用。');	
-        // }	
-        //	
-        // if(preg_match('/qq\.com/', request('email'))){	
-        //     return back()->with('danger', 'qq邮箱拒收本站邮件，请勿使用qq邮箱。');	
-        // }	
-        //	
-        // if(preg_match('/\.con$/', request('email'))){	
-        //     return back()->with('danger', '请确认邮箱拼写正确。');	
-        // }	
-        //	
-        // $this->validate($request, [	
-        //     'email' => 'required|string|email|max:255|unique:users|confirmed',	
-        //     'g-recaptcha-response' => 'required|nocaptcha'	
-        // ]);	
-        //	
-        // $old_email = $user->email;	
-        //	
-        // if($old_email==$request->email){	
-        //     return redirect()->back()->with('warning','已经修改为这个邮箱，无需重复修改。');	
-        // }	
-        //	
-        // $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();	
-        // if ($previous_history_counts>=config('constants.monthly_email_resets')){	
-        //     return redirect()->back()->with('warning','一月内只能修改'.config('constants.monthly_email_resets').'次邮箱。');	
-        // }	
-        //	
-        // $record = HistoricalEmailModification::create([	
-        //     'old_email' => $old_email,	
-        //     'new_email' => request('email'),	
-        //     'user_id' => Auth::id(),	
-        //     'ip_address' => request()->ip(),	
-        //     'old_email_verified_at' => $info->email_verified_at,	
-        //     'token' => str_random(30),	
-        //     'email_changed_at' => null,	
-        // ]);	
-        //	
-        // Cache::put('email-modification-limit-' . request()->ip(), true, 1440);	
-        //	
-        // $this->sendChangeEmailConfirmationTo($user, $record, true);	
-        //	
-        // return redirect()->route('user.edit', Auth::id())->with("success", "重置邮箱请求已登记，请查收邮箱，根据指示完成重置操作的后续步骤");	
-    }	
-    public function reset_email_via_token(Request $request)	
-    {	
-        // TODO 收到确认邮件之后，用户可凭借邮件中的链接，确认并更改邮箱	
-        // 更改后，向旧邮箱发送一封关于修改邮箱记录的邮件	
-        // 确定更改后，重置这个账户下所有相关token	
-        // $record = HistoricalEmailModification::onWriteConnection()->where('token',$token)->first();	
-        // if(!$record){	
-        //     return redirect('/')->with('warning','输入的token已失效或不存在');	
-        // }	
-        // $user = User::find($record->user_id);	
-        // $info = UserInfo::find($record->user_id);	
-        // if(!$user||!$info){	
-        //     abort(404);	
-        // }	
-        // if($record->new_email==$user->email){	
-        //     return redirect('/')->with('warning','已经转化成本邮箱，无需继续重置');	
-        // }	
-        // if($record->old_email!=$user->email){	
-        //     return redirect('/')->with('warning','原邮箱已更改，信息失效无法再行修改');	
-        // }	
-        //	
-        // $this->sendChangeEmailNotificationTo($user, $record, true);	
-        //	
-        // $user->forceFill([	
-        //     'email' => $record->new_email,	
-        //     'remember_token' => str_random(60),	
-        //     'activated' => 1,	
-        // ])->save();	
-        //	
-        // $info->forceFill([	
-        //     'activation_token' => str_random(30),	
-        //     'email_verified_at' => Carbon::now(),	
-        // ])->save();	
-        //	
-        // $record->update([	
-        //     'token' => str_random(30),	
-        //     'email_changed_at' => Carbon::now(),	
-        // ]);	
-        //	
-        // session()->flash('success', '邮箱已重置');	
-        //	
-        // return redirect('/');	
+
+    public function reset_password_via_password(Request $request)
+    {
+
+        // TODO 在登陆情况下，用户可以凭借旧密码验证自己的身份，将旧密码更换成新密码
+        // TODO 更新密码之后，在HistoricalPasswordReset留下记录
+        // TODO 更新密码后，原先的token全失活
+        // TODO 更新密码后，向邮箱发送密码已修改的提醒邮件
+        // TODO 如果新旧密码重复，提醒用户conflict contents
+        // 更改后，发送一封关于密码已修改的邮件
     }
+    public function reset_email_via_password(Request $request)
+    {
+        // TODO 在登陆状态下，用户可以凭借旧密码，申请将邮箱更换为新邮箱
+        // 提交申请之后，系统会记录这次尝试，并向新邮箱发送确认邮件
+        // 以下是过渡系统内容，供参考
+        // $user = Auth::user();
+        // $info = $user->info;
+        // if(Cache::has('email-modification-limit-' . request()->ip())){
+        //     return redirect('/')->with('danger', '你的IP今天已经修改过邮箱，请不要重复修改邮箱');
+        // }
+        // if(!Hash::check(request('old-password'), $user->password)) {
+        //     return back()->with("danger", "你的旧密码输入错误");
+        // }
+        //
+        // if(ConstantObjects::black_list_emails()->where('email',request('email'))->first()){
+        //     return back()->with('danger', '邮箱'.request('email').'存在违规记录，禁止在本站使用。');
+        // }
+        //
+        // if(preg_match('/qq\.com/', request('email'))){
+        //     return back()->with('danger', 'qq邮箱拒收本站邮件，请勿使用qq邮箱。');
+        // }
+        //
+        // if(preg_match('/\.con$/', request('email'))){
+        //     return back()->with('danger', '请确认邮箱拼写正确。');
+        // }
+        //
+        // $this->validate($request, [
+        //     'email' => 'required|string|email|max:255|unique:users|confirmed',
+        //     'g-recaptcha-response' => 'required|nocaptcha'
+        // ]);
+        //
+        // $old_email = $user->email;
+        //
+        // if($old_email==$request->email){
+        //     return redirect()->back()->with('warning','已经修改为这个邮箱，无需重复修改。');
+        // }
+        //
+        // $previous_history_counts = HistoricalEmailModification::where('user_id','=',Auth::id())->where('created_at','>',Carbon::now()->subMonth(1)->toDateTimeString())->count();
+        // if ($previous_history_counts>=config('constants.monthly_email_resets')){
+        //     return redirect()->back()->with('warning','一月内只能修改'.config('constants.monthly_email_resets').'次邮箱。');
+        // }
+        //
+        // $record = HistoricalEmailModification::create([
+        //     'old_email' => $old_email,
+        //     'new_email' => request('email'),
+        //     'user_id' => Auth::id(),
+        //     'ip_address' => request()->ip(),
+        //     'old_email_verified_at' => $info->email_verified_at,
+        //     'token' => str_random(30),
+        //     'email_changed_at' => null,
+        // ]);
+        //
+        // Cache::put('email-modification-limit-' . request()->ip(), true, 1440);
+        //
+        // $this->sendChangeEmailConfirmationTo($user, $record, true);
+        //
+        // return redirect()->route('user.edit', Auth::id())->with("success", "重置邮箱请求已登记，请查收邮箱，根据指示完成重置操作的后续步骤");
+    }
+    public function reset_email_via_token(Request $request)
+    {
+        // TODO 收到确认邮件之后，用户可凭借邮件中的链接，确认并更改邮箱
+        // 更改后，向旧邮箱发送一封关于修改邮箱记录的邮件
+        // 确定更改后，重置这个账户下所有相关token
+
+        // $record = HistoricalEmailModification::onWriteConnection()->where('token',$token)->first();
+        // if(!$record){
+        //     return redirect('/')->with('warning','输入的token已失效或不存在');
+        // }
+        // $user = User::find($record->user_id);
+        // $info = UserInfo::find($record->user_id);
+        // if(!$user||!$info){
+        //     abort(404);
+        // }
+        // if($record->new_email==$user->email){
+        //     return redirect('/')->with('warning','已经转化成本邮箱，无需继续重置');
+        // }
+        // if($record->old_email!=$user->email){
+        //     return redirect('/')->with('warning','原邮箱已更改，信息失效无法再行修改');
+        // }
+        //
+        // $this->sendChangeEmailNotificationTo($user, $record, true);
+        //
+        // $user->forceFill([
+        //     'email' => $record->new_email,
+        //     'remember_token' => str_random(60),
+        //     'activated' => 1,
+        // ])->save();
+        //
+        // $info->forceFill([
+        //     'activation_token' => str_random(30),
+        //     'email_verified_at' => Carbon::now(),
+        // ])->save();
+        //
+        // $record->update([
+        //     'token' => str_random(30),
+        //     'email_changed_at' => Carbon::now(),
+        // ]);
+        //
+        // session()->flash('success', '邮箱已重置');
+        //
+        // return redirect('/');
+    }
+
     protected function sendChangeEmailConfirmationTo($user, $record)
     {
         $view = 'auth.confirm_email_change';
