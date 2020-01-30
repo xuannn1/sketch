@@ -369,7 +369,6 @@ class PassportController extends Controller
         $to = $record->new_email;
         $subject = $user->name."的废文网账户信息更改确认！";
 
-        // $this->send_email_to_select_server($view, $data, $to, $subject);
         $this->send_email_from_ses_server($view, $data, $to, $subject);
     }
 
@@ -380,7 +379,6 @@ class PassportController extends Controller
         $to = $user->email;
         $subject = $user->name."的废文网账户信息更改提醒！";
 
-        // $this->send_email_to_select_server($view, $data, $to, $subject);
         $this->send_email_from_ses_server($view, $data, $to, $subject);
     }
 }

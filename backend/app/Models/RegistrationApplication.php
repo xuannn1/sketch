@@ -145,7 +145,6 @@ class RegistrationApplication extends Model
         $to = $application->email;
         $subject = "恭喜，你的废文网注册申请审核已通过";
 
-        // $this->send_email_to_select_server($view, $data, $to, $subject);
         $this->send_email_from_ses_server($view, $data, $to, $subject);
 
         $this->update(['last_invited_at' => Carbon::now()]);
@@ -160,7 +159,6 @@ class RegistrationApplication extends Model
             $to = $application->email;
             $subject = "感谢申请注册废文网，请确认你的邮箱";
 
-            // $this->send_email_to_select_server($view, $data, $to, $subject);
             $this->send_email_from_ses_server($view, $data, $to, $subject);
 
             $this->update(['send_verification_at' => Carbon::now()]);
