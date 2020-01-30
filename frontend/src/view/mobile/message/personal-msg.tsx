@@ -16,6 +16,8 @@ interface State {
   data:API.Get['/user/$0/message'];
 }
 
+// TODO: 管理通知, 公共通知: waiting for API
+
 export class PersonalMessage extends React.Component<MobileRouteProps, State> {
   public state:State = {
     data:{
