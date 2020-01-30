@@ -27,34 +27,24 @@ class ResetEmailTest extends TestCase
         Cache::flush();
         $data=['email' => $user->email];
         $response = $this->post('api/password/email', $data)
-        ->assertStatus(409)//当天注册用户
-        ->assertJson([
-            'code' => 409,
-            'data' => [
-              'email' => $user->email
-            ],
-        ]);
+        ->assertStatus(412);//当天注册用户
 
         $response = $this->post('api/password/email', $data)
-        ->assertStatus(409);//当前ip已于10分钟内提交过重置密码请求。
+        ->assertStatus(498);//当前ip已于10分钟内提交过重置密码请求。
 
         Cache::flush();
         $response = $this->post('api/password/email',['email' => '111'] )
         ->assertStatus(422)//邮箱格式错误
         ->assertJson([
             'code' => 422,
-            'data' => [
-              "message"=> "validation failed"
-         ]
+            'data' => "邮箱格式不正确"
         ]);
 
         $response = $this->post('api/password/email',['email' => '111@163.com'] )
         ->assertStatus(404)//邮箱账户不存在
         ->assertJson([
             'code' => 404,
-            'data' => [
-              'email' => '111@163.com'
-            ]
+            'data' => '该邮箱账户不存在'
         ]);
 
         $user_update=User::where('email',$user->email)->update(['created_at' =>Carbon::now()->subDays(2)]);
@@ -72,54 +62,41 @@ class ResetEmailTest extends TestCase
         $response = $this->post('api/password/reset_via_email', $request)
         ->assertStatus(422);    //密码格式错误
 
-        array_set($request, 'password', '1111111');
+        array_set($request, 'password', 'Aa1aa#%a01A11saAD');
           $response = $this->post('api/password/reset_via_email', [
             'token' => 'token',
-            'password' => '122111'
+            'password' => 'Aa1aa#%a01A11saAD'
           ])
           ->assertJson([
               'code' => 404,
-              'data' => [
-                'token' => 'token'
-              ]
+              'data' => "token过期或不存在"
           ]);    //cache中token不存在或过期  60min
 
           Cache::put('token_test','111@163.com' ,60);
           $response = $this->post('api/password/reset_via_email', [
             'token' => 'token_test',
-            'password' => '122111'
+            'password' => 'Aa1aa#%a01A11saAD'
           ])
           ->assertJson([
               'code' => 404,
-              'data' => [
-                'token' => 'token_test'
-              ]
+              'data' => "找不到重置请求"
           ]); //email及token的配对不存在重置表
 
-          $user_update=User::where('email',$user->email)->update(['email_verified_at' =>Carbon::now()->subDays(2)]);
-          $response = $this->post('api/password/reset_via_email', [
-            'token' => $token,
-            'password' => '111111'
-          ])
+           $response = $this->post('api/password/reset_via_email', $request)
           ->assertJson([
               'code' => 200,
-              'data' => [
-                'token' => $token
-              ]
+              'data' => 200
           ]); 
-          $response = $this->post('api/password/reset_via_email', [
-            'token' => $token,
-            'password' => '111111'
-          ])
+          $response = $this->post('api/password/reset_via_email', $request)
           ->assertStatus(404); //token一次性有效 token过期
 
-      $response =$this->post('api/login',['email'=>$user->email,'password'=>'111111'])
-      ->assertStatus(200)
-      ->assertJsonStructure([
-          'code',
-          'data' => [
-              'token',
-          ],
-      ]);
+      // $response =$this->post('api/login',['email'=>$user->email,'password'=>'Aa1aa#%a01A11saAD'])
+      // ->assertStatus(200)
+      // ->assertJsonStructure([
+      //     'code',
+      //     'data' => [
+      //         'token',
+      //     ],
+      // ]);
     }
   }

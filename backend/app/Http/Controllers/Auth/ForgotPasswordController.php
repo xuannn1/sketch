@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
 use DB;
-use Carbon;
+use Carbon\Carbon;
 use Cache;
+use Validator;
 
 class ForgotPasswordController extends Controller
 {
@@ -46,12 +48,11 @@ class ForgotPasswordController extends Controller
      */
     public function sendResetLinkEmail(Request $request)
     {
-        //Cache::flush();
+       // Cache::flush();
         //captcha不存在 验证码功能
         // $request->validate([
         //     'captcha' => 'required|captcha'
         // ]);
-//重写了validator,为了规范返回格式
        $validator = Validator::make($request->all(), [
         'email' => 'required|email'
         ]);
@@ -77,7 +78,7 @@ class ForgotPasswordController extends Controller
             return response()->error("当日注册的用户不能重置密码", 412);
         }
 
-        $email_check = PASSWORDRESET::where('email', $request->email)->first();
+        $email_check = PasswordReset::where('email', $request->email)->first();
     //该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。 
         if ($email_check&&$email_check->created_at>Carbon::now()->subHours(12)){
             return response()->error("该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。", 410);
@@ -85,23 +86,29 @@ class ForgotPasswordController extends Controller
 
         $token = str_random(40);
 
-        $reset_record = \App\Models\PasswordReset::updateOrCreate([
+        $reset_record = PasswordReset::updateOrCreate([
             'email' => $request->email,
         ],[
             'token'=>bcrypt($token),
             'created_at' => Carbon::now(),
         ]);
-        $this->sendEmailConfirmationTo($user, $token);
+        $this->sendEmailConfirmationTo($user_check, $token);
 
-        if(Cache::has($request->email)){
-            $succ_data=[
-                'token'=>Cache::get($request->email)
-            ];
-        }
+        $succ_data=[
+                'token'=>$token
+        ];
+        
+        Cache::put($token, $request->email, 60);
         Cache::put('reset-password-limit-' . request()->ip(), true, 60);
         
-        return $response == Password::RESET_LINK_SENT
-        ? response()->success(($succ_data))
-        : response()->error("sent email error", 595);
+        return response()->success(($succ_data));
+    }
+    protected function sendEmailConfirmationTo($user, $token)
+    {
+        $view = 'auth.passwords.reset_password_email';
+        $data = compact('user','token');
+        $to = $user->email;
+        $subject = $user->name."的废文网密码重置申请";
+        $this->send_email_from_ses_server($view, $data, $to, $subject);
     }
 }
