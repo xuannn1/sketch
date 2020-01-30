@@ -197,15 +197,7 @@ class PassportController extends Controller
     public function logout(){
         // TODO: deactivate current token
     }
-    protected function reset(array $data) // TODO:这里需要修改
-    {
-        // TODO: 这里需要使用forcefill，否则password不会改变。见Eloquent fillable说明。
-        // TODO：不应该使用updateorcreate，修改密码的这种情况下如果找不到就创建user，这不符合逻辑...需要从上一步传递User和UserInfo模型，如果不能找到，进行报错。
-        // TODO: email verified field 转移到UserInfo里，需要找到并修改。
-        // TODO: 如果是未激活的用户，通过邮箱重置密码则自动激活
-        // TODO: 为防盗号卖号，注册第一天的用户不允许重置密码
-        // TODO: 为了便于未来核查账户安全，完成重置密码之后，需要在HistoricalPasswordReset模型里留下对应的记录，记录中需包括旧密码的值
-    }
+
     public function reset_password_via_email(Request $request)
     {
         $data = $request->all();
@@ -223,20 +215,18 @@ class PassportController extends Controller
             return response()->error("token过期或不存在", 404);
         }
         
-        $token_check = DB::table('password_resets')->where('email',$email)->first();
+        $token_check = PasswordReset::where('email',$email)->first();
         if(!$token_check||!hash::check($request->token,$token_check->token))
             return response()->error("找不到重置请求", 404);
             //email及token的配对不存在重置表
         if ($token_check&&$token_check->created_at<Carbon::now()->subMinutes(30)){
-            return response()->error("token过期",422);
+            return response()->error("token过期",444);
           //  token过期
         }
        // $user_check = DB::table('users')->where('email',$email)->first(); 
         $user_check = USER::where('email',$email)->first(); 
         if(!$user_check)  
             return response()->error("邮箱不存在", 404);//邮箱不存在user用户表   
-        // if($user_check&&$user_check->email_verified_at>Carbon::now()->subHours(12))
-        //     return response()->error("12小时内已成功重置密码不能重置密码", 409);//12小时内已成功重置密码不能重置密码
 
         HistoricalPasswordReset::create([
             'user_id' => $user_check->id,
