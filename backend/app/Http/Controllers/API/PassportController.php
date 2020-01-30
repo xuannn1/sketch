@@ -242,7 +242,7 @@ class PassportController extends Controller
             $info->activation_token=null;
             $info->email_verified_at = Carbon::now();
             $info->save;        
-            auth('api')->login($user_check);
+            Auth::guard()->login($user_check);
             $token_update= PASSWORDRESET::where('email',$email)->forceDelete();
             if(!$token_update)
                 return response()->error('db error',595);
