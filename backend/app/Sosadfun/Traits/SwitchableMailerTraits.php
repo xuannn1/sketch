@@ -23,8 +23,8 @@ trait SwitchableMailerTraits{
     }
     public function send_email_to_select_server($view, $data, $to, $subject)
     {
-        $from = env('MAIL_USERNAME','null');
-        $name = env('MAIL_NAME','null');
+        $from = env('MAIL_USERNAME','no_reply@sosad.fun');
+        $name = env('MAIL_NAME','sosad_no_reply');
 
         $mail_setting = $this->select_server();
 
@@ -49,8 +49,8 @@ trait SwitchableMailerTraits{
     }
     public function send_email_from_ses_server($view, $data, $to, $subject)
     {
-        $name = env('MAIL_FROM_NAME','null');
-        $from = env('MAIL_FROM_ADDRESS','null');
+        $name = env('MAIL_FROM_NAME','sosad_no_reply');
+        $from = env('MAIL_FROM_ADDRESS','no_reply@sosad.fun');
         try {
             $mail_status = Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
                 $message->from($from, $name)->to($to)->subject($subject);
