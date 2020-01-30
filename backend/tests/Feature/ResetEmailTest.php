@@ -84,6 +84,18 @@ class ResetEmailTest extends TestCase
               ]
           ]);    //cache中token不存在或过期  60min
 
+          Cache::put('token_test','111@163.com' ,60);
+          $response = $this->post('api/password/reset_via_email', [
+            'token' => 'token_test',
+            'password' => '122111'
+          ])
+          ->assertJson([
+              'code' => 404,
+              'data' => [
+                'token' => 'token_test'
+              ]
+          ]); //email及token的配对不存在重置表
+
           $user_update=User::where('email',$user->email)->update(['email_verified_at' =>Carbon::now()->subDays(2)]);
           $response = $this->post('api/password/reset_via_email', [
             'token' => $token,
@@ -99,15 +111,15 @@ class ResetEmailTest extends TestCase
             'token' => $token,
             'password' => '111111'
           ])
-          ->assertStatus(422); //token一次性有效
-          
-    $response =$this->post('api/login',['email'=>$user->email,'password'=>'111111'])
-    ->assertStatus(200)
-    ->assertJsonStructure([
-        'code',
-        'data' => [
-            'token',
-        ],
-    ]);
-  }
+          ->assertStatus(404); //token一次性有效 token过期
+
+      $response =$this->post('api/login',['email'=>$user->email,'password'=>'111111'])
+      ->assertStatus(200)
+      ->assertJsonStructure([
+          'code',
+          'data' => [
+              'token',
+          ],
+      ]);
+    }
   }

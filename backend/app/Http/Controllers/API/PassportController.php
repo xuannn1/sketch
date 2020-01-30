@@ -13,6 +13,7 @@ use DB;
 use App\Models\User;
 use App\Models\UserInfo;
 use App\Models\PasswordReset;
+use \App\Models\HistoricalPasswordReset;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -96,29 +97,27 @@ class PassportController extends Controller
         $password = $request->password;
         $data = $request->all();
         $rules = [
-            'password'=>'required|between:6,20',
+            'password' => 'required|string|min:10|max:32|regex:/^(?=.?[A-Z])(?=.?[a-z])(?=.?[0-9])(?=.?[#?!@$%^&*-_]).{6,}$/',
         ];
-    
-        $messages = [
-            'required' => '密码不能为空',
-            'between' => '密码必须是6~20位之间'
-        ];
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->fails()) {
-            $data = [
-                "message"=> "validation failed"
-           ];
-            return response()->error($data, 422);
-            //返回一次性错误
-        }
         $err_data = [
             "token"=>$request->token 
        ];
+        $messages = [
+            'required' => '密码不能为空',
+            'between' => '密码必须是10~32位之间'
+
+        ];
+        $validator = Validator::make($data, $rules, $messages);
+        if ($validator->fails()) {
+            print_r($validator);
+            return response()->error($validator->errors()->first(), 422);
+            //返回一次性错误
+        }
         if(Cache::has($request->token)){
             $email=Cache::get($request->token);
         }
         else{
-            return response()->error($err_data, 404);
+            return response()->error($data, 404);
         }
        // $token=hash::make($request->token);
         $token_check = DB::table('password_resets')->where('email',$email)->first();
@@ -129,31 +128,33 @@ class PassportController extends Controller
             return response()->error($err_data,422);
           //  token过期
         }
-        $user_check = DB::table('users')->where('email',$email)->first(); 
+       // $user_check = DB::table('users')->where('email',$email)->first(); 
+        $user_check = USER::where('email',$email)->first(); 
         if(!$user_check)  
             return response()->error($err_data, 404);//邮箱不存在user用户表   
         if($user_check&&$user_check->email_verified_at>Carbon::now()->subHours(12))
             return response()->error($err_data, 409);//12小时内已成功重置密码不能重置密码
-        $token_update= DB::table('password_resets')->where('email',$email)->update(
-            ['created_at'=>Carbon::now()->subMinutes(40)]);
+
+        $token_update= PASSWORDRESET::where('email',$email)->forceDelete();
+
         if(!$token_update)
             return response()->error($err_data, 404);
-        $user = User::updateOrCreate(
-            ['email'=>$email],
-            ['password' => bcrypt($request->password)]);
-        User::updateOrCreate(
-            ['email'=>$email],
-            ['email_verified_at' => Carbon::now()]);
-        User::updateOrCreate(
-            ['email'=>$email],
-            ['remember_token' => Str::random(60)]);
-        
+
         $succ_data=[
             'token'=>$request->token
         ];    
-
-        if($user){
-            Auth::guard()->login($user);
+        // HistoricalPasswordReset::create([
+        //     'user_id' => $user->id,
+        //     'ip_address' => request()->ip(),
+        //     'old_password' => $user->password,
+        // ]);
+        $user_check->password=bcrypt($request->password);
+        $user_check->remember_token=str_random(60);
+        $user_check->email_verified_at = Carbon::now();
+        $user_check->save();
+    
+        if($user_check){
+            Auth::guard()->login($user_check);
             return response()->success($succ_data);
         }
         abort(500);
