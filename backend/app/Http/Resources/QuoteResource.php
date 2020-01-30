@@ -14,17 +14,17 @@ class QuoteResource extends JsonResource
      */
     public function toArray($request)
     {
-        if (!$this->is_anonymous){
+        $author = [];
+        if((!$this->is_anonymous)||((auth('api')->check())&&(auth('api')->id()===$this->user_id||auth('api')->user()->isAdmin()))){
             $author = new UserBriefResource($this->whenLoaded('author'));
-        }else{
-            $author = [];
         }
+
         return [
             'type' => 'quote',
             'id' => (int)$this->id,
             'attributes' => [
                 'body' => (string)$this->body,
-                'xianyu' => (int)$this->xianyu,
+                'fish' => (int)$this->xianyu,
                 'is_anonymous' => (bool)$this->is_anonymous,
                 'majia' => (string)$this->majia,
             ],

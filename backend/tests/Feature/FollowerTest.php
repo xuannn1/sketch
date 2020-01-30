@@ -37,7 +37,7 @@ class FollowerTest extends TestCase
 
         // assert that one cannot follow themself
         $this->post('api/user/'.$follower->id.'/follow')
-            ->assertStatus(403);
+            ->assertStatus(411);
         // assert one can follow aother
         $this->post('api/user/'.$followed_user->id.'/follow')
             ->assertStatus(200);
@@ -153,10 +153,11 @@ class FollowerTest extends TestCase
             ->assertJson([
                 'code' => 200,
                 'data' => [
-                    'id' => $followed_user->id,
-                    'followInfo' => [
+                    'type' => 'follower',
+                    'attributes' => [
+                        'user_id' => $followed_user->id,
                         'keep_updated' => true,
-                        'is_updated' => false,
+                        'updated' => false,
                     ],
                 ]
             ]);
@@ -168,11 +169,12 @@ class FollowerTest extends TestCase
                 ->assertJson([
                     'code' => 200,
                     'data' => [
-                        'id' => $followed_user->id,
-                        'followInfo' => [
+                        'type' => 'follower',
+                        'attributes' => [
+                            'user_id' => $followed_user->id,
                             'keep_updated' => false,
-                            'is_updated' => false,
-                        ],
+                            'updated' => false,
+                        ]
                     ]
                 ]);
     }

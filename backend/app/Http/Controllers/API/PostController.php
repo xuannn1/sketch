@@ -7,14 +7,19 @@ use App\Models\Post;
 use App\Models\Thread;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePost;
-use App\Http\Requests\UpdatePost;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\ThreadProfileResource;
 use App\Http\Resources\ThreadBriefResource;
 use App\Http\Resources\PaginateResource;
+use App\Sosadfun\Traits\PostObjectTraits;
+use App\Sosadfun\Traits\ThreadObjectTraits;
+use App\Events\NewPost;
+
 
 class PostController extends Controller
 {
+    use PostObjectTraits;
+    use ThreadObjectTraits;
     /**
     * Display a listing of the resource.
     *
@@ -23,44 +28,8 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show']);
-        $this->middleware('filter_thread');
+        $this->middleware('auth:api')->except('show','redirect');
 
-    }
-
-    /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function index(Thread $thread, Request $request)
-    {
-        $posts = Post::where('thread_id',$thread->id)
-        ->with('author','tags')
-        ->withType($request->withType)//可以筛选显示比如只看post，只看comment，只看。。。
-        ->withComponent($request->withComponent)//可以选择是只看component，还是不看component
-        ->userOnly($request->userOnly)//可以只看某用户（这样选的时候，默认必须同时属于非匿名）
-        ->withReplyTo($request->withReplyTo)//可以只看用于回复某个回帖的
-        ->ordered($request->ordered)//排序方式
-        ->paginate(config('constants.posts_per_page'));
-
-        $channel = $thread->channel();
-        if($channel->type==='book'){
-            $posts->load('chapter');
-        }
-        if($channel->type==='review'){
-            $posts->load('review.reviewee');
-            $posts->review->reviewee->load('tags','author');
-        }
-
-        return response()->success([
-            'thread' => new ThreadBriefResource($thread),
-            'posts' => PostResource::collection($posts),
-            'paginate' => new PaginateResource($posts),
-        ]);
-
-        //return view('test', compact('posts'));
-        //上面这一行代码，是为了通过debugler测试query实际效率。
     }
 
     /**
@@ -69,10 +38,18 @@ class PostController extends Controller
     * @param  \Illuminate\Http\Request  $request
     * @return \Illuminate\Http\Response
     */
-    public function store(Thread $thread, StorePost $form)
+    public function store($id, StorePost $form)
     {
 
-        $post = $form->generatePost();
+        $thread = Thread::on('mysql::write')->find($id);
+        if(!$thread||!auth('api')->user()){abort(404);}
+        if(auth('api')->user()->no_posting){abort(403,'禁言中');}
+
+        $post = $form->storePost($thread);
+
+        event(new NewPost($post));
+
+        $post = $this->postProfile($post->id);
         return response()->success(new PostResource($post));
     }
 
@@ -82,10 +59,28 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function show(Thread $thread,Post $post)
+    public function show($thread, $post)
     {
+        $post = $this->postProfile($post);
+        if(!$post){abort(404);}
+        $thread = $this->findThread($thread);
+        if(!$thread){abort(404);}
         if($thread->id!=$post->thread_id){abort(403);}
-        return response()->success(new PostResource($post));
+
+        return response()->success([
+            'thread' => new ThreadBriefResource($thread),
+            'post' => new PostResource($post),
+        ]);
+    }
+
+    public function redirect($post)
+    {
+        $post = $this->postProfile($post);
+        return response()->error([
+            'post_id' => $post->id,
+            'thread_id' => $post->thread_id,
+            'url' => route('post.show',['post'=>$post->id, 'thread' => $post->thread_id]),
+        ], 301);
     }
 
 
@@ -96,9 +91,12 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(Thread $thread, StorePost $form, Post $post)
+    public function update($post, StorePost $form)
     {
+        $post = Post::on('mysql::write')->find($post);
         $form->updatePost($post);
+        $this->clearPost($post->id);
+        $post = $this->postProfile($post->id);
         return response()->success(new PostResource($post));
 
     }
@@ -109,49 +107,33 @@ class PostController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function destroy(Thread $thread, Post $post)
+    public function destroy($id)
     {
-        if($post->user_id===auth('api')->id()){
-            if($post->type==='post'||$post->type==='comment'){
-                $post->delete();
-            }else{
+        $post = Post::on('mysql::write')->find($id);
+        if(!$post){abort(404);}
+        if($post->user_id!=auth('api')->id()&&!auth('api')->user()->isAdmin()){abort(403,'不能删除非自己的回帖');}
 
-            }
+        if($post->type==='post'||$post->type==='comment'||auth('api')->user()->isAdmin()){
+            $post->delete();
+            return response()->success('deleted post'.$id);
         }
+        abort(420,'什么都没做');
     }
 
-    public function turnToPost(Thread $thread, Post $post)
+    public function fold($post)
     {
-        $channel = $thread->channel();
-        if($post->thread_id===$thread->id&&auth('api')->id()===$thread->user_id){
-            if($post->type==='chapter'){
-                $chapter = $post->chapter;
-                if($chapter){
-                    $chapter->delete();
-                    $post->update([
-                        'type' => 'post',
-                        'edited_at' => Carbon::now(),
-                    ]);
-                }
-            }
-            if($post->type==='review'){
-                $review = $post->review;
-                if($review){
-                    $review->delete();
-                    $post->update([
-                        'type' => 'post',
-                        'edited_at' => Carbon::now(),
-                    ]);
-                }
-            }
-            if($post->type==='question'||$post->type==='answer'){
-                $post->update([
-                    'type' => 'post',
-                    'edited_at' => Carbon::now(),
-                ]);
-            }
-            return response()->success(new PostResource($post));
-        }
-        return response()->error(config('error.403'), 403);
+        $post = Post::findOrFail($id);
+        if(!$post){abort(404);}
+        $thread=$post->thread;
+        if(!$thread||!$post){abort(404);}
+        if($thread->is_locked||$thread->user_id!=auth('api')->id()||auth('api')->user()->no_posting){abort(403);}
+
+        if($post->fold_state>0){abort(409);}
+
+        if($post->user->isAdmin()){abort(413);}
+
+        $post->update(['fold_state'=>2]);
+
+        return response()->success(new PostResource($post));
     }
 }

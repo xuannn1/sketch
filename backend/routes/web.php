@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return 'welcome';
-});
+    return view('welcome');
+})->name('home');
+
+Route::get( '/{path?}', function(){
+    return view('react');
+} )->where('path', '.*');

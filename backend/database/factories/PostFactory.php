@@ -14,10 +14,11 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\Models\Post::class, function (Faker $faker) {
+    $body = $faker->paragraph;
     return [
         'title' => $faker->sentence,
-        'brief' => $faker->sentence,
-        'body' => $faker->paragraph,
+        'brief' => App\Helpers\StringProcess::simpletrim($body, 20),
+        'body' => $body,
         'user_id' => function(){
             return \App\Models\User::inRandomOrder()->first()->id;
         },
@@ -25,5 +26,6 @@ $factory->define(App\Models\Post::class, function (Faker $faker) {
             return \App\Models\Thread::inRandomOrder()->first()->id;
         },
         'type' => 'post',
+        'char_count' => mb_strlen($body),
     ];
 });

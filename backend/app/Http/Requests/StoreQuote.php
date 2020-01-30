@@ -41,10 +41,7 @@ class StoreQuote extends FormRequest
         } else{
             $quote_data['is_anonymous'] = 0;
         }
-        $quote = DB::transaction(function() use($quote_data) {
-            $quote = Quote::create($quote_data);
-            return $quote;
-        });
+        $quote = Quote::create($quote_data);
         return $quote;
     }
 }

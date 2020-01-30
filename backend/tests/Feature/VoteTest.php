@@ -17,19 +17,19 @@ class VoteTest extends TestCase
      *
      * @return void
      */
-    use DatabaseTransactions;
 
     /** @test */
     public function test_a_user_can_create_a_vote_with_attitude()
     {
         $user = factory('App\Models\User')->create();
+
         $this->actingAs($user, 'api');
         $quote = factory('App\Models\Quote')->create(['user_id' => $user->id]);
 
         $data = [
-            'votable_type' => 'Quote',
+            'votable_type' => 'quote',
             'votable_id' => $quote->id,
-            'attitude' => 'upvote',
+            'attitude_type' => 'upvote',
         ];
 
         $response = $this->post('api/vote', $data);
@@ -40,24 +40,24 @@ class VoteTest extends TestCase
         $response->assertStatus(409);//重复投票
 
         $data = [
-            'votable_type' => 'Quote',
+            'votable_type' => 'quote',
             'votable_id' => $quote->id,
-            'attitude' => 'downvote',
+            'attitude_type' => 'downvote',
         ];
 
         $response = $this->post('api/vote', $data);
-        $response->assertStatus(409);//检查无效投票
+        $response->assertStatus(411);//检查无效投票，不能即赞又踩
         $this->assertDatabaseMissing('votes',$data);
 
         $data = [
-            'votable_type' => 'Status',
+            'votable_type' => 'status',
             'votable_id' => '0',
-            'attitude' => 'upvote',
+            'attitude_type' => 'upvote',
         ];
 
         $response = $this->post('api/vote', $data);
         $response->assertStatus(404);
-        $response = $this->get('api/vote?votable_type=Status&votable_id=2');
+        $response = $this->get('api/vote?votable_type=status&votable_id=2');
         $response->assertStatus(200);
     }
 
@@ -68,9 +68,9 @@ class VoteTest extends TestCase
         $quote = factory('App\Models\Quote')->create(['user_id' => $user->id]);
 
         $data = [
-            'votable_type' => 'Quote',
+            'votable_type' => 'quote',
             'votable_id' => $quote->id,
-            'attitude' => 'upvote',
+            'attitude_type' => 'upvote',
         ];
 
         $response = $this->post('api/vote', $data);
@@ -91,9 +91,9 @@ class VoteTest extends TestCase
     //     $quote = factory('App\Models\Quote')->create(['user_id' => $user->id]);
     //
     //     $data = [
-    //         'votable_type' => 'Quote',
+    //         'votable_type' => 'quote',
     //         'votable_id' => $quote->id,
-    //         'attitude' => 'downvote',
+    //         'attitude_type' => 'downvote',
     //     ];
     //
     //     $response = $this->post('api/vote', $data);
@@ -110,9 +110,9 @@ class VoteTest extends TestCase
     //     $this->actingAs($user, 'api');
     //     $quote = factory('App\Models\Quote')->create(['user_id' => $user->id]);
     //     $data = [
-    //         'votable_type' => 'Quote',
+    //         'votable_type' => 'quote',
     //         'votable_id' => $quote->id,
-    //         'attitude' => 'downvote',
+    //         'attitude_type' => 'downvote',
     //     ];
     //     $response = $this->post('api/vote', $data);
     //
@@ -134,9 +134,9 @@ class VoteTest extends TestCase
         $quote = factory('App\Models\Quote')->create(['user_id' => $user->id]);
 
         $data = [
-            'votable_type' => 'Quote',
+            'votable_type' => 'quote',
             'votable_id' => $quote->id,
-            'attitude' => 'upvote',
+            'attitude_type' => 'upvote',
         ];
 
         $response = $this->post('api/vote', $data);

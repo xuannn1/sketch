@@ -14,11 +14,21 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(App\Models\User::class, function (Faker $faker) {
+    static $password;
+
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => bcrypt('secret'), // secret
+        'activated' => true,
+        'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
     ];
+})->afterCreating(App\Models\User::class, function ($my_model, Faker $faker) {
+
+    factory('App\Models\UserInfo')->create([
+        'user_id' => $my_model->id,
+        'email_verified_at' => now(),
+    ]);
+
+    return $my_model; // or return "test"
 });

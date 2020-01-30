@@ -15,12 +15,14 @@ class CreateRewardsTable extends Migration
     {
         Schema::create('rewards', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->morphs('rewardable');
-            $table->string('attribute');
-            $table->unsignedInteger('value');
-            $table->date('created_at');
-            $table->index(['user_id','rewardable_type', 'rewardable_id','attribute']);
+            $table->unsignedInteger('user_id')->index();
+            $table->unsignedInteger('receiver_id')->default(0)->index();
+            $table->unsignedInteger('rewardable_id')->default(0)->index();
+            $table->string('rewardable_type',10)->nullable()->index();
+            $table->unsignedInteger('reward_value')->default(0)->index();
+            $table->string('reward_type',10)->nullable()->index();
+            $table->dateTime('created_at')->nullable()->index();
+            $table->dateTime('deleted_at')->nullable()->index();
         });
     }
 

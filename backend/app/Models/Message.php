@@ -4,48 +4,61 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\User;
+use Carbon;
 
 class Message extends Model
 {
+    use SoftDeletes;
     protected $guarded = [];
+    protected $dates = ['deleted_at','created_at'];
     const UPDATED_AT = null;
 
-    protected $dates = ['deleted_at'];
+    public function message_body()
+    {
+        return $this->belongsTo(MessageBody::class, 'body_id');
+    }
 
     public function poster()
     {
-        return $this->belongsTo(User::class, 'poster_id')->select('id', 'name', 'title_id');
+        return $this->belongsTo(User::class, 'poster_id')->select('id','name');
     }
+
     public function receiver()
     {
-        return $this->belongsTo(User::class, 'receiver_id')->select('id', 'name', 'title_id');
-    }
-    public function body()
-    {
-        return $this->hasOne(MessageBody::class, 'id', 'message_body_id');
+        return $this->belongsTo(User::class, 'receiver_id')->select('id','name');
     }
 
-    public function scopeWithReceiver($query, $receiver_id)
+    public function scopeWithUser($query, $id=0)
     {
-        return $query->where('messages.receiver_id', $receiver_id);
+        return $query->where('poster_id',$id)
+        ->orWhere('receiver_id',$id);
     }
 
-    public function scopeWithPoster($query, $poster_id)
+    public function scopeWithPoster($query, $id=0)
     {
-        return $query->where('messages.poster_id', $poster_id);
+        return $query->where('poster_id',$id);
     }
 
-    public function scopeWithDialogue($query, $user_id, $chatWith_id)
+    public function scopeWithReceiver($query, $id=0)
     {
-        return $query->where(function($query) use($user_id, $chatWith_id) {
-            $query->where('poster_id', $user_id)
-            ->where('receiver_id', $chatWith_id);
-        })
-        ->orWhere(function($query) use($user_id, $chatWith_id) {
-            $query->where('poster_id', $chatWith_id)
-            ->where('receiver_id', $user_id);
-        });
+        return $query->where('receiver_id',$id);
+    }
+
+    public function scopeWithDialogue($query, $user1=0, $user2=0)
+    {
+        return $query->where([
+            ['poster_id', '=', $user1],
+            ['receiver_id', '=', $user2],
+        ])
+        ->orWhere([
+            ['poster_id', '=', $user2],
+            ['receiver_id', '=', $user1],
+        ]);
+    }
+
+    public function scopeWithInDays($query, $days = 2)
+    {
+        return $query->where('created_at','<',Carbon::now()->subDays($days));
     }
 
     public function scopeWithRead($query, $readstatus)
@@ -57,12 +70,16 @@ class Message extends Model
         }
     }
 
-    public function scopeWithOrdered($query, $ordered)
+    public function scopeOrdered($query, $ordered = '')
     {
-        if($ordered === 'oldest') {
+        switch ($ordered) {
+            case 'oldest'://最老的
             return $query->orderBy('created_at', 'asc');
-        }else {
+            break;
+
+            default://默认按时间顺序排列，显示最晚的
             return $query->orderBy('created_at', 'desc');
         }
     }
+
 }

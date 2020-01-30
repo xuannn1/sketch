@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use App\Sosadfun\Traits\SwitchableMailerTraits;
 use DB;
-use Validator;
-use Carbon\Carbon;
+use Carbon;
 use Cache;
-use Illuminate\Database\Eloquent\Builder; 
+
 class ForgotPasswordController extends Controller
 {
     /*
@@ -27,6 +26,7 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
+    use SwitchableMailerTraits;
 
     /**
     * Create a new controller instance.
@@ -38,9 +38,14 @@ class ForgotPasswordController extends Controller
         $this->middleware('guest');
     }
 
+    /**
+     * Send a reset link to the given user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
     public function sendResetLinkEmail(Request $request)
     {
-
         //Cache::flush();
         //captcha不存在 验证码功能
         // $request->validate([
@@ -78,9 +83,15 @@ class ForgotPasswordController extends Controller
             return response()->error("该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。", 410);
         }
 
-        $response = $this->broker()->sendResetLink(
-            $request->only('email')
-        );
+        $token = str_random(40);
+
+        $reset_record = \App\Models\PasswordReset::updateOrCreate([
+            'email' => $request->email,
+        ],[
+            'token'=>bcrypt($token),
+            'created_at' => Carbon::now(),
+        ]);
+        $this->sendEmailConfirmationTo($user, $token);
 
         if(Cache::has($request->email)){
             $succ_data=[

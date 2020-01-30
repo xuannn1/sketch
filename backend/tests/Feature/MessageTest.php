@@ -11,8 +11,8 @@ class MessageTest extends TestCase
     private function create_sender($message_limit)
     {
         $user = factory('App\Models\User')->create();
-        $info = \App\Models\UserInfo::create([
-            'user_id' => $user->id,
+        $info = $user->info;
+        $info->update([
             'message_limit' => $message_limit,
         ]);
         return $user;
@@ -20,9 +20,9 @@ class MessageTest extends TestCase
     private function create_receiver($no_stranger_message)
     {
         $user = factory('App\Models\User')->create();
-        $info = \App\Models\UserInfo::create([
-            'user_id' => $user->id,
-            'no_stranger_message' => $no_stranger_message,
+        $info = $user->info;
+        $info->update([
+            'no_stranger_msg' => $no_stranger_message,
         ]);
         return $user;
     }
@@ -44,7 +44,7 @@ class MessageTest extends TestCase
                     'attributes' => [
                         'poster_id',
                         'receiver_id',
-                        'message_body',
+                        'body_id',
                         'created_at',
                     ],
 
@@ -59,7 +59,9 @@ class MessageTest extends TestCase
                     'attributes' => [
                         'poster_id' => $poster->id,
                         'receiver_id' => $receiver->id,
-                        'message_body' => [
+                    ],
+                    'message_body' => [
+                        'attributes' => [
                             'body' => $body,
                         ],
                     ],
@@ -86,7 +88,7 @@ class MessageTest extends TestCase
         $this->actingAs($poster, 'api');
         $body = 'send this message';
 
-        $response = $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body])->assertStatus(403);
+        $response = $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body])->assertStatus(410);
     }
 
     /** @test */
@@ -97,7 +99,7 @@ class MessageTest extends TestCase
         $this->actingAs($poster, 'api');
         $body = 'send this message';
 
-        $response = $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body])->assertStatus(403);
+        $response = $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body])->assertStatus(413);
     }
 
     /** @test */
@@ -107,7 +109,7 @@ class MessageTest extends TestCase
         $this->actingAs($poster, 'api');
         $body = 'send this message';
 
-        $response = $this->post('/api/message', ['sendTo' => $poster->id, 'body' => $body])->assertStatus(403);
+        $response = $this->post('/api/message', ['sendTo' => $poster->id, 'body' => $body])->assertStatus(411);
     }
 
     /** @test */
@@ -120,17 +122,15 @@ class MessageTest extends TestCase
         $response = $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body])
         ->assertStatus(200);
         $response2 = $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body])
-        ->assertStatus(403);
+        ->assertStatus(409);
     }
 
     /** @test */
     public function admin_can_send_mass_messages()//管理员可以群发私信
     {
         $admin = $this->create_sender(1);
-        DB::table('role_user')->insert([
-            'user_id' => $admin->id,
-            'role' => 'admin',
-        ]);
+        $admin->role = 'admin';
+        $admin->save();
         $this->actingAs($admin, 'api');
 
         $receivers_id = [$this->create_receiver(false)->id, $this->create_receiver(false)->id];
@@ -147,10 +147,11 @@ class MessageTest extends TestCase
                     'attributes' => [
                         'poster_id',
                         'receiver_id',
-                        'message_body',
+                        'body_id',
                         'created_at',
                     ],
-                ]]
+                ]],
+                'message_body',
             ],
         ])
         ->assertJson([
@@ -161,20 +162,20 @@ class MessageTest extends TestCase
                     'attributes' => [
                         'poster_id' => $admin->id,
                         'receiver_id' => $receivers_id[0],
-                        'message_body' => [
-                            'body' => $body,
-                        ],
                     ],
                 ],[
                     'type' => 'message',
                     'attributes' => [
                         'poster_id' => $admin->id,
                         'receiver_id' => $receivers_id[1],
-                        'message_body' => [
-                            'body' => $body,
-                        ],
                     ],
-                ]]
+                ]],
+                'message_body' => [
+                    'type' => 'message_body',
+                    'attributes' => [
+                        'body' => $body,
+                    ],
+                ],
             ],
         ]);
     }
@@ -183,10 +184,8 @@ class MessageTest extends TestCase
     public function admin_can_not_send_mass_messages_to_inexistent_user()//管理员不可以给不存在的用户发私信
     {
         $admin = $this->create_sender(1);
-        DB::table('role_user')->insert([
-            'user_id' => $admin->id,
-            'role' => 'admin',
-        ]);
+        $admin->role = 'admin';
+        $admin->save();
         $this->actingAs($admin, 'api');
 
         $receivers_id = [99999, $this->create_receiver(false)->id];
@@ -223,10 +222,8 @@ class MessageTest extends TestCase
     public function admin_can_send_public_notice() // 管理员可发系统消息
     {
         $admin = $this->create_sender(1);
-        DB::table('role_user')->insert([
-            'user_id' => $admin->id,
-            'role' => 'admin',
-        ]);
+        $admin->role = 'admin';
+        $admin->save();
         $this->actingAs($admin, 'api');
         $body = 'send this public notice';
         $unread_reminders = (int)$admin->unread_reminders;
@@ -241,7 +238,7 @@ class MessageTest extends TestCase
                     'id',
                     'attributes' => [
                         'user_id',
-                        'notice_body',
+                        'body',
                         'created_at',
                     ],
                 ],
@@ -254,7 +251,7 @@ class MessageTest extends TestCase
                     'type' => 'public_notice',
                     'attributes' => [
                         'user_id' => $admin->id,
-                        'notice_body' => $body,
+                        'body' => $body,
                     ],
                 ],
             ],
@@ -263,7 +260,6 @@ class MessageTest extends TestCase
         $public_notice_id = PublicNotice::orderBy('created_at', 'desc')->first()->id;
         $latest_public_notice_id = DB::table('system_variables')->first()->latest_public_notice_id;
         $this->assertEquals($public_notice_id, $latest_public_notice_id);
-        $this->assertEquals($unread_reminders+1, (int)$admin->fresh()->unread_reminders);
     }
 
     /** @test */
@@ -276,11 +272,12 @@ class MessageTest extends TestCase
         ->assertStatus(403);
     }
 
+    /** @test */
     public function guest_can_not_send_public_notice() // 游客不可发系统消息
     {
         $body = 'send this public notice';
         $response = $this->post('/api/publicnotice', ['body' => $body])
-        ->assertStatus(403);
+        ->assertStatus(401);
     }
 
     /** @test */
@@ -302,10 +299,13 @@ class MessageTest extends TestCase
                         'type',
                         'id',
                         'attributes' => [
-                            'message_body',
+                            'poster_id',
+                            'receiver_id',
+                            'body_id',
                         ],
                         'poster',
                         'receiver',
+                        'message_body',
                     ]
                 ],
             ],
@@ -320,10 +320,12 @@ class MessageTest extends TestCase
                         'attributes' => [
                             'poster_id' => $poster->id,
                             'receiver_id' => $receiver->id,
-                            'message_body' => [
+                            'seen' => false,
+                        ],
+                        'message_body' => [
+                            'attributes' => [
                                 'body' => $body,
                             ],
-                            'seen' => false,
                         ],
                     ]
                 ],
@@ -341,10 +343,8 @@ class MessageTest extends TestCase
         $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body]);
 
         $admin = $this->create_sender(1);
-        DB::table('role_user')->insert([
-            'user_id' => $admin->id,
-            'role' => 'admin',
-        ]);
+        $admin->role = 'admin';
+        $admin->save();
         $this->actingAs($admin, 'api');
 
         $response = $this->get('/api/user/'.$receiver->id.'/message?withStyle=receivebox')
@@ -359,7 +359,9 @@ class MessageTest extends TestCase
                         'attributes' => [
                             'poster_id' => $poster->id,
                             'receiver_id' => $receiver->id,
-                            'message_body' => [
+                        ],
+                        'message_body' => [
+                            'attributes' => [
                                 'body' => $body,
                             ],
                         ],
@@ -397,7 +399,9 @@ class MessageTest extends TestCase
                     'attributes' => [
                         'poster_id' => $poster->id,
                         'receiver_id' => $receiver->id,
-                        'message_body' => [
+                    ],
+                    'message_body' => [
+                        'attributes' => [
                             'body' => $body,
                         ],
                     ],
@@ -416,10 +420,8 @@ class MessageTest extends TestCase
         $this->post('/api/message', ['sendTo' => $receiver->id, 'body' => $body]);
 
         $admin = $this->create_sender(1);
-        DB::table('role_user')->insert([
-            'user_id' => $admin->id,
-            'role' => 'admin',
-        ]);
+        $admin->role = 'admin';
+        $admin->save();
         $this->actingAs($admin, 'api');
 
         $response = $this->get('/api/user/'.$poster->id.'/message?withStyle=sendbox')
@@ -428,8 +430,8 @@ class MessageTest extends TestCase
             'code' => 200,
             'data' => [
                 'messages' => [[
-                    'attributes' => [
-                        'message_body' => [
+                    'message_body' => [
+                        'attributes' => [
                             'body' => $body,
                         ],
                     ],
@@ -474,6 +476,4 @@ class MessageTest extends TestCase
 
         $response = $this->get('/api/user/'.$user->id.'/message?withStyle=dialogue&chatWith='.$chatWith->id)->assertStatus(401);
     }
-
-    // TODO: 写groupmessage的test
 }

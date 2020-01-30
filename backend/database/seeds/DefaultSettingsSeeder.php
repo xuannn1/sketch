@@ -627,10 +627,14 @@ class DefaultSettingsSeeder extends Seeder
             DB::table('titles')->insert([
                 'name' => '大咸者',
                 'description' => '用户等级大于7',
+                'level' => 7,
+                'type' => 'level',
             ]);
             DB::table('titles')->insert([
                 'name' => '初来乍到',
                 'description' => '新注册咸鱼',
+                'level' => 0,
+                'type' => 'level',
             ]);
             DB::table('titles')->insert([
                 'name' => '编辑',
@@ -648,13 +652,19 @@ class DefaultSettingsSeeder extends Seeder
                 'name' => '资深咸鱼',
                 'description' => '在废文深水遨游、咸之又咸的鱼。',
             ]);
+            DB::table('titles')->insert([
+                'id' => 61,
+                'name' => '2019 winter',
+                'description' => '2019冬季限定，在2020年前注册的用户可以领取',
+                'type' => 'task',
+            ]);
         }
-        // InvitationToken::create([
-        //     'user_id' => 1,
-        //     'token' => 'SOSAD_invite',
-        //     'invitation_times' => 10,
-        //     'invite_until' => Carbon::now()->addYears(2),
-        // ]);
+        DB::table('invitation_tokens')->insert([
+            'user_id' => 1,
+            'token' => 'SOSAD_invite',
+            'invitation_times' => 10,
+            'invite_until' => Carbon::now()->addYears(2),
+        ]);
         DB::table('system_variables')->insert([
             'latest_public_notice_id' => 0,
         ]);

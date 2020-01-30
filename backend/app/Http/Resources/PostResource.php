@@ -20,20 +20,30 @@ class PostResource extends JsonResource
         }else{
             $body = '';
         }
-        if((!$this->is_anonymous)||((auth('api')->check())&&(auth('api')->id()===$this->user_id))){
+        $author = [];
+        if((!$this->is_anonymous)||((auth('api')->check())&&(auth('api')->id()===$this->user_id||auth('api')->user()->isAdmin()))){
             $author = new UserBriefResource($this->whenLoaded('author'));
-        }else{
-            $author = [];
         }
-        $component = [];
-        if($this->type==='chapter'){
-            $component = new ChapterResource($this->whenLoaded('chapter'));
+        $info = [];
+        if($this->type==='chapter'||$this->type==='review'){
+            $info = new PostInfoFullResource($this->whenLoaded('info'));
         }
-        if($this->type==='review'){
-            $component = new ReviewResource($this->whenLoaded('review'));
-        }
+        $parent = [];
         if($this->type==='answer'){
-            $component = new PostResource($this->whenLoaded('parent'));
+            $parent = new PostResource($this->whenLoaded('parent'));
+        }
+        $last_reply = new PostBriefResource($this->whenLoaded('last_reply'));
+        $recent_rewards = [];
+        if($this->recent_rewards){
+            $recent_rewards = RewardResource::collection($this->recent_rewards);
+        }
+        $recent_upvotes = [];
+        if($this->recent_upvotes){
+            $recent_upvotes = VoteResource::collection($this->recent_upvotes);
+        }
+        $new_replies = [];
+        if($this->new_replies){
+            $new_replies = PostResource::collection($this->new_replies);
         }
         return [
             'type' => 'post',
@@ -48,10 +58,11 @@ class PostResource extends JsonResource
                 'majia' => (string)$this->majia,
                 'created_at' => (string)$this->created_at,
                 'edited_at' => (string)$this->edited_at,
-                'reply_id' => (int)$this->reply_id,
-                'reply_brief' => (string)$this->reply_brief,
-                'reply_position' => (string)$this->reply_position,
-                'is_folded' => (bool)$this->is_folded,
+                'in_component_id' => (int) $this->in_component_id,
+                'reply_to_id' => (int)$this->reply_to_id,
+                'reply_to_brief' => (string)$this->reply_to_brief,
+                'reply_to_position' => (string)$this->reply_to_position,
+                'fold_state' => (int) $this->fold_state,
                 'is_bianyuan' => (bool)$this->is_bianyuan,
                 'use_markdown' => (bool)$this->markdown,
                 'use_indentation' => (bool)$this->use_indentation,
@@ -62,8 +73,14 @@ class PostResource extends JsonResource
                 'responded_at' => (string)$this->responded_at,
             ],
             'author' => $author,
-            $this->type => $component,
+            'info' => $info,
+            'parent' => $parent,
+            'last_reply' => $last_reply,
             'tags' => TagInfoResource::collection($this->whenLoaded('tags')),
+            'thread' => new ThreadBriefResource($this->whenLoaded('simpleThread')),
+            'recent_rewards' => $recent_rewards,
+            'recent_upvotes' => $recent_upvotes,
+            'new_replies' => $new_replies,
         ];
     }
 }
