@@ -233,14 +233,14 @@ class PassportController extends Controller
             'ip_address' => request()->ip(),
             'old_password' => $user_check->password,
         ]);
-        $user_check->password=bcrypt($request->password);
-        $user_check->remember_token=str_random(60);
+        $user_check->forceFill(['password'=>bcrypt($request->password),
+            'remember_token'=>str_random(60)]);
         $user_check->save();
             
         if($user_check){
             $info = $user_check->info;
-            $info->activation_token=null;
-            $info->email_verified_at = Carbon::now();
+            $info->forceFill(['activation_token'=>null,
+                'email_verified_at' => Carbon::now()]);
             $info->save;        
             Auth::guard()->login($user_check);
             $token_update= PASSWORDRESET::where('email',$email)->forceDelete();
