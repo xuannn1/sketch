@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
                 return response()->error(config('error.408'), 408);
                 break;
                 default:
-                echo 'Connection failed: ' . $exception->getMessage();
+                //echo 'Connection failed: ' . $exception->getMessage();
                 $errorMessage = 'database invalid';
             }
             return response()->error($errorMessage, 595);
