@@ -194,4 +194,5 @@ Route::post('patreon', 'API\DonationController@patreon_store')->name('patreon.st
 Route::delete('patreon/{patreon}', 'API\DonationController@patreon_destroy')->name('patreon.store');
 Route::get('patreon', 'API\DonationController@patreon_index')->name('patreon.index');
 Route::patch('patreon/{patreon}/approve', 'API\DonationController@patreon_approve')->name('patreon.approve');
+Route::patch('patreon/{patreon}/disapprove', 'API\DonationController@patreon_disapprove')->name('patreon.disapprove');
 Route::post('patreon_upload', 'API\DonationController@patreon_upload')->name('patreon.upload');

@@ -204,6 +204,11 @@ class DonationController extends Controller
         return redirect()->route('donation.review_patreon')->with('success','synced_records');
     }
 
+    public function disapprove(Request $request)
+    {
+
+    }
+
     public function patreon_upload(Request $request)
     {
         $body = $request->body;
@@ -218,5 +223,6 @@ class DonationController extends Controller
         }
         return redirect()->route('donation.review_patreon')->with('success','已成功修改赞助记录');
     }
+
 
 }
