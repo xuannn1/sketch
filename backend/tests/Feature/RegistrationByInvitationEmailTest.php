@@ -150,4 +150,50 @@ class RegistrationByInvitationEmailTest extends TestCase
         $this->get('api/register/by_invitation_email/resend_email_verification?email='.$email_address)
             ->assertStatus(498);
     }
+
+    /** @test */
+    public function registration_by_invitation_email_resend_invitation_email()
+    {
+        // 拒绝申请记录不存在的邮箱
+        Artisan::call('cache:clear');
+        $email_address = 'null@null.com';
+        $this->get('api/register/by_invitation_email/resend_invitation_email?email='.$email_address)
+            ->assertStatus(404);
+
+        // 拒绝未完成前序步骤的邮箱
+        Artisan::call('cache:clear');
+        $regapp = factory('App\Models\RegistrationApplication')->create();
+        $email_address = $regapp->email;
+        $this->get('api/register/by_invitation_email/resend_invitation_email?email='.$email_address)
+            ->assertStatus(411);
+
+        // 成功发送
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'has_quizzed' => true,
+            'is_passed' => true
+        ]);
+        $this->get('api/register/by_invitation_email/resend_invitation_email?email='.$email_address)
+            ->assertStatus(200)->assertExactJson([
+                "code" => 200,
+                "data" => [
+                    "token" => $email_address
+                ]
+            ]);
+
+        // 拒绝短时间内重复要求重发验证码的
+        Artisan::call('cache:clear');
+        $this->get('api/register/by_invitation_email/resend_invitation_email?email='.$email_address)
+            ->assertStatus(409);
+
+        // 拒绝已经成功通过点击邀请链接注册了的
+        Artisan::call('cache:clear');
+        $regapp->update(['user_id' => $this->faker->numberBetween($min = 10000, $max = 99999)]); // 产生一个随机用户id
+        $this->get('api/register/by_invitation_email/resend_invitation_email?email='.$email_address)
+            ->assertStatus(409);
+
+        // 验证禁止频繁访问
+        $this->get('api/register/by_invitation_email/resend_invitation_email?email='.$email_address)
+            ->assertStatus(498);
+    }
 }
