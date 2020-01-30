@@ -95,24 +95,25 @@ class VoteController extends Controller
     public function received($id, Request $request)
     {
         $user = CacheUser::user($id);
-        $info = $user->info();
+        $info = CacheUser::info($id);
         $info->clear_column('upvote_reminders');
         $votes = Vote::with('votable','author')
         ->where('receiver_id',$user->id)
         ->withAttitude('upvote')
         ->orderBy('created_at','desc')
         ->paginate(config('preference.votes_per_page'));
-        // TODO return response
+        return response()->success(VoteResource::collection($votes));
 
     }
 
     public function sent($id, Request $request)
     {
         $user = CacheUser::user($id);
+        $info = CacheUser::info($id);
         $votes = Vote::with('votable','receiver')
         ->where('user_id',$user->id)
         ->orderBy('created_at','desc')
         ->paginate(config('preference.votes_per_page'));
-        // TODO return response
+        return response()->success(VoteResource::collection($votes));
     }
 }

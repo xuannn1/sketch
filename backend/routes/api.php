@@ -33,6 +33,8 @@ Route::get('email/reset_via_password/{token}', 'API\PassportController@reset_ema
 // 输入邮箱申请测试答题
 Route::post('register/by_invitation_email/submit_email', 'API\RegAppController@submit_email'); // 输入邮箱尝试注册
 Route::post('register/by_invitation_email/submit_quiz', 'API\RegAppController@submit_quiz'); // 尝试答题
+Route::post('register/by_invitation_email/submit_email_confirmation_token', 'API\RegAppController@submit_email_confirmation_token'); // 填写确认邮箱的token
+
 Route::get('register/by_invitation_email/resend_email_verification', 'API\RegAppController@resend_email_verification'); // 重新发送邮箱确认邮件
 Route::post('register/by_invitation_email/submit_essay', 'API\RegAppController@submit_essay'); // 提交小论文
 Route::get('register/by_invitation_email/resend_invitation_email', 'API\RegAppController@resend_invitation_email'); // 重发邀请邮件
@@ -124,14 +126,14 @@ Route::get('follow_status', 'API\StatusController@follow_status');//关注的人
 // 题头部分
 Route::apiResource('quote', 'API\QuoteController')->only(['index','show','store','destroy']);
 
-Route::patch('/quote/{quote}/review','QuoteController@review')->name('quote.review');//审核单独题头
+Route::patch('/quote/{quote}/review','API\QuoteController@review')->name('quote.review');//审核单独题头
 
 // 私信部分
 Route::get('/user/{user}/message', 'API\MessageController@index');// 展示某用户的信箱，仅允许本人和管理员查询
 Route::post('message', 'API\MessageController@store');
 Route::post('groupmessage', 'API\MessageController@groupmessage');//管理员群发私信
 Route::post('publicnotice', 'API\MessageController@publicnotice');//管理员发系统消息
-
+Route::get('publicnotice', 'API\MessageController@publicnotice_index');//用户查看当前全部系统公共消息
 // 消息部分
 Route::get('/user/{user}/activity', 'API\ActivityController@index');// 展示某用户的站内提醒，仅允许本人和管理员查询
 Route::post('/clearupdates', 'API\ActivityController@clearupdates');// 清除未读提醒
@@ -148,7 +150,7 @@ Route::get('/user/{user}/vote_received','API\VoteController@received');//我收�
 Route::apiResource('reward', 'API\RewardController')->only(['index', 'store', 'destroy']);
 
 Route::get('/user/{user}/reward_sent','API\RewardController@sent');//我给出的评票
-Route::get('/user/{user}/reward_received','API\RewardController@received');//我收到的评票
+Route::get('/user/{user}/reward_received','API\RewardController@received');//我收到的打赏
 
 // 头衔
 Route::get('user/{user}/title', 'API\TitleController@title');

@@ -124,7 +124,10 @@ class StoreMessage extends FormRequest
         }
         $sendToUser = CacheUser::user($sendToId);
         if(!$sendToUser){abort(404);}
-        if($selfId === $sendToId){abort(411,'cannot send message to oneself');}
+        if($selfId == $sendToId){
+            // $sendToId is of type integer, $selfId is of type string
+            abort(411,'cannot send message to oneself');
+        }
         if($sendToUser->info->no_stranger_msg&&!$sendToUser->isFollowing(auth('api')->id())){abort(413,'receiver refuse to get message');}
     }
 

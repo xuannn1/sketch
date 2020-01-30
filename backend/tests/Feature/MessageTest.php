@@ -275,11 +275,12 @@ class MessageTest extends TestCase
         ->assertStatus(403);
     }
 
+    /** @test */
     public function guest_can_not_send_public_notice() // 游客不可发系统消息
     {
         $body = 'send this public notice';
         $response = $this->post('/api/publicnotice', ['body' => $body])
-        ->assertStatus(403);
+        ->assertStatus(401);
     }
 
     /** @test */
