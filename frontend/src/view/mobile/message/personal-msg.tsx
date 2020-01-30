@@ -65,16 +65,29 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
       </Page>);
   }
 
-  private renderMessages () {
+  private getDialogues() : ResData.Message[] {
     const { messages } = this.state.data;
+    const dialogues:{[key:string]:ResData.Message} = {};
+    const dialoguesArray:ResData.Message[] = [];
+    messages.forEach((m) => {
+      if (!dialogues[m.attributes.poster_id]) {
+        dialogues[m.attributes.poster_id] = m;
+        dialoguesArray.push(m); // so the dialogues are perserved in time order
+      }
+    });
+    return dialoguesArray;
+  }
+
+  private renderMessages () {
+    const dialogues = this.getDialogues();
     // TODO: mark msg as read
     return (<Card style={replyNotificationCardStyle}>
               <List style={{background:'transparent'}}>
-                {messages.map((m, i) =>
+                {dialogues.map((d, i) =>
                   <List.Item key={i} style={{background:'white', marginBottom:'0.3em'}}>
-                    <h6 className="is-6" style={m.attributes.seen ? {} : unreadStyle}>{m.poster ? m.poster.attributes.name : ''}</h6>
+                    <h6 className="is-6" style={d.attributes.seen ? {} : unreadStyle}>{d.poster ? d.poster.attributes.name : ''}</h6>
                     <div style={replyMessageContentStyle}>
-                      <p style={oneLineTruncationStyle}>{!m.attributes.seen ? <React.Fragment><b>[有新消息]</b>{` `}</React.Fragment> : ''}{m.message_body ? m.message_body.attributes.body : ''}</p>
+                      <p style={oneLineTruncationStyle}>{!d.attributes.seen ? <React.Fragment><b>[有新消息]</b>{` `}</React.Fragment> : ''}{d.message_body ? d.message_body.attributes.body : ''}</p>
                     </div>
                   </List.Item>)}
               </List>
