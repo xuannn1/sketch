@@ -20,4 +20,19 @@ class RewardToken extends Model
     {
         return $this->belongsTo(User::class, 'user_id')->select('id','name','title_id','level');
     }
+
+    public function scopeIsRedeemable($query)
+    {
+        return $query->where('redeem_limit','>',0)->where('redeem_until','>',Carbon::now());;
+    }
+
+    public function scopeIsPublic($query)
+    {
+        return $query->where('is_public',1);
+    }
+
+    public function scopeIsPrivate($query)
+    {
+        return $query->where('is_public',0);
+    }
 }

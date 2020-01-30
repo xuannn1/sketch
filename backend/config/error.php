@@ -10,7 +10,7 @@ return [
     '409' => 'content duplication conflict', //数据内容重复，邀请链接已经成功注册（可直接登陆），新旧密码重复，已经关注
     '410' => 'allowed number limit conflict', //不允许建立更多的同类内容了，需要更长时间间隔或者更高等级或更多余额，一日只能打赏一个东西一次，同一账户几小时内只能重置密码一次。
     '411' => 'precondition failed due to self input', //由于自身输入的内容，前提失败导致动作无效，不能关注或取关自己，不能给自己发私信，不能即赞又踩
-    '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信, 不能佩戴不具有的头衔，不能打赏超过个人收入的虚拟物，新注册的用户当天不能重置密码。
+    '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信, 不能佩戴不具有的头衔，不能打赏超过个人收入的虚拟物，新注册的用户当天不能重置密码。已免广告的不能再免广告
     '413' => 'precondition failed due to other side setting', //由于对方设置，前提失败导致动作无效，不能发私信给拒绝接收私信的用户，不能访问作者设置私密的讨论，不能收藏申请删除中的书籍/讨论
     '414' => 'precondition failed due to system setting', //由于系统设置，前提失败导致动作无效.
     '416' => 'user further action reqired: needs authentification', // 用户需要激活邮箱才能访问内容
@@ -18,7 +18,7 @@ return [
     '420' => 'precondition failed, nothing really done', // 因为输入的内容不可操作，实际上什么都没做
     '422' => 'validation failed',//输入的数据不符合规则，不能validate内容，
     '433' => 'item is component, has to be a regular post/comment to delete', //目标物并不是普通的回帖，而是chapter/review/question/answer一类的内容，需要转换成普通post才能正常删除
-    '444' => 'item or command expired, unable to perform operation', //操作已失效，比如邀请码已经使用，邀请链接已经使用
+    '444' => 'item or command expired, unable to perform operation', //操作已失效，比如邀请码已经使用或已失效，邀请链接已经使用，福利码已使用或已失效
     '481' => 'classification data corruption', //分类性数据冲突，比如大类信息和频道信息不能对应匹配，或不能检索到对应的大类信息，或许可以考虑更新大类信息；或者，选择回复的
     '482' => 'related item not applicable', //选择回复/附件的对象并不存在或不可用(比如在讨论帖A中回复讨论帖B的回帖)
     '488' => 'forbidden word',//内容中违禁词超过了运作能力（比如标题因违禁词存在变成空白字串）

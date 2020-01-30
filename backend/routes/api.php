@@ -180,3 +180,18 @@ Route::get('submit_quiz','API\QuizController@submitQuiz');
 
 // 标签系统管理
 Route::apiResource('tag', 'API\TagController');
+
+// patreon & donation record controllers
+Route::get('donation','API\DonationController@index')->name('donation.index');
+Route::patch('donation/{donation}', 'API\DonationController@donation_update')->name('donation.update');
+Route::get('user/{user}/donation', 'API\DonationController@user_donation')->name('donation.user_donation');
+
+Route::get('user/{user}/reward_token', 'API\DonationController@user_reward_token')->name('donation.user_reward_token');
+Route::post('reward_token_redeem', 'API\DonationController@reward_token_redeem')->name('donation.reward_token_redeem');
+Route::post('reward_token', 'API\DonationController@reward_token_store')->name('donation.reward_token_store');
+
+Route::post('patreon', 'API\DonationController@patreon_store')->name('patreon.store');
+Route::delete('patreon/{patreon}', 'API\DonationController@patreon_destroy')->name('patreon.store');
+Route::get('patreon', 'API\DonationController@patreon_index')->name('patreon.index');
+Route::patch('patreon/{patreon}/approve', 'API\DonationController@patreon_approve')->name('patreon.approve');
+Route::post('patreon_upload', 'API\DonationController@patreon_upload')->name('patreon.upload');
