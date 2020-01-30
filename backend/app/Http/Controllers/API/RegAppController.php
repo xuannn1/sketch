@@ -131,7 +131,7 @@ class RegAppController extends Controller
             abort(409,'你已经成功验证过邮箱，不需要重复验证。');
         }
         if($application->send_verification_at && $application->send_verification_at>=Carbon::now()->subDay(1)) {
-            abort(409,'已成功发信，暂时不能重复发送邮件。');
+            abort(410,'短时间内已曾成功发信，暂时不能重复发送验证邮件。');
         }
         if(!$application->has_quizzed) {
             abort(411,'未完成前序步骤，不能发送验证邮件。');
@@ -139,7 +139,7 @@ class RegAppController extends Controller
 
         $application->sendVerificationEmail();
         $this->refreshCheckApplicationViaEmail($request->email);
-        return response()->success(["token" => $request->email]);
+        return response()->success(["email" => $request->email]);
     }
 
     public function submit_essay(Request $request)

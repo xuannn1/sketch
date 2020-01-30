@@ -124,7 +124,7 @@ class RegistrationByInvitationEmailTest extends TestCase
             'send_verification_at' => Carbon::now()
         ]);
         $this->get('api/register/by_invitation_email/resend_email_verification?email='.$email_address)
-            ->assertStatus(409);
+            ->assertStatus(410);
 
         // 拒绝已经验证过邮箱了的
         Artisan::call('cache:clear');
@@ -142,7 +142,7 @@ class RegistrationByInvitationEmailTest extends TestCase
             ->assertStatus(200)->assertExactJson([
                 "code" => 200,
                 "data" => [
-                    "token" => $email_address
+                    "email" => $email_address
                 ]
             ]);
 
