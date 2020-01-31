@@ -44,3 +44,19 @@ export const oneLineTruncationStyle:React.CSSProperties = {
   overflow: 'hidden',
   marginTop: '0.8em',
 };
+
+export const DialogueCardStyle:React.CSSProperties = {
+  padding: '20px',
+  backgroundColor: '#f4f5f9',
+  height: '100%',
+};
+export const posterNameStyle:React.CSSProperties = {
+  marginBottom: '1em',
+  fontWeight: 'bold',
+};
+export const myPosterNameStyle:React.CSSProperties = {
+  float: 'right',
+};
+export const messageStyle:React.CSSProperties = {
+  marginBottom: '1.3em',
+};

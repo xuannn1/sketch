@@ -11,12 +11,15 @@ import { List } from '../../components/common/list';
 import { pageStyle, largeListItemStyle, badgeStyle, topCardStle, contentCardStyle, replyNotificationCardStyle, replyMessageContentStyle, unreadStyle, oneLineTruncationStyle } from './styles';
 import { mockReplyNotifications } from './mock-data';
 import { Message } from '.';
+import { Dialogue } from './dialogue';
 
 interface State {
   data:API.Get['/user/$0/message'];
 }
 
 // TODO: 管理通知, 公共通知: waiting for API
+// TODO: reduce API use by saving messages in localStorage
+// TODO: implement mark as read
 
 export class PersonalMessage extends React.Component<MobileRouteProps, State> {
   public state:State = {
@@ -78,18 +81,31 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
     return dialoguesArray;
   }
 
+  // @param chatWithID - the id of user you are chating with
+  // @param chatWithName - the name of user you are chating with
+  private onClicDialogue = (chatWithID:number, chatWithName:string) => () => {
+    this.props.core.history.push(`/messages/pm/${chatWithID}`, {chatWithName});
+  }
+
   private renderMessages () {
     const dialogues = this.getDialogues();
-    // TODO: mark msg as read
+    const renderDialogue = (dialogue:ResData.Message) => {
+      const posterName:string = dialogue.poster ? dialogue.poster.attributes.name : '';
+      const posterID:number = dialogue.attributes.poster_id;
+      const seen:boolean = dialogue.attributes.seen;
+      const content:string = dialogue.message_body ? dialogue.message_body.attributes.body : '';
+
+      return (<List.Item key={dialogue.id} style={{background:'white', marginBottom:'0.3em'}} onClick={this.onClicDialogue(posterID, posterName)}>
+                <h6 className="is-6" style={seen ? {} : unreadStyle}>{posterName}</h6>
+                <div style={replyMessageContentStyle}>
+                  <p style={oneLineTruncationStyle}>{!seen ? <React.Fragment><b>[有新消息]</b>{` `}</React.Fragment> : ''}{content}</p>
+                </div>
+              </List.Item>);
+    };
+
     return (<Card style={replyNotificationCardStyle}>
               <List style={{background:'transparent'}}>
-                {dialogues.map((d, i) =>
-                  <List.Item key={i} style={{background:'white', marginBottom:'0.3em'}}>
-                    <h6 className="is-6" style={d.attributes.seen ? {} : unreadStyle}>{d.poster ? d.poster.attributes.name : ''}</h6>
-                    <div style={replyMessageContentStyle}>
-                      <p style={oneLineTruncationStyle}>{!d.attributes.seen ? <React.Fragment><b>[有新消息]</b>{` `}</React.Fragment> : ''}{d.message_body ? d.message_body.attributes.body : ''}</p>
-                    </div>
-                  </List.Item>)}
+                {dialogues.map((d) => renderDialogue(d))}
               </List>
             </Card>);
   }
