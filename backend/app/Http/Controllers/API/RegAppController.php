@@ -135,7 +135,7 @@ class RegAppController extends Controller
             abort(422, '请求数据格式有误。');
         }
         foreach ($request->quizzes as $quiz) {
-            if (!is_array($quiz) || !array_key_exists('id', $quiz) || !array_key_exists('answer', $quiz)) {
+            if (!is_array($quiz) || !array_key_exists('id', $quiz) || !array_key_exists('answer', $quiz) || !is_int($quiz['id']) || !$quiz['answer']) {
                 abort(422, '请求数据格式有误。');
             }
             $correct_quiz_number += $this->is_answer_correct($quiz['id'],$quiz['answer']);

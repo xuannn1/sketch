@@ -417,17 +417,17 @@ class RegistrationByInvitationEmailTest extends TestCase
         // 成功提交，答错数量太多
         Artisan::call('cache:clear');
         $data['quizzes'] = [
-            ['id' => 4, 'answer' => '1'],
-            ['id' => 20, 'answer' => '1'],
-            ['id' => 23, 'answer' => '1'],
-            ['id' => 27, 'answer' => '1'],
-            ['id' => 31, 'answer' => '1'],
-            ['id' => 62, 'answer' => '1'],
-            ['id' => 77, 'answer' => '1'],
-            ['id' => 96, 'answer' => '1'],
-            ['id' => 99, 'answer' => '1'],
-            ['id' => 116, 'answer' => '1'],
-            ['id' => 103, 'answer' => '1'],
+            ['id' => 4, 'answer' => '12'],
+            ['id' => 20, 'answer' => '70'],
+            ['id' => 23, 'answer' => '78'],
+            ['id' => 27, 'answer' => '93'],
+            ['id' => 31, 'answer' => '112'],
+            ['id' => 62, 'answer' => '240'],
+            ['id' => 77, 'answer' => '302,303'],
+            ['id' => 96, 'answer' => '382'],
+            ['id' => 99, 'answer' => '395'],
+            ['id' => 116, 'answer' => '478'],
+            ['id' => 103, 'answer' => '411,412'],
         ];
         $this->post('api/register/by_invitation_email/submit_quiz', $data)
             ->assertStatus(200)->assertJsonFragment(['has_quizzed' => false]);
