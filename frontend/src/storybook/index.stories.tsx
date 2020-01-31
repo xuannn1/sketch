@@ -44,6 +44,7 @@ import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
 import { RecommendList } from '../view/components/home/recommend-list';
+import { ChatBubble } from '../view/components/message/chat-bubble'; 
 
 const core = new Core();
 
@@ -705,7 +706,10 @@ storiesOf('Thread Components', module)
 ;
 
 storiesOf('Message Components', module)
-;
+  .add('chatBubble', () =>
+    (<div style={{'width':'100%', 'height':'100%', 'background':'#f4f5f9', 'padding':'30px'}}>
+      <ChatBubble fromMe={boolean('fromMe', false)} content={text('content', 'This is a chat bubble!')}></ChatBubble>
+  </div>));
 
 storiesOf('Status Components', module)
 ;
