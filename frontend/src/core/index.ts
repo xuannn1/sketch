@@ -6,12 +6,14 @@ import { EventBus } from '../utils/events';
 import * as _ from 'lodash/core';
 import { TagHandler } from './tag-handler';
 import { Page } from './page';
+import { Store } from './store';
 const debounce = require('lodash/debounce');
 
 export type History = History;
 
 export class Core {
   public db:DB;
+  public store:Store;  // a global store is used to save some temporary data shared between components. (e.g. poster name for dialogue)
   public user:User;
   public tag:TagHandler;
   public history:History;
@@ -29,6 +31,7 @@ export class Core {
     this.tag = new TagHandler();
     this.user = new User(this.history);
     this.db = new DB(this.user, this.history);
+    this.store = new Store();
     this.windowResizeEvent = new EventBus();
     window.addEventListener('resize', debounce(() => {
       this.windowResizeEvent.notify(undefined);
