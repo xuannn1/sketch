@@ -177,7 +177,7 @@ class RegistrationByInvitationEmailTest extends TestCase
             ->assertStatus(200)->assertExactJson([
                 "code" => 200,
                 "data" => [
-                    "token" => $email_address
+                    "email" => $email_address
                 ]
             ]);
 
@@ -194,6 +194,73 @@ class RegistrationByInvitationEmailTest extends TestCase
 
         // 验证禁止频繁访问
         $this->get('api/register/by_invitation_email/resend_invitation_email?email='.$email_address)
+            ->assertStatus(498);
+    }
+
+    /** @test */
+    public function registration_by_invitation_submit_email_confirmation_token()
+    {
+        // 拒绝缺少token的请求
+        Artisan::call('cache:clear');
+        $data['email'] = 'null@null.com';
+        $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
+            ->assertStatus(422);
+
+        // 拒绝申请记录不存在的邮箱
+        Artisan::call('cache:clear');
+        $data['email'] = 'null@null.com';
+        $data['token'] = 'NotAValidToken';
+        $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
+            ->assertStatus(404);
+
+        // 拒绝未完成前序步骤的邮箱
+        Artisan::call('cache:clear');
+        $regapp = factory('App\Models\RegistrationApplication')->create();
+        $data['email'] = $regapp->email;
+        $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
+            ->assertStatus(411);
+
+        // 拒绝被拉黑的邮箱/申请
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'is_forbidden' => true
+        ]);
+        $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
+            ->assertStatus(499);
+
+        // 拒绝错误的验证码
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'is_forbidden' => false,
+            'has_quizzed' => true
+        ]);
+        $data['token'] = 'NotAValidToken';
+        $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
+            ->assertStatus(422);
+
+        // 成功验证
+        Artisan::call('cache:clear');
+        $data['token'] = $regapp->email_token;
+        $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
+            ->assertStatus(200)->assertExactJson([
+                "code" => 200,
+                "data" => [
+                    "email" => $data['email']
+                ]
+            ]);
+
+        // 验证数据库是否已被更新
+        $regapp = RegistrationApplication::where('email',$data['email'])->first();
+        $this->assertNotNull($regapp->email_verified_at);
+        $this->assertNotNull($regapp->ip_address_verify_email);
+
+        // 拒绝已经验证过的
+        Artisan::call('cache:clear');
+        $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
+            ->assertStatus(409);
+
+        // 验证禁止频繁访问
+        $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
             ->assertStatus(498);
     }
 }
