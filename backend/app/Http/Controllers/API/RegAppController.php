@@ -81,6 +81,10 @@ class RegAppController extends Controller
             $this->refreshFindApplicationViaEmail($request->email);
         }
 
+        if ($application->is_forbidden) {
+            abort(498,'此邮箱已被拉黑');
+        }
+
         $success['registration_application'] = new RegistrationApplicationResource($application);
 
         if(!$application->is_passed&&!$application->cut_in_line&&!$application->has_quizzed){
@@ -107,8 +111,50 @@ class RegAppController extends Controller
 
     public function submit_email_confirmation_token(Request $request)
     {
-        // TODO: 提交邮箱+确认码
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255',
+            'token' => 'required|string'
+        ]);
 
+        if ($validator->fails()) {
+            return response()->error($validator->errors(), 422);
+        }
+
+        if(Cache::has('IP-refresh-limit-submit_email_confirmation_token-' . request()->ip())){
+            abort(498,'访问过于频繁。');
+        }
+        Cache::put('IP-refresh-limit-submit_email_confirmation_token-' . request()->ip(), true, 5);
+
+        $message = $this->checkApplicationViaEmail($request->email);
+        if ($message["code"] != 200) {
+            abort($message["code"],$message["msg"]);
+        }
+
+        $application = RegistrationApplication::where('email',$request->email)->first();
+        if(!$application) {
+            abort(404,'申请记录不存在。');
+        }
+        if ($application->is_forbidden) {
+            abort(499,'此邮箱已被拉黑');
+        }
+        if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0){
+            abort(409,'你已经成功验证过邮箱，不需要重复验证。');
+        }
+        if(!$application->has_quizzed) {
+            abort(411,'未完成前序步骤，不能验证邮箱。');
+        }
+
+        if($request->token!=$application->email_token){
+            abort(422,'邮箱验证码不正确，无法验证邮箱真实有效。');
+        }
+
+        $application->update([
+            'email_verified_at' => Carbon::now(),
+            'ip_address_verify_email' => request()->ip(),
+        ]);
+
+        $this->refreshCheckApplicationViaEmail($request->email);
+        return response()->success(["email" => $request->email]);
     }
 
     public function resend_email_verification(Request $request)
@@ -126,6 +172,9 @@ class RegAppController extends Controller
         $application = RegistrationApplication::where('email',$request->email)->first();
         if(!$application) {
             abort(404,'申请记录不存在。');
+        }
+        if ($application->is_forbidden) {
+            abort(498,'此邮箱已被拉黑');
         }
         if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0){
             abort(409,'你已经成功验证过邮箱，不需要重复验证。');
@@ -147,11 +196,6 @@ class RegAppController extends Controller
         //TODO:提交小论文
     }
 
-    public function submit_email_verification(Request $request)
-    {
-        //TODO:提交邮件确认码
-    }
-
     public function resend_invitation_email(Request $request)
     {
         if(Cache::has('IP-refresh-limit-resend_invitation_email-' . request()->ip())){
@@ -168,6 +212,9 @@ class RegAppController extends Controller
         if(!$application) {
             abort(404,'申请记录不存在。');
         }
+        if ($application->is_forbidden) {
+            abort(498,'此邮箱已被拉黑');
+        }
         if($application->user_id>0){
             abort(409,'你已经成功接受邀请并注册，不需要重复验证。');
         }
@@ -180,7 +227,7 @@ class RegAppController extends Controller
 
         $application->sendInvitationEmail();
         $this->refreshCheckApplicationViaEmail($request->email);
-        return response()->success(["token" => $request->email]);
+        return response()->success(["email" => $request->email]);
     }
 
     // 以下都是过度系统的内容，供参考业务逻辑
