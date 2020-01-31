@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Resources\QuizOptionResource;
+use App\Models\Quiz;
 use App\Models\QuizOption;
 use App\Models\RegistrationApplication;
 use Carbon\Carbon;
@@ -10,9 +11,11 @@ use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Sosadfun\Traits\QuizObjectTraits;
 
 class RegistrationByInvitationEmailTest extends TestCase
 {
+    use QuizObjectTraits;
     /** @test */
     public function registration_by_invitation_email_submit_email()
     {
@@ -359,10 +362,138 @@ class RegistrationByInvitationEmailTest extends TestCase
         $this->assertEquals(0,$regapp->reviewer_id);
         $this->assertNull($regapp->reviewed_at);
         $this->assertEquals(1,$regapp->submission_count);
-        $this->assertEquals('127.0.0.1',$regapp->ip_address_submit_essay);
+        $this->assertNotNull($regapp->ip_address_submit_essay);
 
         // 验证禁止频繁访问
         $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(498);
+    }
+
+    /** @test */
+    public function registration_by_invitation_submit_quiz()
+    {
+        // 拒绝申请记录不存在的邮箱
+        Artisan::call('cache:clear');
+        $data['email'] = 'null@null.com';
+        $this->post('api/register/by_invitation_email/submit_quiz', $data)
+            ->assertStatus(404);
+
+        // 拒绝被拉黑的邮箱/申请
+        Artisan::call('cache:clear');
+        $regapp = factory('App\Models\RegistrationApplication')->create();
+        $data['email'] = $regapp->email;
+        $regapp->update([
+            'is_forbidden' => true
+        ]);
+        $this->post('api/register/by_invitation_email/submit_quiz', $data)
+            ->assertStatus(499);
+
+        // 拒绝已经通过的申请
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'is_forbidden' => false,
+            'is_passed' => true
+        ]);
+        $this->post('api/register/by_invitation_email/submit_quiz', $data)
+            ->assertStatus(409);
+
+        // 拒绝缺少quizzes的请求
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'is_passed' => false,
+            'quiz_questions' => '31,96,27,23,77,4,20,62,99,116,103'
+        ]);
+        $this->post('api/register/by_invitation_email/submit_quiz', $data)
+            ->assertStatus(422);
+
+        // 拒绝提交题目不匹配的请求
+        Artisan::call('cache:clear');
+        $data['quizzes'] = [
+            ['id' => 1, 'answer' => '1']
+        ];
+        $this->post('api/register/by_invitation_email/submit_quiz', $data)
+            ->assertStatus(444);
+
+        // 成功提交，答错数量太多
+        Artisan::call('cache:clear');
+        $data['quizzes'] = [
+            ['id' => 4, 'answer' => '1'],
+            ['id' => 20, 'answer' => '1'],
+            ['id' => 23, 'answer' => '1'],
+            ['id' => 27, 'answer' => '1'],
+            ['id' => 31, 'answer' => '1'],
+            ['id' => 62, 'answer' => '1'],
+            ['id' => 77, 'answer' => '1'],
+            ['id' => 96, 'answer' => '1'],
+            ['id' => 99, 'answer' => '1'],
+            ['id' => 116, 'answer' => '1'],
+            ['id' => 103, 'answer' => '1'],
+        ];
+        $this->post('api/register/by_invitation_email/submit_quiz', $data)
+            ->assertStatus(200)->assertJsonFragment(['has_quizzed' => false]);
+
+        // 验证数据库是否已被更新
+        $regapp_tmp = RegistrationApplication::where('email',$data['email'])->first();
+        $this->assertEquals(false,$regapp_tmp->has_quizzed);
+        $this->assertEquals(1,$regapp_tmp->quiz_count);
+
+        // 成功提交，答题全对
+        Artisan::call('cache:clear');
+        $quiz_questions = [88,11,25,95,36,30,68,9,44,59,113];
+        $regapp->update(['quiz_questions' =>implode(',',$quiz_questions)]);
+        unset($data['quizzes']);
+        // 直接填充正确答案
+        foreach ($quiz_questions as $quiz_question) {
+            $data['quizzes'][] = ['id' => $quiz_question, 'answer' => implode(',',QuizObjectTraits::find_quiz_set($quiz_question)->quiz_options->where('is_correct',true)->pluck('id')->toArray())];
+        }
+        $response = $this->post('api/register/by_invitation_email/submit_quiz', $data);
+        $response->assertStatus(200)->assertJsonFragment(['has_quizzed' => true]);
+
+        // 验证数据库中的数据
+        $db_regapp = RegistrationApplication::find($regapp->id);
+        $db_essay = Quiz::find($db_regapp->essay_question_id);
+
+        $response->assertExactJson([
+            "code" => 200,
+            "data" => [
+                "essay" => [
+                    "type" => "essay",
+                    "id" => $db_regapp->essay_question_id,
+                    "attributes" => [
+                        "body" => $db_essay->body,
+                        "hint" => $db_essay->hint
+                    ]
+                ],
+                "registration_application" => [
+                    "id" => $regapp->id,
+                    "type" => "registration_application",
+                    "attributes" => [
+                        "email" => $data['email'],
+                        "has_quizzed" => true,
+                        "email_verified_at" => "",
+                        "submitted_at" => "",
+                        "is_passed" => false,
+                        "last_invited_at" => "",
+                        "is_in_cooldown" => false
+                    ]
+                ]
+            ]
+        ]);
+
+        // 验证数据库是否已被更新
+        $regapp = RegistrationApplication::where('email',$data['email'])->first();
+        $this->assertEquals(true,$regapp->has_quizzed);
+        $this->assertNotNull($regapp->ip_address_last_quiz);
+        $this->assertEquals(2,$regapp->quiz_count);
+        $this->assertNotNull($regapp->send_verification_at);
+
+        // 拒绝答题通过后再次答题
+        Artisan::call('cache:clear');
+        $this->post('api/register/by_invitation_email/submit_quiz', $data)
+            ->assertStatus(409);
+
+        // 验证禁止频繁访问
+        $this->post('api/register/by_invitation_email/submit_quiz', $data)
             ->assertStatus(498);
     }
 }
