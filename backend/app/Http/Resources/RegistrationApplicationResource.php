@@ -26,7 +26,20 @@ class RegistrationApplicationResource extends JsonResource
                 'submitted_at' => (string)$this->submitted_at,
                 'is_passed' => (bool)$this->is_passed,
                 'last_invited_at' => (string)$this->last_invited_at,
-                'is_in_cooldown' => (bool)$cooldown
+                'is_in_cooldown' => (bool)$cooldown,
+                $this->mergeWhen(auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin(), [
+                    'is_forbidden' => (bool)$this->is_forbidden,
+                    'reviewer_id' => (int)$this->reviewer_id,
+                    'cut_in_line' => (bool)$this->cut_in_line,
+                    'ip_address' => (string)$this->ip_address,
+                    'ip_address_last_quiz' => (string)$this->ip_address_last_quiz,
+                    'ip_address_verify_email' => (string)$this->ip_address_verify_email,
+                    'ip_address_submit_essay' => (string)$this->ip_address_submit_essay,
+                    'created_at' => (string)$this->created_at,
+                    'reviewed_at' => (string)$this->reviewed_at,
+                    'submission_count' => (int)$this->submission_count,
+                    'quiz_count' => (int) $this->quiz_count
+                ]),
             ]
         ];
     }
