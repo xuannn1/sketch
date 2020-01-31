@@ -70,20 +70,20 @@ class ForgotPasswordController extends Controller
 
         $user_check = User::where('email', $request->email)->first();
 
-        if (!$user_check) {        
+        if (!$user_check) {
             return response()->error("该邮箱账户不存在", 404);
         }
 
-        if ($user_check->created_at>Carbon::now()->subDay()){     
+        if ($user_check->created_at>Carbon::now()->subDay()){
             return response()->error("当日注册的用户不能重置密码", 412);
         }
         $info=$user_check->info;
-         if($info&&$info->no_logging_until&&$info->no_logging_until>Carbon::now()){	
-            return response()->error('封禁管理中的账户不能重置密码',412);	
+         if($info&&$info->no_logging_until&&$info->no_logging_until>Carbon::now()){
+            return response()->error('封禁管理中的账户不能重置密码',412);
         }
 
         $email_check = PasswordReset::where('email', $request->email)->first();
-    //该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。 
+    //该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。
         if ($email_check&&$email_check->created_at>Carbon::now()->subHours(12)){
             return response()->error("该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。", 410);
         }
@@ -94,18 +94,13 @@ class ForgotPasswordController extends Controller
             'email' => $request->email,
         ],[
             'token'=>bcrypt($token),
-            'created_at' => Carbon::now(),
         ]);
         $this->sendEmailConfirmationTo($user_check, $token);
 
-        $succ_data=[
-                'token'=>$token
-        ];
-        
         Cache::put($token, $request->email, 60);
         Cache::put('reset-password-limit-' . request()->ip(), true, 60);
-        
-        return response()->success(($succ_data));
+
+        return response()->success(['email'=>$request->email]);
     }
     protected function sendEmailConfirmationTo($user, $token)
     {
