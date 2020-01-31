@@ -82,7 +82,7 @@ class RegAppController extends Controller
         }
 
         if ($application->is_forbidden) {
-            abort(498,'此邮箱已被拉黑');
+            abort(499,'此邮箱已被拉黑');
         }
 
         $success['registration_application'] = new RegistrationApplicationResource($application);
@@ -135,9 +135,9 @@ class RegAppController extends Controller
             abort(404,'申请记录不存在。');
         }
         if ($application->is_forbidden) {
-            abort(499,'此邮箱已被拉黑');
+            abort(499,'此邮箱已被拉黑。');
         }
-        if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0){
+        if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0||$application->cut_in_line){
             abort(409,'你已经成功验证过邮箱，不需要重复验证。');
         }
         if(!$application->has_quizzed) {
@@ -174,9 +174,9 @@ class RegAppController extends Controller
             abort(404,'申请记录不存在。');
         }
         if ($application->is_forbidden) {
-            abort(498,'此邮箱已被拉黑');
+            abort(499,'此邮箱已被拉黑。');
         }
-        if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0){
+        if($application->email_verified_at||$application->submitted_at||$application->is_passed||$application->user_id>0||$application->cut_in_line){
             abort(409,'你已经成功验证过邮箱，不需要重复验证。');
         }
         if($application->send_verification_at && $application->send_verification_at>=Carbon::now()->subDay(1)) {
@@ -193,7 +193,59 @@ class RegAppController extends Controller
 
     public function submit_essay(Request $request)
     {
-        //TODO:提交小论文
+        if(Cache::has('IP-refresh-limit-submit_essay-' . request()->ip())){
+            abort(498,'访问过于频繁。');
+        }
+        Cache::put('IP-refresh-limit-submit_essay-' . request()->ip(), true, 5);
+
+        $validator = Validator::make($request->all(), [
+            'body' => 'required|string|min:450|max:2000',
+            'essay_id' => 'required|integer',
+            'email' => 'required|string|email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->error($validator->errors(), 422);
+        }
+
+        $message = $this->checkApplicationViaEmail($request->email);
+        if ($message["code"] != 200) {
+            abort($message["code"],$message["msg"]);
+        }
+
+        $application = RegistrationApplication::where('email',$request->email)->first();
+        if(!$application) {
+            abort(404,'申请记录不存在。');
+        }
+        if ($application->is_forbidden) {
+            abort(499,'此邮箱已被拉黑。');
+        }
+        if ($application->cut_in_line||$application->is_passed) {
+            abort(409,'后续步骤已经完成，不需要再次提交申请。');
+        }
+        if ($application->submitted_at&&$application->submitted_at > Carbon::now()->subDays(config('constants.application_cooldown_days'))) {
+            abort(409,'已经成功提交论文，等待审核中，不需要再次提交论文。');
+        }
+        if(!$application->has_quizzed){
+            abort(411,'未完成测试题，不能提交小论文。');
+        }
+        if(!$application->email_verified_at){
+            abort(411,'未验证邮箱，不能提交小论文。');
+        }
+        if($application->essay_question_id != $request->essay_id) {
+            abort(444,'回答的小论文题目和记录的应该回答的题目不符合。');
+        }
+
+        $application->update([
+            'body' => $request->body,
+            'submitted_at' => Carbon::now(),
+            'reviewer_id' => 0,
+            'reviewed_at' => null,
+            'submission_count' => $application->submission_count+1,
+            'ip_address_submit_essay' => request()->ip(),
+        ]);
+        $this->refreshCheckApplicationViaEmail($request->email);
+        return response()->success(['registration_application' => new RegistrationApplicationResource($application)]);
     }
 
     public function resend_invitation_email(Request $request)
@@ -213,7 +265,7 @@ class RegAppController extends Controller
             abort(404,'申请记录不存在。');
         }
         if ($application->is_forbidden) {
-            abort(498,'此邮箱已被拉黑');
+            abort(499,'此邮箱已被拉黑。');
         }
         if($application->user_id>0){
             abort(409,'你已经成功接受邀请并注册，不需要重复验证。');

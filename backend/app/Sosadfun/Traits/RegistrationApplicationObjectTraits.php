@@ -47,7 +47,7 @@ trait RegistrationApplicationObjectTraits{
             }
             return [
                 'code' => 200,
-                'msg'=>'本邮箱可用'
+                'msg'=>'本邮箱可用。'
             ];
         });
     }
