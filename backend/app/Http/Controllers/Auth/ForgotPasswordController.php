@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
 use DB;
-use Carbon;
+use Carbon\Carbon;
 use Cache;
+use Validator;
 
 class ForgotPasswordController extends Controller
 {
@@ -46,63 +48,66 @@ class ForgotPasswordController extends Controller
      */
     public function sendResetLinkEmail(Request $request)
     {
+       // Cache::flush();
+        //captcha不存在 验证码功能
+        // $request->validate([
+        //     'captcha' => 'required|captcha'
+        // ]);
+       $validator = Validator::make($request->all(), [
+        'email' => 'required|email'
+        ]);
+        if ($validator->fails()) {
+        return response()->error("邮箱格式不正确", 422);
+        }
 
-        // TODO：把这些请求都改写成适应API的response的格式
         if(Cache::has('reset-password-request-limit-' . request()->ip())){
-            return back()->with('danger','当前ip('.request()->ip().')已于10分钟内提交过重置密码请求。');
+            return response()->error('当前ip('.request()->ip().')已于10分钟内提交过重置密码请求。', 498);
         }
         Cache::put('reset-password-request-limit-' . request()->ip(), true, 10);
-
         if(Cache::has('reset-password-limit-' . request()->ip())){
-            return back()->with('danger','当前ip('.request()->ip().')已于1小时内成功重置密码。');
+            return response()->error('当前ip('.request()->ip().')已于1小时内成功重置密码。', 498);
         }
 
-        $this->validateEmail($request);
+        $user_check = User::where('email', $request->email)->first();
 
-        $user = \App\Models\User::onWriteConnection()->where('email', $request->email)->first();
-
-        if (!$user) {
-            return back()->with('warning', '该邮箱账户不存在。');
+        if (!$user_check) {
+            return response()->error("该邮箱账户不存在", 404);
         }
 
-        if ($user->created_at>Carbon::now()->subDay(1)){
-            return back()->with('danger', '当日注册的用户不能重置密码。');
+        if ($user_check->created_at>Carbon::now()->subDay()){
+            return response()->error("当日注册的用户不能重置密码", 412);
+        }
+        $info=$user_check->info;
+         if($info&&$info->no_logging_until&&$info->no_logging_until>Carbon::now()){
+            return response()->error('封禁管理中的账户不能重置密码',412);
         }
 
-        $info = $user->info;
-
-        if($info&&$info->no_logging_until&&$info->no_logging_until>Carbon::now()){
-            return back()->with('danger', '封禁管理中的账户不能重置密码');
-        }
-
-        $email_check = DB::connection('mysql::write')->table('password_resets')->where('email', $request->email)->first();
-
+        $email_check = PasswordReset::where('email', $request->email)->first();
+    //该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。
         if ($email_check&&$email_check->created_at>Carbon::now()->subHours(12)){
-            return back()->with('warning', '该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。');
+            return response()->error("该邮箱12小时内已发送过重置邮件。请不要重复发送邮件，避免被识别为垃圾邮件。", 410);
         }
 
         $token = str_random(40);
 
-        $reset_record = \App\Models\PasswordReset::updateOrCreate([
+        $reset_record = PasswordReset::updateOrCreate([
             'email' => $request->email,
         ],[
             'token'=>bcrypt($token),
-            'created_at' => Carbon::now(),
         ]);
-        $this->sendEmailConfirmationTo($user, $token);
+        $this->sendEmailConfirmationTo($user_check, $token);
 
+        Cache::put($token, $request->email, 60);
         Cache::put('reset-password-limit-' . request()->ip(), true, 60);
 
-        return back()->with('success', '已成功发送重置密码邮件。');
+        return response()->success(['email'=>$request->email]);
     }
-
     protected function sendEmailConfirmationTo($user, $token)
     {
         $view = 'auth.passwords.reset_password_email';
         $data = compact('user','token');
         $to = $user->email;
         $subject = $user->name."的废文网密码重置申请";
-
         $this->send_email_from_ses_server($view, $data, $to, $subject);
     }
 }

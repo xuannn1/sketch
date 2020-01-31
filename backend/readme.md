@@ -148,6 +148,33 @@ password: password
 | Accept  | application/json |照着写就行|
 | Authorization | Bearer eyJ0eXAiOiJK...|这个token字串会很长，注意Bearer和token之间有一个英文空格， 还有注意是Bearer，不是Bear|
 
+#### 4.1.4 重置密码
+忘记密码，可以通过邮箱进行密码重置，方法是：
+网址设置为`http://127.0.0.1:8000/api/password/email`，选择POST方式发送信息  
+在下拉内容中填写：  
+email: tester@example.com  
+正确返回：
+200 data email
+错误代码：
+409 当日注册的用户，12小时内已发送过重置邮件不能重置密码
+404 邮箱账户不存在
+422 邮箱格式错误
+595 发送邮件失败
+
+登陆邮箱读取重置邮件，获取token，利用token进行重置，方法是：
+网址设置为`http://127.0.0.1:8000/api/password/reset_via_email`，选择POST方式发送信息  
+在下拉内容中填写：  
+token: token_example
+password: passsword_example
+正确返回：
+200 
+错误代码：
+422 密码格式错误/token过期
+404 token不存在
+409 12小时内已成功重置密码不能重置密码
+500 未知错误
+
+
 ### 4.2 错误处理 error handling
 全部error 列表目前存放在`config/error.php`中，基本遵循http相关指令的约定：2xx表示成功；4xx表示请求/数据有问题；5xx表示服务器问题。具体问题的解释，在这个文件里可以看。
 

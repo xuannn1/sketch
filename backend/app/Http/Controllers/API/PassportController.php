@@ -8,10 +8,13 @@ use App\Http\Controllers\Controller;
 use Validator;
 use Hash;
 use Carbon;
+use Cache;
 use ConstantObjects;
 use DB;
 use App\Models\User;
 use App\Models\UserInfo;
+use App\Models\PasswordReset;
+use App\Models\HistoricalPasswordReset;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use App\Sosadfun\Traits\SwitchableMailerTraits;
@@ -175,37 +178,7 @@ class PassportController extends Controller
         return response()->success($success);
     }
 
-    protected function reset(array $data) // TODO:这里需要修改
-    {
-        // TODO: 这里需要使用forcefill，否则password不会改变。见Eloquent fillable说明。
-        // TODO：不应该使用updateorcreate，修改密码的这种情况下如果找不到就创建user，这不符合逻辑...需要从上一步传递User和UserInfo模型，如果不能找到，进行报错。
-        // TODO: email verified field 转移到UserInfo里，需要找到并修改。
-        // TODO: 如果是未激活的用户，通过邮箱重置密码则自动激活
-        // TODO: 为防盗号卖号，注册第一天的用户不允许重置密码
-        // TODO: 为了便于未来核查账户安全，完成重置密码之后，需要在HistoricalPasswordReset模型里留下对应的记录，记录中需包括旧密码的值
-        $user = User::updateOrCreate(
-            ['email'=>$data['email']],
-            ['password' => bcrypt($data['password']), 'email_verified_at' => Carbon::now(),'remember_token' => str_random(60)]);
-        return $user;
 
-        // TODO 下面这部分代码是从当前上线的程序搬过来的，还需要根据目前的需求改写，供参考
-        // \App\Models\HistoricalPasswordReset::create([
-        //     'user_id' => $user->id,
-        //     'ip_address' => request()->ip(),
-        //     'old_password' => $user->password,
-        // ]);
-        // $user->forceFill([
-        //     'password' => bcrypt($password),
-        //     'remember_token' => str_random(60),
-        //     'activated' => true,
-        // ])->save();
-        // $info = $user->info;
-        // $info->activation_token=null;
-        // $info->email_verified_at = Carbon::now();
-        // $info->save;
-        //
-        // $this->guard()->login($user);
-    }
 
     public function login(){
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
@@ -222,33 +195,75 @@ class PassportController extends Controller
     }
 
     public function logout(){
-        // TODO: deactivate current token
+        $user = auth('api')->user();
+        $user->token()->revoke();
+        return response()->success([
+            'user_id' => $user->id,
+            'message' => "you've logged out!",
+        ]);
     }
 
     public function reset_password_via_email(Request $request)
     {
-
-        $password = $request->password;
         $data = $request->all();
-        $this->validate($request, [
-            'password' => 'required|string|min:10|max:32|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
-        ]);
-        $token=hash::make($request->token);
-        $token_check = DB::table('password_resets')->where('email',$request->email)->first();
-        if(!hash::check($request->token,$token_check->token))
-            abort(404,$token);
-            //token不存在
-        if ($token_check&&$token_check->created_at<Carbon::now()->subMinutes(30)){
-            abort(444);
-          //  token过期
+        $rules = [
+            'password' => 'required|string|min:10|max:32|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
+            'token' => 'required|string',
+            'email' => 'required|email'
+        ];
+        $validator = Validator::make($data, $rules);
+        if($validator->fails()) {
+            return response()->error($validator->errors(), 422);
         }
-        $user=$this->reset($data);
 
-        auth('api')->login($user);
-        return response()->success('200');
-        // TODO：在更新密码之后，安全上需要取消和登出这个账户名下所有往期的token（方法参考NoLogControl里的内容），然后采取新token登入，在这里返回新token
+        if(Cache::has('reset-password-email-limit:'.$request->email)){
+            return response()->error('请等待一定间隙再尝试', 410);
+        }
 
+        $token_check = PasswordReset::where('email', $request->email)->latest()->first();
+
+        Cache::put('reset-password-email-limit:'.$request->email, true, 5);
+
+        if(!$token_check){abort(404, '重置请求不存在');}
+
+        if(!Hash::check($request->token, $token_check->token)){abort(444, 'token已过期或已失效');}
+        if($token_check->created_at<Carbon::now()->subMinutes(30)){abort(444, '重置请求过期');}
+
+
+        $user_check = User::where('email', $token_check->email)->first();
+        if(!$user_check){abort(404, '无法找到需要修改的账户信息');}
+        $info = $user_check->info;
+        if(!$info){abort(404, '用户内容不存在');}
+
+        DB::transaction(function()use($request,$user_check,$info,$token_check){
+            HistoricalPasswordReset::create([
+                'user_id' => $user_check->id,
+                'ip_address' => request()->ip(),
+                'old_password' => $user_check->password,
+            ]);
+            $user_check->forceFill([
+                'password'=>bcrypt($request->password),
+                'remember_token'=>str_random(60)
+            ])->save();
+            $info->forceFill([
+                'activation_token'=>null,
+                'email_verified_at' => Carbon::now()
+            ])->save();
+            $token_check->delete();
+        });
+
+        $tokens = $user_check->tokens;
+
+        foreach($tokens as $token){
+            $token->revoke();
+        }
+
+        $success['token'] =  $user_check->createToken('MyApp')->accessToken;
+        $success['name'] =  $user_check->name;
+        $success['id'] = $user_check->id;
+        return response()->success($success);
     }
+
     public function reset_password_via_password(Request $request)
     {
 

@@ -48,17 +48,6 @@ class User extends Authenticatable
     {
         parent::boot();
     }
-    /**
-    * Send the password reset notification.
-    *
-    * @param  string  $token
-    * @return void
-    */
-    //overriding existing sendpassword reset notification
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPasswordNotification($token));
-    }
 
     public function threads()
     {
@@ -371,6 +360,12 @@ class User extends Authenticatable
         ]);
     }
 
+    public function sendPasswordResetNotification($token) 
+    { 
+        Cache::put($token, $this->email, 60);
+        Cache::put($this->email,$token, 60);
+        $this->notify(new ResetPasswordNotification($token)); 
+    } 
     public function active_now($ip)
     {
         $this->info->active_now($ip);
@@ -554,3 +549,5 @@ class User extends Authenticatable
     }
 
 }
+
+
