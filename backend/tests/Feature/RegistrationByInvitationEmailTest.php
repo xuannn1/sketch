@@ -263,4 +263,106 @@ class RegistrationByInvitationEmailTest extends TestCase
         $this->post('api/register/by_invitation_email/submit_email_confirmation_token', $data)
             ->assertStatus(498);
     }
+
+    /** @test */
+    public function registration_by_invitation_submit_essay()
+    {
+        // 拒绝缺少body或essay_id的请求
+        Artisan::call('cache:clear');
+        $data['email'] = 'null@null.com';
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(422);
+
+        // 拒绝申请记录不存在的邮箱
+        Artisan::call('cache:clear');
+        $data['email'] = 'null@null.com';
+        $body = $this->faker->text($maxNbChars = 600);
+        $data['body'] = $body;
+        $data['essay_id'] = 1;
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(404);
+
+        // 拒绝未完成前序步骤的邮箱
+        Artisan::call('cache:clear');
+        $regapp = factory('App\Models\RegistrationApplication')->create();
+        $data['email'] = $regapp->email;
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(411);
+
+        // 拒绝被拉黑的邮箱/申请
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'is_forbidden' => true
+        ]);
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(499);
+
+        // 拒绝已经通过的申请
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'is_forbidden' => false,
+            'is_passed' => true
+        ]);
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(409);
+
+        // 拒绝错误的小论文题目
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'is_passed' => false,
+            'has_quizzed' => true,
+            'email_verified_at' => "2020-01-30 21:23:11"
+        ]);
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(444);
+
+        // 拒绝上一次提交日期距今还在缓冲期的申请
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'submitted_at' => Carbon::now(),
+        ]);
+        $data['token'] = 'NotAValidToken';
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(409);
+
+        // 成功提交
+        Artisan::call('cache:clear');
+        $regapp->update([
+            'essay_question_id' => 15,
+            'submitted_at' => null,
+        ]);
+        $data['essay_id'] = 15;
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(200)->assertJsonStructure([
+                "code",
+                "data" => [
+                    "registration_application" => [
+                        "id",
+                        "type",
+                        "attributes" => [
+                            "email",
+                            "has_quizzed",
+                            "email_verified_at",
+                            "submitted_at",
+                            "is_passed",
+                            "last_invited_at",
+                            "is_in_cooldown"
+                        ]
+                    ]
+                ]
+            ]);
+
+        // 验证数据库是否已被更新
+        $regapp = RegistrationApplication::where('email',$data['email'])->first();
+        $this->assertEquals($body,$regapp->body);
+        $this->assertNotNull($regapp->submitted_at);
+        $this->assertEquals(0,$regapp->reviewer_id);
+        $this->assertNull($regapp->reviewed_at);
+        $this->assertEquals(1,$regapp->submission_count);
+        $this->assertEquals('127.0.0.1',$regapp->ip_address_submit_essay);
+
+        // 验证禁止频繁访问
+        $this->post('api/register/by_invitation_email/submit_essay', $data)
+            ->assertStatus(498);
+    }
 }
