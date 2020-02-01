@@ -56,7 +56,7 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   private renderMessage (m:ResData.Message) : JSX.Element {
     const myID:number = this.props.core.user.id;
     const fromMe:boolean = myID == m.attributes.poster_id;
-    const posterName:string = m.poster ? m.poster.attributes.name : ' ';
+    const posterName:string = fromMe ? '我' : m.poster ? m.poster.attributes.name : ' ';
     const content:string = m.message_body ? m.message_body.attributes.body : '';
     return (<div key={m.id} style={messageStyle}>
               <h5 style={fromMe ? {...posterNameStyle, ...myPosterNameStyle} : posterNameStyle}>{posterName}</h5>

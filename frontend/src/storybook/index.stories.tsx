@@ -34,6 +34,7 @@ import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
+import { ResizableTextarea } from '../view/components/common/resizable-textarea';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
 import { FooterMenu } from '../view/components/common/footer-menu';
@@ -44,7 +45,7 @@ import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
 import { RecommendList } from '../view/components/home/recommend-list';
-import { ChatBubble } from '../view/components/message/chat-bubble'; 
+import { ChatBubble } from '../view/components/message/chat-bubble';
 
 const core = new Core();
 
@@ -345,6 +346,12 @@ storiesOf('Common Components', module)
         <p> 加载中请稍后</p>
       </div>
     </Loading>,
+  )
+  .add('ResizableTextarea', () =>
+    <ResizableTextarea
+      maxRows={number('maxRow', 3)}
+      minRows={number('minRow', 1)}
+      placeholder={text('placeholder', '写回复')}/>,
   );
 
 storiesOf('Common Components/Notice Bar', module)
