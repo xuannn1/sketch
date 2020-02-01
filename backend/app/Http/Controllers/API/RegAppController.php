@@ -128,29 +128,8 @@ class RegAppController extends Controller
             abort(409,'已经答过题了，无需重复答题。');
         }
 
-        // 开始核对题目和答案
-        $correct_quiz_number = 0;
-        $submitted_quiz_ids = [];
-        if (!$request->quizzes || !is_array($request->quizzes)) {
-            abort(422, '请求数据格式有误。');
-        }
-        foreach ($request->quizzes as $quiz) {
-            if (!is_array($quiz) || !array_key_exists('id', $quiz) || !array_key_exists('answer', $quiz) || !is_int($quiz['id']) || !$quiz['answer']) {
-                abort(422, '请求数据格式有误。');
-            }
-            $correct_quiz_number += $this->is_answer_correct($quiz['id'],$quiz['answer']);
-            $submitted_quiz_ids[] = $quiz['id'];
-        }
-        // 检查答的题目是不是数据库中记录的题目
-        $expected_quiz_ids = array_map('intval', explode(',', $application->quiz_questions));
-        sort($expected_quiz_ids);
-        sort($submitted_quiz_ids);
-        if ($expected_quiz_ids != $submitted_quiz_ids) {
-            abort(444, '回答的题目和数据库中应该回答的题不符合。');
-        }
-
         // 如果通过了
-        if($correct_quiz_number >= config('constants.registration_quiz_correct')){
+        if($this->check_quiz_passed_or_not($request->quizzes, $application->quiz_questions, config('constants.registration_quiz_correct'))){
             $application->update([
                 'has_quizzed'=>1,
                 'quiz_count' => $application->quiz_count+1,
@@ -160,7 +139,7 @@ class RegAppController extends Controller
             $success['essay'] = new QuizResource($essay);
             $application->sendVerificationEmail();
         } else {
-            $r = $application->update([
+            $application->update([
                 'quiz_questions' => null,
                 'quiz_count' => $application->quiz_count+1
             ]);
