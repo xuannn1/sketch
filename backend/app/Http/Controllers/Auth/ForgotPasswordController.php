@@ -97,15 +97,11 @@ class ForgotPasswordController extends Controller
             'created_at' => Carbon::now(),
         ]);
         $this->sendEmailConfirmationTo($user_check, $token);
-
-        $succ_data=[
-                'token'=>$token
-        ];
         
         Cache::put($token, $request->email, 60);
         Cache::put('reset-password-limit-' . request()->ip(), true, 60);
         
-        return response()->success(($succ_data));
+        return response()->success(200);
     }
     protected function sendEmailConfirmationTo($user, $token)
     {

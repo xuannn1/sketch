@@ -205,7 +205,7 @@ class PassportController extends Controller
             'password' => 'required|string|min:10|max:32|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
                 ];
         $validator = Validator::make($data, $rules);
-        if ($validator->fails()) {echo $validator->errors();
+        if ($validator->fails()) {
             return response()->error($validator->errors()->first(), 422);
         }
         if(Cache::has($request->token)){
@@ -227,29 +227,28 @@ class PassportController extends Controller
         $user_check = USER::where('email',$email)->first(); 
         if(!$user_check)  
             return response()->error("邮箱不存在", 404);//邮箱不存在user用户表   
-
-        HistoricalPasswordReset::create([
-            'user_id' => $user_check->id,
-            'ip_address' => request()->ip(),
-            'old_password' => $user_check->password,
-        ]);
-        $user_check->forceFill(['password'=>bcrypt($request->password),
-            'remember_token'=>str_random(60)]);
-        $user_check->save();
-            
-        if($user_check){
+        DB::beginTransaction();
+        try {
+            HistoricalPasswordReset::create([
+                'user_id' => $user_check->id,
+                'ip_address' => request()->ip(),
+                'old_password' => $user_check->password,
+            ]);
+            $user_check->forceFill(['password'=>bcrypt($request->password),
+                'remember_token'=>str_random(60)]);
+            $user_check->save();
             $info = $user_check->info;
             $info->forceFill(['activation_token'=>null,
                 'email_verified_at' => Carbon::now()]);
             $info->save;        
             Auth::guard()->login($user_check);
-            $token_update= PASSWORDRESET::where('email',$email)->forceDelete();
-            if(!$token_update)
-                return response()->error('db error',595);
-            return response()->success(200);
-        }else
+            $token_update= PASSWORDRESET::where('email',$email)->forceDelete(); 
+            DB::commit();       
+        } catch(QueryException $ex) {
+            DB::rollback();
             return response()->error('db error',595);
-            
+        }
+        return response()->success(200);
     }
 
     public function reset_password_via_password(Request $request)

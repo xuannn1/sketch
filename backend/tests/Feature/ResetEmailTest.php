@@ -52,8 +52,9 @@ class ResetEmailTest extends TestCase
         $response = $this->post('api/password/email', $data)
         ->assertStatus(200);
         
-        $token=$response->original['data']['token'];
-        //$user_update=User::where('email',$user->email)->update(['email_verified_at' =>Carbon::now()->subDays(2)]);
+        $token = str_random(40);
+        Cache::put($token, $user->email, 60);
+        $user_update=PasswordReset::where('email',$user->email)->update(['token' =>bcrypt($token)]);
         
         $request=[
           'token' => $token,
@@ -62,10 +63,10 @@ class ResetEmailTest extends TestCase
         $response = $this->post('api/password/reset_via_email', $request)
         ->assertStatus(422);    //密码格式错误
 
-        array_set($request, 'password', 'Aa1aa#%a01A11saAD');
+        array_set($request, 'password', 'Aa1aa%a01A11saAD');
           $response = $this->post('api/password/reset_via_email', [
             'token' => 'token',
-            'password' => 'Aa1aa#%a01A11saAD'
+            'password' => 'Aa1aa%a01A11saAD'
           ])
           ->assertJson([
               'code' => 404,
@@ -75,7 +76,7 @@ class ResetEmailTest extends TestCase
           Cache::put('token_test','111@163.com' ,60);
           $response = $this->post('api/password/reset_via_email', [
             'token' => 'token_test',
-            'password' => 'Aa1aa#%a01A11saAD'
+            'password' => 'Aa1aa%a01A11saAD'
           ])
           ->assertJson([
               'code' => 404,
@@ -90,13 +91,13 @@ class ResetEmailTest extends TestCase
           $response = $this->post('api/password/reset_via_email', $request)
           ->assertStatus(404); //token一次性有效 token过期
 
-      // $response =$this->post('api/login',['email'=>$user->email,'password'=>'Aa1aa#%a01A11saAD'])
-      // ->assertStatus(200)
-      // ->assertJsonStructure([
-      //     'code',
-      //     'data' => [
-      //         'token',
-      //     ],
-      // ]);
+          $response =$this->post('api/login',['email'=>$user->email,'password'=>"Aa1aa%a01A11saAD"])
+          ->assertStatus(200)
+          ->assertJsonStructure([
+            'code',
+            'data' => [
+                'token',
+            ],
+      ]);
     }
   }
