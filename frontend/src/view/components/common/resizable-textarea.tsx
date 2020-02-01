@@ -22,7 +22,7 @@ export class ResizableTextarea extends React.PureComponent<{
     placeholder:'',
   };
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       rows: props.minRows,

@@ -45,7 +45,7 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
         top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
           {this.props.location.state.chatWithName}
         </NavBar>}>
-        <Card style={DialogueCardStyle} >
+        <Card style={DialogueCardStyle}>
           {this.state.data.messages.map((m) => this.renderMessage(m))}
         </Card>
         { this.textBox() }
