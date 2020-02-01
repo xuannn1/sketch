@@ -1,7 +1,8 @@
 <?php
 
+namespace App\Http\Controllers\API;
 namespace App\Notifications;
-
+use cache;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;

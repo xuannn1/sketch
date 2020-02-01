@@ -25,7 +25,9 @@ Route::post('register_by_invitation', 'API\PassportController@register_by_invita
 Route::post('login', 'API\PassportController@login')->name('login');
 Route::post('logout', 'API\PassportController@logout')->name('logout');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::patch('password/reset_via_email', 'API\PassportController@reset_password_via_email');
+Route::post('password/reset_via_email', 'API\PassportController@reset_password_via_email');
+
+Route::patch('password/reset_via_email', 'API\PassportController@reset_password_via_email')->name('password.reset');
 Route::patch('password/reset_via_password', 'API\PassportController@reset_password_via_password');
 Route::patch('email/reset_via_password', 'API\PassportController@reset_email_via_password');//修改个人邮箱
 Route::get('email/reset_via_password/{token}', 'API\PassportController@reset_email_via_token');//确认个人邮箱为本人
