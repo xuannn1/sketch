@@ -15,6 +15,7 @@ import { ResizableTextarea } from '../../components/common/resizable-textarea';
 
 interface State {
   data:API.Get['/user/$0/message'];
+  messageToSend:string;
 }
 
 export class Dialogue extends React.Component<MobileRouteProps, State> {
@@ -23,13 +24,15 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
       messages: [],
       paginate: ResData.allocThreadPaginate(),
       style: ReqData.Message.style.dialogue,
-    }
+    },
+    messageToSend: '',
   };
 
   public async componentDidMount() {
     try {
       const query = {withStyle: ReqData.Message.style.dialogue, chatWith: this.props.match.params.uid};
       const data = await this.props.core.db.getMessages(query);
+      data.messages.reverse();
       this.setState({data});
       console.log(data);
     } catch (e) {
@@ -47,7 +50,7 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
         { this.textBox() }
       </Page>);
   }
-
+  protected updateMessageToSend = (value:string) => this.setState({messageToSend:value});
   private textBox () : JSX.Element {
     return (
       <div style={pmTextBoxStyle}>
@@ -55,12 +58,25 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
           style={{flexGrow:1, display:'inline-block'}}
           maxRows={3}
           minRows={1}
-          placeholder={'写回复'}/>
-          <span style={sendButtonStyle} className="icon">
+          placeholder={'写回复'}
+          updateValue={this.updateMessageToSend}/>
+          <span style={sendButtonStyle} className="icon" onClick={this.sendMessage}>
             <i className="far fa-paper-plane"/>
           </span>
       </div>
     );
+  }
+
+  private sendMessage = async () => {
+    console.log(this.state.messageToSend);
+    if (!this.state.messageToSend) { return; }
+    try {
+      const msg = await this.props.core.db.sendMessage(this.props.match.params.uid, this.state.messageToSend);
+      const data = {...this.state.data, messages: [...this.state.data.messages, msg.message]};
+      this.setState({data});
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   private renderMessages () : JSX.Element {

@@ -2,6 +2,7 @@
 export const pageStyle:React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
+  overflow: 'auto',
 };
 export const largeListItemStyle:React.CSSProperties = {
   padding: '1em 1em',
@@ -49,6 +50,8 @@ export const DialogueCardStyle:React.CSSProperties = {
   padding: '20px',
   backgroundColor: '#f4f5f9',
   height: '100%',
+  overflow: 'scroll',
+  flexGrow: 1,
 };
 export const posterNameStyle:React.CSSProperties = {
   marginBottom: '1em',
@@ -64,7 +67,6 @@ export const messageStyle:React.CSSProperties = {
 export const pmTextBoxStyle:React.CSSProperties = {
   height: 'auto !important',
   padding: '0.5em 1em 0.5em 1em',
-  position: 'fixed',
   left: '0',
   width: '100%',
   bottom: '0',

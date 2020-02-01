@@ -61,7 +61,7 @@ export class DB {
     }
     if (spec.body) {
       try {
-        options.body = JSON.stringify(options.body);
+        options.body = JSON.stringify(spec.body);
       } catch (e) {
         throw this._handleError(0, ErrorMsg.JSONParseError);
       }
@@ -100,7 +100,7 @@ export class DB {
     return this._fetch<API.Get[Path]>(path, {method: 'GET'}, ops);
   }
   private _post<Path extends keyof API.Post> (path:Path, ops:FetchOptions = {}) {
-    return this._fetch<API.Post[Path]>(path, {method: 'POST'}, ops);
+    return this._fetch<API.Post[Path]>(path, {method: 'POST', headers:{'Content-Type': 'application/json'}}, ops);
   }
   private _patch<Path extends keyof API.Patch> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Patch[Path]>(path, {method: 'PATCH'}, ops);

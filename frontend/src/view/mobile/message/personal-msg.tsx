@@ -10,7 +10,6 @@ import { Badge } from '../../components/common/badge';
 import { List } from '../../components/common/list';
 import { pageStyle, largeListItemStyle, badgeStyle, topCardStle, contentCardStyle, replyNotificationCardStyle, replyMessageContentStyle, unreadStyle, oneLineTruncationStyle } from './styles';
 import { mockReplyNotifications } from './mock-data';
-import { Message } from '.';
 import { Dialogue } from './dialogue';
 
 interface State {

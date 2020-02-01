@@ -228,7 +228,7 @@ export namespace ResData {
       },
       poster: allocUser(),
       receiver: allocUser(),
-      message_body: allocMessageBody()
+      message_body: allocMessageBody(),
     };
   }
 
