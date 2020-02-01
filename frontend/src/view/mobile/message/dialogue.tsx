@@ -4,14 +4,13 @@ import { MobileRouteProps } from '../router';
 // import { StatusNav } from './nav';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
-import { MessageMenu } from './message-menu';
 import { Card } from '../../components/common/card';
-import { Badge } from '../../components/common/badge';
-import { List } from '../../components/common/list';
 import { ChatBubble } from '../../components/message/chat-bubble';
 import { pageStyle, DialogueCardStyle, posterNameStyle, messageStyle, myPosterNameStyle, pmTextBoxStyle, sendButtonStyle } from './styles';
-import { Message } from '.';
 import { ResizableTextarea } from '../../components/common/resizable-textarea';
+import ReactDOM from 'react-dom';
+
+// TODO: implement fetch new msg by scroll up: https://www.pubnub.com/blog/react-chat-message-history-and-infinite-scroll/
 
 interface State {
   data:API.Get['/user/$0/message'];
@@ -46,7 +45,9 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
         top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
           {this.props.location.state.chatWithName}
         </NavBar>}>
-        { this.renderMessages() }
+        <Card style={DialogueCardStyle} >
+          {this.state.data.messages.map((m) => this.renderMessage(m))}
+        </Card>
         { this.textBox() }
       </Page>);
   }
@@ -58,6 +59,7 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
           style={{flexGrow:1, display:'inline-block'}}
           maxRows={3}
           minRows={1}
+          value={this.state.messageToSend}
           placeholder={'写回复'}
           updateValue={this.updateMessageToSend}/>
           <span style={sendButtonStyle} className="icon" onClick={this.sendMessage}>
@@ -73,17 +75,10 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
     try {
       const msg = await this.props.core.db.sendMessage(this.props.match.params.uid, this.state.messageToSend);
       const data = {...this.state.data, messages: [...this.state.data.messages, msg.message]};
-      this.setState({data});
+      this.setState({data, messageToSend:''});
     } catch (e) {
       console.log(e);
     }
-  }
-
-  private renderMessages () : JSX.Element {
-    const { messages } = this.state.data;
-    return (<Card style={DialogueCardStyle}>
-              {messages.map((m) => this.renderMessage(m))}
-            </Card>);
   }
 
   private renderMessage (m:ResData.Message) : JSX.Element {

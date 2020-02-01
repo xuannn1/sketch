@@ -347,12 +347,19 @@ storiesOf('Common Components', module)
       </div>
     </Loading>,
   )
-  .add('ResizableTextarea', () =>
-    <ResizableTextarea
+  .add('ResizableTextarea', () => (React.createElement(class extends React.Component<{}, {value:string}> {
+    public state = {
+      value: '',
+    };
+    public render () {
+      return <ResizableTextarea
       maxRows={number('maxRow', 3)}
       minRows={number('minRow', 1)}
-      placeholder={text('placeholder', '写回复')}/>,
-  );
+      placeholder={text('placeholder', '写回复')}
+      value={this.state.value}
+      updateValue={(value) => {this.setState({value})} }/>
+    }
+  })));
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar

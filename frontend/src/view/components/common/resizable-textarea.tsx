@@ -7,12 +7,12 @@ export class ResizableTextarea extends React.PureComponent<{
   minRows:number;
   maxRows:number; //default 3
   placeholder:string;
+  value:string;
   updateValue:(value:string) => void;
   style?:React.CSSProperties;
   className?:string;
 }, {
   // state
-  value:string;
   rows:number;
 }> {
 
@@ -25,7 +25,6 @@ export class ResizableTextarea extends React.PureComponent<{
   constructor(props){
     super(props);
     this.state = {
-      value:'',
       rows: props.minRows,
     };
   }
@@ -47,7 +46,6 @@ export class ResizableTextarea extends React.PureComponent<{
     }
 
     this.setState({
-      value: event.target.value,
       rows: currentRows < maxRows ? currentRows : maxRows,
     });
     updateValue(event.target.value);
@@ -58,7 +56,7 @@ export class ResizableTextarea extends React.PureComponent<{
       <div className={'text-box-container'} style={this.props.style}>
         <textarea
           rows={this.state.rows}
-          value={this.state.value}
+          value={this.props.value}
           placeholder={this.props.placeholder}
           className={'textarea text-box'}
           onChange={this.handleChange}/>
