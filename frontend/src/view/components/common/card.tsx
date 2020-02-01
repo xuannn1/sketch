@@ -7,14 +7,12 @@ export class Card extends React.Component<{
   children?:React.ReactNode;
   style?:React.CSSProperties;
   className?:string;
-  ref?:(el:HTMLDivElement|null) => void;
   title?:string|{text:string, link:string};
 }, {
   // state
   }> {
     public render () {
       return <div className={classnames('card', this.props.className)}
-        ref={(el) => this.props.ref && this.props.ref(el)}
         style={Object.assign(
           {
             marginTop: '10px',
