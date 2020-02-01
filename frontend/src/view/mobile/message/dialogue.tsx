@@ -9,8 +9,9 @@ import { Card } from '../../components/common/card';
 import { Badge } from '../../components/common/badge';
 import { List } from '../../components/common/list';
 import { ChatBubble } from '../../components/message/chat-bubble';
-import { pageStyle, DialogueCardStyle, posterNameStyle, messageStyle, myPosterNameStyle } from './styles';
+import { pageStyle, DialogueCardStyle, posterNameStyle, messageStyle, myPosterNameStyle, pmTextBoxStyle, sendButtonStyle } from './styles';
 import { Message } from '.';
+import { ResizableTextarea } from '../../components/common/resizable-textarea';
 
 interface State {
   data:API.Get['/user/$0/message'];
@@ -43,7 +44,23 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
           {this.props.location.state.chatWithName}
         </NavBar>}>
         { this.renderMessages() }
+        { this.textBox() }
       </Page>);
+  }
+
+  private textBox () : JSX.Element {
+    return (
+      <div style={pmTextBoxStyle}>
+        <ResizableTextarea
+          style={{flexGrow:1, display:'inline-block'}}
+          maxRows={3}
+          minRows={1}
+          placeholder={'写回复'}/>
+          <span style={sendButtonStyle} className="icon">
+            <i className="far fa-paper-plane"/>
+          </span>
+      </div>
+    );
   }
 
   private renderMessages () : JSX.Element {

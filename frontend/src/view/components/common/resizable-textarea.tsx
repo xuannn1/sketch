@@ -54,7 +54,7 @@ export class ResizableTextarea extends React.PureComponent<{
 
   public render () {
     return (
-      <div className={'text-box-container'}>
+      <div className={'text-box-container'} style={this.props.style}>
         <textarea
           rows={this.state.rows}
           value={this.state.value}

@@ -60,3 +60,18 @@ export const myPosterNameStyle:React.CSSProperties = {
 export const messageStyle:React.CSSProperties = {
   marginBottom: '1.3em',
 };
+
+export const pmTextBoxStyle:React.CSSProperties = {
+  height: 'auto !important',
+  padding: '0.5em 1em 0.5em 1em',
+  position: 'fixed',
+  left: '0',
+  width: '100%',
+  bottom: '0',
+  backgroundColor: 'white',
+  display: 'flex',
+};
+export const sendButtonStyle:React.CSSProperties = {
+  fontSize: '1.3em',
+  margin: '0.5em 0 0 0.5em',
+};
