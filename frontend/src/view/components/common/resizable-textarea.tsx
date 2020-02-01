@@ -29,6 +29,15 @@ export class ResizableTextarea extends React.PureComponent<{
     };
   }
 
+  public componentWillUpdate (nextProps) {
+    // shrink text box after clear the content
+    if (nextProps.value != this.props.value && nextProps.value == '') {
+      this.setState({
+        rows: this.props.minRows,
+      });
+    }
+  }
+
   private handleChange = (event) => {
     const textareaLineHeight = 24;
     const { minRows, maxRows, updateValue } = this.props;
