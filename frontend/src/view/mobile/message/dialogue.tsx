@@ -33,7 +33,6 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
       const data = await this.props.core.db.getMessages(query);
       data.messages.reverse();
       this.setState({data});
-      console.log(data);
     } catch (e) {
       console.log(e);
     }
@@ -58,7 +57,6 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   }
 
   public render () {
-    // console.log(this.state.chatWithName);
     return (<Page style={pageStyle}
         top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
           {this.props.location.state.chatWithName}
@@ -79,7 +77,7 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
           minRows={1}
           value={this.state.messageToSend}
           placeholder={'写回复'}
-          updateValue={this.updateMessageToSend}/>
+          onChange={this.updateMessageToSend}/>
           <span style={sendButtonStyle} className="icon" onClick={this.sendMessage}>
             <i className="far fa-paper-plane"/>
           </span>
@@ -88,7 +86,6 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   }
 
   private sendMessage = async () => {
-    console.log(this.state.messageToSend);
     if (!this.state.messageToSend) { return; }
     try {
       const msg = await this.props.core.db.sendMessage(this.props.match.params.uid, this.state.messageToSend);

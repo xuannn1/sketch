@@ -8,7 +8,7 @@ export class ResizableTextarea extends React.PureComponent<{
   maxRows:number; //default 3
   placeholder:string;
   value:string;
-  updateValue:(value:string) => void;
+  onChange:(value:string) => void;
   style?:React.CSSProperties;
   className?:string;
 }, {
@@ -40,7 +40,7 @@ export class ResizableTextarea extends React.PureComponent<{
 
   private handleChange = (event) => {
     const textareaLineHeight = 24;
-    const { minRows, maxRows, updateValue } = this.props;
+    const { minRows, maxRows, onChange } = this.props;
     const previousRows = event.target.rows;
     event.target.rows = minRows; // reset number of rows in textarea
     const currentRows = ~~(event.target.scrollHeight / textareaLineHeight); //~~: similar to Math.floor(), it basically just remove the right part of the decimal point
@@ -57,7 +57,7 @@ export class ResizableTextarea extends React.PureComponent<{
     this.setState({
       rows: currentRows < maxRows ? currentRows : maxRows,
     });
-    updateValue(event.target.value);
+    onChange(event.target.value);
   }
 
   public render () {

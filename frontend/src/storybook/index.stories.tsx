@@ -374,7 +374,7 @@ storiesOf('Common Components', module)
       minRows={number('minRow', 1)}
       placeholder={text('placeholder', '写回复')}
       value={this.state.value}
-      updateValue={(value) => {this.setState({value})} }/>
+      onChange={(value) => this.setState({value})}/>;
     }
   })));
 
