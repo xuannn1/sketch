@@ -1,0 +1,32 @@
+.expandable-message{
+  background-color: white;
+  margin-top: 4px;
+  padding: 16px;
+}
+.expandable-message-content{
+  font-size: 0.95em;
+  color: #666666;
+}
+.expandable-message-title{
+  font-size: 1.1em;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+.expandable-message-title-text{
+  width: 90%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.expandable-message-title .icon{
+  float: right;
+} 
+.expandable-message-footer{
+  margin-top: 1em;
+  height: 0.85em;
+}
+.expandable-message-footer span{
+  font-size: 0.85em;
+  float: right;
+}
