@@ -1,7 +1,7 @@
 import { History } from '.';
 import { ReqData, Increments, API } from '../config/api';
 import { parsePath, URLQuery } from '../utils/url';
-import { loadStorage, saveStorage } from '../utils/storage';
+import { saveStorage } from '../utils/storage';
 import { ErrorMsg, ErrorCodeKeys } from '../config/error';
 import { User } from './user';
 
