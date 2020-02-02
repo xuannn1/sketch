@@ -32,9 +32,10 @@ class QuizResource extends JsonResource
                     'level' => (int)$this->quiz_level,
                     'quiz_count' => (int)$this->quiz_count,
                     'correct_count' => (int)$this->correct_count,
-                    'edited_at' => (string)$this->edited_at
+                    'edited_at' => (string)$this->edited_at,
+                    'correct_answer' => $this->quiz_options->where('is_correct',true)->pluck('id')->toArray()
                 ]),
-                'options' => $this->when($quiz_type == 'quiz', QuizOptionResource::collection($this->quiz_options))
+                'options' => $this->when($quiz_type != 'essay', QuizOptionResource::collection($this->quiz_options))
             ]
         ];
     }

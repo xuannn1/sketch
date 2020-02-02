@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Resources\QuizResource;
+use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Quiz;
@@ -18,7 +20,7 @@ class QuizController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('admin')->only('index','store','update','destroy');
+        $this->middleware('admin')->only('index','store','update','destroy','show');
 
     }
 
@@ -114,12 +116,20 @@ class QuizController extends Controller
         // return redirect()->route('quiz.show', $quiz);
     }
 
-    public function takeQuiz(Request $request)
+    public function getQuiz(Request $request)
     {
-        // $user = Auth::user();
-        // $level = (int)$request->level ?? 0;
-        // $quizzes = $this->random_quizzes($level, 'level_up', config('constants.quiz_test_number'));
-        // return view('quiz.taketest',compact('level', 'quizzes', 'user'));
+        $user = auth('api')->user();
+        if (!$user) {
+            abort(401,'用户未登录。');
+        }
+        $level = (int)$request->level ?? 0;
+        $quizzes = $this->random_quizzes($level, 'level_up', config('constants.quiz_test_number'));
+        $quiz_questions = implode(",", $quizzes->pluck('id')->toArray());
+        if (!$quizzes || empty($quizzes) || count($quizzes) == 0) {
+            abort(404,'没有找到该等级的题目。');
+        }
+        UserInfo::find($user->id)->update(['quiz_questions' => $quiz_questions]);
+        return response()->success(['quizzes' => QuizResource::collection($quizzes)]);
     }
 
     public function submitQuiz(Request $request)
