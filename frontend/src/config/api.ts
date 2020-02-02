@@ -476,6 +476,9 @@ export namespace API {
       paginate:ResData.ThreadPaginate,
       style:ReqData.Message.style,
     };
+    '/publicnotice':{
+      public_notice:ResData.PublicNotice[],
+    };
     '/config/titles':{
       titles:ResData.Title[],
     };
@@ -526,7 +529,7 @@ export namespace API {
     '/groupmessage':{
       messages:ResData.Message[],
     };
-    '/publicnotce':{
+    '/publicnotice':{
       public_notice:ResData.PublicNotice,
     };
     '/vote':ResData.Vote;

@@ -26,6 +26,7 @@ export class User {
     this.name = name;
     this.id = id;
     this.token = token;
+    this.history.goBack();
   }
 
   public isAdmin () : boolean {
