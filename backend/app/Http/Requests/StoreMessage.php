@@ -91,7 +91,7 @@ class StoreMessage extends FormRequest
     {
         if(!auth('api')->user()->isAdmin()){abort(403);}
 
-        $notice_data['body'] = Request('body');
+        $notice_data = request()->only('body','title');
         $notice_data['user_id'] = auth('api')->id();
         $public_notice = DB::transaction(function() use($notice_data) {
             $public_notice = PublicNotice::create($notice_data);
