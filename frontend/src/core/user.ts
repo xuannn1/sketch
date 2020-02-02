@@ -4,10 +4,10 @@ import { loadStorage, saveStorage, clearStorage } from '../utils/storage';
 export class User {
   private history:History;
 
-  public isLogin:boolean = false;
-  public name:string = '';
-  public id:number = -1;
-  public token:string = '';
+  public isLogin = false;
+  public name = '';
+  public id = -1;
+  public token = '';
 
   constructor (history:History) {
     this.history = history;
