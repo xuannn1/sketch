@@ -13,31 +13,37 @@ import { mockReplyNotifications } from './mock-data';
 import { Dialogue } from './dialogue';
 
 interface State {
-  data:API.Get['/user/$0/message'];
+  messageData:API.Get['/user/$0/message'];
+  publicNoticeData:API.Get['/publicnotice'];
 }
 
 // TODO: 管理通知, 公共通知: waiting for API
 // TODO: reduce API use by saving messages in localStorage
 // TODO: implement mark as read
+// TODO: we need a way to notify user API errors. (e.g. probably with a pop up)
+// TODO: detect read public notice
 
 export class PersonalMessage extends React.Component<MobileRouteProps, State> {
   public state:State = {
-    data:{
+    messageData:{
       messages: [],
       paginate: ResData.allocThreadPaginate(),
       style: ReqData.Message.style.receiveBox,
     },
+    publicNoticeData:{
+      public_notice: [],
+    }
   };
 
   public async componentDidMount() {
-    try {
-      const query = {withStyle: ReqData.Message.style.receiveBox};
-      const data = await this.props.core.db.getMessages(query);
-      this.setState({data});
-      console.log(data);
-    } catch (e) {
-      console.log(e);
-    }
+    const query = {withStyle: ReqData.Message.style.receiveBox};
+    const fetchMsgData = this.props.core.db.getMessages(query).catch((e) => { console.log(e);
+                                                                              return this.state.messageData; });
+    const fetchPublicNotice = this.props.core.db.getPublicNotice().catch((e) => { console.log(e);
+                                                                                  return this.state.publicNoticeData; });
+    const [messageData, publicNoticeData] = await Promise.all([fetchMsgData, fetchPublicNotice]);
+    this.setState({messageData, publicNoticeData});
+    console.log(messageData, publicNoticeData);
   }
 
   public render () {
@@ -67,8 +73,14 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
       </Page>);
   }
 
+  // redirect user to public notice page
+  private readPublicNotice = () => {
+    // TODO: clear all unread notice
+
+  }
+  /** ===========            user messages           =============== **/
   private getDialogues() : ResData.Message[] {
-    const { messages } = this.state.data;
+    const { messages } = this.state.messageData;
     const dialogues:{[key:string]:ResData.Message} = {};
     const dialoguesArray:ResData.Message[] = [];
     messages.forEach((m) => {
