@@ -400,14 +400,18 @@ class RegistrationByInvitationEmailTest extends TestCase
         // 拒绝缺少quizzes的请求
         Artisan::call('cache:clear');
         $regapp->update([
-            'is_passed' => false,
-            'quiz_questions' => '31,96,27,23,77,4,20,62,99,116,103'
+            'is_passed' => false
         ]);
         $this->post('api/register/by_invitation_email/submit_quiz', $data)
             ->assertStatus(422);
 
         // 拒绝提交题目不匹配的请求
         Artisan::call('cache:clear');
+        $quizzes = self::random_quizzes(-1, 'register', config('constants.registration_quiz_total'));
+        $quiz_questions = $quizzes->pluck('id')->toArray();
+        $regapp->update([
+            'quiz_questions' => implode(",", $quiz_questions)
+        ]);
         $data['quizzes'] = [
             ['id' => 1, 'answer' => '1']
         ];
@@ -416,19 +420,18 @@ class RegistrationByInvitationEmailTest extends TestCase
 
         // 成功提交，答错数量太多
         Artisan::call('cache:clear');
-        $data['quizzes'] = [
-            ['id' => 4, 'answer' => '12'],
-            ['id' => 20, 'answer' => '70'],
-            ['id' => 23, 'answer' => '78'],
-            ['id' => 27, 'answer' => '93'],
-            ['id' => 31, 'answer' => '112'],
-            ['id' => 62, 'answer' => '240'],
-            ['id' => 77, 'answer' => '302,303'],
-            ['id' => 96, 'answer' => '382'],
-            ['id' => 99, 'answer' => '395'],
-            ['id' => 116, 'answer' => '478'],
-            ['id' => 103, 'answer' => '411,412'],
-        ];
+        unset($data['quizzes']);
+        // 直接填充错误答案。填充方式为：如果正确选项数量大于1个，则只填充第一个选项；如果正确选项数量只有1个，则填充所有选项
+        foreach ($quiz_questions as $quiz_question) {
+            $possible_answers = QuizObjectTraits::find_quiz_set($quiz_question)->quiz_options;
+            $correct_answer = $possible_answers->where('is_correct',true)->pluck('id')->toArray();
+            if (count($correct_answer) > 1) {
+                $data['quizzes'][] = ['id' => $quiz_question, 'answer' => $correct_answer[0]];
+            } else {
+                $data['quizzes'][] = ['id' => $quiz_question, 'answer' => implode(',',$possible_answers->pluck('id')->toArray())];
+            }
+
+        }
         $this->post('api/register/by_invitation_email/submit_quiz', $data)
             ->assertStatus(200)->assertJsonFragment(['has_quizzed' => false]);
 
@@ -439,8 +442,13 @@ class RegistrationByInvitationEmailTest extends TestCase
 
         // 成功提交，答题全对
         Artisan::call('cache:clear');
-        $quiz_questions = [88,11,25,95,36,30,68,9,44,59,113];
-        $regapp->update(['quiz_questions' =>implode(',',$quiz_questions)]);
+
+        // 先重新刷新一次model
+        $regapp->update(['quiz_questions' =>'']);
+
+        $regapp->update([
+            'quiz_questions' => implode(",", $quiz_questions)
+        ]);
         unset($data['quizzes']);
         // 直接填充正确答案
         foreach ($quiz_questions as $quiz_question) {
