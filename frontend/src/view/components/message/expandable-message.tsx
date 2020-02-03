@@ -48,7 +48,7 @@ export class ExpandableMessage extends React.Component<Props, State> {
       </div>
       <div className="expandable-message-content">
         {this.state.expanded ? this.getFullContent() : this.getBrief()}
-        {this.props.footer && (<div className="expandable-message-footer"><span>{this.props.footer}</span></div>)}
+        {this.props.footer && this.state.expanded && (<div className="expandable-message-footer"><span>{this.props.footer}</span></div>)}
       </div>
     </div>);
   }

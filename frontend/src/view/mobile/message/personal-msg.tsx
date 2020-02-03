@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { API, ResData, ReqData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
-// import { StatusNav } from './nav';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
 import { MessageMenu } from './message-menu';
@@ -9,8 +8,6 @@ import { Card } from '../../components/common/card';
 import { Badge } from '../../components/common/badge';
 import { List } from '../../components/common/list';
 import { pageStyle, largeListItemStyle, badgeStyle, topCardStle, contentCardStyle, replyNotificationCardStyle, replyMessageContentStyle, unreadStyle, oneLineTruncationStyle } from './styles';
-import { mockReplyNotifications } from './mock-data';
-import { Dialogue } from './dialogue';
 
 interface State {
   messageData:API.Get['/user/$0/message'];
@@ -71,12 +68,6 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
         {/* reply notifications */}
         { this.renderMessages() }
       </Page>);
-  }
-
-  // redirect user to public notice page
-  private readPublicNotice = () => {
-    // TODO: clear all unread notice
-
   }
 
   // redirect user to public notice page
