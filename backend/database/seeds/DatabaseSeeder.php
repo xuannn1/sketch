@@ -18,6 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ThreadsTableSeeder::class);
         $this->call(HomeworksTableSeeder::class);
         $this->call(FollowersTableSeeder::class);
-        // $this->call(QuizzesTableSeeder::class);  // FIXME: error: ReflectionException  : Class QuizzesTableSeeder does not exist
+        $this->call(QuizzesTableSeeder::class);  
     }
 }
