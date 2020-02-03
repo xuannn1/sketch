@@ -8,9 +8,10 @@ import { MessageMenu } from './message-menu';
 import { Card } from '../../components/common/card';
 import { Badge } from '../../components/common/badge';
 import { List } from '../../components/common/list';
-import { pageStyle, largeListItemStyle, badgeStyle, topCardStle, contentCardStyle, replyNotificationCardStyle, replyMessageContentStyle, unreadStyle, oneLineTruncationStyle } from './styles';
+import { pageStyle, publicNoticeCardStyle } from './styles';
 import { mockReplyNotifications } from './mock-data';
 import { Dialogue } from './dialogue';
+import { ExpandableMessage } from '../../components/message/expandable-message';
 
 interface State {
   publicNoticeData:API.Get['/publicnotice'];
@@ -20,13 +21,13 @@ interface State {
 export class PublicNotice extends React.Component<MobileRouteProps, State> {
   public state:State = {
     publicNoticeData:{
-      public_notice: [],
+      public_notices: [],
     },
   };
 
   public async componentDidMount() {
     let publicNoticeData;
-    if (this.props.location.state.publicNoticeData) {
+    if (this.props.location.state && this.props.location.state.publicNoticeData) {
       publicNoticeData = this.props.location.state.publicNoticeData;
     } else {
       publicNoticeData = await this.props.core.db.getPublicNotice()
@@ -36,7 +37,25 @@ export class PublicNotice extends React.Component<MobileRouteProps, State> {
                                 });
     }
     console.log(publicNoticeData);
+    debugger;
     this.setState({publicNoticeData});
+  }
+
+  private renderNotice (notice:ResData.PublicNotice) {
+    const title = notice.attributes.title ? notice.attributes.title : '通知';
+    const authorName = notice.author ? notice.author.attributes.name : '管理员';
+    const time = notice.attributes.created_at;
+    const id = notice.id;
+    const content = notice.attributes.body;
+    const footer = `${authorName} ${time}`;
+
+    return (
+      <ExpandableMessage
+        key={'pn' + id}
+        title={title}
+        uid={'pn' + id}
+        content={content}
+        footer={footer}/>);
   }
 
   public render () {
@@ -44,10 +63,12 @@ export class PublicNotice extends React.Component<MobileRouteProps, State> {
         top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
           公共通知
         </NavBar>}>
+        <Card style={ publicNoticeCardStyle }>
+          {this.state.publicNoticeData.public_notices.map((n) => this.renderNotice(n))}
+        </Card>
       </Page>);
   }
 }
-
 
 // <Accordion
 //     title={text('title', 'accordion title')}

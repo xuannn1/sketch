@@ -60,7 +60,7 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   public render () {
     return (<Page style={pageStyle}
         top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
-          {this.props.location.state.chatWithName}
+          {this.props.location.state && this.props.location.state.chatWithName}
         </NavBar>}>
         <Card style={DialogueCardStyle} ref={(card) => this.messageListRef = card ? card.rootElement : null}>
           {this.state.data.messages.map((m) => this.renderMessage(m))}

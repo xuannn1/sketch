@@ -4,7 +4,7 @@ import ClampLines from 'react-clamp-lines';
 
 interface Props {
   title:React.ReactNode;
-  uid:number;
+  uid:string;
   footer?:string;
   boldTitle?:boolean;
   content:string;
@@ -23,7 +23,7 @@ export class ExpandableMessage extends React.Component<Props, State> {
   }
 
   private getBrief () {
-    const contentWithOutLineBreak = this.props.content.replace(/\s/g, '');
+    const contentWithOutLineBreak = this.props.content.replace(/\s+/g, ' ');
     return <ClampLines
               text={contentWithOutLineBreak}
               lines={2}

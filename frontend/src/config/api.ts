@@ -248,11 +248,12 @@ export namespace ResData {
     id:number;
     attributes:{
       user_id:number;
+      title:string;
       body:string;
       created_at:Timestamp;
       edited_at:Timestamp;
     };
-    user?:User;
+    author?:User;
   }
   export function allocPublicNotice () : PublicNotice {
     return {
@@ -260,11 +261,12 @@ export namespace ResData {
       id: 0,
       attributes: {
         user_id: 0,
+        title: '',
         body: '',
         created_at: '',
         edited_at: '',
       },
-      user: allocUser(),
+      author: allocUser(),
     };
   }
 
@@ -477,7 +479,7 @@ export namespace API {
       style:ReqData.Message.style,
     };
     '/publicnotice':{
-      public_notice:ResData.PublicNotice[],
+      public_notices:ResData.PublicNotice[],
     };
     '/config/titles':{
       titles:ResData.Title[],

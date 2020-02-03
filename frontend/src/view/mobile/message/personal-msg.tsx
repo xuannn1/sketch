@@ -31,7 +31,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
       style: ReqData.Message.style.receiveBox,
     },
     publicNoticeData:{
-      public_notice: [],
+      public_notices: [],
     }
   };
 
