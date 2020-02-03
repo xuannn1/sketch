@@ -11,6 +11,9 @@ interface State {
   publicNoticeData:API.Get['/publicnotice'];
 }
 
+// TODO: unread
+// TODO: common component to display article: will display newline, blank new, tab correctly
+
 // public notice data can be passed via props (it's optional)
 export class PublicNotice extends React.Component<MobileRouteProps, State> {
   public state:State = {
@@ -34,6 +37,12 @@ export class PublicNotice extends React.Component<MobileRouteProps, State> {
     this.setState({publicNoticeData});
   }
 
+  private isNoticeUnread (notice:ResData.PublicNotice) : boolean {
+    // TODO
+    if (notice.id > 2) { return true; }
+    return false;
+  }
+
   private renderNotice (notice:ResData.PublicNotice) {
     const title = notice.attributes.title ? notice.attributes.title : '通知';
     const authorName = notice.author ? notice.author.attributes.name : '管理员';
@@ -41,6 +50,7 @@ export class PublicNotice extends React.Component<MobileRouteProps, State> {
     const id = notice.id;
     const content = notice.attributes.body;
     const footer = `${authorName} ${time}`;
+    const unread = this.isNoticeUnread(notice);
 
     return (
       <ExpandableMessage
@@ -48,7 +58,8 @@ export class PublicNotice extends React.Component<MobileRouteProps, State> {
         title={title}
         uid={'pn' + id}
         content={content}
-        footer={footer}/>);
+        footer={footer}
+        boldTitle={unread}/>);
   }
 
   public render () {

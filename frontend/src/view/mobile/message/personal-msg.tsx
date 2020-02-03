@@ -17,7 +17,7 @@ interface State {
   publicNoticeData:API.Get['/publicnotice'];
 }
 
-// TODO: 管理通知, 公共通知: waiting for API
+// TODO: 管理通知: waiting for API
 // TODO: reduce API use by saving messages in localStorage
 // TODO: implement mark as read
 // TODO: we need a way to notify user API errors. (e.g. probably with a pop up)
@@ -61,7 +61,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
               管理通知
               {/* <Badge num={1000} max={100} style={badgeStyle}/> */}
             </List.Item>
-            <List.Item onClick={() => console.log('click item ')} arrow={true} style={largeListItemStyle}>
+            <List.Item onClick={this.onClickPublicNotice} arrow={true} style={largeListItemStyle}>
               <i className="far fa-envelope icon"></i>
               公共通知
               <Badge num={2} max={100} style={badgeStyle}/>
@@ -77,6 +77,12 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
   private readPublicNotice = () => {
     // TODO: clear all unread notice
 
+  }
+
+  // redirect user to public notice page
+  private onClickPublicNotice = () => {
+    // TODO: clear all unread notice
+    this.props.core.history.push(`/messages/publicnotice`, {publicNoticeData: this.state.publicNoticeData});
   }
   /** ===========            user messages           =============== **/
   private getDialogues() : ResData.Message[] {
@@ -94,7 +100,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
 
   // @param chatWithID - the id of user you are chating with
   // @param chatWithName - the name of user you are chating with
-  private onClicDialogue = (chatWithID:number, chatWithName:string) => () => {
+  private onClickDialogue = (chatWithID:number, chatWithName:string) => () => {
     this.props.core.history.push(`/messages/pm/${chatWithID}`, {chatWithName});
   }
 
@@ -106,7 +112,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
       const seen:boolean = dialogue.attributes.seen;
       const content:string = dialogue.message_body ? dialogue.message_body.attributes.body : '';
 
-      return (<List.Item key={dialogue.id} style={{background:'white', marginBottom:'0.3em'}} onClick={this.onClicDialogue(posterID, posterName)}>
+      return (<List.Item key={dialogue.id} style={{background:'white', marginBottom:'0.3em'}} onClick={this.onClickDialogue(posterID, posterName)}>
                 <h6 className="is-6" style={seen ? {} : unreadStyle}>{posterName}</h6>
                 <div style={replyMessageContentStyle}>
                   <p style={oneLineTruncationStyle}>{!seen ? <React.Fragment><b>[有新消息]</b>{` `}</React.Fragment> : ''}{content}</p>
