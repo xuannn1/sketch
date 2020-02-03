@@ -759,7 +759,7 @@ storiesOf('Message Components', module)
     没有买卖就没有攻击。`;
     const title = '没有买卖就没有攻击';
     const footer = '废文网大内总管 2019-10-29 18:03:54';
-    return (<ExpandableMessage title={title} content={content} footer={footer}></ExpandableMessage>);
+    return (<ExpandableMessage title={title} content={content} footer={footer} uid={1} boldTitle={boolean('bold title', false)}></ExpandableMessage>);
   })
 ;
 
