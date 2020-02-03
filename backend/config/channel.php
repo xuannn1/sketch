@@ -67,7 +67,7 @@ return [
         'channel_name' => '随笔',
         'channel_explanation' => '随笔板块从此进入',
         'order_by' => '6',
-        'type' => 'thread',
+        'type' => 'column',
         'allow_anonymous' => true,
         'allow_edit' => true,
         'allow_deletion' => true,
