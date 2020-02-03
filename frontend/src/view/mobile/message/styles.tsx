@@ -80,8 +80,7 @@ export const sendButtonStyle:React.CSSProperties = {
 
 export const publicNoticeCardStyle:React.CSSProperties = {
   border: 'none',
-  paddingLeft: '0px',
-  paddingRight: '0px',
+  padding: '0px 0px 10px 0px',
   backgroundColor: '#f4f5f9',
   boxShadow: 'none',
   marginTop: '0px',
