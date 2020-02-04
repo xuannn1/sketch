@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Resources\PaginateResource;
 use App\Http\Resources\QuizCollection;
 use App\Http\Resources\QuizResource;
 use App\Models\UserInfo;
@@ -27,13 +28,19 @@ class QuizController extends Controller
 
     public function index(Request $request)
     {
-        // $quizzes = Quiz::with('quiz_options')
-        // ->withQuizType($request->quizType)
-        // ->withQuizLevel($request->quizLevel)
-        // ->orderBy('id','desc')
-        // ->paginate(config('constants.index_per_page'))
-        // ->appends($request->only('quizType','quizLevel'));
-        // return view('quiz.review',compact('quizzes'))->with('quizType',$request->quizType)->with('quizLevel',$request->quizLevel);
+        $quizzes = Quiz::with('quiz_options')->withQuizOnlineStatus($request->quiz_status);;
+        if (isset($request->quiz_level) && ($request->quiz_level || $request->quiz_level == '0')&& $request->quiz_level != '') {
+            $quizzes = $quizzes->withQuizLevelRange($request->quiz_level);
+        }
+        if (isset($request->quiz_type) && $request->quiz_type && $request->quiz_type != '') {
+            $quizzes = $quizzes->withQuizTypeRange($request->quiz_type);
+        }
+
+        $quizzes = $quizzes->orderBy('id','desc')->paginate(config('preference.index_per_page'));
+        return response()->success([
+            'quizzes' => QuizCollection::make($quizzes),
+            'paginate' => new PaginateResource($quizzes),
+        ]);
     }
 
     public function store(Request $request)

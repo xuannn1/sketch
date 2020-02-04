@@ -116,6 +116,8 @@ return [
         'register' => '注册申请选择题',
         'essay' => '注册申请简答题',
     ],
+    'quiz_has_level_type' => ['level_up'],
+    'quiz_has_no_level_type' => ['register','essay'],
     'task_titles' => [
         '2019winter' => 61,
     ],
