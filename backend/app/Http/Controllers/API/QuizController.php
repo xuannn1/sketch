@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Resources\QuizCollection;
 use App\Http\Resources\QuizResource;
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
@@ -134,38 +135,40 @@ class QuizController extends Controller
 
     public function submitQuiz(Request $request)
     {
-        // $user = Auth::user();
-        // $wrong_quiz = [];
-        // //dd($request->all());
-        // $this->validate($request, [
-        //     'quiz-answer' => 'required',
-        // ]);
-        // foreach($request['quiz-answer'] as $quiz_answer){
-        //     $submitted_answers = $this->select_submitted_answers($quiz_answer);
-        //     $correct_answers = $this->find_quiz_answers((int)$quiz_answer['quiz_id']);
-        //     if($submitted_answers!=$correct_answers){
-        //         array_push($wrong_quiz, [
-        //             'submitted_answers' => $submitted_answers,
-        //             'correct_answers' => $correct_answers,
-        //             'quiz' => $this->find_quiz_set((int)$quiz_answer['quiz_id']),
-        //         ]);
-        //     }
-        // }
-        // if(empty($wrong_quiz)){
-        //     if($user->quiz_level<=$request->level){
-        //         $user->reward('first_quiz', $request->level+1);
-        //         $user->quiz_level = $request->level+1;
-        //         if($user->level<1){$user->level=1;}
-        //         $user->save();
-        //         return redirect('/')->with('success', '恭喜，初次答对本组题目的奖励已经发放！');
-        //     }else{
-        //         // $user->reward('more_quiz');
-        //         return redirect('/')->with('success', '恭喜，已经成功完成了测试！');
-        //     }
-        // }else{
-        //     $level = (int)$request->level ?? 0;
-        //     return view('quiz.analyzequiz', compact('wrong_quiz','user','level'));
-        // }
+        $user = auth('api')->user();
+        if (!$user) {
+            abort(401,'用户未登录。');
+        }
+        $user_info = UserInfo::find($user->id);
+        $quiz = $request->quizzes;
+        $result = [
+            'id' => $user->id,
+            'type' => 'quiz_result',
+            'attribute' => [
+                'is_passed' => false,
+                'is_quiz_level_up' => false
+            ]
+        ];
+        // 设置应答对题目数量为总题目数量
+        $is_passed = $this->check_quiz_passed_or_not($quiz, $user_info->quiz_questions, config('constants.quiz_test_number'));
+        $current_quiz_level = self::find_quiz_set($quiz[0]['id'])->quiz_level;
+        $result['attribute']['current_quiz_level'] = $current_quiz_level;
+        if($is_passed){
+            $result['attribute']['is_passed'] = true;
+            if($user->quiz_level<=$current_quiz_level){
+                $user->reward('first_quiz', $current_quiz_level+1);
+                $user->quiz_level = $current_quiz_level+1;
+                if($user->level<1){$user->level=1;}
+                $user->save();
+                $result['attribute']['is_quiz_level_up'] = true;
+            }
+        }else{
+            $result['quizzes'] = QuizCollection::make(Quiz::whereIn('id',collect($quiz)->pluck('id')->toArray())->get(),true);
+        }
+        $user_info->update([
+            'quiz_questions' => null
+        ]);
+        return response()->success($result);
     }
 
     // private function find_quiz_answers($quiz_id)

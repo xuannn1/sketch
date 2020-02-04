@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Resources\QuizCollection;
 use App\Models\RegistrationApplication;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,7 +14,6 @@ use App\Sosadfun\Traits\QuizObjectTraits;
 use Validator;
 use Cache;
 use App\Http\Resources\QuizResource;
-use App\Http\Resources\QuizOptionResource;
 use App\Http\Resources\RegistrationApplicationResource;
 
 class RegAppController extends Controller
@@ -92,7 +92,7 @@ class RegAppController extends Controller
             $quiz_questions = implode(",", $quizzes->pluck('id')->toArray());
             $application ->update(['quiz_questions' => $quiz_questions]);
 
-            $success['quizzes'] = QuizResource::collection($quizzes);
+            $success['quizzes'] = QuizCollection::make($quizzes);
         } elseif($application->email_verified_at&&!$application->is_passed&&!$application->cut_in_line&&$application->has_quizzed&&!$application->submitted_at){
             $essay = $application->assign_essay_question();
             $success['essay'] = new QuizResource($essay);

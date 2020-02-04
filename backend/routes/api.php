@@ -178,7 +178,7 @@ Route::apiResource('helpfaq', 'API\FAQController')->only(['index', 'store', 'upd
 
 // 注意顺序
 Route::get('quiz/get_quiz','API\QuizController@getQuiz');
-Route::get('quiz/submit_quiz','API\QuizController@submitQuiz');
+Route::post('quiz/submit_quiz','API\QuizController@submitQuiz');
 Route::apiResource('quiz', 'API\QuizController');
 
 
