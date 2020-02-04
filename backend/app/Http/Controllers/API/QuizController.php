@@ -12,8 +12,10 @@ use App\Models\Quiz;
 use App\Models\QuizOption;
 use DB;
 use Auth;
+use Validator;
 use App\Sosadfun\Traits\QuizObjectTraits;
 use Carbon;
+use Illuminate\Validation\Rule;
 
 class QuizController extends Controller
 {
@@ -24,6 +26,32 @@ class QuizController extends Controller
         $this->middleware('auth:api');
         $this->middleware('admin')->only('index','store','update','destroy','show');
 
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'quizzes'=> 'required|array',
+            'quizzes.*.body' => 'required|string|max:6000',
+            'quizzes.*.hint' => 'nullable|string|max:6000',
+            'quizzes.*.is_online'=> 'nullable|boolean',
+            'quizzes.*.type' => [
+                'required',
+                'string',
+                Rule::in(array_keys(config('constants.quiz_types')))
+            ],
+            'quizzes.*.level'=> 'integer|required_if:quizzes.*.type,'.implode(',',config('constants.quiz_has_level_type')),
+            'quizzes.*.option'=> 'array|required_if:quizzes.*.type,'.implode(',',config('constants.quiz_has_option')),
+            'quizzes.*.option.*.body' => 'required|string|max:190',
+            'quizzes.*.option.*.explanation' => 'required|string|max:190',
+            'quizzes.*.option.*.is_correct' => 'nullable|boolean',
+        ]);
     }
 
     public function index(Request $request)
@@ -45,33 +73,48 @@ class QuizController extends Controller
 
     public function store(Request $request)
     {
-        // $this->validate($request, [
-        //     'quiz-body' => 'required|string|max:6000',
-        //     'quiz-hint' => 'nullable|string|max:6000',
-        //     'quiz-level'=> 'required|numeric',
-        //     'quiz-option.*' => 'nullable|string|max:190',
-        //     'quiz-type' => 'required|string',
-        //     'quiz-option-explanation.*' => 'nullable|string|max:190',
-        // ]);
-        // $quizdata['body'] = $request['quiz-body'];
-        // $quizdata['quiz_level'] = (int)$request['quiz-level'];
-        // $quizdata['hint'] = $request['quiz-hint'];
-        // $quizdata['type'] = $request['quiz-type'];
-        // if(!array_key_exists($request['quiz-type'], config('constants.quiz_types'))){abort(422);}
-        // DB::transaction(function () use ($request, $quizdata){
-        //     $quiz = Quiz::create($quizdata);
-        //     foreach($request['quiz-option'] as $key=>$option){
-        //         if($option){
-        //             $optiondata['quiz_id'] = $quiz->id;
-        //             $optiondata['body'] = $option;
-        //             $optiondata['explanation'] = $request['quiz-option-explanation'][$key];
-        //             $optiondata['is_correct'] = !empty($request['check-quiz-option'])&&array_key_exists($key, $request['check-quiz-option']);
-        //             QuizOption::create($optiondata);
-        //         }
-        //     }
-        // });
-        //
-        // return redirect()->route('quiz.review');
+        $validator = $this->validator($request->all());
+        if ($validator->fails()) {
+            return response()->error($validator->errors(), 422);
+        }
+
+        $succeeded_quiz = [];
+        $failed_quiz = [];
+        DB::transaction(function () use ($request, &$succeeded_quiz, &$failed_quiz){
+            foreach ($request->quizzes as $index => $quiz) {
+                // 先检查有没有至少一个正确选项
+                $has_correct_answer = false;
+                foreach($quiz['option'] as $option){
+                    if (array_key_exists('is_correct',$option) && $option['is_correct']) {
+                        $has_correct_answer = true;
+                    }
+                }
+                if (!$has_correct_answer && in_array($quiz['type'],config('constants.quiz_has_option'))) {
+                    $failed_quiz[] = $index;
+                    continue;
+                }
+                $quiz_data['body'] = $quiz['body'];
+                $quiz_data['quiz_level'] = $quiz['level'] ?? -1;
+                $quiz_data['hint'] = $quiz['hint'] ?? null;
+                $quiz_data['type'] = $quiz['type'];
+                $quiz_data['is_online'] = $quiz['is_online'] ?? true;
+                $new_quiz = Quiz::create($quiz_data);
+                foreach($quiz['option'] as $option){
+                    $option_data = [
+                        'quiz_id' => $new_quiz->id,
+                        'body' => $option['body'],
+                        'explanation' => $option['explanation'],
+                        'is_correct' => $option['is_correct'] ?? false
+                    ];
+                    QuizOption::create($option_data);
+                }
+                $succeeded_quiz[] = $new_quiz;
+            }
+        });
+        return response()->success([
+            'quizzes' => QuizCollection::make(collect($succeeded_quiz)),
+            'failed' => $failed_quiz
+        ]);
     }
 
     public function show($id)

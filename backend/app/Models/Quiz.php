@@ -64,7 +64,7 @@ class Quiz extends Model
             }
         }
         if(count($level_range) > 0){
-            return $query->whereIn('quiz_level',$level_range)->orWhereIn('type',config('constants.quiz_has_no_level_type'));
+            return $query->whereIn('quiz_level',$level_range)->orWhereNotIn('type',config('constants.quiz_has_level_type'));
         }
         return $query;
     }

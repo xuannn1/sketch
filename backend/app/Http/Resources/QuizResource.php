@@ -37,7 +37,7 @@ class QuizResource extends JsonResource
             $quiz_type = 'quiz';
         }
         $is_admin = auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin();
-        $include_answer = $this->include_answer || $is_admin;
+        $include_answer = in_array($this->type, config('constants.quiz_has_option')) && ($this->include_answer || $is_admin);
         return [
             'type' => $quiz_type,
             'id' => (int)$this->id,
@@ -47,6 +47,7 @@ class QuizResource extends JsonResource
                 'correct_answer' => $this->when($include_answer,$this->quiz_options->where('is_correct',true)->pluck('id')->toArray()),
                 $this->mergeWhen(auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin(), [
                     'type' => (string)$this->type,
+                    'is_online' => (bool)$this->is_online,
                     'level' => (int)$this->quiz_level,
                     'quiz_count' => (int)$this->quiz_count,
                     'correct_count' => (int)$this->correct_count,
