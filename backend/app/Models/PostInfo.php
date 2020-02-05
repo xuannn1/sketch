@@ -22,4 +22,9 @@ class PostInfo extends Model
     {
         return $this->belongsTo(Thread::class, 'reviewee_id')->select('id','user_id','channel_id','title','brief','is_bianyuan','is_anonymous','is_public','no_reply','is_locked');
     }
+
+    public function referer()//被附载的内容
+    {
+        return $this->morphTo('reviewee');
+    }
 }

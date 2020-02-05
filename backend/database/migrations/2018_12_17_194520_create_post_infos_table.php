@@ -28,6 +28,7 @@ class CreatePostInfosTable extends Migration
             $table->tinyInteger('rating')->default(0)->index();//推荐星级
             $table->unsignedInteger('redirect_count')->default(0)->index();//安利成功次数
             $table->tinyInteger('author_attitude')->default(0)->index();//作者态度
+            $table->string('summary', 10)->nullable()->index();//举报结果
         });
     }
 

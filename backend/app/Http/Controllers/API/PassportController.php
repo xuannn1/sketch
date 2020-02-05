@@ -195,7 +195,12 @@ class PassportController extends Controller
     }
 
     public function logout(){
-        // TODO: deactivate current token
+        $user = auth('api')->user();
+        $user->token()->revoke();
+        return response()->success([
+            'user_id' => $user->id,
+            'message' => "you've logged out!",
+        ]);
     }
 
     public function reset_password_via_email(Request $request)
@@ -203,52 +208,60 @@ class PassportController extends Controller
         $data = $request->all();
         $rules = [
             'password' => 'required|string|min:10|max:32|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{6,}$/',
-                ];
+            'token' => 'required|string',
+            'email' => 'required|email'
+        ];
         $validator = Validator::make($data, $rules);
-        if ($validator->fails()) {
-            return response()->error($validator->errors()->first(), 422);
+        if($validator->fails()) {
+            return response()->error($validator->errors(), 422);
         }
-        if(Cache::has($request->token)){
-            $email=Cache::get($request->token);
+
+        if(Cache::has('reset-password-email-limit:'.$request->email)){
+            return response()->error('请等待一定间隙再尝试', 410);
         }
-        else{
-            return response()->error("token过期或不存在", 404);
-        }
-        
-        $token_check = PasswordReset::where('email',$email)->first();
-        if(!$token_check||!hash::check($request->token,$token_check->token))
-            return response()->error("找不到重置请求", 404);
-            //email及token的配对不存在重置表
-        if ($token_check&&$token_check->created_at<Carbon::now()->subMinutes(30)){
-            return response()->error("token过期",444);
-          //  token过期
-        }
-       // $user_check = DB::table('users')->where('email',$email)->first(); 
-        $user_check = USER::where('email',$email)->first(); 
-        if(!$user_check)  
-            return response()->error("邮箱不存在", 404);//邮箱不存在user用户表   
-        DB::beginTransaction();
-        try {
+
+        $token_check = PasswordReset::where('email', $request->email)->latest()->first();
+
+        Cache::put('reset-password-email-limit:'.$request->email, true, 5);
+
+        if(!$token_check){abort(404, '重置请求不存在');}
+
+        if(!Hash::check($request->token, $token_check->token)){abort(444, 'token已过期或已失效');}
+        if($token_check->created_at<Carbon::now()->subMinutes(30)){abort(444, '重置请求过期');}
+
+
+        $user_check = User::where('email', $token_check->email)->first();
+        if(!$user_check){abort(404, '无法找到需要修改的账户信息');}
+        $info = $user_check->info;
+        if(!$info){abort(404, '用户内容不存在');}
+
+        DB::transaction(function()use($request,$user_check,$info,$token_check){
             HistoricalPasswordReset::create([
                 'user_id' => $user_check->id,
                 'ip_address' => request()->ip(),
                 'old_password' => $user_check->password,
             ]);
-            $user_check->forceFill(['password'=>bcrypt($request->password),
-                'remember_token'=>str_random(60)]);
-            $user_check->save();
-            $info = $user_check->info;
-            $info->forceFill(['activation_token'=>null,
-                'email_verified_at' => Carbon::now()]);
-            $info->save;        
-            Auth::guard()->login($user_check);
-            $token_update= PASSWORDRESET::where('email',$email)->forceDelete(); 
-            DB::commit();       
-        } catch(QueryException $ex) {
-            DB::rollback();
-            return response()->error('db error',595);
+            $user_check->forceFill([
+                'password'=>bcrypt($request->password),
+                'remember_token'=>str_random(60)
+            ])->save();
+            $info->forceFill([
+                'activation_token'=>null,
+                'email_verified_at' => Carbon::now()
+            ])->save();
+            $token_check->delete();
+        });
+
+        $tokens = $user_check->tokens;
+
+        foreach($tokens as $token){
+            $token->revoke();
         }
-        return response()->success(200);
+
+        $success['token'] =  $user_check->createToken('MyApp')->accessToken;
+        $success['name'] =  $user_check->name;
+        $success['id'] = $user_check->id;
+        return response()->success($success);
     }
 
     public function reset_password_via_password(Request $request)
