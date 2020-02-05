@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Quiz extends Model
 {
     use Traits\DelayCountTrait;
-    const UPDATED_AT = null;
+    const UPDATED_AT = 'edited_at';
 
     protected $guarded = [];
 

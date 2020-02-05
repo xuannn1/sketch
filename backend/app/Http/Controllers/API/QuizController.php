@@ -82,33 +82,12 @@ class QuizController extends Controller
         $failed_quiz = [];
         DB::transaction(function () use ($request, &$succeeded_quiz, &$failed_quiz){
             foreach ($request->quizzes as $index => $quiz) {
-                // 先检查有没有至少一个正确选项
-                $has_correct_answer = false;
-                foreach($quiz['option'] as $option){
-                    if (array_key_exists('is_correct',$option) && $option['is_correct']) {
-                        $has_correct_answer = true;
-                    }
-                }
-                if (!$has_correct_answer && in_array($quiz['type'],config('constants.quiz_has_option'))) {
+                $result = $this->save_quiz($quiz);
+                if ($result) {
+                    $succeeded_quiz[] = $result;
+                } else {
                     $failed_quiz[] = $index;
-                    continue;
                 }
-                $quiz_data['body'] = $quiz['body'];
-                $quiz_data['quiz_level'] = $quiz['level'] ?? -1;
-                $quiz_data['hint'] = $quiz['hint'] ?? null;
-                $quiz_data['type'] = $quiz['type'];
-                $quiz_data['is_online'] = $quiz['is_online'] ?? true;
-                $new_quiz = Quiz::create($quiz_data);
-                foreach($quiz['option'] as $option){
-                    $option_data = [
-                        'quiz_id' => $new_quiz->id,
-                        'body' => $option['body'],
-                        'explanation' => $option['explanation'],
-                        'is_correct' => $option['is_correct'] ?? false
-                    ];
-                    QuizOption::create($option_data);
-                }
-                $succeeded_quiz[] = $new_quiz;
             }
         });
         return response()->success([
@@ -126,45 +105,24 @@ class QuizController extends Controller
 
     public function update($id, Request $request)
     {
-        // $quiz = Quiz::on('mysql::write')->find($id);
-        //
-        // $this->validate($request, [
-        //     'quiz-body' => 'required|string|max:6000',
-        //     'quiz-hint' => 'nullable|string|max:6000',
-        //     'quiz-level'=> 'required|numeric',
-        //     'quiz-type' => 'required|string',
-        //     'quiz-option.*' => 'nullable|string|max:190',
-        //     'quiz-option-explanation.*' => 'nullable|string|max:190',
-        // ]);
-        // $quizdata['body'] = $request['quiz-body'];
-        // $quizdata['quiz_level'] = (int)$request['quiz-level'];
-        // $quizdata['hint'] = $request['quiz-hint'];
-        // $quizdata['type'] = $request['quiz-type'];
-        // $quizdata['is_online'] = $request['quiz-is-online']?true:false;
-        // if(!array_key_exists($request['quiz-type'], config('constants.quiz_types'))){abort(422);}
-        // DB::transaction(function () use ($request, $quizdata, $quiz){
-        //     $quiz->update($quizdata);
-        //     foreach($request['quiz-option'] as $key=>$option){
-        //         if($option){ // 选项干必须非空白
-        //             if($key===0){
-        //                 $optiondata['quiz_id'] = $quiz->id;
-        //                 $optiondata['body'] = $option;
-        //                 $optiondata['explanation'] = $request['quiz-option-explanation'][$key];
-        //                 $optiondata['is_correct'] = !empty($request['check-quiz-option'])&&array_key_exists($key, $request['check-quiz-option']);
-        //                 QuizOption::create($optiondata);
-        //             }else{
-        //                 $quiz_option = QuizOption::findOrfail($key);
-        //                 if($quiz_option&&$quiz_option->quiz_id===$quiz->id){
-        //                     $optiondata['body'] = $option;
-        //                     $optiondata['explanation'] = $request['quiz-option-explanation'][$key];
-        //                     $optiondata['is_correct'] = !empty($request['check-quiz-option'])&&array_key_exists($key, $request['check-quiz-option']);
-        //                     $quiz_option->update($optiondata);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // });
-        // return redirect()->route('quiz.show', $quiz);
+        $orig_quiz = Quiz::on('mysql::write')->find($id);
+        if (!$orig_quiz) {
+            abort(404,'没有找到对应的quiz_id。');
+        }
+        $validator = $this->validator(['quizzes'=>[$request->all()]]);
+        if ($validator->fails()) {
+            return response()->error($validator->errors(), 422);
+        }
+
+        $quiz = $request->all();
+        if (in_array($quiz['type'],config('constants.quiz_has_option')) xor in_array($orig_quiz['type'],config('constants.quiz_has_option'))) {
+            abort(422, '不可以将'.$orig_quiz['type'].'类型更改为'.$quiz['type'].'类型。');
+        }
+        $result = $this->save_quiz($quiz, $orig_quiz);
+        if (!$result) {
+            abort(422, '没有选择至少一个正确选项。');
+        }
+        return response()->success(new QuizResource($result));
     }
 
     public function getQuiz(Request $request)
@@ -219,6 +177,47 @@ class QuizController extends Controller
             'quiz_questions' => null
         ]);
         return response()->success($result);
+    }
+
+    private function save_quiz($quiz, $orig_quiz = null) {
+        // 先检查有没有至少一个正确选项
+        $has_correct_answer = false;
+        foreach($quiz['option'] as $option){
+            if (array_key_exists('is_correct',$option) && $option['is_correct']) {
+                $has_correct_answer = true;
+            }
+        }
+        if (!$has_correct_answer && in_array($quiz['type'],config('constants.quiz_has_option'))) {
+            return null;
+        }
+        $quiz_data['body'] = $quiz['body'];
+        $quiz_data['quiz_level'] = $quiz['level'] ?? -1;
+        $quiz_data['hint'] = $quiz['hint'] ?? null;
+        $quiz_data['type'] = $quiz['type'];
+        $quiz_data['is_online'] = $quiz['is_online'] ?? true;
+        $new_quiz = null;
+        $orig_options = [];
+        if (!$orig_quiz) {
+            $new_quiz = Quiz::create($quiz_data);
+        } else {
+            $orig_quiz->update($quiz_data);
+            $new_quiz = $orig_quiz->refresh();
+            $orig_options = $orig_quiz->quiz_options()->get();
+        }
+        foreach($quiz['option'] as $index => $option){
+            $option_data = [
+                'quiz_id' => $new_quiz->id,
+                'body' => $option['body'],
+                'explanation' => $option['explanation'],
+                'is_correct' => $option['is_correct'] ?? false
+            ];
+            if (count($orig_options) > 0) {
+                $orig_options[$index]->update($option_data);
+            } else {
+                QuizOption::create($option_data);
+            }
+        }
+        return $new_quiz;
     }
 
     // private function find_quiz_answers($quiz_id)
