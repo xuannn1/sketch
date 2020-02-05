@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Resources\QuizResource;
 use App\Models\Quiz;
 use App\Models\QuizOption;
 use App\Models\RegistrationApplication;
@@ -16,7 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class QuizTest extends TestCase
 {
     /** @test */
-    public function get_quiz()
+    public function get_quiz_test()
     {
 
         // 未登录时报错
@@ -78,7 +79,7 @@ class QuizTest extends TestCase
 
 
     /** @test **/
-    public function submit_quiz()
+    public function submit_quiz_test()
     {
         // 未登录时报错
         $this->post('api/quiz/submit_quiz')
@@ -194,4 +195,329 @@ class QuizTest extends TestCase
         $this->assertEquals(2, $new_user->quiz_level);
     }
 
+    /** @test **/
+    public function get_all_quiz_test()
+    {
+        // 未登录时报错
+        $this->get('api/quiz')
+            ->assertStatus(401);
+
+        // 不是管理员时报错
+        $user0 = factory('App\Models\User')->create();
+        $this->actingAs($user0, 'api');
+        $this->get('api/quiz')
+            ->assertStatus(403);
+
+        // 成功
+        $user = factory('App\Models\User')->create(['role'=>'admin']);
+        $this->actingAs($user, 'api');
+        $this->get('api/quiz')->assertStatus(200)
+            ->assertJsonStructure([
+                "code",
+                "data" => [
+                    "quizzes" => [
+                        '*' => [
+                            "type",
+                            "id",
+                            "attributes" => [
+                                "body",
+                                "hint",
+                                "type",
+                                "is_online",
+                                "level",
+                                "quiz_count",
+                                "correct_count",
+                                "edited_at"
+                            ]
+                        ],
+                    ],
+                    "paginate" => [
+                        "total",
+                        "count",
+                        "per_page",
+                        "current_page",
+                        "total_pages"
+                    ]
+                ]
+            ]);
+
+        // 测试筛选
+        $response = $this->get('api/quiz?quiz_level=1,2&quiz_type=level_up')->assertStatus(200);
+        $response->assertJsonStructure([
+            "code",
+            "data" => [
+                "quizzes" => [
+                    '*' => [
+                        "type",
+                        "id",
+                        "attributes" => [
+                            "body",
+                            "hint",
+                            "type",
+                            "is_online",
+                            "level",
+                            "quiz_count",
+                            "correct_count",
+                            "edited_at"
+                        ]
+                    ],
+                ],
+                "paginate" => [
+                    "total",
+                    "count",
+                    "per_page",
+                    "current_page",
+                    "total_pages"
+                ]
+            ]
+        ]);
+        $response->assertJsonMissingExact(['type' => 'essay']);
+        $response->assertJsonMissingExact(['type' => 'registration']);
+        $response->assertJsonMissingExact(['level' => 0]);
+    }
+
+    /** @test **/
+    public function create_quiz_test()
+    {
+        // 未登录时报错
+        $this->post('api/quiz')
+            ->assertStatus(401);
+
+        // 不是管理员时报错
+        $user0 = factory('App\Models\User')->create();
+        $this->actingAs($user0, 'api');
+        $this->post('api/quiz')
+            ->assertStatus(403);
+
+        // 没有quizzes字段
+        $user = factory('App\Models\User')->create(['role'=>'admin']);
+        $this->actingAs($user, 'api');
+        $this->post('api/quiz')->assertStatus(422);
+
+        // type不能为未注册在constants中的类型
+        $data['quizzes'] = [
+            [
+                "type" => "none",
+                "hint" => "提示",
+                "level" => 1,
+                "is_online" => false
+            ]
+        ];
+        $this->post('api/quiz',$data)->assertStatus(422);
+
+        // quiz不能没有body
+        $data['quizzes'] = [
+            [
+                "type" => "level_up",
+                "hint" => "提示",
+                "level" => 1,
+                "is_online" => false
+            ]
+        ];
+        $this->post('api/quiz',$data)->assertStatus(422);
+
+        // 选择题不能没有选项
+        $data['quizzes'] = [
+            [
+                "type" => "level_up",
+                "body" => "选择题题干",
+                "hint" => "提示",
+                "level" => 1,
+                "is_online" => false
+            ]
+        ];
+        $this->post('api/quiz',$data)->assertStatus(422);
+
+        // 没有正确答案的选择题会被failed
+        $data['quizzes'] = [
+            [
+                "type" => "level_up",
+                "body" => "选择题题干",
+                "hint" => "提示",
+                "level" => 1,
+                "is_online" => false,
+                "option" => [
+                    [
+                        "body" => "错误选项A",
+                        "explanation" => "错误解释A"
+                    ],
+                    [
+                        "body" => "错误选项B",
+                        "explanation" => "错误解释C"
+                    ]
+                ]
+            ]
+        ];
+        $response = $this->post('api/quiz',$data)->assertStatus(200);
+        $response = $response->decodeResponseJson()["data"];
+        $this->assertEmpty($response['quizzes']);
+        $this->assertEquals([0],$response['failed']);
+
+
+        // 成功提交quiz
+        $type = 'level_up';
+        $body = '选择题题干';
+        $hint = '提示';
+        $level = 1;
+        $is_online = false;
+        $option = [
+            [
+                "body" => "错误选项A",
+                "explanation" => "错误解释A",
+                "is_correct" => false
+            ],
+            [
+                "body" => "正确选项B",
+                "explanation" => "正确解释B",
+                "is_correct" => true
+            ],
+            [
+                "body" => "错误选项C",
+                "explanation" => "错误解释C",
+                "is_correct" => false
+            ],
+        ];
+        $data['quizzes'] = [
+            [
+                "type" => $type,
+                "body" => $body,
+                "hint" => $hint,
+                "level" => $level,
+                "is_online" => $is_online,
+                "option" => $option
+            ]
+        ];
+        $response = $this->post('api/quiz',$data)->assertStatus(200);
+        $response = $response->decodeResponseJson()["data"];
+        $this->assertEmpty($response['failed']);
+        $this->assertCount(1,$response["quizzes"]);
+        $quiz = $response['quizzes'][0]['attributes'];
+        $this->assertEquals($type, $quiz['type']);
+        $this->assertEquals($body, $quiz['body']);
+        $this->assertEquals($hint, $quiz['hint']);
+        $this->assertEquals($level, $quiz['level']);
+        $this->assertEquals($is_online, $quiz['is_online']);
+        $this->assertEquals($option[0]['body'], $quiz['options'][0]['attributes']['body']);
+        $this->assertEquals($option[0]['explanation'], $quiz['options'][0]['attributes']['explanation']);
+        $this->assertEquals($option[0]['is_correct'], $quiz['options'][0]['attributes']['is_correct']);
+        $this->assertEquals($option[1]['body'], $quiz['options'][1]['attributes']['body']);
+        $this->assertEquals($option[1]['explanation'], $quiz['options'][1]['attributes']['explanation']);
+        $this->assertEquals($option[1]['is_correct'], $quiz['options'][1]['attributes']['is_correct']);
+        $this->assertEquals($option[2]['body'], $quiz['options'][2]['attributes']['body']);
+        $this->assertEquals($option[2]['explanation'], $quiz['options'][2]['attributes']['explanation']);
+        $this->assertEquals($option[2]['is_correct'], $quiz['options'][2]['attributes']['is_correct']);
+
+        // 验证数据库是否更新
+        $last = Quiz::latest()->first();
+        $this->assertEquals($body, $last['body']);
+        $last_option = $last->quiz_options;
+        $this->assertEquals($option[2]['body'],$last_option->last()['body']);
+
+
+        // 成功提交essay
+        $type = 'essay';
+        $body = 'essay题干';
+        $hint = 'essay提示';
+        unset($data);
+        $data['quizzes'] = [
+            [
+                "type" => $type,
+                "body" => $body,
+                "hint" => $hint,
+            ]
+        ];
+        $response = $this->post('api/quiz',$data)->assertStatus(200);
+        $response = $response->decodeResponseJson()["data"];
+        $this->assertEmpty($response['failed']);
+        $this->assertCount(1,$response["quizzes"]);
+        $quiz = $response['quizzes'][0]['attributes'];
+        $this->assertEquals($type, $quiz['type']);
+        $this->assertEquals($body, $quiz['body']);
+        $this->assertEquals($hint, $quiz['hint']);
+
+        // 验证数据库是否更新
+        $last = Quiz::latest()->first();
+        $this->assertEquals($body, $last['body']);
+    }
+
+    /** @test **/
+    public function update_quiz_test()
+    {
+        // 先插一道题
+        factory('App\Models\Quiz')->create(['type' => 'level_up']);
+
+        // 未登录时报错
+        $this->patch('api/quiz/1')
+            ->assertStatus(401);
+
+        // 不是管理员时报错
+        $user0 = factory('App\Models\User')->create();
+        $this->actingAs($user0, 'api');
+        $this->patch('api/quiz/1')
+            ->assertStatus(403);
+
+        // 没有quizzes字段
+        $user = factory('App\Models\User')->create(['role'=>'admin']);
+        $this->actingAs($user, 'api');
+        $this->patch('api/quiz/1')->assertStatus(422);
+
+        $last_quiz = Quiz::latest()->first();
+        $last_id = $last_quiz->id;
+
+        // 成功提交quiz
+        $type = $last_quiz->type;
+        $body = '新的选择题题干';
+        $hint = '新的提示';
+        $level = 2;
+        $is_online = true;
+        $option = [
+            [
+                "body" => "新的正确选项A",
+                "explanation" => "新的正确解释A",
+                "is_correct" => true
+            ],
+            [
+                "body" => "新的错误选项B",
+                "explanation" => "新的错误解释B",
+                "is_correct" => false
+            ],
+            [
+                "body" => "新的正确选项C",
+                "explanation" => "新的正确解释C",
+                "is_correct" => true
+            ],
+        ];
+        $data = [
+            "type" => $type,
+            "body" => $body,
+            "hint" => $hint,
+            "level" => $level,
+            "is_online" => $is_online,
+            "option" => $option
+        ];
+        $response = $this->patch("api/quiz/$last_id",$data)->assertStatus(200);
+        $response = $response->decodeResponseJson()["data"];
+        $quiz = $response['attributes'];
+        $this->assertEquals($type, $quiz['type']);
+        $this->assertEquals($body, $quiz['body']);
+        $this->assertEquals($hint, $quiz['hint']);
+        $this->assertEquals($level, $quiz['level']);
+        $this->assertEquals($is_online, $quiz['is_online']);
+        $this->assertEquals($option[0]['body'], $quiz['options'][0]['attributes']['body']);
+        $this->assertEquals($option[0]['explanation'], $quiz['options'][0]['attributes']['explanation']);
+        $this->assertEquals($option[0]['is_correct'], $quiz['options'][0]['attributes']['is_correct']);
+        $this->assertEquals($option[1]['body'], $quiz['options'][1]['attributes']['body']);
+        $this->assertEquals($option[1]['explanation'], $quiz['options'][1]['attributes']['explanation']);
+        $this->assertEquals($option[1]['is_correct'], $quiz['options'][1]['attributes']['is_correct']);
+        $this->assertEquals($option[2]['body'], $quiz['options'][2]['attributes']['body']);
+        $this->assertEquals($option[2]['explanation'], $quiz['options'][2]['attributes']['explanation']);
+        $this->assertEquals($option[2]['is_correct'], $quiz['options'][2]['attributes']['is_correct']);
+
+        // 验证数据库是否更新
+        $last = Quiz::find($last_quiz->id);
+        $this->assertEquals($body, $last['body']);
+        $last_option = $last->quiz_options;
+        $this->assertEquals($option[2]['body'],$last_option->last()['body']);
+
+    }
 }

@@ -31,6 +31,7 @@ return [
     'threads_per_search' => 3, //每页展示40个搜索记录
     'users_per_search' => 3, //每页展示80个搜索记录
     'tags_per_search' => 3, //每页展示80个搜索记录
+    'quiz_per_page' => 20, //每页展示20道quiz
 
     // TODO 每页显示的内容，到时候还需要调整成适合前端的。目前主要是便于后端开发，设置个数较少
 

@@ -64,7 +64,7 @@ class QuizController extends Controller
             $quizzes = $quizzes->withQuizTypeRange($request->quiz_type);
         }
 
-        $quizzes = $quizzes->orderBy('id','desc')->paginate(config('preference.index_per_page'));
+        $quizzes = $quizzes->orderBy('id','desc')->paginate(config('preference.quiz_per_page'));
         return response()->success([
             'quizzes' => QuizCollection::make($quizzes),
             'paginate' => new PaginateResource($quizzes),
@@ -118,7 +118,10 @@ class QuizController extends Controller
         if (in_array($quiz['type'],config('constants.quiz_has_option')) xor in_array($orig_quiz['type'],config('constants.quiz_has_option'))) {
             abort(422, '不可以将'.$orig_quiz['type'].'类型更改为'.$quiz['type'].'类型。');
         }
-        $result = $this->save_quiz($quiz, $orig_quiz);
+        $result = null;
+        DB::transaction(function () use ($quiz, $orig_quiz, &$result) {
+            $result = $this->save_quiz($quiz, $orig_quiz);
+        });
         if (!$result) {
             abort(422, '没有选择至少一个正确选项。');
         }
@@ -181,13 +184,16 @@ class QuizController extends Controller
 
     private function save_quiz($quiz, $orig_quiz = null) {
         // 先检查有没有至少一个正确选项
+        if (!array_key_exists('option', $quiz)) {
+            $quiz['option'] = [];
+        }
         $has_correct_answer = false;
-        foreach($quiz['option'] as $option){
-            if (array_key_exists('is_correct',$option) && $option['is_correct']) {
+        foreach ($quiz['option'] as $option) {
+            if (array_key_exists('is_correct', $option) && $option['is_correct']) {
                 $has_correct_answer = true;
             }
         }
-        if (!$has_correct_answer && in_array($quiz['type'],config('constants.quiz_has_option'))) {
+        if (!$has_correct_answer && in_array($quiz['type'], config('constants.quiz_has_option'))) {
             return null;
         }
         $quiz_data['body'] = $quiz['body'];
@@ -196,26 +202,21 @@ class QuizController extends Controller
         $quiz_data['type'] = $quiz['type'];
         $quiz_data['is_online'] = $quiz['is_online'] ?? true;
         $new_quiz = null;
-        $orig_options = [];
         if (!$orig_quiz) {
             $new_quiz = Quiz::create($quiz_data);
         } else {
             $orig_quiz->update($quiz_data);
             $new_quiz = $orig_quiz->refresh();
-            $orig_options = $orig_quiz->quiz_options()->get();
+            $orig_quiz->quiz_options()->delete();
         }
-        foreach($quiz['option'] as $index => $option){
+        foreach ($quiz['option'] as $index => $option) {
             $option_data = [
                 'quiz_id' => $new_quiz->id,
                 'body' => $option['body'],
                 'explanation' => $option['explanation'],
                 'is_correct' => $option['is_correct'] ?? false
             ];
-            if (count($orig_options) > 0) {
-                $orig_options[$index]->update($option_data);
-            } else {
-                QuizOption::create($option_data);
-            }
+            QuizOption::create($option_data);
         }
         return $new_quiz;
     }
