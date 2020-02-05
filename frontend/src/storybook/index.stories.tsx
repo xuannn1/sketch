@@ -19,7 +19,7 @@ import { Center } from '../view/components/common/center';
 import { Dropdown } from '../view/components/common/dropdown';
 import { FilterBar } from '../view/components/common/filter-bar';
 import { List } from '../view/components/common/list';
-import { LongList } from '../view/components/common/longList';
+import { InfiniteScroll } from '../view/components/common/infiniteScroll';
 import { Mark } from '../view/components/common/mark';
 import { NavBar } from '../view/components/common/navbar';
 import { Popup } from '../view/components/common/popup';
@@ -44,6 +44,7 @@ import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
 import { RecommendList } from '../view/components/home/recommend-list';
+import { Fragment } from 'react';
 
 const core = new Core();
 
@@ -149,11 +150,17 @@ storiesOf('Common Components', module)
       {item}
     </List.Item>)}
   </List>)
-  .add('LongList', () => React.createElement(class extends React.Component {
+  .add('InfiniteScroll', () => React.createElement(class extends React.Component {
     public state = {
       items: [],
       isLoading: true,
       cursor: 0,
+    }
+    private divStyle = {
+      border: '5px solid pink',
+      background: 'antiquewhite',
+      height: '250px',
+      width: '300px',
     };
 
     public componentDidMount() {
@@ -161,45 +168,55 @@ storiesOf('Common Components', module)
       this.loadMore();
     }
 
-    public apiCall = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      return ['a', 'a', 'a', 'a', 'a'];
+    public loadMore = () => {
+      const cursor = this.state.cursor;
+      this.setState({ isLoading: true, error: undefined });
+      const load = new Promise<number[]>((resolve, reject) => {
+        setTimeout(() => resolve([cursor, cursor + 1, cursor + 2, cursor + 3, cursor + 4, cursor + 5]), 500);
+      });
+
+      // cursor should not be used like this. It should be used to make paginated db fetch, but here it's used to generate dumb data
+      load
+        .then(
+          (res) =>
+            (this.setState({
+              items: [...this.state.items, ...res],
+              cursor: res[5] + 1,
+              isLoading: false
+            }))
+          ,
+          (error) => {
+            this.setState({ isLoading: false, error })
+          }
+      )
     }
 
-    public loadMore = () => {
-      // throttle could be implemented here, or in api service
-      this.setState({ isLoading: true, error: undefined });
-      this.apiCall().then((res) => {
-        this.setState({
-          items: [...this.state.items, ...res],
-          isLoading: false,
-          });
-        },
-                          (error) => {
-            this.setState({ isLoading: false, error });
-          });
-      }
-
-      public render() {
-        return (
-          <LongList
+    public render() {
+      // here the internal element is <p>, but it can be any element
+      return (
+        <Fragment>
+        <div style={this.divStyle}>
+          <InfiniteScroll
+            throttle={100}
+            threshold={50}
             isLoading={this.state.isLoading}
-            hasMore={true}
+            hasMore={this.state.cursor < 200}
             onLoadMore={this.loadMore}
           >
-            {this.state.items.map((item, i) => (
-              <List.Item
-                key={i}
-                onClick={() => alert('click item ' + item)}
-                arrow={boolean('arrow', false)}
-              >
-                {item}
-              </List.Item>
-              ))}
-          </LongList>
-        );
-      }
-    }))
+            {this.state.items.length > 0
+              ? this.state.items.map((item, i) => (
+                  <p key={i}>{item}</p>
+                ))
+              : null}
+          </InfiniteScroll>
+          {this.state.isLoading && (
+            <p>Loading...</p>
+          )}
+        </div>
+        </Fragment>
+      )
+    }
+  }))
   .add('Accordion', () => <Accordion
     title={text('title', 'accordion title')}
     arrow={boolean('arrow', true)}
