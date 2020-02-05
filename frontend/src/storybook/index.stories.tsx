@@ -400,7 +400,24 @@ storiesOf('Common Components/Dropdown', module)
 ;
 
 storiesOf('Common Components/TextEditor', module)
-  .add('style1', () => <TextEditor></TextEditor>)
+.add('style1', () => {
+  const ref = React.createRef<TextEditor>();  // you have to use ref with this component
+  const content = `yes[color=#e600]hello[/color]`;
+
+  // will return content in bbcode
+  const getContent = () => {
+    console.log(ref, 11);
+    if (ref.current) {
+      const content = ref.current.getContent();
+      console.log('[EXPORT BBCODE]', content);
+    }
+  };
+  return  (
+    <div>
+      <TextEditor ref={ref} content={content}></TextEditor>
+      <button onClick={getContent}>GET BBCODE</button>
+  </div>);
+})
   .add('style2', () => <TextEditor/>)
 ;
 
