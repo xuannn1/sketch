@@ -11,7 +11,6 @@ import { withConsole } from '@storybook/addon-console';
 import { boolean, number, select, text, withKnobs } from '@storybook/addon-knobs';
 import { withViewport } from '@storybook/addon-viewport';
 import { addDecorator, storiesOf } from '@storybook/react';
-import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router';
 import { Accordion } from '../view/components/common/accordion';
@@ -52,6 +51,10 @@ import { fakeDB } from '../test/mock-data/fake-db';
 import { Button } from '../view/components/common/button';
 import { Colors } from '../view/theme/theme';
 import { ResData } from '../config/api';
+import { Dialogue } from '../view/mobile/message/dialogue';
+import { TextEditor } from '../view/components/common/textEditor';
+const createBrowserHistory = require('history').createBrowserHistory;
+import { App } from '../view';
 
 const core = new Core();
 fakeDB(core.db);
@@ -139,7 +142,7 @@ storiesOf('Common Components', module)
       items: [],
       isLoading: true,
       cursor: 0,
-    }
+    };
     private divStyle = {
       border: '5px solid pink',
       background: 'antiquewhite',
@@ -166,13 +169,12 @@ storiesOf('Common Components', module)
             (this.setState({
               items: [...this.state.items, ...res],
               cursor: res[5] + 1,
-              isLoading: false
+              isLoading: false,
             }))
           ,
           (error) => {
-            this.setState({ isLoading: false, error })
-          }
-      )
+            this.setState({ isLoading: false, error });
+          });
     }
 
     public render() {
@@ -198,7 +200,7 @@ storiesOf('Common Components', module)
           )}
         </div>
         </Fragment>
-      )
+      );
     }
   }))
   .add('Accordion', () => <Accordion
@@ -397,6 +399,11 @@ storiesOf('Common Components/Dropdown', module)
   })
 ;
 
+storiesOf('Common Components/TextEditor', module)
+  .add('style1', () => <TextEditor></TextEditor>)
+  .add('style2', () => <TextEditor/>)
+;
+
 storiesOf('Common Components/Navigation Bar', module)
   .add('simple', () => <NavBar goBack={action('goBack')} >
     {text('title', 'example title')}
@@ -525,7 +532,7 @@ storiesOf('Home Components/HomePage', module)
         childTags:[{tagId:'12', tagName:'原创'} , {tagId:'13' , tagName:'同人'}]},
         {tagCatagoryName:'篇幅',
         childTags:[{tagId:'14', tagName:'短篇'} , {tagId:'15' , tagName:'中篇'},
-        {tagId:'16', tagName:'长篇'},{tagId:'17', tagName:'大纲'}]}
+        {tagId:'16', tagName:'长篇'}, {tagId:'17', tagName:'大纲'}]},
         ]}
         onBack={() => {console.log('back'); }}
         onFilter={() => {console.log('filter'); }}
@@ -553,7 +560,7 @@ storiesOf('Home Components/HomePage', module)
         {tagCategoryName:'热门推荐',
         categoryTrash:false,
         childTags:[{tagId:'14', tagName:'九州见闻'} , {tagId:'15' , tagName:'得偿所愿'},
-        {tagId:'16', tagName:'翅膀养护日记'},{tagId:'17', tagName:'不知道写啥'}]}
+        {tagId:'16', tagName:'翅膀养护日记'}, {tagId:'17', tagName:'不知道写啥'}]},
         ]}
         onBack={() => {console.log('back'); }}
         onDelete={(tags) => {
@@ -642,7 +649,7 @@ storiesOf('Message Components', module)
     因此，系统会定时对多人异地使用、行为异常的账户进行封禁。
     为了避免这种情况，避免被系统禁封，请使用了简单密码的用户早日更换为在别处不经常使用的密码，增加账号安全。
     废文禁止盗号，禁止任何形式的账户买卖，买号者付出的金钱，正是攻击者攻击网站的动力。
-    
+
     没有买卖就没有攻击。`;
     const title = '没有买卖就没有攻击';
     const footer = '废文网大内总管 2019-10-29 18:03:54';
