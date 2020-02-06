@@ -99,7 +99,6 @@ var defaults = {
   
   
   function tagReplace(options, fullMatch, tag, params, value) {
-      debugger;
   var tmp, className, inlineValue, i, val;
   
   tag = tag.toLowerCase();
@@ -128,7 +127,7 @@ var defaults = {
     case 'i':
         return '<em>' + value + '</em>';
     case 'size':
-        return '<span style="font-size:'+ inlineValue +'">' + value + '</span>';
+        return '<span class="ql-size-'+ inlineValue +'">' + value + '</span>';
     case 'color':
         return '<span style="color:'+ inlineValue +'">' + value + '</span>';
     case 'fly':
@@ -254,7 +253,6 @@ var defaults = {
     }
   }
   // 暂时只有这个规则
-  debugger;
   content = content.replace(/\n/g, '<br/>')
   matches.push({e: '\\[(\\w+)(?:[= ]([^\\]]+))?]((?:.|[\r\n])*?)\\[/\\1]', func: tagReplace});
   return doReplace(content, matches, options);

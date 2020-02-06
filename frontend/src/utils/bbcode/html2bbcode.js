@@ -824,51 +824,36 @@ HTML2BBCode.prototype.color = function (c) {
   }
   return c;
 };
+
+const qlSizes = {
+  "ql-size-small": 'small',
+  "ql-size-large": 'large',
+  "ql-size-huge":  'huge',
+
+}
 HTML2BBCode.prototype.size = function (size) {
   if (!size) return;
-  var px2size = [0, 12, 14, 16, 18, 24, 32, 48];
-  var name2size = [null, 'smaller', 'small', 'medium', 'large',
-    'x-large', 'xx-large', '-webkit-xxx-large'];
-  if (/^\d+$/.test(size)) {
-    return size;
+  let numberSize = 0;
+  if (qlSizes[size]){
+    return qlSizes[size].toString();
+  } else if (/^\d+$/.test(size)) {
+    numberSize = parseInt(size);
   } else if (/^\d+?px$/.test(size)) {
-    size = parseInt(size);
-    if (!size || size < 0) {
-      return;
-    }
-    if (this.opts.transsize) {
-      for (var i = px2size.length; i >= 0; i--) {
-        if (i === 0) {
-          // smallest
-          return '1';
-        }
-        if (size >= px2size[i]) {
-          return i.toString();
-        }
-      }
-    } else {
-      return size.toString();
-    }
-  } else {
-    var ns = name2size.indexOf(size);
-    if (ns > 0) {
-      if (this.opts.transsize) {
-        return ns.toString();
-      } else {
-        return px2size[ns].toString();
-      }
-    }
+    numberSize = parseInt(size);
+  } else return;
     // TODO: support other type
-    return;
-  }
-  return size ? size.toString() : undefined;
+  if (numberSize < 10) return 'small';
+  if (numberSize < 22 && numberSize > 15) return 'large';
+  if (numberSize >= 22) return 'huge';
 };
+
 HTML2BBCode.prototype.px = function (px) {
   if (!px) return;
   px = parseInt(px);
   return px ? px.toString() : undefined;
 };
 HTML2BBCode.prototype.convertStyle = function (htag, sec) {
+  debugger;
   if (!sec) {
     return;
   }
@@ -882,11 +867,12 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
     }
     var tsec = { section: sec.section };
     if (sec.attr) {
-      console.log(sec.attr) // 待定
+      console.log(sec.attr, "sec attr") // 待定
       if (htag.attr) {
+        console.log(htag.attr, "htag attr");
         switch (sec.section) {
           case 'size':
-            tsec.attr = that.size(htag.attr[sec.attr]);
+            tsec.attr = that.size(htag.attr[sec.attr] || htag.attr['class']); // quill use classes for predefined sizes
             break;
           case 'color':
             tsec.attr = that.color(htag.attr[sec.attr]);
@@ -901,10 +887,11 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
         if (htag.attr.style) {
           var ra;
           switch (sec.section) {
-            case 'size':
-              ra = htag.attr.style['font-size'];
+            case 'size':{
+              ra = htag.attr.style['font-size']; 
               if (ra) ra = that.size(ra);
               break;
+            }
             case 'color':
               ra = htag.attr.style['color'];
               if (ra) ra = that.color(ra);
@@ -959,6 +946,7 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
   console.log(htag)
   if (htag.attr && htag.attr.style) {
     console.log(444)
+    debugger;
     if (htag.name !== 'b' && htag.name !== 'strong') {
       var att = htag.attr.style['font-weight'];
       if (att === 'bold' || (/^\d+$/.test(att) && parseInt(att) >= 700)) {
