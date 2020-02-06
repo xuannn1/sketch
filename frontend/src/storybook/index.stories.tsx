@@ -54,6 +54,7 @@ import { ResData } from '../config/api';
 import { Dialogue } from '../view/mobile/message/dialogue';
 import { TextEditor } from '../view/components/common/textEditor';
 const createBrowserHistory = require('history').createBrowserHistory;
+import { bbcode2html, html2bbcode, test } from '../utils/text-formater';
 import { App } from '../view';
 
 const core = new Core();
@@ -400,24 +401,37 @@ storiesOf('Common Components/Dropdown', module)
 ;
 
 storiesOf('Common Components/TextEditor', module)
-.add('style1', () => {
-  const ref = React.createRef<TextEditor>();  // you have to use ref with this component
-  const content = `yes[color=#e600]hello[/color]`;
-
-  // will return content in bbcode
-  const getContent = () => {
-    console.log(ref, 11);
-    if (ref.current) {
-      const content = ref.current.getContent();
-      console.log('[EXPORT BBCODE]', content);
-    }
+.add('style1', () => React.createElement(class extends React.Component<{}, {content:string}> {
+  public state = {
+    content: `123\n123`,
   };
-  return  (
+  private ref = React.createRef<TextEditor>();  // you have to use ref with this component
+
+      // will return content in bbcode
+  private getContent = () => {
+        if (this.ref.current) {
+          const content = this.ref.current.getContent();
+          console.log('[EXPORT BBCODE]', content);
+          return content;
+        }
+        return '';
+      }
+
+  private test = () => {
+    const bbcode = this.getContent();
+    test(bbcode);
+    this.setState({content: bbcode});
+  }
+
+  public render() {
+    return  (
     <div>
-      <TextEditor ref={ref} content={content}></TextEditor>
-      <button onClick={getContent}>GET BBCODE</button>
+      <TextEditor ref={this.ref} content={this.state.content}></TextEditor>
+      <button onClick={this.getContent}>GET BBCODE</button>
+      <button onClick={this.test}>TEST</button>
   </div>);
-})
+  }
+}))
   .add('style2', () => <TextEditor/>)
 ;
 

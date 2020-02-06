@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { classnames } from '../../../utils/classname';
 import 'react-quill/dist/quill.snow.css';
 // import * as ReactQuill from 'react-quill';
 import ReactQuill, { } from 'react-quill';
-import bbcode from 'discuz-bbcode';
+import {bbcode2html, html2bbcode, test} from '../../../utils/text-formater';
 
 // export/ import bbcode methods based on https://github.com/anrip/quill-bbcode-ngx/blob/master/src/component/quill-editor.component.ts
 
@@ -13,6 +12,13 @@ import bbcode from 'discuz-bbcode';
 // however, the ReactQuill team is already working on fixing this, and the PR has already fixed the issue https://github.com/zenoamaro/react-quill/pull/549
 // As it seems that the maintainer plans to merge this PR soon, I would prefer to wait for a while first. If not, I will clone the reactQuill module and try fix it myself Q.Q
 
+// TODO: TEST
+// [{ 'size': ['small', false, 'large', 'huge'] }], // fail -> use header for now
+// [{ 'color': [] }, { 'background': [] }],
+// ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+// [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+// ['link', 'image'],
+// ['clean']
 const modules = {
   toolbar: [
     [{ 'size': ['small', false, 'large', 'huge'] }],
@@ -32,7 +38,6 @@ const modules = {
 export type textFormat = 'plaintext' | 'markdown' | 'bbcode';
 
 const formats = [
-  'header',
   'size',
   'color', 'background',
   'bold', 'italic', 'underline', 'strike', 'blockquote',
@@ -65,7 +70,7 @@ export class TextEditor extends React.Component<{
   }
   // return text in bbcode format
   public getContent () {
-    const result = bbcode.build(this.state.text);
+    const result = html2bbcode(this.state.text);
     return result;
   }
 
@@ -73,7 +78,7 @@ export class TextEditor extends React.Component<{
     const {content, isMarkdown} = this.props;
     if (content) {
       if (!isMarkdown) {
-        const html = bbcode.parse(content);
+        const html = bbcode2html(content);
         return html;
         // this.reactQuillRef.clip
         // TODO
@@ -102,56 +107,3 @@ export class TextEditor extends React.Component<{
     );
   }
 }
-// export class TextEditor extends React.Component<{
-// }, {
-//   editorState:EditorState,
-// }> {
-
-//   private onChange:(s:EditorState) => void;
-//   private setEditor:(e:Editor) => void;
-//   private editor:Editor;
-//   constructor(props) {
-//     super(props);
-//     this.state = {editorState: EditorState.createEmpty()};
-//     this.onChange = (editorState) => this.setState({editorState});
-//     this.setEditor = (editor) => {
-//       this.editor = editor;
-//     };
-//   }
-
-//   public render() {
-//     return (
-//       <div style={styles.editor}>
-//         <button onClick={this.onBoldClick}>Bold</button>
-//         <Editor
-//           ref={this.setEditor}
-//           editorState={this.state.editorState}
-//           handleKeyCommand={this.handleKeyCommand}
-//           onChange={this.onChange}
-//         />
-//       </div>
-//     );
-//   }
-
-//   // handle key commnad
-//   private handleKeyCommand = (command) => {
-//     const {editorState} = this.state;
-//     const newState = RichUtils.handleKeyCommand(editorState, command);
-//     if (newState) {
-//       this.onChange(newState);  // handled
-//       return true;
-//     }
-//     return false; // not handled
-//   }
-
-//   private onBoldClick = () => {
-//     this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
-//   }
-// }
-
-// const styles = {
-//   editor: {
-//     border: '1px solid gray',
-//     minHeight: '6em',
-//   }
-// }
