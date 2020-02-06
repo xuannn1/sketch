@@ -11,7 +11,7 @@ class QuizOptionCollection extends ResourceCollection
     /**
      * QuizCollection constructor.
      * @param mixed $resource
-     * @param bool $include_explanation include answer in returned resource by default
+     * @param bool $include_explanation include explanation in returned resource by default
      */
     public function __construct($resource, bool $include_explanation = false)
     {

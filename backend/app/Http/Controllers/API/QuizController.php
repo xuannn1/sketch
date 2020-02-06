@@ -46,7 +46,7 @@ class QuizController extends Controller
                 'string',
                 Rule::in(array_keys(config('constants.quiz_types')))
             ],
-            'quizzes.*.level'=> 'integer|required_if:quizzes.*.type,'.implode(',',config('constants.quiz_has_level_type')),
+            'quizzes.*.level'=> 'integer|required_if:quizzes.*.type,'.implode(',',config('constants.quiz_has_level')),
             'quizzes.*.option'=> 'array|required_if:quizzes.*.type,'.implode(',',config('constants.quiz_has_option')),
             'quizzes.*.option.*.body' => 'required|string|max:190',
             'quizzes.*.option.*.explanation' => 'required|string|max:190',
