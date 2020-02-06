@@ -34,6 +34,7 @@ import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
+import { ResizableTextarea } from '../view/components/common/resizable-textarea';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
 import { FooterMenu } from '../view/components/common/footer-menu';
@@ -44,9 +45,14 @@ import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
 import { RecommendList } from '../view/components/home/recommend-list';
+import { ChatBubble } from '../view/components/message/chat-bubble';
 import { Fragment } from 'react';
+import { fakeDB } from '../test/mock-data/fake-db';
+import { Dialogue } from '../view/mobile/message/dialogue';
+import { App } from '../view';
 
 const core = new Core();
+fakeDB(core.db);
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
@@ -361,7 +367,20 @@ storiesOf('Common Components', module)
         <p> 加载中请稍后</p>
       </div>
     </Loading>,
-  );
+  )
+  .add('ResizableTextarea', () => (React.createElement(class extends React.Component<{}, {value:string}> {
+    public state = {
+      value: '',
+    };
+    public render () {
+      return <ResizableTextarea
+      maxRows={number('maxRow', 3)}
+      minRows={number('minRow', 1)}
+      placeholder={text('placeholder', '写回复')}
+      value={this.state.value}
+      onChange={(value) => this.setState({value})}/>;
+    }
+  })));
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar
@@ -722,6 +741,10 @@ storiesOf('Thread Components', module)
 ;
 
 storiesOf('Message Components', module)
+  .add('chatBubble', () =>
+    (<div style={{'width':'100%', 'height':'100%', 'background':'#f4f5f9', 'padding':'30px'}}>
+      <ChatBubble fromMe={boolean('fromMe', false)} content={text('content', 'This is a chat bubble!')}></ChatBubble>
+  </div>))
 ;
 
 storiesOf('Status Components', module)

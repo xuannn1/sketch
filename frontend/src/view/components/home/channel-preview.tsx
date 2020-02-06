@@ -17,7 +17,7 @@ export class ChannelPreview extends React.Component<Props, State> {
       alignItems: 'center',
       margin:'0',
       padding:'0',
-      width:'100%'}} className={'channelpreview'}>
+      width:'100%'}} className="channelpreview">
       <div style={{
         margin:'0',
         backgroundColor:'rgba(244,245,249,1)',

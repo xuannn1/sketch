@@ -1,0 +1,45 @@
+.talk-bubble {
+  display: inline-block;
+  position: relative;
+	width: 100%;
+	height: auto;
+}
+
+.from-other-color{
+  background-color: white;
+}
+
+.talktext{
+  padding: 1em;
+	text-align: left;
+  line-height: 1.5em;
+}
+
+.from-other:after{
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  right: auto;
+  top: -11px;
+  bottom: auto;
+  border: 11px solid;
+  border-color: transparent transparent transparent white;
+}
+
+.from-me-color{
+  background-color: #dddfe6;
+}
+
+.from-me:after{
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: auto;
+  right: 0px;
+  top: -11px;
+  bottom: auto;
+  border: 11px solid;
+  border-color: transparent #dddfe6 transparent transparent;
+}

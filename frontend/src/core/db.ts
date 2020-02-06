@@ -1,7 +1,7 @@
-import { History } from '.';
+import { History } from 'history';
 import { ReqData, Increments, API } from '../config/api';
 import { parsePath, URLQuery } from '../utils/url';
-import { loadStorage, saveStorage } from '../utils/storage';
+import { saveStorage } from '../utils/storage';
 import { ErrorMsg, ErrorCodeKeys } from '../config/error';
 import { User } from './user';
 
@@ -46,7 +46,7 @@ export class DB {
   private async _fetch<T extends JSONType> (path:string, reqInit:RequestInit, spec:FetchOptions = {}) {
     const headers = Object.assign({}, this.commonOption.headers, reqInit['headers'] || {});
     const options = Object.assign({}, this.commonOption, reqInit, {headers});
-    const token = loadStorage('token');
+    const token = this.user.token;
     if (token) {
       options.headers!['Authorization'] = `Bearer ${token}`;
     }
@@ -57,11 +57,11 @@ export class DB {
       }
     }
     if (spec.query) {
-      _path = parsePath(path, spec.query);
+      _path = parsePath(_path, spec.query);
     }
     if (spec.body) {
       try {
-        options.body = JSON.stringify(options.body);
+        options.body = JSON.stringify(spec.body);
       } catch (e) {
         throw this._handleError(0, ErrorMsg.JSONParseError);
       }
@@ -100,7 +100,7 @@ export class DB {
     return this._fetch<API.Get[Path]>(path, {method: 'GET'}, ops);
   }
   private _post<Path extends keyof API.Post> (path:Path, ops:FetchOptions = {}) {
-    return this._fetch<API.Post[Path]>(path, {method: 'POST'}, ops);
+    return this._fetch<API.Post[Path]>(path, {method: 'POST', headers:{'Content-Type': 'application/json'}}, ops);
   }
   private _patch<Path extends keyof API.Patch> (path:Path, ops:FetchOptions = {}) {
     return this._fetch<API.Patch[Path]>(path, {method: 'PATCH'}, ops);
@@ -194,12 +194,15 @@ export class DB {
       },
     });
   }
-  public getMessages (id:number, query:{
-    withStyle:ReqData.Message.style;
-    chatWith:Increments;
-    ordered?:ReqData.Message.ordered;
-    read?:ReqData.Message.read;
-  }) {
+  public getMessages (
+    query:{
+      withStyle:ReqData.Message.style;
+      chatWith?:Increments;
+      ordered?:ReqData.Message.ordered;
+      read?:ReqData.Message.read;
+    },
+    id:number = this.user.id,
+  ) {
     return this._get(`/user/$0/message`, {
       pathInsert: [id],
       query,
@@ -383,10 +386,11 @@ export class DB {
         422: '用户名/密码/邮箱格式错误',
       },
     });
+
     if (!res) { return false; }
-    this.user.isLogin = true;
+    this.user.login(res.name, res.id, res.token);
     this.history.push('/');
-    saveStorage('token', res.token);
+    saveStorage('auth', {token: res.token, username: res.name, userId: res.id});
     return true;
   }
   public async login (email:string, password:string, backTo?:string) {
@@ -400,8 +404,8 @@ export class DB {
       },
     });
     if (!res) { return false; }
-    this.user.isLogin = true;
-    saveStorage('token', res.token);
+    this.user.login(res.name, res.id, res.token);
+    saveStorage('auth', {token: res.token, username: res.name, userId: res.id});
     backTo ? this.history.push(backTo) : this.history.push('/');
     return true;
   }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { validEmail } from '../../../utils/validates';
 import { Card } from '../common/card';
 import { NoticeBar } from '../common/notice-bar';
-
+// FIXME: internal server error will be treated as incorrect password 
 interface Props {
   login:(email:string, pwd:string) => Promise<boolean>;
 }

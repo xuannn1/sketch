@@ -228,7 +228,7 @@ export namespace ResData {
       },
       poster: allocUser(),
       receiver: allocUser(),
-      message_body: allocMessageBody()
+      message_body: allocMessageBody(),
     };
   }
 
@@ -360,9 +360,9 @@ export namespace ReqData {
 
   export namespace Message {
     export enum style {
-      sendbox,
-      receiveBox,
-      dialogue,
+      sendbox = 'sendbox',
+      receiveBox = 'receivebox',
+      dialogue = 'dialogue',
     }
 
     export enum ordered {
