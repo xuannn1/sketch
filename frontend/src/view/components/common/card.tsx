@@ -11,8 +11,11 @@ export class Card extends React.Component<{
 }, {
   // state
   }> {
+    public rootElement:HTMLDivElement|null = null;
+
     public render () {
       return <div className={classnames('card', this.props.className)}
+        ref={(el) => this.rootElement = el}
         style={Object.assign(
           {
             marginTop: '10px',

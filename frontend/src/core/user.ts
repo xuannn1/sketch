@@ -1,5 +1,5 @@
-import { History } from '.';
-import { loadStorage, saveStorage, clearStorage } from '../utils/storage';
+import { loadStorage, clearStorage } from '../utils/storage';
+import { History } from 'history';
 
 export class User {
   private history:History;

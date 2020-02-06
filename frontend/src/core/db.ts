@@ -1,4 +1,4 @@
-import { History } from '.';
+import { History } from 'history';
 import { ReqData, Increments, API } from '../config/api';
 import { parsePath, URLQuery } from '../utils/url';
 import { saveStorage } from '../utils/storage';
@@ -194,12 +194,15 @@ export class DB {
       },
     });
   }
-  public getMessages (query:{
-    withStyle:ReqData.Message.style;
-    chatWith?:Increments;
-    ordered?:ReqData.Message.ordered;
-    read?:ReqData.Message.read;
-  },                  id:number = this.user.id) {
+  public getMessages (
+    query:{
+      withStyle:ReqData.Message.style;
+      chatWith?:Increments;
+      ordered?:ReqData.Message.ordered;
+      read?:ReqData.Message.read;
+    },
+    id:number = this.user.id,
+  ) {
     return this._get(`/user/$0/message`, {
       pathInsert: [id],
       query,

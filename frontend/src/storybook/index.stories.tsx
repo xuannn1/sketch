@@ -47,8 +47,12 @@ import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter'
 import { RecommendList } from '../view/components/home/recommend-list';
 import { ChatBubble } from '../view/components/message/chat-bubble';
 import { Fragment } from 'react';
+import { fakeDB } from '../test/mock-data/fake-db';
+import { Dialogue } from '../view/mobile/message/dialogue';
+import { App } from '../view';
 
 const core = new Core();
+fakeDB(core.db);
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
@@ -740,7 +744,8 @@ storiesOf('Message Components', module)
   .add('chatBubble', () =>
     (<div style={{'width':'100%', 'height':'100%', 'background':'#f4f5f9', 'padding':'30px'}}>
       <ChatBubble fromMe={boolean('fromMe', false)} content={text('content', 'This is a chat bubble!')}></ChatBubble>
-  </div>));
+  </div>))
+;
 
 storiesOf('Status Components', module)
 ;

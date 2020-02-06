@@ -26,10 +26,12 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
     },
     messageToSend: '',
   };
-  private messageListRef = React.createRef<Card>();
   public async componentDidMount() {
     try {
-      const query = {withStyle: ReqData.Message.style.dialogue, chatWith: this.props.match.params.uid};
+      const query = {
+        withStyle: ReqData.Message.style.dialogue,
+        chatWith: this.props.match.params.uid,
+      };
       const data = await this.props.core.db.getMessages(query);
       data.messages.reverse();
       this.setState({data});
@@ -45,23 +47,22 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   }
 
   private scrollToLatestMsg() {
-    if (this.messageListRef.current) {
-      const node:HTMLDivElement = ReactDOM.findDOMNode(this.messageListRef.current) as HTMLDivElement;
-      if (node) {
-        const scrollHeight = node.scrollHeight;
-        const height = node.clientHeight;
-        const maxScrollTop = scrollHeight - height;
-        node.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-      }
+    const { messageListRef } = this;
+    if (messageListRef) {
+      const scrollHeight = messageListRef.scrollHeight;
+      const height = messageListRef.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      messageListRef.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
   }
 
+  private messageListRef:HTMLDivElement|null = null;
   public render () {
     return (<Page style={pageStyle}
         top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
           {this.props.location.state.chatWithName}
         </NavBar>}>
-        <Card style={DialogueCardStyle} ref={this.messageListRef}>
+        <Card style={DialogueCardStyle} ref={(card) => this.messageListRef = card ? card.rootElement : null}>
           {this.state.data.messages.map((m) => this.renderMessage(m))}
         </Card>
         { this.textBox() }
