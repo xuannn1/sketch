@@ -380,13 +380,9 @@ export class DB {
   }
 
   // User System
-  public async register (body:{
-    name:string;
-    password:string;
-    email:string;
-  }) {
+  public async register (name:string, password:string, email:string, backTo?:string) {
     const res = await this._post('/register', {
-      body,
+      query:{name, password, email},
       errorMsg: {
         422: '用户名/密码/邮箱格式错误',
       },
@@ -395,6 +391,7 @@ export class DB {
     if (!res) { return false; }
     this.user.login(res.name, res.id, res.token);
     saveStorage('auth', {token: res.token, username: res.name, userId: res.id});
+    backTo ? this.history.push(backTo) : this.history.push('/');
     return true;
   }
   public async login (email:string, password:string, backTo?:string) {
