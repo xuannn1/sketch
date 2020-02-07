@@ -16,7 +16,7 @@ export class NavBar extends React.Component<Props, State> {
       justifyContent: 'space-between',
       alignItems: 'center',
       textAlign: 'center',
-      minHeight: '2.25rem',
+      minHeight: '3.25rem',
       backgroundColor: 'white',
       position: 'relative',
     },                               this.props.style || {})}

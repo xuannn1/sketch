@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { API, ResData, ReqData } from '../../../config/api';
 import { MobileRouteProps } from '../router';
-// import { StatusNav } from './nav';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
 import { MessageMenu } from './message-menu';
@@ -9,35 +8,39 @@ import { Card } from '../../components/common/card';
 import { Badge } from '../../components/common/badge';
 import { List } from '../../components/common/list';
 import { pageStyle, largeListItemStyle, badgeStyle, topCardStle, contentCardStyle, replyNotificationCardStyle, replyMessageContentStyle, unreadStyle, oneLineTruncationStyle } from './styles';
-import { mockReplyNotifications } from './mock-data';
-import { Dialogue } from './dialogue';
 
 interface State {
-  data:API.Get['/user/$0/message'];
+  messageData:API.Get['/user/$0/message'];
+  publicNoticeData:API.Get['/publicnotice'];
 }
 
-// TODO: 管理通知, 公共通知: waiting for API
+// TODO: 管理通知: waiting for API
 // TODO: reduce API use by saving messages in localStorage
 // TODO: implement mark as read
+// TODO: we need a way to notify user API errors. (e.g. probably with a pop up)
+// TODO: detect read public notice
 
 export class PersonalMessage extends React.Component<MobileRouteProps, State> {
   public state:State = {
-    data:{
+    messageData:{
       messages: [],
       paginate: ResData.allocThreadPaginate(),
       style: ReqData.Message.style.receiveBox,
     },
+    publicNoticeData:{
+      public_notices: [],
+    }
   };
 
   public async componentDidMount() {
-    try {
-      const query = {withStyle: ReqData.Message.style.receiveBox};
-      const data = await this.props.core.db.getMessages(query);
-      this.setState({data});
-      console.log(data);
-    } catch (e) {
-      console.log(e);
-    }
+    const query = {withStyle: ReqData.Message.style.receiveBox};
+    const fetchMsgData = this.props.core.db.getMessages(query).catch((e) => { console.log(e);
+                                                                              return this.state.messageData; });
+    const fetchPublicNotice = this.props.core.db.getPublicNotice().catch((e) => { console.log(e);
+                                                                                  return this.state.publicNoticeData; });
+    const [messageData, publicNoticeData] = await Promise.all([fetchMsgData, fetchPublicNotice]);
+    this.setState({messageData, publicNoticeData});
+    console.log(messageData, publicNoticeData);
   }
 
   public render () {
@@ -55,7 +58,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
               管理通知
               {/* <Badge num={1000} max={100} style={badgeStyle}/> */}
             </List.Item>
-            <List.Item onClick={() => console.log('click item ')} arrow={true} style={largeListItemStyle}>
+            <List.Item onClick={this.onClickPublicNotice} arrow={true} style={largeListItemStyle}>
               <i className="far fa-envelope icon"></i>
               公共通知
               <Badge num={2} max={100} style={badgeStyle}/>
@@ -67,8 +70,14 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
       </Page>);
   }
 
+  // redirect user to public notice page
+  private onClickPublicNotice = () => {
+    // TODO: clear all unread notice
+    this.props.core.history.push(`/messages/publicnotice`, {publicNoticeData: this.state.publicNoticeData});
+  }
+  /** ===========            user messages           =============== **/
   private getDialogues() : ResData.Message[] {
-    const { messages } = this.state.data;
+    const { messages } = this.state.messageData;
     const dialogues:{[key:string]:ResData.Message} = {};
     const dialoguesArray:ResData.Message[] = [];
     messages.forEach((m) => {
@@ -82,7 +91,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
 
   // @param chatWithID - the id of user you are chating with
   // @param chatWithName - the name of user you are chating with
-  private onClicDialogue = (chatWithID:number, chatWithName:string) => () => {
+  private onClickDialogue = (chatWithID:number, chatWithName:string) => () => {
     this.props.core.history.push(`/messages/pm/${chatWithID}`, {chatWithName});
   }
 
@@ -94,7 +103,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
       const seen:boolean = dialogue.attributes.seen;
       const content:string = dialogue.message_body ? dialogue.message_body.attributes.body : '';
 
-      return (<List.Item key={dialogue.id} style={{background:'white', marginBottom:'0.3em'}} onClick={this.onClicDialogue(posterID, posterName)}>
+      return (<List.Item key={dialogue.id} style={{background:'white', marginBottom:'0.3em'}} onClick={this.onClickDialogue(posterID, posterName)}>
                 <h6 className="is-6" style={seen ? {} : unreadStyle}>{posterName}</h6>
                 <div style={replyMessageContentStyle}>
                   <p style={oneLineTruncationStyle}>{!seen ? <React.Fragment><b>[有新消息]</b>{` `}</React.Fragment> : ''}{content}</p>

@@ -77,3 +77,12 @@ export const sendButtonStyle:React.CSSProperties = {
   fontSize: '1.3em',
   margin: '0.5em 0 0 0.5em',
 };
+
+export const publicNoticeCardStyle:React.CSSProperties = {
+  border: 'none',
+  padding: '0px 0px 10px 0px',
+  backgroundColor: '#f4f5f9',
+  boxShadow: 'none',
+  marginTop: '0px',
+  flexGrow: 1,
+};

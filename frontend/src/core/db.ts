@@ -208,8 +208,13 @@ export class DB {
       query,
     });
   }
+  public getPublicNotice () {
+    return this._get('/publicnotice', {
+      errorCodes: [401],
+    });
+  }
   public sendPublicNotice (content:string) {
-    return this._post('/publicnotce', {
+    return this._post('/publicnotice', {
       body: {
         body: content,
       },
@@ -389,7 +394,6 @@ export class DB {
 
     if (!res) { return false; }
     this.user.login(res.name, res.id, res.token);
-    this.history.push('/');
     saveStorage('auth', {token: res.token, username: res.name, userId: res.id});
     return true;
   }

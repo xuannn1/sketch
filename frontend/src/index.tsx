@@ -13,7 +13,7 @@ import { fakeDB } from './test/mock-data/fake-db';
 
 async function run () {
   const core = new Core();
-  fakeDB(core.db);
+  // fakeDB(core.db);
 
   const root = document.createElement('div');
   root.id = 'app';
