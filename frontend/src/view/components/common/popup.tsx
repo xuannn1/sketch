@@ -21,7 +21,7 @@ export class Popup extends React.Component <{
       justifyContent: props.bottom && undefined || 'center',
     }}>
       {this.props.darkBackground &&
-        <div className={'modal-background'}
+        <div className="modal-background"
           onClick={() => props.onClose()}
           style={{
             background: `rgba(10, 10, 10, ${this.props.darkBackground})`,

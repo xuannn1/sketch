@@ -4,7 +4,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  $top-height: 2.25rem;
+  $top-height: 3.25rem; //top-height fixed so it's consistent with navBar height
 
   .top {
     top: 0;

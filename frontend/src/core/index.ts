@@ -8,8 +8,6 @@ import { TagHandler } from './tag-handler';
 import { Page } from './page';
 const debounce = require('lodash/debounce');
 
-export type History = History;
-
 export class Core {
   public db:DB;
   public user:User;

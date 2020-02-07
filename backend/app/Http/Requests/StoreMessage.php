@@ -33,6 +33,7 @@ class StoreMessage extends FormRequest
             'sendTo' => 'numeric',
             'sendTos' => 'array',
             'body' => 'required|string|max:20000',
+            'title' => 'string|max:1000'
         ];
     }
 

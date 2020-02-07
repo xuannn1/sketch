@@ -34,6 +34,7 @@ import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
+import { ResizableTextarea } from '../view/components/common/resizable-textarea';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
 import { FooterMenu } from '../view/components/common/footer-menu';
@@ -44,9 +45,15 @@ import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
 import { RecommendList } from '../view/components/home/recommend-list';
+import { ChatBubble } from '../view/components/message/chat-bubble';
+import { ExpandableMessage } from '../view/components/message/expandable-message';
 import { Fragment } from 'react';
+import { fakeDB } from '../test/mock-data/fake-db';
+import { Dialogue } from '../view/mobile/message/dialogue';
+import { App } from '../view';
 
 const core = new Core();
+fakeDB(core.db);
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
@@ -361,7 +368,20 @@ storiesOf('Common Components', module)
         <p> 加载中请稍后</p>
       </div>
     </Loading>,
-  );
+  )
+  .add('ResizableTextarea', () => (React.createElement(class extends React.Component<{}, {value:string}> {
+    public state = {
+      value: '',
+    };
+    public render () {
+      return <ResizableTextarea
+      maxRows={number('maxRow', 3)}
+      minRows={number('minRow', 1)}
+      placeholder={text('placeholder', '写回复')}
+      value={this.state.value}
+      onChange={(value) => this.setState({value})}/>;
+    }
+  })));
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar
@@ -722,6 +742,25 @@ storiesOf('Thread Components', module)
 ;
 
 storiesOf('Message Components', module)
+  .add('chatBubble', () =>
+    (<div style={{'width':'100%', 'height':'100%', 'background':'#f4f5f9', 'padding':'30px'}}>
+      <ChatBubble fromMe={boolean('fromMe', false)} content={text('content', 'This is a chat bubble!')}></ChatBubble>
+    </div>))
+  .add('Expandable Message', () => {
+    const content =
+    `今日，系统查封了大批共享账号。
+    其中，对于一些有被盗嫌疑的共享账号，系统进行了保护性的临时禁封。
+    这些账号不一定是注册者恶意共享，而是被攻击者通过撞库盗号后，盗号者不做任何改动，便将账号密码贩卖出去，从而进行多人共享。
+    也就是说，在原主人不知道的情况下，该账号被偷偷地、反复地使用。
+    因此，系统会定时对多人异地使用、行为异常的账户进行封禁。
+    为了避免这种情况，避免被系统禁封，请使用了简单密码的用户早日更换为在别处不经常使用的密码，增加账号安全。
+    废文禁止盗号，禁止任何形式的账户买卖，买号者付出的金钱，正是攻击者攻击网站的动力。
+    
+    没有买卖就没有攻击。`;
+    const title = '没有买卖就没有攻击';
+    const footer = '废文网大内总管 2019-10-29 18:03:54';
+    return (<ExpandableMessage title={text('title', title)} content={text('content', content)} footer={footer} uid={'1'} boldTitle={boolean('bold title', false)}></ExpandableMessage>);
+  })
 ;
 
 storiesOf('Status Components', module)

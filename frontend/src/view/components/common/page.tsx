@@ -9,7 +9,7 @@ export function Page (props:{
   className?:string;
   style?:React.CSSProperties;
 }) {
-  return <div className={'page'}>
+  return <div className="page">
     { props.top &&
       <div className="top">
         {props.top}
