@@ -1,6 +1,6 @@
 const defaults = {
-    showQuotePrefix: true,
-    classPrefix: 'ask_',
+    showQuotePrefix: false,
+    classPrefix: 'ql-',
     mentionPrefix: '@',
     preserveSpace: true,
   };
@@ -35,10 +35,6 @@ const defaults = {
     }
   } while (hasMatch);
   return content;
-  }
-  
-  function listItemReplace(options, fullMatch, tag, value) {
-  return '<li>' + value.trim() + '</li>';
   }
   
   export var extractQuotedText = function (value, parts) {
@@ -116,7 +112,8 @@ const defaults = {
                 val += ' data-' + i + '="' + tmp + '"';
             }
         }
-        return val + '>' + (inlineValue ? inlineValue + ' wrote:' : (options.showQuotePrefix ? 'Quote:' : '')) + '<blockquote>' + value + '</blockquote></div>';
+        if (options.showQuotePrefix) return val + '>' + (inlineValue ? inlineValue + ' wrote:' : 'Quote:') + '<blockquote>' + value + '</blockquote></div>';
+        else return '<blockquote>' + value + '</blockquote>';
     case 'url':
         return '<a class="' + options.classPrefix + 'link" target="_blank" href="' + (inlineValue || value) + '">' + value + '</a>';
     case 'email':
@@ -141,32 +138,16 @@ const defaults = {
         return '<blockquote>' + value + '</blockquote>';
     case 'font':
       return '<span style="font-family:'+ inlineValue +'">' + value + '</span>';
-    case 'list':
-        tag = 'ul';
-        className = options.classPrefix + 'list';
-        if (inlineValue && /[1Aa]/.test(inlineValue)) {
-            tag = 'ol';
-            if (/1/.test(inlineValue)) {
-                className += '_numeric';
-            }
-            else if (/A/.test(inlineValue)) {
-                className += '_alpha';
-            }
-            else if (/a/.test(inlineValue)) {
-                className += '_alpha_lower';
-            }
+    case 'li':
+        className = '';
+        if (inlineValue && /indent-[\d]+/.test(inlineValue)) {
+            className = options.classPrefix + inlineValue;
         }
-        val = '<' + tag + ' class="' + className + '">';
-        
-        val += doReplace(value, [{e: '\\[([*])\\]([^\r\n\\[\\<]+)', func: listItemReplace}], options);
-        return val + '</' + tag + '>';
-      case 'olist':
-        tag = 'ol';
-        className = options.classPrefix + 'list';
-        val = '<' + tag + ' class="' + className + '">';
-        
-        val += doReplace(value, [{e: '\\[([*])\\]([^\r\n\\[\\<]+)', func: listItemReplace}], options);
-        return val + '</' + tag + '>';
+        return `<li${className ? ` class="${className}"` : ''}>${value}</li>`
+    case 'ul':
+        return `<ul>${value}</ul>`;
+      case 'ol':     
+        return `<ol>${value}</ol>`;
     case 'code':
     case 'php':
     case 'java':
@@ -253,7 +234,14 @@ const defaults = {
         options[tmp] = defaults[tmp];
     }
   }
-  // 暂时只有这个规则
+  // remove auto generated new line after quote
+  content = content.replace(/\[\/blockquote\][\n\s]+/g, '[/blockquote]');
+  // remove auto generated new line after list item (within list)
+  content = content.replace(/\[\/li\][\n\s]+/g, '[/li]');
+  // remove auto generated new line after list (outside list)
+  content = content.replace(/\[\/ol\][\ ]*[\n]/g, '[/ol]');
+  content = content.replace(/\[\/ul\][\ ]*[\n]/g, '[/ul]');
+  // preserve other new lines
   content = content.replace(/\n/g, '<br/>')
   matches.push({e: '\\[(\\w+)(?:[= ]([^\\]]+))?]((?:.|[\r\n])*?)\\[/\\1]', func: tagReplace});
   return doReplace(content, matches, options);

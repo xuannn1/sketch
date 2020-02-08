@@ -4,13 +4,13 @@ import 'react-quill/dist/quill.snow.css';
 import ReactQuill, { } from 'react-quill';
 import {bbcode2html, html2bbcode, test} from '../../../utils/text-formater';
 
-// export/ import bbcode methods based on https://github.com/anrip/quill-bbcode-ngx/blob/master/src/component/quill-editor.component.ts
-
 // TODO: there are some lifecycle warnings with this component (e.g.omponentWillUpdate has been renamed), this warning is from the library Quill
 // https://github.com/quilljs/quill/issues/2771
 // Thre ReactQuill is a react wrapper for Quill, it also has this warning: https://github.com/zenoamaro/react-quill/pull/531
 // however, the ReactQuill team is already working on fixing this, and the PR has already fixed the issue https://github.com/zenoamaro/react-quill/pull/549
 // As it seems that the maintainer plans to merge this PR soon, I would prefer to wait for a while first. If not, I will clone the reactQuill module and try fix it myself Q.Q
+
+// TODO: the editor supports upload local img, but probably we only want to accept link for web img.
 
 // TODO: TEST
 // [{ 'size': ['small', false, 'large', 'huge'] }], // fail -> use header for now
@@ -93,12 +93,12 @@ export class TextEditor extends React.Component<{
     return '';
   }
 
-  handleChange(value) {
+  private handleChange(value) {
     // console.log(value);
     this.setState({ text: value });
   }
 
-  render() {
+  public render() {
     return (
       <ReactQuill value={this.state.text}
                   modules={modules}

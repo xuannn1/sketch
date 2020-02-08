@@ -698,10 +698,10 @@ BBCode.maps = {
   'sup': { section: 'sup' },
   'sub': { section: 'sub' },
   'center': { section: 'center' },
-  'ul': { section: 'list' },  // may need to treat as 'list'
-  'ol': { section: 'olist' },  // may need to treat as 'list'
-  'li': { section: '*', newline: 1 },
-  'blockquote': { section: 'quote' },
+  'ul': { section: 'ul' },  // may need to treat as 'list'
+  'ol': { section: 'ol' },  // may need to treat as 'list'
+  'li': { section: 'li', attr: 'class', newline: 1, optionalAttr: true },
+  'blockquote': { section: 'blockquote' },
   'code': { section: 'code' },
   'pre': { section: 'code' },
   'font': { extend: ['color', 'face', 'size'] },
@@ -887,6 +887,14 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
           case 'highlight':
             tsec.attr = that.color(htag.attr[sec.attr]);
             break;
+          case 'li':{
+            let listType = htag.attr['class'];
+            if (listType && listType.indexOf('ql-') == 0){
+              listType = listType.substring(3);
+            }
+            tsec.attr = listType;
+            break;
+          }
           default:
             tsec.attr = htag.attr[sec.attr];
             break;
@@ -915,10 +923,10 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
             tsec.attr = ra;
           }
         }
-        if (!tsec.attr) {
+        if (!tsec.attr && !sec.optionalAttr) {
           return;
         }
-      } else {
+      } else if (!sec.optionalAttr){
         return;
       }
     } else if (sec.section === 'img' && opts.imagescale) {

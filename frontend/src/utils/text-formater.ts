@@ -27,7 +27,7 @@ export function html2bbcode(html) {
   return result;
 }
 
-export function test(bbcode) {
+export function test(bbcode) : boolean {
   const html = bbcode2html(bbcode);
   const _bbcode = html2bbcode(html);
   if (bbcode != _bbcode) {

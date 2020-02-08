@@ -431,7 +431,7 @@ storiesOf('Common Components/TextEditor', module)
     if (testNum < 0 || testNum >= bbcodTestCases.length) {
       testNum = 0;
     }
-    const testCase = bbcodTestCases[number('testID', 0) || 0];
+    const testCase = bbcodTestCases[testNum];
     return  (
     <div>
       <TextEditor ref={this.ref} content={testCase.test}></TextEditor>
