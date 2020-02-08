@@ -1,7 +1,8 @@
-var defaults = {
+const defaults = {
     showQuotePrefix: true,
     classPrefix: 'ask_',
-    mentionPrefix: '@'
+    mentionPrefix: '@',
+    preserveSpace: true,
   };
   
   var URL_PATTERN = new RegExp("("
@@ -100,7 +101,7 @@ var defaults = {
   
   function tagReplace(options, fullMatch, tag, params, value) {
   var tmp, className, inlineValue, i, val;
-  
+  value = value.replace(/ /g, '&nbsp;');
   tag = tag.toLowerCase();
   params = parseParams(tag, params || undefined);
   inlineValue = params[tag];
@@ -130,6 +131,8 @@ var defaults = {
         return '<span class="ql-size-'+ inlineValue +'">' + value + '</span>';
     case 'color':
         return '<span style="color:'+ inlineValue +'">' + value + '</span>';
+    case 'highlight':
+        return '<span style="background-color:'+ inlineValue +'">' + value + '</span>';
     case 'fly':
         return '<marquee behavior="alternate">' + value + '</marquee>';
     case 'move':
@@ -172,8 +175,6 @@ var defaults = {
     case 'ruby':
     case 'python':
         return '<pre class="' + options.classPrefix + (tag === 'code' ? '' : 'code_') + tag + '">' + value + '</pre>';
-    case 'highlight':
-        return '<span class="' + options.classPrefix + tag + '">' + value + '</span>';
     case 'html':
         return value;
     case 'mention':

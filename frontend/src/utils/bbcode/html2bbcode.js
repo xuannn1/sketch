@@ -1,5 +1,10 @@
 
-  
+const config = {
+  noHeadSpaceAfterNewLine: false,
+  removeExtraSpace: false,
+  removeLastEmptyString: false,
+}
+
 function HTMLTag() {
   this.name = '';
   this.length = 0;
@@ -537,6 +542,8 @@ HTMLStack.prototype.dedup = function () {
   }
   return this;
 };
+
+// TODO: strip rules
 HTMLStack.prototype.strip = function (parent, afternewline) {
   if (!afternewline) {
     afternewline = (parent && !afternewline) ? (HTMLTag.newlinetags.indexOf(parent.name) >= 0) : true;
@@ -584,7 +591,7 @@ HTMLStack.prototype.strip = function (parent, afternewline) {
   var new_len = 0;
   for (var i = 0; i < this.stack.length; i++) {
     var s = this.stack[i];
-    if (typeof s === 'string' && blanks.test(s) && afternewline) {
+    if (typeof s === 'string' && blanks.test(s) && afternewline && config.removeLastEmptyString) {
       if (stag) {
         continue;
       }
@@ -619,7 +626,7 @@ HTMLStack.prototype.strip = function (parent, afternewline) {
       }
     } else {
       // not full empty string
-      if (afternewline) {
+      if (afternewline && config.noHeadSpaceAfterNewLine) {
         // removehead space after newline
         s = s.replace(/^\s+/g, '');
         if (!s) {
@@ -627,7 +634,7 @@ HTMLStack.prototype.strip = function (parent, afternewline) {
           continue;
         }
       }
-      s = s.replace(/\s+/g, ' ');
+      if (config.removeExtraSpace) s = s.replace(/\s+/g, ' ');
       stag = false;
       afternewline = false;
     }
@@ -635,17 +642,20 @@ HTMLStack.prototype.strip = function (parent, afternewline) {
     new_stack.push(s);
   }
   // check last one is empty string
-  var s = new_stack[new_len - 1];
-  if (typeof s === 'string') {
-    if (new_len >= 2 && blanks.test(s)) {
-      // remove last empty string
-      new_stack.splice(new_len - 1, 1);
-      new_len--;
-    } else if (/\S\s+$/.test(s)) {
-      // space follow with a non-space string
-      new_stack[new_len - 1] = s.replace(/\s+$/, '');
+  if (config.removeLastEmptyString){
+    var s = new_stack[new_len - 1];
+    if (typeof s === 'string') {
+      if (new_len >= 2 && blanks.test(s)) {
+        // remove last empty string
+        new_stack.splice(new_len - 1, 1);
+        new_len--;
+      } else if (/\S\s+$/.test(s)) {
+        // space follow with a non-space string
+        new_stack[new_len - 1] = s.replace(/\s+$/, '');
+      }
     }
   }
+  
   if (new_len <= 0 && parent) {
     delete parent.content;
     return;
@@ -697,7 +707,7 @@ BBCode.maps = {
   'font': { extend: ['color', 'face', 'size'] },
   'span': { extend: ['background-color', 'color', 'face', 'size'] },
   'color': { section: 'color', attr: 'color' },
-  'background-color': { section: 'background-color', attr: 'background-color' },
+  'background-color': { section: 'highlight', attr: 'background-color' },
   'size': { section: 'size', attr: 'size' },
   'face': { section: 'font', attr: 'face' },
   // new line tags
@@ -853,7 +863,6 @@ HTML2BBCode.prototype.px = function (px) {
   return px ? px.toString() : undefined;
 };
 HTML2BBCode.prototype.convertStyle = function (htag, sec) {
-  debugger;
   if (!sec) {
     return;
   }
@@ -867,9 +876,7 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
     }
     var tsec = { section: sec.section };
     if (sec.attr) {
-      console.log(sec.attr, "sec attr") // 待定
       if (htag.attr) {
-        console.log(htag.attr, "htag attr");
         switch (sec.section) {
           case 'size':
             tsec.attr = that.size(htag.attr[sec.attr] || htag.attr['class']); // quill use classes for predefined sizes
@@ -877,7 +884,7 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
           case 'color':
             tsec.attr = that.color(htag.attr[sec.attr]);
             break;
-          case 'background-color':
+          case 'highlight':
             tsec.attr = that.color(htag.attr[sec.attr]);
             break;
           default:
@@ -896,7 +903,7 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
               ra = htag.attr.style['color'];
               if (ra) ra = that.color(ra);
               break;
-            case 'background-color':
+            case 'highlight':
               ra = htag.attr.style['background-color'];
               if (ra) ra = that.color(ra);
               break;
@@ -943,10 +950,7 @@ HTML2BBCode.prototype.convertStyle = function (htag, sec) {
     }
     bbs.push(tsec);
   };
-  console.log(htag)
   if (htag.attr && htag.attr.style) {
-    console.log(444)
-    debugger;
     if (htag.name !== 'b' && htag.name !== 'strong') {
       var att = htag.attr.style['font-weight'];
       if (att === 'bold' || (/^\d+$/.test(att) && parseInt(att) >= 700)) {
@@ -1028,7 +1032,6 @@ HTML2BBCode.prototype.convert = function (hstack) {
     for (var i = 0; i < hs.length; i++) {
       var s = hs[i];
       if (s instanceof HTMLTag) {
-        console.log(s.name)
         if (s.name in BBCode.maps) {
           var fnewline = 0;
           var sec = BBCode.maps[s.name];
@@ -1069,6 +1072,7 @@ HTML2BBCode.prototype.parse = function (html) {
     .strip().dedup().decode();
 };
 HTML2BBCode.prototype.feed = function (html) {
+  // let domtree = getXMLParser()(html);
   var hstack = this.parse(html);
   if (this.opts.debug) {
     hstack.showtree();
@@ -1077,6 +1081,20 @@ HTML2BBCode.prototype.feed = function (html) {
   bbcode.s = bbcode.s.replace(/\[\/\*\]/g, '')
   return bbcode;
 };
+
+/**
+ * Retrieves an XML parser, or null if it cannot find one.
+ *
+ * @return {function|null}
+ **/
+export function getXMLParser() {
+  if (typeof window.DOMParser != "undefined") {
+    return function(xmlStr) {
+      return new window.DOMParser().parseFromString(xmlStr, "text/html");
+    };
+  }
+  return null;
+}
 export default {
   HTMLTag: HTMLTag,
   HTMLStack: HTMLStack,
