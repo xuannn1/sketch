@@ -55,6 +55,7 @@ import { Dialogue } from '../view/mobile/message/dialogue';
 import { TextEditor } from '../view/components/common/textEditor';
 const createBrowserHistory = require('history').createBrowserHistory;
 import { bbcode2html, html2bbcode, test } from '../utils/text-formater';
+import { bbcodTestCases } from '../test/bbcode';
 import { App } from '../view';
 
 const core = new Core();
@@ -401,34 +402,73 @@ storiesOf('Common Components/Dropdown', module)
 ;
 
 storiesOf('Common Components/TextEditor', module)
-.add('style1', () => React.createElement(class extends React.Component<{}, {content:string}> {
-  public state = {
-    content: `123\n123`,
-  };
+.add('style1', () => React.createElement(class extends React.Component<{}, {content:string, generatedBBCODE:string, test:any}>{
   private ref = React.createRef<TextEditor>();  // you have to use ref with this component
+  public state = {
+    content: '',
+    generatedBBCODE: '',
+    test: '',
+  };
 
       // will return content in bbcode
   private getContent = () => {
-        if (this.ref.current) {
-          const content = this.ref.current.getContent();
-          console.log('[EXPORT BBCODE]', content);
-          return content;
-        }
-        return '';
-      }
+    let content = '';
+    if (this.ref.current) {
+      content = this.ref.current.getContent();
+    }
+    return content;
+  }
 
   private test = () => {
     const bbcode = this.getContent();
-    test(bbcode);
-    this.setState({content: bbcode});
+    const result = test(bbcode);
+    this.setState({content: bbcode,
+      test: result ? 'success' :'failure, check console'});
   }
 
   public render() {
+    let testNum = number('testID', 0) || 0;
+    if (testNum < 0 || testNum >= bbcodTestCases.length) {
+      testNum = 0;
+    }
+    const testCase = bbcodTestCases[number('testID', 0) || 0];
     return  (
     <div>
-      <TextEditor ref={this.ref} content={this.state.content}></TextEditor>
-      <button onClick={this.getContent}>GET BBCODE</button>
+      <TextEditor ref={this.ref} content={testCase.test}></TextEditor>
+      <br/>
+      <button onClick={() => this.setState({generatedBBCODE: this.getContent()})}>Generate BBCODE</button>
+      {this.state.generatedBBCODE && (
+        <div>
+          Following is the generate BBCODE:
+          <pre>{this.state.generatedBBCODE}</pre>
+          <button onClick={() => this.setState({generatedBBCODE: ''})}>
+            Clear
+          </button>
+        </div>
+        ) }
+      <br/>
       <button onClick={this.test}>TEST</button>
+      <div>
+        The TEST button will export bbcode, convert the bbcode to html, and the generated html to bbcode, then compare the two bbcode strings, they should be the same.
+        {this.state.test ?  (
+        <p>
+          <strong>
+            { this.state.test }
+          </strong>
+          <button onClick={() => this.setState({test: ''})}>
+            Clear
+          </button>
+        </p>) : null
+      }
+      </div>
+      <br/>
+    <div>
+      <br/>
+      There are <strong>{bbcodTestCases.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {bbcodTestCases.length - 1}</strong> in the Knobs panel.
+      <br/><br/>
+      Current Test case is <strong>{testCase.id}</strong>. Following is the test case bbcode:
+      <pre>{testCase.test}</pre>
+    </div>
   </div>);
   }
 }))

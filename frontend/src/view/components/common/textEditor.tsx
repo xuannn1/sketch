@@ -70,6 +70,7 @@ export class TextEditor extends React.Component<{
   }
   // return text in bbcode format
   public getContent () {
+    console.log('[get content]', this.state.text);
     const result = html2bbcode(this.state.text);
     return result;
   }
@@ -93,7 +94,7 @@ export class TextEditor extends React.Component<{
   }
 
   handleChange(value) {
-    console.log(value);
+    // console.log(value);
     this.setState({ text: value });
   }
 
