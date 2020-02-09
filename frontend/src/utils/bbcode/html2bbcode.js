@@ -1080,7 +1080,7 @@ HTML2BBCode.prototype.parse = function (html) {
     .strip().dedup().decode();
 };
 HTML2BBCode.prototype.feed = function (html) {
-  // let domtree = getXMLParser()(html);
+  html = html.replace(/<[\t ]*br[\t ]*\/>/g,'\n');
   var hstack = this.parse(html);
   if (this.opts.debug) {
     hstack.showtree();

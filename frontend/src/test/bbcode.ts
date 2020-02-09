@@ -88,6 +88,13 @@ export const bbcodTestCases = [
   {
     id: 'link',
     test: '[url=https://www.google.com/]link[/url]',
-  }
-
+  },
+  {
+    id: 'img',
+    test: '[img]https://images.unsplash.com/photo-1499084732479-de2c02d45fcc?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80[/img]\n',
+  },
+  {
+    id: 'code',
+    test: '[code]let a = 1;\nlet b = 2;\nfor (let i = 0; i < b; i++){\n  console.log("hello world");\n}\n[/code]',
+  },
 ];

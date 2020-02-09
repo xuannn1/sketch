@@ -1,8 +1,9 @@
 import * as React from 'react';
 import 'react-quill/dist/quill.snow.css';
 // import * as ReactQuill from 'react-quill';
-import ReactQuill, { } from 'react-quill';
-import {bbcode2html, html2bbcode, test} from '../../../utils/text-formater';
+import ReactQuill, { Quill } from 'react-quill';
+import { bbcode2html, html2bbcode, test } from '../../../utils/text-formater';
+import './text-editor.scss';
 
 // TODO: there are some lifecycle warnings with this component (e.g.omponentWillUpdate has been renamed), this warning is from the library Quill
 // https://github.com/quilljs/quill/issues/2771
@@ -19,30 +20,16 @@ import {bbcode2html, html2bbcode, test} from '../../../utils/text-formater';
 // [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
 // ['link', 'image'],
 // ['clean']
-const modules = {
-  toolbar: [
-    [{ 'size': ['small', false, 'large', 'huge'] }],
-    [{ 'color': [] }, { 'background': [] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-    ['link', 'image'],
-    ['clean'],
-  ],
-    history: {
-      delay: 2000,
-      maxStack: 200,
-      userOnly: true,
-    },
-};
 
 export type textFormat = 'plaintext' | 'markdown' | 'bbcode';
 
 const formats = [
   'size',
   'color', 'background',
-  'bold', 'italic', 'underline', 'strike', 'blockquote',
+  'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block',
   'list', 'bullet', 'indent',
   'link', 'image',
+  'clean',
 ];
 
 export class TextEditor extends React.Component<{
@@ -61,12 +48,52 @@ export class TextEditor extends React.Component<{
   private reactQuillRef:any = React.createRef<ReactQuill>();
   private quillRef:any = null;
 
-  private attachQuillRefs = () => {
-    if (typeof this.reactQuillRef.getEditor !== 'function') {
+  public componentDidMount() {
+    this.attachQuillRefs();
+  }
+
+  public componentDidUpdate() {
+    this.attachQuillRefs();
+  }
+
+  private imageHandler = () => {
+    if (!this.quillRef) {
       return;
     }
-    this.quillRef = this.reactQuillRef.getEditor();
-    // console.log("ref", this.quillRef);
+    const range = this.quillRef.getSelection();
+    // TODO: use a common prompt element
+    const value = prompt('What is the image URL');
+    if (value) {
+        this.quillRef.insertEmbed(range.index, 'image', value, 'user');
+      }
+    }
+
+  private modules = {
+    toolbar: {
+      container: [
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      [{ 'color': [] }, { 'background': [] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+      [{'list': 'ordered'}, {'list': 'bullet'}],
+      ['link', 'image'],
+      ['clean'],
+      ],
+      handlers: {
+        image: this.imageHandler,
+      },
+    },
+      history: {
+        delay: 2000,
+        maxStack: 200,
+        userOnly: true,
+      },
+  };
+
+  private attachQuillRefs = () => {
+    if (typeof this.reactQuillRef.current.getEditor !== 'function') {
+      return;
+    }
+    this.quillRef = this.reactQuillRef.current.getEditor();
   }
   // return text in bbcode format
   public getContent () {
@@ -100,11 +127,11 @@ export class TextEditor extends React.Component<{
 
   public render() {
     return (
-      <ReactQuill value={this.state.text}
-                  modules={modules}
-                  formats={formats}
-                  onChange={this.handleChange}
-                  ref={this.reactQuillRef}/>
+      <ReactQuill value={ this.state.text }
+                  modules={ this.modules }
+                  formats={ formats }
+                  onChange={ this.handleChange }
+                  ref={ this.reactQuillRef }/>
     );
   }
 }

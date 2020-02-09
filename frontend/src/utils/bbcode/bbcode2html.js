@@ -93,12 +93,26 @@ const defaults = {
   }
   return paramMap;
   };
-  
-  
+
+  const codeTags = {
+      code: 'code',
+      java: 'java',
+      javascript: 'javascript',
+      cpp: 'cpp',
+      ruby: 'ruby',
+      python: 'python',
+  };
+
   function tagReplace(options, fullMatch, tag, params, value) {
   var tmp, className, inlineValue, i, val;
-  value = value.replace(/ /g, '&nbsp;');
   tag = tag.toLowerCase();
+  if (!codeTags[tag]) {
+    value = value.replace(/ /g, '&nbsp;');
+  } else {
+    value = value.replace(/<[\t ]*br[\t ]*\/>/g,'\n');
+    value = value.replace(/</g, '&lt;');
+    value = value.replace(/>/g, '&gt;');
+  }
   params = parseParams(tag, params || undefined);
   inlineValue = params[tag];
   switch (tag) {
@@ -155,7 +169,7 @@ const defaults = {
     case 'cpp':
     case 'ruby':
     case 'python':
-        return '<pre class="' + options.classPrefix + (tag === 'code' ? '' : 'code_') + tag + '">' + value + '</pre>';
+        return '<pre class="' + options.classPrefix + (tag === 'code' ? '' : 'code_') + 'syntax' + '">' + value + '</pre>';
     case 'html':
         return value;
     case 'mention':
