@@ -27,18 +27,26 @@ class QuoteTest extends TestCase
         ->assertJsonStructure([
             'code',
             'data' => [
-                'body',
-                'user_id',
-                'is_anonymous',
-                'id',
+                'type',
+                'attributes' => [
+                    'body',
+                    'is_anonymous',
+                ],
+                'author',
             ],
         ])
         ->assertJson([
             'code' => 200,
             'data' => [
-              'body' => $body,
-              'user_id' => $user->id,
-              'is_anonymous' => 0,
+                'type' => 'quote',
+                'attributes' => [
+                    'body' => $body,
+                    'is_anonymous' => false,
+                ],
+                'author' => [
+                    'type' => 'user',
+                    'id' => $user->id,
+                ],
             ],
         ]);
 
@@ -50,10 +58,10 @@ class QuoteTest extends TestCase
     public function an_authorised_user_can_create_quote_anonymously()//用户可匿名发表题头
     {
         $user = factory('App\Models\User')->create();
-        $this->actingAs($user, 'api');
         $user->forceFill([
             'level' => 5
         ])->save();
+        $this->actingAs($user, 'api');
         $body = $this->faker->sentence;
         $majia = 'niming';
         $response = $this->post('api/quote', ['body' => $body, 'is_anonymous' => 1, 'majia' => $majia])
@@ -61,20 +69,27 @@ class QuoteTest extends TestCase
         ->assertJsonStructure([
             'code',
             'data' => [
-                'body',
-                'user_id',
-                'is_anonymous',
-                'majia',
-                'id',
+                'type',
+                'attributes' => [
+                    'body',
+                    'is_anonymous',
+                    'majia',
+                ],
             ],
         ])
         ->assertJson([
             'code' => 200,
             'data' => [
-              'body' => $body,
-              'user_id' => $user->id,
-              'is_anonymous' => 1,
-              'majia' => $majia,
+                'type' => 'quote',
+                'attributes' => [
+                    'body' => $body,
+                    'is_anonymous' => true,
+                    'majia' => $majia,
+                ],
+                'author' => [
+                    'type' => 'user',
+                    'id' => $user->id,
+                ],
             ],
         ]);
 

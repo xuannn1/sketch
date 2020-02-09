@@ -62,7 +62,8 @@ class QuoteController extends Controller
         }
 
         $quote = $form->generateQuote();
-        return response()->success($quote);
+        $quote->load('author');
+        return response()->success(new QuoteResource($quote));
      }
 
     /**
