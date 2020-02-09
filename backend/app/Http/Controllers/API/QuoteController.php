@@ -18,7 +18,7 @@ class QuoteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api')->except('index');
         $this->middleware('admin')->only('review_index', 'review');
     }
     /**
@@ -32,17 +32,14 @@ class QuoteController extends Controller
         $ordered = is_string($request->ordered)? $request->ordered:"latest_created";
         $quotes = Cache::remember('quotes.'. $ordered .'.P'. $page, 10, function () use ($ordered){
             return (Quote::with('author')
-            ->where('approved',1)
+            ->withReviewState('Passed')
             ->ordered($ordered)
            ->paginate(config('preference.quotes_per_page')));
         });
-        if($quotes){
-            return response()->success([
-                'quotes' => QuoteResource::collection($quotes),
-                'paginate' => new PaginateResource($quotes)
-            ]);
-        }
-        abort(404);
+        return response()->success([
+            'quotes' => QuoteResource::collection($quotes),
+            'paginate' => new PaginateResource($quotes)
+        ]);
     }
 
 
@@ -83,6 +80,23 @@ class QuoteController extends Controller
          // $user = Auth::check()? CacheUser::Auser():'';
          // $info = Auth::check()? CacheUser::Ainfo():'';
          // return view('quotes.show', compact('user','info','quote'));
+     }
+
+     public function userQuote($user, Request $request)
+     {
+         if(!auth('api')->user()->isAdmin()){
+             $user = auth('api')->id();
+         }
+
+         $quotes = Quote::with('author')
+         ->where('user_id',auth('api')->id())
+         ->ordered('latest_created')
+         ->paginate(config('preference.quotes_per_page'));
+
+         return response()->success([
+             'quotes' => QuoteResource::collection($quotes),
+             'paginate' => new PaginateResource($quotes)
+         ]);
      }
 
     /**

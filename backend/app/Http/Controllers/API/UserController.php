@@ -15,7 +15,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index','show','showThread','showPost','showStatus','showQuote');
+        $this->middleware('auth:api')->except('index','show','showThread','showPost','showStatus');
     }
     /**
      * Display a listing of the resource.
@@ -219,21 +219,6 @@ class UserController extends Controller
         //
         // return view('users.show_status', compact('user','info','intro','statuses'))->with(['show_user_tab'=>'status'])->with('status_expand',true)->with('status_show_title',false);
     }
-    public function showQuote($user,Request $request)
-    {
-        if(!auth('api')->user()->isAdmin()){
-            $user = auth('api')->id();
-        }
-
-        $quotes = Quote::with('author')
-        ->where('user_id',auth('api')->id())
-        ->ordered('latest_created')
-        ->paginate(config('preference.quotes_per_page'));
-
-        return response()->success([
-            'quotes' => QuoteResource::collection($quotes),
-            'paginate' => new PaginateResource($quotes)
-        ]);
-    }
+    
 
 }

@@ -146,6 +146,7 @@ class QuoteTest extends TestCase
         ->assertStatus(200);
         $response = $this->get('api/quote/',['ordered'=>'latest_created','page'=>2])
         ->assertStatus(200);
+        // TODO 这里可能还需要考虑到是否会显示某个题头，题头格式是否符合要求等问题
 
     }
             /** @test */
@@ -158,7 +159,7 @@ class QuoteTest extends TestCase
         $response = $this->get('api/user/'.$user->id.'/quote',['ordered'=>'latest_created'])
         ->assertStatus(401);
         $this->actingAs($user, 'api');
-        $response = $this->get('api/user/'.$user->id.'/quote',['ordered'=>'latest_created'])
+        $response = $this->get('api/user/'.$user->id.'/quote')
         ->assertStatus(200);
         // TODO 这里需要检查，比如某用户之前创建了一个题头，能否通过这个api获得这个刚创建的内容
     }
