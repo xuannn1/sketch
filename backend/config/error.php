@@ -11,7 +11,7 @@ return [
     '410' => 'allowed number limit conflict', //不允许建立更多的同类内容了，需要更长时间间隔或者更高等级或更多余额，一日只能打赏一个东西一次，同一账户几小时内只能重置密码一次。
     '411' => 'precondition failed due to self input', //由于自身输入的内容，前提失败导致动作无效，不能关注或取关自己，不能给自己发私信，不能即赞又踩
     '412' => 'precondition failed due to self setting', //由于自身设置或状态，前提失败导致动作无效，不能取关未关注的人,不能修改对未关注人的关注偏好，不能在私信余额不足的时候发送私信, 不能佩戴不具有的头衔，不能打赏超过个人收入的虚拟物，新注册的用户当天不能重置密码。已免广告的不能再免广告，封禁管理中的用户不能重置密码
-    '413' => 'precondition failed due to other side setting', //由于对方设置，前提失败导致动作无效，不能发私信给拒绝接收私信的用户，不能访问作者设置私密的讨论，不能收藏申请删除中的书籍/讨论
+    '413' => 'precondition failed due to other side setting', //由于对方设置，前提失败导致动作无效，不能发私信给拒绝接收私信的用户，不能访问作者设置私密的讨论，不能收藏申请删除中的书籍/讨论，不能折叠管理员的留言
     '414' => 'precondition failed due to system setting', //由于系统设置，前提失败导致动作无效.
     '416' => 'user further action reqired: needs authentification', // 用户需要激活邮箱才能访问内容
     '417' => 'user further action reqired: needs purchase', // 作业需购买才能阅读

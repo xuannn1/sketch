@@ -37,6 +37,25 @@ class Quote extends Model
         return $this->hasMany(AdminReviewQuote::class,'quote_id');
     }
 
+    public function scopeOrdered($query, $ordered="")
+    {
+        switch ($ordered) {
+            case 'earliest_created'://创建时间
+            return $query->orderBy('created_at', 'asc');
+            case 'latest_created'://创建时间
+            return $query->orderBy('created_at', 'desc');
+            break;
+            case 'id'://创建顺序
+            return $query->orderBy('id', 'asc');
+            break;
+            case 'max_fish'://被投咸鱼数
+            return $query->orderBy('fish', 'desc');
+            break;
+            default://默认
+            return $query->orderBy('created_at', 'desc');
+        }
+    }
+
     public function scopeNotSad($query)
     {
         return $query->where('notsad','=',true);

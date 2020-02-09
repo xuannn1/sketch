@@ -15,7 +15,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index','show','showThread','showPost','showStatus','showQuote');
+        $this->middleware('auth:api')->except('index','show','showThread','showPost','showStatus');
     }
     /**
      * Display a listing of the resource.
@@ -219,14 +219,6 @@ class UserController extends Controller
         //
         // return view('users.show_status', compact('user','info','intro','statuses'))->with(['show_user_tab'=>'status'])->with('status_expand',true)->with('status_show_title',false);
     }
-    public function showQuote($user,Request $request)
-    {
-        // TODO 这里要注意权限设置变化,
-        // $quotes = \App\Models\Quote::with('author')
-        // ->where('user_id',Auth::id())
-        // ->orderBy('created_at','desc')
-        // ->paginate(config('preference.quotes_per_page'));
-        // return view('quotes.index', compact('quotes'))->with('show_quote_tab','mine');
-    }
+    
 
 }

@@ -92,7 +92,7 @@ Route::delete('user/{user}', 'API\UserController@destroy');//用户注销
 Route::get('user/{user}/thread', 'API\UserController@showThread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
 Route::get('user/{user}/post', 'API\UserController@showPost');// 展示某用户的全部post，当本人或管理查询时，允许出现匿名post
 Route::get('user/{user}/status', 'API\UserController@showStatus');// 展示某用户的全部status，当本人或管理查询时，允许出现匿名post
-Route::get('user/{user}/quote', 'API\UserController@showQuote');// 展示某用户的全部quote，当本人或管理查询时，允许出现匿名quote
+
 
 // 签到
 Route::get('qiandao', 'API\QiandaoController@qiandao');// 签到
@@ -127,6 +127,10 @@ Route::get('follow_status', 'API\StatusController@follow_status');//关注的人
 
 // 题头部分
 Route::apiResource('quote', 'API\QuoteController')->only(['index','show','store','destroy']);
+
+Route::get('user/{user}/quote', 'API\QuoteController@userQuote');// 展示某用户的全部quote，当本人或管理查询时，允许出现匿名quote
+
+Route::get('/admin/manage/quote_review_index', 'API\QuoteController@review_index')->name('quote.review_index');//批量审核题头
 
 Route::patch('/quote/{quote}/review','API\QuoteController@review')->name('quote.review');//审核单独题头
 

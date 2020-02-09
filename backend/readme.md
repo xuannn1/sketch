@@ -93,6 +93,50 @@ $ vendor/bin/phpunit
 #### 2.6.4 结果
 正常的话应该会看到绿色的测试通过公示。一切ok的话，说明这边没有大问题了
 
+### 2.7 使用 docker 安装后端
+
+#### 2.7.1 安装 docker 以及 docker-compose
+
+#### 2.7.2 .env
+
+按照 2.2 中的说明配置 .env 文件
+
+#### 2.7.3 检查配置
+在 backend 目录下执行
+
+``` shell
+docker-compose config
+```
+
+查看是否有以下警告产生，有则需要检查 .env 文件
+
+> WARNING: The xxx variable is not set. Defaulting to a blank string.
+
+#### 2.7.4 运行服务
+执行
+
+``` shell
+docker-compose up -d
+```
+
+如果是后端开发已有 php 环境，可以只执行``` docker-compose up dbadmin ``` 运行 数据库以及 phpmyadmin 服务
+
+等待服务启动完成
+
+#### 2.7.5 完成
+成功后即可访问以下服务
+
+- 数据库 mysql: localhost:3306 
+- 查看数据库内容 phpmyadmin: localhost:8001 
+- api: localhost:8000
+
+git pull 之后需要重新执行
+
+``` shell
+docker-compose rm
+docker-compose up --build
+```
+
 ## 3. 数据库结构解释
 
 
