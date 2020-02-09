@@ -46,7 +46,7 @@ trait PageObjectTraits{
             ->take(config('preference.short_recommendations_on_homepage'))
             ->select('posts.*')
             ->get();
-            $short_reviews->load('simpleInfo.reviewee');
+            $short_reviews->load('simpleInfo.reviewee.author');
             return $short_reviews;
         });
     }
