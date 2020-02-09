@@ -3,7 +3,7 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\Models\Quiz::class, function (Faker $faker) {
-    $type = $faker->optional($weight = 0.3, $default = 'register')->randomElement($array = array ('register','essay','level_up'));
+    $type = $faker->optional($weight = 0.15, $default = 'register')->randomElement($array = array ('register','essay','level_up'));
     return [
         'is_online' => true,
         'type' => $type,
