@@ -1,4 +1,4 @@
-export function randomCnWords (length:number, commaWeight:number) {
+export function randomCnWords (length:number, commaWeight = 0.2) {
     const comma = '，';
     const period = '。';
     const range = [19968, 20500]; // all: 40869

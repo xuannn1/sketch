@@ -21,24 +21,17 @@ export class LoginRoute extends React.Component<MobileRouteProps, State> {
   }
 
   public renderContent () {
+    // FIXME: location.state.from is '/user', we should probably use from.from
+    const fromUrl = '/';
     switch (window.location.pathname) {
       case '/login':
         this.location = 'login';
         return <Login login={async (email, pwd) =>
-          this.props.location.state &&
-          this.props.location.state.from ?
-            this.props.core.db.login(
-              email,
-              pwd,
-              this.props.location.state.from) :
-              this.props.core.db.login(email, pwd) }></Login>;
+            this.props.core.db.login(email, pwd, fromUrl) }></Login>;
       case '/register':
         this.location = 'register';
-        return <Register register={async (name, email, pwd) => await this.props.core.db.register({
-          email,
-          name,
-          password: pwd,
-        })}></Register>;
+        return <Register register={async (name, email, pwd) =>
+          this.props.core.db.register(name, pwd, email, fromUrl)}></Register>;
       case '/reset_password':
         this.location = 'reset password';
         return <PasswordReset resetPassword={(email) => this.props.core.db.resetPassword(email)}></PasswordReset>;

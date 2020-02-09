@@ -2,6 +2,7 @@
 export const pageStyle:React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
+  overflow: 'auto',
 };
 export const largeListItemStyle:React.CSSProperties = {
   padding: '1em 1em',
@@ -43,4 +44,45 @@ export const oneLineTruncationStyle:React.CSSProperties = {
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   marginTop: '0.8em',
+};
+
+export const DialogueCardStyle:React.CSSProperties = {
+  padding: '20px',
+  backgroundColor: '#f4f5f9',
+  height: '100%',
+  overflow: 'scroll',
+  flexGrow: 1,
+};
+export const posterNameStyle:React.CSSProperties = {
+  marginBottom: '1em',
+  fontWeight: 'bold',
+};
+export const myPosterNameStyle:React.CSSProperties = {
+  float: 'right',
+};
+export const messageStyle:React.CSSProperties = {
+  marginBottom: '1.3em',
+};
+
+export const pmTextBoxStyle:React.CSSProperties = {
+  height: 'auto !important',
+  padding: '0.5em 1em 0.5em 1em',
+  left: '0',
+  width: '100%',
+  bottom: '0',
+  backgroundColor: 'white',
+  display: 'flex',
+};
+export const sendButtonStyle:React.CSSProperties = {
+  fontSize: '1.3em',
+  margin: '0.5em 0 0 0.5em',
+};
+
+export const publicNoticeCardStyle:React.CSSProperties = {
+  border: 'none',
+  padding: '0px 0px 10px 0px',
+  backgroundColor: '#f4f5f9',
+  boxShadow: 'none',
+  marginTop: '0px',
+  flexGrow: 1,
 };
