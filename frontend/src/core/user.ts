@@ -1,19 +1,31 @@
-import { History } from '.';
-import { loadStorage, saveStorage } from '../utils/storage';
+import { loadStorage, clearStorage } from '../utils/storage';
+import { History } from 'history';
 
 export class User {
   private history:History;
 
   public isLogin = false;
   public name = '';
+  public id = -1;
+  public token = '';
 
   constructor (history:History) {
     this.history = history;
 
-    const token = loadStorage('token');
-    if (token) {
+    const auth = loadStorage('auth');
+    if (auth.userId != -1) {
       this.isLogin = true;
+      this.name = auth.username;
+      this.id = auth.userId;
+      this.token = auth.token;
     }
+  }
+
+  public login(name:string, id:number, token:string) {
+    this.isLogin = true;
+    this.name = name;
+    this.id = id;
+    this.token = token;
   }
 
   public isAdmin () : boolean {
@@ -26,8 +38,11 @@ export class User {
   }
 
   public logout () {
-    saveStorage('token', '');
+    clearStorage('auth');
     this.isLogin = false;
+    this.name = '';
+    this.id = -1;
+    this.token = '';
     this.history.push('/');
   }
 }

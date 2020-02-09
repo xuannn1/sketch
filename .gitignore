@@ -22,3 +22,4 @@ backend/.phpunit.result.cache
 # frontend
 frontend/dist
 frontend/yarn.lock
+frontend/dist-storybook

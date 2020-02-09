@@ -9,8 +9,11 @@ import '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
 import './theme.scss';
 
+import { fakeDB } from './test/mock-data/fake-db';
+
 async function run () {
   const core = new Core();
+  // fakeDB(core.db);
 
   const root = document.createElement('div');
   root.id = 'app';

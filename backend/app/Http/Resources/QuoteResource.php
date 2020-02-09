@@ -30,5 +30,6 @@ class QuoteResource extends JsonResource
             ],
             'author' => $author,
         ];
+        // TODO 如果当前用户是管理员，返回quote里的其他内容，比如本题头是否通过等
     }
 }

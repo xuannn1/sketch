@@ -87,11 +87,10 @@ export class Register extends React.Component<Props, State> {
         </div>
 
         <div className="checkbox"
-          onClick={(ev) => this.setState((prevState) => this.setState({accept: !prevState.accept}))}
+          onClick={(ev) => this.setState((prevState) => ({accept: !prevState.accept}))}
           style={{ textAlign: 'center', width: '100%', margin: '10px 0' }}>
           <input type="checkbox"
             checked={this.state.accept}
-            onChange={(ev) => this.setState({accept: ev.target.checked})}
           />
           我已阅读并同意注册协议 更多内容
         </div>

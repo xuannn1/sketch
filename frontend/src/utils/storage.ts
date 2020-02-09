@@ -1,10 +1,18 @@
 export interface Storage {
-  token:string;
+  auth:{
+      token:string,
+      username:string,
+      userId:number,
+    };
 }
 
 export function allocStorage () : Storage {
   return {
-    token: '',
+    auth:{
+      token:'',
+      username:'',
+      userId:-1,
+    },
   };
 }
 
@@ -27,4 +35,9 @@ export function loadStorage<K extends keyof Storage> (key:K) : Storage[K] {
     console.error('load storage failed with key ' + key);
   }
   return allocStorage()[key];
+}
+
+export function clearStorage<K extends keyof Storage> (key:K) {
+  const clearState = allocStorage()[key];
+  saveStorage(key, clearState);
 }

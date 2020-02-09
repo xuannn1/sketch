@@ -66,17 +66,86 @@ class ComponentController extends Controller
     }
 
     public function convert($id, Request $request){
+
+        // $request->convert_to_type;
         $post = Post::find($id);
-        if(!$post){abort(404);}
-
+        if(!$post){abort(404);} // post必须存在
         $thread=$post->thread;
-        if($thread->is_locked||$thread->user_id!=Auth::id()){abort(403);}
+        if(!$thread){abort(404);}  // thread必须存在
+        if($thread->is_locked||$thread->user_id!=auth('api')->id()||auth('api')->user()->no_posting){abort(403);} // 本人，且未禁言，且未锁定
 
-        //validate turn to type and channel type
+        $this->validate($request, [
+            'convert_to_type' => 'required|string|max:10',
+        ]);
 
-        // $post = ?
-        // $request->convert_to_type ==='post'//'comment'...
-        // TODO post to chapter, chapter to post, and so on.
+        if($request->convert_to_type==='post'&&$post->type!="post"){
+            $post_info = $post->info;
+            if($post_info){
+                $post_info->delete();
+            }
+            $post->update([
+                'type' => 'post'
+                'edited_at' => Carbon::now(),
+            ]);
+        }
+
+        if($request->convert_to_type!='post'&&$post->type==="post"){
+            if(($thread->channel()->type==='book'&&in_array($request->convert_to_type, ['chapter','volumn']))||($thread->channel()->type==='list'&&in_array($request->convert_to_type, ['review']))||($thread->channel()->type==='column'&&in_array($request->convert_to_type, ['essay']))){
+                $previous_chapter = $thread->last_component;
+                $order_by = ($previous_chapter&&$previous_chapter->info)? ($previous_chapter->info->order_by+1):1;
+                PostInfo::updateOrCreate([
+                    'post_id' => $post->id,
+                ],[
+                    'order_by' => $order_by,
+                    'abstract'=>StringProcess::trimtext($post->body,150),
+                ]);
+                $post->update([
+                    'type' => $request->convert_to_type,
+                    'reply_to_id' => 0,
+                    'reply_to_brief' => '',
+                    'in_component_id' => 0,
+                    'edited_at' => Carbon::now(),
+                ]);
+            }
+            if($thread->channel()->type==='box'&&in_array($request->convert_to_type,['answer'])){
+                PostInfo::updateOrCreate([
+                    'post_id' => $post->id,
+                ],[
+                    'order_by' => 1,
+                    'abstract'=>StringProcess::trimtext($post->body,150),
+                ]);
+                $post->update([
+                    'type' => $request->convert_to_type,
+                    'edited_at' => Carbon::now(),
+                ]);
+            }
+            if($thread->channel()->type==='box'&&in_array($request->convert_to_type,['question'])){
+                if($post_info){
+                    $post_info->delete();
+                }
+                $post->update([
+                    'type' => $request->convert_to_type,
+                    'edited_at' => Carbon::now(),
+                ]);
+            }
+            if($thread->channel()->type==='homework'&&in_array($request->convert_to_type,['work','critique'])){
+                if($post_info){
+                    $post_info->delete();
+                }
+                $post->update([
+                    'type' => $request->convert_to_type,
+                    'reply_to_id' => 0,
+                    'reply_to_brief' => '',
+                    'in_component_id' => 0,
+                    'edited_at' => Carbon::now(),
+                ]);
+            }
+        }
+
+        $this->clearPost($post->id);
+        $this->clearThread($thread->id);
+
+        return response()->success(new PostResource($post));
     }
 
 }

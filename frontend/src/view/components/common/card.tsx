@@ -2,25 +2,31 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { classnames } from '../../../utils/classname';
 
-export function Card (props:{
+export class Card extends React.Component<{
+  // props
   children?:React.ReactNode;
   style?:React.CSSProperties;
   className?:string;
-  ref?:(el:HTMLDivElement|null) => void;
   title?:string|{text:string, link:string};
-}) {
-  return <div className={classnames('card', props.className)}
-    ref={(el) => props.ref && props.ref(el)}
-    style={Object.assign(
-      {
-        marginTop: '10px',
-        padding: '10px',
-        position: 'relative',
-      },
-      props.style || {})}>
-    {props.title && (typeof props.title !== 'string' ?
-      <Link to={props.title.link} className="title">{props.title.text}</Link> :
-      <span className="title">{props.title}</span>)}
-    {props.children}
-  </div>;
+}, {
+  // state
+  }> {
+    public rootElement:HTMLDivElement|null = null;
+
+    public render () {
+      return <div className={classnames('card', this.props.className)}
+        ref={(el) => this.rootElement = el}
+        style={Object.assign(
+          {
+            marginTop: '10px',
+            padding: '10px',
+            position: 'relative',
+          },
+          this.props.style || {})}>
+          {this.props.title && (typeof this.props.title !== 'string' ?
+        <Link to={this.props.title.link} className="title">{this.props.title.text}</Link> :
+        <span className="title">{this.props.title}</span>)}
+        {this.props.children}
+      </div>;
+    }
 }
