@@ -221,12 +221,19 @@ class UserController extends Controller
     }
     public function showQuote($user,Request $request)
     {
-        // TODO 这里要注意权限设置变化,
-        // $quotes = \App\Models\Quote::with('author')
-        // ->where('user_id',Auth::id())
-        // ->orderBy('created_at','desc')
-        // ->paginate(config('preference.quotes_per_page'));
-        // return view('quotes.index', compact('quotes'))->with('show_quote_tab','mine');
+        if(!auth('api')->user()->isAdmin()){
+            $user = auth('api')->id();
+        }
+
+        $quotes = Quote::with('author')
+        ->where('user_id',auth('api')->id())
+        ->ordered('latest_created')
+        ->paginate(config('preference.quotes_per_page'));
+
+        return response()->success([
+            'quotes' => QuoteResource::collection($quotes),
+            'paginate' => new PaginateResource($quotes)
+        ]);
     }
 
 }

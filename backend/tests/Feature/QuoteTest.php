@@ -6,6 +6,7 @@ use Tests\TestCase;
 
 class QuoteTest extends TestCase
 {
+
     /** @test */
     public function an_authorised_user_can_create_quote()
     {
@@ -13,6 +14,14 @@ class QuoteTest extends TestCase
         $this->actingAs($user, 'api');
 
         $body = $this->faker->sentence;
+
+        $response = $this->post('api/quote', ['body' => $body])
+        ->assertStatus(412);
+
+        $user->forceFill([
+            'level' => 5
+        ])->save();
+
         $response = $this->post('api/quote', ['body' => $body])
         ->assertStatus(200)
         ->assertJsonStructure([
@@ -42,7 +51,9 @@ class QuoteTest extends TestCase
     {
         $user = factory('App\Models\User')->create();
         $this->actingAs($user, 'api');
-
+        $user->forceFill([
+            'level' => 5
+        ])->save();
         $body = $this->faker->sentence;
         $majia = 'niming';
         $response = $this->post('api/quote', ['body' => $body, 'is_anonymous' => 1, 'majia' => $majia])
@@ -77,5 +88,78 @@ class QuoteTest extends TestCase
         $body = $this->faker->sentence;
         $response = $this->post('api/quote', ['body' => $body])
         ->assertStatus(401);
+    }
+
+    /** @test */
+    public function an_authorised_user_can_delete_quote()
+    {
+        $user = factory('App\Models\User')->create();
+        $user->forceFill([
+            'level' => 5
+        ])->save();
+        $quote = factory('App\Models\Quote')->create();
+        $response = $this->delete('api/quote/'.$quote->id)
+        ->assertStatus(401);
+        $this->actingAs($user, 'api');
+        $response = $this->delete('api/quote/'.$quote->id)
+        ->assertStatus(403);
+        $quote->user_id=$user->id;
+        $quote->save();
+        $response = $this->delete('api/quote/'.$quote->id)
+        ->assertStatus(200);
+    }
+    /** @test */
+    public function a_guest_can_not_delete_quote()
+    {
+        $quote = factory('App\Models\Quote')->create();
+        $response = $this->delete('api/quote/'.$quote->id)
+        ->assertStatus(401);
+    }
+        /** @test */
+    public function a_admin_can_review_quote()
+    {
+        $user = factory('App\Models\User')->create();
+        $quote = factory('App\Models\Quote')->create();
+        $response = $this->patch('api/quote/'.$quote->id.'/review',['attitude'=>'approve'])
+        ->assertStatus(401);//未登录
+        $this->actingAs($user, 'api');
+        $response = $this->patch('api/quote/'.$quote->id.'/review',['attitude'=>'approve'])
+        ->assertStatus(403);//不是管理员
+        $user->role='admin';
+        $response = $this->patch('api/quote/'.$quote->id.'/review',['attitude'=>'disapprove'])
+        ->assertStatus(200);
+        $response = $this->patch('api/quote/'.$quote->id.'/review',['attitude'=>'disapprove'])
+        ->assertStatus(404);//已经不通过的 不能再次不通过
+        $response = $this->patch('api/quote/'.$quote->id.'/review',['attitude'=>'approve'])
+        ->assertStatus(200);
+        $response = $this->patch('api/quote/'.$quote->id.'/review',['attitude'=>'approve'])
+        ->assertStatus(404);//已经通过的 不能再次通过
+        $response = $this->patch('api/quote/111/review',['attitude'=>'approve'])
+        ->assertStatus(404);
+    }
+        /** @test */
+    public function anyone_can_browse_quotes()
+    {
+        $response = $this->get('api/quote/',['ordered'=>'latest_created'])
+        ->assertStatus(200);
+        $response = $this->get('api/quote/',['ordered'=>'max_fish'])
+        ->assertStatus(200);
+        $response = $this->get('api/quote/',['ordered'=>'latest_created','page'=>2])
+        ->assertStatus(200);
+
+    }
+            /** @test */
+    public function an_authorised_user_can_browse_his_own_quotes()
+    {
+        $user = factory('App\Models\User')->create();
+        $user->forceFill([
+            'level' => 5
+        ])->save();
+        $response = $this->get('api/user/'.$user->id.'/quote',['ordered'=>'latest_created'])
+        ->assertStatus(401);
+        $this->actingAs($user, 'api');
+        $response = $this->get('api/user/'.$user->id.'/quote',['ordered'=>'latest_created'])
+        ->assertStatus(200);
+        // TODO 这里需要检查，比如某用户之前创建了一个题头，能否通过这个api获得这个刚创建的内容
     }
 }

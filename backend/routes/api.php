@@ -128,6 +128,8 @@ Route::get('follow_status', 'API\StatusController@follow_status');//关注的人
 // 题头部分
 Route::apiResource('quote', 'API\QuoteController')->only(['index','show','store','destroy']);
 
+Route::get('/admin/manage/quote_review_index', 'API\QuoteController@review_index')->name('quote.review_index');//批量审核题头
+
 Route::patch('/quote/{quote}/review','API\QuoteController@review')->name('quote.review');//审核单独题头
 
 // 私信部分
