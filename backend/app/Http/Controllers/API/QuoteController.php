@@ -18,7 +18,7 @@ class QuoteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->only( 'store', 'mine', 'destroy');
+        $this->middleware('auth:api');
         $this->middleware('admin')->only('review_index', 'review');
     }
     /**
@@ -29,20 +29,20 @@ class QuoteController extends Controller
     public function index(Request $request)
     {
         $page = is_numeric($request->page)? $request->page:'1';
-        $order = is_string($request->order)? $request->order:"created_at";
-        $quotes = Cache::remember('quotes.'. $order .'.P'. $page, 10, function () use ($order){
+        $ordered = is_string($request->ordered)? $request->ordered:"latest_created";
+        $quotes = Cache::remember('quotes.'. $ordered .'.P'. $page, 10, function () use ($ordered){
             return (Quote::with('author')
             ->where('approved',1)
-            ->orderBy($order,'desc')
+            ->ordered($ordered)
            ->paginate(config('preference.quotes_per_page')));
         });
-        if($quotes)
+        if($quotes){
             return response()->success([
                 'quotes' => QuoteResource::collection($quotes),
                 'paginate' => new PaginateResource($quotes)
             ]);
-        else
-            abort(599);
+        }
+        abort(404);
     }
 
 
@@ -56,14 +56,14 @@ class QuoteController extends Controller
      {
        if(auth('api')->user()->level<3){
             abort(412, "你的等级不足，暂不能提交题头。");
-        }  
-        
+        }
+
         $last_quote = Quote::where('user_id', auth('api')->id())->orderBy('created_at','desc')->first();
-        
+
         if($last_quote&&$last_quote->created_at>Carbon::now()->subDay(1)){
             abort(410, '一人一天只能提交一次题头');
         }
-        
+
         $quote = $form->generateQuote();
         return response()->success($quote);
      }
@@ -95,7 +95,7 @@ class QuoteController extends Controller
      {
         if(auth('api')->user()->level<3){
             abort(412, "你的等级不足，暂不能删除题头。");
-        }  
+        }
         $quote=Quote::find($id);
         if(!$quote)
             abort(404, "找不到该题头。");
@@ -104,28 +104,13 @@ class QuoteController extends Controller
          $quote->delete();
          $this->clearQuote($id);
          return response()->success([
-            'success' => "成功删除题头",
-            'quote' => $quote,
+             'message' =>[
+                 'success' => "成功删除题头",
+             ],
+            'quote_id' => $id,
         ]);
      }
 
-     
-    public function mine()
-    {
-        if(auth('api')->user()->level<3){
-             abort(412, "你的等级不足，暂不能查看题头。");
-         }  
-        $quotes = Quote::with('author')
-        ->where('user_id',auth('api')->id())
-        ->orderBy('created_at','desc')
-        ->paginate(config('preference.quotes_per_page'));
-        
-        return response()->success([
-            'quotes' => QuoteResource::collection($quotes),
-            'paginate' => new PaginateResource($quotes)
-        ]);
-        
-    }
 
      public function review_index(Request $request)
     {

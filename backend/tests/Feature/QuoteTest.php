@@ -89,7 +89,7 @@ class QuoteTest extends TestCase
         $response = $this->post('api/quote', ['body' => $body])
         ->assertStatus(401);
     }
-    
+
     /** @test */
     public function an_authorised_user_can_delete_quote()
     {
@@ -140,27 +140,26 @@ class QuoteTest extends TestCase
         /** @test */
     public function anyone_can_browse_quotes()
     {
-        $response = $this->get('api/quote/',['order'=>'created_at'])
+        $response = $this->get('api/quote/',['ordered'=>'latest_created'])
         ->assertStatus(200);
-        $response = $this->get('api/quote/',['order'=>'fish'])
+        $response = $this->get('api/quote/',['ordered'=>'max_fish'])
         ->assertStatus(200);
-        $response = $this->get('api/quote/',['order'=>'created_at','page'=>2])
+        $response = $this->get('api/quote/',['ordered'=>'latest_created','page'=>2])
         ->assertStatus(200);
-        
+
     }
             /** @test */
     public function an_authorised_user_can_browse_his_own_quotes()
     {
-        $response = $this->get('api/quote_mine',['order'=>'created_at'])
-        ->assertStatus(401);
         $user = factory('App\Models\User')->create();
-        $this->actingAs($user, 'api');
-        $response = $this->get('api/quote_mine',['order'=>'created_at'])
-        ->assertStatus(412);
         $user->forceFill([
             'level' => 5
         ])->save();
-        $response = $this->get('api/quote_mine',['order'=>'created_at'])
+        $response = $this->get('api/user/'.$user->id.'/quote',['ordered'=>'latest_created'])
+        ->assertStatus(401);
+        $this->actingAs($user, 'api');
+        $response = $this->get('api/user/'.$user->id.'/quote',['ordered'=>'latest_created'])
         ->assertStatus(200);
+        // TODO 这里需要检查，比如某用户之前创建了一个题头，能否通过这个api获得这个刚创建的内容
     }
 }
