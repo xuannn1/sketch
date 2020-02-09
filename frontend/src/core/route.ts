@@ -10,6 +10,14 @@ export class Route {
         this._history.goForward();
     }
 
+    public back = () => {
+        if (this._history.length <= 2) {
+            this.go('/');
+        } else {
+            this._history.goBack();
+        }
+    }
+
     public channelTag (channelId:number, tagId:number) {
         this.go(`/threads/?channels=[${channelId}]&tags=[${tagId}]`);
     }
@@ -19,5 +27,9 @@ export class Route {
 
     public user (userId:number) {
         this.go(`/user/${userId}`);
+    }
+
+    public book (threadId:number) {
+        this.go(`/book/${threadId}`);
     }
 }

@@ -17,12 +17,7 @@ export function Page (props:{
       </div>
     }
 
-    <div className={classnames('body', props.className)} style={Object.assign(
-      {
-        marginTop: props.top ? '44px' : '0',
-      },
-      props.style || {},
-    )}>
+    <div className={classnames('body', props.className)} style={props.style}>
       {props.children}
     </div>
 

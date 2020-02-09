@@ -23,7 +23,7 @@ export class SearchPage extends React.Component<{
           onConfirm={() => {}}
           onChange={(text) => this.setState({text})}
         ></InputText>
-        <div onClick={() => this.props.core.history.goBack()} className="cancel">取消</div>
+        <div onClick={() => this.props.core.route.back()} className="cancel">取消</div>
       </div>
     </Page>;
   }

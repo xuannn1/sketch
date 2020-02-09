@@ -1,6 +1,7 @@
 import React from 'react';
 import { classnames } from '../../../utils/classname';
 import './button.scss';
+import { Colors } from '../../theme/theme';
 
 export class Button extends React.Component<{
   // props
@@ -9,7 +10,7 @@ export class Button extends React.Component<{
   icon?:string;
   disabled?:boolean;
   ghost?:boolean;
-  color?:'primary';
+  color?:Colors;
   size?:'small',
   type?:'ellipse',
 }, {}> {

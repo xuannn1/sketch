@@ -1,4 +1,12 @@
 import { Themes } from '../view/theme/theme';
+import { ResData } from '../config/api';
+
+type Timestamp = number;
+export type FilterDataType<T> = {
+  updated_at:number;
+  list:T[];
+  selectedList:number[];
+};
 
 export interface Storage {
   auth:{
@@ -7,6 +15,9 @@ export interface Storage {
     userId:number,
   };
   theme:string;
+  tag:FilterDataType<ResData.Tag>;
+  channel:FilterDataType<ResData.Channel>;
+  bianyuan:FilterDataType<{id:number, name:string}>;
 }
 
 export function allocStorage () : Storage {
@@ -17,6 +28,21 @@ export function allocStorage () : Storage {
       userId:-1,
     },
     theme: Themes.light,
+    tag: {
+      updated_at: 0,
+      list: [],
+      selectedList: [],
+    },
+    channel: {
+      updated_at: 0,
+      list: [],
+      selectedList: [],
+    },
+    bianyuan: {
+      updated_at: 0,
+      list: [],
+      selectedList: [],
+    },
   };
 }
 

@@ -5,6 +5,7 @@ import { Core } from './core';
 
 async function run () {
   const core = new Core();
+  await core.init();
 
   const root = document.createElement('div');
   document.body.appendChild(root);

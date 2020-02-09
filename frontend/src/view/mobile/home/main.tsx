@@ -8,14 +8,8 @@ import { SearchBar } from '../search/search-bar';
 import { RoutePath } from '../../../config/route-path';
 import { ChannelPreview } from '../../components/home/channel-preview';
 import { Button } from '../../components/common/button';
+import { Colors } from '../../theme/theme';
 import './main.scss';
-
-type ListItem = {
-  title:string;
-  content:string;
-  author:string;
-  id:number;
-};
 
 interface State {
   data:API.Get['/'];
@@ -27,7 +21,10 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
       quotes: [],
       recent_recommendations: [],
       homeworks: [],
-      channel_threads: [],
+      channel_threads: [
+        {threads: [], channel_id: 1},
+        {threads: [], channel_id: 2},
+      ],
     },
   };
 
@@ -53,18 +50,33 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
       </div>
 
       <ChannelPreview
-        title={'推荐榜单'}
-        threads={[]}
+        title={'编辑推荐'}
+        threads={this.state.data.recent_recommendations.map((post) => ({
+          id: post.id,
+          author: post.info.reviewee.author.attributes.name,
+          title: post.info.reviewee.attributes.title,
+          brief: post.attributes.brief || '',
+        }))}
         goToThread={(id) => this.props.core.route.thread(id)}
       />
       <ChannelPreview
         title={'原创榜单'}
-        threads={[]}
+        threads={this.state.data.channel_threads[0].threads.map((thread) => ({
+          id: thread.id,
+          author: thread.author.attributes.name,
+          brief: thread.attributes.brief || '',
+          title: thread.attributes.title,
+        }))}
         goToThread={(id) => this.props.core.route.thread(id)}
       />
       <ChannelPreview
         title={'同人榜单'}
-        threads={[]}
+        threads={this.state.data.channel_threads[1].threads.map((thread) => ({
+          id: thread.id,
+          author: thread.author.attributes.name,
+          brief: thread.attributes.brief || '',
+          title: thread.attributes.title,
+        }))}
         goToThread={(id) => this.props.core.route.thread(id)}
       />
     </Page>);
@@ -73,7 +85,7 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
   public renderMainButton = (text:string, icon:string, link:RoutePath) => {
     return <Button onClick={() => this.props.core.route.go(link)}
       icon={icon}
-      color="primary"
+      color={Colors.primary}
     >{text}</Button>;
   }
 }

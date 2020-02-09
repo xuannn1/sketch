@@ -3,7 +3,6 @@ export enum RoutePath {
   createQuote = '/createquote',
   suggestion = '/suggestion',
   library = '/library',
-  search = '/search',
 
   // forum
   forum = '/thread_index',
@@ -18,8 +17,8 @@ export enum RoutePath {
   collection = '/collection',
 
   // status
-  statusCollection = '/status/collection',
   status = '/status/all',
+  statusCollection = '/status/collection',
 
   // messages
   messages = '/messages',
@@ -27,5 +26,7 @@ export enum RoutePath {
   personalMessages = '/message/pm',
   publicNotice = '/messages/publicnotice',
 
-  tidings = '/tidings',
+  // other
+  tags = '/tags',
+  search = '/search',
 }

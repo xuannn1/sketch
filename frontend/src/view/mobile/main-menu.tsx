@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RouteMenu } from '../components/common/route-menu';
 import { RoutePath } from '../../config/route-path';
+import './main-menu.scss';
 
 type MenuItem = {
   to:RoutePath,
@@ -28,5 +29,6 @@ export function MainMenu () {
   return <RouteMenu
     onIndex={onIndex}
     items={items}
+    className="route-menu"
   />;
 }

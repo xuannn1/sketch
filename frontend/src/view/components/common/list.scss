@@ -1,18 +1,22 @@
 .list {
-  $border: #dbdbdb 1px solid;
+  $border: var(--color-border) 1px solid;
 
   width: 100%;
-  background-color: white;
+  background-color: var(--color-bg-front);
   border-radius: 0;
   box-shadow: none;
   border-top: $border;
   border-bottom: $border;
 
   .list-item {
-    border-bottom: $border;
+    padding: 12px 0;
+    position: relative;
     &:hover {
       cursor: pointer;
     }
+  }
+  .list-item:not(:last-child) {
+    border-bottom: $border;
   }
 
   .list-arrow {

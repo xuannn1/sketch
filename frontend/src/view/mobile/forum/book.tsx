@@ -37,7 +37,7 @@ export class Book extends React.Component<MobileRouteProps, State> {
     return (
       <Page
         top={
-          <NavBar goBack={this.props.core.history.goBack}>
+          <NavBar goBack={this.props.core.route.back}>
             <div className="buttons">
               <Anchor className="button" isDisabled={true} to={''}>目录模式</Anchor>
               <Anchor className="button" to={''}>论坛模式</Anchor>

@@ -17,7 +17,7 @@ interface State {
 export class Message extends React.Component<MobileRouteProps, State> {
   public render () {
     return (<Page style={pageStyle}
-        top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           <MessageMenu/>
         </NavBar>}>
         <Card style={topCardStle}>

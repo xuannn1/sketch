@@ -7,8 +7,9 @@
   font-size: var(--font-size-3);
   font-family: var(--font-family-medium);
   text-align: center;
-  cursor: pointer;
   padding: 0 26px;
+  cursor: pointer;
+  box-sizing: border-box;
 
   i {
     margin-right: 4px;

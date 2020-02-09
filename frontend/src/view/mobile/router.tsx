@@ -12,13 +12,13 @@ import { HomeMain } from './home/main';
 import { Chapter } from './forum/chapter';
 import { CreateQuote } from './home/createquote';
 
-import { Tidings } from './tidings';
 import { RoutePath } from '../../config/route-path';
 import { Forum } from './forum';
 import { SearchPage } from './search/search-page';
 import { Suggestion } from './home/suggestion';
 import { Library } from './home/library';
 import { Collection } from './collection';
+import { ForumTags } from '../components/thread/forum-tags';
 
 interface Props {
   core:Core;
@@ -39,7 +39,6 @@ export const MobileRoutes = {
   [RoutePath.createQuote]: CreateQuote,
   [RoutePath.suggestion]: Suggestion,
   [RoutePath.library]: Library,
-  [RoutePath.search]: SearchPage,
   // '/homebook': HomeBook,
   // '/homethread': HomeThread,
   // '/threads': HomeThread,
@@ -68,7 +67,9 @@ export const MobileRoutes = {
   [RoutePath.personalMessages]: PersonalMessage,
   [RoutePath.publicNotice]: PublicNotice,
 
-  [RoutePath.tidings]: Tidings,
+  // other
+  [RoutePath.tags]: ForumTags,
+  [RoutePath.search]: SearchPage,
 };
 
 export class MobileRouter extends React.Component<Props, State> {

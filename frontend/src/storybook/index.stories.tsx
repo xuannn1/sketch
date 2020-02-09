@@ -20,7 +20,6 @@ import { Badge } from '../view/components/common/badge';
 import { Card } from '../view/components/common/card';
 import { Center } from '../view/components/common/center';
 import { Dropdown } from '../view/components/common/dropdown';
-import { FilterBar } from '../view/components/common/filter-bar';
 import { List } from '../view/components/common/list';
 import { InfiniteScroll } from '../view/components/common/infiniteScroll';
 import { Mark } from '../view/components/common/mark';
@@ -30,27 +29,29 @@ import { PopupMenu } from '../view/components/common/popup-menu';
 import { RouteMenu } from '../view/components/common/route-menu';
 import { Slider } from '../view/components/common/slider';
 import { Tab } from '../view/components/common/tab';
-import { Tag, TagColor } from '../view/components/common/tag';
+import { Tag } from '../view/components/common/tag';
 import { TagList } from '../view/components/common/tag-list';
 import { FloatButton } from '../view/components/common/float-button';
 import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
-import { ResizableTextarea } from '../view/components/common/resizable-textarea';
+import { ResizableTextarea } from '../view/components/common/input/resizable-textarea';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
 import { ChannelPreview } from '../view/components/home/channel-preview';
-import { TagBasic } from '../view/components/home/tagbasic';
+/*
 import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
-import { RecommendList } from '../view/components/home/recommend-list';
+*/
 import { ChatBubble } from '../view/components/message/chat-bubble';
 import { ExpandableMessage } from '../view/components/message/expandable-message';
 import { Fragment } from 'react';
 import { fakeDB } from '../test/mock-data/fake-db';
 import { Button } from '../view/components/common/button';
+import { Colors } from '../view/theme/theme';
+import { ResData } from '../config/api';
 
 const core = new Core();
 fakeDB(core.db);
@@ -58,6 +59,7 @@ fakeDB(core.db);
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
 addDecorator(withKnobs);
+addDecorator((storyFn) => <div id="app" className="theme-light" data-theme="light">{storyFn()}</div>); //todo: add theme switcher
 
 storiesOf('Common Components', module)
   .add('button', () => <Button
@@ -76,64 +78,32 @@ storiesOf('Common Components', module)
     </Badge>,
   )
   .add('Tag', () => {
-    const colorOptions:{[name:string]:TagColor} = {
-      black: 'black',
-      dark: 'dark',
-      light: 'light',
-      white: 'white',
-      primary: 'primary',
-      link: 'link',
-      info: 'info',
-      success: 'success',
-      warning: 'warning',
-      danger: 'danger',
-    };
     return <Tag
       selected={boolean('selected', false)}
       onClick={action('tag click')}
       size={select('size', {
-        normal: 'normal',
-        medium: 'medium',
-        large: 'large',
-      },           'normal')}
-      color={select('color', colorOptions, undefined)}
-      selectedColor={select('selectedColor', colorOptions, undefined)}
+        default: 'default',
+        small: 'small',
+      })}
+      color={select('color', Colors, '')}
+      selectedColor={select('selectedColor', Colors, Colors.primary)}
       rounded={boolean('rounded', false)}
-      selectable={boolean('selectable', true)}
     >{text('text', 'test')}</Tag>;
   })
   .add('TagList', () => {
-    const colorOptions:{[name:string]:TagColor} = {
-      black: 'black',
-      dark: 'dark',
-      light: 'light',
-      white: 'white',
-      primary: 'primary',
-      link: 'link',
-      info: 'info',
-      success: 'success',
-      warning: 'warning',
-      danger: 'danger',
-    };
     return <TagList>
       {(new Array(number('length', 20)).fill(text('text', 'tag')).map((content, i) => <Tag
         key={i}
         onClick={action('tag click ' + i)}
         size={select('size', {
-          normal: 'normal',
-          medium: 'medium',
-          large: 'large',
-        },           'normal')}
-        color={select('color', colorOptions, undefined)}
-        selectedColor={select('selectedColor', colorOptions, undefined)}
+          default: 'default',
+          small: 'small',
+        })}
+        color={select('color', Colors, undefined)}
+        selectedColor={select('selectedColor', Colors, Colors.primary)}
         rounded={boolean('rounded', false)}
-        selectable={boolean('selectable', true)}
       >{content}</Tag>))}
     </TagList>;
-  })
-
-  .add('FilterBar', () => {
-    return <FilterBar></FilterBar>;
   })
   .add('Popup', () => React.createElement(class extends React.Component {
     public state = {
@@ -146,7 +116,6 @@ storiesOf('Common Components', module)
           <Popup
             width={text('width', '')}
             bottom={text('bottom', '')}
-            darkBackground={number('darkBackground', 0.8)}
             onClose={() => this.setState({showPopup: false})}>
             {text('content', 'example content')}
           </Popup>
@@ -432,10 +401,6 @@ storiesOf('Common Components/Navigation Bar', module)
   .add('simple', () => <NavBar goBack={action('goBack')} >
     {text('title', 'example title')}
   </NavBar>)
-  .add('buttons', () => <NavBar goBack={action('goBack')}>
-    <div className="button">阅读模式</div>
-    <div className="button">论坛模式</div>
-  </NavBar>)
   .add('with menu', () => React.createElement(class extends React.Component {
     public state = {
       showPopup: false,
@@ -488,26 +453,7 @@ storiesOf('Home Components/HomePage', module)
         </Router>;
     }
   }))
-  .add('tagbasicMidium', () => <TagBasic
-    tagId={'233'}
-    tagName={'tag'}
-    onClick={(selected, selectedId) => {console.log('select', selectedId); } }
-    selected={false}
-    size={'medium'}
-    color={'light'}
-    selectedColor={'danger'}
-    selectable={true}>
-    </TagBasic>)
-  .add('tagbasicSmall', () => <TagBasic
-    tagId={'233'}
-    tagName={'tag'}
-    onClick={(selected, selectedId) => {console.log('select', selectedId); } }
-    selected={false}
-    size={'normal'}
-    color={'white'}
-    selectedColor={'danger'}
-    selectable={true}>
-  </TagBasic>)
+  /*
   .add('TagBasicList1', () => React.createElement(class extends React.Component {
     public render () {
       return <div style={{
@@ -624,29 +570,7 @@ storiesOf('Home Components/HomePage', module)
         </TagBasicListFilter>;
     }
   }))
-  .add('RecommendList', () => React.createElement(class extends React.Component {
-    public render () {
-      const items = [
-        {id:1, channel_id:1, title:'夜深知雪重量', brief:'推荐语：小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开；小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开', author:'尸尸'},
-        {id:2, channel_id:1, title:'贼雀', brief:'一二三四五六七，我们都死得很离奇；七六五四三二一，找到答案前谁都出不去', author:'叽里呱啦'},
-        {id:3, channel_id:1, title:'她捡到1个放大镜', brief:'夏天夏天悄悄过去充满小秘密，放大镜的乐趣我只想告诉你', author:'越荷兮'},
-    ];
-      return <Router history={createBrowserHistory()}>
-          <RecommendList
-          taglist={[{tagCatagoryName:'文章分类',
-          childTags:[{tagId:'12', tagName:'原创'} , {tagId:'13' , tagName:'同人'}]},
-          {tagCatagoryName:'篇幅',
-          childTags:[{tagId:'14', tagName:'长篇'} , {tagId:'15' , tagName:'中篇'},
-          {tagId:'16', tagName:'短篇'},{tagId:'17', tagName:'大纲'}]}
-          ]}
-          threads={items}
-          onBack={() => {}}
-          onSearch={() => {}}
-          onShowTags={() => {}}>
-        </RecommendList>
-        </Router>;
-    }
-  }))
+  */
 ;
 storiesOf('Home Components', module)
 ;
@@ -674,7 +598,10 @@ storiesOf('Thread Components', module)
           attributes: {
             title: randomCnWords(number('post title', 40), 0.2),
             body: '',
+            brief: randomCnWords(20),
           },
+          info: ResData.allocPostInfo(),
+          parent: [],
         },
         author: {
           id: 1,

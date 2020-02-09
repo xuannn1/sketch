@@ -9,6 +9,8 @@
   --color-font: #333333;
   --color-font-light: #666666;
   --color-placeholder: #999999;
+
+  --color-border: #dbdbdb;
 }
 
 .theme-light {
@@ -23,12 +25,16 @@
   .card {
     background-color: var(--color-bg-front);
   }
-  .button {
+  .button, .tag {
     background-color: #dddfe6;
     color: var(--color-font);
   }
-  .button.primary {
+  .button.color-primary, .tag.color-primary {
     background-color: #ce565d;
     color: white;
+  }
+  .button.color-pure, .tag.color-pure {
+    background-color: white;
+    color: var(--color-font);
   }
 }

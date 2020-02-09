@@ -5,6 +5,7 @@
 node_modules
 yarn-error.log
 package-lock.json
+*/**/screenlog.*
 
 # backend
 backend/public/hot

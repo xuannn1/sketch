@@ -1,6 +1,5 @@
 import * as React from 'react';
 import './resizable-textarea.scss';
-import { classnames } from '../../../utils/classname';
 
 export class ResizableTextarea extends React.PureComponent<{
   // props

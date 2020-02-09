@@ -37,7 +37,7 @@ export class Thread extends React.Component<MobileRouteProps, State> {
 
     return <Page
         top={
-          <NavBar goBack={this.props.core.history.goBack}>
+          <NavBar goBack={this.props.core.route.back}>
             {thread.attributes.title}
           </NavBar>
         }

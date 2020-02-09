@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ResData } from '../../../config/api';
-import { parseDate } from '../../../utils/date';
 import { Tag } from '../common/tag';
 import './thread-preview.scss';
+import { Card } from '../common/card';
 
 // todo: mini version
 interface Props {
@@ -20,7 +20,7 @@ export class ThreadPreview extends React.Component<Props, State> {
     const { attributes, id, author, tags, last_post } = this.props.data;
     const mini = this.props.mini || false; // true表示精简版， false表示非精简版
 
-    return <div className="thread-item" key={id}>
+    return <Card className="thread-item" key={id}>
 
     <div className="first-line">
       { !mini && tags && <span className="tags">
@@ -60,6 +60,6 @@ export class ThreadPreview extends React.Component<Props, State> {
 
       <div className="author" onClick={() => this.props.onUserClick(author.id)}>{author.attributes.name}</div>
     </div>
-  </div>;
+  </Card>;
   }
 }

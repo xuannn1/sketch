@@ -11,7 +11,7 @@ interface State {
 export class Suggestion extends React.Component<MobileRouteProps, State> {
   public render () {
     return <Page top={<NavBar
-      goBack={() => this.props.history.goBack()}
+      goBack={() => this.props.core.route.back()}
       onMenuClick={() => this.props.core.route.go(RoutePath.search)}
       menuIcon="fa fa-search"
     >推荐</NavBar>}>
