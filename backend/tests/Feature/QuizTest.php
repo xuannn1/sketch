@@ -62,7 +62,7 @@ class QuizTest extends TestCase
         $id = $user->id;
         $quizzes_questions = UserInfo::find($id)->quiz_questions;
         $returned_quizzes_questions = [];
-        $this->assertCount(config('constants.quiz_test_number'),$response["data"]["quizzes"]);
+        $this->assertCount(config('constants.quiz_test_number',5),$response["data"]["quizzes"]);
         foreach ($response["data"]["quizzes"] as $quiz) {
             $returned_quizzes_questions[] = $quiz["id"];
             $this->assertDatabaseHas('quizzes', ["id" => $quiz["id"]]);

@@ -135,7 +135,7 @@ class QuizController extends Controller
             abort(401,'用户未登录。');
         }
         $level = (int)$request->level ?? 0;
-        $quizzes = $this->random_quizzes($level, 'level_up', config('constants.quiz_test_number'));
+        $quizzes = $this->random_quizzes($level, 'level_up', config('constants.quiz_test_number',5));
         $quiz_questions = implode(",", $quizzes->pluck('id')->toArray());
         if (!$quizzes || empty($quizzes) || count($quizzes) == 0) {
             abort(404,'没有找到该等级的题目。');
@@ -161,7 +161,7 @@ class QuizController extends Controller
             ]
         ];
         // 设置应答对题目数量为总题目数量
-        $is_passed = $this->check_quiz_passed_or_not($quiz, $user_info->quiz_questions, config('constants.quiz_test_number'));
+        $is_passed = $this->check_quiz_passed_or_not($quiz, $user_info->quiz_questions, config('constants.quiz_test_number',5));
         $current_quiz_level = self::find_quiz_set($quiz[0]['id'])->quiz_level;
         $result['attribute']['current_quiz_level'] = $current_quiz_level;
         if($is_passed){
