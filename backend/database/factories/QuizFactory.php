@@ -3,16 +3,17 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\Models\Quiz::class, function (Faker $faker) {
+    $type = $faker->optional($weight = 0.15, $default = 'register')->randomElement($array = array ('register','essay','level_up'));
     return [
         'is_online' => true,
-        'type' => $faker->optional($weight = 0.3, $default = 'register')->randomElement($array = array ('register','essay')),
-        // 15% 为'essay', 85% 为'register'
-        'quiz_level' => -1,
+        'type' => $type,
+        // 15% 为'essay'或'level_up, 85% 为'register'
+        'quiz_level' => $type == 'level_up' ? $faker->numberBetween($min = 0, $max = 2) : -1,
         'body' => str_random(10),
         'hint' => str_random(10)
     ];
 })->afterCreating(App\Models\Quiz::class, function ($my_model, Faker $faker) {
-    if ($my_model->type == 'register') {
+    if ($my_model->type != 'essay') {
 
         // 每道题最多6个选项，最少3个选项
         $total_options_count = $faker->numberBetween($min = 3, $max = 6);

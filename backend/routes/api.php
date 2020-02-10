@@ -180,9 +180,11 @@ Route::patch('/homework_registration/{homework_registration}/manage_registration
 // 帮助FAQ管理
 Route::apiResource('helpfaq', 'API\FAQController')->only(['index', 'store', 'update', 'destroy']);
 
+// 注意顺序
+Route::get('quiz/get_quiz','API\QuizController@getQuiz');
+Route::post('quiz/submit_quiz','API\QuizController@submitQuiz');
 Route::apiResource('quiz', 'API\QuizController');
-Route::get('take_quiz','API\QuizController@takeQuiz');
-Route::get('submit_quiz','API\QuizController@submitQuiz');
+
 
 // 标签系统管理
 Route::apiResource('tag', 'API\TagController');

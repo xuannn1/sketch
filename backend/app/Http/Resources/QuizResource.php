@@ -3,10 +3,23 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\QuizOptionResource;
 
 class QuizResource extends JsonResource
 {
+    protected $include_answer;
+
+    /**
+     * QuizResource constructor.
+     * @param mixed $resource
+     * @param bool $include_answer include answer in returned resource by default
+     */
+    public function __construct($resource, bool $include_answer = false)
+    {
+        parent::__construct($resource);
+        $this->include_answer = $include_answer;
+    }
+
+
     /**
      * Transform the resource into an array.
      *
@@ -20,21 +33,27 @@ class QuizResource extends JsonResource
             $quiz_type = 'quiz';
         } elseif ($this->type == "essay") {
             $quiz_type = 'essay';
+        } elseif ($this->type == "level_up") {
+            $quiz_type = 'quiz';
         }
+        $is_admin = auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin();
+        $include_answer = in_array($this->type, config('constants.quiz_has_option')) && ($this->include_answer || $is_admin);
         return [
             'type' => $quiz_type,
             'id' => (int)$this->id,
             'attributes' => [
                 'body' => (string)$this->body,
                 'hint' => (string)$this->hint,
+                'correct_answer' => $this->when($include_answer,$this->quiz_options->where('is_correct',true)->pluck('id')->toArray()),
                 $this->mergeWhen(auth('api')->check() && auth('api')->user() && auth('api')->user()->isAdmin(), [
                     'type' => (string)$this->type,
+                    'is_online' => (bool)$this->is_online,
                     'level' => (int)$this->quiz_level,
                     'quiz_count' => (int)$this->quiz_count,
                     'correct_count' => (int)$this->correct_count,
                     'edited_at' => (string)$this->edited_at
                 ]),
-                'options' => $this->when($quiz_type == 'quiz', QuizOptionResource::collection($this->quiz_options))
+                'options' => $this->when($quiz_type != 'essay', new QuizOptionCollection($this->quiz_options,$include_answer))
             ]
         ];
     }

@@ -9,6 +9,7 @@ return [
     'monthly_email_resets' => 5, //一个月能修改多少次邮箱
     'default_majia' => '匿名咸鱼',
 
+    'quiz_test_number' => 5, //目前每次测试取5道题
     'tongren_channel_id' => 2, //  同人版块id
     'homework_channel_id' => 3,// 作业区板块id
     'commentary_channel_id' => 4,// 读写交流板块id
@@ -126,6 +127,8 @@ return [
         'register' => '注册申请选择题',
         'essay' => '注册申请简答题',
     ],
+    'quiz_has_level' => ['level_up'],
+    'quiz_has_option' => ['register','level_up'],
     'task_titles' => [
         '2019winter' => 61,
     ],

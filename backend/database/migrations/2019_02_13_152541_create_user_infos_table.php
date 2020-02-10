@@ -88,6 +88,8 @@ class CreateUserInfosTable extends Migration
             $table->boolean('use_indentation')->default(true);//最近使用过的段首缩进设置
             $table->unsignedInteger('public_notice_id')->default(0);//已读最新系统消息
 
+            $table->string('quiz_questions')->nullable();//上一次quiz的题目
+
         });
     }
 
