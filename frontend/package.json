@@ -12,7 +12,7 @@
     "analyze": "webpack --env production --profile --json > dist/stats.json && npm run size",
     "size": "webpack-bundle-analyzer dist/stats.json dist",
     "server": "node bin/server.js",
-    "storybook": "start-storybook -p 9001 -c .storybook",
+    "storybook": "start-storybook -p 9001 -h 0.0.0.0 -c .storybook",
     "build-storybook": "build-storybook -c .storybook -o dist-storybook"
   },
   "dependencies": {
