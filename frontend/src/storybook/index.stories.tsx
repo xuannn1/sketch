@@ -464,7 +464,7 @@ storiesOf('Common Components/TextEditor', module)
       <br/>
     <div>
       <br/>
-      There are <strong>{bbcodTestCases.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {bbcodTestCases.length - 1}</strong> in the Knobs panel.
+      There are <strong>{bbcodTestCases.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {bbcodTestCases.length - 1}</strong> in the Addons/Knobs panel.
       <br/><br/>
       Current Test case is <strong>{testCase.id}</strong>. Following is the test case bbcode:
       <pre>{testCase.test}</pre>
