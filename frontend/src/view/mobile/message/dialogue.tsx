@@ -7,7 +7,7 @@ import { NavBar } from '../../components/common/navbar';
 import { Card } from '../../components/common/card';
 import { ChatBubble } from '../../components/message/chat-bubble';
 import { pageStyle, DialogueCardStyle, posterNameStyle, messageStyle, myPosterNameStyle, pmTextBoxStyle, sendButtonStyle } from './styles';
-import { ResizableTextarea } from '../../components/common/resizable-textarea';
+import { ResizableTextarea } from '../../components/common/input/resizable-textarea';
 import ReactDOM from 'react-dom';
 
 // TODO: implement fetch new msg by scroll up: https://www.pubnub.com/blog/react-chat-message-history-and-infinite-scroll/
@@ -59,7 +59,7 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   private messageListRef:HTMLDivElement|null = null;
   public render () {
     return (<Page style={pageStyle}
-        top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           {this.props.location.state && this.props.location.state.chatWithName}
         </NavBar>}>
         <Card style={DialogueCardStyle} ref={(card) => this.messageListRef = card ? card.rootElement : null}>

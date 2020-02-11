@@ -12,7 +12,8 @@
     "analyze": "webpack --env production --profile --json > dist/stats.json && npm run size",
     "size": "webpack-bundle-analyzer dist/stats.json dist",
     "server": "node bin/server.js",
-    "storybook": "start-storybook -p 9001 -c .storybook"
+    "storybook": "start-storybook -p 9001 -c .storybook",
+    "build-storybook": "build-storybook -c .storybook -o dist-storybook"
   },
   "dependencies": {
     "lodash": "^4.17.11",
@@ -48,7 +49,6 @@
     "babel-plugin-import": "^1.10.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
-    "bulma": "^0.7.2",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",

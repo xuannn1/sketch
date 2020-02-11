@@ -1,6 +1,11 @@
 export type BasicType = string|number|boolean;
 export type URLQuery = {[key:string]:BasicType|BasicType[]|undefined};
 export function parsePath (path:string, query:URLQuery) {
+  for (const key in query) {
+    if (query[key] === '' || query[key] === undefined) {
+      delete query[key];
+    }
+  }
   const res = path;
 
   const obj = Object.assign({}, query);

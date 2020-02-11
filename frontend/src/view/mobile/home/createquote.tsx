@@ -30,7 +30,7 @@ export class CreateQuote extends React.Component<MobileRouteProps, State> {
 
   public render () {
     return <Page
-        top={<NavBar goBack={this.props.core.history.goBack}>
+        top={<NavBar goBack={this.props.core.route.back}>
           创建题头
         </NavBar>}>
       {this.props.core.user.isLoggedIn() &&

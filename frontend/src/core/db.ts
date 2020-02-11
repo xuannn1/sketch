@@ -119,8 +119,45 @@ export class DB {
   public getPageHomeThread () {
     return this._get('/homethread');
   }
-  public getPageHomeBook () {
-    return this._get('/homebook');
+  public getBooks (spec:{
+    channel:number[],
+    page?:number;
+    withBianyuan?:boolean;
+    ordered?:ReqData.Thread.ordered;
+    withTag?:number[][];
+    excludeTag?:number[];
+  }) {
+    const query = {};
+    if (this.user.isLoggedIn()) {
+      if (spec.page && spec.page > 1) {
+        query['page'] = spec.page;
+      }
+
+      if (spec.channel
+        && spec.channel.length === 1
+        && spec.channel[0] <= 2
+      ) {
+        query['inChannel'] = spec.channel[0];
+      }
+
+      if (spec.withBianyuan) {
+        query['withBianyuan'] = 'include_bianyuan';
+      }
+
+      if (spec.ordered && spec.ordered !== ReqData.Thread.ordered.default) {
+        query['ordered'] = spec.ordered;
+      }
+
+      if (spec.excludeTag && spec.excludeTag.length > 0) {
+        query['excludeTag'] = spec.excludeTag.join('-');
+      }
+
+      if (spec.withTag && spec.withTag.length > 0) {
+        query['withTag'] = spec.withTag.map((tagsOr) => tagsOr.join('_')).join('-');
+      }
+    }
+
+    return this._get('/book', { query });
   }
 
   // follow system
@@ -428,5 +465,11 @@ export class DB {
   public getNoTongrenTags () {
     // fixme:
     return new Promise<[]>((resolve) => resolve([]));
+  }
+  public getAllTags () {
+    return this._get('/config/allTags');
+  }
+  public getAllChannels () {
+    return this._get('/config/allChannels');
   }
 }

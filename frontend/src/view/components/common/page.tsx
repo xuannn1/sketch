@@ -8,8 +8,9 @@ export function Page (props:{
   bottom?:React.ReactNode;
   className?:string;
   style?:React.CSSProperties;
+  zIndex?:number;
 }) {
-  return <div className="page">
+  return <div className="page" style={{zIndex: props.zIndex || undefined}}>
     { props.top &&
       <div className="top">
         {props.top}

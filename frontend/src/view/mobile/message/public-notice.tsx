@@ -64,7 +64,7 @@ export class PublicNotice extends React.Component<MobileRouteProps, State> {
 
   public render () {
     return (<Page style={pageStyle}
-        top={<NavBar goBack={this.props.core.history.goBack} onMenuClick={() => console.log('open setting')}>
+        top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           公共通知
         </NavBar>}>
         <Card style={ publicNoticeCardStyle }>
