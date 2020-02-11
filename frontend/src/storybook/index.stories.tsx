@@ -55,7 +55,8 @@ import { Dialogue } from '../view/mobile/message/dialogue';
 import { TextEditor } from '../view/components/common/textEditor';
 const createBrowserHistory = require('history').createBrowserHistory;
 import { bbcode2html, html2bbcode, test } from '../utils/text-formater';
-import { bbcodTestCases } from '../test/bbcode';
+import { bbcodTestCases } from '../test/bbcode/bbcode';
+import { loadTestData, formatTestData } from '../test/bbcode/additionalTest';
 import { App } from '../view';
 
 const core = new Core();
@@ -402,14 +403,20 @@ storiesOf('Common Components/Dropdown', module)
 ;
 
 storiesOf('Common Components/TextEditor', module)
-.add('style1', () => React.createElement(class extends React.Component<{}, {content:string, generatedBBCODE:string, test:any}>{
+.add('style1', () => React.createElement(class extends React.Component<{}, {content:string, generatedBBCODE:string, test:any, extraData:any[], testId:number, useDefaultTest:boolean}> {
   private ref = React.createRef<TextEditor>();  // you have to use ref with this component
   public state = {
     content: '',
     generatedBBCODE: '',
     test: '',
+    extraData: [],
+    testId: 0,
+    useDefaultTest: true,
   };
 
+  public async componentWillMount () {
+    await this.loadExtraTestData();
+  }
       // will return content in bbcode
   private getContent = () => {
     let content = '';
@@ -426,15 +433,30 @@ storiesOf('Common Components/TextEditor', module)
       test: result ? 'success' :'failure, check console'});
   }
 
-  public render() {
-    let testNum = number('testID', 0) || 0;
-    if (testNum < 0 || testNum >= bbcodTestCases.length) {
-      testNum = 0;
+  private loadExtraTestData = async () => {
+    const extraData = await loadTestData();
+    this.setState({extraData});
+  }
+
+  private getTest() {
+    let testId = this.state.testId || 0;
+    if (testId < 0 || testId >= this.state.extraData.length) {
+      testId = 0;
     }
-    const testCase = bbcodTestCases[testNum];
+
+    if (this.state.useDefaultTest) {
+      return {type: 'normal', testID: bbcodTestCases[testId].id, test: bbcodTestCases[testId].test};
+    } else {
+      return {type: 'excel', testID: testId, test: formatTestData(this.state.extraData[testId])};
+    }
+  }
+
+  public render() {
+    let { type, testID, test } = this.getTest();
+
     return  (
     <div>
-      <TextEditor ref={this.ref} content={testCase.test}></TextEditor>
+      <TextEditor ref={this.ref} content={ test }></TextEditor>
       <br/>
       <button onClick={() => this.setState({generatedBBCODE: this.getContent()})}>Generate BBCODE</button>
       {this.state.generatedBBCODE && (
@@ -462,18 +484,30 @@ storiesOf('Common Components/TextEditor', module)
       }
       </div>
       <br/>
+      <div>
+        Using { this.state.useDefaultTest ? 'local default test suit' : 'remote excel test suit' }.
+        <button onClick={() => { this.setState({useDefaultTest: !this.state.useDefaultTest }); }}> switch to { this.state.useDefaultTest ? 'remote excel test suit' : 'local default test suit' } </button>
+
+        { this.state.useDefaultTest ? (
+          <p>
+            There are <strong>{bbcodTestCases.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {bbcodTestCases.length - 1}</strong>
+          </p>
+        ) : (
+          <div>
+            { this.state.extraData.length == 0 ? 'still loading remote remote test suit...' :
+              <p>There are <strong>{this.state.extraData.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {this.state.extraData.length - 1}</strong></p>}
+          </div>
+        )}
+      </div>
+      <input type="number" value={this.state.testId} min="0" max={this.state.useDefaultTest ? bbcodTestCases.length - 1 : this.state.extraData.length - 1} onChange={(e) => this.setState({testId: Number(e.target.value)})}></input>
     <div>
       <br/>
-      There are <strong>{bbcodTestCases.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {bbcodTestCases.length - 1}</strong> in the Addons/Knobs panel.
-      <br/><br/>
-      Current Test case is <strong>{testCase.id}</strong>. Following is the test case bbcode:
-      <pre>{testCase.test}</pre>
+      Current Test case is <strong>{ testID }</strong>. Following is the test case bbcode:
+      <pre>{ test }</pre>
     </div>
   </div>);
   }
-}))
-  .add('style2', () => <TextEditor/>)
-;
+}));
 
 storiesOf('Common Components/Navigation Bar', module)
   .add('simple', () => <NavBar goBack={action('goBack')} >

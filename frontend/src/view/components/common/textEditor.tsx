@@ -1,11 +1,14 @@
 import * as React from 'react';
 import 'react-quill/dist/quill.snow.css';
 // import * as ReactQuill from 'react-quill';
-import ReactQuill, { Quill } from 'react-quill';
+import ReactQuill from 'react-quill';
 import { bbcode2html, html2bbcode, test } from '../../../utils/text-formater';
 import './text-editor.scss';
-
+// TODO: support [br]
+// TODO: 表情包
+// TODO: font size
 // TODO: there are some lifecycle warnings with this component (e.g.omponentWillUpdate has been renamed), this warning is from the library Quill
+// FIXME: code test first, then other test will have code style
 // https://github.com/quilljs/quill/issues/2771
 // Thre ReactQuill is a react wrapper for Quill, it also has this warning: https://github.com/zenoamaro/react-quill/pull/531
 // however, the ReactQuill team is already working on fixing this, and the PR has already fixed the issue https://github.com/zenoamaro/react-quill/pull/549
@@ -52,7 +55,11 @@ export class TextEditor extends React.Component<{
     this.attachQuillRefs();
   }
 
-  public componentDidUpdate() {
+  public componentDidUpdate(prevProps, prevState) {
+    if (prevProps.content != this.props.content) {
+      const text = this.setContent();
+      this.setState({text}); // You can also pass a Quill Delta here
+    }
     this.attachQuillRefs();
   }
 
@@ -121,7 +128,6 @@ export class TextEditor extends React.Component<{
   }
 
   private handleChange(value) {
-    // console.log(value);
     this.setState({ text: value });
   }
 
