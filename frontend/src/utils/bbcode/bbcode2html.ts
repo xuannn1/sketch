@@ -1,3 +1,6 @@
+// code modified based on https://github.com/xiaolieask/bbcode-html
+
+import { BBCDOE_HTML_TAG_MAP, BBCODETag, fontSizes } from './common';
 // a converter that transforms bbcode to html
 // TODO: the converter works by identifying bbcode tags and replace each tags with html. It's possible we will go throught the same text multiple times. This can be inefficient, probably we should build an AST tree first.
 
@@ -57,8 +60,8 @@ function doReplace(content:string, matches:Match[]) {
         const regex = new RegExp(match.e, 'gi');  // 'gi': global match, case insensitive
         const tmp = content.replace(regex, match.func);
         if (tmp !== content) {
-            content = tmp;
-            hasMatch = true;
+          content = tmp;
+          hasMatch = true;
         }
     }
   } while (hasMatch);
@@ -134,66 +137,6 @@ function parseParams (tagName:string, params) {
   return paramMap;
 }
 
-export type BBCODETag = 'quote' | 'url' | 'email' | 'anchor' | 'b' | 'i' | 'size'
-  | 'color' | 'highlight' | 'fly' | 'move' | 'indent' | 'font' | 'li'
-  | 'ul' | 'ol' | 'code' | 'php' | 'java' | 'javascript' | 'cpp' | 'ruby'
-  | 'python' | 'html' | 'mention' | 'span' | 'h1' | 'h2' | 'h3' | 'h4'
-  | 'h5' | 'h6' | 'table' | 'tr' | 'td' | 's' | 'u' | 'sup' | 'sub'
-  | 'youtube' | 'gvideo' | 'google' | 'baidu' | 'wikipedia' | 'img';
-
-export type HTMLTag = 'div' | 'blockquote' | 'a' | 'strong' | 'em' | 'span'
-  | 'marquee' | 'li' | 'ul' | 'ol' | 'pre' | 'h1' | 'h2' | 'h3' | 'h4'
-  | 'h5' | 'h6' | 'table' | 'tr' | 'td' | 's' | 'u' | 'sup' | 'sub'
-  | 'object' | 'embed' | 'img' | '';
-
-// TODO: comment out unsupported bbcode tags
-export const BBCDOE_HTML_TAG_MAP:{[key in BBCODETag]:HTMLTag} = {
-  'quote': 'blockquote',
-  'url': 'a',
-  'email': 'a',
-  'anchor': 'a',
-  'b': 'strong',
-  'i': 'em',
-  'size': 'span',
-  'color': 'span',
-  'highlight': 'span',
-  'fly': 'marquee',
-  'move': 'marquee',
-  'indent': 'blockquote',
-  'font': 'span',
-  'li': 'li',
-  'ul': 'ul',
-  'ol': 'ol',
-  'code': 'pre',
-  'php': 'pre',
-  'java': 'pre',
-  'javascript': 'pre',
-  'cpp': 'pre',
-  'ruby': 'pre',
-  'python': 'pre',
-  'html': '',
-  'mention': 'span',
-  'span': 'span',
-  'h1': 'h1',
-  'h2': 'h2',
-  'h3': 'h3',
-  'h4': 'h4',
-  'h5': 'h5',
-  'h6': 'h6',
-  'table': 'table',
-  'tr': 'tr',
-  'td': 'td',
-  's': 's',
-  'u': 'u',
-  'sup': 'sup',
-  'sub': 'sub',
-  'youtube': 'object',
-  'gvideo': 'embed',
-  'google': 'a',
-  'baidu': 'a',
-  'wikipedia': 'a',
-  'img': 'img',
-};
 // TEST: what if none of them?
 
 /**
@@ -209,7 +152,7 @@ function tagReplace(fullMatch, t:string, params, value) {
     tag = temp as BBCODETag;
   } else {
     // a invalid tag
-    return `<${t}>${value}</${t}`;
+    return `<${t}>${value}</${t}>`;
   }
 
   if (!codeTags[tag]) {
@@ -224,7 +167,7 @@ function tagReplace(fullMatch, t:string, params, value) {
   const inlineValue = params[tag];
 
   switch (tag) {
-    case 'quote':
+    case 'blockquote':
     case 'b':
     case 'i':
     case 'move':
@@ -254,7 +197,14 @@ function tagReplace(fullMatch, t:string, params, value) {
       return '<a name="' + (inlineValue || params.a || value) + '">' + value + '</a>';
     case 'size': {
       // TODO:
-      return '<span class="ql-size-' + inlineValue + '">' + value + '</span>';
+      let size = inlineValue;
+      if (/^\d+?px$/.test(inlineValue) || /^\d+$/.test(inlineValue)) {
+        const numberSize = parseInt(inlineValue);
+        if (numberSize < 10) { size = 'small'; }
+        if (numberSize < 22 && numberSize > 15) { size = 'large'; }
+        if (numberSize >= 22) { size = 'huge'; }
+      }
+      return '<span class="ql-size-' + size + '">' + value + '</span>';
     }
     case 'color':
         return '<span style="color:' + inlineValue + '">' + value + '</span>';
@@ -340,7 +290,7 @@ export function bbcode2html (content) {
   content = content.replace(/\[\/ol\][\ ]*[\n]/g, '[/ol]');
   content = content.replace(/\[\/ul\][\ ]*[\n]/g, '[/ul]');
   // preserve other new lines
-  content = content.replace(/\n/g, '<br/>');
+  content = content.replace(/(\n|\[br\][\n]*)/g, '<br/>');
 
   matches.push({e: '\\[(\\w+)(?:[= ]([^\\]]+))?]((?:.|[\r\n])*?)\\[/\\1]', func: tagReplace});
 

@@ -29,8 +29,12 @@ export const bbcodTestCases = [
   },
   {
     id: 'font-size',
-    test: '[size=40]这个需要修[/size]',
-  },  //FIXME
+    test: '[size=40]如果是数字，就被分font size如果是数字，就被分到巨大 /大 /正常 /小四种大小中去[/size]',
+  },
+  {
+    id: 'long-eng',
+    test: '[size=40]long para long para /long para long/ para /long paralong paralong/ paralong paralong paralong paralong paralong paralong para[/size]',
+  },
   {
     id: 'color-2',
     test: '[color=#3CB371]原谅色一号[/color]\n[color=#2E8B57]原谅色二号[/color]\n[color=#40E0D0]原谅色三号[/color]\n[color=#48D1CC]原谅色四号[/color]\n[color=#20B2AA]原谅色五号[/color]',
@@ -131,7 +135,7 @@ export const bbcodTestCases = [
   }, // todo
   {
     id: 'br',
-    test: 'the next line is br[br]a br before',
+    test: 'the next line is br[br]a br before\nNote：如果你先测了之前的code test case, 这个test case可能也有code style，这似乎是quill中的一个bug。在实际运用中，我们尽量不要更改给TextEditor的props （content），只是在initialize 的时候pass一个content，那么就不会遇到这个bug。',
   },
   {
     id: 'complex',

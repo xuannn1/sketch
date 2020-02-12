@@ -16,7 +16,7 @@ const converter = new _bbcodeUtil.HTML2BBCode({
 
 export function bbcode2html(bbcode){
   const result = _bbcodeUtil.bbcode2html(bbcode);
-  console.log("[b2h]", result);
+  console.log('[b2h]', result);
   return _bbcodeUtil.bbcode2html(bbcode);
     // return bbobHTML(bbcode, presetHTML5());
     // return BBCODE.bbcode.render(bbcode);
@@ -31,7 +31,6 @@ export function test(bbcode) : boolean {
   const html = bbcode2html(bbcode);
   const _bbcode = html2bbcode(html);
   if (bbcode != _bbcode) {
-    debugger;
     console.log(bbcode == _bbcode);
     console.error(_bbcode, bbcode, html);
     return false;

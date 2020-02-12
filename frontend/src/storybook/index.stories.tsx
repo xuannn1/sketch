@@ -445,18 +445,18 @@ storiesOf('Common Components/TextEditor', module)
     }
 
     if (this.state.useDefaultTest) {
-      return {type: 'normal', testID: bbcodTestCases[testId].id, test: bbcodTestCases[testId].test};
+      return {type: 'normal', testID: bbcodTestCases[testId].id, testContent: bbcodTestCases[testId].test};
     } else {
-      return {type: 'excel', testID: testId, test: formatTestData(this.state.extraData[testId])};
+      return {type: 'excel', testID: testId, testContent: formatTestData(this.state.extraData[testId])};
     }
   }
 
   public render() {
-    let { type, testID, test } = this.getTest();
+    const { type, testID, testContent } = this.getTest();
 
     return  (
     <div>
-      <TextEditor ref={this.ref} content={ test }></TextEditor>
+      <TextEditor ref={this.ref} content={ testContent }></TextEditor>
       <br/>
       <button onClick={() => this.setState({generatedBBCODE: this.getContent()})}>Generate BBCODE</button>
       {this.state.generatedBBCODE && (
@@ -503,7 +503,7 @@ storiesOf('Common Components/TextEditor', module)
     <div>
       <br/>
       Current Test case is <strong>{ testID }</strong>. Following is the test case bbcode:
-      <pre>{ test }</pre>
+      <pre>{ testContent }</pre>
     </div>
   </div>);
   }

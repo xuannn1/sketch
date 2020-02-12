@@ -1,4 +1,6 @@
+import { fontSizes } from "./common";
 
+// code modified based on https://github.com/xiaolieask/bbcode-html
 const config = {
   noHeadSpaceAfterNewLine: false,
   removeExtraSpace: false,
@@ -835,17 +837,12 @@ HTML2BBCode.prototype.color = function (c) {
   return c;
 };
 
-const qlSizes = {
-  "ql-size-small": 'small',
-  "ql-size-large": 'large',
-  "ql-size-huge":  'huge',
 
-}
 HTML2BBCode.prototype.size = function (size) {
   if (!size) return;
   let numberSize = 0;
-  if (qlSizes[size]){
-    return qlSizes[size].toString();
+  if (fontSizes[size]){
+    return fontSizes[size].toString();
   } else if (/^\d+$/.test(size)) {
     numberSize = parseInt(size);
   } else if (/^\d+?px$/.test(size)) {
@@ -1086,7 +1083,9 @@ HTML2BBCode.prototype.feed = function (html) {
     hstack.showtree();
   }
   var bbcode = this.convert(hstack);
-  bbcode.s = bbcode.s.replace(/\[\/\*\]/g, '')
+  bbcode.s = bbcode.s.replace(/\[\/\*\]/g, '');
+  // only allow at most one newline, if user is not using [br]
+  bbcode.s = bbcode.s.replace(/[\n]+/g, '\n');
   return bbcode;
 };
 
