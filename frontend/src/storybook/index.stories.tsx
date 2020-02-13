@@ -440,13 +440,15 @@ storiesOf('Common Components/TextEditor', module)
 
   private getTest() {
     let testId = this.state.testId || 0;
-    if (testId < 0 || testId >= this.state.extraData.length) {
+    if (testId < 0) {
       testId = 0;
     }
 
     if (this.state.useDefaultTest) {
+      if ( testId >= bbcodTestCases.length ) { testId = 0; }
       return {type: 'normal', testID: bbcodTestCases[testId].id, testContent: bbcodTestCases[testId].test};
     } else {
+      if ( testId >= this.state.extraData.length ) { testId = 0; }
       return {type: 'excel', testID: testId, testContent: formatTestData(this.state.extraData[testId])};
     }
   }
