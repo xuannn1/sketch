@@ -1,19 +1,7 @@
 import XLSX from 'xlsx';
 // test bbcode samples in provided excel
-const excelFileAddress = 'http://34.70.54.149/files/testData/	bbcodedata.xlsx';
+const excelFileAddress = 'http://34.70.54.149/files/testData/bbcodedata.xlsx';
 const testSheetNumber = 3; // can be 0 - 3
-
-const corsProxy = 'https://powerful-citadel-32622.herokuapp.com/';
-
-// if I want to fetch url resource on localhost, I may be blocked by CORS
-// a proxy is used to bypass the cors restriction
-function getUrl(url) {
-  if (new URL(url).hostname != window.location.hostname) {
-    // cors
-    return corsProxy + url;
-  }
-  return url;
-}
 
 export function formatTestData(data:string) {
   if (typeof(data) != 'string') {
@@ -23,7 +11,7 @@ export function formatTestData(data:string) {
 }
 
 export function loadTestData () {
-  return fetch(getUrl(excelFileAddress))
+  return fetch(excelFileAddress)
     .then((response) => {
       if (!response.ok) {
         throw new Error('HTTP error, status = ' + response.status);
