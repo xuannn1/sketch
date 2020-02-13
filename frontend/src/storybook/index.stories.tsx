@@ -53,7 +53,7 @@ import { Colors } from '../view/theme/theme';
 import { ResData } from '../config/api';
 import { Dialogue } from '../view/mobile/message/dialogue';
 import { TextEditor } from '../view/components/common/textEditor';
-const createBrowserHistory = require('history').createBrowserHistory;
+import { createBrowserHistory } from 'history';
 import { bbcode2html, html2bbcode, test } from '../utils/text-formater';
 import { bbcodTestCases } from '../test/bbcode/bbcode';
 import { loadTestData, formatTestData } from '../test/bbcode/additionalTest';
