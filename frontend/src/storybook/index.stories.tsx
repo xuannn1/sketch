@@ -11,7 +11,6 @@ import { withConsole } from '@storybook/addon-console';
 import { boolean, number, select, text, withKnobs } from '@storybook/addon-knobs';
 import { withViewport } from '@storybook/addon-viewport';
 import { addDecorator, storiesOf } from '@storybook/react';
-import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router';
 import { Accordion } from '../view/components/common/accordion';
@@ -52,6 +51,13 @@ import { fakeDB } from '../test/mock-data/fake-db';
 import { Button } from '../view/components/common/button';
 import { Colors } from '../view/theme/theme';
 import { ResData } from '../config/api';
+import { Dialogue } from '../view/mobile/message/dialogue';
+import { TextEditor } from '../view/components/common/textEditor';
+const createBrowserHistory = require('history').createBrowserHistory;
+import { bbcode2html, html2bbcode, test } from '../utils/text-formater';
+import { bbcodTestCases } from '../test/bbcode/bbcode';
+import { loadTestData, formatTestData } from '../test/bbcode/additionalTest';
+import { App } from '../view';
 
 const core = new Core();
 fakeDB(core.db);
@@ -139,7 +145,7 @@ storiesOf('Common Components', module)
       items: [],
       isLoading: true,
       cursor: 0,
-    }
+    };
     private divStyle = {
       border: '5px solid pink',
       background: 'antiquewhite',
@@ -166,13 +172,12 @@ storiesOf('Common Components', module)
             (this.setState({
               items: [...this.state.items, ...res],
               cursor: res[5] + 1,
-              isLoading: false
+              isLoading: false,
             }))
           ,
           (error) => {
-            this.setState({ isLoading: false, error })
-          }
-      )
+            this.setState({ isLoading: false, error });
+          });
     }
 
     public render() {
@@ -198,7 +203,7 @@ storiesOf('Common Components', module)
           )}
         </div>
         </Fragment>
-      )
+      );
     }
   }))
   .add('Accordion', () => <Accordion
@@ -397,6 +402,115 @@ storiesOf('Common Components/Dropdown', module)
   })
 ;
 
+storiesOf('Common Components/TextEditor', module)
+.add('style1', () => React.createElement(class extends React.Component<{}, {content:string, generatedBBCODE:string, test:any, extraData:any[], testId:number, useDefaultTest:boolean}> {
+  private ref = React.createRef<TextEditor>();  // you have to use ref with this component
+  public state = {
+    content: '',
+    generatedBBCODE: '',
+    test: '',
+    extraData: [],
+    testId: 0,
+    useDefaultTest: true,
+  };
+
+  public async componentWillMount () {
+    await this.loadExtraTestData();
+  }
+      // will return content in bbcode
+  private getContent = () => {
+    let content = '';
+    if (this.ref.current) {
+      content = this.ref.current.getContent();
+    }
+    return content;
+  }
+
+  private test = () => {
+    const bbcode = this.getContent();
+    const result = test(bbcode);
+    this.setState({content: bbcode,
+      test: result ? 'success' :'failure, check console'});
+  }
+
+  private loadExtraTestData = async () => {
+    const extraData = await loadTestData();
+    this.setState({extraData});
+  }
+
+  private getTest() {
+    let testId = this.state.testId || 0;
+    if (testId < 0) {
+      testId = 0;
+    }
+
+    if (this.state.useDefaultTest) {
+      if ( testId >= bbcodTestCases.length ) { testId = 0; }
+      return {type: 'normal', testID: bbcodTestCases[testId].id, testContent: bbcodTestCases[testId].test};
+    } else {
+      if ( testId >= this.state.extraData.length ) { testId = 0; }
+      return {type: 'excel', testID: testId, testContent: formatTestData(this.state.extraData[testId])};
+    }
+  }
+
+  public render() {
+    const { type, testID, testContent } = this.getTest();
+
+    return  (
+    <div>
+      <TextEditor ref={this.ref} content={ testContent }></TextEditor>
+      <br/>
+      <button onClick={() => this.setState({generatedBBCODE: this.getContent()})}>Generate BBCODE</button>
+      {this.state.generatedBBCODE && (
+        <div>
+          Following is the generate BBCODE:
+          <pre>{this.state.generatedBBCODE}</pre>
+          <button onClick={() => this.setState({generatedBBCODE: ''})}>
+            Clear
+          </button>
+        </div>
+        ) }
+      <br/>
+      <button onClick={this.test}>TEST</button>
+      <div>
+        The TEST button will export bbcode, convert the bbcode to html, and the generated html to bbcode, then compare the two bbcode strings, they should be the same.
+        {this.state.test ?  (
+        <p>
+          <strong>
+            { this.state.test }
+          </strong>
+          <button onClick={() => this.setState({test: ''})}>
+            Clear
+          </button>
+        </p>) : null
+      }
+      </div>
+      <br/>
+      <div>
+        Using { this.state.useDefaultTest ? 'local default test suit' : 'remote excel test suit' }.
+        <button onClick={() => { this.setState({useDefaultTest: !this.state.useDefaultTest }); }}> switch to { this.state.useDefaultTest ? 'remote excel test suit' : 'local default test suit' } </button>
+
+        { this.state.useDefaultTest ? (
+          <p>
+            There are <strong>{bbcodTestCases.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {bbcodTestCases.length - 1}</strong>
+          </p>
+        ) : (
+          <div>
+            { this.state.extraData.length == 0 ? 'still loading remote remote test suit...' :
+              <p>There are <strong>{this.state.extraData.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {this.state.extraData.length - 1}</strong></p>}
+          </div>
+        )}
+      </div>
+      <input type="number" value={this.state.testId} min="0" max={this.state.useDefaultTest ? bbcodTestCases.length - 1 : this.state.extraData.length - 1} onChange={(e) => this.setState({testId: Number(e.target.value)})}></input>
+    <div>
+      <br/>
+      Current Test case is <strong>{ testID }</strong>. Following is the test case bbcode:
+      <pre>{ testContent }</pre>
+    </div>
+  </div>);
+  }
+}));
+
 storiesOf('Common Components/Navigation Bar', module)
   .add('simple', () => <NavBar goBack={action('goBack')} >
     {text('title', 'example title')}
@@ -525,7 +639,7 @@ storiesOf('Home Components/HomePage', module)
         childTags:[{tagId:'12', tagName:'原创'} , {tagId:'13' , tagName:'同人'}]},
         {tagCatagoryName:'篇幅',
         childTags:[{tagId:'14', tagName:'短篇'} , {tagId:'15' , tagName:'中篇'},
-        {tagId:'16', tagName:'长篇'},{tagId:'17', tagName:'大纲'}]}
+        {tagId:'16', tagName:'长篇'}, {tagId:'17', tagName:'大纲'}]},
         ]}
         onBack={() => {console.log('back'); }}
         onFilter={() => {console.log('filter'); }}
@@ -553,7 +667,7 @@ storiesOf('Home Components/HomePage', module)
         {tagCategoryName:'热门推荐',
         categoryTrash:false,
         childTags:[{tagId:'14', tagName:'九州见闻'} , {tagId:'15' , tagName:'得偿所愿'},
-        {tagId:'16', tagName:'翅膀养护日记'},{tagId:'17', tagName:'不知道写啥'}]}
+        {tagId:'16', tagName:'翅膀养护日记'}, {tagId:'17', tagName:'不知道写啥'}]},
         ]}
         onBack={() => {console.log('back'); }}
         onDelete={(tags) => {
@@ -642,7 +756,7 @@ storiesOf('Message Components', module)
     因此，系统会定时对多人异地使用、行为异常的账户进行封禁。
     为了避免这种情况，避免被系统禁封，请使用了简单密码的用户早日更换为在别处不经常使用的密码，增加账号安全。
     废文禁止盗号，禁止任何形式的账户买卖，买号者付出的金钱，正是攻击者攻击网站的动力。
-    
+
     没有买卖就没有攻击。`;
     const title = '没有买卖就没有攻击';
     const footer = '废文网大内总管 2019-10-29 18:03:54';

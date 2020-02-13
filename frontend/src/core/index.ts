@@ -1,6 +1,6 @@
 import { DB } from './db';
 import { User } from './user';
-import { History, UnregisterCallback, createBrowserHistory } from 'history';
+import { History, UnregisterCallback } from 'history';
 import { EventBus } from '../utils/events';
 import * as _ from 'lodash/core';
 import { TagHandler, ChannelHandler, BianyuanHandler } from './filter-handler';
@@ -8,6 +8,7 @@ import { Route } from './route';
 import { saveStorage } from '../utils/storage';
 import { Themes } from '../view/theme/theme';
 const debounce = require('lodash/debounce');
+const createBrowserHistory = require('history').createBrowserHistory;
 
 export type Filters = {
   tag:TagHandler,
