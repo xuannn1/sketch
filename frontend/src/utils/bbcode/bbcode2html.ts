@@ -157,10 +157,11 @@ function tagReplace(fullMatch, t:string, params, value) {
 
   if (!codeTags[tag]) {
     value = value.replace(/ /g, '&nbsp;');
-  } else {
-    value = value.replace(/<[\t ]*br[\t ]*\/>/g, '\n');
-    value = value.replace(/</g, '&lt;');
-    value = value.replace(/>/g, '&gt;');
+  }
+  if (codeTags[tag]) {
+    // value = value.replace(/</g, '&lt;');
+    // value = value.replace(/>/g, '&gt;');
+    value = value.replace(/<[\t ]*br[\t ]*\/>/g, '</code><br/><code>');
   }
 
   params = parseParams(tag, params || undefined);
@@ -188,6 +189,13 @@ function tagReplace(fullMatch, t:string, params, value) {
     case 'u':
     case 'sup':
     case 'sub':
+    case 'code':
+    case 'php':
+    case 'java':
+    case 'javascript':
+    case 'cpp':
+    case 'ruby':
+    case 'python':
       return `<${BBCDOE_HTML_TAG_MAP[tag]}>${value}</${BBCDOE_HTML_TAG_MAP[tag]}>`;
     case 'url':
       return '<a target="_blank" rel="noopener noreferrer" href="' + (inlineValue || value) + '">' + value + '</a>';
@@ -196,7 +204,6 @@ function tagReplace(fullMatch, t:string, params, value) {
     case 'anchor':
       return '<a name="' + (inlineValue || params.a || value) + '">' + value + '</a>';
     case 'size': {
-      // TODO:
       let size = inlineValue;
       if (/^\d+?px$/.test(inlineValue) || /^\d+$/.test(inlineValue)) {
         const numberSize = parseInt(inlineValue);
@@ -221,14 +228,6 @@ function tagReplace(fullMatch, t:string, params, value) {
       }
       return `<li${className ? ` class="${className}"` : ''}>${value}</li>`;
     }
-    case 'code':
-    case 'php':
-    case 'java':
-    case 'javascript':
-    case 'cpp':
-    case 'ruby':
-    case 'python':
-        return '<pre class="' + options.classPrefix + (tag === 'code' ? '' : 'code_') + 'syntax' + '">' + value + '</pre>';
     case 'html':
         return value;
     case 'mention': {

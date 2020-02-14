@@ -6,7 +6,6 @@ import './text-editor.scss';
 
 // TODO: 表情包
 // TODO: 字号要调大一点
-// FIXME: 老站的code是inline element，新的code是block element。见test case #complex3 老站允许在code中字体加粗，调字号，甚至创建list。
 // TODO: 加链接的UX有点别扭，在没有选中东西的时候提醒用户选中东西。
 // TODO: santize html
 // TODO: 和谐词过滤
@@ -15,7 +14,6 @@ import './text-editor.scss';
 // TODO: 图片允许调大小
 
 // OTHER NOTES
-// FIXME: if run a test include <code>, then run a test without, the code style still apply (e.g.in default test suit, try test "code", then the next test case). It seems that there is something wrong in the state sync in quill package, fixing may need some time. However, since that we do not really need to update prop.content during runtime, the bug has low priority.
 
 // TODO: there are some lifecycle warnings with this component (e.g.omponentWillUpdate has been renamed), this warning is from the library Quill
 // https://github.com/quilljs/quill/issues/2771
@@ -28,7 +26,7 @@ export type textFormat = 'plaintext' | 'markdown' | 'bbcode';
 const formats = [
   'size',
   'color', 'background',
-  'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block',
+  'bold', 'italic', 'underline', 'strike', 'blockquote', 'code',
   'list', 'bullet', 'indent',
   'link', 'image',
   'clean',
@@ -79,7 +77,7 @@ export class TextEditor extends React.Component<{
       container: [
       [{ 'size': ['small', false, 'large', 'huge'] }],
       [{ 'color': [] }, { 'background': [] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code'],
       [{'list': 'ordered'}, {'list': 'bullet'}],
       ['link', 'image'],
       ['clean'],
