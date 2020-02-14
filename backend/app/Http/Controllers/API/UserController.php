@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
+use Cache;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Thread;
 use App\Http\Resources\UserBriefResource;
+use App\Http\Resources\UserInfoResource;
+use App\Http\Resources\ThreadInfoResource;
 use App\Http\Resources\PaginateResource;
 use App\Sosadfun\Traits\UserObjectTraits;
+use App\Helpers\CacheUser;
 
 class UserController extends Controller
 {
@@ -48,9 +53,40 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        // TODO 展示用户个人主页,比如等级、虚拟物等信息
+        $user_info = $this->getUserInfo($id);
+
+        if(auth('api')->check() && (auth('api')->user()->isAdmin() || auth('api')->id() == $id)) {
+            $books = Thread::with('tags','author','last_post')
+                ->withUser($id)
+                ->withType('book')
+                ->ordered('latest_add_component')
+                ->paginate(config('preference.threads_per_page'));
+        } else {
+            $queryid = 'UserBook.'
+                .url('/')
+                .$id
+                .(is_numeric($request->page) ? 'P'.$request->page : 'P1');
+
+            $books = Cache::remember($queryid, 10, function () use($request, $id) {
+                    return Thread::with('tags','author','last_post')
+                    ->withUser($id)
+                    ->withType('book')
+                    ->isPublic()
+                    ->inPublicChannel()
+                    ->withAnonymous('none_anonymous_only')
+                    ->ordered('latest_add_component')
+                    ->paginate(config('preference.threads_per_page'))
+                    ->appends($request->only('page'));
+                });
+        }
+
+        return response()->success([
+            'userInfo' => new UserinfoResource($user_info),
+            'books' => ThreadInfoResource::collection($books),
+            'paginate' => new PaginateResource($books),
+        ]);
     }
 
     /**
@@ -219,6 +255,15 @@ class UserController extends Controller
         //
         // return view('users.show_status', compact('user','info','intro','statuses'))->with(['show_user_tab'=>'status'])->with('status_expand',true)->with('status_show_title',false);
     }
-    
 
+    private function getUserInfo($id) {
+        $user_info = [
+            'user' => CacheUser::user($id),
+            'info' => CacheUser::info($id),
+        ];
+        if (!$user_info['user'] || !$user_info['info']) {abort(404);}
+        $user_info['intro'] = $user_info['info']->has_intro ? CacheUser::intro($id) : null;
+
+        return $user_info;
+    }
 }
