@@ -36,7 +36,7 @@ export class RouteMenu extends React.Component<Props, State> {
 
           {item.icon && <i className={classnames(item.icon, {'selected': selected})}></i>}
 
-          <div className={classnames(selectedCln)}>{item.label}</div>
+          <div className={classnames(selectedCln, item.icon ? 'icon-text' : '')}>{item.label}</div>
         </Link>;
       })}
     </div>;

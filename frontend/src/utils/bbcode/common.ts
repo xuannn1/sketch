@@ -9,7 +9,7 @@ export type HTMLTag = 'div' | 'blockquote' | 'a' | 'strong' | 'em' | 'span'
   | 'marquee' | 'li' | 'ul' | 'ol' | 'pre' | 'h1' | 'h2' | 'h3' | 'h4'
   | 'h5' | 'h6' | 'table' | 'tr' | 'td' | 's' | 'u' | 'sup' | 'sub'
   | 'object' | 'embed' | 'img' | 'br'
-  | 'p' | '';
+  | 'p' | 'code' | '';
 
 // TODO: comment out unsupported bbcode tags
 export const BBCDOE_HTML_TAG_MAP:{[key in BBCODETag]:HTMLTag} = {
@@ -29,13 +29,13 @@ export const BBCDOE_HTML_TAG_MAP:{[key in BBCODETag]:HTMLTag} = {
   'li': 'li',
   'ul': 'ul',
   'ol': 'ol',
-  'code': 'pre',
-  'php': 'pre',
-  'java': 'pre',
-  'javascript': 'pre',
-  'cpp': 'pre',
-  'ruby': 'pre',
-  'python': 'pre',
+  'code': 'code',
+  'php': 'code',
+  'java': 'code',
+  'javascript': 'code',
+  'cpp': 'code',
+  'ruby': 'code',
+  'python': 'code',
   'html': '',
   'mention': 'span',
   'span': 'span',

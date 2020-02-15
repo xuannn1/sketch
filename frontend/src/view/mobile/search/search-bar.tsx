@@ -26,8 +26,10 @@ export class SearchBar extends React.Component<{
       <div className="message-container"
         onClick={() => this.props.core.route.go(RoutePath.messages)}
       >
-        <i className={classnames('fas', 'fa-bullhorn', {'hasInfo': this.state.newMessages})}></i>
-        <div>消息</div>
+        <div className="icon-with-bottom-text">
+          <i className={classnames('fas', 'fa-bullhorn', {'hasInfo': this.state.newMessages})}></i>
+          <p>消息</p>
+        </div>
       </div>
     </div>;
   }

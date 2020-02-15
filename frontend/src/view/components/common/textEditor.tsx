@@ -14,7 +14,6 @@ import './text-editor.scss';
 // TODO: 图片允许调大小
 
 // OTHER NOTES
-
 // TODO: there are some lifecycle warnings with this component (e.g.omponentWillUpdate has been renamed), this warning is from the library Quill
 // https://github.com/quilljs/quill/issues/2771
 // Thre ReactQuill is a react wrapper for Quill, it also has this warning: https://github.com/zenoamaro/react-quill/pull/531

@@ -9,7 +9,7 @@
   border-bottom: $border;
 
   .list-item {
-    padding: 12px 0;
+    padding: var(--top-padding-1) 0px;
     position: relative;
     &:hover {
       cursor: pointer;
@@ -20,7 +20,27 @@
   }
 
   .list-arrow {
+    padding-left: var(--left-padding-small);
+    font-size: var(--font-size-4);
     float: right;
     color: #8c8787;
   }
+
+
+  .item-container {
+    padding: 0 var(--left-padding-1);
+
+    .item-first-line {
+      // margin: 0 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .item-brief {
+      // margin: 0 20px;
+      text-align: left;
+      font-size: var(--font-size-small);
+    }
+  }
 }
+
