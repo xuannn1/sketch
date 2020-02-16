@@ -9,11 +9,13 @@ import { Badge } from '../../components/common/badge';
 import ClampLines from 'react-clamp-lines';
 import './style.scss';
 import { mockReplyNotifications } from './mock-data';
+import { MarkAllAsRead } from './mark-all-as-read';
+import { Mark } from '../../components/common/mark';
+import { Menu, MenuItem } from '../../components/common/menu';
 
 interface State {
 
 }
-const badgeStyle:React.CSSProperties = {float:'right'};
 
 export class Message extends React.Component<MobileRouteProps, State> {
   public render () {
@@ -21,28 +23,13 @@ export class Message extends React.Component<MobileRouteProps, State> {
         top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           <MessageMenu/>
         </NavBar>}>
-        <div className="blank-block right-align">
-          <a>全部标记已读</a>
-        </div>
 
-        <Card>
-          <List>
-            <List.Item onClick={() => console.log('click item ')} arrow={true}>
-              <span className="icon-with-right-text">
-                <i className="far fa-thumbs-up icon" />
-                <span>点赞提醒</span>
-              </span>
-              <Badge num={1000} max={100} style={badgeStyle}/>
-            </List.Item>
-            <List.Item onClick={() => console.log('click item ')} arrow={true}>
-              <span className="icon-with-right-text">
-                <i className="fas fa-gift icon"></i>
-                <span>打赏提醒</span>
-              </span>
-              <Badge num={1} max={100} style={badgeStyle}/>
-            </List.Item>
-          </List>
-        </Card>
+        <MarkAllAsRead />
+
+        <Menu>
+          <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒" badgeNum={1000}/>
+          <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1}/>
+        </Menu>
 
         <List className="message-list">
           {mockReplyNotifications.map((n, i) =>
