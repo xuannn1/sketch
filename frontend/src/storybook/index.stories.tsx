@@ -515,7 +515,12 @@ storiesOf('Common Components/TextEditor', module)
     </div>
   </div>);
   }
-}));
+}))
+.add('style2', () => (
+  <div style={{ height: '400px', position: 'relative' }}>
+    <TextEditor theme="bubble" style={{position: 'absolute', bottom: 0, width: '100%'}}></TextEditor>
+  </div>
+));
 
 storiesOf('Common Components/Navigation Bar', module)
   .add('simple', () => <NavBar goBack={action('goBack')} >

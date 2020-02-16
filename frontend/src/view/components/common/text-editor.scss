@@ -1,3 +1,16 @@
-.ql-editor{
-  height:150px;
+
+.ql-snow {
+  .ql-editor {
+    height:150px;
+  }
+}
+
+.ql-bubble {
+  background-color: var(--color-bg-base);
+  padding: 12px 12px;
+  border-radius: 16px;
+  .ql-editor {
+    padding:0 0;
+    max-height: 65px;
+  }
 }
