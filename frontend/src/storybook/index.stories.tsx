@@ -51,13 +51,13 @@ import { fakeDB } from '../test/mock-data/fake-db';
 import { Button } from '../view/components/common/button';
 import { Colors } from '../view/theme/theme';
 import { ResData } from '../config/api';
-import { Dialogue } from '../view/mobile/message/dialogue';
 import { TextEditor } from '../view/components/common/textEditor';
 import { createBrowserHistory } from 'history';
 import { bbcode2html, html2bbcode, test } from '../utils/text-formater';
 import { bbcodTestCases } from '../test/bbcode/bbcode';
 import { loadTestData, formatTestData } from '../test/bbcode/additionalTest';
 import { App } from '../view';
+import { MenuItem, Menu } from '../view/components/common/menu';
 
 const core = new Core();
 fakeDB(core.db);
@@ -363,7 +363,13 @@ storiesOf('Common Components', module)
       value={this.state.value}
       onChange={(value) => this.setState({value})}/>;
     }
-  })));
+  })))
+  .add('Menu', () => (
+    <Menu>
+      <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒" badgeNum={1000}/>
+      <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1}/>
+    </Menu>
+  ));
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar
