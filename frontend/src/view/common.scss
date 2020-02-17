@@ -9,19 +9,20 @@
   --font-family-bold: PingFangSC-Semibold;
   --font-family-medium: PingFangSC-Medium;
 
-  --font-size-small: 12px;
-  --font-size-1: 14px;
-  --font-size-2: 16px;
-  --font-size-3: 18px;
-  --font-size-4: 20px;
+  --font-size-small: 10px;
+  --font-size-1: 12px;
+  --font-size-2: 14px;
+  --font-size-3: 16px;
+  --font-size-4: 18px;
 
   // todo: base/big margin, padding ...etc
-  --left-padding-small: 12px; // left and right padding
-  --left-padding-1: 16px;
-  --top-padding-small: 8px; // top and bottom padding
-  --top-padding-1: 12px;
-  --top-padding-2: 16px;
+  --padding-xsmall: 8px 16px;
+  --padding-small: 12px 12px;
+  --padding-1: 12px 16px;
+  --padding-2: 16px 16px;
 
+  --margin-1: 0 12px;
+  --margin-2: 0 16px;  
   --top-margin-1: 8px;
   --top-margin-3: 16px;
 }
@@ -55,32 +56,4 @@ i {
 // set h1, h2, h3, h4, h5 font-size, font-family
 title {
   font-family: var(--font-family-bold)
-}
-
-.icon-with-bottom-text {
-  p {
-    margin: 0;
-    font-size: var(--font-size-small);
-  }
-}
-
-.icon-with-right-text {
-  i {
-    font-size: var(--font-size-2);
-  }
-  span {
-    margin: 0 var(--left-padding-small);
-    font-size: var(--font-size-1);
-  }
-}
-
-.blank-block {
-  padding: var(--top-padding-1) var(--left-padding-1);
-  a {
-    color: var(--color-primary);
-  }
-}
-
-.unread {
-  font-weight: bold;
 }

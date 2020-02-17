@@ -38,7 +38,6 @@ export class HomeMain extends React.Component<MobileRouteProps, State> {
   }
 
   public render () {
-    // Question: should the components wrapped in <Card/> ?
     return (<Page bottom={<MainMenu />} className="page-main">
       <SearchBar core={this.props.core} />
       <Quotes

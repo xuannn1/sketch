@@ -7,10 +7,21 @@
   margin-top: var(--top-margin-1);
 }
 
+.blank-block {
+  padding: var(--padding-1);
+  a {
+    color: var(--color-primary);
+  }
+}
+
 .msg-page {
   display: flex;
   flex-direction: column;
   overflow: auto;
+
+  .unread {
+    font-weight: bold;
+  }
 
   .one-line-truncation {
     text-overflow: ellipsis;
@@ -43,7 +54,7 @@
   
   #pm-text-box {
     height: auto !important;
-    padding: var(--top-padding-small) var(--left-padding-1);
+    padding: var(--padding-xsmall);
     left: 0;
     bottom: 0;
     background-color: white;
@@ -63,14 +74,5 @@
       // font-size: 1.3em;
       margin: 0.5em 0 0 0.5em;
     }
-  }
-
-  .public-notice-card {
-    border: none;
-    padding: 0px 0px var(--top-padding-small) 0px;
-    background-color: #f4f5f9;
-    box-shadow: none;
-    margin-top: 0px;
-    flex-grow: 1;
   }
 }

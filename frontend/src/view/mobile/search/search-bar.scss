@@ -24,10 +24,16 @@
   .message-container {
     margin: auto;
     color: var(--color-primary); 
-    i {
-      width: 20px;
-      height: 20px;
-      font-size: 20px;
+    .icon-with-bottom-text {
+      i {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+      }
+      p {
+        margin: 0;
+        font-size: var(--font-size-small);
+      }
     }
   }
 }

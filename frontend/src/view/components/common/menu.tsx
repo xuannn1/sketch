@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { classnames } from '../../../utils/classname';
-import { Card } from './card';
 import { List } from './list';
 import { Badge } from './badge';
+import './menu.scss';
 const badgeStyle:React.CSSProperties = {float:'right'};
 
 export function MenuItem (props:{
@@ -31,9 +31,7 @@ export function Menu (props:{
   children:React.ReactNode;
 }) {
   return (
-    <Card>
-      <List>
-        {props.children}
-      </List>
-    </Card>);
+    <List className="menu">
+      {props.children}
+    </List>);
 }

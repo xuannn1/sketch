@@ -9,7 +9,7 @@
   border-bottom: $border;
 
   .list-item {
-    padding: var(--top-padding-1) 0px;
+    padding: var(--padding-1);
     position: relative;
     &:hover {
       cursor: pointer;
@@ -20,7 +20,7 @@
   }
 
   .list-arrow {
-    padding-left: var(--left-padding-small);
+    margin: var(--margin-1);
     font-size: var(--font-size-4);
     float: right;
     color: #8c8787;
@@ -28,7 +28,7 @@
 
 
   .item-container {
-    padding: 0 var(--left-padding-1);
+    // padding: 0 var(--left-padding-1);
 
     .item-first-line {
       // margin: 0 20px;
