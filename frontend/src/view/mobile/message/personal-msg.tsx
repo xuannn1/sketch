@@ -56,7 +56,8 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
 
         <Menu>
           <MenuItem icon="far fa-envelope icon" title="管理通知" badgeNum={1000}/>
-          <MenuItem icon="far fa-envelope icon" title="公共通知" badgeNum={1}/>
+          <MenuItem icon="far fa-envelope icon" title="公共通知"
+            onClick={ this.onClickPublicNotice } badgeNum={1}/>
         </Menu>
         { this.renderMessages() }
       </Page>);
