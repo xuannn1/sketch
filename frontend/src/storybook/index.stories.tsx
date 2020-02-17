@@ -35,7 +35,6 @@ import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
-import { ResizableTextarea } from '../view/components/common/input/resizable-textarea';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
 import { ChannelPreview } from '../view/components/home/channel-preview';
@@ -351,19 +350,6 @@ storiesOf('Common Components', module)
       </div>
     </Loading>,
   )
-  .add('ResizableTextarea', () => (React.createElement(class extends React.Component<{}, {value:string}> {
-    public state = {
-      value: '',
-    };
-    public render () {
-      return <ResizableTextarea
-      maxRows={number('maxRow', 3)}
-      minRows={number('minRow', 1)}
-      placeholder={text('placeholder', '写回复')}
-      value={this.state.value}
-      onChange={(value) => this.setState({value})}/>;
-    }
-  })))
   .add('Menu', () => (
     <Menu>
       <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒" badgeNum={1000}/>

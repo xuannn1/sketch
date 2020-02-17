@@ -4,7 +4,6 @@ import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
 import { Card } from '../../components/common/card';
-import { pageStyle, publicNoticeCardStyle } from './styles';
 import { ExpandableMessage } from '../../components/message/expandable-message';
 
 interface State {
@@ -63,13 +62,11 @@ export class PublicNotice extends React.Component<MobileRouteProps, State> {
   }
 
   public render () {
-    return (<Page style={pageStyle}
+    return (<Page className="msg-page"
         top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           公共通知
         </NavBar>}>
-        <Card style={ publicNoticeCardStyle }>
-          {this.state.publicNoticeData.public_notices.map((n) => this.renderNotice(n))}
-        </Card>
+        {this.state.publicNoticeData.public_notices.map((n) => this.renderNotice(n))}
       </Page>);
   }
 }

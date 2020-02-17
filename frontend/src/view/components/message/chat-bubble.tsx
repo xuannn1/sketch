@@ -1,6 +1,5 @@
 import * as React from 'react';
 import './chat-bubble.scss';
-import { classnames } from '../../../utils/classname';
 import { bbcode2html } from '../../../utils/text-formater';
 // support bbcode
 

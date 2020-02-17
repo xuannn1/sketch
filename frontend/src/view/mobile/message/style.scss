@@ -7,10 +7,17 @@
   margin-top: var(--top-margin-1);
 }
 
-.dialogue-page {
+.msg-page {
   display: flex;
   flex-direction: column;
   overflow: auto;
+
+  .one-line-truncation {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-top: var(--top-margin-1);
+  }
 
   .dialogue-card {
     // padding: '20px',
@@ -56,5 +63,14 @@
       // font-size: 1.3em;
       margin: 0.5em 0 0 0.5em;
     }
+  }
+
+  .public-notice-card {
+    border: none;
+    padding: 0px 0px var(--top-padding-small) 0px;
+    background-color: #f4f5f9;
+    box-shadow: none;
+    margin-top: 0px;
+    flex-grow: 1;
   }
 }

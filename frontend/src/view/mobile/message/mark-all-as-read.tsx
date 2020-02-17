@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { classnames } from '../../../utils/classname';
 
 export function MarkAllAsRead (props:{
   className?:string;

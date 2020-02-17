@@ -4,10 +4,7 @@ import { MobileRouteProps } from '../router';
 import { Page } from '../../components/common/page';
 import { NavBar } from '../../components/common/navbar';
 import { MessageMenu } from './message-menu';
-import { Card } from '../../components/common/card';
-import { Badge } from '../../components/common/badge';
 import { List } from '../../components/common/list';
-import { pageStyle, largeListItemStyle, badgeStyle, topCardStle, contentCardStyle, replyNotificationCardStyle, replyMessageContentStyle, unreadStyle, oneLineTruncationStyle } from './styles';
 import { RoutePath } from '../../../config/route-path';
 import { MarkAllAsRead } from './mark-all-as-read';
 import { Menu, MenuItem } from '../../components/common/menu';
@@ -47,7 +44,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
   }
 
   public render () {
-    return (<Page style={pageStyle}
+    return (<Page className="msg-page"
         top={<NavBar goBack={this.props.core.route.back} onMenuClick={() => console.log('open setting')}>
           <MessageMenu/>
         </NavBar>}>
@@ -106,7 +103,7 @@ export class PersonalMessage extends React.Component<MobileRouteProps, State> {
             </div>
             {/* <div style={replyMessageContentStyle}> */}
             <div className="item-brief">
-              <p style={oneLineTruncationStyle}>{!seen ? <b>[有新消息]&nbsp;</b> : ''}{content}</p>
+              <p className="one-line-truncation">{!seen ? <b>[有新消息]&nbsp;</b> : ''}{content}</p>
             </div>
           </div>
         </List.Item>);
