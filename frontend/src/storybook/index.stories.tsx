@@ -518,7 +518,7 @@ storiesOf('Common Components/TextEditor', module)
 }))
 .add('style2', () => (
   <div style={{ height: '400px', position: 'relative' }}>
-    <TextEditor theme="bubble" style={{position: 'absolute', bottom: 0, width: '100%'}}></TextEditor>
+    <TextEditor theme="bubble" placeholder="写回复" style={{position: 'absolute', bottom: 0, width: '100%'}}></TextEditor>
   </div>
 ));
 

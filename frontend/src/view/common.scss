@@ -23,6 +23,7 @@
   --top-padding-2: 16px;
 
   --top-margin-1: 8px;
+  --top-margin-3: 16px;
 }
 
 html, body {
@@ -45,6 +46,10 @@ a {
   &:active {
     text-decoration: none;
   }
+}
+
+i {
+  font-size: var(--font-size-2);
 }
 
 // set h1, h2, h3, h4, h5 font-size, font-family

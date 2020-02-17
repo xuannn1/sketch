@@ -67,6 +67,7 @@ export class TextEditor extends React.Component<{
   isMarkdown?:boolean;
   theme?:textEditorTheme;
   style?:React.CSSProperties;
+  placeholder?:string;
 }, {
   text:string;
 }> {
@@ -158,6 +159,7 @@ export class TextEditor extends React.Component<{
                   formats={ toolbarConfig[theme].formats }
                   onChange={ this.handleChange }
                   ref={ this.reactQuillRef }
+                  placeholder={this.props.placeholder ? this.props.placeholder : ''}
                   style={ this.props.style ? this.props.style : {} }/>
     );
   }

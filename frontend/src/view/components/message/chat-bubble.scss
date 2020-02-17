@@ -10,10 +10,10 @@
 }
 
 .talktext{
-  padding: 1em;
+  padding: 0 var(--left-padding-small);
 	text-align: left;
-  line-height: 1.5em;
 }
+
 
 .from-other:after{
   content: ' ';
