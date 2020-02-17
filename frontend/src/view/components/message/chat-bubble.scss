@@ -10,8 +10,12 @@
 }
 
 .talktext{
-  padding: 0 var(--left-padding-small);
-	text-align: left;
+  padding: var(--top-padding-1) var(--left-padding-small);
+  text-align: left;
+  
+  p {
+    margin: 0 0;
+  }
 }
 
 

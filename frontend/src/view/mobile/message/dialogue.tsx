@@ -11,17 +11,16 @@ import { TextEditor } from '../../components/common/textEditor';
 
 interface State {
   data:API.Get['/user/$0/message'];
-  messageToSend:string;
 }
 
 export class Dialogue extends React.Component<MobileRouteProps, State> {
+  private textEditorRef = React.createRef<TextEditor>();
   public state:State = {
     data:{
       messages: [],
       paginate: ResData.allocThreadPaginate(),
       style: ReqData.Message.style.dialogue,
     },
-    messageToSend: '',
   };
   public async componentDidMount() {
     try {
@@ -65,11 +64,11 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
         { this.textBox() }
       </Page>);
   }
-  protected updateMessageToSend = (value:string) => this.setState({messageToSend:value});
+
   private textBox () : JSX.Element {
     return (
       <div id="pm-text-box">
-        <TextEditor theme="bubble" placeholder="写回复"/>
+        <TextEditor theme="bubble" ref={ this.textEditorRef } placeholder="写回复"/>
         <span className="icon sendbutton" onClick={this.sendMessage}>
             <i className="far fa-paper-plane"/>
           </span>
@@ -78,11 +77,14 @@ export class Dialogue extends React.Component<MobileRouteProps, State> {
   }
 
   private sendMessage = async () => {
-    if (!this.state.messageToSend) { return; }
+    if (!this.textEditorRef.current) { return; }
+    const messageToSend = this.textEditorRef.current.getContent();
+    if (!messageToSend) { return; }
     try {
-      const msg = await this.props.core.db.sendMessage(this.props.match.params.uid, this.state.messageToSend);
+      const msg = await this.props.core.db.sendMessage(this.props.match.params.uid, messageToSend);
       const data = {...this.state.data, messages: [...this.state.data.messages, msg.message]};
-      this.setState({data, messageToSend:''});
+      this.setState({ data });
+      this.textEditorRef.current.clearContent();
     } catch (e) {
       console.log(e);
     }

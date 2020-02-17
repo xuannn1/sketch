@@ -135,6 +135,10 @@ export class TextEditor extends React.Component<{
     return result;
   }
 
+  public clearContent () {
+    this.setState({ text: ''});
+  }
+
   private setContent () : string {
     const {content, isMarkdown} = this.props;
     if (content) {
