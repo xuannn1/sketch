@@ -13,6 +13,7 @@ interface State {
   expanded:boolean;
 }
 
+// TODO: support bbcode
 export class ExpandableMessage extends React.Component<Props, State> {
   public state:State = {
     expanded: false,

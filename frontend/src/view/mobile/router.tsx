@@ -62,10 +62,10 @@ export const MobileRoutes = {
   [RoutePath.status]: Status,
 
   //message
-  [RoutePath.messages]: Message,
-  [RoutePath.dialogue]: Dialogue,
   [RoutePath.personalMessages]: PersonalMessage,
   [RoutePath.publicNotice]: PublicNotice,
+  [RoutePath.dialogue]: Dialogue,
+  [RoutePath.messages]: Message,
 
   // other
   [RoutePath.tags]: ForumTags,

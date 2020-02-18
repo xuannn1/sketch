@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './chat-bubble.scss';
-import { classnames } from '../../../utils/classname';
+import { bbcode2html } from '../../../utils/text-formater';
+// support bbcode
 
 export class ChatBubble extends React.Component<{
   // props
@@ -13,12 +14,13 @@ export class ChatBubble extends React.Component<{
 }> {
 
   public render () {
+    const htmlContent = bbcode2html(this.props.content);
     const style = this.props.fromMe ? 'talk-bubble from-me-color from-me' : 'talk-bubble from-other-color from-other';
-    const content = this.props.content.split ('\n').map ((line, i) => <p key={i}>{line}</p>); // otherwise the '\n' in string will be ignored in <p/>
+
     return (
       <div className={style}>
-        <div className="talktext">
-          {content}
+        {/* FIXIME: dangerouslySetInnerHTML is not good practice. we use it as our bbcode converter only converts bbcode to html string for now (not react element). We may modify the converter in future */}
+        <div className="talktext"  dangerouslySetInnerHTML={{__html:htmlContent}}>
         </div>
       </div>);
 

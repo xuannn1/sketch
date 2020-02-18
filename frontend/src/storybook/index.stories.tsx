@@ -35,7 +35,6 @@ import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
-import { ResizableTextarea } from '../view/components/common/input/resizable-textarea';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
 import { ChannelPreview } from '../view/components/home/channel-preview';
@@ -51,13 +50,13 @@ import { fakeDB } from '../test/mock-data/fake-db';
 import { Button } from '../view/components/common/button';
 import { Colors } from '../view/theme/theme';
 import { ResData } from '../config/api';
-import { Dialogue } from '../view/mobile/message/dialogue';
 import { TextEditor } from '../view/components/common/textEditor';
 import { createBrowserHistory } from 'history';
 import { bbcode2html, html2bbcode, test } from '../utils/text-formater';
 import { bbcodTestCases } from '../test/bbcode/bbcode';
 import { loadTestData, formatTestData } from '../test/bbcode/additionalTest';
 import { App } from '../view';
+import { MenuItem, Menu } from '../view/components/common/menu';
 
 const core = new Core();
 fakeDB(core.db);
@@ -351,19 +350,12 @@ storiesOf('Common Components', module)
       </div>
     </Loading>,
   )
-  .add('ResizableTextarea', () => (React.createElement(class extends React.Component<{}, {value:string}> {
-    public state = {
-      value: '',
-    };
-    public render () {
-      return <ResizableTextarea
-      maxRows={number('maxRow', 3)}
-      minRows={number('minRow', 1)}
-      placeholder={text('placeholder', '写回复')}
-      value={this.state.value}
-      onChange={(value) => this.setState({value})}/>;
-    }
-  })));
+  .add('Menu', () => (
+    <Menu>
+      <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒" badgeNum={1000}/>
+      <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1}/>
+    </Menu>
+  ));
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar
@@ -509,7 +501,12 @@ storiesOf('Common Components/TextEditor', module)
     </div>
   </div>);
   }
-}));
+}))
+.add('style2', () => (
+  <div style={{ height: '400px', position: 'relative' }}>
+    <TextEditor theme="bubble" placeholder="写回复" style={{position: 'absolute', bottom: 0, width: '100%'}}></TextEditor>
+  </div>
+));
 
 storiesOf('Common Components/Navigation Bar', module)
   .add('simple', () => <NavBar goBack={action('goBack')} >

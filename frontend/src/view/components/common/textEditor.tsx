@@ -1,22 +1,19 @@
 import * as React from 'react';
 import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css';
 import ReactQuill from 'react-quill';
 import { bbcode2html, html2bbcode } from '../../../utils/text-formater';
 import './text-editor.scss';
 
 // TODO: 表情包
 // TODO: 字号要调大一点
-// FIXME: 老站的code是inline element，新的code是block element。见test case #complex3 老站允许在code中字体加粗，调字号，甚至创建list。
 // TODO: 加链接的UX有点别扭，在没有选中东西的时候提醒用户选中东西。
 // TODO: santize html
 // TODO: 和谐词过滤
 // TODO: 圈人
-// TODO: 搞一个style2给私聊页面
 // TODO: 图片允许调大小
 
 // OTHER NOTES
-// FIXME: if run a test include <code>, then run a test without, the code style still apply (e.g.in default test suit, try test "code", then the next test case). It seems that there is something wrong in the state sync in quill package, fixing may need some time. However, since that we do not really need to update prop.content during runtime, the bug has low priority.
-
 // TODO: there are some lifecycle warnings with this component (e.g.omponentWillUpdate has been renamed), this warning is from the library Quill
 // https://github.com/quilljs/quill/issues/2771
 // Thre ReactQuill is a react wrapper for Quill, it also has this warning: https://github.com/zenoamaro/react-quill/pull/531
@@ -24,11 +21,42 @@ import './text-editor.scss';
 // As it seems that the maintainer plans to merge this PR soon, I would prefer to wait for a while first. If not, I will clone the reactQuill module and try fix it myself Q.Q
 
 export type textFormat = 'plaintext' | 'markdown' | 'bbcode';
+export type textEditorTheme = 'snow' | 'bubble';
 
+const toolbarConfig = {
+  snow: {
+    formats: [
+      'size',
+      'color', 'background',
+      'bold', 'italic', 'underline', 'strike', 'blockquote', 'code',
+      'list', 'bullet', 'indent',
+      'link', 'image',
+      'clean',
+    ],
+    container: [
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      [{ 'color': [] }, { 'background': [] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code'],
+      [{'list': 'ordered'}, {'list': 'bullet'}],
+      ['link', 'image'],
+      ['clean'],
+      ],
+  },
+  bubble: {
+    formats: [
+      'size', 'color', 'background',
+      'bold', 'italic', 'underline', 'image',
+    ],
+  container: [
+    [{ 'size': ['small', false, 'large'] }, { 'color': [] }, { 'background': [] }],
+    ['bold', 'italic', 'underline', 'image'],
+    ],
+  },
+}
 const formats = [
   'size',
   'color', 'background',
-  'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block',
+  'bold', 'italic', 'underline', 'strike', 'blockquote', 'code',
   'list', 'bullet', 'indent',
   'link', 'image',
   'clean',
@@ -37,6 +65,9 @@ const formats = [
 export class TextEditor extends React.Component<{
   content?:string;
   isMarkdown?:boolean;
+  theme?:textEditorTheme;
+  style?:React.CSSProperties;
+  placeholder?:string;
 }, {
   text:string;
 }> {
@@ -74,26 +105,22 @@ export class TextEditor extends React.Component<{
       }
     }
 
-  private modules = {
-    toolbar: {
-      container: [
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      [{ 'color': [] }, { 'background': [] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
-      [{'list': 'ordered'}, {'list': 'bullet'}],
-      ['link', 'image'],
-      ['clean'],
-      ],
-      handlers: {
-        image: this.imageHandler,
+  private getModules () {
+    const theme = this.props.theme ? this.props.theme : 'snow';
+    return {
+      toolbar: {
+        container: toolbarConfig[theme].container,
+        handlers: {
+          image: this.imageHandler,
+        },
       },
-    },
-      history: {
-        delay: 2000,
-        maxStack: 200,
-        userOnly: true,
-      },
-  };
+        history: {
+          delay: 2000,
+          maxStack: 200,
+          userOnly: true,
+        },
+    };
+  }
 
   private attachQuillRefs = () => {
     if (typeof this.reactQuillRef.current.getEditor !== 'function') {
@@ -106,6 +133,10 @@ export class TextEditor extends React.Component<{
     console.log('[get content]', this.state.text);
     const result = html2bbcode(this.state.text);
     return result;
+  }
+
+  public clearContent () {
+    this.setState({ text: ''});
   }
 
   private setContent () : string {
@@ -124,12 +155,16 @@ export class TextEditor extends React.Component<{
   }
 
   public render() {
+    const theme = this.props.theme ? this.props.theme : 'snow';
     return (
       <ReactQuill value={ this.state.text }
-                  modules={ this.modules }
-                  formats={ formats }
+                  modules={ this.getModules() }
+                  theme={theme}
+                  formats={ toolbarConfig[theme].formats }
                   onChange={ this.handleChange }
-                  ref={ this.reactQuillRef }/>
+                  ref={ this.reactQuillRef }
+                  placeholder={this.props.placeholder ? this.props.placeholder : ''}
+                  style={ this.props.style ? this.props.style : {} }/>
     );
   }
 }

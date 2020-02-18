@@ -77,7 +77,7 @@ export const bbcodTestCases = [
   },
   {
     id: 'complex3',
-    test: '[br]\n[blockquote]为什么要在quote中放代码[code]为什么要在代码中放list[ol][li]为什么老站还支持这个[ul][li]新站可以不支持吗[u]它[size=20]只是[i]代码[b]放[/b][/i][/size][/u][/li][li]过它[/li][/ul][/li][li]不要给代码加style嚶嚶嚶[/li][/ol][/code][/blockquote]\n',
+    test: '[br]\n[blockquote]aaaaaa[code]bbbbbb[ol][li]ccccc[ul][li]ddddd[u]e[size=20]fff[i]gg[b]aaa[/b][/i][/size][/u][/li][li]bbb[/li][/ul][/li][li]cccccc[/li][/ol][/code][/blockquote]\n',
   },
   {
     id: 'complex4',
@@ -132,15 +132,15 @@ export const bbcodTestCases = [
   {
     id: 'code',
     test: '[code]let a = 1;\nlet b = 2;\nfor (let i = 0; i < b; i++){\n  console.log("hello world");\n}\n[/code]',
-  }, // todo
+  },
   {
     id: 'br',
-    test: 'the next line is br[br]a br before\nNote：如果你先测了之前的code test case, 这个test case可能也有code style，这似乎是quill中的一个bug。在实际运用中，我们尽量不要更改给TextEditor的props （content），只是在initialize 的时候pass一个content，那么就不会遇到这个bug。',
+    test: 'the next line is br[br]a br before\n',
   },
   {
     id: 'complex',
     test: '[b]1[i]2[u]3[size=20][code]4567[/code][/size][/u][/i][/b]',
-  }, // FIXME
+  },
   {
     id: 'fix_space_around_text',
     test: '[i]我[/i] [b]学[/b] [u]会[/u] [size=40]了[/size]',
