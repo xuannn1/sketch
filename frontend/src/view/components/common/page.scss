@@ -1,34 +1,31 @@
 .page {
-  position: absolute;
+  position: fixed;
   height: 100%;
   width: 100%;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  $top-height: 3.25rem; //top-height fixed so it's consistent with navBar height
+  justify-content: space-between;
 
   .top {
-    top: 0;
-    left: 0;
     width: 100%;
-    position: fixed;
-    height: $top-height;
+    height: 44px;
     z-index: 100;
-    background-color: white;
     border-bottom: 1px solid #e6e3e3;
-  }
-
-  .body {
-    flex: 1;
-    margin-top: $top-height;
+    background-color: var(--color-bg-front);
   }
 
   .bottom {
-    position: fixed;
-    left: 0;
     width: 100%;
-    bottom: 0;
-    height: 3.25rem;
-    background-color: white;
+    height: 45px;
     box-shadow: 0px -1px 2px rgba(0, 0, 0, 0.2);
+    background-color: var(--color-bg-front);
+    z-index: 100;
+  }
+
+  .body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
   }
 }

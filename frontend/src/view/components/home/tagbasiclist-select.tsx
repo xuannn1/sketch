@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import { TagBasicList } from './tagbasic-list';
 
@@ -91,5 +92,4 @@ export class TagBasicListSelect extends React.Component<{
     </div>;
   }
 }
-
-
+*/

@@ -2,22 +2,23 @@ import '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
 import '@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
+
+import '../view/common.scss';
+import '../view/theme/index.scss';
+
 import { action } from '@storybook/addon-actions';
 import { withConsole } from '@storybook/addon-console';
 import { boolean, number, select, text, withKnobs } from '@storybook/addon-knobs';
 import { withViewport } from '@storybook/addon-viewport';
 import { addDecorator, storiesOf } from '@storybook/react';
-import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router';
-import '../theme.scss';
 import { Accordion } from '../view/components/common/accordion';
 import { Animate } from '../view/components/common/animate';
 import { Badge } from '../view/components/common/badge';
 import { Card } from '../view/components/common/card';
 import { Center } from '../view/components/common/center';
 import { Dropdown } from '../view/components/common/dropdown';
-import { FilterBar } from '../view/components/common/filter-bar';
 import { List } from '../view/components/common/list';
 import { InfiniteScroll } from '../view/components/common/infiniteScroll';
 import { Mark } from '../view/components/common/mark';
@@ -27,30 +28,35 @@ import { PopupMenu } from '../view/components/common/popup-menu';
 import { RouteMenu } from '../view/components/common/route-menu';
 import { Slider } from '../view/components/common/slider';
 import { Tab } from '../view/components/common/tab';
-import { Tag, TagColor } from '../view/components/common/tag';
+import { Tag } from '../view/components/common/tag';
 import { TagList } from '../view/components/common/tag-list';
 import { FloatButton } from '../view/components/common/float-button';
 import { Core } from '../core/index';
 import { Carousel } from '../view/components/common/carousel';
 import { NoticeBar } from '../view/components/common/notice-bar';
 import { Loading } from '../view/components/common/loading';
-import { ResizableTextarea } from '../view/components/common/resizable-textarea';
 import { ThreadPreview } from '../view/components/thread/thread-preview';
 import { randomCnWords } from '../utils/fake';
-import { FooterMenu } from '../view/components/common/footer-menu';
-import { SearchHomepageBar } from '../view/components/home/searchhomepage-bar';
 import { ChannelPreview } from '../view/components/home/channel-preview';
-import { TagBasic } from '../view/components/home/tagbasic';
+/*
 import { TagBasicList } from '../view/components/home/tagbasic-list';
 import { TagBasicListSelect } from '../view/components/home/tagbasiclist-select';
 import { TagBasicListFilter } from '../view/components/home/tagbasiclist-filter';
-import { RecommendList } from '../view/components/home/recommend-list';
+*/
 import { ChatBubble } from '../view/components/message/chat-bubble';
 import { ExpandableMessage } from '../view/components/message/expandable-message';
 import { Fragment } from 'react';
 import { fakeDB } from '../test/mock-data/fake-db';
-import { Dialogue } from '../view/mobile/message/dialogue';
+import { Button } from '../view/components/common/button';
+import { Colors } from '../view/theme/theme';
+import { ResData } from '../config/api';
+import { TextEditor } from '../view/components/common/textEditor';
+import { createBrowserHistory } from 'history';
+import { bbcode2html, html2bbcode, test } from '../utils/text-formater';
+import { bbcodTestCases } from '../test/bbcode/bbcode';
+import { loadTestData, formatTestData } from '../test/bbcode/additionalTest';
 import { App } from '../view';
+import { MenuItem, Menu } from '../view/components/common/menu';
 
 const core = new Core();
 fakeDB(core.db);
@@ -58,8 +64,17 @@ fakeDB(core.db);
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
 addDecorator(withViewport());
 addDecorator(withKnobs);
+addDecorator((storyFn) => <div id="app" className="theme-light" data-theme="light">{storyFn()}</div>); //todo: add theme switcher
 
 storiesOf('Common Components', module)
+  .add('button', () => <Button
+    onClick={action('onClick')}
+    icon={text('icon', 'fa fa-search')}
+    disabled={boolean('disabled', false)}
+    color={select('color', {primary: 'primary', default: ''}, '')}
+    size={select('size', {default: '', small: 'small'}, '')}
+    type={select('type', {default: '', ellipse: 'ellipse'}, '')}
+  >I am a button</Button>)
   .add('Badge', () => <Badge num={number('num', 10)}
       max={number('max', 0)}
       dot={boolean('dot', false)}
@@ -68,64 +83,32 @@ storiesOf('Common Components', module)
     </Badge>,
   )
   .add('Tag', () => {
-    const colorOptions:{[name:string]:TagColor} = {
-      black: 'black',
-      dark: 'dark',
-      light: 'light',
-      white: 'white',
-      primary: 'primary',
-      link: 'link',
-      info: 'info',
-      success: 'success',
-      warning: 'warning',
-      danger: 'danger',
-    };
     return <Tag
       selected={boolean('selected', false)}
       onClick={action('tag click')}
       size={select('size', {
-        normal: 'normal',
-        medium: 'medium',
-        large: 'large',
-      },           'normal')}
-      color={select('color', colorOptions, undefined)}
-      selectedColor={select('selectedColor', colorOptions, undefined)}
+        default: 'default',
+        small: 'small',
+      })}
+      color={select('color', Colors, '')}
+      selectedColor={select('selectedColor', Colors, Colors.primary)}
       rounded={boolean('rounded', false)}
-      selectable={boolean('selectable', true)}
     >{text('text', 'test')}</Tag>;
   })
   .add('TagList', () => {
-    const colorOptions:{[name:string]:TagColor} = {
-      black: 'black',
-      dark: 'dark',
-      light: 'light',
-      white: 'white',
-      primary: 'primary',
-      link: 'link',
-      info: 'info',
-      success: 'success',
-      warning: 'warning',
-      danger: 'danger',
-    };
     return <TagList>
       {(new Array(number('length', 20)).fill(text('text', 'tag')).map((content, i) => <Tag
         key={i}
         onClick={action('tag click ' + i)}
         size={select('size', {
-          normal: 'normal',
-          medium: 'medium',
-          large: 'large',
-        },           'normal')}
-        color={select('color', colorOptions, undefined)}
-        selectedColor={select('selectedColor', colorOptions, undefined)}
+          default: 'default',
+          small: 'small',
+        })}
+        color={select('color', Colors, undefined)}
+        selectedColor={select('selectedColor', Colors, Colors.primary)}
         rounded={boolean('rounded', false)}
-        selectable={boolean('selectable', true)}
       >{content}</Tag>))}
     </TagList>;
-  })
-
-  .add('FilterBar', () => {
-    return <FilterBar></FilterBar>;
   })
   .add('Popup', () => React.createElement(class extends React.Component {
     public state = {
@@ -138,7 +121,6 @@ storiesOf('Common Components', module)
           <Popup
             width={text('width', '')}
             bottom={text('bottom', '')}
-            darkBackground={number('darkBackground', 0.8)}
             onClose={() => this.setState({showPopup: false})}>
             {text('content', 'example content')}
           </Popup>
@@ -162,7 +144,7 @@ storiesOf('Common Components', module)
       items: [],
       isLoading: true,
       cursor: 0,
-    }
+    };
     private divStyle = {
       border: '5px solid pink',
       background: 'antiquewhite',
@@ -189,13 +171,12 @@ storiesOf('Common Components', module)
             (this.setState({
               items: [...this.state.items, ...res],
               cursor: res[5] + 1,
-              isLoading: false
+              isLoading: false,
             }))
           ,
           (error) => {
-            this.setState({ isLoading: false, error })
-          }
-      )
+            this.setState({ isLoading: false, error });
+          });
     }
 
     public render() {
@@ -221,7 +202,7 @@ storiesOf('Common Components', module)
           )}
         </div>
         </Fragment>
-      )
+      );
     }
   }))
   .add('Accordion', () => <Accordion
@@ -369,19 +350,12 @@ storiesOf('Common Components', module)
       </div>
     </Loading>,
   )
-  .add('ResizableTextarea', () => (React.createElement(class extends React.Component<{}, {value:string}> {
-    public state = {
-      value: '',
-    };
-    public render () {
-      return <ResizableTextarea
-      maxRows={number('maxRow', 3)}
-      minRows={number('minRow', 1)}
-      placeholder={text('placeholder', '写回复')}
-      value={this.state.value}
-      onChange={(value) => this.setState({value})}/>;
-    }
-  })));
+  .add('Menu', () => (
+    <Menu>
+      <MenuItem icon="far fa-thumbs-up icon" title="点赞提醒" badgeNum={1000}/>
+      <MenuItem icon="fas fa-gift icon" title="打赏提醒" badgeNum={1}/>
+    </Menu>
+  ));
 
 storiesOf('Common Components/Notice Bar', module)
   .add('short message', () => <NoticeBar
@@ -420,13 +394,123 @@ storiesOf('Common Components/Dropdown', module)
   })
 ;
 
+storiesOf('Common Components/TextEditor', module)
+.add('style1', () => React.createElement(class extends React.Component<{}, {content:string, generatedBBCODE:string, test:any, extraData:any[], testId:number, useDefaultTest:boolean}> {
+  private ref = React.createRef<TextEditor>();  // you have to use ref with this component
+  public state = {
+    content: '',
+    generatedBBCODE: '',
+    test: '',
+    extraData: [],
+    testId: 0,
+    useDefaultTest: true,
+  };
+
+  public async componentWillMount () {
+    await this.loadExtraTestData();
+  }
+      // will return content in bbcode
+  private getContent = () => {
+    let content = '';
+    if (this.ref.current) {
+      content = this.ref.current.getContent();
+    }
+    return content;
+  }
+
+  private test = () => {
+    const bbcode = this.getContent();
+    const result = test(bbcode);
+    this.setState({content: bbcode,
+      test: result ? 'success' :'failure, check console'});
+  }
+
+  private loadExtraTestData = async () => {
+    const extraData = await loadTestData();
+    this.setState({extraData});
+  }
+
+  private getTest() {
+    let testId = this.state.testId || 0;
+    if (testId < 0) {
+      testId = 0;
+    }
+
+    if (this.state.useDefaultTest) {
+      if ( testId >= bbcodTestCases.length ) { testId = 0; }
+      return {type: 'normal', testID: bbcodTestCases[testId].id, testContent: bbcodTestCases[testId].test};
+    } else {
+      if ( testId >= this.state.extraData.length ) { testId = 0; }
+      return {type: 'excel', testID: testId, testContent: formatTestData(this.state.extraData[testId])};
+    }
+  }
+
+  public render() {
+    const { type, testID, testContent } = this.getTest();
+
+    return  (
+    <div>
+      <TextEditor ref={this.ref} content={ testContent }></TextEditor>
+      <br/>
+      <button onClick={() => this.setState({generatedBBCODE: this.getContent()})}>Generate BBCODE</button>
+      {this.state.generatedBBCODE && (
+        <div>
+          Following is the generate BBCODE:
+          <pre>{this.state.generatedBBCODE}</pre>
+          <button onClick={() => this.setState({generatedBBCODE: ''})}>
+            Clear
+          </button>
+        </div>
+        ) }
+      <br/>
+      <button onClick={this.test}>TEST</button>
+      <div>
+        The TEST button will export bbcode, convert the bbcode to html, and the generated html to bbcode, then compare the two bbcode strings, they should be the same.
+        {this.state.test ?  (
+        <p>
+          <strong>
+            { this.state.test }
+          </strong>
+          <button onClick={() => this.setState({test: ''})}>
+            Clear
+          </button>
+        </p>) : null
+      }
+      </div>
+      <br/>
+      <div>
+        Using { this.state.useDefaultTest ? 'local default test suit' : 'remote excel test suit' }.
+        <button onClick={() => { this.setState({useDefaultTest: !this.state.useDefaultTest }); }}> switch to { this.state.useDefaultTest ? 'remote excel test suit' : 'local default test suit' } </button>
+
+        { this.state.useDefaultTest ? (
+          <p>
+            There are <strong>{bbcodTestCases.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {bbcodTestCases.length - 1}</strong>
+          </p>
+        ) : (
+          <div>
+            { this.state.extraData.length == 0 ? 'still loading remote remote test suit...' :
+              <p>There are <strong>{this.state.extraData.length}</strong> test cases available. To test a test case, enter a number from <strong>0 ~ {this.state.extraData.length - 1}</strong></p>}
+          </div>
+        )}
+      </div>
+      <input type="number" value={this.state.testId} min="0" max={this.state.useDefaultTest ? bbcodTestCases.length - 1 : this.state.extraData.length - 1} onChange={(e) => this.setState({testId: Number(e.target.value)})}></input>
+    <div>
+      <br/>
+      Current Test case is <strong>{ testID }</strong>. Following is the test case bbcode:
+      <pre>{ testContent }</pre>
+    </div>
+  </div>);
+  }
+}))
+.add('style2', () => (
+  <div style={{ height: '400px', position: 'relative' }}>
+    <TextEditor theme="bubble" placeholder="写回复" style={{position: 'absolute', bottom: 0, width: '100%'}}></TextEditor>
+  </div>
+));
+
 storiesOf('Common Components/Navigation Bar', module)
   .add('simple', () => <NavBar goBack={action('goBack')} >
     {text('title', 'example title')}
-  </NavBar>)
-  .add('buttons', () => <NavBar goBack={action('goBack')}>
-    <div className="button">阅读模式</div>
-    <div className="button">论坛模式</div>
   </NavBar>)
   .add('with menu', () => React.createElement(class extends React.Component {
     public state = {
@@ -464,90 +548,23 @@ storiesOf('Common Components/Float Button', module)
   </FloatButton>)
 ;
 storiesOf('Home Components/HomePage', module)
-  .add('SearchHomepageBar', () => React.createElement(class extends React.Component {
-    public render () {
-      return <div style={{
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'rgba(244,245,249,1)',
-      }}>
-          <SearchHomepageBar hasInfo={true}
-            onSearch={() => console.log('click search')} onInfo={() => console.log('click info')}>
-          </SearchHomepageBar>
-      </div>;
-    }
-  }))
   .add('ChannelPreview', () => React.createElement(class extends React.Component {
     public render () {
       const items = [
-        {id:1, channel_id:1, title:'春潮', brief:'我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性', author:'小山鬼'},
-        {id:2, channel_id:1, title:'stay gold', brief:'娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷', author:'草率'},
-        {id:3, channel_id:1, title:'英国病人', brief:'我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性', author:'小山鬼'},
+        {id:1, title:'春潮', brief:'我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性', author:'小山鬼'},
+        {id:2, title:'stay gold', brief:'娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷娱乐圈万人迷', author:'草率'},
+        {id:3, title:'英国病人', brief:'我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性我要吞下蛮荒的野兽本性', author:'小山鬼'},
     ];
       return <Router history={createBrowserHistory()}>
           <ChannelPreview
-          channel={{id:1, name: '推荐榜单'}}
-          threads={items}>
+            goToThread={action('goToThread')}
+            title="推荐榜单"
+            threads={items}>
         </ChannelPreview>
         </Router>;
     }
   }))
-  .add('buttons', () => <NavBar goBack={action('goBack')}>
-    <div className="button is-danger"><i className="fas fa-fire"></i>推荐</div>
-    <div className="button is-danger"><i className="fas fa-book-open"></i>文库</div>
-  </NavBar>)
-  .add('FooterMenu', () => React.createElement(class extends React.Component {
-    public state = {
-      onIndex: 0,
-      icon: boolean('icon', false),
-    };
-    public render () {
-      const items = [
-        {to: '', label: '首页', icon: 'fas fa-home', defaultColor:'black', selectedColor:'red'},
-        {to: '', label: '论坛', icon: 'fas fa-comments', defaultColor:'black', selectedColor:'red'},
-        {to: '', label: '动态', icon: 'far fa-compass', defaultColor:'black', selectedColor:'red'},
-        {to: '', label: '收藏', icon: 'far fa-star', defaultColor:'black', selectedColor:'red'},
-        {to: '', label: '我的', icon: 'far fa-user', defaultColor:'black', selectedColor:'red'},
-      ];
-      return <Router history={createBrowserHistory()}>
-      <div style={{
-          position: 'absolute',
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column'}}>
-          <FooterMenu
-            items={items}
-            onIndex={this.state.onIndex}
-            onClick={(_, i) => this.setState({onIndex: i})}
-          ></FooterMenu>
-          </div>
-      </Router>;
-    }
-  }))
-  .add('tagbasicMidium', () => <TagBasic
-    tagId={'233'}
-    tagName={'tag'}
-    onClick={(selected, selectedId) => {console.log('select', selectedId); } }
-    selected={false}
-    size={'medium'}
-    color={'light'}
-    selectedColor={'danger'}
-    selectable={true}>
-    </TagBasic>)
-  .add('tagbasicSmall', () => <TagBasic
-    tagId={'233'}
-    tagName={'tag'}
-    onClick={(selected, selectedId) => {console.log('select', selectedId); } }
-    selected={false}
-    size={'normal'}
-    color={'white'}
-    selectedColor={'danger'}
-    selectable={true}>
-  </TagBasic>)
+  /*
   .add('TagBasicList1', () => React.createElement(class extends React.Component {
     public render () {
       return <div style={{
@@ -619,7 +636,7 @@ storiesOf('Home Components/HomePage', module)
         childTags:[{tagId:'12', tagName:'原创'} , {tagId:'13' , tagName:'同人'}]},
         {tagCatagoryName:'篇幅',
         childTags:[{tagId:'14', tagName:'短篇'} , {tagId:'15' , tagName:'中篇'},
-        {tagId:'16', tagName:'长篇'},{tagId:'17', tagName:'大纲'}]}
+        {tagId:'16', tagName:'长篇'}, {tagId:'17', tagName:'大纲'}]},
         ]}
         onBack={() => {console.log('back'); }}
         onFilter={() => {console.log('filter'); }}
@@ -647,7 +664,7 @@ storiesOf('Home Components/HomePage', module)
         {tagCategoryName:'热门推荐',
         categoryTrash:false,
         childTags:[{tagId:'14', tagName:'九州见闻'} , {tagId:'15' , tagName:'得偿所愿'},
-        {tagId:'16', tagName:'翅膀养护日记'},{tagId:'17', tagName:'不知道写啥'}]}
+        {tagId:'16', tagName:'翅膀养护日记'}, {tagId:'17', tagName:'不知道写啥'}]},
         ]}
         onBack={() => {console.log('back'); }}
         onDelete={(tags) => {
@@ -664,29 +681,7 @@ storiesOf('Home Components/HomePage', module)
         </TagBasicListFilter>;
     }
   }))
-  .add('RecommendList', () => React.createElement(class extends React.Component {
-    public render () {
-      const items = [
-        {id:1, channel_id:1, title:'夜深知雪重量', brief:'推荐语：小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开；小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开小精灵要下山，老妖怪有交代：这世间乱得很，牵着九哥的手别放开', author:'尸尸'},
-        {id:2, channel_id:1, title:'贼雀', brief:'一二三四五六七，我们都死得很离奇；七六五四三二一，找到答案前谁都出不去', author:'叽里呱啦'},
-        {id:3, channel_id:1, title:'她捡到1个放大镜', brief:'夏天夏天悄悄过去充满小秘密，放大镜的乐趣我只想告诉你', author:'越荷兮'},
-    ];
-      return <Router history={createBrowserHistory()}>
-          <RecommendList
-          taglist={[{tagCatagoryName:'文章分类',
-          childTags:[{tagId:'12', tagName:'原创'} , {tagId:'13' , tagName:'同人'}]},
-          {tagCatagoryName:'篇幅',
-          childTags:[{tagId:'14', tagName:'长篇'} , {tagId:'15' , tagName:'中篇'},
-          {tagId:'16', tagName:'短篇'},{tagId:'17', tagName:'大纲'}]}
-          ]}
-          threads={items}
-          onBack={() => {}}
-          onSearch={() => {}}
-          onShowTags={() => {}}>
-        </RecommendList>
-        </Router>;
-    }
-  }))
+  */
 ;
 storiesOf('Home Components', module)
 ;
@@ -714,7 +709,10 @@ storiesOf('Thread Components', module)
           attributes: {
             title: randomCnWords(number('post title', 40), 0.2),
             body: '',
+            brief: randomCnWords(20),
           },
+          info: ResData.allocPostInfo(),
+          parent: [],
         },
         author: {
           id: 1,
@@ -755,7 +753,7 @@ storiesOf('Message Components', module)
     因此，系统会定时对多人异地使用、行为异常的账户进行封禁。
     为了避免这种情况，避免被系统禁封，请使用了简单密码的用户早日更换为在别处不经常使用的密码，增加账号安全。
     废文禁止盗号，禁止任何形式的账户买卖，买号者付出的金钱，正是攻击者攻击网站的动力。
-    
+
     没有买卖就没有攻击。`;
     const title = '没有买卖就没有攻击';
     const footer = '废文网大内总管 2019-10-29 18:03:54';

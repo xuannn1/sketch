@@ -4,7 +4,7 @@ import { History } from 'history';
 export class User {
   private history:History;
 
-  public isLogin = false;
+  private isLogin = false;
   public name = '';
   public id = -1;
   public token = '';

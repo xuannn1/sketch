@@ -15,7 +15,7 @@ export class LoginRoute extends React.Component<MobileRouteProps, State> {
   public render () {
     const content = this.renderContent();
 
-    return <Page top={<NavBar goBack={this.props.core.history.goBack}>Login</NavBar>} >
+    return <Page top={<NavBar goBack={this.props.core.route.back}>Login</NavBar>} >
       { content }
     </Page>;
   }
