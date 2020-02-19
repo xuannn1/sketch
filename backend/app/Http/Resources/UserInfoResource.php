@@ -33,6 +33,7 @@ class UserInfoResource extends JsonResource
             'type' => 'user_info',
             'id' => (int)$this->user_id,
             'attributes' => [
+                'brief_intro' => (string)$this->brief_intro,
                 'salt' => (int)$this->salt,
                 'fish' => (int)$this->fish,
                 'ham' => (int)$this->ham,

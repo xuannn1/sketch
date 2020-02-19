@@ -52,12 +52,7 @@ trait UserObjectTraits{
             $query = Thread::with('tags','author','last_post')
             ->withUser($id);
 
-            if ($is_book) {
-                $query->withType('book')->ordered('latest_add_component');
-            } else {
-                $query->withoutType('book')->ordered();
-            }
-            $threads = $query->paginate(config('preference.threads_per_page'));
+            $data = $this->query_filter($query, $is_book);
         } else {
             $queryid = 'User'.($is_book ? 'Book.' : 'Thread.')
             .url('/')
@@ -67,7 +62,7 @@ trait UserObjectTraits{
             .'include_bianyuan'.$include_bianyuan
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
-            $threads = Cache::remember($queryid, 10, function () use($include_bianyuan, $is_book, $request, $id) {
+            $data = Cache::remember($queryid, 10, function () use($include_bianyuan, $is_book, $request, $id) {
                 $query = Thread::with('tags','author','last_post')
                 ->withUser($id)
                 ->isPublic()
@@ -78,19 +73,23 @@ trait UserObjectTraits{
                     $query->withBianyuan();
                 }
 
-                if ($is_book) {
-                    $query->withType('book')->ordered('latest_add_component');
-                } else {
-                    $query->withoutType('book')->ordered();
-                }
-
-                $threads = $query->paginate(config('preference.threads_per_page'))
+                $query = $this->query_filter($query, $is_book)
                 ->appends($request->only('page'));
 
-                return $threads;
+                return $query;
             });
         }
 
-        return $threads;
+        return $data;
+    }
+
+    private function query_filter($query, $is_book) {
+        if ($is_book) {
+            $query->withType('book')->ordered('latest_add_component');
+        } else {
+            $query->withoutType('book')->ordered();
+        }
+
+        return $query->paginate(config('preference.threads_per_page'));
     }
 }
