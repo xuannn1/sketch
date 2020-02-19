@@ -83,20 +83,18 @@ class QuoteController extends Controller
          // return view('quotes.show', compact('user','info','quote'));
      }
 
-     public function userQuote($user, Request $request)
+     public function userQuote($id, Request $request)
      {
-         if(!auth('api')->user()->isAdmin()){
-             $user = auth('api')->id();
-         }
+         if(auth('api')->id() != $id && !auth('api')->user()->isAdmin()) {abort(403);}
 
          $quotes = Quote::with('author')
-         ->where('user_id',auth('api')->id())
+         ->where('user_id', $id)
          ->ordered('latest_created')
          ->paginate(config('preference.quotes_per_page'));
 
          return response()->success([
              'quotes' => QuoteResource::collection($quotes),
-             'paginate' => new PaginateResource($quotes)
+             'paginate' => new PaginateResource($quotes),
          ]);
      }
 

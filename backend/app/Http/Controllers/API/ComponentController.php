@@ -84,7 +84,7 @@ class ComponentController extends Controller
                 $post_info->delete();
             }
             $post->update([
-                'type' => 'post'
+                'type' => 'post',
                 'edited_at' => Carbon::now(),
             ]);
         }
