@@ -102,4 +102,22 @@ class MessageController extends Controller
             'paginate' => new PaginateResource($messages),
         ]);
     }
+    public function administration_record($id, Request $request)
+    {
+        $user_id = 0;$is_public='';$user_name='';
+        $page = is_numeric($request->page)? $request->page:'1';
+        if(auth('api')->check()&&$id===auth('api')->id()){
+            CacheUser::Ainfo()->clear_column('administration_reminders');
+            $user_id = $id;
+        }
+        if(auth('api')->check()&&auth('api')->user()->isAdmin()&&$id>0&&$id!=auth('api')->id()){
+            $user_id = $id;
+            $is_public="include_private";
+        }
+        if($user_id>0){
+            $user_name = CacheUser::user($user_id)->name;
+        }
+        $records = $this->findAdminRecords($user_id, $page, $is_public, config('preference.index_per_page'));
+        // TODO return administration record resource of $records
+    }
 }

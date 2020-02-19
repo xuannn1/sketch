@@ -50,6 +50,8 @@ Route::delete('/linkaccount/destroy','API\LinkAccountController@destroy');
 // 默认页面
 Route::get('/', 'API\PageController@home')->name('home');// 网站首页
 
+Route::get('/administration_records', 'API\PageController@administration_records')->name('administration_record');// 管理目录
+
 // 固定信息
 Route::get('config/allTags', 'API\PageController@allTags');
 Route::get('config/allChannels', 'API\PageController@allChannels');
@@ -143,6 +145,7 @@ Route::get('publicnotice', 'API\MessageController@publicnotice_index');//用户�
 // 消息部分
 Route::get('/user/{user}/activity', 'API\ActivityController@index');// 展示某用户的站内提醒，仅允许本人和管理员查询
 Route::post('/clearupdates', 'API\ActivityController@clearupdates');// 清除未读提醒
+Route::get('/user/{user}/administration_record', 'API\MessageController@administration_record')->name('user.administration_record');// 展示某用户的被管理记录
 
 // 阅读历史保存?
 
@@ -204,3 +207,5 @@ Route::get('patreon', 'API\DonationController@patreon_index')->name('patreon.ind
 Route::patch('patreon/{patreon}/approve', 'API\DonationController@patreon_approve')->name('patreon.approve');
 Route::patch('patreon/{patreon}/disapprove', 'API\DonationController@patreon_disapprove')->name('patreon.disapprove');
 Route::post('patreon_upload', 'API\DonationController@patreon_upload')->name('patreon.upload');
+
+Route::post('admin/management','API\AdminController@management')->name('admin.management');

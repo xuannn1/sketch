@@ -15,10 +15,12 @@ use App\Http\Resources\TitleResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostIndexResource;
 use App\Sosadfun\Traits\PageObjectTraits;
+use App\Sosadfun\Traits\AdministrationTraits;
 use Cache;
 
 class PageController extends Controller
 {
+    use AdministrationTraits;
     use PageObjectTraits;
 
     public function home()
@@ -68,6 +70,16 @@ class PageController extends Controller
             'selectors' => config('selectors'),
             'constants' => config('constants'),
             'preferences' => config('preferences'),
+        ]);
+    }
+
+    public function administration_records()
+    {
+        $records = Cache::remember('adminrecords-p'.$page, 2, function () use($page) {
+                return $this->findAdminRecords(0, $page, '', config('preference.index_per_page'));
+            });
+        return response()->success([
+// TODO 创建administration_record resource,在这里加载返回。注意，管理员能看到的信息比用户能看到的信息多。
         ]);
     }
 }

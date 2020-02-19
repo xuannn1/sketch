@@ -32,7 +32,7 @@ class Post extends Model
 
     public function simpleInfo()
     {
-        return $this->hasOne(PostInfo::class, 'post_id')->select('post_id','order_by','previous_id','next_id','reviewee_id','reviewee_type','recommend','editor_recommend','rating','redirect_count','author_attitude','previous_id','next_id','abstract');
+        return $this->hasOne(PostInfo::class, 'post_id')->select('post_id','order_by','previous_id','next_id','reviewee_id','reviewee_type','recommend','editor_recommend','rating','redirect_count','author_attitude','previous_id','next_id','abstract', 'summary');
     }
 
     public function thread()

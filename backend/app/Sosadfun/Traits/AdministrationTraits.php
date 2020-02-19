@@ -11,9 +11,4 @@ trait AdministrationTraits{
         ->paginate(config('preference.index_per_page'))
         ->appends(['page'=>$page]);
     }
-
-    public function refreshFindAdminRecords($id, $page=1, $is_public)
-    {
-        
-    }
 }
