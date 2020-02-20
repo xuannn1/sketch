@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserIntroResource extends JsonResource
+class UserReminderResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,14 @@ class UserIntroResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => 'user_intro',
+            'type' => 'user_info',
             'id' => (int)$this->user_id,
             'attributes' => [
-                'body' => (string)$this->body,
+                // TODO
+                // all reminders in user_info return here
+                // unread_reminders
+                // upvote_reminders ...
+                // public_notice_id
             ],
         ];
     }

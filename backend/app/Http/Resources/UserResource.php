@@ -36,6 +36,9 @@ class UserResource extends JsonResource
                 'no_posting' => (boolean)$user->no_posting,
                 'no_ads' => (boolean)$user->no_ads,
                 'no_homework' => (boolean)$user->no_posting,
+                $this->mergeWhen(auth('api')->check() && (auth('api')->user()->isAdmin()||auth('api')->id()===$user->id), [
+                    'created_at' => (string)$user->created_at,
+                ]),
             ],
             'title' => new TitleBriefResource($user->title),
             'info' => new UserInfoResource($info),

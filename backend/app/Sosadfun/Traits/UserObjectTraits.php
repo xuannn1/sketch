@@ -61,6 +61,7 @@ trait UserObjectTraits{
             .'$include_unpublic'.$include_unpublic
             .'include_bianyuan'.$include_bianyuan
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
+            // TODO 可以适当简化query id
 
             $data = Cache::remember($queryid, 10, function () use($include_bianyuan, $is_book, $request, $id) {
                 $query = Thread::with('tags','author','last_post')

@@ -9,7 +9,8 @@ use App\Models\User;
 use App\Models\Thread;
 use App\Models\Status;
 use App\Http\Resources\UserResource;
-use App\Http\Resources\UserPrivateInfoResource;
+use App\Http\Resources\UserPreferenceResource;
+use App\Http\Resources\UserReminderResource;
 use App\Http\Resources\ThreadInfoResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\StatusResource;
@@ -58,14 +59,14 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = [
+        $user_profile = [
             'user' => CacheUser::user($id),
             'info' => CacheUser::info($id),
         ];
-        if (!$user['user'] || !$user['info']) {abort(404);}
-        $user['intro'] = $user['info']->has_intro ? CacheUser::intro($id) : null;
+        if (!$user_profile['user'] || !$user_profile['info']) {abort(404);}
+        $user_profile['intro'] = $user_profile['info']->has_intro ? CacheUser::intro($id) : null;
 
-        return response()->success(new UserResource($user));
+        return response()->success(new UserResource($user_profile));
     }
 
     /**
@@ -79,16 +80,30 @@ class UserController extends Controller
         // TODO 注销
     }
 
-    public function getInfo($id,Request $request)
+    public function getReminder($id,Request $request)
     {
         if (!auth('api')->user()->isAdmin() && auth('api')->id() != $id) {abort(403);}
 
         $info = CacheUser::info($id);
 
-        return response()->success(new UserPrivateInfoResource($info));
+        return response()->success(new UserReminderResource($info));
     }
 
-    public function updateInfo($user,Request $request)
+    public function updateReminder($id,Request $request)
+    {
+        // TODO
+    }
+
+    public function getPreference($id,Request $request)
+    {
+        if (!auth('api')->user()->isAdmin() && auth('api')->id() != $id) {abort(403);}
+
+        $info = CacheUser::info($id);
+
+        return response()->success(new UserPreferenceResource($info));
+    }
+
+    public function updatePreference($user,Request $request)
     {
         // TODO 修改用户的个人偏好等信息
         //
@@ -195,7 +210,6 @@ class UserController extends Controller
             ->paginate(config('preference.statuses_per_page'));
         } else {
             $queryid = 'UserStatus.'
-            .url('/')
             .$id
             .(is_numeric($request->page)? 'P'.$request->page:'P1');
 
@@ -225,6 +239,11 @@ class UserController extends Controller
         } else {
             $data = $this->select_user_threads(0, 0, 0, $is_book, $id, $request);
         }
+
+        // TODO 这个地方我想了一下，一个是不用pagination了，直接返回全部threads，因为一个人的threads数量再多也不会很多，缓存时间也可以更长一些，问题不大。
+        // TODO 但是对应的，这里的threads需要有限制，briefthread格式（不需要含有文案这个很长的东西）
+        // TODO 然后，这里只区分两个情况就可以了 1）本人或管理，可以看全部 2）非本人，只能看公共非匿名
+        // TODO 边限那个就先不筛选了，让情况简单一点
 
         return $data;
     }

@@ -86,8 +86,11 @@ Route::apiResource('/user', 'API\UserController')->only(['index', 'show', 'destr
 
 // 用户个人管理
 Route::patch('user/{user}/intro', 'API\UserController@updateIntro');//修改个人简介
-Route::get('user/{user}/info', 'API\UserController@getInfo');// 获取用户的个人偏好信息
-Route::patch('user/{user}/info', 'API\UserController@updateInfo');//修改个人偏好
+Route::get('user/{user}/preference', 'API\UserController@getPreference');// 获取用户的个人偏好信息
+Route::get('user/{user}/reminder', 'API\UserController@getReminder');// 获取用户的当前未读提醒信息。这个数据前端定时获取。
+Route::patch('user/{user}/reminder', 'API\UserController@updateReminder');// 更新用户的当前未读提醒信息（比如标记哪些已读）
+
+Route::patch('user/{user}/preference', 'API\UserController@updatePreference');//修改个人偏好
 Route::delete('user/{user}', 'API\UserController@destroy');//用户注销
 
 //用户的个人内容
