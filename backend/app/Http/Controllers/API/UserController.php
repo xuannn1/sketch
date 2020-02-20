@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use Cache;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Http\Resources\UserBriefResource;
+use App\Models\Thread;
+use App\Models\Status;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\UserPreferenceResource;
+use App\Http\Resources\UserReminderResource;
+use App\Http\Resources\ThreadInfoResource;
+use App\Http\Resources\PostResource;
+use App\Http\Resources\StatusResource;
 use App\Http\Resources\PaginateResource;
 use App\Sosadfun\Traits\UserObjectTraits;
+use App\Helpers\CacheUser;
 
 class UserController extends Controller
 {
@@ -15,7 +24,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index','show','showThread','showPost','showStatus');
+        $this->middleware('auth:api')->except('index','show','showThread','showBook','showStatus');
     }
     /**
      * Display a listing of the resource.
@@ -50,7 +59,14 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        // TODO 展示用户个人主页,比如等级、虚拟物等信息
+        $user_profile = [
+            'user' => CacheUser::user($id),
+            'info' => CacheUser::info($id),
+        ];
+        if (!$user_profile['user'] || !$user_profile['info']) {abort(404);}
+        $user_profile['intro'] = $user_profile['info']->has_intro ? CacheUser::intro($id) : null;
+
+        return response()->success(new UserResource($user_profile));
     }
 
     /**
@@ -64,12 +80,30 @@ class UserController extends Controller
         // TODO 注销
     }
 
-    public function getInfo($user,Request $request)
+    public function getReminder($id,Request $request)
     {
-        // TODO 获取用户的个人偏好等信息
+        if (!auth('api')->user()->isAdmin() && auth('api')->id() != $id) {abort(403);}
+
+        $info = CacheUser::info($id);
+
+        return response()->success(new UserReminderResource($info));
     }
 
-    public function updateInfo($user,Request $request)
+    public function updateReminder($id,Request $request)
+    {
+        // TODO
+    }
+
+    public function getPreference($id,Request $request)
+    {
+        if (!auth('api')->user()->isAdmin() && auth('api')->id() != $id) {abort(403);}
+
+        $info = CacheUser::info($id);
+
+        return response()->success(new UserPreferenceResource($info));
+    }
+
+    public function updatePreference($user,Request $request)
     {
         // TODO 修改用户的个人偏好等信息
         //
@@ -130,95 +164,87 @@ class UserController extends Controller
         return $result;
     }
 
-    public function showThread($user,Request $request)
+    public function showThread($id, Request $request)
     {
-        // TODO 展示用户创建的主题
+        $threads = $this->get_threads_or_books(0, $id, $request);
 
-        // $user = CacheUser::user($id);
-        // $info = CacheUser::info($id);
-        // if(!$user||!$info){abort(404);}
-        // $intro = $info->has_intro? CacheUser::intro($id):null;
-        //
-        // if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
-        //     $threads = \App\Models\Thread::with('tags','author','last_post')
-        //     ->withUser($id)
-        //     ->withoutType('book')
-        //     ->ordered()
-        //     ->paginate(config('preference.threads_per_page'));
-        // }else{
-        //     $queryid = 'UserThread.'
-        //     .url('/')
-        //     .$id
-        //     .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        //
-        //     $threads = Cache::remember($queryid, 10, function () use($request, $id) {
-        //         return \App\Models\Thread::with('tags','author','last_post')
-        //         ->withUser($id)
-        //         ->withoutType('book')
-        //         ->isPublic()
-        //         ->inPublicChannel()
-        //         ->withAnonymous('none_anonymous_only')
-        //         ->ordered()
-        //         ->paginate(config('preference.threads_per_page'))
-        //         ->appends($request->only('page'));
-        //     });
-        // }
-        // return view('users.show', compact('user','info','intro','threads'))->with(['show_user_tab'=>'thread','user_title'=>'主题']);
+        return response()->success([
+            'threads' => ThreadInfoResource::collection($threads),
+            'paginate' => new PaginateResource($threads),
+        ]);
     }
 
-    public function showPost($user,Request $request)
+    public function showBook($id, Request $request)
     {
-        // TODO 展示用户创建的回帖
+        $books = $this->get_threads_or_books(1, $id, $request);
 
-        // $user = CacheUser::user($id);
-        // $info = CacheUser::info($id);
-        // if(!$user||!$info){abort(404);}
-        // $intro = $info->has_intro? CacheUser::intro($id):null;
-        //
-        // if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
-        //     $posts = $this->select_user_comments(1, 1, $id,$request);
-        // }elseif(Auth::check()&&Auth::user()->level>0){
-        //     $posts = $this->select_user_comments(0, 1, $id,$request);
-        // }else{
-        //     $posts = $this->select_user_comments(0, 0, $id,$request);
-        // }
-        //
-        // return view('users.show_comment', compact('user','info','intro', 'posts'))->with(['show_user_tab'=>'comment']);
+        return response()->success([
+            'books' => ThreadInfoResource::collection($books),
+            'paginate' => new PaginateResource($books),
+        ]);
     }
 
-    public function showStatus($user,Request $request)
+    public function showPost($id, Request $request)
     {
-        // TODO 展示用户创建的动态
+        // 管理员或本人可查看包括匿名、边缘、折叠以及发表在非公开thread、非公开板块内thread的post
+        if(auth('api')->user()->isAdmin() || auth('api')->id() == $id){
+            $posts = $this->select_user_comments(1, 1, $id,$request);
+        }elseif(auth('api')->user()->level > 0){
+            $posts = $this->select_user_comments(0, 1, $id,$request);
+        } else {
+            abort(403);
+        }
 
-        // $user = CacheUser::user($id);
-        // $info = CacheUser::info($id);
-        // if(!$user||!$info){abort(404);}
-        // $intro = $info->has_intro? CacheUser::intro($id):null;
-        //
-        // if(Auth::check()&&((Auth::user()->isAdmin())||(Auth::id()==$id))){
-        //     $statuses = Status::with('author.title')
-        //     ->withUser($id)
-        //     ->ordered()
-        //     ->paginate(config('preference.statuses_per_page'));
-        // }else{
-        //     $queryid = 'UserStatus.'
-        //     .url('/')
-        //     .$id
-        //     .(is_numeric($request->page)? 'P'.$request->page:'P1');
-        //
-        //     $statuses = Cache::remember($queryid, 10, function () use($request, $id) {
-        //         return Status::with('author.title')
-        //         ->withUser($id)
-        //         ->isPublic()
-        //         ->ordered()
-        //         ->paginate(config('preference.statuses_per_page'))
-        //         ->appends($request->only('page'));
-        //     });
-        //
-        // }
-        //
-        // return view('users.show_status', compact('user','info','intro','statuses'))->with(['show_user_tab'=>'status'])->with('status_expand',true)->with('status_show_title',false);
+        return response()->success([
+            'posts' => PostResource::collection($posts),
+            'paginate' => new PaginateResource($posts),
+        ]);
     }
-    
 
+    public function showStatus($id,Request $request)
+    {
+        if(auth('api')->check() && (auth('api')->user()->isAdmin() || auth('api')->id() == $id)){
+            $statuses = Status::with('author.title')
+            ->withUser($id)
+            ->ordered()
+            ->paginate(config('preference.statuses_per_page'));
+        } else {
+            $queryid = 'UserStatus.'
+            .$id
+            .(is_numeric($request->page)? 'P'.$request->page:'P1');
+
+            $statuses = Cache::remember($queryid, 10, function () use($request, $id) {
+                return Status::with('author.title')
+                ->withUser($id)
+                ->isPublic()
+                ->ordered()
+                ->paginate(config('preference.statuses_per_page'))
+                ->appends($request->only('page'));
+            });
+
+        }
+
+        return response()->success([
+            'statuses' => StatusResource::collection($statuses),
+            'paginate' => new PaginateResource($statuses),
+        ]);
+    }
+
+    private function get_threads_or_books($is_book, $id, $request) {
+
+        if (auth('api')->check() && (auth('api')->user()->isAdmin() || auth('api')->id() == $id)) {
+            $data = $this->select_user_threads(1, 1, 1, $is_book, $id, $request);
+        } elseif (auth('api')->check() && auth('api')->user()->level > 0){
+            $data = $this->select_user_threads(0, 0, 1, $is_book, $id, $request);
+        } else {
+            $data = $this->select_user_threads(0, 0, 0, $is_book, $id, $request);
+        }
+
+        // TODO 这个地方我想了一下，一个是不用pagination了，直接返回全部threads，因为一个人的threads数量再多也不会很多，缓存时间也可以更长一些，问题不大。
+        // TODO 但是对应的，这里的threads需要有限制，briefthread格式（不需要含有文案这个很长的东西）
+        // TODO 然后，这里只区分两个情况就可以了 1）本人或管理，可以看全部 2）非本人，只能看公共非匿名
+        // TODO 边限那个就先不筛选了，让情况简单一点
+
+        return $data;
+    }
 }

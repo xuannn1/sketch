@@ -86,14 +86,18 @@ Route::apiResource('/user', 'API\UserController')->only(['index', 'show', 'destr
 
 // 用户个人管理
 Route::patch('user/{user}/intro', 'API\UserController@updateIntro');//修改个人简介
-Route::get('user/{user}/info', 'API\UserController@getInfo');// 获取用户的个人偏好信息
-Route::patch('user/{user}/info', 'API\UserController@updateInfo');//修改个人偏好
+Route::get('user/{user}/preference', 'API\UserController@getPreference');// 获取用户的个人偏好信息
+Route::get('user/{user}/reminder', 'API\UserController@getReminder');// 获取用户的当前未读提醒信息。这个数据前端定时获取。
+Route::patch('user/{user}/reminder', 'API\UserController@updateReminder');// 更新用户的当前未读提醒信息（比如标记哪些已读）
+
+Route::patch('user/{user}/preference', 'API\UserController@updatePreference');//修改个人偏好
 Route::delete('user/{user}', 'API\UserController@destroy');//用户注销
 
 //用户的个人内容
-Route::get('user/{user}/thread', 'API\UserController@showThread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
-Route::get('user/{user}/post', 'API\UserController@showPost');// 展示某用户的全部post，当本人或管理查询时，允许出现匿名post
-Route::get('user/{user}/status', 'API\UserController@showStatus');// 展示某用户的全部status，当本人或管理查询时，允许出现匿名post
+Route::get('user/{user}/thread', 'API\UserController@showThread');// 展示某用户的全部thread，当本人或管理查询时，允许出现匿名和私密thread
+Route::get('user/{user}/book', 'API\UserController@showBook');// 展示某用户的全部book，当本人或管理查询时，允许出现匿名和私密book
+Route::get('user/{user}/post', 'API\UserController@showPost');// 展示某用户的全部post，当本人或管理查询时，允许出现匿名和私密post
+Route::get('user/{user}/status', 'API\UserController@showStatus');// 展示某用户的全部status
 
 
 // 签到
