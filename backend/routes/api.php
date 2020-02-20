@@ -116,6 +116,7 @@ Route::post('/thread/{thread}/collect', 'API\CollectionController@store');//收�
 Route::patch('/collection/{collection}', 'API\CollectionController@update');//修改某个收藏
 Route::delete('/collection/{collection}', 'API\CollectionController@destroy');//删除某个收藏
 Route::get('user/{user}/collection', 'API\CollectionController@index');//查看收藏更新
+Route::patch('user/{user}/clear_update', 'API\CollectionController@clear_update');//收藏内容全部已读
 
 Route::get('user/{user}/collection_group', 'API\CollectionGroupController@index');//查看收藏分页列表
 Route::post('collection_group', 'API\CollectionGroupController@store');//新建收藏分页

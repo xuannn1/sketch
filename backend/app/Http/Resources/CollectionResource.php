@@ -21,7 +21,6 @@ class CollectionResource extends JsonResource
                 'user_id' =>  (int)$this->user_id,
                 'thread_id' => (int)$this->thread_id,
                 'keep_updated' => (bool)$this->keep_updated,
-                'updated' => (bool)$this->updated,
                 'group_id' => (int)$this->group_id,
                 'last_read_post_id' => (int)$this->last_read_post_id,
             ],

@@ -20,7 +20,6 @@ class CollectionGroupResource extends JsonResource
             'attributes' => [
                 'user_id' =>  (int)$this->user_id,
                 'name' => (string)$this->name,
-                'update_count' => (int)$this->update_count,
                 'order_by' => $this->order_by,
             ],
         ];
