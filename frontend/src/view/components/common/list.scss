@@ -1,20 +1,46 @@
 .list {
-  $border: #dbdbdb 1px solid;
+  $border: var(--color-border) 1px solid;
 
   width: 100%;
-  background-color: white;
+  background-color: var(--color-bg-front);
   border-radius: 0;
   box-shadow: none;
   border-top: $border;
   border-bottom: $border;
+
   .list-item {
+    padding: var(--padding-1);
+    position: relative;
     &:hover {
       cursor: pointer;
     }
   }
+  .list-item:not(:last-child) {
+    border-bottom: $border;
+  }
 
   .list-arrow {
+    margin: var(--margin-1);
+    font-size: var(--font-size-4);
     float: right;
     color: #8c8787;
   }
+
+
+  .item-container {
+    // padding: 0 var(--left-padding-1);
+
+    .item-first-line {
+      // margin: 0 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .item-brief {
+      // margin: 0 20px;
+      text-align: left;
+      font-size: var(--font-size-small);
+    }
+  }
 }
+

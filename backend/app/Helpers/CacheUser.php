@@ -39,7 +39,7 @@ class CacheUser{ //cache-user class
         if(!$id||$id<=0){return;}
 
         return Cache::remember('cachedUserIntro.'.$id, 60, function() use($id) {
-            return UserIntro::on('mysql::write')->find($id);
+            return UserIntro::find($id);
         });
     }
 

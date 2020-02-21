@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use ConstantObjects;
+
 
 class Post extends Model
 {
@@ -32,7 +34,7 @@ class Post extends Model
 
     public function simpleInfo()
     {
-        return $this->hasOne(PostInfo::class, 'post_id')->select('post_id','order_by','previous_id','next_id','reviewee_id','reviewee_type','recommend','editor_recommend','rating','redirect_count','author_attitude','previous_id','next_id','abstract');
+        return $this->hasOne(PostInfo::class, 'post_id')->select('post_id','order_by','previous_id','next_id','reviewee_id','reviewee_type','recommend','editor_recommend','rating','redirect_count','author_attitude','previous_id','next_id','abstract', 'summary');
     }
 
     public function thread()
@@ -90,6 +92,10 @@ class Post extends Model
         return $query->select('id', 'thread_id', 'user_id', 'title', 'type', 'brief', 'created_at',  'edited_at',  'is_anonymous', 'majia', 'is_bianyuan', 'upvote_count', 'char_count', 'reply_count', 'view_count');
     }
 
+    public function scopeWithUser($query, $id) {
+        return $query->where('posts.user_id', '=', $id);
+    }
+
     public function scopeIsPublic($query, $isPublic='')//只看作者决定公开的
     {
         if($isPublic==='include_private'){
@@ -99,6 +105,14 @@ class Post extends Model
             $query->where('threads.is_public', false);
         }
         $query->where('threads.is_public', true);
+    }
+
+    public function scopeInPublicChannel($query, $inPublicChannel='')//只看公共channel内的
+    {
+        if($inPublicChannel==='include_none_public_channel'){
+            return $query;
+        }
+        return $query->whereIn('threads.channel_id', ConstantObjects::public_channels());
     }
 
     public function scopeThreadOnly($query, $threadOnly)
@@ -126,7 +140,7 @@ class Post extends Model
         return $query;
     }
 
-    public function scopeWithFolded($query, $withFolded)
+    public function scopeWithFolded($query, $withFolded='')
     {
         if($withFolded==='include_folded'){
             return $query;

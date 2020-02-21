@@ -19,7 +19,8 @@ class PublicNoticeResource extends JsonResource
             'id' => (int)$this->id,
             'attributes' => [
                 'user_id' => (int)$this->user_id,
-                'body' => $this->body,
+                'title' => (string)$this->title,
+                'body' => (string)$this->body,
                 'created_at' => (string)$this->created_at,
                 'edited_at' => (string)$this->edited_at,
             ],

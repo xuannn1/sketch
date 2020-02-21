@@ -115,14 +115,40 @@ export namespace ResData {
     };
   }
 
+  export interface PostInfo {
+    type:'post_info';
+    id:number;
+    attributes:Database.PostInfo;
+    reviewee:Thread;
+  }
+
+  export function allocPostInfo () : PostInfo {
+    return {
+      type: 'post_info',
+      id: 0,
+      attributes: {
+        order_by: 0,
+        abstract: '',
+        previous_id: 0,
+        next_id: 0,
+        reviewee_id: 0,
+        reviewee_type: 'thread',
+        recommend: false,
+        editor_recommend: false,
+        rating: 0,
+        redirect_count: 0,
+        author_attitude: 0,
+      },
+      reviewee: allocThread(),
+    };
+  }
+
   export interface Post {
     type:'post';
     id:number;
     attributes:Database.Post;
-    author?:User;
-    review?:Review;
-    answer?:Thread;
-    chapter?:Chapter;
+    info:PostInfo;
+    parent:Post[];
   }
 
   export function allocPost () : Post {
@@ -132,6 +158,8 @@ export namespace ResData {
       attributes: {
         body: '',
       },
+      info: allocPostInfo(),
+      parent: [],
     };
   }
 
@@ -228,7 +256,7 @@ export namespace ResData {
       },
       poster: allocUser(),
       receiver: allocUser(),
-      message_body: allocMessageBody()
+      message_body: allocMessageBody(),
     };
   }
 
@@ -248,11 +276,12 @@ export namespace ResData {
     id:number;
     attributes:{
       user_id:number;
+      title:string;
       body:string;
       created_at:Timestamp;
       edited_at:Timestamp;
     };
-    user?:User;
+    author?:User;
   }
   export function allocPublicNotice () : PublicNotice {
     return {
@@ -260,11 +289,12 @@ export namespace ResData {
       id: 0,
       attributes: {
         user_id: 0,
+        title: '',
         body: '',
         created_at: '',
         edited_at: '',
       },
-      user: allocUser(),
+      author: allocUser(),
     };
   }
 
@@ -334,13 +364,14 @@ export namespace ResData {
 export namespace ReqData {
   export namespace Thread {
     export enum ordered {
+      default = 'default', //最后回复
       latest_added_component = 'latest_added_component', //按最新更新时间排序
       jifen = 'jifen',  //按总积分排序
       weighted_jifen = 'weighted_jifen', //按平衡积分排序
       latest_created = 'latest_created', //按创建时间排序
-      id = 'id',  //按id排序
       collection_count = 'collection_count', //按收藏总数排序
       total_char = 'total_char', //按总字数排序
+      random = 'random',
     }
     // （是否仅返回边缘/非边缘内容）
     export enum withBianyuan {
@@ -360,9 +391,9 @@ export namespace ReqData {
 
   export namespace Message {
     export enum style {
-      sendbox,
-      receiveBox,
-      dialogue,
+      sendbox = 'sendbox',
+      receiveBox = 'receivebox',
+      dialogue = 'dialogue',
     }
 
     export enum ordered {
@@ -434,10 +465,9 @@ export namespace API {
   export interface Get {
     '/':{
       quotes:ResData.Quote[],
-      recent_added_chapter_books:ResData.Thread[],
-      recent_responded_books:ResData.Thread[],
-      recent_responded_threads:ResData.Thread[],
-      recent_statuses:ResData.Status[],
+      recent_recommendations:ResData.Post[],
+      homeworks:ResData.Thread[],
+      channel_threads:{channel_id:number, threads:ResData.Thread[]}[],
     };
     '/homethread':{
       [idx:string]:{
@@ -445,16 +475,9 @@ export namespace API {
         threads:ResData.Thread[],
       },
     };
-    '/homebook':{
-      recent_long_recommendations:ResData.Post[],
-      recent_short_recommendations:ResData.Post[],
-      random_short_recommendations:ResData.Post[],
-      recent_custom_short_recommendations:ResData.Post[],
-      recent_custom_long_recommendations:ResData.Post[],
-      recent_added_chapter_books:ResData.Thread[],
-      recent_responded_books:ResData.Thread[],
-      highest_jifen_books:ResData.Thread[],
-      most_collected_books:ResData.Thread[],
+    '/book':{
+      threads:ResData.Thread[],
+      paginate:ResData.ThreadPaginate,
     };
     '/user/$0/following':{
       user:ResData.User,
@@ -475,6 +498,9 @@ export namespace API {
       messages:ResData.Message[],
       paginate:ResData.ThreadPaginate,
       style:ReqData.Message.style,
+    };
+    '/publicnotice':{
+      public_notices:ResData.PublicNotice[],
     };
     '/config/titles':{
       titles:ResData.Title[],
@@ -514,6 +540,12 @@ export namespace API {
       paginate:ResData.ThreadPaginate,
     };
     '/config/noTongrenTags':ResData.Tag[]; // fixme:
+    '/config/allTags':{
+      tags:ResData.Tag[],
+    };
+    '/config/allChannels':{
+      channels:ResData.Channel[],
+    };
   }
 
   export interface Post {
@@ -526,7 +558,7 @@ export namespace API {
     '/groupmessage':{
       messages:ResData.Message[],
     };
-    '/publicnotce':{
+    '/publicnotice':{
       public_notice:ResData.PublicNotice,
     };
     '/vote':ResData.Vote;

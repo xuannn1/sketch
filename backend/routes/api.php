@@ -50,6 +50,8 @@ Route::delete('/linkaccount/destroy','API\LinkAccountController@destroy');
 // 默认页面
 Route::get('/', 'API\PageController@home')->name('home');// 网站首页
 
+Route::get('/administration_records', 'API\PageController@administration_records')->name('administration_record');// 管理目录
+
 // 固定信息
 Route::get('config/allTags', 'API\PageController@allTags');
 Route::get('config/allChannels', 'API\PageController@allChannels');
@@ -84,15 +86,19 @@ Route::apiResource('/user', 'API\UserController')->only(['index', 'show', 'destr
 
 // 用户个人管理
 Route::patch('user/{user}/intro', 'API\UserController@updateIntro');//修改个人简介
-Route::get('user/{user}/info', 'API\UserController@getInfo');// 获取用户的个人偏好信息
-Route::patch('user/{user}/info', 'API\UserController@updateInfo');//修改个人偏好
+Route::get('user/{user}/preference', 'API\UserController@getPreference');// 获取用户的个人偏好信息
+Route::get('user/{user}/reminder', 'API\UserController@getReminder');// 获取用户的当前未读提醒信息。这个数据前端定时获取。
+Route::patch('user/{user}/reminder', 'API\UserController@updateReminder');// 更新用户的当前未读提醒信息（比如标记哪些已读）
+
+Route::patch('user/{user}/preference', 'API\UserController@updatePreference');//修改个人偏好
 Route::delete('user/{user}', 'API\UserController@destroy');//用户注销
 
 //用户的个人内容
-Route::get('user/{user}/thread', 'API\UserController@showThread');// 展示某用户的全部thread，当本人或管理查询时，允许出现私密thread
-Route::get('user/{user}/post', 'API\UserController@showPost');// 展示某用户的全部post，当本人或管理查询时，允许出现匿名post
-Route::get('user/{user}/status', 'API\UserController@showStatus');// 展示某用户的全部status，当本人或管理查询时，允许出现匿名post
-Route::get('user/{user}/quote', 'API\UserController@showQuote');// 展示某用户的全部quote，当本人或管理查询时，允许出现匿名quote
+Route::get('user/{user}/thread', 'API\UserController@showThread');// 展示某用户的全部thread，当本人或管理查询时，允许出现匿名和私密thread
+Route::get('user/{user}/book', 'API\UserController@showBook');// 展示某用户的全部book，当本人或管理查询时，允许出现匿名和私密book
+Route::get('user/{user}/post', 'API\UserController@showPost');// 展示某用户的全部post，当本人或管理查询时，允许出现匿名和私密post
+Route::get('user/{user}/status', 'API\UserController@showStatus');// 展示某用户的全部status
+
 
 // 签到
 Route::get('qiandao', 'API\QiandaoController@qiandao');// 签到
@@ -114,6 +120,7 @@ Route::post('/thread/{thread}/collect', 'API\CollectionController@store');//收�
 Route::patch('/collection/{collection}', 'API\CollectionController@update');//修改某个收藏
 Route::delete('/collection/{collection}', 'API\CollectionController@destroy');//删除某个收藏
 Route::get('user/{user}/collection', 'API\CollectionController@index');//查看收藏更新
+Route::patch('user/{user}/clear_update', 'API\CollectionController@clear_update');//收藏内容全部已读
 
 Route::get('user/{user}/collection_group', 'API\CollectionGroupController@index');//查看收藏分页列表
 Route::post('collection_group', 'API\CollectionGroupController@store');//新建收藏分页
@@ -128,6 +135,10 @@ Route::get('follow_status', 'API\StatusController@follow_status');//关注的人
 // 题头部分
 Route::apiResource('quote', 'API\QuoteController')->only(['index','show','store','destroy']);
 
+Route::get('user/{user}/quote', 'API\QuoteController@userQuote');// 展示某用户的全部quote，当本人或管理查询时，允许出现匿名quote
+
+Route::get('/admin/manage/quote_review_index', 'API\QuoteController@review_index')->name('quote.review_index');//批量审核题头
+
 Route::patch('/quote/{quote}/review','API\QuoteController@review')->name('quote.review');//审核单独题头
 
 // 私信部分
@@ -139,6 +150,7 @@ Route::get('publicnotice', 'API\MessageController@publicnotice_index');//用户�
 // 消息部分
 Route::get('/user/{user}/activity', 'API\ActivityController@index');// 展示某用户的站内提醒，仅允许本人和管理员查询
 Route::post('/clearupdates', 'API\ActivityController@clearupdates');// 清除未读提醒
+Route::get('/user/{user}/administration_record', 'API\MessageController@administration_record')->name('user.administration_record');// 展示某用户的被管理记录
 
 // 阅读历史保存?
 
@@ -176,9 +188,11 @@ Route::patch('/homework_registration/{homework_registration}/manage_registration
 // 帮助FAQ管理
 Route::apiResource('helpfaq', 'API\FAQController')->only(['index', 'store', 'update', 'destroy']);
 
+// 注意顺序
+Route::get('quiz/get_quiz','API\QuizController@getQuiz');
+Route::post('quiz/submit_quiz','API\QuizController@submitQuiz');
 Route::apiResource('quiz', 'API\QuizController');
-Route::get('take_quiz','API\QuizController@takeQuiz');
-Route::get('submit_quiz','API\QuizController@submitQuiz');
+
 
 // 标签系统管理
 Route::apiResource('tag', 'API\TagController');
@@ -198,3 +212,5 @@ Route::get('patreon', 'API\DonationController@patreon_index')->name('patreon.ind
 Route::patch('patreon/{patreon}/approve', 'API\DonationController@patreon_approve')->name('patreon.approve');
 Route::patch('patreon/{patreon}/disapprove', 'API\DonationController@patreon_disapprove')->name('patreon.disapprove');
 Route::post('patreon_upload', 'API\DonationController@patreon_upload')->name('patreon.upload');
+
+Route::post('admin/management','API\AdminController@management')->name('admin.management');

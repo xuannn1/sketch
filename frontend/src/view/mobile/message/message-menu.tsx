@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { RouteMenu } from '../../components/common/route-menu';
+import { RoutePath } from '../../../config/route-path';
 
 export function MessageMenu () {
   const items = [
-    {to:'/messages', label: '提醒'},
-    {to:'/messages/pm', label: '个人消息'},
+    {to:RoutePath.messages, label: '提醒'},
+    {to:RoutePath.personalMessages, label: '个人消息'},
   ];
   let onIndex = 0;
   for (let i = 0; i < items.length; i ++) {

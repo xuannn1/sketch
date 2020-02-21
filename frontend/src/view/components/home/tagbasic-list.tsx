@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { classnames } from '../../../utils/classname';
-import { TagBasic } from './tagbasic';
+import { Tag } from '../common/tag';
 
 type TagColor = 'black'|'dark'|'light'|'white'|'primary'|'link'|'info'|'success'|'warning'|'danger';
 type tagType = {
@@ -8,6 +8,7 @@ type tagType = {
   tagName:string,
 };
 
+/*
 export class TagBasicList extends React.Component<{
   // props
   tagCategoryName:string;
@@ -86,20 +87,21 @@ export class TagBasicList extends React.Component<{
       </div>
       <div className={classnames('tags')} >
           {this.state.myChildTags.map((child, inx) => {
-          return   <TagBasic
-          key={child.tagId}
-          selected={false}
-          selectable={true}
-          selectedColor={this.props.selectedColor}
-          onClick={(selected, selectedId) => 
-            {
-              this.props.onClick(selected, selectedId);
-            }} 
-          tagId={child.tagId} tagName={child.tagName}
-          size={this.props.tagSize} color={this.props.tagColor}></TagBasic>; })}
-        </div>
+          return <Tag
+            key={child.tagId}
+            selected={false}
+            selectedColor={this.props.selectedColor}
+            onClick={(selected, selectedId) => 
+              {
+                this.props.onClick(selected, selectedId);
+              }} 
+            tagId={child.tagId}
+            tagName={child.tagName}
+            size={this.props.tagSize}
+            color={this.props.tagColor}></Tag>; })}
       </div>
-      );
+    </div>
+    );
   }
 }
-
+*/

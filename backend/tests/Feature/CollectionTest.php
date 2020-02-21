@@ -77,7 +77,6 @@ class CollectionTest extends TestCase
         ->assertJsonStructure([
             'data' => [
                 'collections',
-                'paginate',
             ],
         ])->assertJson([
             'data' => [

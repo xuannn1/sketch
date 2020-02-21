@@ -130,7 +130,7 @@ class PostController extends Controller
 
         if($post->fold_state>0){abort(409);}
 
-        if($post->user->isAdmin()){abort(413);}
+        if($post->user->isAdmin()&&!$post->is_anonymous){abort(413);}
 
         $post->update(['fold_state'=>2]);
 

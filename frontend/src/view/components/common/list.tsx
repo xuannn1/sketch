@@ -9,12 +9,17 @@ class ListItem extends React.Component<{
   arrow?:boolean;
   onClick?:() => void;
   style?:React.CSSProperties;
+  noBorder?:boolean;
 }, {
   //state
 }> {
   public render () {
     return <div className={classnames('list-item', this.props.className)}
-      style={this.props.style}
+      style={Object.assign(
+        {
+          border: this.props.noBorder ? 'none' : undefined,
+        },
+        this.props.style || {})}
       onClick={this.props.onClick}>
       {this.props.arrow && <div className="list-arrow">
         <i className="fas fa-angle-right icon"></i>

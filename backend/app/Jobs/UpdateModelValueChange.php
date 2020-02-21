@@ -61,6 +61,7 @@ class UpdateModelValueChange implements ShouldQueue
             'App\Models\Thread',
             'App\Models\Post',
             'App\Models\Quiz',
+            'App\Models\QuizOption',
             'App\Models\UserInfo',
             'App\Models\PostInfo',
         ];
@@ -70,6 +71,7 @@ class UpdateModelValueChange implements ShouldQueue
             'redirect_count',
             'quiz_count',
             'correct_count',
+            'select_count',
             'daily_clicks',
         ];
 

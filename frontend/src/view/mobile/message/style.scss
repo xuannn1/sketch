@@ -1,0 +1,78 @@
+.right-align {
+  text-align: right;
+}
+
+
+.message-list {
+  margin-top: var(--top-margin-1);
+}
+
+.blank-block {
+  padding: var(--padding-1);
+  a {
+    color: var(--color-primary);
+  }
+}
+
+.msg-page {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+
+  .unread {
+    font-weight: bold;
+  }
+
+  .one-line-truncation {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-top: var(--top-margin-1);
+  }
+
+  .dialogue-card {
+    // padding: '20px',
+    background-color: '#f4f5f9';
+    height: 100%;
+    overflow-y: scroll;
+    flex-grow: 1;
+    background-color: transparent !important;
+    // margin-bottom: 0 !important;
+
+    .message-item {
+      margin-bottom: var(--top-margin-3);
+      .poster-name {
+        margin-bottom: 1em;
+        font-weight: bold;
+      }
+      .from-me {
+        float: right;
+      }
+    }
+  }
+  
+  
+  #pm-text-box {
+    height: auto !important;
+    padding: var(--padding-xsmall);
+    left: 0;
+    bottom: 0;
+    background-color: white;
+    display: flex;
+  
+    .quill {
+      flex-grow:1;
+      display: inline-block;
+      .ql-size.ql-expanded .ql-picker-options {
+        top: -418%;
+      }
+      .ql-color-picker.ql-expanded .ql-picker-options {
+        top: -480%;
+      }
+    }
+    span.sendbutton {
+      // font-size: 1.3em;
+      margin: 0.5em 0 0 0.5em;
+    }
+  }
+}

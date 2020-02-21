@@ -41,34 +41,10 @@ class CollectionController extends Controller
         if(!$user){abort(404);}
         if(!auth('api')->user()->isAdmin()&&($user->id!=auth('api')->id())){abort(403,'只能看自己的收藏');}
 
-        $info->clear_column('unread_updates');
-        $info->clear_column('default_collection_updates');
-
-        $group_id = 0;
-        $order_by = 2;
-        if($request->group_id){
-            $groups = $this->findCollectionGroups($user->id);
-            $group = $groups->keyby('id')->get($request->group_id);
-            if($group){
-                $group->update_count();
-                $group_id = $group->id;
-                $order_by = $group->order_by;
-            }
-        }
-
-        $page = is_numeric($request->page)? (int)$request->page:1;
-
-        $collections = $this->findCollectionIndex($user->id, $group_id, $order_by, $page);
+        $collections = $this->findCollectionIndex($user->id);
 
         return response()->success([
             'collections' => CollectionResource::collection($collections),
-            'paginate' => new PaginateResource($collections),
-            'request_data' => [
-                'user_id' => $user->id,
-                'page' => $page,
-                'group_id' => $group_id,
-                'order_by' => $order_by,
-            ],
         ]);
 
     }
@@ -164,4 +140,14 @@ class CollectionController extends Controller
         $collection->delete();
         return response()->success('deleted this collection');
     }
+
+    public function clear_updates($id)
+    {
+        DB::table('collections')->join('threads','collections.thread_id','=','threads.id')
+        ->where('collections.user_id',$id)
+        ->where('threads.last_component_id','>',0)
+        ->update(['collections.last_read_post_id' => 'threads.last_component_id']);
+        return response()->success('cleared collection updates');
+    }
+
 }
